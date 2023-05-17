@@ -294,7 +294,8 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       validateFirst
       rules={[
         { required: true },
-        { max: 64 },
+        { min: 2 },
+        { max: 32 },
         { validator: (_, value) => {
           if (!editMode && applicationsRuleList.findIndex(rule => rule.ruleName === value) !== -1) {
             return Promise.reject($t({ defaultMessage: 'This rule name has been existed.' }))

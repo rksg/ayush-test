@@ -31,6 +31,8 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
+
 import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
@@ -595,6 +597,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')

@@ -37,7 +37,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { layer3ProtocolLabelMapping } from '../../contentsMap'
+import { layer3ProtocolLabelMapping }      from '../../contentsMap'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
 import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
@@ -652,9 +653,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         })
       }}
     >
-      {Object.keys(Layer3ProtocolType).map((type) => {
+      {Object.keys(Layer3ProtocolType).map((type, index) => {
         return (
-          <Option value={type}>
+          <Option value={type} key={index}>
             {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
           </Option>
         )
@@ -1017,6 +1018,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')

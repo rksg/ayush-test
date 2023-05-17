@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps }                from '@acx-ui/components'
@@ -160,6 +161,7 @@ const AccessControlSet = () => {
 
 function useColumns (networkFilterOptions: AclOptionType[]) {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
 
   const columns: TableProps<EnhancedAccessControlInfoType>['columns'] = [
     {
@@ -190,10 +192,10 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (data, row) {
         return row.l2AclPolicyId
-          ? <Layer2Drawer
+          ? <Form form={form}><Layer2Drawer
             isOnlyViewMode={true}
             onlyViewMode={{ id: row.l2AclPolicyId, viewText: row.l2AclPolicyName }}
-          />
+          /></Form>
           : '-'
       }
     },
@@ -204,10 +206,10 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (data, row) {
         return row.l3AclPolicyId
-          ? <Layer3Drawer
+          ? <Form form={form}><Layer3Drawer
             isOnlyViewMode={true}
             onlyViewMode={{ id: row.l3AclPolicyId, viewText: row.l3AclPolicyName }}
-          />
+          /></Form>
           : '-'
       }
     },
@@ -218,10 +220,10 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (data, row) {
         return row.devicePolicyId
-          ? <DeviceOSDrawer
+          ? <Form form={form}><DeviceOSDrawer
             isOnlyViewMode={true}
             onlyViewMode={{ id: row.devicePolicyId, viewText: row.devicePolicyName }}
-          />
+          /></Form>
           : '-'
       }
     },
@@ -232,13 +234,13 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       sorter: true,
       render: function (data, row) {
         return row.applicationPolicyId
-          ? <ApplicationDrawer
+          ? <Form form={form}><ApplicationDrawer
             isOnlyViewMode={true}
             onlyViewMode={{
               id: row.applicationPolicyId,
               viewText: row.applicationPolicyName
             }}
-          />
+          /></Form>
           : '-'
       }
     },
