@@ -217,3 +217,15 @@ export const RearFanIcon = styled(FanSolid)`
     fill: var(--acx-primary-black);
   }
 `
+
+export const StackTagsOutlineIcon = styled(TagsOutline)`
+  width: 14px;
+  height: 16px;
+  vertical-align: middle;
+`
+export const StackTagsSolidIcon = styled(TagsSolid)`
+  width: 14px;
+  height: 16px;
+  vertical-align: middle;
+  margin-left: 6px;
+`

@@ -1,9 +1,13 @@
 
-import { Drawer }  from 'antd'
-import { useIntl } from 'react-intl'
+import { Drawer, Space } from 'antd'
+import _                 from 'lodash'
+import { useIntl }       from 'react-intl'
 
 import { Table, TableProps }                        from '@acx-ui/components'
 import {  SwitchPortStatus, defaultSort, sortProp } from '@acx-ui/rc/utils'
+
+import * as UI from './styledComponents'
+
 
 export interface StackPortsDrawerType {
   setDrawerVisible: (visible: boolean) => void,
@@ -38,9 +42,6 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
       dataIndex: 'portIdentifier',
       key: 'portIdentifier',
       sorter: { compare: sortProp('portIdentifier', defaultSort) }
-      // render: (data, row) => {
-      //   return getRuleTypeLabel(row)
-      // }
     },
     {
       title: $t({ defaultMessage: 'Port Name' }),
@@ -64,7 +65,10 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
       title: $t({ defaultMessage: 'PoE Device Type' }),
       dataIndex: 'poeType',
       key: 'poeType',
-      sorter: { compare: sortProp('poeType', defaultSort) }
+      sorter: { compare: sortProp('poeType', defaultSort) },
+      render: (data) => {
+        return _.isEmpty(data) ? '--' : data
+      }
     },
     {
       title: $t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' }),
@@ -87,15 +91,22 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
     },
     {
       title: $t({ defaultMessage: 'Connected Device' }),
-      dataIndex: 'toVlan',
-      key: 'toVlan',
-      sorter: { compare: sortProp('toVlan', defaultSort) }
+      dataIndex: 'neighborName',
+      key: 'neighborName',
+      // sorter: { compare: sortProp('neighborName', defaultSort) },
+      render: (data, row) => {
+        return row.neighborName || row.neighborMacAddress || '--'
+      }
     },
     {
       title: $t({ defaultMessage: 'VLANs' }),
       dataIndex: 'toVlan',
       key: 'toVlan',
-      sorter: { compare: sortProp('toVlan', defaultSort) }
+      // sorter: { compare: sortProp('toVlan', defaultSort) },
+      render: (data, row) => <Space size={2}>
+        <UI.StackTagsOutlineIcon /> {row.unTaggedVlan || '--'}
+        <UI.StackTagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
+      </Space>
     }
   ]
 
@@ -115,7 +126,7 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
         <Table
           columns={columns}
           dataSource={stackPorts}
-          rowKey='id'
+          rowKey='portIdentifier'
         />
       </div>
     }
@@ -123,3 +134,23 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
 }
 
 
+
+function filterUntaggedVlan (vlanIds?: string, unTaggedVlan?: string) {
+  if (vlanIds) {
+    let vlanIdsArray = vlanIds?.split(' ')
+    if (unTaggedVlan) {
+      let taggedVlan = ''
+      if (vlanIdsArray.length > 1) {
+        vlanIdsArray = _.remove(vlanIdsArray, n => n !== unTaggedVlan)
+        vlanIdsArray.sort((a, b) => Number(a) - Number(b))
+        taggedVlan = vlanIdsArray.join(', ')
+      } else {
+        taggedVlan = '--'
+      }
+      return taggedVlan
+    } else {
+      return vlanIdsArray.join(', ')
+    }
+  }
+  return '--'
+}

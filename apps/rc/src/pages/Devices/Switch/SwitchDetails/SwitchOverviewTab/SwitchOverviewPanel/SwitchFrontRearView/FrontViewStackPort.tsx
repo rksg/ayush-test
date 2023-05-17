@@ -95,27 +95,25 @@ export function FrontViewStackPort (props:{
             position: 'absolute'
           }}></div>
         </div>
-
-
       </UI.Port>
 
+    </div>
+    {labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel>}
+  </UI.PortWrapper>
+
+  return tooltipEnable
+    ? <>
       <FrontViewStackPortDrawer
         portNumber={portNumber}
         setDrawerVisible={setDrawerVisible}
         drawerVisible={drawerVisible}
         stackPorts={breakOutPorts}
-      ></FrontViewStackPortDrawer>
-
-    </div>
-    { labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel> }
-  </UI.PortWrapper>
-
-  return tooltipEnable
-    ? <Tooltip
-      placement={'top'}
-      overlayStyle={{ maxWidth: '300px' }}
-      title={getTooltip()}>
-      {portElement}
-    </Tooltip>
+      />
+      <Tooltip
+        placement={'top'}
+        overlayStyle={{ maxWidth: '300px' }}
+        title={getTooltip()}>
+        {portElement}
+      </Tooltip></>
     : portElement
 }
