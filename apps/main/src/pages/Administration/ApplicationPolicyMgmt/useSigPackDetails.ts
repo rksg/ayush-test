@@ -4,7 +4,7 @@ import { useGetSigPackQuery }                                             from '
 import { ApplicationConfirmType, ApplicationInfo, ApplicationUpdateType } from '@acx-ui/rc/utils'
 
 export function useSigPackDetails () {
-  const [ updateAvailable, setUpdateAvailable ] = useState(true)
+  const [ updateAvailable, setUpdateAvailable ] = useState(false)
   const [ added, setAdded ] = useState([] as ApplicationInfo[])
   const [ updated, setUpdated ] = useState([] as ApplicationInfo[])
   const [ merged, setMerged ] = useState([] as ApplicationInfo[])
@@ -32,27 +32,28 @@ export function useSigPackDetails () {
     }
   }, [data])
 
-  const updatedCount = (): number => {
-    return Number(!!renamed.length) + Number(!!updated.length) + Number(!!merged.length)
-  }
+  useEffect(()=>{
+    const updatedCount = (): number => {
+      return Number(!!renamed.length) + Number(!!updated.length) + Number(!!merged.length)
+    }
+    const updatedWithAddedCount = (): number => {
+      return Number(!!added.length) + updatedCount()
+    }
+    if(added.length && !removed.length && (updatedCount() === 0)){
+      setConfirmationType(ApplicationConfirmType.NEW_APP_ONLY)
+    } else if(removed.length && (updatedWithAddedCount() === 0)){
+      setConfirmationType(ApplicationConfirmType.REMOVED_APP_ONLY)
+      setRulesCount(removed.length)
+    } else if(!added.length && !removed.length && updatedCount() === 1){
+      setConfirmationType(ApplicationConfirmType.UPDATED_APP_ONLY)
+      setRulesCount(updated.length + merged.length + renamed.length)
+    } else if(!removed.length && (updatedWithAddedCount() > 1)){
+      setConfirmationType(ApplicationConfirmType.UPDATED_APPS)
+    } else if(removed.length && (updatedWithAddedCount() >= 1)){
+      setConfirmationType(ApplicationConfirmType.UPDATED_REMOVED_APPS)
+    }
+  },[added, removed, renamed, updated, merged])
 
-  const updatedWithAddedCount = (): number => {
-    return Number(!!added.length) + updatedCount()
-  }
-
-  if(added.length && !removed.length && (updatedCount() === 0)){
-    setConfirmationType(ApplicationConfirmType.NEW_APP_ONLY)
-  } else if(removed.length && (updatedWithAddedCount() === 0)){
-    setConfirmationType(ApplicationConfirmType.REMOVED_APP_ONLY)
-    setRulesCount(removed.length)
-  } else if(!added.length && !removed.length && updatedCount() === 1){
-    setConfirmationType(ApplicationConfirmType.UPDATED_APP_ONLY)
-    setRulesCount(updated.length + merged.length + renamed.length)
-  } else if(!removed.length && (updatedWithAddedCount() > 1)){
-    setConfirmationType(ApplicationConfirmType.UPDATED_APPS)
-  } else if(removed.length && (updatedWithAddedCount() >= 1)){
-    setConfirmationType(ApplicationConfirmType.UPDATED_REMOVED_APPS)
-  }
 
   return {
     data,
