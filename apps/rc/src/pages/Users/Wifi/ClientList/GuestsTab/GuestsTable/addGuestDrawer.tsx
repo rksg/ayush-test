@@ -355,7 +355,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         ]}
         initialValue={null}
         children={
-          <PhoneInput callback={onPhoneNumberChange} onTop={false} />
+          <PhoneInput name={'mobilePhoneNumber'} callback={onPhoneNumberChange} onTop={false} />
         }
       />
       <Form.Item

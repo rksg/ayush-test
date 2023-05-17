@@ -330,7 +330,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                 initialValue=''
                 validateFirst
               >
-                <PhoneInput callback={setPhoneValue} onTop={true} />
+                <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
               </Form.Item>
             </Col>
             <Col span={4}>

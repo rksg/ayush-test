@@ -1,19 +1,21 @@
 import { useEffect, useRef } from 'react'
 
-import { Input, InputRef } from 'antd'
+import { Form, Input, InputRef } from 'antd'
 import 'intl-tel-input/build/css/intlTelInput.css'
 import 'intl-tel-input/build/js/utils'
-import intlTelInput        from 'intl-tel-input'
+import intlTelInput              from 'intl-tel-input'
 
 import { FlagContainer } from './styledComponents'
 
 interface PhoneInputProps {
-    callback?: (value: string) => void,
-    onTop: boolean
+  name: string
+  callback?: (value: string) => void
+  onTop: boolean
 }
 
-export function PhoneInput ({ callback, onTop }: PhoneInputProps) {
+export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
   const inputRef = useRef<InputRef>(null)
+  const form = Form.useFormInstance()
 
   useEffect(() => {
     if (inputRef.current?.input) {
@@ -35,12 +37,18 @@ export function PhoneInput ({ callback, onTop }: PhoneInputProps) {
 
       inputRef.current.input.addEventListener('change', handleChange)
       inputRef.current.input.addEventListener('keyup', handleChange)
+
+      if(form.getFieldValue(name)) {
+        iti.setNumber(form.getFieldValue(name))
+      }
     }
   }, [])
 
   return (
     <FlagContainer>
-      <Input ref={inputRef} style={{ width: '100%' }} />
+      <Form.Item name={name}>
+        <Input ref={inputRef} style={{ width: '100%' }} />
+      </Form.Item>
     </FlagContainer>
   )
 }
