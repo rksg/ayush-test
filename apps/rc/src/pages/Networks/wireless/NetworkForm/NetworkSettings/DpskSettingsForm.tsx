@@ -43,6 +43,7 @@ export function DpskSettingsForm () {
         dpskWlanSecurity: data?.wlan?.wlanSecurity,
         enableAccountingService: data.enableAccountingService,
         authRadius: data.authRadius,
+        enableAuthProxy: data.enableAuthProxy,
         accountingRadius: data.accountingRadius,
         accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
         authRadiusId: data.authRadiusId||data.authRadius?.id

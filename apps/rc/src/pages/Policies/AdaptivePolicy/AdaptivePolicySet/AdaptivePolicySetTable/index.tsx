@@ -96,7 +96,8 @@ export default function AdaptivePolicySetTable () {
         .unwrap()
         .then(result => {
           if (result.data) {
-            const polices: string [] = result.data.map(item => item.policyId)
+            // eslint-disable-next-line max-len
+            const polices: string [] = [...result.data].sort((p1, p2) => p1.priority - p2.priority).map(item => item.policyId)
             setPrioritizedPoliciesMap(map => new Map(map.set(id, polices)))
           }
         })

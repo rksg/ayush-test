@@ -171,8 +171,8 @@ export const checkVlanIgnore = (
   value: string[] | Number,
   isMultipleEdit: boolean,
   useVenueSettings: boolean,
-  isDirtyUntaggedVlan: boolean) => {
-  return !isMultipleEdit && !useVenueSettings && (!value || !isDirtyUntaggedVlan) && field
+  isDirtyPortVlan: boolean) => {
+  return !isMultipleEdit && !useVenueSettings && !isDirtyPortVlan && field
 }
 
 export const checkPortEditStatus = (
@@ -343,7 +343,8 @@ export const getMultipleVlanValue = ( // TODO: rewrite
           }
           if (!result.untagged[index]) {
             result.untagged[index]
-              = switchesDefaultVlan?.filter(s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
+              = switchesDefaultVlan?.filter(s =>
+                s.switchId === item.switchMac)?.[0]?.defaultVlanId.toString()
           }
         }
       }

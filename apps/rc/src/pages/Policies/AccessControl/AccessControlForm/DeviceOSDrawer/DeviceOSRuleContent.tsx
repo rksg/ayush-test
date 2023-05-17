@@ -201,6 +201,8 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
       validateFirst
       rules={[
         { required: true },
+        { min: 2 },
+        { max: 32 },
         { validator: (_, value) => {
           if (deviceOSRuleList
             .filter((rule: DeviceOSRule) => ruleDrawerEditMode ? (rule.ruleName !== value) : true)
