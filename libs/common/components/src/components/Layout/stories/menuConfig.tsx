@@ -42,7 +42,7 @@ const config: LayoutProps['menuConfig'] = [
         label: 'Health'
       },
       {
-        uri: '/serviceValidation/networkHealth',
+        uri: '/analytics/serviceValidation',
         label: 'Service Validation'
       }
     ]
