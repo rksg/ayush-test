@@ -319,7 +319,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'Mobile Number' })}
         >
-          <Row align='middle' justify='space-between' style={{ paddingBottom: '100px' }}>
+          <Row align='middle' justify='space-between'>
             <Col span={18}>
               <Form.Item
                 name='mobile'
@@ -330,7 +330,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                 initialValue=''
                 validateFirst
               >
-                <PhoneInput callback={setPhoneValue} />
+                <PhoneInput callback={setPhoneValue} onTop={true} />
               </Form.Item>
             </Col>
             <Col span={4}>

@@ -8,10 +8,11 @@ import intlTelInput        from 'intl-tel-input'
 import { FlagContainer } from './styledComponents'
 
 interface PhoneInputProps {
-    callback?: (value: string) => void
+    callback?: (value: string) => void,
+    onTop: boolean
 }
 
-export function PhoneInput ({ callback }: PhoneInputProps) {
+export function PhoneInput ({ callback, onTop }: PhoneInputProps) {
   const inputRef = useRef<InputRef>(null)
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export function PhoneInput ({ callback }: PhoneInputProps) {
         placeholderNumberType: 'MOBILE',
         preferredCountries: ['us'],
         utilsScript: 'intl-tel-input/js/utils',
+        dropdownContainer: onTop ? document.body : undefined,
         customPlaceholder: function (selectedCountryPlaceholder, selectedCountryData) {
           return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`
         }
