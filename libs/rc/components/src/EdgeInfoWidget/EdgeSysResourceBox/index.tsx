@@ -2,15 +2,16 @@ import { Statistic as AntStatistic } from 'antd'
 import { useIntl }                   from 'react-intl'
 import styled                        from 'styled-components/macro'
 
-import { Tooltip, GridCol, GridRow, Loader, cssStr } from '@acx-ui/components'
-import { formatter }                                 from '@acx-ui/formatter'
-import { EdgeResourceUtilizationEnum }               from '@acx-ui/rc/utils'
+import { Tooltip, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { formatter }                         from '@acx-ui/formatter'
+import { EdgeResourceUtilizationEnum }       from '@acx-ui/rc/utils'
 
 import { WrapperStyles } from './styledComponents'
 
 
 const calculatePercentage = (value: number, totalVal: number)=> {
   if (Boolean(totalVal) === false) {
+    if (Boolean(totalVal) === false) return 0
     return 100
   }
   return Math.round(value / totalVal * 100)
