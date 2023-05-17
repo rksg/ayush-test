@@ -224,10 +224,6 @@ export function useStepsForm <T> ({
 
   const currentStepEl = steps[newConfig.current]
 
-  const formEl = <Form {...newConfig.formProps}>
-    {currentStepEl}
-  </Form>
-
   const formLayout = steps.length > 1
     ? <>
       <Col span={4} data-testid='steps-form-steps'>{stepsEls}</Col>
@@ -246,7 +242,6 @@ export function useStepsForm <T> ({
     steps: stepsEls,
     actionButtons: buttonEls,
     currentStep: currentStepEl,
-    form: formEl,
     stepsForm: stepsFormEl
   }
 
