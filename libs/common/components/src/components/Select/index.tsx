@@ -10,7 +10,6 @@ import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 import { Button }  from '../Button'
 import { Tooltip } from '../Tooltip'
 
-
 import * as UI from './styledComponents'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'

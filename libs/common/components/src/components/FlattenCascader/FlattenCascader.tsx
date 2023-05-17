@@ -5,8 +5,7 @@ import styled       from 'styled-components/macro'
 
 import {
   cascaderStyles,
-  DropdownPortal,
-  ExpandIcon
+  DropdownPortal
 } from './styledComponents'
 
 import type {
@@ -38,7 +37,7 @@ export const FlattenCascader = styled(function FlattenCascader <
       getPopupContainer={() => ref.current!}
       dropdownClassName={props.className}
       suffixIcon={null}
-      expandIcon={<ExpandIcon />}
+      expandTrigger='click'
       animation='none'
     />
     <DropdownPortal ref={ref} />
