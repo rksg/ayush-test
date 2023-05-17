@@ -1,3 +1,4 @@
+import { useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { VenueMarkerOptions }        from '@acx-ui/rc/utils'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
@@ -107,6 +108,42 @@ const common = {
 describe('Venue Marker Tooltip', () => {
   afterEach(() => {
     jest.clearAllMocks()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
+
+  it('should not render edge data if feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const venue: VenueMarkerOptions = {
+      ...common,
+      ...withCounts
+    }
+    const onNavigateMock = jest.fn()
+
+    const { asFragment } = render(
+      <VenueMarkerTooltip
+        venueMarker={venue}
+        onNavigate={onNavigateMock} />)
+    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelectorAll('svg').length).toEqual(2)
+
+    const venueTitle = screen.getByText('Aparna-Venue')
+    fireEvent.click(venueTitle)
+    expect(onNavigateMock).toHaveBeenCalledWith({
+      path: 'venue-details/overview',
+      venueId: '7ae27179b7b84de89eb7e56d9b15943d'
+    })
+
+    const links = screen.getAllByText('1234')
+    expect(links.length).toEqual(4)
+    links.forEach((link, i) => {
+      fireEvent.click(link)
+      expect(onNavigateMock).lastCalledWith({
+        path: paths[i],
+        venueId: '7ae27179b7b84de89eb7e56d9b15943d'
+      })
+    })
+
+    expect(onNavigateMock).toBeCalledTimes(5)
   })
   it('should render all charts with counts clickable', async () => {
     const venue: VenueMarkerOptions = {
@@ -141,6 +178,7 @@ describe('Venue Marker Tooltip', () => {
 
     expect(onNavigateMock).toBeCalledTimes(7)
   })
+
   it('should not render any data', async () => {
     const venue: VenueMarkerOptions = {
       ...common,

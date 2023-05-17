@@ -3,6 +3,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { StackedBarChart }                 from '@acx-ui/components'
 import { Table }                           from '@acx-ui/components'
 import { getDeviceConnectionStatusColors } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { VenueMarkerOptions }              from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -39,6 +40,7 @@ interface VenueMarkerTooltipProps {
 export function VenueMarkerTooltip (
   props: { venueMarker: VenueMarkerOptions } & VenueMarkerTooltipProps) {
   const { $t } = useIntl()
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const {
     name,
     venueId,
@@ -120,8 +122,11 @@ export function VenueMarkerTooltip (
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No Switch clients' })}
         </UI.TextWrapper>
-    },
-    {
+    }
+  ]
+
+  if (isEdgeEnabled) {
+    data.push({
       key: '3',
       name: $t({ defaultMessage: 'SmartEdge' }),
       networkDevices: edgesCount > 0
@@ -147,8 +152,8 @@ export function VenueMarkerTooltip (
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No SmartEdge clients' })}
         </UI.TextWrapper>
-    }
-  ]
+    })
+  }
 
   return (
     <UI.Wrapper needPadding={needPadding}>
