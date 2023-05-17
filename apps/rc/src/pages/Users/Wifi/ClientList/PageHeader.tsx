@@ -4,12 +4,11 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, RangePicker }       from '@acx-ui/components'
-import { useGetClientListQuery }         from '@acx-ui/rc/services'
+import { useGetClientListQuery, useGetGuestsListQuery }         from '@acx-ui/rc/services'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { DateRange, getDateRangeFilter } from '@acx-ui/utils'
 
 import Tabs from './Tabs'
-
 
 export interface GuestDateFilter {
   range: DateRange,
@@ -19,7 +18,6 @@ export interface GuestDateFilter {
   endDate: string,
   setEndDate: (v: string) => void,
 }
-
 
 function Header (
   props: { dateFilter: GuestDateFilter }
@@ -34,7 +32,10 @@ function Header (
 
   // For display the total count, use query for a quick solution.
   // Might hitting timing issue and the count could be inconsistent with the size of client table
-  const { data } = useGetClientListQuery({ params: { tenantId }, payload: defaultPayload }, {
+  const clientList = useGetClientListQuery({ params: { tenantId }, payload: defaultPayload }, {
+    pollingInterval: 30_000
+  })
+  const guestList = useGetGuestsListQuery({ params: { tenantId }, payload: defaultPayload }, {
     pollingInterval: 30_000
   })
 
@@ -51,9 +52,14 @@ function Header (
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'Wi-Fi' })}
+      title={$t({ defaultMessage: 'Wireless' })}
+      breadcrumb={[
+        { text: $t({ defaultMessage: 'Cients' }), link: '/users/wifi/clients' }
+      ]}
       footer={<Tabs
-        clientCount={data?.totalCount ? data.totalCount : 0} />}
+        clientCount={clientList?.data?.totalCount ? clientList?.data.totalCount : 0}
+        guestPassCount={guestList?.data?.totalCount ? guestList?.data.totalCount : 0}
+      />}
       extra={activeTab === 'guests' ? [
         <RangePicker
           selectionType={range}

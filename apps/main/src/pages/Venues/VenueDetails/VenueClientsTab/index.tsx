@@ -35,7 +35,7 @@ export function VenueClientsTab () {
       defaultActiveKey='wifi'
       onChange={onTabChange}
       type='card'>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })} key='wifi'>
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Wireless' })} key='wifi'>
         <IconRadioGroup value={showIdx}
           buttonStyle='solid'
           size='small'

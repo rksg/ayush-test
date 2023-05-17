@@ -22,7 +22,7 @@ function PersonaPageHeader () {
     <PageHeader
       title={$t({ defaultMessage: 'Persona Management' })}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Users' }), link: '/users' }
+        { text: $t({ defaultMessage: 'Clients' }), link: '/users' }
       ]}
       footer={
         <Tabs onChange={onTabChange} activeKey={params.activeTab}>
@@ -33,7 +33,7 @@ function PersonaPageHeader () {
           />
           <Tabs.TabPane
             key={'persona'}
-            tab={$t({ defaultMessage: 'Persona' })}
+            tab={$t({ defaultMessage: 'Personas' })}
             children={<PersonaTable />}
           />
         </Tabs>

@@ -9,6 +9,7 @@ import { DateRange }       from '@acx-ui/utils'
 import { GuestsTab } from './GuestsTab'
 import PageHeader    from './PageHeader'
 
+type WirelessTabs = 'clients' | 'guests' | 'reports'
 
 export default function ClientList () {
   const [range, setRange] = useState(DateRange.allTime)
@@ -25,13 +26,19 @@ export default function ClientList () {
     setEndDate
   }
 
-  return activeTab === 'clients'
-    ? <>
-      <PageHeader dateFilter={dateFilter}/>
-      { <ClientDualTable /> }
-    </>
-    : <>
-      <PageHeader dateFilter={dateFilter}/>
-      <GuestsTab dateFilter={dateFilter}/>
-    </>
+  const currentTab = (tab: WirelessTabs) => {
+    switch(tab) {
+      case 'clients':
+        return <ClientDualTable />
+      case 'guests':
+        return <GuestsTab dateFilter={dateFilter}/>
+      case 'reports':
+        return <></> // return reports/clients
+    }
+  }
+
+  return <>
+    <PageHeader dateFilter={dateFilter} />
+    {currentTab(activeTab as WirelessTabs)}
+  </>
 }

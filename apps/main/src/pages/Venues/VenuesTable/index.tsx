@@ -303,10 +303,12 @@ export function VenuesTable () {
     })
   })
 
+  const count = tableQuery?.currentData?.totalCount
+  
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Venues' })}
+        title={$t({ defaultMessage: 'Venues ({count})' }, { count })}
         extra={filterByAccess([
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>

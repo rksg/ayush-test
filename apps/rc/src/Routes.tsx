@@ -123,6 +123,8 @@ import SwitchClientList           from './pages/Users/Switch/ClientList'
 import WifiClientDetails          from './pages/Users/Wifi/ClientDetails'
 import WifiClientList             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
+import AccessPointList from './pages/Devices/Wifi'
+import NetworksList from './pages/Networks/wireless'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -144,7 +146,7 @@ function DeviceRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
-      <Route path='devices/wifi' element={<ApsTable />} />
+      <Route path='devices/:activeTab' element={<AccessPointList />} />
       <Route path='devices/wifi/:action' element={<ApForm />} />
       <Route path='devices/wifi/:serialNumber/:action/:activeTab' element={<ApEdit />} />
       <Route
@@ -200,7 +202,7 @@ function NetworkRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='networks' element={<TenantNavigate replace to='/networks/wireless' />} />
-      <Route path='networks/wireless' element={<NetworksTable />} />
+      <Route path='networks/:activeTab' element={<NetworksList />} />
       <Route path='networks/wireless/add' element={<NetworkForm />} />
       <Route
         path='networks/wireless/:networkId/network-details/:activeTab'

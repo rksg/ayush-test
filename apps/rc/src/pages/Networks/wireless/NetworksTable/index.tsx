@@ -17,7 +17,7 @@ export default function NetworksTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Networks' })}
+        title
         extra={filterByAccess([
           <TenantLink to='/networks/wireless/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
