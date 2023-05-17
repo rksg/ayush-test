@@ -9,7 +9,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeviceInventoryListQuery, useExportDeviceInventoryMutation } from '@acx-ui/rc/services'
+import {
+  useDeviceInventoryListQuery,
+  useExportDeviceInventoryMutation,
+  useGetTenantDetailsQuery,
+  useIntegratorDeviceInventoryListQuery
+} from '@acx-ui/rc/services'
 import {
   APView,
   ApDeviceStatusEnum,
@@ -20,6 +25,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { AccountType }           from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -74,6 +80,11 @@ export function DeviceInventory () {
   const { tenantId } = useParams()
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
+  const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
+  const isIntegrator =
+    (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
+     tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
+  const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
 
   const filterPayload = {
     searchString: '',
@@ -214,6 +225,25 @@ export function DeviceInventory () {
       'customerName',
       'deviceStatus' ],
     searchTargetFields: ['apMac', 'switchMac', 'serialNumber']
+  }
+
+  const integratorPayload = {
+    searchString: '',
+    fields: [
+      'deviceType',
+      'venueName',
+      'serialNumber',
+      'switchMac',
+      'name',
+      'tenantId',
+      'apMac',
+      'model',
+      'customerName',
+      'deviceStatus' ],
+    searchTargetFields: ['apMac', 'switchMac', 'serialNumber'],
+    filters: {
+      id: [{ tenantId }]
+    }
   }
 
   const DeviceTable = () => {
