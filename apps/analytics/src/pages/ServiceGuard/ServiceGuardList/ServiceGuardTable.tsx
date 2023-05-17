@@ -171,7 +171,7 @@ export function ServiceGuardTable () {
       fixed: 'left',
       render: (value, row, _, highlightFn) => {
         const highlightedValue = highlightFn(String(value))
-        return row.latestTest?.summary.apsTestedCount
+        return row.latestTest
           ? <TenantLink
             to={`/analytics/serviceValidation/${row.id}/tests/${row.latestTest?.id}`}
           >

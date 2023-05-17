@@ -3,10 +3,9 @@ import { useEffect } from 'react'
 
 import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
-import { useParams }                     from 'react-router-dom'
 
-import { Alert, StepsForm, Tooltip, useStepFormContext }                                   from '@acx-ui/components'
-import { useGetPropertyConfigsQuery, useGetVenueWithSetPropertyQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { Alert, StepsForm, Tooltip, useStepFormContext }                   from '@acx-ui/components'
+import { useGetPropertyConfigsQuery, useGetQueriablePropertyConfigsQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
@@ -20,27 +19,26 @@ interface GeneralSettingsFormProps {
 }
 
 const venueOptionsDefaultPayload = {
-  fields: ['name', 'id'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
+  sortField: 'venueName',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 100
 }
 
 export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const { $t } = useIntl()
-  const { tenantId } = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const venueId = useWatch('venueId', form)
-  const { venueOptions, isLoading: isVenueOptionsLoading } = useVenuesListQuery(
-    { params: { tenantId: tenantId }, payload: venueOptionsDefaultPayload }, {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          venueOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
-          isLoading
-        }
+  const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
+    payload: venueOptionsDefaultPayload }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        venueOptions: data?.data.map(item => ({ label: item.venueName, value: item.venueId })),
+        isVenueOptionsLoading: isLoading
       }
-    })
+    }
+  })
   const { personaGroupId } = useGetPropertyConfigsQuery(
     { params: { venueId } },
     {
@@ -48,18 +46,6 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
       selectFromResult: ({ data }) => {
         return {
           personaGroupId: data?.personaGroupId
-        }
-      }
-    }
-  )
-
-  const { filteredVenueOptions } = useGetVenueWithSetPropertyQuery(
-    venueOptions?.map(option => option.value) || [],
-    {
-      skip: !!!venueOptions,
-      selectFromResult: ({ data }) => {
-        return {
-          filteredVenueOptions: venueOptions?.filter(option => data?.includes(option.value))
         }
       }
     }
@@ -158,7 +144,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
                 loading={isVenueOptionsLoading}
                 onChange={onVenueChange}
                 placeholder={$t({ defaultMessage: 'Select...' })}
-                options={filteredVenueOptions}
+                options={venueOptions}
                 disabled={props.editMode}
               />
             }

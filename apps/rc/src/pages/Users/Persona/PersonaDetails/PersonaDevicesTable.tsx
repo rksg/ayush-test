@@ -22,7 +22,8 @@ import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportD
 const defaultPayload = {
   searchString: '',
   searchTargetFields: ['clientMac', 'ipAddress', 'Username', 'hostname', 'osType'],
-  fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName', 'apName']
+  fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName',
+    'apName', 'lastUpdateTime']
 }
 
 export function PersonaDevicesTable (props: {
@@ -65,7 +66,12 @@ export function PersonaDevicesTable (props: {
         .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
 
       return client
-        ? { ...device, os: client.osType, deviceName: client.hostname }
+        ? {
+          ...device,
+          os: client.osType,
+          deviceName: client.hostname,
+          lastSeenAt: client.lastUpdateTime
+        }
         : device
     }) ?? []
   }
@@ -133,7 +139,7 @@ export function PersonaDevicesTable (props: {
       title: $t({ defaultMessage: 'Last Seen Time' }),
       render: (data) => {
         return data
-          ? moment(data as string).format('YYYY/MM/DD HH:MM A')
+          ? moment(data as string).format('YYYY/MM/DD HH:mm A')
           : noDataDisplay
       }
     }

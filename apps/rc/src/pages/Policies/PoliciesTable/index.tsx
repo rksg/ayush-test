@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom'
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   useDelVLANPoolPolicyMutation,
-  useDeleteClientIsolationMutation,
   useDelRoguePolicyMutation,
   usePolicyListQuery,
   useDeleteAAAPolicyMutation,
@@ -109,7 +108,7 @@ export default function PoliciesTable () {
 
   const deletePolicyFnMapping = {
     [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
-    [PolicyType.CLIENT_ISOLATION]: useDeleteClientIsolationMutation(),
+    [PolicyType.CLIENT_ISOLATION]: [],
     [PolicyType.AAA]: useDeleteAAAPolicyMutation(),
     [PolicyType.ACCESS_CONTROL]: useDeleteAccessControlProfileMutation(),
     [PolicyType.MAC_REGISTRATION_LIST]: [],
