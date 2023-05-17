@@ -3,12 +3,16 @@ import { screen, act, waitFor } from '@testing-library/react'
 import userEvent                from '@testing-library/user-event'
 import { Modal }                from 'antd'
 
+import * as utils from '@acx-ui/utils'
+
 import {
   ErrorAction,
   getErrorContent,
   showErrorModal,
   errorMiddleware
 } from './errorMiddleware'
+
+const { setUpIntl } = utils
 
 describe('getErrorContent', () => {
   it('should handle 400', () => {
@@ -100,6 +104,21 @@ describe('getErrorContent', () => {
       meta: {},
       payload: { originalStatus: 999 }
     } as unknown as ErrorAction).title).toBe('Server Error')
+  })
+  it('should not throw error if intl is not initialized', () => {
+    setUpIntl()
+    expect(() => getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 400 } } },
+      payload: {}
+    } as unknown as ErrorAction)).not.toThrow()
+    setUpIntl({ locale: 'en-US', messages: {} })
+  })
+  it('should throw if error is not because of intl initialization', () => {
+    jest.spyOn(utils, 'getIntl').mockImplementationOnce(() => { throw Error('some error') })
+    expect(() => getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 400 } } },
+      payload: {}
+    } as unknown as ErrorAction)).toThrow('some error')
   })
 })
 
