@@ -7,13 +7,13 @@ import {
   Col,
   Input
 } from 'antd'
-import { PhoneNumberUtil } from 'google-libphonenumber'
-import _                   from 'lodash'
-import { FieldData }       from 'rc-field-form/lib/interface'
-import { useIntl }         from 'react-intl'
-import styled              from 'styled-components/macro'
+import _             from 'lodash'
+import { FieldData } from 'rc-field-form/lib/interface'
+import { useIntl }   from 'react-intl'
+import styled        from 'styled-components/macro'
 
 import { Modal, showToast }    from '@acx-ui/components'
+import { PhoneInput }          from '@acx-ui/rc/components'
 import {
   useAddRecipientMutation,
   useUpdateRecipientMutation
@@ -63,7 +63,6 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   } = props
   const [isChanged, setIsChanged] = useState(false)
   const [isValid, setIsValid] = useState(false)
-  const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
   const [addRecipient, addState] = useAddRecipientMutation()
   const [updateRecipient, updateState] = useUpdateRecipientMutation()
 
@@ -233,6 +232,11 @@ const RecipientDialog = (props: RecipientDialogProps) => {
     form.resetFields()
   }
 
+  const setPhoneValue = (phoneNumber: string) => {
+    form.setFieldValue('mobile', phoneNumber)
+    form.validateFields(['mobile'])
+  }
+
   useEffect(()=>{
     if (editData && visible) {
       form.setFieldsValue(editData)
@@ -324,16 +328,13 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                 ]}
                 noStyle
                 initialValue=''
+                validateFirst
               >
-                <Input
-                  // eslint-disable-next-line max-len
-                  placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-                />
+                <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
               </Form.Item>
             </Col>
             <Col span={4}>
               <Form.Item
-                noStyle
                 name='mobileEnabled'
                 valuePropName='checked'
                 initialValue={false}
