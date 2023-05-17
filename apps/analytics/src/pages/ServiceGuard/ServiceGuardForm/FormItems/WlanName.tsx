@@ -67,7 +67,7 @@ export function WlanName () {
   }, [form, map.data])
 
   return <Loader style={{ height: 'auto', minHeight: 71 }} states={[response, map]}>
-    <Form.Item label={<>{$t(label)}{tooltip}</>}>
+    <Form.Item required label={<>{$t(label)}{tooltip}</>}>
       <Form.Item
         noStyle
         name={name}
