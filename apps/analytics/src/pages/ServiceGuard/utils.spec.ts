@@ -98,7 +98,7 @@ describe('statsFromSummary', () => {
       apsTestedCount: 0,
       apsPendingCount: 0,
       apsSuccessCount: 0
-    } as unknown as NetworkHealthTest['summary'])).toEqual({
+    } as unknown as ServiceGuardTest['summary'])).toEqual({
       isOngoing: false,
       apsFinishedTest: undefined,
       apsUnderTest: 0,
