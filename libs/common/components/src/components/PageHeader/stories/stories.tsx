@@ -1,6 +1,7 @@
 import { storiesOf } from '@storybook/react'
 
 import { Basic }                              from './Basic'
+import { WithBreadcrumb }                     from './WithBreadcrumb'
 import { WithButtons }                        from './WithButtons'
 import { WithSubTitleText, WithSubTitleComp } from './WithSubTitle'
 import { WithTabs }                           from './WithTabs'
@@ -13,4 +14,5 @@ storiesOf('PageHeader', module)
   .add('With Subtitle Text', WithSubTitleText)
   .add('With Subtitle Component', WithSubTitleComp)
   .add('With Title Extra', WithTitleExtra)
+  .add('With Breadcrumb', WithBreadcrumb)
 export {}

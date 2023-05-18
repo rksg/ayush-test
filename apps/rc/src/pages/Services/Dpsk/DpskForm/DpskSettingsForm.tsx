@@ -72,6 +72,7 @@ export default function DpskSettingsForm () {
           validateFirst
           hasFeedback
           children={<Input />}
+          validateTrigger={'onBlur'}
         />
         <Subtitle level={3}>
           { intl.$t({ defaultMessage: 'Passphrase Generation Parameters' }) }
@@ -208,6 +209,7 @@ function CloudpathFormItems () {
           >
             <Select style={{ width: 200 }}
               placeholder={$t({ defaultMessage: 'Select...' })}
+              allowClear
               options={policySetOptions}
             />
           </Form.Item>

@@ -18,15 +18,17 @@ const ValidationStatus = styled((props: SyslogSettingFormProps) => {
 
   return (
     <Row gutter={20} className={className}>
-      <Col span={10}>
-        <Typography.Text>
-          {// eslint-disable-next-line max-len
-            $t({ defaultMessage: 'ZoneDirector configurations is being validated and may take a few minutes to complete.' })}
-        </Typography.Text>
-        <Typography.Text>
-          {// eslint-disable-next-line max-len
-            $t({ defaultMessage: 'Click Done to return to the ZD Migrations list or wait here for the result.' })}
-        </Typography.Text>
+      <Col>
+        <div className='description'>
+          <Typography.Text>
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'ZoneDirector configurations is being validated and may take a few minutes to complete.' })}
+          </Typography.Text>
+          <Typography.Text>
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Click Cancel to return to the ZD Migrations list or wait here for the result.' })}
+          </Typography.Text>
+        </div>
       </Col>
     </Row>
   )

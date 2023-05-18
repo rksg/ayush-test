@@ -1,20 +1,27 @@
+import { useState } from 'react'
+
 import { Space }   from 'antd'
+import _           from 'lodash'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, getSeriesData }                                                                                                              from '@acx-ui/analytics/utils'
-import { Loader, PageHeader, Table, TableProps, Tooltip, TrendType, cssStr,  Card, GridCol, GridRow, MultiLineTimeSeriesChart, NoData, Alert, TrendPill } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                                                                      from '@acx-ui/formatter'
+import { TimeSeriesDataType, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
+import { Loader, PageHeader, Table, TableProps, Tooltip,
+  TrendType, cssStr,  Card, GridCol, GridRow,
+  MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
+  Drawer, SearchBar }                from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }   from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-
-import { zoomStatsThresholds }                         from '../VideoCallQoe/constants'
-import { useVideoCallQoeTestDetailsQuery }             from '../VideoCallQoe/services'
-import { DetailedResponse, Participants, WifiMetrics } from '../VideoCallQoe/types'
+import { zoomStatsThresholds }                                                                        from '../VideoCallQoe/constants'
+import { useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
+import { DetailedResponse, Participants, WifiMetrics, Client }                                        from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
 import * as UI                                               from './styledComponents'
@@ -23,10 +30,14 @@ export function VideoCallQoeDetails (){
   const intl= useIntl()
   const { $t } = intl
   const { testId } = useParams()
+  const [isDrawerOpen,setIsDrawerOpen] = useState(false)
+  const [participantId,setParticipantId] = useState<number|null>(null)
+  const [selectedMac,setSelectedMac] = useState<string|null>(null)
   const queryResults = useVideoCallQoeTestDetailsQuery({ testId: Number(testId),status: 'ENDED' })
   const callQoeDetails = queryResults.data?.getAllCallQoeTests.at(0)
   const currentMeeting = callQoeDetails?.meetings.at(0)
   const participants = currentMeeting?.participants
+  const [ updateParticipant ] = useUpdateCallQoeParticipantMutation()
 
   const isMissingClientMac = (participants:Participants[])=>{
     const missingMacCount = participants
@@ -34,6 +45,25 @@ export function VideoCallQoeDetails (){
         !participant.macAddress && participant.networkType.toLowerCase() === 'wifi').length
     return missingMacCount > 0
   }
+
+  const [ search, setSearch ] = useState('')
+  const searchQueryResults = useSeachClientsQuery({
+    start: moment(currentMeeting? currentMeeting.startTime: moment()).format(),
+    end: moment(currentMeeting? currentMeeting.endTime: moment()).format(),
+    query: search,
+    limit: 100
+  }, { selectFromResult: (states) => ({
+    ...states,
+    data: states.data && aggregateDataBy<Client>('mac')(states.data).map( client => {
+      return {
+        hostname: client.hostname[0],
+        mac: client.mac[0],
+        username: client.username[0]
+      }
+    })
+  }) })
+
+
 
   const columnHeaders: TableProps<Participants>['columns'] = [
     {
@@ -43,9 +73,15 @@ export function VideoCallQoeDetails (){
       render: (value:unknown, row:Participants)=>{
         if(row.networkType.toLowerCase() === 'wifi'){
           return <Space>
-            {value ? <span>{value as string}</span> : <div style={{ width: '100px' }}>-</div>}
+            {value ? <span>{(value as string).toUpperCase()}</span>
+              : <div style={{ width: '100px' }}>-</div>}
             <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
-              <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }} />
+              <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }}
+                onClick={()=>{
+                  setParticipantId(row.id)
+                  setIsDrawerOpen(true)
+                  setSelectedMac(null)
+                }}/>
             </Tooltip>
           </Space>
         }
@@ -253,6 +289,19 @@ export function VideoCallQoeDetails (){
     participantNumber: number) =>
     callQoeDetails.meetings.at(0)?.participants.at(participantNumber)?.userName
 
+  const onCancelClientMac = ()=>{
+    setSelectedMac(null)
+    setSearch('')
+    setIsDrawerOpen(false)
+  }
+  const onSelectClientMac = async ()=>{
+    if(participantId && selectedMac){
+      await updateParticipant({ participantId, macAddr: selectedMac }).unwrap()
+      queryResults.refetch()
+      setIsDrawerOpen(false)
+      setSearch('')
+    }
+  }
   return (
     <Loader states={[queryResults]}>
       {callQoeDetails && currentMeeting && <>
@@ -273,7 +322,7 @@ export function VideoCallQoeDetails (){
           ]}
           breadcrumb={[{
             text: $t({ defaultMessage: 'Video Call QoE' }),
-            link: '/serviceValidation/videoCallQoe'
+            link: '/analytics/videoCallQoe'
           }]}
         />
         <UI.ReportSectionTitle>
@@ -290,6 +339,78 @@ export function VideoCallQoeDetails (){
               type='warning'
               showIcon />
           </div>
+        }
+        {isDrawerOpen &&
+          <Drawer
+            width={400}
+            visible={isDrawerOpen}
+            title={$t({ defaultMessage: 'Select Client MAC' })}
+            onClose={onCancelClientMac}
+            footer={<Drawer.FormFooter showAddAnother={false}
+              buttonLabel={({
+                save: $t({ defaultMessage: 'Select' })
+              })}
+              showSaveButton={selectedMac!= null}
+              onCancel={onCancelClientMac}
+              onSave={onSelectClientMac}
+            />}
+          >
+            <SearchBar
+              placeHolder='Search by MAC, username or hostname'
+              onChange={(q) => q?.trim().length>=0 && _.debounce(
+                (search) => {
+                  setSearch(search)
+                  setSelectedMac(null)
+                }
+                ,1000
+              )(q.trim())}
+            />
+            <Loader states={[searchQueryResults]}>
+              <Table
+                rowKey='mac'
+                rowSelection={
+                  { type: 'radio',
+                    selectedRowKeys: selectedMac ? [selectedMac] : [],
+                    onChange: (keys)=>{
+                      if(keys.length){
+                        setSelectedMac(keys[0] as string)
+                      }else{
+                        setSelectedMac(null)
+                      }
+                    } }}
+                showHeader={false}
+                columns={[
+                  {
+                    dataIndex: 'mac',
+                    key: 'mac',
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    render: (value:unknown, row:any)=>{
+                      return <>
+                        <GridRow>
+                          <GridCol col={{ span: 24 }}><strong>{value as string}</strong></GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol col={{ span: 8 }}>
+                            {$t({ defaultMessage: 'Username' })}:</GridCol>
+                          <GridCol col={{ span: 16 }}>{row.username}</GridCol>
+                        </GridRow>
+                        <GridRow>
+                          <GridCol col={{ span: 8 }}>
+                            {$t({ defaultMessage: 'Hostname' })}:</GridCol>
+                          <GridCol col={{ span: 16 }}>{row.hostname}</GridCol>
+                        </GridRow>
+                      </>
+                    }
+                  }
+                ]}
+                dataSource={searchQueryResults.data}
+                pagination={{
+                  pageSize: TABLE_DEFAULT_PAGE_SIZE,
+                  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
+                }}
+              />
+            </Loader>
+          </Drawer>
         }
         <Table
           rowKey='id'
