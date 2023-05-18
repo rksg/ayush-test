@@ -4,6 +4,7 @@ import {
   TableResult,
   MigrationUrlsInfo,
   createHttpRequest,
+  CommonResult,
   RequestPayload,
   RequestFormData,
   TaskContextType,
@@ -98,6 +99,15 @@ export const migrationApi = baseMigrationApi.injectEndpoints({
           totalCount: result.apImportResults.length
         } as TableResult<MigrationResultType>
       }
+    }),
+    deleteMigration: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MigrationUrlsInfo.deleteMigration, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Migration', id: 'LIST' }]
     })
   })
 })
@@ -108,5 +118,6 @@ export const {
   useGetZdMigrationListQuery,
   useGetMigrationResultQuery,
   useLazyGetMigrationResultQuery,
-  useGetPollingMigrationResultQuery
+  useGetPollingMigrationResultQuery,
+  useDeleteMigrationMutation
 } = migrationApi

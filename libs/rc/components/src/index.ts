@@ -79,6 +79,7 @@ export type { TunnelProfileFormType } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 export { PassphraseViewer } from './PassphraseViewer'
+export { PhoneInput } from './PhoneInput'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
