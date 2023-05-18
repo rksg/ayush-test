@@ -14,10 +14,10 @@ import { VideoCallQoeDetailsForm } from './VideoCallQoeDetailsForm'
 export function VideoCallQoeForm () {
   const { $t } = useIntl()
   const [ link, setLink ] = useState('')
-  const navigateToList = useNavigateToPath('/serviceValidation/videoCallQoe')
+  const navigateToList = useNavigateToPath('/analytics/videoCallQoe')
   const breadcrumb = [{
     text: $t({ defaultMessage: 'Video Call QoE' }),
-    link: '/serviceValidation/videoCallQoe'
+    link: '/analytics/videoCallQoe'
   }]
 
   const [ submit ] = useCreateCallQoeTestMutation()

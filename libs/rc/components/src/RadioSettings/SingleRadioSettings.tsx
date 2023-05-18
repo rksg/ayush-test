@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
@@ -38,6 +38,12 @@ const initChannelBars: ChannelBars = {
   lower5GChannels: [],
   upper5GChannels: []
 }
+
+const showChannelBarRadios = [
+  ApRadioTypeEnum.Radio5G,
+  ApRadioTypeEnum.RadioLower5G,
+  ApRadioTypeEnum.RadioUpper5G
+]
 
 export function SingleRadioSettings (props:{
   context?: string,
@@ -94,12 +100,15 @@ export function SingleRadioSettings (props:{
   const [outdoorChannelBars, setOutdoorChannelBars] = useState({ ...initChannelBars })
 
   const [groupSize, setGroupSize] = useState(1)
-  const [oldBandwidth, setOldBandwidth] = useState<string>()
-  const [oldCombinChannels, setOldCombinChannels] = useState<boolean>()
-  const [oldChannelMethod, setOldChannelMethod] = useState<String>()
+
   const [channelErrMsg, setChannelErrMsg] = useState<string>()
   const [indoorChannelErrMsg, setIndoorChannelErrMsg] = useState<string>()
   const [outdoorChannelErrMsg, setOutdoorChannelErrMsg] = useState<string>()
+
+  const previousChannelMethod = useRef<string>()
+  const bandWidthOnChanged = useRef(false)
+  const methodOnChanged = useRef(false)
+  const combinChannelOnChanged = useRef(false)
 
   let hasIndoorBandwidth = false
   let hasOutdoorBandwidth = false
@@ -156,12 +165,6 @@ export function SingleRadioSettings (props:{
       })
     }
 
-    const showChannelBarRadios = [
-      ApRadioTypeEnum.Radio5G,
-      ApRadioTypeEnum.RadioLower5G,
-      ApRadioTypeEnum.RadioUpper5G
-    ]
-
     if (!channelBandwidth || isEmpty(supportChannels)) {
       return
     }
@@ -190,21 +193,13 @@ export function SingleRadioSettings (props:{
         setIndoorChannelBars(chBars)
       }
 
-      let needResetChannel = false
-      if (oldBandwidth !== bandwidth) {
-        if (oldBandwidth) {
-          needResetChannel = true
-        }
-        setOldBandwidth(bandwidth)
-      }
-      if (oldChannelMethod !== channelMethod) {
-        if (oldChannelMethod) {
-          needResetChannel = true
-        }
-        setOldChannelMethod(channelMethod)
+      const isPreviousManualSelect = previousChannelMethod.current === 'MANUAL'
+      if (previousChannelMethod.current !== channelMethod) {
+        previousChannelMethod.current = channelMethod
       }
 
-      if (needResetChannel) {
+      if (bandWidthOnChanged.current ||
+          (methodOnChanged.current && isManualSelect !== isPreviousManualSelect)) {
         if (isManualSelect) {
           const allowChannels = form.getFieldValue(allowedChannelsFieldName)
           if (allowChannels.length !== 1 || !availableCannels.includes(allowChannels)) {
@@ -215,6 +210,9 @@ export function SingleRadioSettings (props:{
           form.setFieldValue(allowedChannelsFieldName, availableCannels)
           selectedChannels = setSelectedChannels(availableCannels, availableCannels)
         }
+
+        bandWidthOnChanged.current = false
+        methodOnChanged.current = false
       }
 
       setChannelList(selectedChannels)
@@ -242,20 +240,18 @@ export function SingleRadioSettings (props:{
       setOutdoorChannelBars(outdoorChBars)
 
       // the bandwidth value is changed
-      if (oldBandwidth !== bandwidth) {
-        if (oldBandwidth) {
-          form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
-          form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
-        }
-        setOldBandwidth(bandwidth)
+      if (bandWidthOnChanged.current) {
+        form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
+        form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
+        bandWidthOnChanged.current = false
       }
 
       // the combinChannels value is changed
-      if (allowIndoorForOutdoor && oldCombinChannels !== combinChannels) {
+      if (allowIndoorForOutdoor && combinChannelOnChanged.current) {
         if (combinChannels === false) {
           form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
         }
-        setOldCombinChannels(combinChannels)
+        combinChannelOnChanged.current = false
       }
     }
 
@@ -309,6 +305,18 @@ export function SingleRadioSettings (props:{
     setDisplayRadioBarSettings(values)
   }
 
+  const handleSettingGUIChanged = (fieldName: string) => {
+    if (fieldName === 'bandwidth') {
+      bandWidthOnChanged.current = true
+    } else if (fieldName === 'method') {
+      methodOnChanged.current = true
+    }
+  }
+
+  const handleCombinChannelsChanged = () => {
+    combinChannelOnChanged.current = true
+  }
+
   return (
     <>
       {
@@ -323,6 +331,7 @@ export function SingleRadioSettings (props:{
               channelBandwidthOptions={bandwidthOptions}
               context={context}
               isUseVenueSettings={isUseVenueSettings}
+              onGUIChanged={handleSettingGUIChanged}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&
@@ -375,7 +384,7 @@ export function SingleRadioSettings (props:{
                 name={combinChannelsFieldName}
                 valuePropName='checked'
               >
-                <Switch />
+                <Switch onChange={handleCombinChannelsChanged}/>
               </Form.Item>
             </Col>
           </Row>

@@ -26,7 +26,8 @@ export function RadioSettingsForm (props:{
   disabled?: boolean,
   channelBandwidthOptions: SelectItemOption[],
   context?: string
-  isUseVenueSettings?: boolean
+  isUseVenueSettings?: boolean,
+  onGUIChanged?: (fieldName: string) => void
 }) {
 
   const { $t } = useIntl()
@@ -36,7 +37,8 @@ export function RadioSettingsForm (props:{
     radioDataKey,
     channelBandwidthOptions,
     context = 'venue',
-    isUseVenueSettings = false
+    isUseVenueSettings = false,
+    onGUIChanged
   } = props
 
   const methodFieldName = [...radioDataKey, 'method']
@@ -59,6 +61,10 @@ export function RadioSettingsForm (props:{
     return `${value}%`
   }
 
+  const onChangedByCustom = (fieldName: string) => {
+    onGUIChanged?.(fieldName)
+  }
+
   return (
     <>
       <Form.Item
@@ -71,6 +77,7 @@ export function RadioSettingsForm (props:{
           className={isUseVenueSettings? 'readOnly' : undefined}
           options={channelSelectionOpts?.map(p =>
             ({ label: $t(p.label), value: p.value }))}
+          onChange={() => onChangedByCustom('method')}
         />
       </Form.Item>
       <Form.Item
@@ -86,6 +93,7 @@ export function RadioSettingsForm (props:{
           min={1}
           max={100}
           marks={{ 1: '1%', 100: '100%' }}
+          onChange={() => onChangedByCustom('changeInterval')}
         />
       </Form.Item>
       {context === 'venue' &&
@@ -99,7 +107,10 @@ export function RadioSettingsForm (props:{
               { type: 'number', max: 65535 }
             ]}
           >
-            <InputNumber disabled={disabled} min={1} max={65535}/>
+            <InputNumber disabled={disabled}
+              min={1}
+              max={65535}
+              onChange={() => onChangedByCustom('scanInterval')}/>
           </Form.Item>
           <div style={{ marginLeft: '-72px', paddingTop: '5px' }}>
             {$t({ defaultMessage: 'Seconds' })}
@@ -116,6 +127,7 @@ export function RadioSettingsForm (props:{
           open={isUseVenueSettings? false : undefined}
           className={isUseVenueSettings? 'readOnly' : undefined}
           options={channelBandwidthOptions}
+          onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
       <Form.Item
@@ -128,6 +140,7 @@ export function RadioSettingsForm (props:{
           className={isUseVenueSettings? 'readOnly' : undefined}
           options={(radioType === ApRadioTypeEnum.Radio6G)?
             txPowerAdjustment6GOptions : txPowerAdjustmentOptions}
+          onChange={() => onChangedByCustom('txPower')}
         />
       </Form.Item>
       {(radioType === ApRadioTypeEnum.Radio6G && radio6GRateControlFeatureFlag) &&
@@ -141,6 +154,7 @@ export function RadioSettingsForm (props:{
             showArrow={!isUseVenueSettings}
             className={isUseVenueSettings? 'readOnly' : undefined}
             options={bssMinRate6GOptions}
+            onChange={() => onChangedByCustom('bssMinRate')}
           />
         </Form.Item>
         <Form.Item
@@ -152,6 +166,7 @@ export function RadioSettingsForm (props:{
             showArrow={!isUseVenueSettings}
             className={isUseVenueSettings? 'readOnly' : undefined}
             options={mgmtTxRate6GOptions}
+            onChange={() => onChangedByCustom('mgmtTxRate')}
           />
         </Form.Item>
       </>
