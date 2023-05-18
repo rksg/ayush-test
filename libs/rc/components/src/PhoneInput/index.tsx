@@ -20,6 +20,7 @@ export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
   useEffect(() => {
     if (inputRef.current?.input) {
       const iti = intlTelInput(inputRef.current.input, {
+        nationalMode: false,
         hiddenInput: 'full_phone',
         autoPlaceholder: 'aggressive',
         placeholderNumberType: 'MOBILE',
