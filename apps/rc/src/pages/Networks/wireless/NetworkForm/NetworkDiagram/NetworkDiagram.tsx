@@ -20,6 +20,8 @@ import CaptiveCloudpathOnPremDiagram from '../../../../../assets/images/network-
 import ClickThroughDiagram           from '../../../../../assets/images/network-wizard-diagrams/click-through.png'
 import DpskCloudpathCloudDiagram     from '../../../../../assets/images/network-wizard-diagrams/dpsk-cloudpath-cloud-deployment.png'
 import DpskCloudpathOnPremDiagram    from '../../../../../assets/images/network-wizard-diagrams/dpsk-cloudpath-on-prem-deployment.png'
+import DpskUsingRadiusDiagram        from '../../../../../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
+import DpskUsingRadiusNonProxyDiagram    from '../../../../../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
 import DpskDiagram                   from '../../../../../assets/images/network-wizard-diagrams/dpsk.png'
 import GuestPassDiagram              from '../../../../../assets/images/network-wizard-diagrams/guest-pass.png'
 import HostApprovalDiagram           from '../../../../../assets/images/network-wizard-diagrams/host-approval.png'
