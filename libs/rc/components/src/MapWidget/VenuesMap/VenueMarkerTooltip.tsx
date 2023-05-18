@@ -139,7 +139,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.CellWrapper>
         : <UI.TextWrapper>
-          {$t({ defaultMessage: 'No SmartEdge' })}
+          {$t({ defaultMessage: 'No SmartEdges' })}
         </UI.TextWrapper>,
       clients: edgeClientsCount && edgeClientsCount > 0
         ? <UI.CellWrapper>

@@ -202,7 +202,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No SmartEdge
+                                    No SmartEdges
                                   </div>
                                 </div>
                               </td>
@@ -438,7 +438,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No SmartEdge
+                                    No SmartEdges
                                   </div>
                                 </div>
                               </td>
