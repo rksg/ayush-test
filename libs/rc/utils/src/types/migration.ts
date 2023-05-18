@@ -67,6 +67,8 @@ export interface TaskContextType {
   state: string,
   tenantId: string,
   fileName: string,
+  venueName?: string,
+  description?: string,
   apImportResults: MigrationResultType[]
 }
 

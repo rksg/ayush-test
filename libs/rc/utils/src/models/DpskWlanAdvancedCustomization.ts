@@ -1,5 +1,6 @@
 import { ClientIsolationOptions } from './ClientIsolationOptions'
 import { DnsProxy }               from './DnsProxy'
+import { RadiusOptions }          from './RadiusOptions'
 import { VlanPool }               from './VlanPool'
 import { WlanRadioCustomization } from './WlanRadioCustomization'
 
@@ -112,6 +113,8 @@ export class DpskWlanAdvancedCustomization {
   dnsProxyEnabled?: boolean
 
   dnsProxy?: DnsProxy
+
+  radiusOptions?: RadiusOptions
 
   constructor () {
     this.maxClientsOnWlanPerRadio = 100

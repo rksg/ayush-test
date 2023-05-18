@@ -219,7 +219,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Firmware Version Management' })
+    const tab = screen.getByRole('tab', { name: 'Version Management' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
