@@ -53,7 +53,7 @@ export function VideoCallQoeTable () {
         const status = startCase(toLower((row as Meeting).status as string))
         const meetingId = (row as Meeting).id
         return [MeetingType.ENDED].includes(status)
-          ? <TenantLink to={`/serviceValidation/videoCallQoe/${meetingId}`}>
+          ? <TenantLink to={`/analytics/videoCallQoe/${meetingId}`}>
             {value as string}
           </TenantLink>
           : [MeetingType.NOT_STARTED, MeetingType.STARTED].includes(status)

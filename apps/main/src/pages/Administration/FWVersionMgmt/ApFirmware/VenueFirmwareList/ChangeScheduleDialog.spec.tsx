@@ -34,7 +34,7 @@ describe('Firmware Venues Table', () => {
         (req, res, ctx) => res(ctx.json(venue))
       ),
       rest.get(
-        FirmwareUrlsInfo.getAvailableFirmwareList.url,
+        FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
         (req, res, ctx) => res(ctx.json(availableVersions))
       ),
       rest.get(
@@ -81,7 +81,7 @@ describe('Firmware Venues Table', () => {
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     fireEvent.click(within(row).getByRole('checkbox'))
 
-    const changeButton = screen.getByRole('button', { name: /Change Update Schedule/i })
+    const changeButton = await screen.findByRole('button', { name: /Change Update Schedule/i })
     fireEvent.click(changeButton)
 
     await screen.findByText('Selected time will apply to each venue according to own time-zone')
