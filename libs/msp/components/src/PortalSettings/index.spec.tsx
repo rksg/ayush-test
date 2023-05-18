@@ -86,7 +86,7 @@ const externalProviders: ExternalProviders =
 
 const baseUrl: BaseUrl =
     {
-      base_url: 'msp.dev.ruckus.cloud'
+      base_url: 'msp.devalto.ruckuswireless.com'
     }
 
 const services = require('@acx-ui/rc/services')
@@ -205,7 +205,7 @@ describe('PortalSettings', () => {
     const formItem = screen.getByRole('textbox')
     expect(formItem).toBeVisible()
     expect(formItem).toHaveValue('demo-msp')
-    expect(screen.getByText('msp.dev.ruckus.cloud')).toBeVisible()
+    expect(screen.getByText('.msp.devalto.ruckuswireless.com')).toBeVisible()
     expect(screen.getByDisplayValue('demo-msp')).toBeInTheDocument()
   })
   it('empty domain form item should show correct error message', async () => {

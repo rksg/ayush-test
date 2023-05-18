@@ -5,6 +5,8 @@ const globalIntlCache = createIntlCache()
 
 let intl: IntlShape | undefined
 
+export class IntlSetUpError extends Error {}
+
 export const onIntlError: OnErrorFn = (error) => {
   if (process.env['NODE_ENV'] === 'production') return
   if (error.code === IntlErrorCode.MISSING_TRANSLATION) return
@@ -23,6 +25,6 @@ export function setUpIntl (config?: IntlConfig) {
 }
 
 export function getIntl () {
-  if (!intl) throw Error('setUpIntl must be called before getIntl')
+  if (!intl) throw new IntlSetUpError()
   return intl
 }

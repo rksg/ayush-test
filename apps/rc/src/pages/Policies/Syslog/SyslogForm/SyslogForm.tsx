@@ -1,11 +1,11 @@
-import { useRef, useReducer } from 'react'
+import { useReducer } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsForm
 } from '@acx-ui/components'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
@@ -52,7 +52,7 @@ const SyslogForm = (props: SyslogFormProps) => {
   const flowLevel = FlowLevelEnum.CLIENT_FLOW
   const venues:SyslogVenue[] = []
 
-  const formRef = useRef<StepsFormInstance<SyslogContextType>>()
+  const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
     policyName,
     server,
@@ -137,7 +137,7 @@ const SyslogForm = (props: SyslogFormProps) => {
         ]}
       />
       <StepsForm<SyslogContextType>
-        formRef={formRef}
+        form={form}
         editMode={edit}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={() => handleSyslogPolicy(edit)}
@@ -146,7 +146,7 @@ const SyslogForm = (props: SyslogFormProps) => {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <SyslogSettingForm edit={edit} formRef={formRef}/>
+          <SyslogSettingForm edit={edit}/>
         </StepsForm.StepForm>
 
         <StepsForm.StepForm

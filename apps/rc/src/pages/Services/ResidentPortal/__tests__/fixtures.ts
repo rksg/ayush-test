@@ -21,7 +21,13 @@ export const mockedCreateFormData: CreateResidentPortalFormFields = {
   textSubtitle: 'This is a Mocked Portal',
   textLogin: 'Login Please',
   textAnnouncements: 'Announcing a Mocked Portal',
-  textHelp: 'This is a test.'
+  textHelp: 'This is a test.',
+  colorMain: '',
+  colorAccent: '',
+  colorSeparator: '',
+  colorText: '',
+  fileLogo: { file: new File(['testLogo'], 'testLogo.png', { type: 'image/png' }) },
+  fileFavicon: { file: new File(['testFavicon'], 'testFavicon.png', { type: 'image/png' }) }
 }
 
 export const mockedResidentPortal = {

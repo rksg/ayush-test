@@ -1,5 +1,8 @@
-import React, { useContext, useState } from 'react'
+import React, { ReactNode, useContext, useState } from 'react'
 
+import {
+  FileTextOutlined
+} from '@ant-design/icons'
 import {
   Col,
   Row,
@@ -12,7 +15,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import {
-  StepsForm
+  StepsFormLegacy
 } from '@acx-ui/components'
 import {
   MigrationActionTypes
@@ -21,8 +24,7 @@ import {
 import { MessageMapping } from '../MessageMapping'
 import MigrationContext   from '../MigrationContext'
 
-import type { UploadFile, UploadProps } from 'antd/es/upload/interface'
-// import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
+import type { UploadProps } from 'antd/es/upload/interface'
 
 
 const UploadForm = () => {
@@ -32,71 +34,48 @@ const UploadForm = () => {
     dispatch
   } = useContext(MigrationContext)
 
-  const [fileList, setFileList] = useState<UploadFile[]>([])
-  // const [uploading, setUploading] = useState(false)
-
-  // const handleUpload = () => {
-  //   const formData = new FormData()
-  //   fileList.forEach((file) => {
-  //     formData.append('files[]', file as RcFile)
-  //   })
-  //   setUploading(true)
-  //   // You can use any AJAX library you like
-  //   fetch('', {
-  //     method: 'POST',
-  //     body: formData
-  //   })
-  //     .then((res) => res.json())
-  //     .then(() => {
-  //       setFileList([])
-  //       message.success('upload successfully.')
-  //     })
-  //     .catch(() => {
-  //       message.error('upload failed.')
-  //     })
-  //     .finally(() => {
-  //       setUploading(false)
-  //     })
-  // }
+  const [fileDescription, setFileDescription] = useState<ReactNode>('')
 
   const props: UploadProps = {
     maxCount: 1,
     showUploadList: false,
-    onRemove: (file) => {
-      const index = fileList.indexOf(file)
-      const newFileList = fileList.slice()
-      newFileList.splice(index, 1)
-      setFileList(newFileList)
-    },
+    // onRemove: (file) => {
+    //   const index = fileList.indexOf(file)
+    //   const newFileList = fileList.slice()
+    //   newFileList.splice(index, 1)
+    //   setFileList(newFileList)
+    // },
     beforeUpload: (file: File) => {
-      // setFileList([...fileList, file])
-
       dispatch({
         type: MigrationActionTypes.UPLOADFILE,
         payload: {
           file: file
         }
       })
+      setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
 
       return false
-    },
-    fileList
+    }
+    // fileList
   }
 
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Backup File Selection' })}</StepsForm.Title>
+        <StepsFormLegacy.Title children={$t({ defaultMessage: 'Backup File Selection' })} />
         <Form.Item
+          // name='backupFile'
           label={$t(MessageMapping.migrate_description)}
         />
         <Upload.Dragger {...props}>
           <Space style={{ height: '90px' }}>
-            <Typography.Text>
-              {$t({ defaultMessage: 'Drag & drop file here or' })}
-            </Typography.Text>
-            <Button type='primary'>
-              {$t({ defaultMessage: 'Browse' })}
+            { fileDescription ? fileDescription :
+              <Typography.Text>
+                {$t({ defaultMessage: 'Drag & drop file here or' })}
+              </Typography.Text> }
+            <Button type='primary'>{ fileDescription ?
+              $t({ defaultMessage: 'Change File' }) :
+              $t({ defaultMessage: 'Browse' }) }
             </Button>
           </Space>
         </Upload.Dragger>

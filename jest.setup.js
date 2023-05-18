@@ -49,10 +49,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 beforeAll(() => {
   mockServer.listen()
-  setUpIntl({
-    locale: 'en-US',
-    messages: {}
-  })
+  setUpIntl({ locale: 'en-US', messages: {} })
 })
 beforeEach(async () => {
   mockDOMSize(1280, 800)
@@ -170,3 +167,13 @@ jest.mock('@acx-ui/icons', ()=> {
 HTMLCanvasElement.prototype.getContext = () => null
 
 jest.setTimeout(20000)
+
+// Mock module because the xarrow component will get the error: '_c.getTotalLength is not a function' when testing
+jest.mock('react-xarrows', () => {
+  const React = jest.requireActual('react')
+  return {
+    __esModule: true,
+    default: () => React.createElement('span'),
+    useXarrow: () => null
+  }
+})

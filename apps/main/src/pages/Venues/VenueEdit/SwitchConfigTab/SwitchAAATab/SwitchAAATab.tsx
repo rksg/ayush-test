@@ -3,10 +3,10 @@ import { useContext, useRef, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { useUpdateAAASettingMutation }                from '@acx-ui/rc/services'
-import { redirectPreviousPage }                       from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { useUpdateAAASettingMutation }                            from '@acx-ui/rc/services'
+import { redirectPreviousPage }                                   from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -25,7 +25,7 @@ export function SwitchAAATab () {
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })
   const settingsTitle = $t({ defaultMessage: 'Settings' })
 
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
 
   const handleUpdate = async () => {
     const values = formRef?.current?.getFieldsValue()
@@ -91,9 +91,9 @@ export function SwitchAAATab () {
     title: serversTitle,
     content: (
       <>
-        <StepsForm.SectionTitle id='aaa-servers'>
+        <StepsFormLegacy.SectionTitle id='aaa-servers'>
           { serversTitle }
-        </StepsForm.SectionTitle>
+        </StepsFormLegacy.SectionTitle>
         <AAAServers />
       </>
     )
@@ -101,17 +101,20 @@ export function SwitchAAATab () {
     title: settingsTitle,
     content: (
       <>
-        <StepsForm.SectionTitle id='aaa-settings'>
+        <StepsFormLegacy.SectionTitle id='aaa-settings'>
           { settingsTitle }
-        </StepsForm.SectionTitle>
-        <StepsForm.StepForm name='aaa-settings' layout='horizontal' labelCol={{ flex: '150px' }}>
+        </StepsFormLegacy.SectionTitle>
+        <StepsFormLegacy.StepForm
+          name='aaa-settings'
+          layout='horizontal'
+          labelCol={{ flex: '150px' }}>
           <AAASettings setAAASettingId={setAAASettingId} />
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
       </>
     )
   }]
   return (
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFinish={() => handleUpdate()}
       onCancel={() =>
@@ -120,6 +123,6 @@ export function SwitchAAATab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save AAA' }) }}
     >
       <AnchorLayout items={anchorItems} offsetTop={275} />
-    </StepsForm>
+    </StepsFormLegacy>
   )
 }

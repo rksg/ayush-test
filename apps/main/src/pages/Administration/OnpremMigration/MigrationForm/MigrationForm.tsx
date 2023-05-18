@@ -1,69 +1,65 @@
-import { useRef, useReducer, useState } from 'react'
+import { useRef, useReducer, useState, useEffect } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
-// import {
-//   useAddZdMigrationMutation, useLazyMigrateResultQuery
-// } from '@acx-ui/rc/services'
 import {
-  // CommonResult,
-  // ImportErrorRes,
-  MigrationContextType
+  useUploadZdConfigMutation,
+  useAddZdMigrationMutation
+} from '@acx-ui/rc/services'
+import {
+  MigrationContextType,
+  TaskContextType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import MigrationContext , { mainReducer } from '../MigrationContext'
 
 import { MigrationSettingForm } from './MigrationSettingForm'
-import MigrationStatusForm      from './MigrationStatusForm'
+import { defaultAddress }       from './MigrationSettingForm'
+import SummaryForm              from './SummaryForm'
 import UploadForm               from './UploadForm'
+import ValidationForm           from './ValidationForm'
+import ValidationStatus         from './ValidationStatus'
 
 
 const MigrationForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const params = useParams()
   const linkToMigration = useTenantLink('/administration/onpremMigration')
   const edit = false
 
   const file = new Blob()
-  const policyName = ''
-  const server = ''
-  const secondaryServer = ''
+  const venueName = ''
+  const description = ''
+  const address = ''
   const [isFinish, setIsFinish] = useState(false)
   const [isMigrating, setIsMigrating] = useState(false)
 
-  // const [ migrateZdCsv ] = useAddZdMigrationMutation()
-  // const [ migrateZdQuery ] = useLazyMigrateResultQuery()
-  // const [ migrateZdResult, setMigrateZdResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
-  // const [isMigrationFinish, setIsMigrationFinish] = useState(false)
+  const [ validateZdAps, validateZdApsResp ] = useUploadZdConfigMutation()
+  // eslint-disable-next-line max-len
+  const [ validateZdApsResult, setValidateZdApsResult ] = useState<TaskContextType>({} as TaskContextType)
+  const [ migrateZdAps ] = useAddZdMigrationMutation()
 
-  // useEffect(()=>{
-  //   console.log('migrate finish')
-  //   if (migrateZdResult?.fileErrorsCount) {
-  //     setIsMigrationFinish(true)
-  //   }
-  // },[migrateZdResult?.fileErrorsCount])
+  useEffect(()=>{
+    if (validateZdApsResp.data) {
+      setValidateZdApsResult(validateZdApsResp.data)
+    }
+  },[validateZdApsResp])
 
-  const formRef = useRef<StepsFormInstance<MigrationContextType>>()
+  const formRef = useRef<StepsFormLegacyInstance<MigrationContextType>>()
   const [state, dispatch] = useReducer(mainReducer, {
     file,
-    policyName,
-    server,
-    secondaryServer
+    venueName,
+    description,
+    address
   })
-
-  // const waitTime = (time: number = 100) => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve(true)
-  //     }, time)
-  //   })
-  // }
 
   return (
     <MigrationContext.Provider value={{ state, dispatch }}>
@@ -73,11 +69,11 @@ const MigrationForm = () => {
           { text: $t({ defaultMessage: 'Administration' }), link: '/administration' }
         ]}
       />
-      <StepsForm<MigrationContextType>
+      <StepsFormLegacy<MigrationContextType>
         formRef={formRef}
         editMode={edit}
         buttonLabel={{
-          next: isFinish ? $t({ defaultMessage: 'Migrate' }) : $t({ defaultMessage: 'Next' }),
+          next: isFinish ? $t({ defaultMessage: 'Migrate' }) : $t({ defaultMessage: 'Validate' }),
           submit: undefined,
           pre: isMigrating ? undefined : $t({ defaultMessage: 'Back' }),
           cancel: isMigrating ? $t({ defaultMessage: 'Done' }) : $t({ defaultMessage: 'Cancel' })
@@ -89,57 +85,58 @@ const MigrationForm = () => {
         }}
         onCancel={() => navigate(linkToMigration)}
       >
-        <StepsForm.StepForm<MigrationContextType>
+        <StepsFormLegacy.StepForm<MigrationContextType>
           name='backupFile'
           title={$t({ defaultMessage: 'Backup File Selection' })}
           onFinish={async () => {
             setIsFinish(true)
+            const file = state.file as File
+            const formData = new FormData()
+            formData.append('backupFile', file, file.name)
+            validateZdAps({ params: {}, payload: formData })
             return true
           }}
         >
           <UploadForm />
-        </StepsForm.StepForm>
+        </StepsFormLegacy.StepForm>
 
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm<MigrationContextType>
+          name='validationResult'
+          title={$t({ defaultMessage: 'Validation Result' })}
+        >
+          {validateZdApsResult.taskId
+            ? <ValidationForm taskId={validateZdApsResult.taskId} />
+            : <ValidationStatus />
+          }
+
+        </StepsFormLegacy.StepForm>
+
+        <StepsFormLegacy.StepForm
           name='migration'
           title={$t({ defaultMessage: 'Migration' })}
           onFinish={async () => {
             setIsMigrating(true)
-            // await waitTime(2000)
-            // const file = state.file as File
-            // const newFormData = new FormData()
-            // newFormData.append('file', file, file.name)
-            // migrateZdCsv({ params: {}, payload: newFormData,
-            //   callback: async (res: CommonResult) => {
-            //     const result = await migrateZdQuery(
-            //       { payload: { requestId: res.requestId } }, true)
-            //       .unwrap()
-            //     setMigrateZdResult(result)
-            //     setIsMigrationFinish(true)
-            //   } }).unwrap()
-            // await waitTime(4000)
-
+            const requestJson = {
+              venueName: state.venueName,
+              description: state.description,
+              // address: state.address
+              address: defaultAddress
+            }
+            // eslint-disable-next-line max-len
+            migrateZdAps({ params: { ...params, id: validateZdApsResult.taskId }, payload: requestJson })
             return true
           }}
         >
-          {!isMigrating
-            ? <MigrationSettingForm />
-            : <MigrationStatusForm />
-          }
-        </StepsForm.StepForm>
+          <MigrationSettingForm />
+        </StepsFormLegacy.StepForm>
 
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='summary'
           title={$t({ defaultMessage: 'Summary' })}
         >
-          {
-            // isMigrationFinish
-            // ? <div>Summary { migrateZdResult?.fileErrorsCount }</div>
-            // : <MigrationStatusForm />
-          }
-          <MigrationStatusForm />
-        </StepsForm.StepForm>
-      </StepsForm>
+          {validateZdApsResult.taskId && <SummaryForm taskId={validateZdApsResult.taskId} />}
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </MigrationContext.Provider>
   )
 }

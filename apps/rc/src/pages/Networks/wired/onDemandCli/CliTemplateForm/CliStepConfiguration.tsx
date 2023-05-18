@@ -188,7 +188,7 @@ export function CliStepConfiguration () {
   return <>
     <Row gutter={24}>
       <Col span={8}>
-        <StepsForm.Title>{$t({ defaultMessage: 'CLI Configuration' })}</StepsForm.Title>
+        <StepsForm.Title children={$t({ defaultMessage: 'CLI Configuration' })} />
         {isTemplate && <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Template Name' })}

@@ -6,14 +6,16 @@ import { defineMessage, useIntl, IntlShape } from 'react-intl'
 import {
   PageHeader,
   showActionModal,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
-  useLazyValidateRadiusQuery
+  useLazyValidateRadiusQuery,
+  useAddNetworkVenuesMutation,
+  useDeleteNetworkVenuesMutation
 } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -26,7 +28,9 @@ import {
   Demo,
   GuestPortal,
   redirectPreviousPage,
-  LocationExtended
+  LocationExtended,
+  NetworkVenue,
+  Network
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -110,8 +114,10 @@ export default function NetworkForm (props:{
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
+  const [addNetworkVenues] = useAddNetworkVenuesMutation()
+  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
-  const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
+  const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
@@ -236,10 +242,40 @@ export default function NetworkForm (props:{
     return true
   }
 
+  const handleNetworkVenues = async (
+    networkId : string,
+    newNetworkVenues? : NetworkVenue[],
+    oldNetworkVenues? : NetworkVenue[]
+  )=> {
+    const newIds = newNetworkVenues?.map(({ id }) => id) ?? []
+    const oldIds = oldNetworkVenues?.map(({ id }) => id) ?? []
+
+    if (newIds.length && oldIds.length) {
+      const added = newNetworkVenues
+        ?.filter(({ id }) => !oldIds.includes(id))
+        .map(({ venueId }) => ({ venueId, networkId }))
+      const removed = oldIds.filter((id) => !newIds.includes(id))
+      await Promise.all([
+        addNetworkVenues({ payload: added }).unwrap(),
+        deleteNetworkVenues({ payload: removed }).unwrap()
+      ])
+    } else if (newIds.length) {
+      const added = newNetworkVenues?.map(({ venueId }) => ({ venueId, networkId }))
+      await addNetworkVenues({ payload: added }).unwrap()
+    } else if (oldIds.length) {
+      await deleteNetworkVenues({ payload: oldIds }).unwrap()
+    }
+  }
+
   const handleAddNetwork = async () => {
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
-      await addNetwork({ params, payload }).unwrap()
+      const result = await addNetwork({ params, payload }).unwrap()
+      if (result && result.response && payload.venues) {
+        // @ts-ignore
+        const network: Network = result.response
+        await handleNetworkVenues(network.id, payload.venues)
+      }
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -252,11 +288,14 @@ export default function NetworkForm (props:{
     }
   }
 
-  const handleEditNetwork = async (data: NetworkSaveData) => {
+  const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       deleteUnnecessaryFields()
-      const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
+      const payload = updateClientIsolationAllowlist({ ...saveState, venues: formData.venues })
       await updateNetwork({ params, payload }).unwrap()
+      if (payload.id && (payload.venues || data?.venues)) {
+        await handleNetworkVenues(payload.id, payload.venues, data?.venues)
+      }
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -369,7 +408,7 @@ export default function NetworkForm (props:{
         data: saveState,
         setData: updateSaveState
       }}>
-        <StepsForm<NetworkSaveData>
+        <StepsFormLegacy<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
           onCancel={() => modalMode
@@ -378,7 +417,7 @@ export default function NetworkForm (props:{
           }
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='details'
             title={intl.$t({ defaultMessage: 'Network Details' })}
             onFinish={async (data) => {
@@ -395,9 +434,9 @@ export default function NetworkForm (props:{
             }}
           >
             <NetworkDetailForm />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
@@ -449,9 +488,9 @@ export default function NetworkForm (props:{
             {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
 
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-              <StepsForm.StepForm
+              <StepsFormLegacy.StepForm
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async (data) => {
@@ -487,10 +526,10 @@ export default function NetworkForm (props:{
                 }}
               >
                 {pickOneCaptivePortalForm(saveState)}
-              </StepsForm.StepForm>
+              </StepsFormLegacy.StepForm>
           }
           {editMode &&
-            <StepsForm.StepForm
+            <StepsFormLegacy.StepForm
               name='moreSettings'
               title={intl.$t({ defaultMessage: 'More Settings' })}
               onFinish={async (data) => {
@@ -503,16 +542,16 @@ export default function NetworkForm (props:{
 
               <NetworkMoreSettingsForm wlanData={saveState} />
 
-            </StepsForm.StepForm>}
-          { isPortalWebRender(saveState) &&<StepsForm.StepForm
+            </StepsFormLegacy.StepForm>}
+          { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
             name='portalweb'
             title={intl.$t({ defaultMessage: 'Portal Web Page' })}
             onFinish={handlePortalWebPage}
           >
             <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           }
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
@@ -536,13 +575,13 @@ export default function NetworkForm (props:{
             }}
           >
             <Venues />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           {!editMode &&
-            <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
+            <StepsFormLegacy.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
               <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-            </StepsForm.StepForm>
+            </StepsFormLegacy.StepForm>
           }
-        </StepsForm>
+        </StepsFormLegacy>
       </NetworkFormContext.Provider>
     </>
   )
@@ -592,7 +631,7 @@ function showConfigConflictModal (
   data: Partial<CreateNetworkFormFields>,
   errors: RadiusValidateErrors[],
   errorList: Record<string, boolean | number>,
-  form: StepsFormInstance<NetworkSaveData> | undefined,
+  form: StepsFormLegacyInstance<NetworkSaveData> | undefined,
   saveState: NetworkSaveData,
   updateSaveData: Function,
   editMode: boolean,

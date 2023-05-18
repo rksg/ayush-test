@@ -25,11 +25,13 @@ import {
   baseVenueApi as venueApi,
   baseTunnelProfileApi as tunnelProfileApi,
   dataApi,
-  networkHealthApi,
+  dataApiSearch,
+  serviceGuardApi,
   userApi,
   baseMsgTemplateApi as msgTemplateApi,
   videoCallQoeApi,
-  baseEdgeFirewallApi as edgeFirewallApi
+  baseEdgeFirewallApi as edgeFirewallApi,
+  baseSigPackApi as sigPackApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -42,9 +44,9 @@ export const store = configureStore({
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer,
     [timelineApi.reducerPath]: timelineApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
+    [dataApiSearch.reducerPath]: dataApiSearch.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
-    [dataApi.reducerPath]: dataApi.reducer,
     [dhcpApi.reducerPath]: dhcpApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer,
@@ -58,12 +60,13 @@ export const store = configureStore({
     [migrationApi.reducerPath]: migrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
-    [networkHealthApi.reducerPath]: networkHealthApi.reducer,
+    [serviceGuardApi.reducerPath]: serviceGuardApi.reducer,
     [nsgApi.reducerPath]: nsgApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
     [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
-    [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer
+    [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
+    [sigPackApi.reducerPath]: sigPackApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -78,9 +81,9 @@ export const store = configureStore({
       eventAlarmApi.middleware,
       timelineApi.middleware,
       dataApi.middleware,
+      dataApiSearch.middleware,
       apApi.middleware,
       userApi.middleware,
-      dataApi.middleware,
       dhcpApi.middleware,
       serviceApi.middleware,
       mspApi.middleware,
@@ -94,12 +97,13 @@ export const store = configureStore({
       migrationApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware,
-      networkHealthApi.middleware,
+      serviceGuardApi.middleware,
       nsgApi.middleware,
       tunnelProfileApi.middleware,
       msgTemplateApi.middleware,
       videoCallQoeApi.middleware,
-      edgeFirewallApi.middleware
+      edgeFirewallApi.middleware,
+      sigPackApi.middleware
     ])
   },
 

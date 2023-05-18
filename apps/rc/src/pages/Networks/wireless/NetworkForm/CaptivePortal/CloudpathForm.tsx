@@ -9,7 +9,7 @@ import {
 import { useIntl } from 'react-intl'
 
 
-import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -49,7 +49,7 @@ export function CloudpathForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name={['guestPortal','externalPortalUrl']}
           rules={

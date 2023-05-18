@@ -2,7 +2,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { GridCol, GridRow, StepsForm }        from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy }  from '@acx-ui/components'
 import { useLazyGetApSnmpPolicyListQuery }    from '@acx-ui/rc/services'
 import { ApSnmpPolicy, checkObjectNotExists } from '@acx-ui/rc/utils'
 
@@ -52,12 +52,13 @@ const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
             hasFeedback
             initialValue={''}
             children={<Input/>}
+            validateTrigger={'onBlur'}
           />
         </GridCol>
       </GridRow>
       <GridRow >
         <GridCol col={{ span: 14 }}>
-          <StepsForm.Title>{$t({ defaultMessage: 'SNMP Agent Settings' })}</StepsForm.Title>
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'SNMP Agent Settings' })} />
           <Form.Item name='snmpV2Agents'>
             <SnmpAgentV2Table data={snmpV2Agents} />
           </Form.Item>

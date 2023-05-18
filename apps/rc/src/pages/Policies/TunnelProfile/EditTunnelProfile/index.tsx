@@ -4,9 +4,9 @@ import { useEffect } from 'react'
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { PageHeader, StepsFormNew }                                 from '@acx-ui/components'
-import { TunnelProfileForm, TunnelProfileFormType }                 from '@acx-ui/rc/components'
-import { useGetTunnelProfileQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
+import { PageHeader, StepsForm }                                        from '@acx-ui/components'
+import { TunnelProfileForm, TunnelProfileFormType }                     from '@acx-ui/rc/components'
+import { useGetTunnelProfileByIdQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
@@ -31,7 +31,9 @@ const EditTunnelProfile = () => {
   })
   const linkToTableView = useTenantLink(tablePath)
   const [form] = Form.useForm()
-  const { data: tunnelProfileData } = useGetTunnelProfileQuery({ params: { id: params.policyId } })
+  const { data: tunnelProfileData } = useGetTunnelProfileByIdQuery(
+    { params: { id: params.policyId } }
+  )
   const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
 
   useEffect(() => {
@@ -87,7 +89,7 @@ const EditTunnelProfile = () => {
           }
         ]}
       />
-      <StepsFormNew
+      <StepsForm
         form={form}
         onFinish={handleUpdateTunnelProfile}
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
@@ -96,14 +98,14 @@ const EditTunnelProfile = () => {
           mtuType: MtuTypeEnum.AUTO
         }}
       >
-        <StepsFormNew.StepForm>
+        <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <TunnelProfileForm />
             </Col>
           </Row>
-        </StepsFormNew.StepForm>
-      </StepsFormNew>
+        </StepsForm.StepForm>
+      </StepsForm>
     </>
   )
 }

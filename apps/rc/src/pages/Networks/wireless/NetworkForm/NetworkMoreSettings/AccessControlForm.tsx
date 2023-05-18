@@ -12,7 +12,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import _, { get }              from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button, Modal, ModalType, StepsForm, StepsFormInstance }        from '@acx-ui/components'
+import { Button, Modal, ModalType, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
@@ -118,7 +118,7 @@ function SaveAsAcProfileButton () {
 
   const [ createAclProfile ] = useAddAccessControlProfileMutation()
 
-  const formRef = useRef<StepsFormInstance<AccessControlFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
   return (
     <>
@@ -133,7 +133,7 @@ function SaveAsAcProfileButton () {
         visible={visible}
         type={ModalType.ModalStepsForm}
       >
-        <StepsForm<AccessControlFormFields>
+        <StepsFormLegacy<AccessControlFormFields>
           formRef={formRef}
           onCancel={() => setVisible(false)}
           onFinish={async () => {
@@ -152,7 +152,7 @@ function SaveAsAcProfileButton () {
             }
           }}
         >
-          <StepsForm.StepForm<AccessControlProfile>
+          <StepsFormLegacy.StepForm<AccessControlProfile>
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}
           >
@@ -180,8 +180,8 @@ function SaveAsAcProfileButton () {
                 )
               }}
             />
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Modal>
     </>
   )

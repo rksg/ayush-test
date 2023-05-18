@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Loader
 } from '@acx-ui/components'
 import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation }              from '@acx-ui/rc/services'
@@ -33,7 +33,7 @@ export default function DHCPForm (props: DHCPFormProps) {
 
   const { editMode } = props
 
-  const formRef = useRef<StepsFormInstance<DHCPSaveData>>()
+  const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
 
   const navigate = useNavigate()
   const tablePath = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
@@ -100,7 +100,7 @@ export default function DHCPForm (props: DHCPFormProps) {
         ]}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>
-        <StepsForm<DHCPSaveData>
+        <StepsFormLegacy<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}
           onCancel={() => navigate(linkToServices)}
@@ -115,13 +115,13 @@ export default function DHCPForm (props: DHCPFormProps) {
             }
           }
         >
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='settings'
             title={$t({ defaultMessage: 'DHCP Settings' })}
           >
             <SettingForm editMode={editMode}/>
-          </StepsForm.StepForm>
-        </StepsForm>
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
       </Loader>
     </>
   )
