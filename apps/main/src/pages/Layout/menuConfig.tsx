@@ -40,6 +40,7 @@ export function useMenuConfig () {
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -110,7 +111,7 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Guest Pass Credentials' })
             },
             {
-              uri: '/reports/clients',
+              uri: isNavbarEnhanced ? '/users/wifi/reports' : '/reports/clients',
               label: $t({ defaultMessage: 'Wireless Clients Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
@@ -152,16 +153,16 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Access Points' }),
           children: [
             {
-              uri: '/devices/wifi',
+              uri: isNavbarEnhanced ? '/devices/wifi/list' : '/devices/wifi',
               label: $t({ defaultMessage: 'Access Point List' })
             },
             {
-              uri: '/reports/aps',
+              uri: isNavbarEnhanced ? '/devices/wifi/report' : '/reports/aps',
               label: $t({ defaultMessage: 'Access Point Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
-              uri: '/reports/airtime',
+              uri: isNavbarEnhanced ? '/devices/wifi/airtime' : '/reports/airtime',
               label: $t({ defaultMessage: 'Airtime Utilization Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
@@ -176,17 +177,17 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Wi-Fi Networks List' })
             },
             {
-              uri: '/reports/wlans',
+              uri: isNavbarEnhanced ? '/networks/wlan' : '/reports/wlans',
               label: $t({ defaultMessage: 'WLANs Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
-              uri: '/reports/applications',
+              uri: isNavbarEnhanced ? '/networks/application' : '/reports/applications',
               label: $t({ defaultMessage: 'Applications Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
-              uri: '/reports/wireless',
+              uri: isNavbarEnhanced ? '/networks/wifi' : '/reports/wireless',
               label: $t({ defaultMessage: 'Wireless Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
@@ -204,11 +205,11 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Switches' }),
           children: [
             {
-              uri: '/devices/switch',
+              uri: isNavbarEnhanced ? '/devices/switch/list' : '/devices/switch',
               label: $t({ defaultMessage: 'Switch List' })
             },
             {
-              uri: '/reports/wired',
+              uri: isNavbarEnhanced ? '/devices/switch/report' : '/reports/wired',
               label: $t({ defaultMessage: 'Wired Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             }
