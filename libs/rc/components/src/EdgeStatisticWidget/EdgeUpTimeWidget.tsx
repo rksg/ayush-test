@@ -155,7 +155,7 @@ export function EdgeUpTimeWidget () {
         <UI.Status col={{ span: 4 }}>
           {$t({ defaultMessage: 'Total Downtime' })}
           {': '}
-          <UI.Duration>{milliSecondsToHm(queryResults?.totalDowntime || 0)}</UI.Duration>
+          <UI.Duration>{milliSecondsToHm(queryResults?.totalDowntime * 1000 || 0)}</UI.Duration>
         </UI.Status>
         <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
           <AutoSizer>
