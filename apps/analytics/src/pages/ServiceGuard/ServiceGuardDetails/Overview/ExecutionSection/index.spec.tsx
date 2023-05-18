@@ -24,6 +24,13 @@ describe('ExecutionSection', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
+  it('should handle no data correctly', async () => {
+    render(<ExecutionSection
+      details={{
+        ...fetchServiceGuardTest.serviceGuardTest, summary: { apsTestedCount: 0 }
+      } as unknown as ServiceGuardTest}/>)
+    expect(await screen.findByText('No data to display')).toBeValid()
+  })
 })
 
 describe('getExecutionSectionData', () => {

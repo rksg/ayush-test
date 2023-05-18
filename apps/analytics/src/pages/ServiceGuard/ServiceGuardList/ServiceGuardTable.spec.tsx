@@ -36,7 +36,11 @@ describe('Service Validation Table', () => {
     expect(tbody).toBeVisible()
     const body = within(tbody)
     expect(await screen.findByRole('table')).toBeVisible()
-    expect(await body.findAllByRole('row')).toHaveLength(3)
+    expect(await body.findAllByRole('row')).toHaveLength(4)
+    expect(await screen.findByText('test-1')).not.toHaveAttribute('href')
+    expect(await screen.findByText('test-2')).toHaveAttribute('href')
+    expect(await screen.findByText('test-3')).toHaveAttribute('href')
+    expect(await screen.findByText('test-4')).toHaveAttribute('href')
   })
 
   it('should click run now', async () => {

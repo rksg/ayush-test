@@ -95,6 +95,16 @@ describe('statsFromSummary', () => {
       lastResult: undefined
     })
     expect(statsFromSummary({
+      apsTestedCount: 0,
+      apsPendingCount: 0,
+      apsSuccessCount: 0
+    } as unknown as ServiceGuardTest['summary'])).toEqual({
+      isOngoing: false,
+      apsFinishedTest: undefined,
+      apsUnderTest: 0,
+      lastResult: undefined
+    })
+    expect(statsFromSummary({
       apsTestedCount: 2,
       apsPendingCount: 2,
       apsSuccessCount: 0

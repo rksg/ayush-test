@@ -1207,21 +1207,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
-    }),
-
-    getVenueWithSetProperty: build.query<string[], string[]>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const result: string[] = []
-        for(let venueId of arg) {
-          const urlInfo = createHttpRequest(PropertyUrlsInfo.getPropertyConfigs, { venueId })
-          urlInfo.headers['Accept'] = '*/*'
-          const fetchResult = await fetchWithBQ(urlInfo)
-          if(!fetchResult.error) {
-            result.push(venueId)
-          }
-        }
-        return { data: result }
-      }
     })
   })
 })
@@ -1333,6 +1318,5 @@ export const {
   useDeleteResidentPortalFaviconMutation,
 
   useImportPropertyUnitsMutation,
-  useLazyDownloadPropertyUnitsQuery,
-  useGetVenueWithSetPropertyQuery
+  useLazyDownloadPropertyUnitsQuery
 } = venueApi

@@ -14,7 +14,6 @@ import Notifications     from './Notifications'
 import OnpremMigration   from './OnpremMigration'
 import Subscriptions     from './Subscriptions'
 
-
 const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
   const { $t } = useIntl()
   const { activeTab } = useParams()
@@ -75,10 +74,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
-        tab={navbarEnhancement
-          ? $t({ defaultMessage: 'Version Management' })
-          : $t({ defaultMessage: 'Firmware Version Management' })
-        }
+        tab={$t({ defaultMessage: 'Version Management' })}
         key='fwVersionMgmt'
       />
       { isCloudMoteEnabled &&
@@ -99,6 +95,7 @@ const tabPanes = {
   subscriptions: Subscriptions,
   fwVersionMgmt: FWVersionMgmt,
   localRadiusServer: LocalRadiusServer
+
 }
 
 export default function Administration () {

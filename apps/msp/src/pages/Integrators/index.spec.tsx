@@ -43,6 +43,10 @@ const list = {
   ]
 }
 
+const mspPortal = {
+  msp_label: 'eleu1658'
+}
+
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
@@ -64,6 +68,9 @@ jest.mock('react-router-dom', () => ({
 describe('Integrators', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
+      return { data: mspPortal }
+    })
     utils.useTableQuery = jest.fn().mockImplementation(() => {
       return { data: list }
     })

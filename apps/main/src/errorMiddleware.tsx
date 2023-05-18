@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { Middleware, isRejectedWithValue } from '@reduxjs/toolkit'
-import { FormattedMessage, defineMessage } from 'react-intl'
+import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
+import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
 import { ActionModalType, ErrorDetailsProps, showActionModal } from '@acx-ui/components'
-import { getIntl }                                             from '@acx-ui/utils'
+import { getIntl, setUpIntl, IntlSetUpError }                  from '@acx-ui/utils'
 
 export type ErrorAction = {
   type: string,
@@ -80,10 +80,20 @@ export const errorMessage = {
 }
 
 export const getErrorContent = (action: ErrorAction) => {
-  const { $t } = getIntl()
+  // IntlSetUpError can be thrown by bootstrap.tsx when getting
+  // user's preferred language, before intl is initialized
+  let intl: IntlShape
+  try {
+    intl = getIntl()
+  } catch (error) {
+    if (!(error instanceof IntlSetUpError)) throw error
+    setUpIntl({ locale: 'en-US' })
+    intl = getIntl()
+  }
+  const { $t } = intl
   const status = action.meta.baseQueryMeta?.response?.status
-   || action.payload?.originalStatus
-   || action.payload?.status
+   ?? action.payload?.originalStatus
+   ?? action.payload?.status
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
