@@ -20,15 +20,13 @@ export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
   useEffect(() => {
     if (inputRef.current?.input) {
       const iti = intlTelInput(inputRef.current.input, {
+        nationalMode: false,
         hiddenInput: 'full_phone',
         autoPlaceholder: 'aggressive',
         placeholderNumberType: 'MOBILE',
         preferredCountries: ['us'],
         utilsScript: 'intl-tel-input/js/utils',
-        dropdownContainer: onTop ? document.body : undefined,
-        customPlaceholder: function (selectedCountryPlaceholder, selectedCountryData) {
-          return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`
-        }
+        dropdownContainer: onTop ? document.body : undefined
       })
 
       const handleChange = () => {

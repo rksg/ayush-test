@@ -1,5 +1,5 @@
 
-import React, { createContext, useState, useEffect, useContext } from 'react'
+import { createContext, useState, useEffect, useContext } from 'react'
 
 import {
   Checkbox,
@@ -8,13 +8,10 @@ import {
   Switch,
   Tooltip
 } from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { QuestionMarkCircleOutlined }                                                                                                  from '@acx-ui/icons'
-import { useExternalProvidersQuery }                                                                                                   from '@acx-ui/rc/services'
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting, NetworkTypeEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
+import { QuestionMarkCircleOutlined }                                                           from '@acx-ui/icons'
+import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -30,7 +27,7 @@ export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
 export const WifiCallingSettingContext = createContext({} as WifiCallingSettingContextType)
 
-export function ServicesForm () {
+export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
   const [
     enableDnsProxy,
@@ -46,32 +43,11 @@ export function ServicesForm () {
     useWatch<boolean>(['wlan','advancedCustomization', 'wifiCallingEnabled'])
   ]
 
-  const { editMode, data } = useContext(NetworkFormContext)
+  const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  const params = useParams()
-  const [showSingleSessionIdAccounting, setShowSingleSessionIdAccounting]=useState(false)
-  const wlanData = (editMode) ? data : form.getFieldsValue()
-  const providerData = useExternalProvidersQuery({ params })
 
-  useEffect(() => {
-    if (wlanData && data && providerData.data) {
-      const isProviderHasAccountingService = function () {
-        const providers = providerData?.data?.providers
-        const providerName = wlanData?.guestPortal?.wisprPage?.externalProviderName
-        const selectedProvider = _.find(providers, p => p.name === providerName)
-        const region = (selectedProvider?.regions) ? selectedProvider.regions[0] : null
-        return !!(region && region.accountingRadius)
-      }
 
-      const showFlag =
-        (wlanData?.enableAccountingService && data.type === NetworkTypeEnum.AAA) || (
-          data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-          wlanData?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-          isProviderHasAccountingService()
-        )
-      setShowSingleSessionIdAccounting(showFlag)
-    }
-  }, [wlanData, data, providerData])
+  const { showSingleSessionIdAccounting } = props
 
   useEffect(() => {
     if (data) {
@@ -227,10 +203,10 @@ export function ServicesForm () {
 
       {showSingleSessionIdAccounting &&
         <UI.FormItemNoLabel
-          name={['wlan', 'advancedCustomization', 'singleSessionIdAccounting']}
+          name={['wlan', 'advancedCustomization', 'radiusOptions', 'singleSessionIdAccounting']}
           valuePropName='checked'
           children={
-            <Checkbox disabled={enableAntiSpoofing}
+            <Checkbox
               children={
                 <>
                   {$t({ defaultMessage: 'Single session ID Accounting' })}
