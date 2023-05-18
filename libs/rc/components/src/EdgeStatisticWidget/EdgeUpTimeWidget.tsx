@@ -145,7 +145,7 @@ export function EdgeUpTimeWidget () {
             </Tooltip>
           </Card.Title>
         </UI.EdgeStatusHeader>
-        <UI.Status col={{ span: 8 }} style={{ height: '20px' }}>
+        <UI.Status col={{ span: 4 }} style={{ height: '20px' }}>
           {$t({ defaultMessage: 'Total Uptime' })}
           {': '}
           <UI.Duration>
@@ -156,7 +156,7 @@ export function EdgeUpTimeWidget () {
           {$t({ defaultMessage: 'Total Downtime' })}
           {': '}
           <UI.Duration>{milliSecondsToHm(queryResults?.totalDowntime || 0)}</UI.Duration>
-        </UI.Status> */
+        </UI.Status>
         <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
           <AutoSizer>
             {({ height, width }) =>
