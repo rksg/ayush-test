@@ -283,7 +283,7 @@ function ConnectedNetworkFilter (
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
-  const { bands: selectedBands } = reportsFilter
+  let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
     omit({
       ...filters, path: defaultNetworkPath, includeMuted: false
@@ -306,7 +306,18 @@ function ConnectedNetworkFilter (
     })
   })
   const isReports = filterFor === 'reports'
-  const rawVal = isReports ? reportsRaw : raw
+  let rawVal:string[][] = isReports ? reportsRaw : raw
+  // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
+  if(filterMode === 'switch'){
+    selectedBands=[]
+    rawVal=rawVal.filter(value=>{
+      return !value[0].includes('zone')
+    })
+  }else if(filterMode === 'ap'){
+    rawVal=rawVal.filter(value=>{
+      return !value[0].includes('switchGroup')
+    })
+  }
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>
