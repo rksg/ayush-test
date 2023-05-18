@@ -67,7 +67,6 @@ import {
 } from './parser'
 import PortalInstance from './PortalInstance'
 import { Venues }     from './Venues/Venues'
-import { networkVenue_apgroup } from "../NetworkDetails/NetworkVenuesTab/__tests__/fixtures";
 
 
 const settingTitle = defineMessage({
