@@ -59,7 +59,7 @@ function Header (
         : $t({ defaultMessage: 'Wi-Fi' })
       }
       breadcrumb={navbarEnhancement ? [
-        { text: $t({ defaultMessage: 'Cients' }), link: '/users/wifi/clients' }
+        { text: $t({ defaultMessage: 'Cients' }) }
       ]: []}
       footer={<Tabs
         clientCount={clientList?.data?.totalCount ? clientList?.data.totalCount : 0}

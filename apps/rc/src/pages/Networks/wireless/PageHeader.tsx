@@ -23,7 +23,7 @@ function Header () {
     {navbarEnhancement && <PageHeader
       title={$t({ defaultMessage: 'Wi-Fi Networks' })}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Wi-Fi' }), link: '/networks' }
+        { text: $t({ defaultMessage: 'Wi-Fi' }) }
       ]}
       footer={<Tabs networkCount={data?.totalCount ? data?.totalCount : 0} />}
     />}

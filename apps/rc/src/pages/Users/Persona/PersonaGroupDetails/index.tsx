@@ -41,12 +41,10 @@ function PersonaGroupDetailsPageHeader (props: {
       extra={extra}
       breadcrumb={navbarEnhancement ? [
         {
-          text: $t({ defaultMessage: 'Clients' }),
-          link: ''
+          text: $t({ defaultMessage: 'Clients' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Management' }),
-          link: ''
+          text: $t({ defaultMessage: 'Persona Management' })
         },
         {
           text: $t({ defaultMessage: 'Persona Group' }),

@@ -34,7 +34,7 @@ function WiredPageHeader () {
         : $t({ defaultMessage: 'Wired Networks' })
       }
       breadcrumb={navbarEnhancement ? [
-        { text: $t({ defaultMessage: 'Wired' }), link: '/networks/wired/profiles' }
+        { text: $t({ defaultMessage: 'Wired' }) }
       ] : []}
       footer={<WiredTabs
         profileCount={profileList?.data?.totalCount ? profileList?.data.totalCount : 0}

@@ -121,7 +121,7 @@ export default function Administration () {
     <PageHeader
       title={$t({ defaultMessage: 'Administration' })}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Administration' }), link: '/administration' }
+        { text: $t({ defaultMessage: 'Administration' }) }
       ]}
       footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
     />

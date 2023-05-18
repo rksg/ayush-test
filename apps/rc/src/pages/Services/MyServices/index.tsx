@@ -120,7 +120,7 @@ export default function MyServices () {
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={navbarEnhancement ? [
-          { text: $t({ defaultMessage: 'Network Control' }), link: '' }
+          { text: $t({ defaultMessage: 'Network Control' }) }
         ]: []}
         extra={filterByAccess([
           <TenantLink to={getSelectServiceRoutePath(true)}>

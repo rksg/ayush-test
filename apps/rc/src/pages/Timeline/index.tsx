@@ -53,7 +53,7 @@ function Timeline () {
       <PageHeader
         title={$t({ defaultMessage: 'Timeline' })}
         breadcrumb={navbarEnhancement ? [
-          { text: $t({ defaultMessage: 'Administration' }), link: '' }
+          { text: $t({ defaultMessage: 'Administration' }) }
         ]: []}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>

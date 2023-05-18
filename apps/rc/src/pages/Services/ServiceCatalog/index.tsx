@@ -86,7 +86,7 @@ export default function ServiceCatalog () {
       <PageHeader
         title={$t({ defaultMessage: 'Service Catalog' })}
         breadcrumb={navbarEnhancement ? [
-          { text: $t({ defaultMessage: 'Network Control' }), link: '' }
+          { text: $t({ defaultMessage: 'Network Control' }) }
         ]: []}
       />
       {sets.map(set => {

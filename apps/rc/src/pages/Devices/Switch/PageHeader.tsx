@@ -25,7 +25,7 @@ function Header () {
       {navbarEnhancement && <PageHeader
         title={$t({ defaultMessage: 'Switches' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Wired' }), link: '' }
+          { text: $t({ defaultMessage: 'Wired' }) }
         ]}
         footer={<Tabs switchCount={data?.totalCount ? data?.totalCount : 0} />}
       />}

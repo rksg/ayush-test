@@ -8,7 +8,7 @@ export default function ClientList () {
   const { $t } = useIntl()
   const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
-  const count = 1
+  const count = 123
   return <>
     <PageHeader
       title={navbarEnhancement
@@ -16,7 +16,7 @@ export default function ClientList () {
         : $t({ defaultMessage: 'Switch' })
       }
       breadcrumb={navbarEnhancement ?[
-        { text: $t({ defaultMessage: 'Cients' }), link: '/users/switch/clients' }
+        { text: $t({ defaultMessage: 'Cients' }) }
       ] : []}
     />
     <SwitchClientsTable filterByVenue={true} filterBySwitch={true} />

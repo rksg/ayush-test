@@ -58,7 +58,7 @@ export default function MyPolicies () {
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={navbarEnhancement ? [
-          { text: $t({ defaultMessage: 'Network Control' }), link: '' }
+          { text: $t({ defaultMessage: 'Network Control' }) }
         ]: []}
         extra={filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)}>

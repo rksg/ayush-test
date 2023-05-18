@@ -25,7 +25,7 @@ function Header () {
       {navbarEnhancement && <PageHeader
         title={$t({ defaultMessage: 'Access Points' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' }
+          { text: $t({ defaultMessage: 'Wi-Fi' }) }
         ]}
         footer={<Tabs apCount={data?.totalCount ? data?.totalCount : 0} />}
       />}
