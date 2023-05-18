@@ -145,7 +145,7 @@ export function Unit (props:{
     tmpPortView.slots.forEach((slot:SwitchSlot) => {
       if (slot.portStatus !== undefined) {
         slot.slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1])
-        const cloudPort = '1/1/1'
+        const { cloudPort } = switchDetail
         if (cloudPort) {
           slot.portStatus.forEach(port => {
             if (port.portIdentifier === cloudPort) {

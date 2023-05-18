@@ -5,10 +5,10 @@ import { useIntl } from 'react-intl'
 import { Tooltip }                            from '@acx-ui/components'
 import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
-import { FrontViewStackPortDrawer } from './FrontViewStackPortDrawer'
+import { FrontViewBreakoutPortDrawer } from './FrontViewBreakoutPortDrawer'
 import * as UI                      from './styledComponents'
 
-export function FrontViewStackPort (props:{
+export function FrontViewBreakoutPort (props:{
   ports: SwitchPortStatus[],
   portData: SwitchPortStatus,
   labelText: string,
@@ -103,11 +103,11 @@ export function FrontViewStackPort (props:{
 
   return tooltipEnable
     ? <>
-      <FrontViewStackPortDrawer
+      <FrontViewBreakoutPortDrawer
         portNumber={portNumber}
         setDrawerVisible={setDrawerVisible}
         drawerVisible={drawerVisible}
-        stackPorts={breakOutPorts}
+        breakoutPorts={breakOutPorts}
       />
       <Tooltip
         placement={'top'}

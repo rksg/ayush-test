@@ -9,16 +9,29 @@ import {  SwitchPortStatus, defaultSort, sortProp } from '@acx-ui/rc/utils'
 import * as UI from './styledComponents'
 
 
-export interface StackPortsDrawerType {
+export interface BreakOutPortDrawerType {
   setDrawerVisible: (visible: boolean) => void,
   drawerVisible: boolean,
   portNumber: string,
-  stackPorts: SwitchPortStatus[]
+  breakoutPorts: SwitchPortStatus[]
 }
 
-export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
+export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
   const { $t } = useIntl()
-  const { drawerVisible, setDrawerVisible, stackPorts, portNumber } = props
+  const { drawerVisible, setDrawerVisible, breakoutPorts, portNumber } = props
+
+
+  const statusFilterOpts = [
+    { key: '', value: $t({ defaultMessage: 'All Statuses' }) },
+    {
+      key: 'Up',
+      value: $t({ defaultMessage: 'Up' })
+    },
+    {
+      key: 'Down',
+      value: $t({ defaultMessage: 'Down' })
+    }
+  ]
 
   const getPortsStatus = (ports: SwitchPortStatus[]) => {
     const upPortsCount = ports.filter(p => p.status === 'Up').length
@@ -53,7 +66,10 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      sorter: { compare: sortProp('status', defaultSort) }
+      sorter: { compare: sortProp('status', defaultSort) },
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: statusFilterOpts
     },
     {
       title: $t({ defaultMessage: 'Speed' }),
@@ -72,13 +88,13 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
     },
     {
       title: $t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' }),
-      dataIndex: 'toVlan',
-      key: 'toVlan',
-      sorter: { compare: sortProp('toVlan', defaultSort) },
+      dataIndex: 'poeUsed',
+      key: 'poeUsed',
+      sorter: { compare: sortProp('poeUsed', defaultSort) },
       render: (data, row) => {
         if (!data) {
           if (row.poeEnabled === false) {
-            return 'off'
+            return $t({ defaultMessage: 'off' })
           }
           const poeTotal = (row.poeTotal) ? Math.round(row.poeTotal / 1000) : 0
           const poeUsed = (row.poeUsed) ? Math.round(row.poeUsed / 1000) : 0
@@ -93,7 +109,7 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
       title: $t({ defaultMessage: 'Connected Device' }),
       dataIndex: 'neighborName',
       key: 'neighborName',
-      // sorter: { compare: sortProp('neighborName', defaultSort) },
+      sorter: { compare: sortProp('neighborName', defaultSort) },
       render: (data, row) => {
         return row.neighborName || row.neighborMacAddress || '--'
       }
@@ -102,10 +118,10 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
       title: $t({ defaultMessage: 'VLANs' }),
       dataIndex: 'toVlan',
       key: 'toVlan',
-      // sorter: { compare: sortProp('toVlan', defaultSort) },
+      sorter: { compare: sortProp('vlanIds', defaultSort) },
       render: (data, row) => <Space size={2}>
-        <UI.StackTagsOutlineIcon /> {row.unTaggedVlan || '--'}
-        <UI.StackTagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
+        <UI.BreakOutPortTagsOutlineIcon /> {row.unTaggedVlan || '--'}
+        <UI.BreakOutPortTagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
       </Space>
     }
   ]
@@ -114,7 +130,7 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
 
   return <Drawer
     // eslint-disable-next-line max-len
-    title={`${portNumber}: ${$t({ defaultMessage: 'Breakout Port' })} (${getPortsStatus(stackPorts)})`}
+    title={`${portNumber}: ${$t({ defaultMessage: 'Breakout Port' })} (${getPortsStatus(breakoutPorts)})`}
     visible={drawerVisible}
     width={'950px'}
     onClose={() => {
@@ -125,7 +141,7 @@ export function FrontViewStackPortDrawer (props: StackPortsDrawerType) {
       <div>
         <Table
           columns={columns}
-          dataSource={stackPorts}
+          dataSource={breakoutPorts}
           rowKey='portIdentifier'
         />
       </div>

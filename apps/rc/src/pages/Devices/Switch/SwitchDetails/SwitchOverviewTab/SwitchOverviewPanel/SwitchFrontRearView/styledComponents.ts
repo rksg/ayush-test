@@ -218,12 +218,12 @@ export const RearFanIcon = styled(FanSolid)`
   }
 `
 
-export const StackTagsOutlineIcon = styled(TagsOutline)`
+export const BreakOutPortTagsOutlineIcon = styled(TagsOutline)`
   width: 14px;
   height: 16px;
   vertical-align: middle;
 `
-export const StackTagsSolidIcon = styled(TagsSolid)`
+export const BreakOutPortTagsSolidIcon = styled(TagsSolid)`
   width: 14px;
   height: 16px;
   vertical-align: middle;
