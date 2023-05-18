@@ -28,11 +28,11 @@ describe('Firmware Venues Table', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        FirmwareUrlsInfo.getVenueVersionList.url,
+        FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(venue))
       ),
       rest.get(
-        FirmwareUrlsInfo.getAvailableFirmwareList.url,
+        FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
         (req, res, ctx) => res(ctx.json(availableVersions))
       ),
       rest.get(
