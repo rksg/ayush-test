@@ -1,8 +1,7 @@
-import { useApContext }         from '@acx-ui/rc/utils'
-import { EmbeddedReport }       from '@acx-ui/reports/components'
+import { useApContext }   from '@acx-ui/rc/utils'
+import { EmbeddedReport } from '@acx-ui/reports/components'
 import {
-  ReportType,
-  reportTypeDataStudioMapping
+  ReportType
 } from '@acx-ui/reports/components'
 
 
@@ -11,7 +10,7 @@ export function ApReportsTab () {
 
   return (
     <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]}
+      reportName={ReportType.AP_DETAIL}
       rlsClause={`"apMac" in ('${apMac}')`}
     />
   )

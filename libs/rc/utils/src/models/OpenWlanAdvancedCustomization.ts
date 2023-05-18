@@ -1,5 +1,6 @@
 import { ClientIsolationOptions } from './ClientIsolationOptions'
 import { DnsProxy }               from './DnsProxy'
+import { RadiusOptions }          from './RadiusOptions'
 import { VlanPool }               from './VlanPool'
 import { WlanRadioCustomization } from './WlanRadioCustomization'
 
@@ -111,6 +112,8 @@ export class OpenWlanAdvancedCustomization {
   dnsProxyEnabled?: boolean
 
   dnsProxy?: DnsProxy
+
+  radiusOptions?: RadiusOptions
 
   constructor () {
     this.clientIsolation = true
