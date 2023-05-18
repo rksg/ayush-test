@@ -38,7 +38,8 @@ export function FrontViewBreakoutPort (props:{
         {portNumber}: {$t({ defaultMessage: 'Breakout Port' })} ({breakOutPorts.length})
       </UI.BreakoutPortTooltipHeader>
       {breakOutPorts.map((p: SwitchPortStatus) => {
-        return <UI.BreakoutPortTooltipItem>
+        return <UI.BreakoutPortTooltipItem
+          key={p.portIdentifier}>
           <div>{`${p.portIdentifier} (${p.status})`}</div>
           <div>{getPortIcon(p)}</div>
         </UI.BreakoutPortTooltipItem>
