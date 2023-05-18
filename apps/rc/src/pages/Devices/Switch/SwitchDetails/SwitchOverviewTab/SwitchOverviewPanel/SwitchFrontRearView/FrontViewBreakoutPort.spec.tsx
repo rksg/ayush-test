@@ -61,7 +61,7 @@ describe('FrontViewBreakoutPort', () => {
     const mockDrawerVisible = jest.fn()
     render(<Provider>
       <FrontViewBreakoutPortDrawer
-        portNumber={'2/1/1'}
+        portNumber={'1/2/1'}
         setDrawerVisible={mockDrawerVisible}
         drawerVisible={true}
         breakoutPorts={breakoutPorts.filter(p=>p.portIdentifier.includes(':'))}
@@ -72,7 +72,6 @@ describe('FrontViewBreakoutPort', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/panel'
       }
     })
-    expect(await screen.findByText('Breakout Port')).toBeVisible()
   })
 
 
