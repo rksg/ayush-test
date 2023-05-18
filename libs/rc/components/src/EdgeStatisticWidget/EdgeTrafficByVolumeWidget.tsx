@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import _                                              from 'lodash'
 import { renderToString }                             from 'react-dom/server'
 import { RawIntlProvider, useIntl, FormattedMessage } from 'react-intl'
@@ -19,7 +17,7 @@ import {
   defaultRichTextFormatValues
 } from '@acx-ui/components'
 import { formatter, DateFormatEnum }                     from '@acx-ui/formatter'
-import { useGetEdgePortTrafficMutation }                 from '@acx-ui/rc/services'
+import { useGetEdgePortTrafficQuery }                    from '@acx-ui/rc/services'
 import { EdgeAllPortTrafficData, EdgeTimeSeriesPayload } from '@acx-ui/rc/utils'
 import type { TimeStamp }                                from '@acx-ui/types'
 import { useDateFilter, getIntl  }                       from '@acx-ui/utils'
@@ -68,32 +66,14 @@ export function EdgeTrafficByVolumeWidget () {
   const filters = useDateFilter()
   const params = useParams()
 
-  const [loadingState, setLoadingState] = useState<boolean>(true)
-  const [queryResults, setQueryResults] = useState<EdgeAllPortTrafficData | null>(null)
-
-  const [trigger, { isLoading }] = useGetEdgePortTrafficMutation()
-
-  useEffect(() => {
-    const initialWidget = async () => {
-      await trigger({
-        params: { serialNumber: params.serialNumber },
-        payload: {
-          start: filters?.startDate,
-          end: filters?.endDate,
-          granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
-        } as EdgeTimeSeriesPayload
-      }).unwrap()
-        .then((data) => {
-          setQueryResults(data)
-          setLoadingState(isLoading)
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error)
-        })
-    }
-    initialWidget()
-  }, [filters])
+  const { data: queryResults, isLoading } = useGetEdgePortTrafficQuery({
+    params: { serialNumber: params.serialNumber },
+    payload: {
+      start: filters?.startDate,
+      end: filters?.endDate,
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
+    } as EdgeTimeSeriesPayload
+  })
 
   const defaultOption: EChartsOption = {
     tooltip: {
@@ -147,7 +127,7 @@ export function EdgeTrafficByVolumeWidget () {
   }
 
   return (
-    <Loader states={[{ isLoading: loadingState }]}>
+    <Loader states={[{ isLoading }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         <AutoSizer>
           { (!queryResults || _.isEmpty(queryResults.timeSeries.time)) ?

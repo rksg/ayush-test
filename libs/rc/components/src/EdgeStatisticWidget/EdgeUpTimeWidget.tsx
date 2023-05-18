@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import _             from 'lodash'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -10,23 +8,12 @@ import AutoSizer     from 'react-virtualized-auto-sizer'
 import { calculateGranularity, TimeSeriesChartData, getSeriesData }                from '@acx-ui/analytics/utils'
 import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip } from '@acx-ui/components'
 import { formatter }                                                               from '@acx-ui/formatter'
-import { useGetEdgeUptimeMutation }                                                from '@acx-ui/rc/services'
+import { useGetEdgeUptimeQuery }                                                   from '@acx-ui/rc/services'
 import { EdgeStatusTimeSeries, EdgeTimeSeriesPayload }                             from '@acx-ui/rc/utils'
 import { TimeStamp }                                                               from '@acx-ui/types'
 import { useDateFilter }                                                           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-interface EdfeUpTimePresentingData { timeSeries: [
-    TimeStamp,
-    string,
-    TimeStamp,
-    number | null,
-    string
-  ][],
-  totalUptime: number,
-  totalDowntime: number
-}
 
 function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
   return timeSeries?.[0]?.data?.reduce((startEndTimes, dataPoint, index) => {
@@ -51,60 +38,44 @@ export function EdgeUpTimeWidget () {
   const filters = useDateFilter()
   const params = useParams()
 
-  const [loadingState, setLoadingState] = useState<boolean>(true)
-  const [queryResults, setQueryResults] = useState<EdfeUpTimePresentingData | null>(null)
-  const [trigger, { isLoading }] = useGetEdgeUptimeMutation()
-
   type Key = keyof Omit<EdgeStatusTimeSeries, 'time'>
-
 
   const seriesMapping = [
     { key: 'isEdgeUp', name: $t({ defaultMessage: 'EdgeStatus' }) }
   ] as Array<{ key: Key; name: string }>
 
-  useEffect(() => {
-    const initialWidget = async () => {
-      await trigger({
-        params: { serialNumber: params.serialNumber },
-        payload: {
-          start: filters?.startDate,
-          end: filters?.endDate,
-          granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
-        } as EdgeTimeSeriesPayload
-      }).unwrap()
-        .then((data) => {
-          const tramformedData = {
-            // eslint-disable-next-line max-len
-            timeSeries: getStartAndEndTimes(getSeriesData(data!.timeSeries, seriesMapping))
-              ?.filter((dataPoint) => dataPoint?.[3] === 1 || dataPoint?.[3] === 0)
-              .map((dataPoint) => {
-                let inclusiveDataPoint = dataPoint
-                inclusiveDataPoint[2] = moment(dataPoint?.[2])
-                  .add(
-                    moment
-                      .duration(calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M'))
-                      .asSeconds(),
-                    'seconds'
-                  )
-                  .toISOString()
-                return inclusiveDataPoint
-              }),
-            totalUptime: data!.totalUptime,
-            totalDowntime: data!.totalDowntime,
-            isLoading: false
-          }
-          setQueryResults(tramformedData)
-          setLoadingState(isLoading)
-        })
-        .catch((err) => {
-          // eslint-disable-next-line no-console
-          console.error(err)
-        })
-    }
-    initialWidget()
-  }, [filters])
+  const { data, isLoading } = useGetEdgeUptimeQuery({
+    params: { serialNumber: params.serialNumber },
+    payload: {
+      start: filters?.startDate,
+      end: filters?.endDate,
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
+    } as EdgeTimeSeriesPayload
+  })
+
+  const queryResults = isLoading ? null : {
+    timeSeries: getStartAndEndTimes(getSeriesData(data!.timeSeries, seriesMapping))
+      ?.filter((dataPoint) => dataPoint?.[3] === 1 || dataPoint?.[3] === 0)
+      .map((dataPoint) => {
+        let inclusiveDataPoint = dataPoint
+        inclusiveDataPoint[2] = moment(dataPoint?.[2])
+          .add(
+            moment
+              .duration(calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M'))
+              .asSeconds(),
+            'seconds'
+          )
+          .toISOString()
+        return inclusiveDataPoint
+      }),
+    totalUptime: data!.totalUptime,
+    totalDowntime: data!.totalDowntime,
+    isLoading: false
+  }
+
+
   return (
-    <Loader states={[{ isLoading: loadingState }]}>
+    <Loader states={[{ isLoading }]}>
       <UI.Wrapper>
         {(!queryResults || _.isEmpty(queryResults.timeSeries)) ?
           <>

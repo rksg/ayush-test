@@ -329,7 +329,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       }
     }),
-    getEdgeUptime: build.mutation<EdgeTotalUpDownTime, RequestPayload<EdgeTimeSeriesPayload>>({
+    getEdgeUptime: build.query<EdgeTotalUpDownTime, RequestPayload<EdgeTimeSeriesPayload>>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(EdgeUrlsInfo.getEdgeUpDownTime, params),
@@ -337,7 +337,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       }
     }),
-    getEdgeTopTraffic: build.mutation<EdgeTopTraffic, RequestPayload<EdgeTimeSeriesPayload>>({
+    getEdgeTopTraffic: build.query<EdgeTopTraffic, RequestPayload<EdgeTimeSeriesPayload>>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(EdgeUrlsInfo.getEdgeTopTraffic, params),
@@ -345,7 +345,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       }
     }),
-    getEdgeResourceUtilization: build.mutation<EdgeResourceUtilizationData,
+    getEdgeResourceUtilization: build.query<EdgeResourceUtilizationData,
     RequestPayload<EdgeTimeSeriesPayload>>({
       query: ({ params, payload }) => {
         return {
@@ -355,7 +355,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       }
     }),
     // eslint-disable-next-line max-len
-    getEdgePortTraffic: build.mutation<EdgeAllPortTrafficData, RequestPayload<EdgeTimeSeriesPayload>>({
+    getEdgePortTraffic: build.query<EdgeAllPortTrafficData, RequestPayload<EdgeTimeSeriesPayload>>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(EdgeUrlsInfo.getEdgePortTraffic, params),
@@ -393,8 +393,8 @@ export const {
   useRebootEdgeMutation,
   useFactoryResetEdgeMutation,
   useDownloadEdgesCSVMutation,
-  useGetEdgeUptimeMutation,
-  useGetEdgeTopTrafficMutation,
-  useGetEdgeResourceUtilizationMutation,
-  useGetEdgePortTrafficMutation
+  useGetEdgeUptimeQuery,
+  useGetEdgeTopTrafficQuery,
+  useGetEdgeResourceUtilizationQuery,
+  useGetEdgePortTrafficQuery
 } = edgeApi
