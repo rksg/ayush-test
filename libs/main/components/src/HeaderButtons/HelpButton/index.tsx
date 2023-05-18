@@ -105,7 +105,7 @@ const HelpButton = (props:HelpButtonProps) => {
         label: <Space>{$t({ defaultMessage: 'Contact Support' })}
           {isBlocked && <Tooltip showArrow={false}
             // eslint-disable-next-line max-len
-            title={$t({ defaultMessage: 'Some security browser extensions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
+            title={$t({ defaultMessage: 'Some browser\'s security extensions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
             <WarningCircleOutlined style={{ marginBottom: '-5px', width: '18px', height: '18px' }}/>
           </Tooltip>}
         </Space>
