@@ -49,10 +49,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 beforeAll(() => {
   mockServer.listen()
-  setUpIntl({
-    locale: 'en-US',
-    messages: {}
-  })
+  setUpIntl({ locale: 'en-US', messages: {} })
 })
 beforeEach(async () => {
   mockDOMSize(1280, 800)
