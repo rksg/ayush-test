@@ -25,10 +25,13 @@ function WifiTabs (props: { clientCount: number, guestCount: number }) {
         key='clients'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount })}
+        tab={navbarEnhancement
+          ? $t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount })
+          : $t({ defaultMessage: 'Guest Pass Credentials' })
+        }
         key='guests'
       />
-      {!navbarEnhancement && <Tabs.TabPane
+      {navbarEnhancement && <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wireless Clients Report' })}
         key='reports'
       />}

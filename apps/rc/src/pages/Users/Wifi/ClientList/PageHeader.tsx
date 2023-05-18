@@ -7,6 +7,7 @@ import { PageHeader, RangePicker }                      from '@acx-ui/components
 import { useGetClientListQuery, useGetGuestsListQuery } from '@acx-ui/rc/services'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { DateRange, getDateRangeFilter }                from '@acx-ui/utils'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 
 import Tabs from './Tabs'
 
@@ -24,6 +25,7 @@ function Header (
 ) {
   const { $t } = useIntl()
   const { tenantId, venueId, serialNumber, activeTab } = useParams()
+  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
@@ -52,10 +54,10 @@ function Header (
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'Wireless' })}
-      breadcrumb={[
+      title={navbarEnhancement ? $t({ defaultMessage: 'Wireless' }) : $t({ defaultMessage: 'Wi-Fi' })}
+      breadcrumb={navbarEnhancement ? [
         { text: $t({ defaultMessage: 'Cients' }), link: '/users/wifi/clients' }
-      ]}
+      ]: []}
       footer={<Tabs
         clientCount={clientList?.data?.totalCount ? clientList?.data.totalCount : 0}
         guestCount={guestList?.data?.totalCount ? guestList?.data.totalCount : 0}
