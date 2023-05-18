@@ -24,6 +24,11 @@ export const Container = styled.div.attrs((props: { $open?: boolean }) => props)
   min-width: 169px;
   max-width: 322px;
   ${(props) => props.$open ? 'width: 322px;' : 'width: 169px;'}
+  .ant-select-selector >
+  .ant-select-selection-overflow >
+  .ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix {
+    top: revert !important;
+  }
 `
 export const SeverityContainer = styled.div`
   display: flex;
@@ -58,4 +63,11 @@ export const SeveritySpan = styled.span.attrs((props: SeveritySpanProps) => prop
   margin-left: -4px;
   border: 1px solid var(--acx-primary-white);
   z-index: ${(props) => severityZIndexMap[props.severity]}
+`
+export const SearchLabel = styled.div.attrs((props: { $isDeep: boolean }) => props)`
+  ${props => props.$isDeep ? 'width: 100%;' : 'width: 150px;' }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: left
 `

@@ -46,6 +46,13 @@ jest.mock('./FWVersionMgmt', () => ({
     return <div data-testid='mocked-FWVersionMgmt'></div>
   }
 }))
+jest.mock('./OnpremMigration', () => ({
+  ...jest.requireActual('./OnpremMigration'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-OnpremMigration'></div>
+  }
+}))
 jest.mock('./LocalRadiusServer', () => ({
   ...jest.requireActual('./LocalRadiusServer'),
   __esModule: true,
@@ -212,7 +219,25 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Firmware Version Management' })
+    const tab = screen.getByRole('tab', { name: 'Version Management' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render zd migration tab correctly', async () => {
+    params.activeTab = 'onpremMigration'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.getByRole('tab', { name: 'ZD Migration' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 

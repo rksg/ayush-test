@@ -20,7 +20,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/tenant-id/t/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/analytics/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -4977,7 +4977,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/tenant-id/t/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/analytics/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -9625,7 +9625,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/tenant-id/t/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/analytics/videoCallQoe"
                 >
                   Video Call QoE
                 </a>
@@ -11075,7 +11075,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/tenant-id/t/serviceValidation/videoCallQoe"
+                  href="/tenant-id/t/analytics/videoCallQoe"
                 >
                   Video Call QoE
                 </a>

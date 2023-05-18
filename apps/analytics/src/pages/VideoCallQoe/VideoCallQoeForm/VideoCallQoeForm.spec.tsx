@@ -7,7 +7,6 @@ import {
   videoCallQoeURL
 } from '@acx-ui/store'
 import {
-  logRoles,
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
@@ -34,12 +33,10 @@ describe('VideoCallQoeForm', () => {
   })
 
   it('works correctly for create flow', async () => {
-    const view = render(<VideoCallQoeForm />, {
+    render(<VideoCallQoeForm />, {
       wrapper: Provider,
       route: { params: { tenantId: 't-id' } }
     })
-    logRoles(view.container)
-
     mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
       data: getAllCallQoeTests
     })

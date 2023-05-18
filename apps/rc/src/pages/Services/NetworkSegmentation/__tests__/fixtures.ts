@@ -467,3 +467,69 @@ export const mockPersonaList = {
   ]
 
 }
+
+export const mockAvailablePropertyConfigs = {
+  content: [
+    {
+      venueId: 'mock_venue_1',
+      venueName: 'Mock Venue 1',
+      address: {
+        country: 'United States',
+        city: 'Sunnyvale, California',
+        addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
+      },
+      personaGroupId: '1dcb4608-af74-46f8-80e8-962f642062d6',
+      residentPortalId: 'a239e939-44f5-4be3-bf80-951ceaf86ecd',
+      status: 'ENABLED'
+    },
+    {
+      venueId: 'mock_venue_2',
+      venueName: 'Mock Venue 2',
+      address: {
+        country: 'United States',
+        city: 'Sunnyvale, California',
+        addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
+      },
+      personaGroupId: '2c3ef9fe-7e35-4c42-8574-489e07835499',
+      residentPortalId: 'a239e939-44f5-4be3-bf80-951ceaf86ecd',
+      status: 'ENABLED'
+    },
+    {
+      venueId: 'mock_venue_3',
+      venueName: 'Mock Venue 3',
+      address: {
+        country: 'United States',
+        city: 'Sunnyvale, California',
+        addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
+      },
+      personaGroupId: '2c3ef9fe-7e35-4c42-8574-489e07835499',
+      residentPortalId: 'a239e939-44f5-4be3-bf80-951ceaf86ecd',
+      status: 'ENABLED'
+    }
+  ],
+  pageable: {
+    sort: {
+      unsorted: true,
+      sorted: false,
+      empty: true
+    },
+    pageNumber: 0,
+    pageSize: 20,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  last: true,
+  totalPages: 1,
+  totalElements: 12,
+  first: true,
+  sort: {
+    unsorted: true,
+    sorted: false,
+    empty: true
+  },
+  numberOfElements: 12,
+  size: 20,
+  number: 0,
+  empty: false
+}
