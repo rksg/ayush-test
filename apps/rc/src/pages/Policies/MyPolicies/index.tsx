@@ -49,6 +49,7 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policies: CardDataProps[] = useCardData()
 
@@ -56,6 +57,9 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
+        breadcrumb={navbarEnhancement ? [
+          { text: $t({ defaultMessage: 'Network Control' }), link: '' }
+        ]: []}
         extra={filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>

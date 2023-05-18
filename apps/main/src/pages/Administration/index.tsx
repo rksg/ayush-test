@@ -54,7 +54,10 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       activeKey={activeTab}
       onChange={onTabChange}
     >
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Account Settings' })} key='accountSettings' />
+      <Tabs.TabPane tab={navbarEnhancement
+        ? $t({ defaultMessage: 'Settings' })
+        : $t({ defaultMessage: 'Account Settings' })
+      } key='accountSettings' />
       { hasAdministratorTab &&
       ( <Tabs.TabPane
         tab={navbarEnhancement
@@ -72,7 +75,10 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Firmware Version Management' })}
+        tab={navbarEnhancement
+          ? $t({ defaultMessage: 'Version Management' })
+          : $t({ defaultMessage: 'Firmware Version Management' })
+        }
         key='fwVersionMgmt'
       />
       { isCloudMoteEnabled &&
