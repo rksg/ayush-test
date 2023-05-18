@@ -54,6 +54,10 @@ describe('RadiusAttributeGroupTable', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAssignments.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -78,11 +82,7 @@ describe('RadiusAttributeGroupTable', () => {
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
-        }),
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAssignments.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json([]))
-      )
+        })
     )
 
     render(<Provider><RadiusAttributeGroupTable /></Provider>, {

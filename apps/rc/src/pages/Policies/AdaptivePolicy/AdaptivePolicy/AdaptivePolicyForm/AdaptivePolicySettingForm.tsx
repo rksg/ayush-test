@@ -196,9 +196,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
           <Loader states={[{ isLoading }]}>
             <Form.Item name='templateTypeId'
               label={$t({ defaultMessage: 'Policy Type' })}
-              rules={[
-                { required: true }
-              ]}
+              rules={[{ required: true }]}
               children={
                 <Radio.Group
                   disabled={editMode}
@@ -236,6 +234,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 rowActions={filterByAccess(rowActions)}
                 rowSelection={{ type: 'radio' }}
                 actions={filterByAccess([{
+                  disabled: !templateId,
+                  // eslint-disable-next-line max-len
+                  tooltip: !templateId ? $t({ defaultMessage: 'Please select Policy Type' }) : undefined,
                   label: $t({ defaultMessage: 'Add' }),
                   onClick: () => {
                     setEditConditionMode(false)
