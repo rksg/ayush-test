@@ -120,6 +120,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         }
       }) as unknown
       setRuleList(vlanPortsData as SwitchModelPortData[])
+      setArpInspection(vlan.arpInspection || false)
+      setIpv4DhcpSnooping(vlan.ipv4DhcpSnooping || false)
     }
   }, [form, vlan])
 

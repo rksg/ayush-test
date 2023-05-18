@@ -247,23 +247,33 @@ export default function NetworkForm (props:{
     newNetworkVenues? : NetworkVenue[],
     oldNetworkVenues? : NetworkVenue[]
   )=> {
-    const newIds = newNetworkVenues?.map(({ id }) => id) ?? []
-    const oldIds = oldNetworkVenues?.map(({ id }) => id) ?? []
+    let added: NetworkVenue[] = []
+    let newIds: string[] = []
+    let removed: string[] = []
 
-    if (newIds.length && oldIds.length) {
-      const added = newNetworkVenues
-        ?.filter(({ id }) => !oldIds.includes(id))
-        .map(({ venueId }) => ({ venueId, networkId }))
-      const removed = oldIds.filter((id) => !newIds.includes(id))
-      await Promise.all([
-        addNetworkVenues({ payload: added }).unwrap(),
-        deleteNetworkVenues({ payload: removed }).unwrap()
-      ])
-    } else if (newIds.length) {
-      const added = newNetworkVenues?.map(({ venueId }) => ({ venueId, networkId }))
+    if (newNetworkVenues?.length) {
+      newNetworkVenues?.forEach(networkVenue => {
+        if (_.isUndefined(networkVenue.id)) {
+          networkVenue.networkId = networkId
+          added.push(networkVenue)
+        } else {
+          newIds.push(networkVenue.id as string)
+        }
+      })
+    }
+    if (oldNetworkVenues?.length) {
+      oldNetworkVenues?.forEach(networkVenue => {
+        if (!_.isUndefined(networkVenue.id) && !newIds.includes(networkVenue.id)) {
+          removed.push(networkVenue.id)
+        }
+      })
+    }
+
+    if (added.length) {
       await addNetworkVenues({ payload: added }).unwrap()
-    } else if (oldIds.length) {
-      await deleteNetworkVenues({ payload: oldIds }).unwrap()
+    }
+    if (removed.length) {
+      await deleteNetworkVenues({ payload: removed }).unwrap()
     }
   }
 
