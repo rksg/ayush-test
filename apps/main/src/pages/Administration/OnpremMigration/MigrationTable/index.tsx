@@ -25,7 +25,8 @@ import {
   SpaceWrapper
 } from '@acx-ui/rc/components'
 import {
-  useGetZdMigrationListQuery
+  useGetZdMigrationListQuery,
+  useDeleteMigrationMutation
 } from '@acx-ui/rc/services'
 import {
   TaskContextType
@@ -42,21 +43,11 @@ const MigrationTable = () => {
   const params = useParams()
   const [visible, setVisible] = useState(false)
   const [currentTask, setCurrentTask] = useState({} as TaskContextType)
-  // const dataMock = [{
-  //   name: 'migration-001.bak',
-  //   state: 'success',
-  //   startTime: '2023-03-02 02:00:10 UTC',
-  //   endTime: '2023-03-02 03:33:13 UTC',
-  //   summary: 'All 4 APs were migrated to venue migration-P0d5E3J3'
-  // },{
-  //   name: 'migration-002.bak',
-  //   state: 'success',
-  //   startTime: '2023-03-02 02:00:10 UTC',
-  //   endTime: '2023-03-02 03:33:13 UTC',
-  //   summary: 'All 44 APs were migrated to venue migration-ABCDEFG'
-  // }]
 
   const { data: migrationList, isLoading, isFetching }= useGetZdMigrationListQuery({ params })
+  const [
+    deleteMigration
+  ] = useDeleteMigrationMutation()
 
   const onClose = () => {
     setVisible(false)
@@ -77,8 +68,8 @@ const MigrationTable = () => {
       key: 'venue',
       dataIndex: 'venue',
       searchable: true,
-      render: () => {
-        return '--'
+      render: (_, row) => {
+        return row.venueName ?? '--'
       }
     },
     {
@@ -100,11 +91,11 @@ const MigrationTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Description' }),
-      key: 'summary',
-      dataIndex: 'summary',
+      key: 'description',
+      dataIndex: 'description',
       searchable: true,
-      render: () => {
-        return '--'
+      render: (_, row) => {
+        return row.description ?? '--'
       }
     },
     {
@@ -127,8 +118,8 @@ const MigrationTable = () => {
 
   const rowActions: TableProps<TaskContextType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Delete' }),
-    // onClick: (rows, clearSelection) => {
-    onClick: (rows) => {
+    onClick: (rows, clearSelection) => {
+    // onClick: (rows) => {
       showActionModal({
         type: 'confirm',
         customContent: {
@@ -139,11 +130,10 @@ const MigrationTable = () => {
           confirmationText: 'Delete'
         },
         onOk: () => {
-          // rows.length === 1 ?
-          // deleteVenue({ params: { tenantId, venueId: rows[0].id } })
-          //   .then(clearSelection) :
-          // deleteVenue({ params: { tenantId }, payload: rows.map(item => item.id) })
-          //   .then(clearSelection)
+          rows.forEach(function (item) {
+            deleteMigration({ params: { ...params, id: item.taskId } })
+              .then(clearSelection)
+          })
         }
       })
     }
