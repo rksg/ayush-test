@@ -103,6 +103,7 @@ export default function HelpPage (props: {
 
   return <Drawer
     title={$t({ defaultMessage: 'Help for this page' })}
+    mask={true}
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
     children={<div>

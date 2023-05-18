@@ -505,7 +505,7 @@ export function emailRegExp (value: string) {
 
 export function phoneRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp (/^[+][1-9]{1,3}\s?([0-9s-]|[- ]){10,16}$/)
+  const re = new RegExp (/^\+[1-9]\d{1,14}$/)
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))

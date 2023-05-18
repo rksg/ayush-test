@@ -1,4 +1,5 @@
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -61,9 +62,6 @@ import MacRegistrationListDetails from './pages/Policies/MacRegistrationList/Mac
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MacRegistrationListForm    from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 import MyPolicies                 from './pages/Policies/MyPolicies'
-import RogueAPDetectionDetailView from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
-import RogueAPDetectionForm       from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
-import RogueAPDetectionTable      from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
 import SelectPolicyForm           from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail            from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm              from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
