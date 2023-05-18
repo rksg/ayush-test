@@ -1,11 +1,9 @@
 import '@testing-library/jest-dom'
 
-import React, { useState } from 'react'
+import { BulbOutlined }              from '@acx-ui/icons'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { BulbOutlined }                       from '@acx-ui/icons'
-import { render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
-
-import { Drawer, useCloseOutsideClick } from '.'
+import { Drawer } from '.'
 
 const onClose = jest.fn()
 const resetFields = jest.fn()
@@ -108,57 +106,6 @@ describe('Drawer', () => {
 
     fireEvent.click(backButton)
     expect(handleBackClick).toBeCalled()
-  })
-
-  it('should handle close on outside click correctly', async () => {
-    const TestWrapper = () => {
-      const [visible, setVisible] = useState(true)
-      const _close = () => {
-        onClose()
-        setVisible(false)
-      }
-      return <div>
-        extra element
-        <div>
-          <div>extra sibling element</div>
-          <Drawer
-            title={'Test Drawer'}
-            visible={visible}
-            onClose={_close}
-            children={content}
-          />
-        </div>
-      </div>
-    }
-    render(<TestWrapper />)
-
-    const drawerTitle = await screen.findByText('some content')
-    fireEvent.mouseDown(drawerTitle)
-    expect(onClose).not.toBeCalled()
-
-    const extraElement = await screen.findByText('extra element')
-    fireEvent.mouseDown(extraElement)
-    expect(onClose).toBeCalled()
-  })
-
-  it('should not trigger outside click close on unmounted state', async () => {
-    const ref = { current: null }
-    Object.defineProperty(ref, 'current', {
-      get: jest.fn(() => null),
-      set: jest.fn(() => null)
-    })
-    const HookItem = () => {
-      useCloseOutsideClick(ref, onClose, false)
-      return <div>hook item</div>
-    }
-    render(<div>
-      <div>extra element</div>
-      <HookItem />
-    </div>)
-
-    const extraElem = await screen.findByText('extra element')
-    fireEvent.mouseDown(extraElem)
-    await waitFor(() => expect(onClose).not.toHaveBeenCalled())
   })
 
   describe('FormFooter', () => {

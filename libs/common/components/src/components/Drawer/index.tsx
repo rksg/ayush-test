@@ -36,24 +36,25 @@ const Header = (props: DrawerHeaderProps) => {
   </>
 }
 
-let currentDrawer: RefObject<HTMLDivElement | null>
+let currentDrawer: {
+  ref: RefObject<HTMLDivElement | null>,
+  onClose: CallableFunction
+}
 
 export function useCloseOutsideClick (
   ref: RefObject<HTMLDivElement | null>,
   onClose: CallableFunction,
-  footer: ReactNode | undefined
+  footer: ReactNode | undefined,
+  visible: boolean
 ) {
+  const wasVisible = useRef<boolean>(false)
   useEffect(() => {
-    if (footer) return
-    currentDrawer = ref
-    const handleOutsideClick = () => {
-      if (currentDrawer !== ref) {
-        onClose?.()
-      }
+    if (!footer && visible && !wasVisible.current && currentDrawer?.ref !== ref) {
+      currentDrawer?.onClose?.()
+      currentDrawer = { ref, onClose }
     }
-    document.addEventListener('mousedown', handleOutsideClick)
-    return () => document.removeEventListener('mousedown', handleOutsideClick)
-  }, [onClose, ref, footer])
+    wasVisible.current = visible
+  }, [onClose, ref, footer, wasVisible, visible])
 }
 
 export const Drawer = (props: DrawerProps) => {
@@ -61,7 +62,7 @@ export const Drawer = (props: DrawerProps) => {
   const headerProps = { title, icon, subTitle, onBackClick }
   const ref = useRef<HTMLDivElement | null>(null)
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
-  useCloseOutsideClick(ref, onClose, props.footer)
+  useCloseOutsideClick(ref, onClose, props.footer, Boolean(props.visible))
   return (
     <div ref={ref}>
       <UI.Drawer
