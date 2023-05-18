@@ -32,13 +32,24 @@ export function EdgeResourceUtilizationWidget () {
   const filters = useDateFilter()
   const params = useParams()
 
+  const emptyData = {
+    timeSeries: {
+      cpu: [],
+      memory: [],
+      disk: [],
+      time: [],
+      memoryUsedBytes: [],
+      diskUsedBytes: []
+    }
+  }
+
   const seriesMapping = [
     { key: 'cpu', name: $t({ defaultMessage: 'CPU' }) },
     { key: 'memory', name: $t({ defaultMessage: 'Memory' }) },
     { key: 'disk', name: $t({ defaultMessage: 'Disk' }) }
   ] as Array<{ key: Key, name: string }>
 
-  const { data, isLoading } = useGetEdgeResourceUtilizationQuery({
+  const { data = emptyData, isLoading } = useGetEdgeResourceUtilizationQuery({
     params: { serialNumber: params.serialNumber },
     payload: {
       start: filters?.startDate,
@@ -111,7 +122,7 @@ export function EdgeResourceUtilizationWidget () {
                 {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
               </time>
               <ul>
-                {(_.isEmpty(queryResults)|| _.isEmpty(queryResults[0].data)) ? null :
+                {_.isEmpty(queryResults[0].data) &&
                   seriesFragment.map((resource) => {
                   // eslint-disable-next-line max-len
                     const color = graphParameters.find(p => p.seriesName === resource.key)?.color || ''

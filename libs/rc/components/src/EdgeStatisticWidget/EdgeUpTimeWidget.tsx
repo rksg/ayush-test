@@ -44,7 +44,16 @@ export function EdgeUpTimeWidget () {
     { key: 'isEdgeUp', name: $t({ defaultMessage: 'EdgeStatus' }) }
   ] as Array<{ key: Key; name: string }>
 
-  const { data, isLoading } = useGetEdgeUptimeQuery({
+  const emptyData = {
+    timeSeries: {
+      time: [],
+      isEdgeUp: []
+    },
+    totalUptime: 0,
+    totalDowntime: 0
+  }
+
+  const { data = emptyData, isLoading } = useGetEdgeUptimeQuery({
     params: { serialNumber: params.serialNumber },
     payload: {
       start: filters?.startDate,
@@ -53,7 +62,7 @@ export function EdgeUpTimeWidget () {
     } as EdgeTimeSeriesPayload
   })
 
-  const queryResults = isLoading ? null : {
+  const queryResults = isLoading ? emptyData : {
     timeSeries: getStartAndEndTimes(getSeriesData(data!.timeSeries, seriesMapping))
       ?.filter((dataPoint) => dataPoint?.[3] === 1 || dataPoint?.[3] === 0)
       .map((dataPoint) => {
@@ -69,45 +78,31 @@ export function EdgeUpTimeWidget () {
         return inclusiveDataPoint
       }),
     totalUptime: data!.totalUptime,
-    totalDowntime: data!.totalDowntime,
-    isLoading: false
+    totalDowntime: data!.totalDowntime
   }
 
 
   return (
     <Loader states={[{ isLoading }]}>
       <UI.Wrapper>
-        {(!queryResults || _.isEmpty(queryResults.timeSeries)) ?
+        <UI.EdgeStatusHeader col={{ span: 16 }}>
+          <Card.Title>
+            {$t({ defaultMessage: 'Edge Status' })}
+            <Tooltip
+              title={$t({
+                defaultMessage: 'Historical data is slightly delayed, and not real-time'
+              })}>
+              <UI.HistoricalIcon />
+            </Tooltip>
+          </Card.Title>
+        </UI.EdgeStatusHeader>
+        {_.isEmpty(queryResults.timeSeries) ?
+          <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
+            <AutoSizer>
+              {() =><NoData />}
+            </AutoSizer>
+          </GridCol>:
           <>
-            <UI.EdgeStatusHeader col={{ span: 16 }}>
-              <Card.Title>
-                {$t({ defaultMessage: 'Edge Status' })}
-                <Tooltip
-                  title={$t({
-                    defaultMessage: 'Historical data is slightly delayed, and not real-time'
-                  })}>
-                  <UI.HistoricalIcon />
-                </Tooltip>
-              </Card.Title>
-            </UI.EdgeStatusHeader>
-            <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
-              <AutoSizer>
-                {() =><NoData />}
-              </AutoSizer>
-            </GridCol>
-          </>:
-          <>
-            <UI.EdgeStatusHeader col={{ span: 16 }}>
-              <Card.Title>
-                {$t({ defaultMessage: 'Edge Status' })}
-                <Tooltip
-                  title={$t({
-                    defaultMessage: 'Historical data is slightly delayed, and not real-time'
-                  })}>
-                  <UI.HistoricalIcon />
-                </Tooltip>
-              </Card.Title>
-            </UI.EdgeStatusHeader>
             <UI.Status col={{ span: 4 }} style={{ height: '20px' }}>
               {$t({ defaultMessage: 'Total Uptime' })}
               {': '}

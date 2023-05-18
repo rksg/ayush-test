@@ -33,6 +33,13 @@ interface TrafficSeriesFragment {
     time: TimeStamp
   }[]
 }
+const emptyData = {
+  timeSeries: {
+    ports: [],
+    time: []
+  },
+  portCount: 0
+}
 
 const transformTimeSeriesChartData = (data: EdgeAllPortTrafficData): TimeSeriesChartData[] => {
   return data.timeSeries.ports.map((traffic, index) => {
@@ -66,7 +73,7 @@ export function EdgeTrafficByVolumeWidget () {
   const filters = useDateFilter()
   const params = useParams()
 
-  const { data: queryResults, isLoading } = useGetEdgePortTrafficQuery({
+  const { data: queryResults = emptyData, isLoading } = useGetEdgePortTrafficQuery({
     params: { serialNumber: params.serialNumber },
     payload: {
       start: filters?.startDate,
@@ -92,7 +99,7 @@ export function EdgeTrafficByVolumeWidget () {
               {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
             </time>
             <ul>
-              {(!queryResults || _.isEmpty(queryResults.timeSeries.time)) ? null :
+              {!_.isEmpty(queryResults.timeSeries.time) &&
                 transformTrafficSeriesFragment(queryResults)
                   .map((traffic: TrafficSeriesFragment)=> {
                     // eslint-disable-next-line max-len
@@ -130,7 +137,7 @@ export function EdgeTrafficByVolumeWidget () {
     <Loader states={[{ isLoading }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         <AutoSizer>
-          { (!queryResults || _.isEmpty(queryResults.timeSeries.time)) ?
+          { _.isEmpty(queryResults.timeSeries.time) ?
             () =><NoData />:
             ({ height, width }) =>
               <MultiLineTimeSeriesChart
