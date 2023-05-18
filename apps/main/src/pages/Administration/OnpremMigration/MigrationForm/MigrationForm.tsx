@@ -21,6 +21,7 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import MigrationContext , { mainReducer } from '../MigrationContext'
 
 import { MigrationSettingForm } from './MigrationSettingForm'
+import { defaultAddress }       from './MigrationSettingForm'
 import SummaryForm              from './SummaryForm'
 import UploadForm               from './UploadForm'
 import ValidationForm           from './ValidationForm'
@@ -100,6 +101,7 @@ const MigrationForm = () => {
         </StepsFormLegacy.StepForm>
 
         <StepsFormLegacy.StepForm<MigrationContextType>
+          name='validationResult'
           title={$t({ defaultMessage: 'Validation Result' })}
         >
           {validateZdApsResult.taskId
@@ -117,7 +119,8 @@ const MigrationForm = () => {
             const requestJson = {
               venueName: state.venueName,
               description: state.description,
-              address: state.address
+              // address: state.address
+              address: defaultAddress
             }
             // eslint-disable-next-line max-len
             migrateZdAps({ params: { ...params, id: validateZdApsResult.taskId }, payload: requestJson })

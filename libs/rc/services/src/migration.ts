@@ -4,9 +4,9 @@ import {
   TableResult,
   MigrationUrlsInfo,
   createHttpRequest,
+  CommonResult,
   RequestPayload,
   RequestFormData,
-  CommonResult,
   TaskContextType,
   MigrationResultType
 } from '@acx-ui/rc/utils'
@@ -54,7 +54,7 @@ export const migrationApi = baseMigrationApi.injectEndpoints({
         })
       }
     }),
-    getZdMigrationList: build.query<CommonResult, RequestPayload>({
+    getZdMigrationList: build.query<TaskContextType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MigrationUrlsInfo.getZdMigrationList, params)
         return {
@@ -99,6 +99,15 @@ export const migrationApi = baseMigrationApi.injectEndpoints({
           totalCount: result.apImportResults.length
         } as TableResult<MigrationResultType>
       }
+    }),
+    deleteMigration: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MigrationUrlsInfo.deleteMigration, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Migration', id: 'LIST' }]
     })
   })
 })
@@ -109,5 +118,6 @@ export const {
   useGetZdMigrationListQuery,
   useGetMigrationResultQuery,
   useLazyGetMigrationResultQuery,
-  useGetPollingMigrationResultQuery
+  useGetPollingMigrationResultQuery,
+  useDeleteMigrationMutation
 } = migrationApi

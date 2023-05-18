@@ -40,7 +40,7 @@ describe('Firmware Version Management', () => {
         (req, res, ctx) => res(ctx.json(preference))
       ),
       rest.get(
-        FirmwareUrlsInfo.getLatestFirmwareList.url,
+        FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
         (req, res, ctx) => res(ctx.json(versionLatest))
       ),
       rest.get(
@@ -52,7 +52,7 @@ describe('Firmware Version Management', () => {
         (req, res, ctx) => res(ctx.json(version))
       ),
       rest.get(
-        FirmwareUrlsInfo.getAvailableFirmwareList.url,
+        FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
         (req, res, ctx) => res(ctx.json(availableVersions))
       ),
       rest.get(

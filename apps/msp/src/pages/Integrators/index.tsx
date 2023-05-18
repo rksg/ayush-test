@@ -19,15 +19,16 @@ import {
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
-  useCheckDelegateAdmin
+  useCheckDelegateAdmin,
+  useGetMspLabelQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                   from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles }             from '@acx-ui/user'
+import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                              from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -56,6 +57,7 @@ export function Integrators () {
   const { $t } = useIntl()
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const params = useParams()
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
@@ -63,7 +65,9 @@ export function Integrators () {
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
+  const { data: mspLabel } = useGetMspLabelQuery({ params })
   const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const onBoard = mspLabel?.msp_label
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -232,7 +236,9 @@ export function Integrators () {
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
             </TenantLink>,
             <MspTenantLink to='/integrators/create'>
-              <Button type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
+              <Button
+                hidden={!onBoard}
+                type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>
