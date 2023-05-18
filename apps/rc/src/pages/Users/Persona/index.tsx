@@ -2,6 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { PersonaGroupTable } from './PersonaGroupTable'
@@ -12,6 +13,8 @@ function PersonaPageHeader () {
   const params = useParams()
   const basePath = useTenantLink('/users/persona-management/')
   const navigate = useNavigate()
+  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -21,9 +24,12 @@ function PersonaPageHeader () {
   return (
     <PageHeader
       title={$t({ defaultMessage: 'Persona Management' })}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Clients' }), link: '/users' }
-      ]}
+      breadcrumb={[{
+        text: navbarEnhancement
+          ? $t({ defaultMessage: 'Clients' })
+          : $t({ defaultMessage: 'Users' }),
+        link: navbarEnhancement ? '' : '/users'
+      }]}
       footer={
         <Tabs onChange={onTabChange} activeKey={params.activeTab}>
           <Tabs.TabPane
@@ -33,7 +39,10 @@ function PersonaPageHeader () {
           />
           <Tabs.TabPane
             key={'persona'}
-            tab={$t({ defaultMessage: 'Personas' })}
+            tab={navbarEnhancement
+              ? $t({ defaultMessage: 'Personas' })
+              : $t({ defaultMessage: 'Persona' })
+            }
             children={<PersonaTable />}
           />
         </Tabs>

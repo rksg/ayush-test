@@ -4,10 +4,10 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, RangePicker }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { useGetClientListQuery, useGetGuestsListQuery } from '@acx-ui/rc/services'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { DateRange, getDateRangeFilter }                from '@acx-ui/utils'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 
 import Tabs from './Tabs'
 
@@ -54,7 +54,10 @@ function Header (
 
   return (
     <PageHeader
-      title={navbarEnhancement ? $t({ defaultMessage: 'Wireless' }) : $t({ defaultMessage: 'Wi-Fi' })}
+      title={navbarEnhancement
+        ? $t({ defaultMessage: 'Wireless' })
+        : $t({ defaultMessage: 'Wi-Fi' })
+      }
       breadcrumb={navbarEnhancement ? [
         { text: $t({ defaultMessage: 'Cients' }), link: '/users/wifi/clients' }
       ]: []}
