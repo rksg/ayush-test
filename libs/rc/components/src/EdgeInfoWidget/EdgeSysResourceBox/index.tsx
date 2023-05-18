@@ -39,42 +39,34 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
     return item+'\r\n'
   })
 
-  if (type === EdgeResourceUtilizationEnum.CPU) {
-    return (
-      <Loader states={[{ isLoading }]}>
-        <GridRow className={className}>
-          <GridCol col={{ span: 24 }} >
+  return (
+    <Loader states={[{ isLoading }]}>
+      <GridRow className={className}>
+        <GridCol col={{ span: 24 }} >
+          {(type === EdgeResourceUtilizationEnum.CPU) ?
             <AntStatistic
               title={statisticTitle}
               valueStyle={(value > 90 ? { color: '#cf1322' } : {})}
               value={`${value}%`}
             />
-          </GridCol>
-        </GridRow>
-      </Loader>
-    )
-  }
-
-  return (
-    <Loader states={[{ isLoading }]}>
-      <GridRow className={className}>
-        <GridCol col={{ span: 24 }} >
-          <Tooltip
-            title={
+            :
+            <Tooltip
+              title={
               // eslint-disable-next-line max-len
-              $t({ defaultMessage: '{freeValue} free' }, { freeValue: formatter('bytesFormat')(totalVal - value) })
-            }>
-            <AntStatistic
-              title={statisticTitle}
-              value={formatter('bytesFormat')(value)}
-              suffix={
+                $t({ defaultMessage: '{freeValue} free' }, { freeValue: formatter('bytesFormat')(totalVal - value) })
+              }>
+              <AntStatistic
+                title={statisticTitle}
+                value={formatter('bytesFormat')(value)}
+                suffix={
                 // eslint-disable-next-line max-len
-                $t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage: calculatePercentage(value, totalVal) })
-              }
-              // eslint-disable-next-line max-len
-              valueStyle={(calculatePercentage(value, totalVal) > 90 ? { color: '#cf1322' } : {})}
-            />
-          </Tooltip>
+                  $t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage: calculatePercentage(value, totalVal) })
+                }
+                // eslint-disable-next-line max-len
+                valueStyle={(calculatePercentage(value, totalVal) > 90 ? { color: '#cf1322' } : {})}
+              />
+            </Tooltip>
+          }
         </GridCol>
       </GridRow>
     </Loader>
