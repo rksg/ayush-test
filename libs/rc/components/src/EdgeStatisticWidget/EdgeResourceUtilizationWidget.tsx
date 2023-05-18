@@ -112,18 +112,6 @@ export function EdgeResourceUtilizationWidget () {
     initialWidget()
   }, [filters])
 
-  if (_.isEmpty(queryResults)|| _.isEmpty(queryResults[0].data)) {
-    return (
-      <Loader states={[{ isLoading: loadingState }]}>
-        <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
-          <AutoSizer>
-            {() =><NoData />}
-          </AutoSizer>
-        </HistoricalCard>
-      </Loader>
-    )
-  }
-
   const defaultOption: EChartsOption = {
     tooltip: {
       ...tooltipOptions(),
@@ -141,34 +129,35 @@ export function EdgeResourceUtilizationWidget () {
               <time dateTime={new Date(time).toJSON()}>
                 {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
               </time>
-              <ul>{
-                seriesFragment.map((resource)=> {
+              <ul>
+                {(_.isEmpty(queryResults)|| _.isEmpty(queryResults[0].data)) ? null :
+                  seriesFragment.map((resource) => {
                   // eslint-disable-next-line max-len
-                  const color = graphParameters.find(p => p.seriesName === resource.key)?.color || ''
-                  const fragment = resource.fragment[graphDataIndex]
-                  let text = <FormattedMessage
-                    defaultMessage='{name}: <b>{value}</b>'
-                    description='Label before colon, value after colon'
-                    values={{
-                      ...defaultRichTextFormatValues,
-                      name: resource.key,
-                      value: fragment.unit ?
-                        // eslint-disable-next-line max-len
-                        `${formatter('percent')(fragment.percentage)} (${formatter('bytesFormat')(fragment.unit)})` :
-                        `${formatter('percent')(fragment.percentage)}`
-                    }}
-                  />
-                  return (
-                    <li key={resource.key}>
-                      <Badge
-                        className='acx-chart-tooltip'
-                        color={(color) as string}
-                        text={text}
-                      />
-                    </li>
-                  )
-                })
-              }</ul>
+                    const color = graphParameters.find(p => p.seriesName === resource.key)?.color || ''
+                    const fragment = resource.fragment[graphDataIndex]
+                    return (
+                      <li key={resource.key}>
+                        <Badge
+                          className='acx-chart-tooltip'
+                          color={(color) as string}
+                          text={<FormattedMessage
+                            defaultMessage='{name}: <b>{value}</b>'
+                            description='Label before colon, value after colon'
+                            values={{
+                              ...defaultRichTextFormatValues,
+                              name: resource.key,
+                              value: fragment.unit ?
+                              // eslint-disable-next-line max-len
+                                `${formatter('percent')(fragment.percentage)} (${formatter('bytesFormat')(fragment.unit)})` :
+                                `${formatter('percent')(fragment.percentage)}`
+                            }}
+                          />}
+                        />
+                      </li>
+                    )
+                  })
+                }
+              </ul>
             </TooltipWrapper>
           </RawIntlProvider>
         )
@@ -180,12 +169,14 @@ export function EdgeResourceUtilizationWidget () {
     <Loader states={[{ isLoading: loadingState }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Resource Utilization' })}>
         <AutoSizer>
-          {({ height, width }) =>
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={queryResults}
-              echartOptions={defaultOption}
-            />
+          {(_.isEmpty(queryResults)|| _.isEmpty(queryResults[0].data)) ?
+            () =><NoData />:
+            ({ height, width }) =>
+              <MultiLineTimeSeriesChart
+                style={{ width, height }}
+                data={queryResults}
+                echartOptions={defaultOption}
+              />
           }
         </AutoSizer>
       </HistoricalCard>

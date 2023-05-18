@@ -95,18 +95,6 @@ export function EdgeTrafficByVolumeWidget () {
     initialWidget()
   }, [filters])
 
-  if (!queryResults || _.isEmpty(queryResults.timeSeries.time)) {
-    return (
-      <Loader states={[{ isLoading: loadingState }]}>
-        <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
-          <AutoSizer>
-            {() =><NoData />}
-          </AutoSizer>
-        </HistoricalCard>
-      </Loader>
-    )
-  }
-
   const defaultOption: EChartsOption = {
     tooltip: {
       ...tooltipOptions(),
@@ -118,43 +106,42 @@ export function EdgeTrafficByVolumeWidget () {
         const [ time ] = graphParameters[0].data as [TimeStamp, number]
         const graphDataIndex = graphParameters[0].dataIndex as number
 
-        return renderToString(
-          <RawIntlProvider value={intl}>
-            <TooltipWrapper maxWidth={300}>
-              <time dateTime={new Date(time).toJSON()}>
-                {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
-              </time>
-              <ul>{
+        return renderToString(<RawIntlProvider value={intl}>
+          <TooltipWrapper maxWidth={300}>
+            <time dateTime={new Date(time).toJSON()}>
+              {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
+            </time>
+            <ul>
+              {(!queryResults || _.isEmpty(queryResults.timeSeries.time)) ? null :
                 transformTrafficSeriesFragment(queryResults)
                   .map((traffic: TrafficSeriesFragment)=> {
                     // eslint-disable-next-line max-len
                     const color = graphParameters.find(p => p.seriesName === traffic.key)?.color || ''
                     const fragment = traffic.fragment[graphDataIndex]
-                    let text = <FormattedMessage
-                      defaultMessage='{name}: <b>{value}</b>'
-                      description='Label before colon, value after colon'
-                      values={{
-                        ...defaultRichTextFormatValues,
-                        name: traffic.key,
-                        value: `${formatter('bytesFormat')(fragment.total)}\
-                                 (Tx: ${formatter('bytesFormat')(fragment.tx)},\
-                                 Rx: ${formatter('bytesFormat')(fragment.rx)})`
-                      }}
-                    />
                     return (
                       <li key={traffic.key}>
                         <Badge
                           className='acx-chart-tooltip'
                           color={(color) as string}
-                          text={text}
+                          text={<FormattedMessage
+                            defaultMessage='{name}: <b>{value}</b>'
+                            description='Label before colon, value after colon'
+                            values={{
+                              ...defaultRichTextFormatValues,
+                              name: traffic.key,
+                              value: `${formatter('bytesFormat')(fragment.total)}\
+                                 (Tx: ${formatter('bytesFormat')(fragment.tx)},\
+                                 Rx: ${formatter('bytesFormat')(fragment.rx)})`
+                            }}
+                          />}
                         />
                       </li>
                     )
                   })
-              }</ul>
-            </TooltipWrapper>
-          </RawIntlProvider>
-        )
+              }
+            </ul>
+          </TooltipWrapper>
+        </RawIntlProvider>)
       }
     } as TooltipComponentOption
   }
@@ -163,14 +150,16 @@ export function EdgeTrafficByVolumeWidget () {
     <Loader states={[{ isLoading: loadingState }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         <AutoSizer>
-          {({ height, width }) => (
-            <MultiLineTimeSeriesChart
-              style={{ width, height }}
-              data={transformTimeSeriesChartData(queryResults)}
-              dataFormatter={formatter('bytesFormat')}
-              echartOptions={defaultOption}
-            />
-          )}
+          { (!queryResults || _.isEmpty(queryResults.timeSeries.time)) ?
+            () =><NoData />:
+            ({ height, width }) =>
+              <MultiLineTimeSeriesChart
+                style={{ width, height }}
+                data={transformTimeSeriesChartData(queryResults)}
+                dataFormatter={formatter('bytesFormat')}
+                echartOptions={defaultOption}
+              />
+          }
         </AutoSizer>
       </HistoricalCard>
     </Loader>

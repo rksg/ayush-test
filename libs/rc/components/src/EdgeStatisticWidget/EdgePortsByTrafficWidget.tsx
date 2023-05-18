@@ -70,21 +70,23 @@ export function EdgePortsByTrafficWidget () {
     <Loader states={[{ isLoading: loadingState }]}>
       <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
         <AutoSizer>
-          {({ height, width }) =>
-            <DonutChart
-              title={$t({ defaultMessage: 'Ports' })}
-              style={{ width, height }}
-              showLabel={true}
-              showTotal={false}
-              showLegend={false}
-              data={queryResults}
-              size={'x-large'}
-              dataFormatter={formatter('bytesFormat')}
-              tooltipFormat={defineMessage({
-                defaultMessage: `{name}<br></br>
+          {(_.isEmpty(queryResults)) ?
+            () =><NoData />:
+            ({ height, width }) =>
+              <DonutChart
+                title={$t({ defaultMessage: 'Ports' })}
+                style={{ width, height }}
+                showLabel={true}
+                showTotal={false}
+                showLegend={false}
+                data={queryResults}
+                size={'x-large'}
+                dataFormatter={formatter('bytesFormat')}
+                tooltipFormat={defineMessage({
+                  defaultMessage: `{name}<br></br>
                     <space><b>{formattedValue}</b> ({formattedPercent})</space>`
-              })}
-            />
+                })}
+              />
           }
         </AutoSizer>
       </HistoricalCard>
