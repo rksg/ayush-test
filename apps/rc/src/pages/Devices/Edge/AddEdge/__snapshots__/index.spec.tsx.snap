@@ -67,7 +67,6 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
   >
     <form
       class="ant-form ant-form-vertical"
-      id="0"
       step="0"
     >
       <div
@@ -99,7 +98,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                     >
                       <label
                         class="ant-form-item-required"
-                        for="0_venueId"
+                        for="venueId"
                         title="Venue"
                       >
                         Venue
@@ -124,14 +123,14 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                                 class="ant-select-selection-search"
                               >
                                 <input
-                                  aria-activedescendant="0_venueId_list_0"
+                                  aria-activedescendant="venueId_list_0"
                                   aria-autocomplete="list"
-                                  aria-controls="0_venueId_list"
+                                  aria-controls="venueId_list"
                                   aria-haspopup="listbox"
-                                  aria-owns="0_venueId_list"
+                                  aria-owns="venueId_list"
                                   autocomplete="off"
                                   class="ant-select-selection-search-input"
-                                  id="0_venueId"
+                                  id="venueId"
                                   readonly=""
                                   role="combobox"
                                   style="opacity: 0;"
@@ -187,7 +186,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                     >
                       <label
                         class="ant-form-item-required"
-                        for="0_name"
+                        for="name"
                         title="SmartEdge Name"
                       >
                         SmartEdge Name
@@ -204,7 +203,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                         >
                           <input
                             class="ant-input"
-                            id="0_name"
+                            id="name"
                             type="text"
                             value=""
                           />
@@ -224,7 +223,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                     >
                       <label
                         class="ant-form-item-required"
-                        for="0_serialNumber"
+                        for="serialNumber"
                         title=""
                       >
                         Serial Number
@@ -244,7 +243,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                         >
                           <input
                             class="ant-input"
-                            id="0_serialNumber"
+                            id="serialNumber"
                             type="text"
                             value=""
                           />
@@ -264,7 +263,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                     >
                       <label
                         class=""
-                        for="0_description"
+                        for="description"
                         title="Description"
                       >
                         Description
@@ -281,7 +280,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                         >
                           <textarea
                             class="ant-input"
-                            id="0_description"
+                            id="description"
                             rows="4"
                           />
                         </div>
@@ -300,7 +299,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                     >
                       <label
                         class=""
-                        for="0_tags"
+                        for="tags"
                         title="Tags"
                       >
                         Tags
@@ -333,14 +332,14 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
                                     style="width: 0px;"
                                   >
                                     <input
-                                      aria-activedescendant="0_tags_list_0"
+                                      aria-activedescendant="tags_list_0"
                                       aria-autocomplete="list"
-                                      aria-controls="0_tags_list"
+                                      aria-controls="tags_list"
                                       aria-haspopup="listbox"
-                                      aria-owns="0_tags_list"
+                                      aria-owns="tags_list"
                                       autocomplete="off"
                                       class="ant-select-selection-search-input"
-                                      id="0_tags"
+                                      id="tags"
                                       role="combobox"
                                       type="search"
                                       value=""

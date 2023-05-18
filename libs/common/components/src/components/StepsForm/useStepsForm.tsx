@@ -115,9 +115,11 @@ export function useStepsForm <T> ({
 
   const formProps: FormProps<T> = {
     layout: 'vertical',
+    // omit defaultFormValues for preventing warning: React does not recognize the `defaultFormValues` prop on a DOM element.
     ..._.omit(config, 'defaultFormValues'),
     ...props,
-    ..._.omit(currentStep.props, 'children'),
+    // omit name for preventing prefix of id
+    ..._.omit(currentStep.props, ['children', 'name']),
     // Unable to take from props.initialValues
     // due to it is done via useEffect, which result in delayed
     initialValues: config.defaultFormValues,
