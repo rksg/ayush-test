@@ -5,6 +5,7 @@ import { Menu, MenuProps }     from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Button, Dropdown, PageHeader }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { ImportFileDrawer, CsvSize, SwitchTable } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
@@ -14,11 +15,11 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
 
-
 export default function SwitchesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible] = useState(false)
+  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ importCsv, importResult ] = useImportSwitchesMutation()
 
@@ -81,7 +82,7 @@ export default function SwitchesTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Switch' })}
+        title={!navbarEnhancement && $t({ defaultMessage: 'Switch' })}
         extra={filterByAccess([
           <Dropdown overlay={addMenu}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>

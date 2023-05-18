@@ -33,7 +33,8 @@ export default function ClientList () {
       case 'guests':
         return <GuestsTab dateFilter={dateFilter}/>
       case 'reports':
-        return <></> // return reports/clients
+        return <>report</>
+        // return <Report type={'client'} />
     }
   }
 

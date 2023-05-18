@@ -69,6 +69,7 @@ export default function ApsTable () {
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
+  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
@@ -124,7 +125,7 @@ export default function ApsTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Wi-Fi' })}
+        title={!navbarEnhancement && $t({ defaultMessage: 'Wi-Fi' })}
         extra={filterByAccess([
           <Dropdown overlay={addMenu}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>

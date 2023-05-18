@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { Tabs }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function WifiTabs (props: { clientCount: number, guestPassCount: number }) {
+function WifiTabs (props: { clientCount: number, guestCount: number }) {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink('/users/wifi/')
@@ -15,8 +15,8 @@ function WifiTabs (props: { clientCount: number, guestPassCount: number }) {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-  const clientCount = props.clientCount ?? 0
-  const guestPassCount = props.guestPassCount ?? 0
+  const clientCount = props.clientCount
+  const guestCount = props.guestCount
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
@@ -25,7 +25,7 @@ function WifiTabs (props: { clientCount: number, guestPassCount: number }) {
         key='clients'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Guest Pass Credentials ({guestPassCount})' }, { guestPassCount })}
+        tab={$t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount })}
         key='guests'
       />
       {!navbarEnhancement && <Tabs.TabPane

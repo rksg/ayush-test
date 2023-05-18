@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs, PageHeader }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                 from '@acx-ui/user'
+import { Tabs, PageHeader }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useGetAdminListQuery, useGetNotificationRecipientsQuery } from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                   from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -17,17 +18,35 @@ import Subscriptions     from './Subscriptions'
 const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
   const { $t } = useIntl()
   const { activeTab } = useParams()
+  const { tenantId, venueId, serialNumber } = useParams()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
+  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
+  const defaultPayload = {
+    filters: venueId ? { venueId: [venueId] } :
+      serialNumber ? { serialNumber: [serialNumber] } : {}
+  }
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
   }
+  const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
+    pollingInterval: 30_000
+  })
+  const notificationList = useGetNotificationRecipientsQuery({
+    params: { tenantId },
+    payload: defaultPayload
+  }, {
+    pollingInterval: 30_000
+  })
+
+  const adminCount = adminList?.data?.length! || 0
+  const notificationCount = notificationList?.data?.length || 0
 
   return (
     <Tabs
@@ -37,9 +56,20 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Account Settings' })} key='accountSettings' />
       { hasAdministratorTab &&
-      ( <Tabs.TabPane tab={$t({ defaultMessage: 'Administrators' })} key='administrators' /> )
+      ( <Tabs.TabPane
+        tab={navbarEnhancement
+          ? $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })
+          : $t({ defaultMessage: 'Administrators' })
+        }
+        key='administrators' /> )
       }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='notifications' />
+      <Tabs.TabPane
+        tab={navbarEnhancement
+          ? $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })
+          : $t({ defaultMessage: 'Notifications' })
+        }
+        key='notifications'
+      />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Firmware Version Management' })}

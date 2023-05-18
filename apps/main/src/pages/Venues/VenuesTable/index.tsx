@@ -288,6 +288,7 @@ export const VenueTable = (
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
+  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
@@ -304,11 +305,14 @@ export function VenuesTable () {
   })
 
   const count = tableQuery?.currentData?.totalCount
-  
+
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Venues ({count})' }, { count })}
+        title={navbarEnhancement
+          ? $t({ defaultMessage: 'Venues ({count})' }, { count })
+          : $t({ defaultMessage: 'Venues' })
+        }
         extra={filterByAccess([
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>

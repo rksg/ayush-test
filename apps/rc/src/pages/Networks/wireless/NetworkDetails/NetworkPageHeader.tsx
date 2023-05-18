@@ -29,7 +29,9 @@ function NetworkPageHeader ({
     <PageHeader
       title={network.data?.name || ''}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
+        { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' },
+        { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
+        { text: $t({ defaultMessage: 'Wi-Fi Networks List' }), link: '/networks' }
       ]}
       extra={filterByAccess([
         ...(setSelectedVenues && selectedVenues)

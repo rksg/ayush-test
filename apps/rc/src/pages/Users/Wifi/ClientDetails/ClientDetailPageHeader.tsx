@@ -108,7 +108,9 @@ function ClientDetailPageHeader () {
         }
       </Space>}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Wi-Fi Users' }), link: '/users/wifi/clients' }
+        { text: $t({ defaultMessage: 'Clients' }), link: '' },
+        { text: $t({ defaultMessage: 'Wireless' }), link: '' },
+        { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
       ]}
       extra={filterByAccess([
         <DatePicker key='date-filter' />,

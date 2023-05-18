@@ -3,10 +3,10 @@
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, RangePicker }       from '@acx-ui/components'
-import { useGetClientListQuery, useGetGuestsListQuery }         from '@acx-ui/rc/services'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { DateRange, getDateRangeFilter } from '@acx-ui/utils'
+import { PageHeader, RangePicker }                      from '@acx-ui/components'
+import { useGetClientListQuery, useGetGuestsListQuery } from '@acx-ui/rc/services'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { DateRange, getDateRangeFilter }                from '@acx-ui/utils'
 
 import Tabs from './Tabs'
 
@@ -58,7 +58,7 @@ function Header (
       ]}
       footer={<Tabs
         clientCount={clientList?.data?.totalCount ? clientList?.data.totalCount : 0}
-        guestPassCount={guestList?.data?.totalCount ? guestList?.data.totalCount : 0}
+        guestCount={guestList?.data?.totalCount ? guestList?.data.totalCount : 0}
       />}
       extra={activeTab === 'guests' ? [
         <RangePicker

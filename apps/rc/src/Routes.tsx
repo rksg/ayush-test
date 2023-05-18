@@ -20,23 +20,23 @@ import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
 import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import SwitchList                                   from './pages/Devices/Switch'
 import { StackForm }                                from './pages/Devices/Switch/StackForm'
 import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
 import { SwitchClientDetailsPage }                  from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
-import SwitchesTable                                from './pages/Devices/Switch/SwitchesTable'
 import { SwitchForm }                               from './pages/Devices/Switch/SwitchForm'
+import AccessPointList                              from './pages/Devices/Wifi'
 import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                                     from './pages/Devices/Wifi/ApsTable'
 import Wired                                        from './pages/Networks/wired'
 import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
 import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
+import NetworksList                                 from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                                  from './pages/Networks/wireless/NetworkForm/NetworkForm'
-import NetworksTable                                from './pages/Networks/wireless/NetworksTable'
 import AAAPolicyDetail                              from './pages/Policies/AAA/AAADetail'
 import AAAForm                                      from './pages/Policies/AAA/AAAForm/AAAForm'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
@@ -123,8 +123,6 @@ import SwitchClientList           from './pages/Users/Switch/ClientList'
 import WifiClientDetails          from './pages/Users/Wifi/ClientDetails'
 import WifiClientList             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
-import AccessPointList from './pages/Devices/Wifi'
-import NetworksList from './pages/Networks/wireless'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -146,7 +144,8 @@ function DeviceRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
-      <Route path='devices/:activeTab' element={<AccessPointList />} />
+      <Route path='devices/wifi' element={<TenantNavigate replace to='/devices/wifi/list' />} />
+      <Route path='devices/wifi/:activeTab' element={<AccessPointList />} />
       <Route path='devices/wifi/:action' element={<ApForm />} />
       <Route path='devices/wifi/:serialNumber/:action/:activeTab' element={<ApEdit />} />
       <Route
@@ -187,7 +186,8 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
-      <Route path='devices/switch' element={<SwitchesTable />} />
+      <Route path='devices/switch' element={<TenantNavigate replace to='/devices/switch/list' />} />
+      <Route path='devices/switch/:activeTab' element={<SwitchList />} />
       <Route path='devices/switch/:action' element={<SwitchForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
       <Route path='devices/switch/stack/:action' element={<StackForm />} />
