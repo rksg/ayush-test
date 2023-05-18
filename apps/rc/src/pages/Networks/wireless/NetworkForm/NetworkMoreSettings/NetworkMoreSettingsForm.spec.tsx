@@ -233,6 +233,7 @@ describe('NetworkMoreSettingsForm', () => {
     expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
   })
   it('Test case for Basic Service Set Radio Group', async ()=> {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const mockContextData = { editMode: true, data: mockWlanData } as NetworkFormContextType
     render(MockedMoreSettingsForm(mockWlanData, mockContextData),{ route: { params } })
