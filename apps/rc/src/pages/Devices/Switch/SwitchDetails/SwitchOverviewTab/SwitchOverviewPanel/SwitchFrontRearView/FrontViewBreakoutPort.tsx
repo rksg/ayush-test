@@ -6,7 +6,7 @@ import { Tooltip }                            from '@acx-ui/components'
 import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { FrontViewBreakoutPortDrawer } from './FrontViewBreakoutPortDrawer'
-import * as UI                      from './styledComponents'
+import * as UI                         from './styledComponents'
 
 export function FrontViewBreakoutPort (props:{
   ports: SwitchPortStatus[],
@@ -18,7 +18,7 @@ export function FrontViewBreakoutPort (props:{
 }) {
   const { $t } = useIntl()
   const { ports, portData, labelText, labelPosition, tooltipEnable, deviceStatus } = props
-
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const portNumber = portData.portIdentifier.split(':')[0]
   const breakOutPorts = ports.filter(p => p.portIdentifier.includes(portNumber))
 
@@ -31,21 +31,19 @@ export function FrontViewBreakoutPort (props:{
     }
     return ''
   }
+
   const getTooltip = () => {
-    return <div style={{
-      fontSize: 'var(--acx-body-4-font-size)',
-      lineHeight: 'var(--acx-body-4-line-height)'
-    }}>
-      <div style={{ paddingBottom: 'var(--acx-descriptions-space)', color: '#c4c4c4' }}>
-        {portNumber}: {$t({ defaultMessage: 'Breakout Port' })} ({breakOutPorts.length})</div>
+    return <UI.BreakoutPortTooltipContainer>
+      <UI.BreakoutPortTooltipHeader>
+        {portNumber}: {$t({ defaultMessage: 'Breakout Port' })} ({breakOutPorts.length})
+      </UI.BreakoutPortTooltipHeader>
       {breakOutPorts.map((p: SwitchPortStatus) => {
-        return <div style={{ gridTemplateColumns: 'auto auto', display: 'grid',
-          paddingBottom: 'var(--acx-descriptions-space)' }}>
+        return <UI.BreakoutPortTooltipItem>
           <div>{`${p.portIdentifier} (${p.status})`}</div>
           <div>{getPortIcon(p)}</div>
-        </div>
+        </UI.BreakoutPortTooltipItem>
       })}
-    </div>
+    </UI.BreakoutPortTooltipContainer>
   }
 
   const getPortColorEnum = () => {
@@ -64,37 +62,22 @@ export function FrontViewBreakoutPort (props:{
     return 'gray'
   }
 
-  const getPortColor = (portColor: string) => {
-    const colorMap:{ [key:string]: string } = {
-      lightgray: 'var(--acx-neutrals-25)',
-      gray: 'var(--acx-neutrals-50)',
-      green: 'var(--acx-semantics-green-50)'
-    }
-    return colorMap[portColor]
-  }
-  const [drawerVisible, setDrawerVisible] = useState(false)
+
 
   const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <div>
 
       <UI.Port portColor={getPortColorEnum()}>
-        <div style={{ position: 'relative' , cursor: 'pointer', fontSize: '10px' }}
-          onClick={()=>{
+        <UI.BreadkoutPortContainer
+          onClick={() => {
             setDrawerVisible(true)
           }}>
-          B
-          <div style={{
-            width: 0,
-            height: 0,
-            borderStyle: 'solid',
-            borderWidth: '0 0 5px 5px',
-            borderColor: `transparent transparent ${getPortColor(getPortColorEnum())} transparent`,
-            left: '7px',
-            top: '11px',
-            position: 'absolute'
-          }}></div>
-        </div>
+          B  {/* Phase 2 will change text to icon */}
+          <UI.BreakOutPortFlag
+            portColor={getPortColorEnum()}
+          ></UI.BreakOutPortFlag>
+        </UI.BreadkoutPortContainer>
       </UI.Port>
 
     </div>

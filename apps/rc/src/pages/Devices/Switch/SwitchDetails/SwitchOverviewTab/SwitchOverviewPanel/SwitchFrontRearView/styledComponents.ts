@@ -117,6 +117,17 @@ export const Port = styled.div<{ portColor: string }>`
   align-items: center;
 `
 
+export const BreakOutPortFlag = styled.div<{ portColor: string }>`
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 5px 5px;
+  border-color: transparent transparent  ${(props) => getPortColor(props.portColor)} transparent;
+  left: 7px;
+  top: 11px;
+  position: absolute;
+`
+
 export const StackingPortIcon = styled(StackingPortSolid)`
   height: 16px;
   width: 16px;
@@ -228,4 +239,25 @@ export const BreakOutPortTagsSolidIcon = styled(TagsSolid)`
   height: 16px;
   vertical-align: middle;
   margin-left: 6px;
+`
+export const BreakoutPortTooltipContainer = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+`
+
+export const BreakoutPortTooltipHeader = styled.div`
+  padding-bottom: var(--acx-descriptions-space);
+  color: var(--acx-neutrals-40);
+`
+
+export const BreakoutPortTooltipItem = styled.div`
+  grid-template-columns: auto auto;
+  display: grid;
+  padding-bottom: var(--acx-descriptions-space);
+`
+
+export const BreadkoutPortContainer = styled.div`
+  position: relative;
+  cursor: pointer;
+  font-size: 10px;
 `

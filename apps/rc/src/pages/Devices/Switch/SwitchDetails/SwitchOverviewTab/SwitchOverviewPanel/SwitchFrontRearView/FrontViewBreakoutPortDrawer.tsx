@@ -88,28 +88,16 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     },
     {
       title: $t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' }),
-      dataIndex: 'poeUsed',
-      key: 'poeUsed',
-      sorter: { compare: sortProp('poeUsed', defaultSort) },
+      dataIndex: 'poeUsage',
+      key: 'poeUsage',
       render: (data, row) => {
-        if (!data) {
-          if (row.poeEnabled === false) {
-            return $t({ defaultMessage: 'off' })
-          }
-          const poeTotal = (row.poeTotal) ? Math.round(row.poeTotal / 1000) : 0
-          const poeUsed = (row.poeUsed) ? Math.round(row.poeUsed / 1000) : 0
-          const poePercentage = (!poeUsed || !poeTotal) ? 0 : Math.round(poeUsed / poeTotal * 100)
-          return `${poeUsed}/${poeTotal}W (${poePercentage}%)`
-        } else {
-          return data
-        }
+        return <>{row.poeUsed} W/ {row.poeTotal} W</>
       }
     },
     {
       title: $t({ defaultMessage: 'Connected Device' }),
       dataIndex: 'neighborName',
       key: 'neighborName',
-      sorter: { compare: sortProp('neighborName', defaultSort) },
       render: (data, row) => {
         return row.neighborName || row.neighborMacAddress || '--'
       }
@@ -119,9 +107,9 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
       dataIndex: 'toVlan',
       key: 'toVlan',
       sorter: { compare: sortProp('vlanIds', defaultSort) },
-      render: (data, row) => <Space size={2}>
+      render: (data, row) => <Space size={2} style={{ width: 'max-content' }}>
         <UI.BreakOutPortTagsOutlineIcon /> {row.unTaggedVlan || '--'}
-        <UI.BreakOutPortTagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
+        <UI.BreakOutPortTagsSolidIcon />  {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
       </Space>
     }
   ]
@@ -140,6 +128,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     children={
       <div>
         <Table
+          type={'compactBordered'}
           columns={columns}
           dataSource={breakoutPorts}
           rowKey='portIdentifier'
