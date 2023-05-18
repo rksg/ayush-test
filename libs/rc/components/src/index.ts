@@ -27,6 +27,7 @@ export {
   defaultColumnState as eventTableColumnState,
   useEventsTableQuery,
   eventDefaultSearch,
+  eventDefaultFilters,
   eventTypeMapping
 } from './EventTable'
 export {
