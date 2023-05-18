@@ -2,13 +2,12 @@ import '@testing-library/jest-dom'
 
 import { SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }         from '@acx-ui/store'
-import { render, screen }   from '@acx-ui/test-utils'
+import { render }           from '@acx-ui/test-utils'
 
 import { breakoutPorts } from '../__tests__/fixtures'
 
 import { FrontViewBreakoutPort }       from './FrontViewBreakoutPort'
 import { FrontViewBreakoutPortDrawer } from './FrontViewBreakoutPortDrawer'
-import { FrontViewSlot } from './FrontViewSlot'
 
 
 describe('FrontViewBreakoutPort', () => {
