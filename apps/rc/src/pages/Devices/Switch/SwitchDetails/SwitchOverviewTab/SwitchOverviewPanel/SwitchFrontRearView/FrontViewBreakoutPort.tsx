@@ -70,6 +70,7 @@ export function FrontViewBreakoutPort (props:{
 
       <UI.Port portColor={getPortColorEnum()}>
         <UI.BreadkoutPortContainer
+          data-testid='BreakoutPort'
           onClick={() => {
             setDrawerVisible(true)
           }}>

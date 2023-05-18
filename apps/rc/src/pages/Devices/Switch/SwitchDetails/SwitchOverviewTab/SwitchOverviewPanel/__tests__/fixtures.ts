@@ -498,6 +498,7 @@ export const breakoutPorts = [
     poeTotal: 0,
     poeType: '',
     usedInFormingStack: true,
+    usedInUplink: true,
     status: 'Down'
   },
   {
@@ -552,10 +553,10 @@ export const breakoutPorts = [
     switchUnitId: 'FLX3333R011',
     portSpeed: 'link down or no traffic',
     adminStatus: 'Up',
-    poeEnabled: false,
+    poeEnabled: true,
     name: '100GigabitEthernet1/2/1:4',
-    poeUsed: 0,
-    poeTotal: 0,
+    poeUsed: 30,
+    poeTotal: 3000,
     poeType: '',
     usedInFormingStack: false,
     status: 'Down'

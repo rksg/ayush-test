@@ -43,7 +43,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     if (downPortsCount > 0) {
       statusArray.push(`${downPortsCount} ${$t({ defaultMessage: 'Down' })}`)
     }
-    if(statusArray.length>0) {
+    if (statusArray.length > 0) {
       return statusArray.join(' ,')
     }
     return ''

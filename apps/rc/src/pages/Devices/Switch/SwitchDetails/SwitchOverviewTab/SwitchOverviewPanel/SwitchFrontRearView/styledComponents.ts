@@ -123,8 +123,8 @@ export const BreakOutPortFlag = styled.div<{ portColor: string }>`
   border-style: solid;
   border-width: 0 0 5px 5px;
   border-color: transparent transparent  ${(props) => getPortColor(props.portColor)} transparent;
-  left: 7px;
-  top: 11px;
+  left: 8px;
+  top: 12px;
   position: absolute;
 `
 
