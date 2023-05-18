@@ -88,8 +88,9 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     },
     {
       title: $t({ defaultMessage: 'PoE Usage (Consumed/Allocated)' }),
-      dataIndex: 'poeUsage',
-      key: 'poeUsage',
+      dataIndex: 'poeUsed',
+      key: 'poeUsed',
+      sorter: { compare: sortProp('poeUsed', defaultSort) },
       render: (data, row) => {
         return <>{row.poeUsed} W/ {row.poeTotal} W</>
       }
