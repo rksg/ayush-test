@@ -75,11 +75,11 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Health' })
             },
             ...(showSV ? [{
-              uri: '/serviceValidation/networkHealth',
+              uri: '/analytics/serviceValidation',
               label: $t({ defaultMessage: 'Service Validation' })
             }] : []),
-            ...(showVideoCallQoe ? [{
-              uri: '/serviceValidation/videoCallQoe',
+            ...(showSV && showVideoCallQoe ? [{
+              uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
           ]
@@ -286,7 +286,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/timeline/adminLogs',
-              label: $t({ defaultMessage: 'Administrative Logs' })
+              label: $t({ defaultMessage: 'Admin Logs' })
             }
           ]
         },

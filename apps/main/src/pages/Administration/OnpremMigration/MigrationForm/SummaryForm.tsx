@@ -1,0 +1,125 @@
+import { useEffect, useState } from 'react'
+
+import {
+  Col,
+  Row,
+  Empty
+} from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
+
+import {
+  Table,
+  TableProps,
+  Subtitle,
+  Loader
+} from '@acx-ui/components'
+import {
+  useLazyGetMigrationResultQuery
+} from '@acx-ui/rc/services'
+import {
+  MigrationResultType
+} from '@acx-ui/rc/utils'
+
+type SummaryFormProps = {
+  taskId?: string
+}
+
+const SummaryForm = (props: SummaryFormProps) => {
+  const { $t } = useIntl()
+  const { taskId } = props
+  const params = useParams()
+
+  // eslint-disable-next-line max-len
+  const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
+  // eslint-disable-next-line max-len
+  const [ getMigrationResult, { data: migrateResult, isLoading, isFetching }] = useLazyGetMigrationResultQuery()
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getMigrationResult({ params: { ...params, id: taskId } })
+      // console.log('This will run every second!')
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(()=>{
+    if (migrateResult) {
+      setValidateZdApsResult(migrateResult?.apImportResults)
+    }
+  },[migrateResult])
+
+  const columns: TableProps<MigrationResultType>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'AP Name' }),
+      key: 'apName',
+      dataIndex: 'apName',
+      render: (_, row) => {
+        return row.apName ?? '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      key: 'description',
+      dataIndex: 'description',
+      render: (_, row) => {
+        return row.description ?? '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Serial Number' }),
+      key: 'serial',
+      dataIndex: 'serial',
+      render: (_, row) => {
+        return row.serial ?? '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      key: 'state',
+      dataIndex: 'state',
+      render: (data, row) => {
+        return row.state ?? '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Failure Reason' }),
+      key: 'validationErrors',
+      dataIndex: 'validationErrors',
+      render: (_, row) => {
+        // eslint-disable-next-line max-len
+        return row.validationErrors && row.validationErrors.length > 0 ? row.validationErrors.join(',') : '--'
+      }
+    }
+  ]
+
+  return (
+    <Loader states={[
+      { isLoading: isLoading,
+        isFetching: isFetching
+      }
+    ]}>
+      <Row>
+        <Col span={12}>
+          <Subtitle level={3}>
+            {$t({ defaultMessage: 'Summary Table' })}
+          </Subtitle>
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Summary State' })}: {migrateResult?.state ?? '--'}
+          </Subtitle>
+        </Col>
+      </Row>
+      <Table
+        columns={columns}
+        dataSource={validateZdApsResult}
+        rowKey='serial'
+        locale={{
+          // eslint-disable-next-line max-len
+          emptyText: <Empty description={$t({ defaultMessage: 'No migration data' })} />
+        }}
+      />
+    </Loader>
+  )
+}
+
+export default SummaryForm

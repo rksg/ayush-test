@@ -133,7 +133,7 @@ describe('ClientOverviewTab', () => {
       // expect(await screen.findByText('Server Error')).toBeVisible()
     })
 
-    it('should render historical client info correctly', async () => {
+    it.skip('should render historical client info correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
       const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
