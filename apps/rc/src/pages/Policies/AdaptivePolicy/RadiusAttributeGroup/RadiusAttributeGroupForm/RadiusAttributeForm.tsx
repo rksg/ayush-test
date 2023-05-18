@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Key, useEffect, useState } from 'react'
 
 import { Form, FormInstance, Input, Select, Space, TreeSelect } from 'antd'
 import {  useIntl }                                             from 'react-intl'
@@ -38,6 +38,8 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const dataType = Form.useWatch('dataType', form)
 
   const [treeSelectValue, setTreeSelectValue] = useState<string | undefined>(undefined)
+
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
 
   useEffect(()=>{
     if(radiusAttributeVendorListQuery.data) {
@@ -131,6 +133,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
         >
           <Form.Item>
             <TreeSelect
+              showArrow={false}
               showSearch
               value={treeSelectValue}
               placeholder={$t({ defaultMessage: 'Select attribute type' })}
@@ -141,11 +144,39 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
                   setTreeSelectValue(undefined)
                   form.setFieldsValue({ attributeName: undefined })
                 }
+
+                // expand the node if children match the search string
+                if(value.length > 1) {
+                  const matchedExpandedKeys = [] as string []
+                  attributeTreeData.forEach(node => {
+                    if(node.children && node.children.length > 0) {
+                      const nodeKey = node.value
+                      // eslint-disable-next-line max-len
+                      if(node.children.find(attr => attr.value.includes(value)) && expandedKeys.indexOf(nodeKey) === -1)
+                        matchedExpandedKeys.push(nodeKey)
+                    }
+                  })
+                  setExpandedKeys([...expandedKeys, ...matchedExpandedKeys])
+                }
               }}
               onChange={(value) => {
                 if(!value) return
                 setTreeSelectValue(value)
                 form.setFieldsValue({ attributeName: value, dataType: getAttributeDataType(value) })
+              }}
+              treeExpandedKeys={expandedKeys}
+              onTreeExpand={(nodeKeys: Key []) =>{
+                // Loading attribute data if the nodes don't have the children
+                nodeKeys.filter(key => {
+                  const node = attributeTreeData.find(node => node.value === key)
+                  if(!node) return false
+                  return (!node.children || node.children.length === 0)
+                }).forEach(key => onLoadData({ value: key }))
+
+                setExpandedKeys([...nodeKeys])
+              }}
+              onDropdownVisibleChange={(open) => {
+                if(!open) setExpandedKeys([])
               }}
             />
           </Form.Item>
