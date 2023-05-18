@@ -69,7 +69,6 @@ import { RolesEnum }              from '@acx-ui/types'
 import { useGetUserProfileQuery } from '@acx-ui/user'
 import { AccountType }            from '@acx-ui/utils'
 
-
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
 // eslint-disable-next-line import/order
 import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
@@ -159,6 +158,7 @@ export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const edgeEnabled = useIsSplitOn(Features.EDGES)
+  const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -188,7 +188,7 @@ export function ManageCustomer () {
   const [subscriptionOrigEndDate, setSubscriptionOrigEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
-
+  const [optionalEcAdmin, setOptionalEcAdmin] = useState(false)
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
 
@@ -392,6 +392,10 @@ export function ManageCustomer () {
     }
   }
 
+  const ecCustomerAdminOnChange = (checked: boolean) => {
+    setOptionalEcAdmin(checked)
+  }
+
   const handleAddCustomer = async (values: EcFormData) => {
     try {
       const ecFormData = { ...values }
@@ -428,12 +432,14 @@ export function ManageCustomer () {
         street_address: ecFormData.address.addressLine as string,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        admin_email: ecFormData.admin_email,
-        admin_firstname: ecFormData.admin_firstname,
-        admin_lastname: ecFormData.admin_lastname,
-        admin_role: ecFormData.admin_role,
         admin_delegations: delegations,
         licenses: assignLicense
+      }
+      if (!optionalEcAdmin) {
+        customer.admin_email = ecFormData.admin_email
+        customer.admin_firstname = ecFormData.admin_firstname
+        customer.admin_lastname = ecFormData.admin_lastname
+        customer.admin_role = ecFormData.admin_role
       }
       const ecDelegations=[] as MspIntegratorDelegated[]
       if (mspIntegrator.length > 0) {
@@ -673,52 +679,58 @@ export function ManageCustomer () {
       <Form.Item children={displayCustomerAdmins()} />
       </>
     } else {
-      return <><Subtitle level={3}>
+      return <>{optionalAdminFF &&
+      <Switch style={{ marginTop: '-5px' }}
+        defaultChecked={optionalEcAdmin}
+        onChange={ecCustomerAdminOnChange}/>}
+      <Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
-      <Form.Item
-        name='admin_email'
-        label={intl.$t({ defaultMessage: 'Email' })}
-        style={{ width: '300px' }}
-        rules={[
-          { required: true },
-          { validator: (_, value) => emailRegExp(value) },
-          { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
-        ]}
-        children={<Input />}
-      />
-      <Form.Item
-        name='admin_firstname'
-        label={intl.$t({ defaultMessage: 'First Name' })}
-        rules={[{ required: true }]}
-        children={<Input />}
-        style={{ display: 'inline-block', width: '150px' ,paddingRight: '10px' }}
-      />
-      <Form.Item
-        name='admin_lastname'
-        label={intl.$t({ defaultMessage: 'Last Name' })}
-        rules={[ { required: true } ]}
-        children={<Input />}
-        style={{ display: 'inline-block', width: '150px',paddingLeft: '10px' }}
-      />
-      <Form.Item
-        name='admin_role'
-        label={intl.$t({ defaultMessage: 'Role' })}
-        style={{ width: '300px' }}
-        rules={[{ required: true }]}
-        initialValue={RolesEnum.PRIME_ADMIN}
-        children={
-          <Select>
-            {
-              Object.entries(RolesEnum).map(([label, value]) => (
-                <Option
-                  key={label}
-                  value={value}>{intl.$t(roleDisplayText[value])}
-                </Option>
-              ))
-            }
-          </Select>
-        }
-      />
+      {(!optionalAdminFF || optionalEcAdmin) && <div>
+        <Form.Item
+          name='admin_email'
+          label={intl.$t({ defaultMessage: 'Email' })}
+          style={{ width: '300px' }}
+          rules={[
+            { required: true },
+            { validator: (_, value) => emailRegExp(value) },
+            { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='admin_firstname'
+          label={intl.$t({ defaultMessage: 'First Name' })}
+          rules={[{ required: true }]}
+          children={<Input />}
+          style={{ display: 'inline-block', width: '150px' ,paddingRight: '10px' }}
+        />
+        <Form.Item
+          name='admin_lastname'
+          label={intl.$t({ defaultMessage: 'Last Name' })}
+          rules={[ { required: true } ]}
+          children={<Input />}
+          style={{ display: 'inline-block', width: '150px',paddingLeft: '10px' }}
+        />
+        <Form.Item
+          name='admin_role'
+          label={intl.$t({ defaultMessage: 'Role' })}
+          style={{ width: '300px' }}
+          rules={[{ required: true }]}
+          initialValue={RolesEnum.PRIME_ADMIN}
+          children={
+            <Select>
+              {
+                Object.entries(RolesEnum).map(([label, value]) => (
+                  <Option
+                    key={label}
+                    value={value}>{intl.$t(roleDisplayText[value])}
+                  </Option>
+                ))
+              }
+            </Select>
+          }
+        />
+      </div>}
       </>
     }
   }

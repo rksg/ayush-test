@@ -49,5 +49,6 @@ export enum Features {
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
   STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
-  SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade'
+  SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
+  MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional'
 }
