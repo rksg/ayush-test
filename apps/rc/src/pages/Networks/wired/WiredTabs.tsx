@@ -36,7 +36,7 @@ function WiredTabs (props: { profileCount: number, cliCount: number }) {
       <Tabs.TabPane
         tab={navbarEnhancement
           ? $t({ defaultMessage: 'On-Demand CLI ({cliCount})' }, { cliCount })
-          : $t({ defaultMessage: 'On-Demand CLI' })
+          : $t({ defaultMessage: 'On-Demand CLI Configuration' })
         }
         key='onDemandCli'
       />
