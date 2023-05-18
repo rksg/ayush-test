@@ -18,7 +18,7 @@ export interface PageHeaderProps
   title: React.ReactNode,
   titleExtra?: React.ReactNode,
   footerSpacer?: boolean,
-  breadcrumb?: { text: string, link: string, tenantType?: TenantType }[]
+  breadcrumb?: { text: string, link?: string, tenantType?: TenantType }[]
 }
 
 PageHeader.defaultProps = {
@@ -44,8 +44,11 @@ function PageHeader (props: PageHeaderProps) {
     pageHeaderProps.breadcrumb = <Breadcrumb>
       {props.breadcrumb.map((breadcrumb, index) => {
         return <Breadcrumb.Item key={index}>
-          <TenantLink to={breadcrumb.link}
-            tenantType={breadcrumb.tenantType}>{breadcrumb.text}</TenantLink>
+          {breadcrumb.link
+            ? <TenantLink to={breadcrumb.link}
+              tenantType={breadcrumb.tenantType}>{breadcrumb.text}</TenantLink>
+            : breadcrumb.text
+          }
         </Breadcrumb.Item>
       })}
       <Breadcrumb.Item key='last'>&nbsp;</Breadcrumb.Item>

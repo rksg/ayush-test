@@ -40,6 +40,11 @@ export const Wrapper = styled.div`
       line-height: var(--acx-body-4-line-height);
       font-weight: var(--acx-body-font-weight);
     }
+    .ant-breadcrumb {
+      a:hover {
+        text-decoration: underline;
+      }
+    }
     .ant-breadcrumb + .ant-page-header-heading {
       margin-top: 3px;
     }
