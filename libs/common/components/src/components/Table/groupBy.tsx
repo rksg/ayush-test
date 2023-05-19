@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useMemo, Key } from 'react'
 
 import { Select }    from 'antd'
@@ -53,6 +54,7 @@ export function useGroupBy<RecordType> (
   groupByValue: string | undefined,
   columnsState: TableColumnState
 ) {
+  console.log(expandedRowKeys)
   return useMemo(() => {
     const groupable = columns.filter(col => col.groupable)
     const isGroupByActive = typeof groupByValue !== 'undefined'
@@ -75,23 +77,30 @@ export function useGroupBy<RecordType> (
       ? count + ('children' in column ? column.children?.length || 1 : 1)
       : count, 0)
     const addColSpan = (colSpan: number) =>
-      (record: RecordType) => 'children' in record ? ({ colSpan }) : ({})
+      (record: RecordType) => 'children' in record && !('isFirstLevel' in record) ? ({ colSpan }) : ({})
+      console.log(columnCount)
     return {
       groupable,
       columns: isGroupByActive
         ? columns.map((column, columnIndex) => {
           const { render, searchable, dataIndex } = column
+          // console.log(column)
           const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
-            if ('children' in record) {
+            if ('children' in record && !('isFirstLevel' in record)) {
               return columnIndex === 0 ? renderGroupRow(record) : null
-            } else {
+            } 
+            // if('children' in record && ('isFirstLevel' in record))
+            // {
+            // return typeof dom === 'string' ? dom : null
+            // }
+            else {
               if (render) {
                 return render(dom, record, index, highlightFn, action, schema)
               }
               if (searchable) {
                 return highlightFn(_.get(record, dataIndex))
               }
-              return dom
+              return typeof dom === 'string' ? dom : null
             }
           }
           return {
@@ -106,7 +115,7 @@ export function useGroupBy<RecordType> (
         })
         : columns,
       isGroupByActive,
-      expandable: isGroupByActive ? { expandedRowKeys, showExpandColumn: false } : undefined
+      expandable: isGroupByActive ? {  showExpandColumn: true } : undefined
     }
   }, [columns, groupByValue, expandedRowKeys, columnsState])
 }

@@ -279,7 +279,7 @@ function Table <RecordType extends Record<string, any>> ({
     },
     ...isGroupByActive
       ? {
-        getCheckboxProps: record => 'children' in record
+        getCheckboxProps: record => 'children' in record && !('isFirstLevel' in record)
           ? ({ disabled: true, style: { display: 'none' } })
           : ({})
       }
@@ -358,7 +358,6 @@ function Table <RecordType extends Record<string, any>> ({
       children: column.children?.map(child => _.flow([columnRender, columnResize])(child))
     })
   }))
-
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
@@ -461,7 +460,7 @@ function Table <RecordType extends Record<string, any>> ({
       expandable={expandable}
       rowClassName={props.rowClassName
         ? props.rowClassName
-        : (record) => isGroupByActive && 'children' in record
+        : (record) => isGroupByActive && 'children' in record && !('isFirstLevel' in record)
           ? 'parent-row-data'
           : ''
       }

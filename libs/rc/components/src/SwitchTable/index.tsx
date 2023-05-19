@@ -50,6 +50,193 @@ import {
 } from './config'
 import { useExportCsv } from './useExportCsv'
 
+const sample= [
+  {
+    switches: [
+      {
+        id: 'FEK4224P02N',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK4224P02N',
+        activeSerial: 'FEK4224P02N',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: false,
+        name: 'FEK4224P02N',
+        venueId: 'd3ba5e5b0c6c44649500c0ab1d853d61',
+        venueName: '111sample',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: false,
+        suspendingDeployTime: '',
+        isFirstLevel: true
+      },
+      {
+        id: 'FEK4224P12N',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK4224P12N',
+        activeSerial: 'FEK4224P12N',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: false,
+        name: 'FEK4224P12N',
+        venueId: '37dcd1c2745f401c994a6bf45e991fd9',
+        venueName: '2newone',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: true,
+        suspendingDeployTime: '',
+        isFirstLevel: true
+      },
+      {
+        id: 'FEK3204N00E',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK3204N00E',
+        activeSerial: 'FEK3204N00E',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: true,
+        name: 'Stack - FEK3204N00E',
+        venueId: 'b12fd44f52bf4df2bca8835bab118c4c',
+        venueName: 'My-Venue',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: false,
+        suspendingDeployTime: '',
+        isFirstLevel: true,
+        children: [
+          {
+            id: 'FEK4224P12N234',
+            model: 'ICX7150-C12P',
+            serialNumber: 'FEK4224P12N',
+            activeSerial: 'FEK4224P12N',
+            deviceStatus: 'PREPROVISIONED',
+            switchMac: '',
+            isStack: false,
+            name: 'FEK4224P12N',
+            venueId: '37dcd1c2745f401c994a6bf45e991fd9234',
+            venueName: '2newone',
+            configReady: false,
+            syncDataEndTime: '',
+            cliApplied: true,
+            suspendingDeployTime: '',
+            isFirstLevel: false
+          }
+        ]
+      },
+      {
+        id: 'FEK3250P5VA',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK3250P5VA',
+        activeSerial: 'FEK3250P5VA',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: false,
+        name: 'Test Lab',
+        venueId: 'd3ba5e5b0c6c44649500c0ab1d853d61',
+        venueName: '111sample',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: false,
+        suspendingDeployTime: '',
+        isFirstLevel: true
+      }
+    ],
+    deviceStatus: 'PREPROVISIONED',
+    members: 4,
+    incidents: 0,
+    clients: 0,
+    children: [
+      {
+        id: 'FEK4224P02N',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK4224P02N',
+        activeSerial: 'FEK4224P02N',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: false,
+        name: 'FEK4224P02N',
+        venueId: 'd3ba5e5b0c6c44649500c0ab1d853d61',
+        venueName: '111sample',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: false,
+        suspendingDeployTime: '',
+        isFirstLevel: true
+      },
+      {
+        id: 'FEK4224P12N',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK4224P12N',
+        activeSerial: 'FEK4224P12N',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: false,
+        name: 'FEK4224P12N',
+        venueId: '37dcd1c2745f401c994a6bf45e991fd9',
+        venueName: '2newone',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: true,
+        suspendingDeployTime: '',
+        isFirstLevel: true
+      },
+      {
+        id: 'FEK3204N00E',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK3204N00E',
+        activeSerial: 'FEK3204N00E',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: true,
+        name: 'Stack - FEK3204N00E',
+        venueId: 'b12fd44f52bf4df2bca8835bab118c4c',
+        venueName: 'My-Venue',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: false,
+        suspendingDeployTime: '',
+        isFirstLevel: true,
+        children: [
+          {
+            id: 'FEK4224P12N234',
+            model: 'ICX7150-C12P1233',
+            serialNumber: 'FEK4224P12N23e',
+            activeSerial: 'FEK4224P12N123',
+            deviceStatus: 'PREPROVISIONED',
+            switchMac: '',
+            isStack: false,
+            name: 'FEK4224P12N123',
+            venueId: '37dcd1c2745f401c994a6bf45e991fd9234',
+            venueName: '2newone213',
+            configReady: false,
+            syncDataEndTime: '',
+            cliApplied: true,
+            suspendingDeployTime: '',
+            isFirstLevel: false
+          }
+        ]
+      },
+      {
+        id: 'FEK3250P5VA',
+        model: 'ICX7150-C12P',
+        serialNumber: 'FEK3250P5VA',
+        activeSerial: 'FEK3250P5VA',
+        deviceStatus: 'PREPROVISIONED',
+        switchMac: '',
+        isStack: false,
+        name: 'Test Lab',
+        venueId: 'd3ba5e5b0c6c44649500c0ab1d853d61',
+        venueName: '111sample',
+        configReady: false,
+        syncDataEndTime: '',
+        cliApplied: false,
+        suspendingDeployTime: '',
+        isFirstLevel: true
+      }
+    ],
+    id: 'group0'
+  }
+]
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
@@ -182,7 +369,9 @@ export function SwitchTable (props : SwitchTableProps) {
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (data, row) => <SwitchStatus row={row}/>
+      render: (data, row) => {
+        return <SwitchStatus row={row}/>
+      }
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -329,12 +518,13 @@ export function SwitchTable (props : SwitchTableProps) {
       {...props}
       settingsId='switch-table'
       columns={columns}
-      dataSource={tableData}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      dataSource={sample as any}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
+      rowKey={(record)=> record.id}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
