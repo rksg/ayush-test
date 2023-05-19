@@ -30,9 +30,6 @@ COPY tools/tests ./tools/tests
 ###############################################################
 FROM node:14.21.1-alpine as build-locales
 
-# add deps for building node-gpy
-RUN apk add --no-cache python3 make g++
-
 WORKDIR /app
 
 COPY package.json ./
