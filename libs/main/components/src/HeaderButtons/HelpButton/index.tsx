@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Menu, Dropdown } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Menu, Dropdown, Space } from 'antd'
+import { useIntl }               from 'react-intl'
 
-import { LayoutUI }                from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { RolesEnum }               from '@acx-ui/types'
-import { hasRoles }                from '@acx-ui/user'
+import { LayoutUI, Tooltip }                              from '@acx-ui/components'
+import { get }                                            from '@acx-ui/config'
+import { QuestionMarkCircleSolid, WarningCircleOutlined } from '@acx-ui/icons'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles }                                       from '@acx-ui/user'
 
 import Firewall          from './Firewall'
 import HelpPage          from './HelpPage'
@@ -18,21 +18,30 @@ export interface HelpButtonProps{
   setIsShown?: (b: boolean | null) => void
 }
 
+let timeout:NodeJS.Timeout
+
 const HelpButton = (props:HelpButtonProps) => {
   const { supportStatus, setIsShown } = props
   const { $t } = useIntl()
 
   const [firewallModalState, setFirewallModalOpen] = useState(false)
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
+  const [isBlocked, setIsBlocked] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   useEffect(()=>{
     switch (supportStatus) {
-      case 'ready':
-        setIsChatDisabled(false)
+      case 'start':
+        timeout=setTimeout(()=>{
+          setIsBlocked(true)
+        },30 * 1000) // Wait 30 secs to show the warning tooltip
+        setIsChatDisabled(true)
         break
+      case 'ready':
       case 'chatting':
+        clearTimeout(timeout)
+        setIsBlocked(false)
         setIsChatDisabled(false)
         break
       default:
@@ -93,7 +102,13 @@ const HelpButton = (props:HelpButtonProps) => {
       {
         key: 'support',
         disabled: isChatDisabled,
-        label: $t({ defaultMessage: 'Contact Support' })
+        label: <Space>{$t({ defaultMessage: 'Contact Support' })}
+          {isBlocked && <Tooltip showArrow={false}
+            // eslint-disable-next-line max-len
+            title={$t({ defaultMessage: 'Some browser\'s security extensions/plugins might block this feature. Please disable those extensions/plugins and try again.' })}>
+            <WarningCircleOutlined style={{ marginBottom: '-5px', width: '18px', height: '18px' }}/>
+          </Tooltip>}
+        </Space>
       },
       {
         key: 'models',
