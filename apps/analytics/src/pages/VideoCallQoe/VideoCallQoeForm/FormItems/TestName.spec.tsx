@@ -7,7 +7,7 @@ import {
 } from '@acx-ui/store'
 import { mockGraphqlQuery, screen } from '@acx-ui/test-utils'
 
-import { renderForm }         from '../../../NetworkHealth/__tests__/fixtures'
+import { renderForm }         from '../../../ServiceGuard/__tests__/fixtures'
 import { getAllCallQoeTests } from '../../__tests__/fixtures'
 
 import { TestName } from './TestName'
