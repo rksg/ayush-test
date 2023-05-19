@@ -73,15 +73,13 @@ export const CloseIcon = styled(Close)`
   font-size: large;
   margin-top: 2px;
 `
-
 interface WrapperProps {
-  needPadding?: boolean
+  needPadding?: boolean;
 }
 export const Wrapper = styled.div<WrapperProps>`
-  height: 160px;
+  height: auto;
   width: 375px;
-  padding: ${props => props.needPadding ? '10px 15px' : undefined};
-  margin-bottom: ${props => !props.needPadding ? '-25px' : undefined};
+  padding: ${props => props.needPadding ? '10px 15px' : undefined};  
 `
 export const CellWrapper = styled(Space)`
   justify-content: left;

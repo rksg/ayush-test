@@ -150,6 +150,7 @@ export function EditPortDrawer ({
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
+  const hasBreakoutPort = selectedPorts.filter(p => p.portIdentifier.includes(':')).length > 0
 
   const [aclsOptions, setAclsOptions] = useState([] as DefaultOptionType[])
   const [vlansOptions, setVlansOptions] = useState([] as DefaultOptionType[])
@@ -917,7 +918,8 @@ export function EditPortDrawer ({
                         ? $t({ defaultMessage: 'Customize' })
                         : $t({ defaultMessage: 'Edit' })
                       }</UI.LinkButton>
-                    {(!useVenueSettings || !portEditStatus || portEditStatus === 'port') &&
+                    {((!useVenueSettings || !portEditStatus || portEditStatus === 'port')
+                      && !hasBreakoutPort) &&
                       <Tooltip title={getFieldTooltip('useVenuesettings')} >
                         <Space>
                           <UI.LinkButton type='link'
