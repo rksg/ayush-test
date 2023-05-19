@@ -74,7 +74,7 @@ type NetworkDiagramProps = DefaultDiagramProps
   | CaptivePortalDiagramProps
 
 const CloudpathCloudDiagramMap: Partial<Record<NetworkTypeEnum, string>> = {
-  [NetworkTypeEnum.DPSK]: DpskCloudpathCloudDiagram,
+  [NetworkTypeEnum.DPSK]: DpskUsingRadiusDiagram,
   [NetworkTypeEnum.OPEN]: OpenCloudpathCloudDiagram,
   [NetworkTypeEnum.AAA]: AaaCloudpathCloudDiagram,
   [NetworkTypeEnum.CAPTIVEPORTAL]: CaptiveCloudpathCloudDiagram
@@ -119,7 +119,7 @@ function getDiagram (props: NetworkDiagramProps) {
 }
 
 function getDPSKDiagram (props:DpskDiagramProps){
-  return props?.isCloudpathEnabled?DpskCloudpathCloudDiagram:DpskDiagram
+  return props?.isCloudpathEnabled?DpskUsingRadiusDiagram:DpskDiagram
 }
 function getPSKDiagram (props: PskDiagramProps) {
   return props?.enableMACAuth ? AaaDiagram : PskDiagram
