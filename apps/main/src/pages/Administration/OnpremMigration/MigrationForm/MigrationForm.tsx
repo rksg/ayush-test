@@ -117,7 +117,7 @@ const MigrationForm = () => {
           onFinish={async () => {
             setIsMigrating(true)
             const requestJson = {
-              venueName: state.venueName,
+              venueName: (state.venueName && state.venueName.length > 0) ? state.venueName : null,
               description: state.description,
               // address: state.address
               address: defaultAddress
