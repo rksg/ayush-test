@@ -41,9 +41,32 @@ const venueMarker = {
     category: 'Switches',
     series
   }],
+  edgeStat: [{
+    category: 'Edges',
+    series: [
+      {
+        name: '1 Requires Attention',
+        value: 0
+      },
+      {
+        name: '2 Transient Issue',
+        value: 0
+      },
+      {
+        name: '3 In Setup Phase',
+        value: 2
+      },
+      {
+        name: '4 Operational',
+        value: 3
+      }
+    ]
+  }],
   switchesCount: 2,
   clientsCount: 20,
-  switchClientsCount: 10
+  edgesCount: 5,
+  switchClientsCount: 10,
+  edgeClientsCount: 0
 }
 
 describe('VenueClusterRenderer', () => {
@@ -60,7 +83,7 @@ describe('VenueClusterRenderer', () => {
   it('should call render for the markercluster', ()=>{
     const map = new google.maps.Map(document.createElement('div'))
     const { result } = renderHook(() => {
-      return new VenueClusterRenderer(map, useIntl())
+      return new VenueClusterRenderer(map, useIntl(), true)
     })
     const spyRender = jest.spyOn(result.current, 'render')
 
@@ -110,7 +133,21 @@ describe('VenueClusterRenderer', () => {
       return marker
     })
     const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv = generateClusterInfoContent(markers, clusterInfoWindow)
+    const infoDiv = generateClusterInfoContent(markers, clusterInfoWindow, true)
+    expect(infoDiv).toMatchSnapshot()
+  })
+  it('should match with snapshot for venue cluster tooltip when edge disabled',() => {
+    const markers = Array.from(Array(15).keys()).map(index => {
+      const marker = new google.maps.Marker()
+      marker.get = jest.fn().mockImplementation(() => ({
+        ...venueMarker,
+        venueId: `venueId#${index+1}`,name: `Venue #${index+1}`,
+        status: index % 2 === 0 ? ApVenueStatusEnum.TRANSIENT_ISSUE : venueMarker.status
+      }))
+      return marker
+    })
+    const clusterInfoWindow = new google.maps.InfoWindow({})
+    const infoDiv = generateClusterInfoContent(markers, clusterInfoWindow, false)
     expect(infoDiv).toMatchSnapshot()
   })
   it('should match with snapshot for venue cluster tooltip for more than 20 venues',()=>{
@@ -125,7 +162,7 @@ describe('VenueClusterRenderer', () => {
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
+    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow, true)
     expect(infoDiv).toMatchSnapshot()
   })
   it('should match with snapshot for venue cluster tooltip without pagination',()=>{
@@ -139,7 +176,7 @@ describe('VenueClusterRenderer', () => {
     })
 
     const clusterInfoWindow = new google.maps.InfoWindow({})
-    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow)
+    const infoDiv=generateClusterInfoContent(markers,clusterInfoWindow, true)
     expect(infoDiv).toMatchSnapshot()
   })
   it('should match with snapshot for renderItemForList',()=>{
