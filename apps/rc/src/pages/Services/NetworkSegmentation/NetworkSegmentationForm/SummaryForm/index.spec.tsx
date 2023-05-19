@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsFormNew }     from '@acx-ui/components'
+import { StepsForm }        from '@acx-ui/components'
 import {
   NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
@@ -87,11 +87,11 @@ describe('SummaryForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew form={formRef.current} onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <SummaryForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))

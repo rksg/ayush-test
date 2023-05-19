@@ -7,6 +7,15 @@ type LabelProps = {
   name : string
 }
 
+export const SeverityCircles = (props: { severityCircles?: string[] }) => {
+  const { severityCircles } = props
+  return (<UI.SeverityContainer>
+    {severityCircles?.map((severityCircle, index) => (
+      <UI.SeveritySpan severity={severityCircle} key={index} />
+    ))}
+  </UI.SeverityContainer>)
+}
+
 export const LabelWithSeverityCircle = (props: LabelProps) => {
   const { name, severityCircles } = props
   return (
@@ -14,11 +23,7 @@ export const LabelWithSeverityCircle = (props: LabelProps) => {
       <UI.Label title={name}>
         {name}
       </UI.Label>
-      <UI.SeverityContainer>
-        {severityCircles?.map((severityCircle, index) => (
-          <UI.SeveritySpan severity={severityCircle} key={index} />
-        ))}
-      </UI.SeverityContainer>
+      <SeverityCircles severityCircles={severityCircles} />
     </UI.LabelContainer>
   )
 }

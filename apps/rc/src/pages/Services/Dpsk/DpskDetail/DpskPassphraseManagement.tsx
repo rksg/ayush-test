@@ -8,7 +8,6 @@ import {
   Modal,
   ModalRef,
   ModalType,
-  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -16,6 +15,7 @@ import { Features, useIsSplitOn }                      from '@acx-ui/feature-tog
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
@@ -33,8 +33,7 @@ import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import NetworkForm                      from '../../../Networks/wireless/NetworkForm/NetworkForm'
-import { serviceInUsedMessageTemplate } from '../contentsMap'
+import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
@@ -180,14 +179,14 @@ export default function DpskPassphraseManagement () {
     }
   ]
 
-  const hasAppliedPersona = (selectedRows: NewDpskPassphrase[]): boolean => {
-    return selectedRows.some(row => row.identityId)
-  }
-
-  const getDeleteButtonTooltip = (selectedRows: NewDpskPassphrase[]): string | undefined => {
-    return hasAppliedPersona(selectedRows)
-      ? $t(serviceInUsedMessageTemplate, { serviceName: 'Persona' })
-      : undefined
+  const doDelete = (selectedRows: NewDpskPassphrase[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Passphrase' }),
+      selectedRows[0].username,
+      [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) }],
+      async () => deletePassphrases({ params, payload: selectedRows.map(p => p.id) }).then(callback)
+    )
   }
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
@@ -240,22 +239,8 @@ export default function DpskPassphraseManagement () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: (selectedRows) => hasAppliedPersona(selectedRows),
-      tooltip: (selectedRows) => getDeleteButtonTooltip(selectedRows),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Passphrase' }),
-            entityValue: selectedRows[0].username,
-            numOfEntities: selectedRows.length
-          },
-          onOk: () => {
-            deletePassphrases({ params, payload: selectedRows.map(p => p.id) })
-            clearSelection()
-          }
-        })
+        doDelete(selectedRows, clearSelection)
       }
     }
   ]
@@ -295,7 +280,7 @@ export default function DpskPassphraseManagement () {
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
     />
-    { managePassphraseInfo && <ManageDevicesDrawer
+    { Object.keys(managePassphraseInfo).length > 0 && <ManageDevicesDrawer
       visible={manageDevicesVisible}
       setVisible={setManageDevicesVisible}
       passphraseInfo={managePassphraseInfo}
@@ -345,6 +330,7 @@ export default function DpskPassphraseManagement () {
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
+        settingsId='dpsk-passphrase-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

@@ -191,6 +191,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
             validateFirst
             hasFeedback
             children={<Input/>}
+            validateTrigger={'onBlur'}
           />
           <Loader states={[{ isLoading }]}>
             <Form.Item name='templateTypeId'

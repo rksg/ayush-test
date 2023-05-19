@@ -504,18 +504,32 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
+  getApMeshTopology: {
+    method: 'get',
+    url: '/venues/:venueId/meshTopologies',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
+    newApi: true
+  },
   getVenueMdnsFencingPolicy: {
     method: 'get',
-    //url: '/venues/:venueId/bonjourFencingSettings',
     url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings ',
+    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
     newApi: true
   },
   updateVenueMdnsFencingPolicy: {
     method: 'put',
-    //url: '/venues/:venueId/bonjourFencingSettings',
     url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings ',
+    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
+    newApi: true
+  },
+  getVenueRadiusOptions: {
+    method: 'get',
+    url: '/venues/:venueId/radiusOptions',
+    newApi: true
+  },
+  updateVenueRadiusOptions: {
+    method: 'put',
+    url: '/venues/:venueId/radiusOptions',
     newApi: true
   }
 }

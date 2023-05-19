@@ -3,8 +3,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsFormNew } from '@acx-ui/components'
-import { useNavigateToPath }        from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm } from '@acx-ui/components'
+import { useNavigateToPath }     from '@acx-ui/react-router-dom'
 
 import { useCreateCallQoeTestMutation } from '../services'
 
@@ -14,10 +14,10 @@ import { VideoCallQoeDetailsForm } from './VideoCallQoeDetailsForm'
 export function VideoCallQoeForm () {
   const { $t } = useIntl()
   const [ link, setLink ] = useState('')
-  const navigateToList = useNavigateToPath('/serviceValidation/videoCallQoe')
+  const navigateToList = useNavigateToPath('/analytics/videoCallQoe')
   const breadcrumb = [{
     text: $t({ defaultMessage: 'Video Call QoE' }),
-    link: '/serviceValidation/videoCallQoe'
+    link: '/analytics/videoCallQoe'
   }]
 
   const [ submit ] = useCreateCallQoeTestMutation()
@@ -27,7 +27,7 @@ export function VideoCallQoeForm () {
       ? $t({ defaultMessage: 'Create Test Call' })
       : $t({ defaultMessage: 'Test Call Details' })}
     breadcrumb={breadcrumb} />
-    <StepsFormNew
+    <StepsForm
       onFinish={async (values: { name: string }) => {
         const response = await submit(values).unwrap()
         setLink(response?.meetings[0]?.joinUrl)
@@ -39,7 +39,7 @@ export function VideoCallQoeForm () {
       }}
     >
       {
-        <StepsFormNew.StepForm
+        <StepsForm.StepForm
           children={link?
             <VideoCallQoeDetailsForm link={link}/>
             :
@@ -47,6 +47,6 @@ export function VideoCallQoeForm () {
           }/>
       }
 
-    </StepsFormNew>
+    </StepsForm>
   </>
 }

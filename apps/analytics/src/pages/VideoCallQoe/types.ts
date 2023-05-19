@@ -115,3 +115,22 @@ export interface Participants{
     }
   }[]
 }
+
+
+// Client MAC Search API
+export interface Client {
+  hostname: string
+  username: string
+  mac: string
+  ipAddress: string
+}
+export interface RequestPayload {
+  start: string
+  end: string
+  query: string
+  limit: number
+}
+
+export interface SearchResponse <T> {
+  search: T
+}

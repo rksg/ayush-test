@@ -5,7 +5,7 @@ import { useWatch }                                                  from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer, Loader, StepsForm } from '@acx-ui/components'
+import { Drawer, Loader, StepsFormLegacy } from '@acx-ui/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -259,23 +259,20 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       payload: { name, resident }
     }).unwrap()
 
+    // update UnitPersona
     const personaUpdateResult = withNsg
       ? await patchPersona(personaId, {
         ...unitPersona,
-        ...ports
-          ? {
-            ethernetPorts: ports.map(p => ({
-              personaId,
-              macAddress: accessAp,
-              portIndex: p,
-              name: apName
-            } as PersonaEthernetPort))
-          }
-          : {}
+        ethernetPorts: ports?.map(p => ({
+          personaId,
+          macAddress: accessAp,
+          portIndex: p,
+          name: apName
+        } as PersonaEthernetPort)) ?? []
       })
       : await patchPersona(personaId, unitPersona)
 
-    // update Persona
+    // update GuestPersona
     const guestUpdateResult = await patchPersona(
       guestPersonaId,
       { ...guestPersona, vlan: guestPersona?.vlan ?? unitPersona?.vlan }
@@ -439,7 +436,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               </Form.Item>
             </Form.Item>
 
-            <StepsForm.FieldLabel width={'160px'}>
+            <StepsFormLegacy.FieldLabel width={'160px'}>
               {$t({ defaultMessage: 'Separate VLAN for guests' })}
               <Form.Item
                 style={{ marginBottom: '10px' }}
@@ -447,7 +444,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 valuePropName={'checked'}
                 children={<Switch />}
               />
-            </StepsForm.FieldLabel>
+            </StepsFormLegacy.FieldLabel>
             {enableGuestVlan &&
               <Form.Item
                 name={['guestPersona', 'vlan']}

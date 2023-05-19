@@ -220,7 +220,6 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
       footer={<FooterDiv>{footer}</FooterDiv>}
       children={content}
       width={'400px'}
-      maskClosable={true}
       closable={true}
     />
   )

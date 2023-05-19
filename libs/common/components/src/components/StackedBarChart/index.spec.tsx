@@ -56,6 +56,21 @@ describe('StackedBarChart', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toMatchSnapshot()
   })
+  it('should render chart with formatTotal enabled', async () => {
+    const formatter = jest.fn(value=>`formatted-${value}`)
+    const { asFragment } = render(
+      <StackedBarChart
+        style={{ height: 110, width: 500 }}
+        barWidth={20}
+        barColors={getDeviceConnectionStatusColorsv2()}
+        data={singleBar}
+        total={24} // must pass this value to make proper width
+        formatTotal
+        dataFormatter={formatter}
+      />)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('svg')).toMatchSnapshot()
+  })
 })
 
 describe('tooltipFormatter', () => {

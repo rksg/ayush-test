@@ -11,10 +11,10 @@ function MockLayout (props: React.PropsWithChildren) {
   return <div className='ant-pro-basicLayout'>{props.children}</div>
 }
 
-storiesOf('StepsForm', module)
+storiesOf('StepsFormNew', module)
   .add('Basic', () => <MockLayout><BasicMultiSteps /></MockLayout>)
   .add('With Async Validation', () => <MockLayout><AsyncValidation /></MockLayout>)
-  .add('Edit Mode', () => <MockLayout><EditMode/ ></MockLayout>)
+  .add('Edit Mode', () => <MockLayout><EditMode /></MockLayout>)
   .add('Dynamic Steps', () => <MockLayout><DynamicSteps /></MockLayout>)
   .add('Single Step', () => <MockLayout><SingleStep /></MockLayout>)
   .add('Custom Inputs', () => <MockLayout><CustomInputForm /></MockLayout>)

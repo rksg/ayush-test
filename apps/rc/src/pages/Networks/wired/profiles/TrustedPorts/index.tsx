@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react'
 import { Row, Col, Form, Input, Typography } from 'antd'
 import _                                     from 'lodash'
 
-import { showActionModal, StepsForm, Table, TableProps, Button } from '@acx-ui/components'
+import { showActionModal, StepsFormLegacy, Table, TableProps, Button } from '@acx-ui/components'
 import {
   defaultSort,
   sortProp,
@@ -167,7 +167,7 @@ export function TrustedPorts () {
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'Trusted Ports' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Trusted Ports' })} />
           <Typography.Paragraph>
             {
               // eslint-disable-next-line max-len

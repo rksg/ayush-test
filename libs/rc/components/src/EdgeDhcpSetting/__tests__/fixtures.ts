@@ -39,7 +39,7 @@ export const mockedOptionData = [
     id: '1',
     optionId: '6',
     optionName: 'Domain Server',
-    optionValue: '12'
+    optionValue: '1.1.1.1'
   },
   {
     id: '2',

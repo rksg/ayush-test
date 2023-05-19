@@ -748,6 +748,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
         </div>
       </div>
     </div>
+    <div />
   </div>
 </DocumentFragment>
 `;
@@ -1506,7 +1507,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/tenant-id/t/serviceValidation/videoCallQoe/57"
+                                  href="/tenant-id/t/analytics/videoCallQoe/57"
                                 >
                                   Asraf - Test1
                                 </a>
@@ -1579,7 +1580,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/tenant-id/t/serviceValidation/videoCallQoe/13"
+                                  href="/tenant-id/t/analytics/videoCallQoe/13"
                                 >
                                   ACX_test
                                 </a>
@@ -1636,6 +1637,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
         </div>
       </div>
     </div>
+    <div />
   </div>
 </DocumentFragment>
 `;

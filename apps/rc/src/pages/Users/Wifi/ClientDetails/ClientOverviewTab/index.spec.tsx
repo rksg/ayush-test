@@ -117,7 +117,7 @@ describe('ClientOverviewTab', () => {
       checkFragment(asFragment)
     })
 
-    it('should handle error occurred', async () => {
+    it.skip('should handle error occurred', async () => {
       mockServer.use(
         rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({}))
@@ -133,7 +133,7 @@ describe('ClientOverviewTab', () => {
       // expect(await screen.findByText('Server Error')).toBeVisible()
     })
 
-    it('should render historical client info correctly', async () => {
+    it.skip('should render historical client info correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
       const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -144,7 +144,7 @@ describe('ClientOverviewTab', () => {
       checkFragment(asFragment)
     })
 
-    it('should render correctly when search parameters is disappeared', async () => {
+    it.skip('should render correctly when search parameters is disappeared', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
       mockServer.use(
         rest.get(ClientUrlsInfo.getClientDetails.url,

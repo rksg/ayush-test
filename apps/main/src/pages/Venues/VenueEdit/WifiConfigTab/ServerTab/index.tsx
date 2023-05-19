@@ -2,10 +2,10 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsForm }    from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }       from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { redirectPreviousPage }          from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }    from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
@@ -40,9 +40,9 @@ export function ServerTab () {
   const items = [{
     title: $t({ defaultMessage: 'Syslog Server' }),
     content: <>
-      <StepsForm.SectionTitle id='syslog-server'>
+      <StepsFormLegacy.SectionTitle id='syslog-server'>
         { $t({ defaultMessage: 'Syslog Server' }) }
-      </StepsForm.SectionTitle>
+      </StepsFormLegacy.SectionTitle>
       <Syslog />
     </>
   }]
@@ -51,9 +51,9 @@ export function ServerTab () {
     items.push({
       title: $t({ defaultMessage: 'mDNS Fencing' }),
       content: <>
-        <StepsForm.SectionTitle id='mdns-fencing'>
+        <StepsFormLegacy.SectionTitle id='mdns-fencing'>
           { $t({ defaultMessage: 'mDNS Fencing' }) }
-        </StepsForm.SectionTitle>
+        </StepsFormLegacy.SectionTitle>
         <MdnsFencing />
       </>
     })
@@ -63,9 +63,9 @@ export function ServerTab () {
     items.push({
       title: $t({ defaultMessage: 'AP SNMP' }),
       content: <>
-        <StepsForm.SectionTitle id='ap-snmp'>
+        <StepsFormLegacy.SectionTitle id='ap-snmp'>
           { $t({ defaultMessage: 'AP SNMP' }) }
-        </StepsForm.SectionTitle>
+        </StepsFormLegacy.SectionTitle>
         <ApSnmp/>
       </>
     })
@@ -89,16 +89,16 @@ export function ServerTab () {
   }
 
   return (
-    <StepsForm
+    <StepsFormLegacy
       onFinish={handleUpdateSetting}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <AnchorLayout items={items} offsetTop={275} />
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   )
 }
