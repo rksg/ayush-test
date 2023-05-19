@@ -8,6 +8,7 @@ import { PolicyType, ServiceType } from '@acx-ui/rc/utils'
 import ClientIsolationAllowList from './ClientIsolationAllowList'
 import DHCPInstance             from './DHCPInstance'
 import EdgeDhcpTab              from './DHCPInstance/Edge'
+import EdgeFirewall             from './Firewall'
 import MdnsProxyInstances       from './MdnsProxyInstances'
 import { VenueRogueAps }        from './VenueRogueAps'
 
@@ -49,6 +50,15 @@ export function VenueServicesTab () {
       >
         <VenueRogueAps />
       </Tabs.TabPane>
+      {
+        isEdgeEnabled &&
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Firewall' })}
+        key={ServiceType.EDGE_FIREWALL}
+      >
+        <EdgeFirewall />
+      </Tabs.TabPane>
+      }
     </Tabs>
   )
 }

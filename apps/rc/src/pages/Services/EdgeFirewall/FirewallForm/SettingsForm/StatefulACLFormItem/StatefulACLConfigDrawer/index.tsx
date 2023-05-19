@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Empty, Form, Input, Row, RowProps, Select, Space, Typography } from 'antd'
 import TextArea                                                         from 'antd/lib/input/TextArea'
 import _                                                                from 'lodash'
-import { IntlShape, useIntl }                                           from 'react-intl'
+import { useIntl }                                                      from 'react-intl'
 import {
   SortableContainer,
   SortableElement,
@@ -24,7 +24,7 @@ import {
   ACLDirection,
   AddressType,
   getAccessActionString,
-  getACLDirectionString,
+  getACLDirectionOptions,
   getProtocolTypeString,
   ProtocolType,
   StatefulAcl,
@@ -338,15 +338,6 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   )
 }
 
-export const getACLDirections = ($t: IntlShape['$t'])
-  : Array<{ label: string, value: ACLDirection }> => {
-  return Object.keys(ACLDirection)
-    .map(key => ({
-      label: getACLDirectionString($t, key as ACLDirection),
-      value: key as ACLDirection
-    }))
-}
-
 interface StatefulACLConfigDrawerProps {
   className?: string;
   visible: boolean;
@@ -357,7 +348,7 @@ interface StatefulACLConfigDrawerProps {
 export const StatefulACLConfigDrawer = (props: StatefulACLConfigDrawerProps) => {
   const { visible, setVisible, editData } = props
   const { $t } = useIntl()
-  const aclDirectionList = getACLDirections($t)
+  const aclDirectionList = getACLDirectionOptions($t)
   const { form: parentForm } = useStepFormContext<FirewallFormModel>()
   const [form] = Form.useForm()
 
