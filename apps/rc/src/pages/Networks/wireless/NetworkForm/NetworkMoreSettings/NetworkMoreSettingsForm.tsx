@@ -6,18 +6,20 @@ import {
   Form,
   Input,
   InputNumber,
+  Radio,
   Select,
-  Switch
+  Switch,
+  Space
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button }                                                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { RadiusOptionsForm }                                                        from '@acx-ui/rc/components'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                                       from '@acx-ui/utils'
+import { Button, Tooltip }                                                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
+import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                                    from '@acx-ui/utils'
 
 import NetworkFormContext                     from '../NetworkFormContext'
 import { hasAccountingRadius, hasAuthRadius } from '../utils'
@@ -144,6 +146,7 @@ export function MoreSettingsForm (props: {
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
+  const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -644,6 +647,40 @@ export function MoreSettingsForm (props: {
               />
             </div>
           </>}
+
+        {enableBSSPriority &&<>
+          <UI.Subtitle>{$t({ defaultMessage: 'Basic Service Set' })}</UI.Subtitle>
+          <Form.Item
+            name={['wlan','advancedCustomization','bssPriority']}
+            label={<>
+              {$t({ defaultMessage: 'BSS Priority' })}
+              <Tooltip.Question
+              // eslint-disable-next-line max-len
+                title={'LOW setting reduces the priority of the WLAN by limiting the throughput to all clients connected to this WLAN.\
+               HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'}
+                placement='right'
+              />
+            </>
+            }
+            initialValue={BasicServiceSetPriorityEnum.HIGH}
+            valuePropName='value'
+            style={{ marginBottom: '15px', width: '300px' }}
+            children={
+              <Radio.Group data-testid='BSS-Radio-Group'>
+                <Space direction='vertical'>
+                  <Radio value={BasicServiceSetPriorityEnum.HIGH} data-testid='BSS-Radio-HIGH'>
+                    {$t({ defaultMessage: 'High' })}
+                  </Radio>
+                  <Radio value={BasicServiceSetPriorityEnum.LOW} data-testid='BSS-Radio-LOW'>
+                    {$t({ defaultMessage: 'Low' })}
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            }
+          />
+        </>
+        }
+
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>
         <RadiusOptionsForm context='network'
