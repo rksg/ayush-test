@@ -724,7 +724,6 @@ export function EditPortDrawer ({
     visible={visible}
     onClose={onClose}
     footer={footer}
-    mask={false}
     children={<Loader states={[{
       isLoading: loading,
       isFetching: isPortsSettingUpdating

@@ -83,5 +83,6 @@ exports[`AP List Table should render table 1`] = `
       </span>
     </div>
   </div>
+  <div />
 </DocumentFragment>
 `;
