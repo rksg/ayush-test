@@ -180,10 +180,10 @@ describe('ClientOverviewTab', () => {
           filters={{ startDate: '', endDate: '', range: DateRange.last24Hours } as AnalyticsFilter}
         />
       </Provider>)
-      // expect(await screen.findByText('Current Status')).toBeVisible()
-      // expect(await screen.findByText('2.4 GHz')).toBeVisible()
-      // expect(await screen.findByText('5 GHz')).toBeVisible()
-      // expect(await screen.findByText('6 GHz')).toBeVisible()
+      expect(await screen.findByText('Current Status')).toBeVisible()
+      expect(await screen.findByText('2.4 GHz')).toBeVisible()
+      expect(await screen.findByText('5 GHz')).toBeVisible()
+      expect(await screen.findByText('6 GHz')).toBeVisible()
     })
 
     it('should render ClientOverviewWidget on undefined ClientStatistic', async () => {
