@@ -1,0 +1,82 @@
+FROM node:16.10.0-alpine as build-base
+
+# add deps for building node-gpy
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+# install node deps
+COPY package.json package-lock.json ./
+COPY patches ./patches
+RUN npm ci
+
+COPY .eslintignore \
+  .eslintrc.json \
+  babel.config.json \
+  jest.config.ts \
+  jest.preset.ts \
+  jest.setup.js \
+  modulefederation.config.base.js \
+  nx.json \
+  webpack.config.base.js \
+  tsconfig.base.json \
+  workspace.json \
+  ./
+COPY .storybook ./.storybook
+COPY apps ./apps
+COPY libs ./libs
+COPY tools/tests ./tools/tests
+
+###############################################################
+FROM node:14.21.1-alpine as build-locales
+
+# add deps for building node-gpy
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+COPY package.json ./
+RUN npm install react-intl lodash
+
+COPY apps ./apps
+COPY libs ./libs
+COPY tools/docker/locales ./tools/docker/locales
+
+RUN chmod +x tools/docker/locales/generate.sh
+RUN tools/docker/locales/generate.sh
+###############################################################
+
+FROM build-base as build
+
+COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
+RUN node ./node_modules/.bin/nx run-many --target=build --all
+
+###############################################################
+FROM nginx:1.21.6-alpine
+
+WORKDIR /usr/share/nginx/html
+
+# Remove default nginx static assets
+RUN rm -rf ./*
+
+COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
+COPY tools/docker/nginx/nginx.conf \
+  tools/docker/nginx/start-nginx.sh \
+  tools/docker/nginx/env.json.template \
+  /etc/nginx/
+
+COPY --from=build /app/dist/apps ./
+
+RUN \
+  # Move all other apps into main
+  ls | grep -v main | xargs mv -t main && \
+  # Create structure to match deployment need
+  mkdir -p tenant/t && \
+  # Move all files into it
+  mv -v main/* tenant/t/. && \
+  # Remove the main folder
+  rm -rf main
+
+EXPOSE 8080
+
+CMD ["/bin/sh", "/etc/nginx/start-nginx.sh"]
