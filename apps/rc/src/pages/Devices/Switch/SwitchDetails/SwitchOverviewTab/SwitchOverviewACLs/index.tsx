@@ -79,7 +79,6 @@ export function SwitchOverviewACLs () {
         visible={drawerVisible}
         onClose={onClose}
         width={443}
-        mask={false}
         children={
           <AclDetail
             row={currentRow}
