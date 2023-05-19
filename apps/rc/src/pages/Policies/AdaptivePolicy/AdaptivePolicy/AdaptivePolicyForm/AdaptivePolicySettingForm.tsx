@@ -83,7 +83,11 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
       {
         key: 'name',
         title: $t({ defaultMessage: 'Condition Type' }),
-        dataIndex: 'name'
+        dataIndex: 'name',
+        render: function (data, row) {
+          return row.templateAttribute?.attributeType === 'DATE_RANGE' ? row.name :
+            $t({ defaultMessage: '{name} (Regex)' }, { name: row.name })
+        }
       },
       {
         title: $t({ defaultMessage: 'Condition Value' }),
