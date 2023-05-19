@@ -195,6 +195,7 @@ export const clientApi = baseClientApi.injectEndpoints({
             body: arg.payload
           }
         } catch(e) {
+          // eslint-disable-next-line no-console
           console.error(e)
         }
         const baseDetailsQuery = await fetchWithBQ(clientDetails)
@@ -213,6 +214,7 @@ export const clientApi = baseClientApi.injectEndpoints({
             }
           }
         } catch(e) {
+          // eslint-disable-next-line no-console
           console.error(e)
         }
         const metaListQuery = await fetchWithBQ(metaInfo)
