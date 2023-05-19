@@ -181,10 +181,10 @@ export default function ActivityButton () {
     <Badge
       overflowCount={9}
       offset={[-3, 0]}
-      children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />}
-        onClick={()=>{
-          setActivityModalOpen(true)
-        }}/>}
+      children={<LayoutUI.ButtonSolid
+        icon={<ClockCircleFilled />}
+        onClick={()=> setActivityModalOpen(!activityModal)}
+      />}
     />
     <UI.Drawer
       width={464}
