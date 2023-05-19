@@ -45,7 +45,7 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <Form.Item name='name'
-          label={$t({ defaultMessage: 'Policy Name' })}
+          label={$t({ defaultMessage: 'Policy Set Name' })}
           rules={[
             { required: true },
             { validator: (_, value) => nameValidator(value) }

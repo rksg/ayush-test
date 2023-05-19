@@ -87,7 +87,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
   return (
     <>
       <Form.Item name='name'
-        label={$t({ defaultMessage: 'Policy Name' })}
+        label={$t({ defaultMessage: 'Group Name' })}
         rules={[
           { required: true },
           { validator: (_, value) => nameValidator(value) }
