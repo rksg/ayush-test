@@ -1,14 +1,15 @@
 import '@testing-library/jest-dom'
 
+import React from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-
-import { useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                 from '@acx-ui/store'
-import { mockServer, within, render, screen, cleanup, fireEvent }                                   from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                                         from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, BasicServiceSetPriorityEnum, OpenWlanAdvancedCustomization, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                             from '@acx-ui/store'
+import { mockServer, within, render, screen, cleanup, fireEvent }                                                                                               from '@acx-ui/test-utils'
 
 import { externalProviders, policyListResponse }      from '../__tests__/fixtures'
 import NetworkFormContext, { NetworkFormContextType } from '../NetworkFormContext'
@@ -21,7 +22,12 @@ const mockWlanData = {
   name: 'test',
   type: 'open',
   isCloudpathEnabled: false,
-  venues: []
+  venues: [],
+  wlan: {
+    advancedCustomization: {
+      bssPriority: BasicServiceSetPriorityEnum.LOW
+    } as OpenWlanAdvancedCustomization
+  }
 } as NetworkSaveData
 
 describe('NetworkMoreSettingsForm', () => {
@@ -226,6 +232,14 @@ describe('NetworkMoreSettingsForm', () => {
     await userEvent.click(screen.getByText(/none/i))
     await userEvent.click(screen.getByText(/5.5 Mbps/i))
     expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
+  })
+  it('Test case for Basic Service Set Radio Group', async ()=> {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockContextData = { editMode: true, data: mockWlanData } as NetworkFormContextType
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData),{ route: { params } })
+    expect(screen.getByTestId('BSS-Radio-Group')).toBeVisible()
+    expect(screen.getByTestId('BSS-Radio-LOW')).toBeChecked()
   })
 
   it('Test network types for show the RADIUS Options settings', () => {
@@ -475,7 +489,7 @@ export function MockedMoreSettingsForm (wlanData: NetworkSaveData, networkFormCo
     <Provider>
       <NetworkFormContext.Provider value={networkFormContext}>
         <Form>
-          <MoreSettingsForm wlanData={wlanData} />
+          <NetworkMoreSettingsForm wlanData={wlanData} />
         </Form>
       </NetworkFormContext.Provider>
     </Provider>
