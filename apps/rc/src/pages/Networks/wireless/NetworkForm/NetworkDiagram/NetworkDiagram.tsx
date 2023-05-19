@@ -11,29 +11,31 @@ import {
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 
-import AaaCloudpathCloudDiagram      from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-cloud-deployment.png'
-import AaaCloudpathOnPremDiagram     from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-on-prem-deployment.png'
-import AaaProxyDiagram               from '../../../../../assets/images/network-wizard-diagrams/aaa-proxy.png'
-import AaaDiagram                    from '../../../../../assets/images/network-wizard-diagrams/aaa.png'
-import CaptiveCloudpathCloudDiagram  from '../../../../../assets/images/network-wizard-diagrams/captive-portal-cloudpath-cloud-deployment.png'
-import CaptiveCloudpathOnPremDiagram from '../../../../../assets/images/network-wizard-diagrams/captive-portal-cloudpath-on-prem-deployment.png'
-import ClickThroughDiagram           from '../../../../../assets/images/network-wizard-diagrams/click-through.png'
-import DpskCloudpathCloudDiagram     from '../../../../../assets/images/network-wizard-diagrams/dpsk-cloudpath-cloud-deployment.png'
-import DpskCloudpathOnPremDiagram    from '../../../../../assets/images/network-wizard-diagrams/dpsk-cloudpath-on-prem-deployment.png'
-import DpskDiagram                   from '../../../../../assets/images/network-wizard-diagrams/dpsk.png'
-import GuestPassDiagram              from '../../../../../assets/images/network-wizard-diagrams/guest-pass.png'
-import HostApprovalDiagram           from '../../../../../assets/images/network-wizard-diagrams/host-approval.png'
-import DefaultDiagram                from '../../../../../assets/images/network-wizard-diagrams/none.png'
-import OpenCloudpathCloudDiagram     from '../../../../../assets/images/network-wizard-diagrams/open-cloudpath-cloud-deployment.png'
-import OpenCloudpathOnPremDiagram    from '../../../../../assets/images/network-wizard-diagrams/open-cloudpath-on-prem-deployment.png'
-import OpenDiagram                   from '../../../../../assets/images/network-wizard-diagrams/open.png'
-import PskDiagram                    from '../../../../../assets/images/network-wizard-diagrams/psk.png'
-import SelfSignInDiagram             from '../../../../../assets/images/network-wizard-diagrams/self-sign-in.png'
-import WISPrWithPskDiagram           from '../../../../../assets/images/network-wizard-diagrams/wispr-psk.png'
-import WISPrDiagram                  from '../../../../../assets/images/network-wizard-diagrams/wispr.png'
-import { networkTypes }              from '../contentsMap'
-import NetworkFormContext            from '../NetworkFormContext'
-import { Diagram }                   from '../styledComponents'
+import AaaCloudpathCloudDiagram       from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-cloud-deployment.png'
+import AaaCloudpathOnPremDiagram      from '../../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-on-prem-deployment.png'
+import AaaProxyDiagram                from '../../../../../assets/images/network-wizard-diagrams/aaa-proxy.png'
+import AaaDiagram                     from '../../../../../assets/images/network-wizard-diagrams/aaa.png'
+import CaptiveCloudpathCloudDiagram   from '../../../../../assets/images/network-wizard-diagrams/captive-portal-cloudpath-cloud-deployment.png'
+import CaptiveCloudpathOnPremDiagram  from '../../../../../assets/images/network-wizard-diagrams/captive-portal-cloudpath-on-prem-deployment.png'
+import ClickThroughDiagram            from '../../../../../assets/images/network-wizard-diagrams/click-through.png'
+import DpskCloudpathCloudDiagram      from '../../../../../assets/images/network-wizard-diagrams/dpsk-cloudpath-cloud-deployment.png'
+import DpskCloudpathOnPremDiagram     from '../../../../../assets/images/network-wizard-diagrams/dpsk-cloudpath-on-prem-deployment.png'
+import DpskUsingRadiusNonProxyDiagram from '../../../../../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
+import DpskUsingRadiusDiagram         from '../../../../../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
+import DpskDiagram                    from '../../../../../assets/images/network-wizard-diagrams/dpsk.png'
+import GuestPassDiagram               from '../../../../../assets/images/network-wizard-diagrams/guest-pass.png'
+import HostApprovalDiagram            from '../../../../../assets/images/network-wizard-diagrams/host-approval.png'
+import DefaultDiagram                 from '../../../../../assets/images/network-wizard-diagrams/none.png'
+import OpenCloudpathCloudDiagram      from '../../../../../assets/images/network-wizard-diagrams/open-cloudpath-cloud-deployment.png'
+import OpenCloudpathOnPremDiagram     from '../../../../../assets/images/network-wizard-diagrams/open-cloudpath-on-prem-deployment.png'
+import OpenDiagram                    from '../../../../../assets/images/network-wizard-diagrams/open.png'
+import PskDiagram                     from '../../../../../assets/images/network-wizard-diagrams/psk.png'
+import SelfSignInDiagram              from '../../../../../assets/images/network-wizard-diagrams/self-sign-in.png'
+import WISPrWithPskDiagram            from '../../../../../assets/images/network-wizard-diagrams/wispr-psk.png'
+import WISPrDiagram                   from '../../../../../assets/images/network-wizard-diagrams/wispr.png'
+import { networkTypes }               from '../contentsMap'
+import NetworkFormContext             from '../NetworkFormContext'
+import { Diagram }                    from '../styledComponents'
 
 
 interface DiagramProps {
@@ -89,7 +91,7 @@ function getDiagram (props: NetworkDiagramProps) {
   let diagram = null
   switch (props.type) {
     case NetworkTypeEnum.DPSK:
-      diagram = getDPSKDiagram(props)
+      diagram = GetDPSKDiagram(props)
       break
     case NetworkTypeEnum.PSK:
       diagram = getPSKDiagram(props)
@@ -116,8 +118,10 @@ function getDiagram (props: NetworkDiagramProps) {
   return diagram
 }
 
-function getDPSKDiagram (props:DpskDiagramProps){
-  return props?.isCloudpathEnabled?DpskCloudpathCloudDiagram:DpskDiagram
+function GetDPSKDiagram (props:DpskDiagramProps) {
+  const { data } = useContext(NetworkFormContext)
+  return props?.isCloudpathEnabled ? (!!data?.enableAuthProxy? DpskUsingRadiusDiagram
+    : DpskUsingRadiusNonProxyDiagram) : DpskDiagram
 }
 function getPSKDiagram (props: PskDiagramProps) {
   return props?.enableMACAuth ? AaaDiagram : PskDiagram
