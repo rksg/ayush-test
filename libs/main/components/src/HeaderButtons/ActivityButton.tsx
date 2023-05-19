@@ -173,10 +173,6 @@ export default function ActivityButton () {
       )
     }
   ]
-  const onDetailClose = () => {
-    setDetailModalOpen(false)
-    setActivityModalOpen(true)
-  }
   return <>
     <Badge
       overflowCount={9}
@@ -199,8 +195,8 @@ export default function ActivityButton () {
       width={464}
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}
-      onClose={onDetailClose}
-      onBackClick={onDetailClose}
+      onClose={() => setDetailModalOpen(false)}
+      onBackClick={() => setActivityModalOpen(true)}
       data={getDrawerData?.(detail!)}
       activity={detail}
     />}
