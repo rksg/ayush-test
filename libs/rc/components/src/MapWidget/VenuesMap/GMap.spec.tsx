@@ -10,14 +10,17 @@ export  const common = {
   venueId: '7ae27179b7b84de89eb7e56d9b15943d',
   name: 'Aparna-Venue',
   apStat: [],
-  switchStat: []
+  switchStat: [],
+  edgeStat: []
 }
 
 export const withCounts = {
   apsCount: 1234,
   switchesCount: 1234,
+  edgesCount: 1234,
   clientsCount: 1234,
-  switchClientsCount: 1234
+  switchClientsCount: 1234,
+  edgeClientsCount: 1234
 }
 const venue1: VenueMarkerOptions = {
   visible: true,
