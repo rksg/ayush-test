@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
 
@@ -85,6 +86,7 @@ export class AAAWlanAdvancedCustomization {
 
   wifiCallingIds?: string[]
 
+  // Discard. It will move to RADIUS options
   singleSessionIdAccounting?: boolean
 
   proxyARP?: boolean
@@ -124,6 +126,7 @@ export class AAAWlanAdvancedCustomization {
   dnsProxy?: DnsProxy
 
   bssPriority: BasicServiceSetPriorityEnum
+  radiusOptions?: RadiusOptions
 
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
@@ -172,8 +175,6 @@ export class AAAWlanAdvancedCustomization {
 
     //@Size(    max = 5 )
     this.wifiCallingIds = []
-
-    this.singleSessionIdAccounting = false
 
     this.proxyARP = false
 

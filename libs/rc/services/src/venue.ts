@@ -63,6 +63,7 @@ import {
   RequestFormData,
   createNewTableHttpRequest,
   TableChangePayload,
+  VenueRadiusOptions,
   ApMeshTopologyData,
   FloorPlanMeshAP
 } from '@acx-ui/rc/utils'
@@ -1207,6 +1208,35 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+    }),
+    getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueRadiusOptions, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRadiusOptions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'RADIUS_OPTIONS' }]))
+          })
+        })
+      }
+    }),
+    updateVenueRadiusOptions: build.mutation<VenueRadiusOptions, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueRadiusOptions, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
     })
   })
 })
@@ -1318,5 +1348,7 @@ export const {
   useDeleteResidentPortalFaviconMutation,
 
   useImportPropertyUnitsMutation,
-  useLazyDownloadPropertyUnitsQuery
+  useLazyDownloadPropertyUnitsQuery,
+  useGetVenueRadiusOptionsQuery,
+  useUpdateVenueRadiusOptionsMutation
 } = venueApi

@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { RadiusOptions }               from './RadiusOptions'
 import { VlanPool }                    from './VlanPool'
 import { WlanRadioCustomization }      from './WlanRadioCustomization'
 
@@ -116,6 +117,7 @@ export class PskWlanAdvancedCustomization {
   dnsProxy?: DnsProxy
 
   bssPriority: BasicServiceSetPriorityEnum
+  radiusOptions?: RadiusOptions
 
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
