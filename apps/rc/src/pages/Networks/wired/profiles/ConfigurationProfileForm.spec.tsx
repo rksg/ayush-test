@@ -229,19 +229,19 @@ describe('Wired', () => {
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await userEvent.click(await screen.findByText('VLANs'))
     await screen.findByRole('heading', { level: 3, name: /VLANs/i })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await userEvent.click(await screen.findByText('ACLs'))
     await screen.findByRole('heading', { level: 3, name: /ACLs/i })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await userEvent.click(await screen.findByText('Venues'))
     await screen.findByRole('heading', { level: 3, name: /Venues/i })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await userEvent.click(await screen.findByText('Summary'))
     await screen.findByRole('heading', { level: 3, name: /Summary/i })
 
-    const finishButton = await screen.findByRole('button', { name: /Finish/i })
+    const finishButton = await screen.findByRole('button', { name: /Apply/i })
     await userEvent.click(finishButton)
   })
 

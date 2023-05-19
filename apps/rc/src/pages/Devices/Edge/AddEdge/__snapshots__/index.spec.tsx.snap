@@ -67,6 +67,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
   >
     <form
       class="ant-form ant-form-vertical"
+      step="0"
     >
       <div
         class="ant-row"

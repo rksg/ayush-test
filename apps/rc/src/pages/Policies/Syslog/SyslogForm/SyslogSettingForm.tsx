@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   Col,
@@ -74,10 +74,8 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
       form.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
       form.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
       form.setFieldValue('secondaryPort', policyData.secondary?.port ?? 514)
-      // eslint-disable-next-line max-len
       form.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
       form.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
-      // eslint-disable-next-line max-len
       form.setFieldValue('flowLevel', policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW)
     }
   }, [data])

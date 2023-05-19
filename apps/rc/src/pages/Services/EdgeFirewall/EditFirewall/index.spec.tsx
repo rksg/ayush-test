@@ -155,14 +155,14 @@ describe('Edit edge firewall service', () => {
     await click(within(drawer).getByRole('button', { name: 'Apply' }))
 
     // Navigate to Step 2
-    await click(actions.getByRole('button', { name: 'Next' }))
+    await click(screen.getByText('Scope'))
     expect(await body.findByRole('heading', { name: 'Scope' })).toBeVisible()
 
     // Step 2
     const rows = await body.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
 
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Apply' }))
 
     await waitFor(() => {
       expect(mockedUpdateFn).toBeCalledWith({
@@ -286,7 +286,7 @@ describe('Edit edge firewall service', () => {
     await click(within(drawer).getByRole('button', { name: 'Add' }))
 
     // Navigate to Step 2
-    await click(actions.getByRole('button', { name: 'Next' }))
+    await click(screen.getByText('Scope'))
     expect(await body.findByRole('heading', { name: 'Scope' })).toBeVisible()
 
     // Step 2
@@ -299,7 +299,7 @@ describe('Edit edge firewall service', () => {
     await click(await body.findByRole('button', { name: 'Deactivate' }))
 
 
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Apply' }))
 
     await waitFor(() => {
       expect(mockedUpdateFn).toBeCalledWith({

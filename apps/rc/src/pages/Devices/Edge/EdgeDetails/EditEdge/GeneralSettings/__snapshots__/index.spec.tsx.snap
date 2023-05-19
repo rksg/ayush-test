@@ -8,6 +8,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
   >
     <form
       class="ant-form ant-form-vertical"
+      step="0"
     >
       <div
         class="ant-row"
@@ -316,7 +317,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
         data-testid="steps-form-actions"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-space ant-space-horizontal ant-space-align-start"
         >
           <div
             class="ant-space-item"
