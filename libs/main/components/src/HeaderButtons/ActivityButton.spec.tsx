@@ -63,6 +63,7 @@ describe('ActivityButton', () => {
     await userEvent.click((await screen.findAllByRole('button', { name: 'Close' }))[1])
     expect(startTime).not.toBeVisible()
 
+    await userEvent.click(screen.getAllByRole('button')[0])
     await userEvent.click(activity)
     startTime = await screen.findByText('Start Time')
     expect(startTime).toBeVisible()
