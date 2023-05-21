@@ -16,7 +16,7 @@ export interface ConnectionMetering {
     dataCapacityEnforced: boolean
     billingCycleRepeat: boolean
     billingCycleType: BillingCycleType
-    billingCycleDays?: number
+    billingCycleDays: number | null
     unitCount?: number
     venueCount?: number
     personas?: Persona[]

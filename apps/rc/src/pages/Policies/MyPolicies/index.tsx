@@ -95,7 +95,7 @@ function useCardData (): CardDataProps[] {
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
-
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   return [
     {
       type: PolicyType.AAA,
@@ -181,9 +181,10 @@ function useCardData (): CardDataProps[] {
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
       totalCount: useGetConnectionMeteringListQuery({
         params
-      }).data?.totalCount,
+      }, { skip: !isConnectionMeteringEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST }))
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
+      disabled: !isConnectionMeteringEnabled
     }
   ]
 }

@@ -38,6 +38,9 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
           params
         }
       },
+      transformResponse (result: NewTableResult<ConnectionMetering>) {
+        return transferToTableResult<ConnectionMetering>(result)
+      },
       providesTags: [{ type: 'ConnectionMetering', id: 'LIST' }]
     }),
     deleteConnectionMetering: build.mutation({

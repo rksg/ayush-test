@@ -35,6 +35,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: false,
   billingCycleType: 'CYCLE_UNSPECIFIED' as BillingCycleType,
+  billingCycleDays: null,
   venueCount: 1,
   unitCount: 2
 }, {
@@ -47,6 +48,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: true,
   billingCycleType: 'CYCLE_MONTHLY' as BillingCycleType,
+  billingCycleDays: null,
   venueCount: 0,
   unitCount: 0
 },
@@ -60,6 +62,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: true,
   billingCycleType: 'CYCLE_WEEKLY' as BillingCycleType,
+  billingCycleDays: null,
   venueCount: 0,
   unitCount: 0
 },
@@ -73,6 +76,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: true,
   billingCycleType: 'CYCLE_NUMS_DAY' as BillingCycleType,
+  billingCycleDays: 7,
   venueCount: 1,
   unitCount: 1
 }
@@ -93,8 +97,10 @@ export const replacePagination = (url: string) => url.replace(paginationPattern,
 describe('ConnectionMeteringForm', () => {
   const createConnectionMeteringApi = jest.fn()
   const updateConnectionMeteringApi = jest.fn()
-  beforeEach(async () => {
+  beforeEach(async () => {  
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    createConnectionMeteringApi.mockClear()
+    updateConnectionMeteringApi.mockClear()
     mockServer.use(
       rest.post(
         replacePagination(ConnectionMeteringUrls.searchConnectionMeteringList.url),
@@ -141,9 +147,37 @@ describe('ConnectionMeteringForm', () => {
     const addButton = await screen.findByRole('button', { name: 'Add' })
     const nameField = await screen.findByLabelText('Profile Name')
     await userEvent.type(nameField, 'new profile')
+    const switches = await screen.findAllByRole('switch')
+    expect(switches.length).toEqual(2)
 
-    await screen.findByRole('switch', { name: 'rateLimitEnabled' })
+    await userEvent.click(switches[0]) //enable data rate setting
+    const enableUploadSetting = await screen.findByRole(
+      'checkbox', 
+      { name: 'Total Upload limit' }
+    )
+    await userEvent.click(enableUploadSetting)
 
+    const enableDownloadSetting = await screen.findByRole(
+      'checkbox',
+      { name: 'Total Download limit' }
+    )
+    await userEvent.click(enableDownloadSetting)
+
+    const inputNumbers = await screen.findAllByText('Mbps')
+    expect(inputNumbers.length).toEqual(2)
+    await userEvent.click(switches[1]) //enable data consumption setting
+
+    const repeatSelect = await screen.findByLabelText('Consumption Cycle')
+    await userEvent.click(repeatSelect)
+    await userEvent.click(await screen.findByText('Repeat cycles'))
+    
+    const typeSelect = await screen.findByLabelText('Recurring Schedule')
+    await userEvent.click(typeSelect)
+    await userEvent.click(await screen.findByText('Custom'))
+
+    fireEvent.scroll(window, {target: {scrollY:screenY}})
+    await screen.findByLabelText('Action for overage data')
+    await screen.findByRole('slider')
 
     fireEvent.click(addButton)
     await waitFor(() => expect(createConnectionMeteringApi).toHaveBeenCalled())
@@ -168,6 +202,37 @@ describe('ConnectionMeteringForm', () => {
       const addButton = await screen.findByRole('button', { name: 'Add' })
       const nameField = await screen.findByLabelText('Profile Name')
       await userEvent.type(nameField, 'new profile')
+      const switches = await screen.findAllByRole('switch')
+      expect(switches.length).toEqual(2)
+      
+      await userEvent.click(switches[0]) //enable data rate setting
+      const enableUploadSetting = await screen.findByRole(
+        'checkbox', 
+        { name: 'Total Upload limit' }
+      )
+      await userEvent.click(enableUploadSetting)
+
+      const enableDownloadSetting = await screen.findByRole(
+        'checkbox',
+        { name: 'Total Download limit' }
+      )
+      await userEvent.click(enableDownloadSetting)
+
+      const inputNumbers = await screen.findAllByText('Mbps')
+      expect(inputNumbers.length).toEqual(2)
+      await userEvent.click(switches[1]) //enable data consumption setting
+
+      const repeatSelect = await screen.findByLabelText('Consumption Cycle')
+      await userEvent.click(repeatSelect)
+      await userEvent.click(await screen.findByText('Repeat cycles'))
+      
+      const typeSelect = await screen.findByLabelText('Recurring Schedule')
+      await userEvent.click(typeSelect)
+      await userEvent.click(await screen.findByText('Custom'))
+
+      fireEvent.scroll(window, {target: {scrollY:screenY}})
+      await screen.findByLabelText('Action for overage data')
+      await screen.findByRole('slider')
 
       fireEvent.click(addButton)
       await waitFor(() => expect(createConnectionMeteringApi).toHaveBeenCalled())
@@ -175,7 +240,8 @@ describe('ConnectionMeteringForm', () => {
     })
 
   it('should render correctly for editing connection metering', async () => {
-    render(<Provider>
+    render(
+    <Provider>
       <ConnectionMeteringForm
         mode={ConnectionMeteringFormMode.EDIT}
       />
@@ -192,7 +258,35 @@ describe('ConnectionMeteringForm', () => {
     await userEvent.clear(nameField)
     await userEvent.type(nameField, 'new profile name')
 
+    const switches = await screen.findAllByRole('switch')
+    expect(switches.length).toEqual(2)
+    await userEvent.click(switches[0]) //disable data rate setting
+    await userEvent.click(switches[1]) //disable data consumption setting
     fireEvent.click(applyButton)
     await waitFor(() => expect(updateConnectionMeteringApi).toHaveBeenCalled())
+  })
+
+  it('should cancel correctly for editing connection metering', async () => {
+    render(
+    <Provider>
+      <ConnectionMeteringForm
+        mode={ConnectionMeteringFormMode.EDIT}
+      />
+    </Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+        policyId: connectionMeterings[3].id
+      }, path: '/:tenantId/:policyId' }
+    })
+
+    
+    await screen.findAllByText('Settings')
+    const cancelButton = await screen.findByRole('button', { name: 'Cancel' })
+    const nameField = await screen.findByLabelText('Profile Name')
+    await userEvent.clear(nameField)
+    await userEvent.type(nameField, 'new profile name')
+
+    fireEvent.click(cancelButton)
+    await waitFor(() => expect(updateConnectionMeteringApi).toHaveBeenCalledTimes(0))
   })
 })

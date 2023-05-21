@@ -40,17 +40,17 @@ function transformFormToData (form:ConnectingMeteringFormField | undefined):
   }
 
   if (!form?.consumptionControlEnabled) {
-    data.dataCapacity = undefined
+    data.dataCapacity = 0
     data.billingCycleRepeat = false
-    data.billingCycleType = undefined
-    data.billingCycleDays = undefined
+    data.billingCycleType = 'CYCLE_UNSPECIFIED'
+    data.billingCycleDays = null
     data.dataCapacityEnforced = false
-    data.dataCapacityThreshold = undefined
+    data.dataCapacityThreshold = 0
   } else if (!form.billingCycleRepeat) {
-    data.billingCycleType = undefined
-    data.billingCycleDays = undefined
+    data.billingCycleType = 'CYCLE_UNSPECIFIED'
+    data.billingCycleDays = null
   } else if (form.billingCycleType !== 'CYCLE_NUM_DAYS') {
-    data.billingCycleDays = undefined
+    data.billingCycleDays = null
   }
   return data
 }

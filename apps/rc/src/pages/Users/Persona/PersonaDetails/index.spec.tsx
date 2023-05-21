@@ -2,18 +2,20 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
   PersonaUrls,
   MacRegListUrlsInfo,
   PersonaBaseUrl,
-  ClientUrlsInfo
+  ClientUrlsInfo,
+  ConnectionMeteringUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
 import {
+  mockConnectionMeterings,
   mockDpskPool,
   mockMacRegistration,
   mockMacRegistrationList,
@@ -85,6 +87,10 @@ describe('Persona Details', () => {
           venueName: 'UI-TEST-VENUE',
           apName: 'UI team ONLY'
         }] }))
+      ),
+      rest.get(
+        ConnectionMeteringUrls.getConnectionMeteringDetail.url,
+        (req, res, ctx) => res(ctx.json(mockConnectionMeterings[0]))
       )
     )
     params = {
@@ -112,6 +118,7 @@ describe('Persona Details', () => {
     await screen.findByRole('heading', { level: 1, name: mockPersona.name })
     await screen.findByRole('heading', { level: 4, name: /Devices/i })
     await screen.findByRole('link', { name: mockPersonaGroup.name })
+    await screen.findByRole('link', { name: mockConnectionMeterings[0].name })
   })
 
   it('should add devices', async () => {

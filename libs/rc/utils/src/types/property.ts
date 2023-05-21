@@ -1,3 +1,6 @@
+
+import moment from 'moment-timezone'
+
 import { PersonaEthernetPort } from './persona'
 
 // FIXME: remove unused interface
@@ -83,16 +86,18 @@ export interface PropertyUnit {
       href?: string
     }
   },
-  meteringProfileId?: string
-  expirationEpoch?: number
+  trafficControl?: {
+    qosProfileId: string
+    qosExpiryTime: number
+  }
 }
 
 export interface UnitPersonaConfig {
   vlan?: number,
   dpskPassphrase?: string,
   ethernetPorts?: PersonaEthernetPort[], // FIXME: not integrate with Persona
-  meteringProfileId?: string,
-  expirationEpoch?: number
+  meteringProfileId?: string | null,
+  expirationEpoch?: number | null
 }
 
 export interface PropertyUnitFormFields extends PropertyUnit {
@@ -101,8 +106,8 @@ export interface PropertyUnitFormFields extends PropertyUnit {
   accessAp?: string,
   ports?: number[],
   apName?: string,
-  meteringProfileId?: string,
-  expirationDate?: Date
+  meteringProfileId?: string | null,
+  expirationDate?: moment.Moment
 }
 
 export interface ResidentPortal {

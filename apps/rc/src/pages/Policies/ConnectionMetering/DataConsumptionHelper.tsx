@@ -9,7 +9,7 @@ import {
 
 function getDataConsumptionText (prop:DataConsumptionLabelProp) : string {
   if (prop.dataCapacity === 0) {
-    return prop.onOffShow
+    return 'OFF'
   }
   let res = 'Max Data: '
   if (prop.dataCapacity >= 1000)
@@ -30,11 +30,10 @@ function getDataConsumptionText (prop:DataConsumptionLabelProp) : string {
 }
 
 interface DataConsumptionLabelProp {
-  onOffShow: string
   dataCapacity: number
   billingCycleRepeat: boolean
-  billingCycleType?: BillingCycleType
-  billingCycleDays?: number
+  billingCycleType: BillingCycleType
+  billingCycleDays: number | null
 }
 
 export function DataConsumptionLabel (props: DataConsumptionLabelProp) {

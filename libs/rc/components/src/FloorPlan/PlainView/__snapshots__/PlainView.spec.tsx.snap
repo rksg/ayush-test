@@ -690,6 +690,8 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
 </DocumentFragment>
 `;
 
+exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = `<DocumentFragment />`;
+
 exports[`Floor Plan Plain View show single floorplan 1`] = `
 <DocumentFragment>
   <div

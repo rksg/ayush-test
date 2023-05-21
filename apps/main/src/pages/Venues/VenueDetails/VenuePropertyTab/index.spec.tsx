@@ -2,20 +2,27 @@ import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { rest }            from 'msw'
 
-import { CommonUrlsInfo, PersonaUrls, PropertyUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }         from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, ConnectionMeteringUrls, PersonaUrls, PropertyUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }                                 from '@acx-ui/test-utils'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { mockPersona }                                                                 from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
-import { mockEnabledPropertyConfig, mockPersonaGroupWithoutNSG, mockPropertyUnitList } from '../../__tests__/fixtures'
+import { mockPersona } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
+import {
+  mockEnabledNSGPropertyConfig,
+  mockPersonaGroupWithoutNSG, mockPropertyUnitList,
+  mockConnectionMeteringTableResult,
+  mockConnectionMeterings,
+  replacePagination
+} from '../../__tests__/fixtures'
 
 import { VenuePropertyTab } from './index'
 
 const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 const params = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
 const updateUnitFn = jest.fn()
-
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Page', () => {
   beforeEach(async () => {
     updateUnitFn.mockClear()
@@ -23,7 +30,7 @@ describe('Property Unit Page', () => {
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
-        (_, res, ctx) => res(ctx.json(mockEnabledPropertyConfig))
+        (_, res, ctx) => res(ctx.json(mockEnabledNSGPropertyConfig))
       ),
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
@@ -59,6 +66,14 @@ describe('Property Unit Page', () => {
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+      ),
+      rest.get(
+        ConnectionMeteringUrls.getConnectionMeteringDetail.url,
+        (_, res, ctx) => res(ctx.json(mockConnectionMeterings[0]))
+      ),
+      rest.get(
+        replacePagination(ConnectionMeteringUrls.getConnectionMeteringList.url),
+        (_, res, ctx) => res(ctx.json(mockConnectionMeteringTableResult))
       )
     )
   })
@@ -79,6 +94,10 @@ describe('Property Unit Page', () => {
     // select one of row and open edit drawer
     const firstRowName = mockPropertyUnitList.content[0].name
     const firstRow = await screen.findByRole('cell', { name: firstRowName })
+    await screen.findByRole('link', { name: mockConnectionMeterings[0].name })
+
+    // eslint-disable-next-line testing-library/no-debugging-utils
+    screen.debug(undefined, 1000000, undefined)
 
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))

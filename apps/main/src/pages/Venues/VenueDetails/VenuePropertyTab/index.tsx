@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import {
   WarningTriangleSolid
 } from '@acx-ui/icons'
@@ -46,7 +47,6 @@ import {
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
 
-
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { expired: boolean }) => props)`
 path:nth-child(1) {
@@ -58,7 +58,11 @@ path:nth-child(3) {
 }
 `
 
-function ConnectionMeteringLink (props:{ id?: string, name?: string, expirationEpoch?: number }) {
+function ConnectionMeteringLink (props:{
+  id: string,
+  name: string,
+  expirationEpoch?: number | null }
+) {
   const { $t } = useIntl()
   const { id, name, expirationEpoch } = props
   let expired = false
@@ -80,8 +84,11 @@ function ConnectionMeteringLink (props:{ id?: string, name?: string, expirationE
   return (
     <div style={{ fontSize: '16px' }}>
       <div style={{ float: 'left', marginLeft: '5%' }}>
-        <TenantLink to={getPolicyDetailsLink({ type: PolicyType.CONNECTION_METERING,
-          oper: PolicyOperation.DETAIL, policyId: id ?? '' })}>
+        <TenantLink to={
+          getPolicyDetailsLink({
+            type: PolicyType.CONNECTION_METERING,
+            oper: PolicyOperation.DETAIL, policyId: id ?? '' })
+        }>
           {name ?? id}
         </TenantLink>
       </div>
@@ -117,7 +124,7 @@ export function VenuePropertyTab () {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
-  const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
+
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
@@ -125,7 +132,8 @@ export function VenuePropertyTab () {
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
-
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
     defaultPayload: {} as {
@@ -210,7 +218,9 @@ export function VenuePropertyTab () {
 
     fetchApData(apMacs)
     fetchSwitchData(switchMacs)
-    fetchConnectionMeteringData([...connectionMeteringSet])
+    if (isConnectionMeteringEnabled) {
+      fetchConnectionMeteringData([...connectionMeteringSet])
+    }
   }, [personaMap])
 
   const fetchPersonaData = (ids: string[]) => {
@@ -402,6 +412,7 @@ export function VenuePropertyTab () {
       }
     },
     {
+      show: isConnectionMeteringEnabled,
       key: 'Connection Metering',
       title: $t({ defaultMessage: 'Connection Metering' }),
       dataIndex: ['connectionMetering'],
@@ -410,11 +421,10 @@ export function VenuePropertyTab () {
         const connectionMeteringId = persona?.meteringProfileId ?? ''
         // eslint-disable-next-line max-len
         const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
-        if (connectionMetering) {
+        if (persona && connectionMetering) {
           // eslint-disable-next-line max-len
-          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona?.expirationEpoch}/>
+          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona.expirationEpoch}/>
         }
-        //return <ConnectionMeteringLink name='test' expirationEpoch={100000000}/>
         return ''
       }
     },

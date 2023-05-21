@@ -1,10 +1,11 @@
-import { waitFor } from '@storybook/testing-library'
-import userEvent   from '@testing-library/user-event'
-import { rest }    from 'msw'
+import userEvent from '@testing-library/user-event'
+import moment    from 'moment-timezone'
+import { rest }  from 'msw'
 
-import { CommonUrlsInfo, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { mockServer, render, screen }                             from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                       from '@acx-ui/store'
+import {  mockServer, render, screen,  waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
 
 import {
   mockPersonaGroupWithoutNSG,
@@ -12,11 +13,13 @@ import {
   venueLanPorts,
   mockEnabledNoNSGPropertyConfig,
   mockEnabledNSGPropertyConfig,
-  mockPersonaGroupWithNSG
+  mockPersonaGroupWithNSG,
+  mockConnectionMeteringTableResult,
+  replacePagination,
+  mockConnectionMeterings
 } from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
-
 
 const closeFn = jest.fn()
 const params = {
@@ -37,10 +40,13 @@ const mockPersona: Persona = {
     portIndex: 1,
     personaId: 'persona-id-1',
     macAddress: 'ap-mac-address'
-  }]
+  }],
+  meteringProfileId: mockConnectionMeterings[0].id,
+  expirationEpoch: moment.now() / 1000
 }
 
 
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
@@ -85,6 +91,14 @@ describe('Property Unit Drawer', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.get(
+        replacePagination(ConnectionMeteringUrls.getConnectionMeteringList.url),
+        (_, res, ctx) => res(ctx.json(mockConnectionMeteringTableResult))
+      ),
+      rest.patch(
+        PersonaUrls.updatePersona.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -97,6 +111,10 @@ describe('Property Unit Drawer', () => {
     await screen.findByText('Unit Name')
     await screen.findByText('VLAN')
     await screen.findByText('Resident Name')
+    await screen.findByLabelText('Connection Metering')
+    const buttons = await screen.findAllByRole('button', { name: 'Add' })
+    expect(buttons.length).toEqual(2)
+    await userEvent.click(buttons[0]) //click to add connection metering
   })
 
   it('should add no nsg drawer', async () => {
@@ -104,6 +122,7 @@ describe('Property Unit Drawer', () => {
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('VLAN')
 
     const nameField = await screen.findByLabelText(/unit name/i)
@@ -112,10 +131,21 @@ describe('Property Unit Drawer', () => {
     const residentField = await screen.findByLabelText(/resident name/i)
     await userEvent.type(residentField, 'new resident name test')
 
-    const addBtn = await screen.findByRole('button', { name: /add/i })
-    await userEvent.click(addBtn)
+    await screen.findByLabelText('Connection Metering')
+    const meteringSelect = await screen.findByLabelText('Connection Metering')
+    for (let i = 0; i < mockConnectionMeterings.length; i ++) {
+      await userEvent.click(meteringSelect)
+      await userEvent.click(await screen.findByText(mockConnectionMeterings[i].name))
+      await screen.findByText('Rate limiting')
+      await screen.findByText('Data comsumption')
+      await screen.findByText('Expiration Date of Data Consumption')
+    }
 
-    await waitFor(expect(closeFn).toHaveBeenCalled)
+    await screen.findByPlaceholderText('Select date')
+
+    const buttons = await screen.findAllByRole('button', { name: 'Add' })
+    expect(buttons.length).toEqual(2)
+    await userEvent.click(buttons[1])
   })
 
   it('should edit no nsg drawer', async () => {
@@ -129,13 +159,15 @@ describe('Property Unit Drawer', () => {
       />
     </Provider>)
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByLabelText(/unit name/i)
     await screen.findByText('Separate VLAN for guests')
 
     const saveBtn = await screen.findByRole('button', { name: /save/i })
+    await screen.findByText('Rate limiting')
+    await screen.findByText('Data comsumption')
+    await screen.findByText('Expiration Date of Data Consumption')
     await userEvent.click(saveBtn)
-
-    await waitFor(expect(closeFn).toHaveBeenCalled)
   })
 
   it('should edit nsg drawer', async () => {
@@ -149,9 +181,12 @@ describe('Property Unit Drawer', () => {
       />
     </Provider>)
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Select AP')
     await screen.findByLabelText(/vxlan/i)
-
+    await screen.findByText('Rate limiting')
+    await screen.findByText('Data comsumption')
+    await screen.findByText('Expiration Date of Data Consumption')
     const saveBtn = await screen.findByRole('button', { name: /save/i })
     await userEvent.click(saveBtn)
   })

@@ -16,7 +16,9 @@ import {
   PersonaGroup,
   NewTableResult,
   NewTablePageable,
-  ResidentPortal
+  ResidentPortal,
+  ConnectionMetering,
+  BillingCycleType
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2951,3 +2953,73 @@ export const resultOfGetApSnmpAgentProfiles = [
     id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
   }
 ]
+
+
+const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
+export const replacePagination = (url: string) => url.replace(paginationPattern, '')
+
+export const mockConnectionMeterings: ConnectionMetering[] = [{
+  id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  name: 'profile1',
+  uploadRate: 12,
+  downloadRate: 5,
+  dataCapacity: 100,
+  dataCapacityEnforced: true,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: false,
+  billingCycleType: 'CYCLE_UNSPECIFIED' as BillingCycleType,
+  billingCycleDays: null,
+  venueCount: 1,
+  unitCount: 2
+}, {
+  id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+  name: 'profile2',
+  uploadRate: 0,
+  downloadRate: 10,
+  dataCapacity: 100,
+  dataCapacityEnforced: false,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: true,
+  billingCycleType: 'CYCLE_MONTHLY' as BillingCycleType,
+  billingCycleDays: null,
+  venueCount: 0,
+  unitCount: 0
+},
+{
+  id: 'afce7414-1c78-4312-ad5b-ae03f28dbc6c',
+  name: 'profile3',
+  uploadRate: 0,
+  downloadRate: 10,
+  dataCapacity: 100,
+  dataCapacityEnforced: true,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: true,
+  billingCycleType: 'CYCLE_WEEKLY' as BillingCycleType,
+  billingCycleDays: null,
+  venueCount: 0,
+  unitCount: 0
+},
+{
+  id: 'bfde7414-1c78-4312-ad5b-ae03f18dbc68',
+  name: 'profile4',
+  uploadRate: 10,
+  downloadRate: 10,
+  dataCapacity: 100,
+  dataCapacityEnforced: false,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: true,
+  billingCycleType: 'CYCLE_NUMS_DAY' as BillingCycleType,
+  billingCycleDays: 6,
+  venueCount: 1,
+  unitCount: 1
+}
+]
+
+
+export const mockConnectionMeteringTableResult : NewTableResult<ConnectionMetering> = {
+  content: mockConnectionMeterings,
+  pageable: defaultPageable,
+  totalPages: 1,
+  totalElements: 4,
+  sort: defaultPageable.sort
+}

@@ -126,7 +126,10 @@ export function ConnectionMeteringDetail () {
     },
     {
       title: $t({ defaultMessage: 'Data Consumption' }),
-      value: <DataConsumptionLabel onOffShow='OFF' dataCapacity={0} billingCycleRepeat={false}/>
+      value: <DataConsumptionLabel dataCapacity={0}
+        billingCycleRepeat={false}
+        billingCycleDays={null}
+        billingCycleType='CYCLE_UNSPECIFIED'/>
     }
   ]
 
@@ -193,4 +196,3 @@ export function ConnectionMeteringDetail () {
     </GridRow>
   </>
 }
-

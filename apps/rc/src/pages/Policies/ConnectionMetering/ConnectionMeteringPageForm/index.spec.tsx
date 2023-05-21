@@ -34,6 +34,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: false,
   billingCycleType: 'CYCLE_UNSPECIFIED' as BillingCycleType,
+  billingCycleDays: null,
   venueCount: 1,
   unitCount: 2
 }, {
@@ -46,6 +47,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: true,
   billingCycleType: 'CYCLE_MONTHLY' as BillingCycleType,
+  billingCycleDays: null,
   venueCount: 0,
   unitCount: 0
 },
@@ -59,6 +61,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: true,
   billingCycleType: 'CYCLE_WEEKLY' as BillingCycleType,
+  billingCycleDays: null,
   venueCount: 0,
   unitCount: 0
 },
@@ -72,6 +75,7 @@ const connectionMeterings = [{
   dataCapacityThreshold: 10,
   billingCycleRepeat: true,
   billingCycleType: 'CYCLE_NUMS_DAY' as BillingCycleType,
+  billingCycleDays: 7,
   venueCount: 1,
   unitCount: 1
 }

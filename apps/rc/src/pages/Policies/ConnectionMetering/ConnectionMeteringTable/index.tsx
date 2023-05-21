@@ -66,7 +66,7 @@ function useColumns (venueMap: Map<string, string>) {
       title: $t({ defaultMessage: 'Data Consumption' }),
       dataIndex: 'dataConsumption',
       render: (_, row) => {
-        return <DataConsumptionLabel {...{ onOffShow: '', ...row }}/>
+        return <DataConsumptionLabel {...{ ...row }}/>
       }
     },
     {

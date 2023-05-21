@@ -383,6 +383,7 @@ function ServiceRoutes () {
 
 function PolicyRoutes () {
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
@@ -570,26 +571,6 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
         element={<AddTunnelProfile />} />
       <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })}
-        element={<ConnectionMeteringTable />}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
-        element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
-        element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
-      />
-      <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
-        element={<ConnectionMeteringDetail/>}
-      />
-      <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })}
         element={<TunnelProfileTable />}
       />
@@ -601,6 +582,28 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT })}
         element={<EditTunnelProfile />}
       />
+      {isConnectionMeteringEnabled && <>
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })}
+          element={<ConnectionMeteringTable />}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
+          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
+          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
+          element={<ConnectionMeteringDetail/>}
+        />
+      </>}
     </Route>
   )
 }

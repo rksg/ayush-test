@@ -5,6 +5,7 @@ import { useIntl }                                      from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
+
 enum ConsumptionUnit {
   MB,
   GB
@@ -59,7 +60,6 @@ export function DataConsumptionSettingForm () {
 
   const [cycleDay, setCycleDay] = useState(form.getFieldValue('billingCycleDays'))
 
-
   const repeatOptions = [{
     label: $t({ defaultMessage: 'One cycle' }),
     value: false
@@ -104,9 +104,9 @@ export function DataConsumptionSettingForm () {
 
   useEffect(()=>{
     if (!repeat || cycleType !== 'CYCLE_NUM_DAYS') {
-      form.setFieldValue('billingCycleDays', undefined)
+      form?.setFieldValue('billingCycleDays', null)
     } else {
-      form.setFieldValue('billingCycleDays', cycleDay)
+      form?.setFieldValue('billingCycleDays', cycleDay)
     }
   }, [cycleDay, cycleType, repeat])
 
@@ -142,7 +142,8 @@ export function DataConsumptionSettingForm () {
                 label={$t({ defaultMessage: 'Consumption Cycle' })}
                 required={true}
               >
-                <Select placeholder={$t({ defaultMessage: 'Select...' })}
+                <Select
+                  placeholder={$t({ defaultMessage: 'Select...' })}
                   options={repeatOptions}
                   value={repeat}
                   onChange={(v)=>setRepeat(v)}
@@ -155,7 +156,8 @@ export function DataConsumptionSettingForm () {
                   style={{ float: 'left' }}
                   name={'billingCycleType'}
                   label={$t({ defaultMessage: 'Recurring Schedule' })}>
-                  <Select placeholder={$t({ defaultMessage: 'Select...' })}
+                  <Select
+                    placeholder={$t({ defaultMessage: 'Select...' })}
                     value={cycleType}
                     onChange={(v)=>setCycleType(v)}
                     options={cycleTypeOptions}/>
@@ -178,16 +180,19 @@ export function DataConsumptionSettingForm () {
                 name='dataCapacityEnforced'
                 required={true}
                 label={$t({ defaultMessage: 'Action for overage data' })}
-                children={<Select placeholder={'Select...'}
-                  options={dataCapacityEnforcedOptions}/>}/>
+                children={
+                  <Select placeholder={'Select...'}
+                    value={form.getFieldValue('dataCapacityEnforced')}
+                    options={dataCapacityEnforcedOptions}
+                  />}/>
               <Form.Item/>
-
               <Form.Item
                 name='dataCapacityThreshold'
                 required={true}
                 label={$t({ defaultMessage: 'Notify when data volume reaches:(%)' })}
                 initialValue={form.getFieldValue('dataCapacityThreshold') ?? 80}
-                children={<Slider
+              >
+                <Slider
                   tooltipVisible={false}
                   min={0}
                   max={100}
@@ -195,7 +200,8 @@ export function DataConsumptionSettingForm () {
                     0: { label: '0' },
                     100: { label: '100' }
                   }}
-                />}/>
+                />
+              </Form.Item>
             </>
       }
     </>)
