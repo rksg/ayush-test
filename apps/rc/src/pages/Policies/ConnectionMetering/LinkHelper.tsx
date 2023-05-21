@@ -27,18 +27,26 @@ export function VenueLink (props: { venueId?: string, name?: string }) {
   )
 }
 
-export function PersonaDetailsLink (
-  props: {
-    personaGroupId?: string,
-    personaId?: string,
-    name?: string })
-{
-  const { personaGroupId, personaId, name } = props
+export function PersonaDetailsLink (props: { id?: string,groupId?: string, name?: string }) {
+  const { id, groupId, name } = props
   return (
     <TenantLink
-      to={`users/persona-management/persona-group/${personaGroupId}/persona/${personaId}`}
+      to={`users/persona-management/persona-group/${groupId}/persona/${id}`}
     >
-      {name ?? personaId}
+      {name ?? id}
     </TenantLink>
+  )
+}
+
+export function PropertyUnitLink (props: { id?: string, venueId?: string, name?: string }) {
+  const { id, venueId, name } = props
+  return (
+    (venueId && id)
+      ? <TenantLink
+        to={`venues/${venueId}/venue-details/units`}
+      >
+        {name ?? id}
+      </TenantLink>
+      : <></>
   )
 }
