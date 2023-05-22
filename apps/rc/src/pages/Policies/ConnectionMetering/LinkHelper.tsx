@@ -1,10 +1,10 @@
-import { 
-  getPolicyDetailsLink, 
-  PolicyOperation, 
-  PolicyType 
+import {
+  getPolicyDetailsLink,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
-import { 
-  TenantLink 
+import {
+  TenantLink
 } from '@acx-ui/react-router-dom'
 
 export function ConnectionMeteringLink (props:{ id?: string, name?: string }) {
