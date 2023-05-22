@@ -2,13 +2,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { ConnectionMeteringFormMode } from '@acx-ui/rc/components'
+import { useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
 import { ConnectionMetering, ConnectionMeteringUrls, NewTablePageable, NewTableResult, BillingCycleType } from '@acx-ui/rc/utils'
 import { Provider }                                                                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor }                                                 from '@acx-ui/test-utils'
 
-import { ConnectionMeteringForm } from './index'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode } from './index'
 const defaultPageable: NewTablePageable = {
   offset: 0,
   pageNumber: 0,
@@ -95,7 +94,7 @@ export const replacePagination = (url: string) => url.replace(paginationPattern,
 describe('ConnectionMeteringForm', () => {
   const createConnectionMeteringApi = jest.fn()
   const updateConnectionMeteringApi = jest.fn()
-  beforeEach(async () => {  
+  beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     createConnectionMeteringApi.mockClear()
     updateConnectionMeteringApi.mockClear()
@@ -150,7 +149,7 @@ describe('ConnectionMeteringForm', () => {
 
     await userEvent.click(switches[0]) //enable data rate setting
     const enableUploadSetting = await screen.findByRole(
-      'checkbox', 
+      'checkbox',
       { name: 'Total Upload limit' }
     )
     await userEvent.click(enableUploadSetting)
@@ -168,12 +167,11 @@ describe('ConnectionMeteringForm', () => {
     const repeatSelect = await screen.findByLabelText('Consumption Cycle')
     await userEvent.click(repeatSelect)
     await userEvent.click(await screen.findByText('Repeat cycles'))
-    
+
     const typeSelect = await screen.findByLabelText('Recurring Schedule')
     await userEvent.click(typeSelect)
     await userEvent.click(await screen.findByText('Custom'))
 
-    fireEvent.scroll(window, {target: {scrollY:screenY}})
     await screen.findByLabelText('Action for overage data')
     await screen.findByRole('slider')
 
@@ -202,10 +200,10 @@ describe('ConnectionMeteringForm', () => {
       await userEvent.type(nameField, 'new profile')
       const switches = await screen.findAllByRole('switch')
       expect(switches.length).toEqual(2)
-      
+
       await userEvent.click(switches[0]) //enable data rate setting
       const enableUploadSetting = await screen.findByRole(
-        'checkbox', 
+        'checkbox',
         { name: 'Total Upload limit' }
       )
       await userEvent.click(enableUploadSetting)
@@ -223,12 +221,11 @@ describe('ConnectionMeteringForm', () => {
       const repeatSelect = await screen.findByLabelText('Consumption Cycle')
       await userEvent.click(repeatSelect)
       await userEvent.click(await screen.findByText('Repeat cycles'))
-      
+
       const typeSelect = await screen.findByLabelText('Recurring Schedule')
       await userEvent.click(typeSelect)
       await userEvent.click(await screen.findByText('Custom'))
 
-      fireEvent.scroll(window, {target: {scrollY:screenY}})
       await screen.findByLabelText('Action for overage data')
       await screen.findByRole('slider')
 
@@ -239,16 +236,16 @@ describe('ConnectionMeteringForm', () => {
 
   it('should render correctly for editing connection metering', async () => {
     render(
-    <Provider>
-      <ConnectionMeteringForm
-        mode={ConnectionMeteringFormMode.EDIT}
-      />
-    </Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-        policyId: connectionMeterings[0].id
-      }, path: '/:tenantId/:policyId' }
-    })
+      <Provider>
+        <ConnectionMeteringForm
+          mode={ConnectionMeteringFormMode.EDIT}
+        />
+      </Provider>, {
+        route: { params: {
+          tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          policyId: connectionMeterings[0].id
+        }, path: '/:tenantId/:policyId' }
+      })
 
     await screen.findAllByText('Settings')
     const applyButton = await screen.findByRole('button', { name: 'Apply' })
@@ -266,18 +263,18 @@ describe('ConnectionMeteringForm', () => {
 
   it('should cancel correctly for editing connection metering', async () => {
     render(
-    <Provider>
-      <ConnectionMeteringForm
-        mode={ConnectionMeteringFormMode.EDIT}
-      />
-    </Provider>, {
-      route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-        policyId: connectionMeterings[3].id
-      }, path: '/:tenantId/:policyId' }
-    })
+      <Provider>
+        <ConnectionMeteringForm
+          mode={ConnectionMeteringFormMode.EDIT}
+        />
+      </Provider>, {
+        route: { params: {
+          tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          policyId: connectionMeterings[3].id
+        }, path: '/:tenantId/:policyId' }
+      })
 
-    
+
     await screen.findAllByText('Settings')
     const cancelButton = await screen.findByRole('button', { name: 'Cancel' })
     const nameField = await screen.findByLabelText('Profile Name')
