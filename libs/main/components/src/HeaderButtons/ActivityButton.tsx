@@ -38,17 +38,10 @@ const defaultPayload: {
   }
 }
 
-interface ActivityButtonProps {
-  // used to determine whether to display, if it is false, activityButton would be displayed
-  isShown: boolean,
-  setIsShown: (b: boolean | null) => void
-}
-
-export default function ActivityButton (props: ActivityButtonProps) {
+export default function ActivityButton () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
-  const { isShown, setIsShown } = props
   const [status, setStatus] = useState('all')
   const [detail, setDetail] = useState<Activity>()
   const [detailModal, setDetailModalOpen] = useState<boolean>()
@@ -76,10 +69,6 @@ export default function ActivityButton (props: ActivityButtonProps) {
       }
     })
   }, [status])
-
-  useEffect(() => {
-    setActivityModalOpen(isShown)
-  }, [isShown])
 
   const activityList = <>
     <UI.FilterRow>
@@ -184,20 +173,14 @@ export default function ActivityButton (props: ActivityButtonProps) {
       )
     }
   ]
-  const onDetailClose = () => {
-    setDetailModalOpen(false)
-    setIsShown(false)
-    setActivityModalOpen(true)
-  }
   return <>
     <Badge
       overflowCount={9}
       offset={[-3, 0]}
-      children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />}
-        onClick={()=>{
-          setIsShown(false)
-          setActivityModalOpen(true)
-        }}/>}
+      children={<LayoutUI.ButtonSolid
+        icon={<ClockCircleFilled />}
+        onClick={()=> setActivityModalOpen(!activityModal)}
+      />}
     />
     <UI.Drawer
       width={464}
@@ -212,8 +195,8 @@ export default function ActivityButton (props: ActivityButtonProps) {
       width={464}
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}
-      onClose={onDetailClose}
-      onBackClick={onDetailClose}
+      onClose={() => setDetailModalOpen(false)}
+      onBackClick={() => setActivityModalOpen(true)}
       data={getDrawerData?.(detail!)}
       activity={detail}
     />}

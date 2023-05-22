@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
-import { useEffect, useState } from 'react'
-
+import { useState } from 'react'
 
 import { Badge } from 'antd'
 
@@ -12,15 +11,8 @@ import {
   useGetAlarmCountQuery }  from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
-interface AlarmsHeaderButtonProps {
-  // used to determine whether to display, if it is true, activityButton would be displayed
-  isShown: boolean | null,
-  setIsShown: (b: boolean | null) => void
-}
-
-export default function AlarmsHeaderButton (props: AlarmsHeaderButtonProps) {
+export default function AlarmsHeaderButton () {
   const params = useParams()
-  const { isShown, setIsShown } = props
   const { data } = useGetAlarmCountQuery({ params })
 
   const [visible, setVisible] = useState(false)
@@ -34,23 +26,16 @@ export default function AlarmsHeaderButton (props: AlarmsHeaderButtonProps) {
     }
   }
 
-  useEffect(() => {
-    if (visible && isShown) {
-      setVisible(isShown)
-    }
-  }, [isShown, visible])
-
   return <>
     <Badge
       count={getCount()}
       overflowCount={9}
       offset={[-3, 0]}
-      children={<LayoutUI.ButtonSolid icon={<NotificationSolid />}
-        onClick={()=>{
-          setIsShown(true)
-          setVisible(true)
-        }}/>}
+      children={<LayoutUI.ButtonSolid
+        icon={<NotificationSolid />}
+        onClick={()=> setVisible(!visible)}
+      />}
     />
-    <AlarmsDrawer visible={visible && !!isShown} setVisible={setVisible} setIsShown={setIsShown}/>
+    <AlarmsDrawer visible={visible} setVisible={setVisible}/>
   </>
 }
