@@ -1,7 +1,6 @@
 import React from 'react'
+
 import { BillingCycleType } from '@acx-ui/rc/utils'
-
-
 
 
 function getDataConsumptionText (prop:DataConsumptionLabelProp) : string {
