@@ -137,6 +137,12 @@ export function Select (props: CascaderProps) {
       onApply([],[])
     }
 
+    const handleKeyDown: CascaderProps['onInputKeyDown'] = (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.stopPropagation()
+      }
+    }
+
     const withFooter = (menus: JSX.Element) => <>
       {menus}
       {showRadioBand && (
@@ -219,6 +225,7 @@ export function Select (props: CascaderProps) {
             })}
           </div>
         }
+        onInputKeyDown={handleKeyDown}
       />
     )
   } else {
