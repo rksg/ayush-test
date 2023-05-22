@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps }                from '@acx-ui/components'
-import { defaultNetworkPayload }                                     from '@acx-ui/rc/components'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
 import {
-  useDeleteAccessControlProfileMutation,
-  useGetEnhancedAccessControlProfileListQuery, useNetworkListQuery
+  doProfileDelete,
+  useDeleteAccessControlProfilesMutation,
+  useGetEnhancedAccessControlProfileListQuery,
+  useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   AclOptionType,
@@ -100,12 +102,24 @@ const AccessControlSet = () => {
     }
   }, [networkTableQuery.data, networkIds])
 
-  const [ delAccessControl ] = useDeleteAccessControlProfileMutation()
+  const [ deleteFn ] = useDeleteAccessControlProfilesMutation()
+
+  const doDelete = (selectedRows: EnhancedAccessControlInfoType[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
 
   const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networkIds }], clearSelection) => {
+      visible: (selectedItems => selectedItems.length > 0),
+      onClick: (rows, clearSelection) => {
         if (networkIds.length !== 0) {
           showActionModal({
             type: 'error',
@@ -114,17 +128,7 @@ const AccessControlSet = () => {
             })
           })
         } else {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: name
-            },
-            onOk: () => {
-              delAccessControl({ params: { ...params, policyId: id } }).then(clearSelection)
-            }
-          })
+          doDelete(rows, clearSelection)
         }
       }
     },
@@ -154,7 +158,7 @@ const AccessControlSet = () => {
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={{ type: 'checkbox' }}
     />
   </Loader>
 }
