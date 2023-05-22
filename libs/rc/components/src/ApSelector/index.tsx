@@ -45,7 +45,10 @@ export function ApSelector (props: ApSelectorProps) {
   }, {
     selectFromResult ({ data }) {
       return {
-        apOptions: data?.data.map((ap: APExtended) => ({ value: ap.serialNumber, label: ap.name }))
+        apOptions: data?.data.map((ap: APExtended) => ({
+          value: ap.serialNumber,
+          label: ap.name ?? ''
+        }))
       }
     }
   })

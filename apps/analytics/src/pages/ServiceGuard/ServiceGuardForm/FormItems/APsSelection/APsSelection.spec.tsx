@@ -57,13 +57,13 @@ describe('APsSelection', () => {
 
     const combobox = await screen.findByRole('combobox')
 
-    await type(combobox, '2')
+    await type(combobox, 'AP 4')
     await click(await screen.findByRole('menuitemcheckbox', { name: /AP 4/ }))
 
-    await type(combobox, '2')
+    await type(combobox, 'AP 3')
     await click(await screen.findByRole('menuitemcheckbox', { name: /AP 3/ }))
 
-    await type(combobox, '2')
+    await type(combobox, 'AP 2')
     await click(await screen.findByRole('menuitemcheckbox', { name: /AP 2/ }))
 
     await click(screen.getByRole('button', { name: 'Submit' }))

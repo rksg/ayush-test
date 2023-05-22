@@ -12,7 +12,7 @@ import { networkFilterResult } from './__tests__/fixtures'
 import { api, Child }          from './services'
 import { NonSelectableItem }   from './styledComponents'
 
-import { NetworkFilter, onApply, displayRender, getNetworkFilterData } from './index'
+import { NetworkFilter, onApply, getNetworkFilterData } from './index'
 
 const mockIncidents = [
   {
@@ -344,16 +344,6 @@ describe('Network Filter', () => {
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
     expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
 
-  })
-  it('should return correct value to render', () => {
-    const data = [
-      { input: undefined, output: undefined },
-      { input: [{ displayLabel: 'dp' }], output: 'dp' },
-      { input: [{ label: 'l' }, { label: 'k' }], output: 'l / k' }
-    ]
-    data.forEach(({ input, output }) => {
-      expect(displayRender({}, input as DefaultOptionType[] | undefined)).toEqual(output)
-    })
   })
   it('should correctly call setNetworkPath', () => {
     const setNetworkPath = jest.fn()

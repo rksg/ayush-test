@@ -2,7 +2,7 @@ import React from 'react'
 
 import { DefaultOptionType } from 'antd/es/cascader'
 
-import { RadioBand, Select, Option } from '..'
+import { RadioBand, Select, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
@@ -57,12 +57,13 @@ export function LazyNested ({ multiple=false,
   return <div style={{ width: 200 }}>
     <Select
       multiple={multiple}
+      checkable
       showRadioBand={showRadioBand}
       defaultRadioBand={defaultRadioBand}
       isRadioBandDisabled={isRadioBandDisabled}
       radioBandDisabledReason={'Disabled for storybook.'}
       placeholder='Entire Organization'
-      options={options as Option[]}
+      options={options as CascaderOption[]}
       onApply={onApply}
       loadData={loadData}
       loading={loading}

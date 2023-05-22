@@ -1,8 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
-import {
-  CascaderProps as AntCascaderProps
-} from 'antd'
 import { DefaultOptionType }                         from 'antd/es/cascader'
 import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
@@ -10,25 +7,18 @@ import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 import { Button }  from '../Button'
 import { Tooltip } from '../Tooltip'
 
+import {
+  BaseCascader,
+  BaseCascaderProps,
+  CascaderOption
+} from './BaseCascader'
 import * as UI from './styledComponents'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 export type RadioBand = '6' | '5' | '2.4'
 
-// taken from antd Cascader API: https://ant.design/components/cascader/#Option
-export interface Option {
-  value: string | number | object[]
-  label?: React.ReactNode
-  displayLabel?: string
-  ignoreSelection?: boolean
-  disabled?: boolean
-  children?: Option[]
-  isLeaf?: boolean,
-  extraLabel?: React.ReactNode
-}
-
-export type CascaderProps = AntCascaderProps<Option> & {
+export type CascaderProps = BaseCascaderProps & {
   // based on antd, the multiple flag determines the type of DefaultOptionType
   onApply: (
     cascaderSelected: SingleValueType | SingleValueType[] | undefined,
@@ -62,15 +52,15 @@ export function Select (props: CascaderProps) {
     defaultRadioBand,
     isRadioBandDisabled = false,
     radioBandDisabledReason,
-    ...antProps } = props
+    ...cascaderProps } = props
   const { $t } = useIntl()
   const initialValues = defaultValue || []
   const initialRadioBands = isRadioBandDisabled ? [] : defaultRadioBand || []
   const [
     currentValues,
     setCurrentValues
-  ] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
-  const [savedValues, setSavedValues] = React.useState(initialValues)
+  ] = useState<SingleValueType | SingleValueType[]>(initialValues)
+  const [savedValues, setSavedValues] = useState(initialValues)
 
   useEffect(() => {
     setCurrentValues(initialValues)
@@ -78,15 +68,13 @@ export function Select (props: CascaderProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue])
 
-  const [open, setOpenState] = React.useState(props.open ?? false)
+  const [open, setOpenState] = useState(props.open ?? false)
   const setOpen = (val: boolean) => {
     setOpenState(val)
     props.onDropdownVisibleChange && props.onDropdownVisibleChange(val)
   }
-  const [currentRadioBands, setCurrentRadioBands] = React
-    .useState<CheckboxValueType[]>(initialRadioBands)
-  const [savedRadioBands, setSavedRadioBands] = React
-    .useState<CheckboxValueType[]>(initialRadioBands)
+  const [currentRadioBands, setCurrentRadioBands] = useState<CheckboxValueType[]>(initialRadioBands)
+  const [savedRadioBands, setSavedRadioBands] = useState<CheckboxValueType[]>(initialRadioBands)
   useEffect(() => {
     setCurrentRadioBands(initialRadioBands)
     setSavedRadioBands(initialRadioBands)
@@ -111,7 +99,9 @@ export function Select (props: CascaderProps) {
     setOpen(false)
   }
 
-  if (props.multiple || showRadioBand) {
+  const multiple = props.multiple || showRadioBand
+
+  if (multiple) {
     const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
       setOpen(false)
@@ -175,15 +165,17 @@ export function Select (props: CascaderProps) {
         </Button>
       </UI.ButtonDiv>
     </>
-    const currentLabels = antProps.options?.reduce(
-      (acc: React.ReactNode[], option: Option) => {
+
+    const currentLabels = cascaderProps.options?.reduce(
+      (acc: ReactNode[], option: CascaderOption) => {
         if ((currentValues as string[]).flat().includes(option.value as string))
           return [...acc, option.displayLabel || option.label]
         return acc
       },
       []
     )
-    let { placeholder } = antProps
+
+    let { placeholder } = cascaderProps
     if(currentRadioBands.length){
       placeholder =$t(selectedItemsDesc, {
         count: currentRadioBands.length,
@@ -192,43 +184,40 @@ export function Select (props: CascaderProps) {
       })
       currentLabels?.push(placeholder)
     }
-    return (
-      <UI.Cascader
-        {...antProps}
-        showArrow={true}
-        value={currentValues}
-        multiple
-        onChange={setCurrentValues}
-        dropdownRender={withFooter}
-        expandTrigger='hover'
-        maxTagCount='responsive'
-        showSearch={antProps.showSearch || true}
-        onDropdownVisibleChange={setOpen}
-        open={open}
-        getPopupContainer={(triggerNode) => triggerNode.parentNode}
-        onClear={antProps.allowClear ? onClearMultiple : undefined}
-        removeIcon={open ? undefined : null}
-        placeholder={placeholder}
-        maxTagPlaceholder={omitted =>
-          <div title={currentLabels?.join(', ')}>
-            {$t(selectedItemsDesc,{
-              count: omitted.length,
-              singular: $t(entityName.singular),
-              plural: $t(entityName.plural)
-            })}
-          </div>
-        }
-      />
-    )
+
+    return <BaseCascader
+      {...cascaderProps}
+      showArrow
+      value={currentValues}
+      multiple
+      onChange={setCurrentValues}
+      dropdownRender={withFooter}
+      expandTrigger='click'
+      maxTagCount='responsive'
+      onDropdownVisibleChange={setOpen}
+      open={open}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      onClear={cascaderProps.allowClear ? onClearMultiple : undefined}
+      removeIcon={open ? undefined : null}
+      placeholder={placeholder}
+      maxTagPlaceholder={omitted =>
+        <div title={currentLabels?.join(', ')}>
+          {$t(selectedItemsDesc,{
+            count: omitted.length,
+            singular: $t(entityName.singular),
+            plural: $t(entityName.plural)
+          })}
+        </div>
+      }
+    />
   } else {
-    return <UI.Cascader
-      {...antProps}
-      changeOnSelect
+    return <BaseCascader
+      {...cascaderProps}
       onChange={(
         value: SingleValueType | SingleValueType[],
         selectedOptions: DefaultOptionType[] | DefaultOptionType[][]
       ) => {
-        const selectedNode = selectedOptions?.slice(-1)[0] as Option
+        const selectedNode = selectedOptions?.slice(-1)[0] as CascaderOption
         if (selectedNode?.ignoreSelection) return
         if (!value) {
           setCurrentValues([])
@@ -237,11 +226,10 @@ export function Select (props: CascaderProps) {
         onApply(value ?? [])
       }}
       expandTrigger='hover'
-      showSearch={antProps.showSearch || true}
       onDropdownVisibleChange={setOpen}
       open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
-      onClear={antProps.allowClear ? onClear : undefined}
+      onClear={cascaderProps.allowClear ? onClear : undefined}
     />
   }
 }

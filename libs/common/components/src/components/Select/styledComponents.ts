@@ -1,9 +1,80 @@
+/* eslint-disable max-len */
 import { Checkbox, Cascader as AntCascader } from 'antd'
-import styled                                from 'styled-components/macro'
+import styled, { createGlobalStyle }         from 'styled-components/macro'
 
 import { InformationOutlined } from '@acx-ui/icons'
 
-export const Cascader = styled(AntCascader)`
+import type { BaseCascaderProps } from './BaseCascader'
+
+export const LabelContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`
+export const Label = styled.div<{ overrideMaxWidth?: boolean }>`
+  ${props => props.overrideMaxWidth && 'max-width: 100% !important;'}
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+export const GlobalStyle = createGlobalStyle<{
+  menuMaxWidth?: string
+  labelMaxWidth?: string
+}>`
+  .ant-cascader {
+    width: 100%;
+    // fixes extra space appearing when clicking on selected items
+    > [aria-live='polite'] { display: none !important; }
+    &-menus {
+      max-width: ${(props) => props.menuMaxWidth ?? '100%'};
+    }
+    &-menu {
+      overflow: auto;
+      height: 215px;
+      max-height: 100%;
+      border-right: 1px solid var(--acx-neutrals-20);
+      ${Label} {
+        max-width: ${(props) => props.labelMaxWidth ?? '100%'};
+      }
+      &-item {
+        &:hover {
+          background-color: var(--acx-accents-orange-10);
+        }
+        &-active {
+          &:not(:disabled) {
+            background-color: var(--acx-accents-orange-20);
+          }
+        }
+        &-content {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        &-expand {
+          position: relative;
+        }
+        &-expand-icon {
+          line-height: 1;
+          span[role=img] {
+            svg { display: none; }
+            &::after {
+              content: '';
+              display: inline-block;
+              width: 16px;
+              height: 16px;
+              background-color: var(--acx-neutrals-50);
+              // encodeURIComponent(renderToStaticMarkup(<ChevronRight />))
+              mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20stroke%3D%22currentColor%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M10%205.25%2016.75%2012%2010%2018.75%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+              -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20stroke%3D%22currentColor%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M10%205.25%2016.75%2012%2010%2018.75%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+              mask-size: 16px 16px;
+              -webkit-mask-size: 16px 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+`
+export const Cascader = styled(AntCascader)<BaseCascaderProps>`
   .ant-select-selector {
     border-color: var(--acx-primary-black) !important;
   }
@@ -15,11 +86,6 @@ export const Cascader = styled(AntCascader)`
       color: var(--acx-neutrals-50);
     }
   }
-  .ant-cascader-menu {
-    overflow: auto;
-    height: 215px;
-    max-height: 100%;
-  }
   .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
     border: none;
     background: var(--acx-primary-white);
@@ -27,7 +93,25 @@ export const Cascader = styled(AntCascader)`
     padding-right: 0px;
     margin-right: 0px;
     margin-bottom: 0px;
-}
+  }
+`
+export const NonSelectable = styled.div.attrs({
+  onClick: (e: React.MouseEvent<HTMLElement>) => e.stopPropagation()
+})`
+  cursor: default;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  * {
+    cursor: default;
+  }
 `
 export const ButtonDiv = styled.div`
   margin-top: 4px;
@@ -72,7 +156,6 @@ export const CheckboxGroup = styled(Checkbox.Group)`
     }
   }
 `
-
 export const InfoIcon = styled(InformationOutlined)`
   margin-bottom: -5px;
 `

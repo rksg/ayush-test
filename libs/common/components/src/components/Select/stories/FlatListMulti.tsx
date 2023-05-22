@@ -1,8 +1,8 @@
-import { Select, Option } from '..'
+import { Select, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
-const options: Option[] = [
+const options: CascaderOption[] = [
   {
     value: 'n1',
     label: 'Venue 1'

@@ -9,7 +9,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -113,16 +113,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="swg1"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -167,16 +167,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="venue"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -221,16 +221,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="venue1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="venue1"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             venue1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -261,16 +261,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -332,7 +332,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
+                  class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -370,7 +370,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -474,16 +474,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="swg"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="swg"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             swg
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -528,16 +528,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="swg1"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -582,16 +582,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="venue"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -622,16 +622,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -693,7 +693,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
+                  class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -731,7 +731,7 @@ exports[`Network Filter should select network node and bands 1`] = `
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -849,16 +849,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="swg"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="swg"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             swg
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -888,7 +888,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                     </li>
                     <li
                       aria-checked="false"
-                      class="ant-cascader-menu-item ant-cascader-menu-item-expand"
+                      class="ant-cascader-menu-item ant-cascader-menu-item-expand ant-cascader-menu-item-active"
                       data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"switchGroup\\",\\"name\\":\\"id5\\"}]"
                       role="menuitemcheckbox"
                     >
@@ -903,16 +903,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="swg1"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -942,7 +942,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                     </li>
                     <li
                       aria-checked="true"
-                      class="ant-cascader-menu-item ant-cascader-menu-item-expand ant-cascader-menu-item-active"
+                      class="ant-cascader-menu-item ant-cascader-menu-item-expand"
                       data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"id1\\"}]"
                       role="menuitemcheckbox"
                     >
@@ -957,16 +957,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="venue"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1011,16 +1011,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="venue1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="venue1"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             venue1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1054,13 +1054,13 @@ exports[`Network Filter should select network node and bands 1`] = `
                     role="menu"
                   >
                     <li
-                      aria-checked="true"
+                      aria-checked="false"
                       class="ant-cascader-menu-item ant-cascader-menu-item-expand"
-                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"id1\\"}]__RC_CASCADER_SPLIT__apsid1"
+                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"switchGroup\\",\\"name\\":\\"id5\\"}]__RC_CASCADER_SPLIT__apsid5"
                       role="menuitemcheckbox"
                     >
                       <span
-                        class="ant-cascader-checkbox ant-cascader-checkbox-checked"
+                        class="ant-cascader-checkbox"
                       >
                         <span
                           class="ant-cascader-checkbox-inner"
@@ -1070,16 +1070,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="APs"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="APs"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             APs
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1110,7 +1110,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                     <li
                       aria-checked="true"
                       class="ant-cascader-menu-item ant-cascader-menu-item-expand"
-                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"id1\\"}]__RC_CASCADER_SPLIT__switchesid2"
+                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"switchGroup\\",\\"name\\":\\"id5\\"}]__RC_CASCADER_SPLIT__switchesid5"
                       role="menuitemcheckbox"
                     >
                       <span
@@ -1124,16 +1124,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="Switches"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="Switches"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             Switches
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1164,16 +1164,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1235,7 +1235,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
+                  class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -1299,7 +1299,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -1403,16 +1403,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="swg"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="swg"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             swg
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1457,16 +1457,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="swg1"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1511,16 +1511,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="venue"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1565,16 +1565,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1x390s8-3 eTUeBM"
+                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          title="venue1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1x390s8-4 cjAkqv"
-                            title="venue1"
+                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
                           >
                             venue1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 ctilhZ"
+                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
                           />
                         </div>
                       </div>
@@ -1605,16 +1605,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1676,7 +1676,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
+                  class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -1714,7 +1714,7 @@ exports[`Network Filter with incident severity should not show any severity circ
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -1862,7 +1862,7 @@ exports[`Network Filter with incident severity should show only venue severities
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -2010,7 +2010,7 @@ exports[`Network Filter with incident severity should show severity only once on
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"

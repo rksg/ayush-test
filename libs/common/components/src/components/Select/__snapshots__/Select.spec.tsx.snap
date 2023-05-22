@@ -3,7 +3,7 @@
 exports[`Select renders simple list with bands, triggers onApply with multi-select 1`] = `
 <DocumentFragment>
   <div
-    class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+    class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
   >
     <div
       class="ant-select-selector"
@@ -109,7 +109,6 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
                   class="ant-cascader-menu-item"
                   data-path-key="n1"
                   role="menuitemcheckbox"
-                  title="SSID 1"
                 >
                   <span
                     class="ant-cascader-checkbox ant-cascader-checkbox-checked"
@@ -121,15 +120,23 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 1
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 1"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 1
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li
                   aria-checked="true"
-                  class="ant-cascader-menu-item"
+                  class="ant-cascader-menu-item ant-cascader-menu-item-active"
                   data-path-key="n2"
                   role="menuitemcheckbox"
-                  title="SSID 2"
                 >
                   <span
                     class="ant-cascader-checkbox ant-cascader-checkbox-checked"
@@ -141,7 +148,16 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 2
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 2"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 2
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li
@@ -149,7 +165,6 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
                   class="ant-cascader-menu-item"
                   data-path-key="n3"
                   role="menuitemcheckbox"
-                  title="SSID 3"
                 >
                   <span
                     class="ant-cascader-checkbox"
@@ -161,7 +176,16 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 3
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 3"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 3
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li
@@ -169,7 +193,6 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
                   class="ant-cascader-menu-item"
                   data-path-key="n4"
                   role="menuitemcheckbox"
-                  title="SSID 4"
                 >
                   <span
                     class="ant-cascader-checkbox"
@@ -181,22 +204,31 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 4
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 4"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 4
+                      </div>
+                    </div>
                   </div>
                 </li>
               </ul>
             </div>
             <div
-              class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
+              class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
             >
               <span
-                class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
+                class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
                 style="margin-right: 10px;"
               >
                 Radio:
               </span>
               <div
-                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
+                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
               >
                 <label
                   class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -258,7 +290,7 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
               </div>
             </div>
             <div
-              class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
+              class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
             >
               <button
                 class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -314,7 +346,7 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
 exports[`Select should render bands disabled, reset default bands and apply 1`] = `
 <DocumentFragment>
   <div
-    class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 jcbjTn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+    class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
   >
     <div
       class="ant-select-selector"
@@ -446,7 +478,6 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   class="ant-cascader-menu-item"
                   data-path-key="n1"
                   role="menuitemcheckbox"
-                  title="SSID 1"
                 >
                   <span
                     class="ant-cascader-checkbox"
@@ -458,7 +489,16 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 1
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 1"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 1
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li
@@ -466,7 +506,6 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   class="ant-cascader-menu-item"
                   data-path-key="n2"
                   role="menuitemcheckbox"
-                  title="SSID 2"
                 >
                   <span
                     class="ant-cascader-checkbox"
@@ -478,7 +517,16 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 2
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 2"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 2
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li
@@ -486,7 +534,6 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   class="ant-cascader-menu-item"
                   data-path-key="n3"
                   role="menuitemcheckbox"
-                  title="SSID 3"
                 >
                   <span
                     class="ant-cascader-checkbox ant-cascader-checkbox-checked"
@@ -498,7 +545,16 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 3
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 3"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 3
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li
@@ -506,7 +562,6 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   class="ant-cascader-menu-item"
                   data-path-key="n4"
                   role="menuitemcheckbox"
-                  title="SSID 4"
                 >
                   <span
                     class="ant-cascader-checkbox"
@@ -518,22 +573,31 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   <div
                     class="ant-cascader-menu-item-content"
                   >
-                    SSID 4
+                    <div
+                      class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                      title="SSID 4"
+                    >
+                      <div
+                        class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                      >
+                        SSID 4
+                      </div>
+                    </div>
                   </div>
                 </li>
               </ul>
             </div>
             <div
-              class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
+              class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
             >
               <span
-                class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
+                class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
                 style="margin-right: 10px;"
               >
                 Radio:
               </span>
               <div
-                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
+                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
               >
                 <label
                   class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-group-item"
@@ -597,12 +661,12 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                 </label>
               </div>
               <svg
-                class="styledComponents__InfoIcon-sc-9z6ynb-6 fnOXKk"
+                class="styledComponents__InfoIcon-sc-9z6ynb-9 glLIBP"
                 data-testid="InformationOutlined"
               />
             </div>
             <div
-              class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
+              class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
             >
               <button
                 class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
