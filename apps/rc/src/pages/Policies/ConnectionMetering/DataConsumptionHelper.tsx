@@ -1,16 +1,12 @@
 import React from 'react'
-import { useIntl }    from 'react-intl'
-import {
-  BillingCycleType
-} from '@acx-ui/rc/utils'
+import { BillingCycleType } from '@acx-ui/rc/utils'
 
 
 
 
 function getDataConsumptionText (prop:DataConsumptionLabelProp) : string {
-  const { $t } = useIntl()
   if (prop.dataCapacity === 0) {
-    return $t({ defaultMessage: 'OFF' })
+    return 'OFF'
   }
   let res = 'Max Data: '
   if (prop.dataCapacity >= 1000)

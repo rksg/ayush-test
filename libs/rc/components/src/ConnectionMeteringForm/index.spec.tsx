@@ -3,9 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }        from '@acx-ui/feature-toggle'
-import {
-  ConnectionMeteringFormMode
-} from '@acx-ui/rc/components'
+import { ConnectionMeteringFormMode } from '@acx-ui/rc/components'
 import { ConnectionMetering, ConnectionMeteringUrls, NewTablePageable, NewTableResult, BillingCycleType } from '@acx-ui/rc/utils'
 import { Provider }                                                                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor }                                                 from '@acx-ui/test-utils'
