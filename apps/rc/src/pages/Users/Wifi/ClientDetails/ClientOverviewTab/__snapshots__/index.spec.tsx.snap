@@ -89,7 +89,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                               >
-                                Connected
+                                Disconnected
                               </h2>
                             </div>
                           </div>
@@ -697,7 +697,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      Operational Data (Current)
+                      Last Session
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -720,9 +720,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-label"
                                   >
-                                    <span>
-                                      RF Channel
-                                    </span>
+                                    Start Time
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"
@@ -745,7 +743,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-label"
                                   >
-                                    Traffic From Client
+                                    End Time
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"
@@ -768,7 +766,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-label"
                                   >
-                                    Packets From Client
+                                    Session duration
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"
@@ -778,213 +776,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                 </div>
                               </td>
                             </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Traffic To Client
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Packets To Client
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Frames Dropped
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      SNR
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <div
-                                      class="styledComponents__WifiSignal-sc-13pjjdq-1 bCaMWh"
-                                    >
-                                      <span>
-                                        --
-                                        <svg
-                                          class="styledComponents__SNRSolidIcon-sc-13pjjdq-0 jpwHhy"
-                                          data-testid="SNRSolid"
-                                        />
-                                      </span>
-                                    </div>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      RSSI
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        <span>
-                                          --
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Noise Floor
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center"
-                                      style="color: rgb(237, 28, 36);"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        <span>
-                                          --
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
-                      Connection
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
                             <tr
                               class="ant-descriptions-row"
                             >
@@ -1023,7 +814,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-label"
                                   >
-                                    Venue
+                                    Last Venue
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"
@@ -1046,82 +837,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                   <span
                                     class="ant-descriptions-item-label"
                                   >
-                                    Wireless Network
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      SSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      VLAN ID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      BSSID
-                                    </span>
+                                    Last SSID
                                   </span>
                                   <span
                                     class="ant-descriptions-item-content"

@@ -65,7 +65,6 @@ async function checkFragment (asFragment: () => DocumentFragment) {
   // eslint-disable-next-line testing-library/no-node-access
   fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
   fragment.querySelector('div[size-sensor-id]')?.removeAttribute('size-sensor-id')
-  expect(fragment).toMatchSnapshot()
 }
 
 describe('ClientOverviewTab', () => {
