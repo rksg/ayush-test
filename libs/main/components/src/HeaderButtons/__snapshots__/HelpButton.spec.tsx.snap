@@ -14,8 +14,6 @@ exports[`HelpButton should enable chat support button if support status is chatt
         data-testid="QuestionMarkCircleSolid"
       />
     </button>
-    <div />
-    <div />
   </span>
 </DocumentFragment>
 `;
