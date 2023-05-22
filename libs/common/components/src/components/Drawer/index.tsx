@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { KeyboardEvent, MouseEvent as ReactMouseEvent, RefObject, useRef, useEffect, useState, ReactNode } from 'react'
 
-import { DrawerProps as AntDrawerProps } from 'antd'
-import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useIntl }                       from 'react-intl'
+import {  DrawerProps as AntDrawerProps } from 'antd'
+import Checkbox, { CheckboxChangeEvent }  from 'antd/lib/checkbox'
+import { useIntl }                        from 'react-intl'
 
 import { CloseSymbol, ArrowBack } from '@acx-ui/icons'
 
@@ -18,7 +18,8 @@ interface DrawerHeaderProps {
 }
 
 export interface DrawerProps extends
-  Omit<AntDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
+  Omit<AntDrawerProps,
+    'title'|'placement'|'extra'|'footerStyle'|'maskClosable'|'maskStyle'|'mask'|'closeIcon'>,
   DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {
@@ -35,20 +36,46 @@ const Header = (props: DrawerHeaderProps) => {
   </>
 }
 
+let currentDrawer: {
+  ref: RefObject<HTMLDivElement | null>,
+  onClose: CallableFunction
+}
+
+export function useCloseOutsideClick (
+  ref: RefObject<HTMLDivElement | null>,
+  onClose: CallableFunction,
+  footer: ReactNode | undefined,
+  visible: boolean
+) {
+  const wasVisible = useRef<boolean>(false)
+  useEffect(() => {
+    if (!footer && visible && !wasVisible.current && currentDrawer?.ref !== ref) {
+      currentDrawer?.onClose?.()
+      currentDrawer = { ref, onClose }
+    }
+    wasVisible.current = visible
+  }, [onClose, ref, footer, wasVisible, visible])
+}
+
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, mask = false, ...rest } = props
+  const { title, icon, subTitle, onBackClick, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
+  const ref = useRef<HTMLDivElement | null>(null)
+  const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
+  useCloseOutsideClick(ref, onClose, props.footer, Boolean(props.visible))
   return (
-    <UI.Drawer
-      {...rest}
-      title={<Header {...headerProps}/>}
-      placement='right'
-      mask={mask}
-      maskStyle={{ background: 'none' }}
-      maskClosable={mask}
-      width={props.width || '336px'}
-      closeIcon={<CloseSymbol />}
-    />
+    <div ref={ref}>
+      <UI.Drawer
+        {...rest}
+        title={<Header {...headerProps}/>}
+        placement='right'
+        mask={false}
+        maskStyle={{ background: 'none' }}
+        maskClosable={false}
+        width={props.width || '336px'}
+        closeIcon={<CloseSymbol />}
+      />
+    </div>
   )
 }
 

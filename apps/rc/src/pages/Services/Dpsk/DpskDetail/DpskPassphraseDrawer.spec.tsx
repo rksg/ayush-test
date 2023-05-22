@@ -227,7 +227,7 @@ describe('DpskPassphraseDrawer', () => {
     const editingData = {
       ...mockedDpskPassphrase,
       email: 'testing@commscope.com',
-      phoneNumber: '+8860987111222'
+      phoneNumber: '+886987111222'
     }
 
     jest.mocked(useIsSplitOn).mockReturnValue(true)

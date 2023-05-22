@@ -65,3 +65,4 @@ export * from './VenueRadiusOptions'
 
 export * from './EdgeFirewallEnum'
 export * from './EdgeDhcpEnum'
+export * from './BasicServiceSetPriorityEnum'

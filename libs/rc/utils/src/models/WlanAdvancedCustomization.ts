@@ -1,9 +1,10 @@
-import { ClientIsolationOptions } from './ClientIsolationOptions'
-import { DevicePolicy }           from './DevicePolicy'
-import { DnsProxy }               from './DnsProxy'
-import { RadiusOptions }          from './RadiusOptions'
-import { VlanPool }               from './VlanPool'
-import { WlanRadioCustomization } from './WlanRadioCustomization'
+import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
+import { ClientIsolationOptions }      from './ClientIsolationOptions'
+import { DevicePolicy }                from './DevicePolicy'
+import { DnsProxy }                    from './DnsProxy'
+import { RadiusOptions }               from './RadiusOptions'
+import { VlanPool }                    from './VlanPool'
+import { WlanRadioCustomization }      from './WlanRadioCustomization'
 
 export class WlanAdvancedCustomization {
   l2AclPolicyId?: string
@@ -106,6 +107,7 @@ export class WlanAdvancedCustomization {
 
   dnsProxy?: DnsProxy
 
+  bssPriority: BasicServiceSetPriorityEnum
   radiusOptions?: RadiusOptions
 
   constructor () {
@@ -193,5 +195,7 @@ export class WlanAdvancedCustomization {
     this.dnsProxyEnabled = false
 
     this.dnsProxy = new DnsProxy()
+
+    this.bssPriority = BasicServiceSetPriorityEnum.HIGH
   }
 }

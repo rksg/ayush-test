@@ -383,7 +383,7 @@ exports[`Layout should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 jckUtx"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 qhECB"
               >
                 <div>
                   Right header
@@ -552,7 +552,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 jckUtx"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 qhECB"
               >
                 <div>
                   Right header

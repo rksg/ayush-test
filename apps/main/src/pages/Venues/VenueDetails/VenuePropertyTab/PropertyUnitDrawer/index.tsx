@@ -6,6 +6,7 @@ import _                                                             from 'lodas
 import { useIntl }                                                   from 'react-intl'
 
 import { Drawer, Loader, StepsFormLegacy } from '@acx-ui/components'
+import { PhoneInput }                      from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -481,7 +482,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               rules={[
                 { validator: (_, value) => phoneRegExp(value) }
               ]}
-              children={<Input />}
+              children={<PhoneInput
+                name={['resident', 'phoneNumber']}
+                callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
+                onTop={false}
+              />}
+              validateFirst
             />
           </Form>
         </Loader>

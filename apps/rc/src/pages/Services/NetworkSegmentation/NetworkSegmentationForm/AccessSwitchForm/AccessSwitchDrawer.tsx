@@ -234,7 +234,6 @@ export function AccessSwitchDrawer (props: {
         { name: editRecords.map(as => as.name).join(', ') }
       )}
       visible={open}
-      mask={true}
       onClose={onClose}
       destroyOnClose={true}
       width={480}
