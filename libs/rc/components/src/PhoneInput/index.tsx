@@ -8,7 +8,7 @@ import intlTelInput              from 'intl-tel-input'
 import { FlagContainer } from './styledComponents'
 
 interface PhoneInputProps {
-  name: string
+  name: string | string[]
   callback?: (value: string) => void
   onTop: boolean
 }
