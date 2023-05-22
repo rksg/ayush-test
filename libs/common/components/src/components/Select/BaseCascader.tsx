@@ -86,8 +86,8 @@ export function BaseCascader (
     />
     <UI.Cascader
       {...props}
-      options={wrappedOptions}
-      showSearch={showSearch}
+      options={!props.loadData ? wrappedOptions : options}
+      showSearch={!props.loadData ? showSearch : undefined}
       displayRender={!props.multiple ? displayRender : undefined}
       changeOnSelect
     />

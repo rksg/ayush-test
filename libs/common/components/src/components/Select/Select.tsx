@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import { DefaultOptionType }                         from 'antd/es/cascader'
 import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
@@ -19,7 +18,6 @@ import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 export type RadioBand = '6' | '5' | '2.4'
 
 export type CascaderProps = BaseCascaderProps & {
-  // based on antd, the multiple flag determines the type of DefaultOptionType
   onApply: (
     cascaderSelected: SingleValueType | SingleValueType[] | undefined,
     radioBandsSelected?: CheckboxValueType[]
@@ -215,7 +213,7 @@ export function Select (props: CascaderProps) {
       {...cascaderProps}
       onChange={(
         value: SingleValueType | SingleValueType[],
-        selectedOptions: DefaultOptionType[] | DefaultOptionType[][]
+        selectedOptions: CascaderOption[] | CascaderOption[][]
       ) => {
         const selectedNode = selectedOptions?.slice(-1)[0] as CascaderOption
         if (selectedNode?.ignoreSelection) return

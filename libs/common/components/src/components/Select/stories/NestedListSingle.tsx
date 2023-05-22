@@ -10,6 +10,7 @@ const options: CascaderOption[] = [
       {
         value: 'v1-a',
         label: 'APs',
+        ignoreSelection: true,
         children: [
           {
             value: 'v1-a-ap3',
@@ -24,6 +25,7 @@ const options: CascaderOption[] = [
       {
         value: 'v1-s',
         label: 'Switches',
+        ignoreSelection: true,
         children: [
           {
             value: 'v1-s-s1',
@@ -44,6 +46,7 @@ const options: CascaderOption[] = [
       {
         value: 'v2-a',
         label: 'APs',
+        ignoreSelection: true,
         children: [
           {
             value: 'v2-a-ap5',

@@ -563,4 +563,26 @@ describe('Select', () => {
     // search not supported with typeof label !== string and no displayLabel provided
     await waitFor(() => { expect(screen.queryByTestId('test-label')).toBeNull() })
   })
+
+  it('handles lazy loading (search and extraLabel not supported)', async () => {
+    const options: CascaderOption[] = [
+      {
+        value: 'n1',
+        label: <div data-testid='test-label'>SSID 1</div>,
+        isLeaf: false
+      }
+    ]
+
+    const loadDataMock = jest.fn()
+    render(<CustomCascader
+      options={options}
+      onApply={jest.fn()}
+      loadData={loadDataMock}
+      entityName={entityName}
+    />)
+
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.hover(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+    expect(loadDataMock).toHaveBeenCalledWith(options)
+  })
 })
