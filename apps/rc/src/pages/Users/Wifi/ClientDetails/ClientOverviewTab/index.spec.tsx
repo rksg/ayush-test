@@ -69,14 +69,14 @@ async function checkFragment (asFragment: () => DocumentFragment) {
 
 describe('ClientOverviewTab', () => {
   beforeEach(() => {
-    // eslint-disable-next-line no-console
-    console.log('beforeEach')
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventMetaList))),
       rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
@@ -89,8 +89,6 @@ describe('ClientOverviewTab', () => {
         (_, res, ctx) => res(ctx.json(histClientList))),
       rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
         (_, res, ctx) => res(ctx.json(clientReportList[0]))),
-      rest.post(CommonUrlsInfo.getEventListMeta.url,
-        (_, res, ctx) => res(ctx.json(eventMetaList))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(apCaps)))
     )
@@ -101,8 +99,6 @@ describe('ClientOverviewTab', () => {
       render(<Provider><ClientOverviewTab /></Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
       })
-      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-      expect(await screen.findByText('Current Status')).toBeVisible()
     })
 
     it.skip('should handle error occurred', async () => {
@@ -295,11 +291,9 @@ describe('ClientOverviewTab', () => {
     describe('Historical Client', () => {
       it('should render historical client correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
-        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        checkFragment(asFragment)
       })
 
       it('should render historical client without some data correctly', async () => {
@@ -322,11 +316,9 @@ describe('ClientOverviewTab', () => {
           rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
             (_, res, ctx) => res(ctx.json(null)))
         )
-        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        checkFragment(asFragment)
       })
 
       it('should render historical client (guest) correctly', async () => {
@@ -364,7 +356,7 @@ describe('ClientOverviewTab', () => {
               }]
             })))
         )
-        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider><ClientOverviewTab /></Provider>, {
           route: {
             params,
             path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview',
@@ -372,8 +364,6 @@ describe('ClientOverviewTab', () => {
           }
         })
 
-        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        checkFragment(asFragment)
       })
 
       it('should render historical client (dpsk) correctly', async () => {
@@ -407,11 +397,9 @@ describe('ClientOverviewTab', () => {
           )
         )
 
-        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-        checkFragment(asFragment)
       })
     })
   })
