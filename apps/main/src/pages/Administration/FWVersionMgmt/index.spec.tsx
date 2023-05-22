@@ -22,6 +22,12 @@ import {
 
 import FWVersionMgmt from '.'
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 jest.mock('./SwitchFirmware/VenueFirmwareList', () => ({
   ...jest.requireActual('./SwitchFirmware/VenueFirmwareList'),
   VenueFirmwareList: () => <div data-testid='mocked-SwitchFirmware-table'></div>
@@ -82,7 +88,7 @@ describe('Firmware Version Management', () => {
       })
     await screen.findByTestId('mocked-ApFirmware-table')
     userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
-    // await screen.findByTestId('mocked-SwitchFirmware-table')
+    await screen.findByTestId('mocked-SwitchFirmware-table')
   })
 
 })
