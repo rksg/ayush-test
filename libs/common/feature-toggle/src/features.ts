@@ -50,5 +50,7 @@ export enum Features {
   STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
+  WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
+  SWITCH_BREAKOUT_PORT='switch-breakout-port',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional'
 }

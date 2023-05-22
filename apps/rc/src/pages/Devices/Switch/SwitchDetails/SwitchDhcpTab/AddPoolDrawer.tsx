@@ -121,7 +121,6 @@ export function AddPoolDrawer (props: {
       visible={props.visible}
       onClose={props.onClose}
       closable={true}
-      maskClosable={false}
       width={460}
       footer={<div>
         <Button
