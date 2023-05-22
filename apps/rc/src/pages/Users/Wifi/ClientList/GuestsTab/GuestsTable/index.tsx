@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react'
 import {
   FetchBaseQueryError
 } from '@reduxjs/toolkit/query/react'
-import { Drawer }  from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
+import { Drawer, Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
 import {
   Button,
   Table,
@@ -418,7 +417,6 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
         title={$t({ defaultMessage: 'Guest Details' })}
         visible={visible}
         onClose={onClose}
-        mask={false}
         children={
           <GuestsDetail
             triggerClose={onClose}

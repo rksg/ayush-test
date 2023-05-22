@@ -38,7 +38,7 @@ const fakeUserProfile = {
     {
       name: 'US',
       description: 'United States of America',
-      link: 'https://devalto.ruckuswireless.com',
+      link: 'https://dev.ruckus.cloud',
       current: true
     },
     {
