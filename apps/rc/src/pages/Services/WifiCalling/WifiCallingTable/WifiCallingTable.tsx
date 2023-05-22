@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { defaultNetworkPayload }                                          from '@acx-ui/rc/components'
+import { defaultNetworkPayload, SimpleListTooltip }                       from '@acx-ui/rc/components'
 import {
   useDeleteWifiCallingServiceMutation,
   useGetEnhancedWifiCallingServiceListQuery,
@@ -220,7 +220,13 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => row.networkIds?.length
+      render: (data, row) => {
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        const networkIds = row.networkIds
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkFilterOptions.filter(v => networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
+      }
     }
   ]
 
