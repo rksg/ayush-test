@@ -10,15 +10,13 @@ jobs:
       - checkout
       - run:
           name: Build
-          command: docker build --tag acx-ui-ra:latest -f ./Dockerfile.ra .
+          command: docker build --tag ${GCR_HOSTNAME}/${GCR_PROJECT_ID}/acx-ui:${CIRCLE_SHA1:0:7} -f ./Dockerfile.ra .
       - run:
           name: Push
           command: |
             docker logout > /dev/null 2>&1
             echo "$GCR_KEY" | docker login -u _json_key --password-stdin https://${GCR_HOSTNAME}
-            docker tag acx-ui-ra:latest ${GCR_HOSTNAME}/${GCR_PROJECT_ID}/acx-ui:latest
-            docker push ${GCR_HOSTNAME}/${GCR_PROJECT_ID}/acx-ui:latest
-            docker logout > /dev/null 2>&1
+            docker push ${GCR_HOSTNAME}/${GCR_PROJECT_ID}/acx-ui:${CIRCLE_SHA1:0:7}
 
 workflows:
   version: 2
