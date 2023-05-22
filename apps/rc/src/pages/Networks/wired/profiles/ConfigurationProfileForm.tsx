@@ -79,7 +79,7 @@ export function ConfigurationProfileForm () {
     const ipv4DhcpSnoopingValue =
       data.vlans?.filter((item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
     const arpInspectionValue =
-      data.vlans?.filter((item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
+      data.vlans?.filter((item: Partial<Vlan>) => item.arpInspection === true) || []
 
     setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.length > 0)
     setArpInspection(arpInspectionValue.length > 0)

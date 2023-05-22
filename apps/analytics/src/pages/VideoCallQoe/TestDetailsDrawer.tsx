@@ -19,8 +19,6 @@ export function TestDetailsDrawer (props: Props) {
     onClose={() => {
       setVisible(false)
     }}
-    maskClosable={true}
-    mask={true}
     children={
       <Form>
         <Row gutter={20}>
