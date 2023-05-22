@@ -71,7 +71,6 @@ export function DistributionSwitchDrawer (props: {
         $t({ defaultMessage: 'Edit Distribution Switch' }) :
         $t({ defaultMessage: 'Add Distribution Switch' })}
       visible={open}
-      mask={true}
       onClose={onClose}
       destroyOnClose={true}
       width={450}
