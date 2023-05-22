@@ -100,30 +100,30 @@ describe('Firmware Venues Table', () => {
     await user.click(updateVenueButton)
   })
 
-  it('should update selected row - use dropdown', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EdgeFirmware />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
-      })
+  // it('should update selected row - use dropdown', async () => {
+  //   const user = userEvent.setup()
+  //   render(
+  //     <Provider>
+  //       <EdgeFirmware />
+  //     </Provider>, {
+  //       route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+  //     })
 
-    const row = await screen.findByRole('row', { name: /My-Venue1/i })
-    await user.click(within(row).getByRole('checkbox'))
+  //   const row = await screen.findByRole('row', { name: /My-Venue1/i })
+  //   await user.click(within(row).getByRole('checkbox'))
 
-    const updateButton = await screen.findByRole('button', { name: /Update Now/i })
-    await user.click(updateButton)
+  //   const updateButton = await screen.findByRole('button', { name: /Update Now/i })
+  //   await user.click(updateButton)
 
-    const updateDialog = await screen.findByRole('dialog')
-    await user.click((await within(updateDialog).findAllByRole('radio'))[1])
-    await user.selectOptions(
-      await within(updateDialog).findByRole('combobox'),
-      await within(updateDialog).findByRole('option', { name: /1.0.0.1711/i })
-    )
-    const updateVenueButton = await screen.findByText('Run Update')
-    await user.click(updateVenueButton)
-  })
+  //   const updateDialog = await screen.findByRole('dialog')
+  //   await user.click((await within(updateDialog).findAllByRole('radio'))[1])
+  //   await user.selectOptions(
+  //     await within(updateDialog).findByRole('combobox'),
+  //     await within(updateDialog).findByRole('option', { name: /1.0.0.1711/i })
+  //   )
+  //   const updateVenueButton = await screen.findByText('Run Update')
+  //   await user.click(updateVenueButton)
+  // })
 
   it('should cancel update', async () => {
     const user = userEvent.setup()

@@ -3,7 +3,6 @@ import { useState } from 'react'
 import {
   Col,
   Row,
-  Drawer,
   Empty
 } from 'antd'
 import { useIntl }   from 'react-intl'
@@ -11,6 +10,7 @@ import { useParams } from 'react-router-dom'
 
 import {
   Button,
+  Drawer,
   Table,
   TableProps,
   Subtitle,
@@ -177,7 +177,6 @@ const MigrationTable = () => {
         title={$t({ defaultMessage: 'Migration Details' })}
         visible={visible}
         onClose={onClose}
-        mask={false}
         children={
           <GuestsDetail
             triggerClose={onClose}
