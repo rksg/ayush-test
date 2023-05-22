@@ -32,7 +32,7 @@ export type CascaderProps = BaseCascaderProps & {
   defaultRadioBand?: RadioBand[]
 }
 
-Select.defaultProps = {
+Cascader.defaultProps = {
   entityName: {
     singular: defineMessage({ defaultMessage: 'item' }),
     plural: defineMessage({ defaultMessage: 'items' })
@@ -42,7 +42,8 @@ Select.defaultProps = {
 const selectedItemsDesc = defineMessage({
   defaultMessage: '{count} {count, plural, one {{singular}} other {{plural}}} selected'
 })
-export function Select (props: CascaderProps) {
+
+export function Cascader (props: CascaderProps) {
   const { onApply,
     entityName,
     showRadioBand,

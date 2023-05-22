@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { BaseCascader, BaseCascaderProps } from '../Select/BaseCascader'
+import { BaseCascader, BaseCascaderProps } from '../Cascader/BaseCascader'
 
 import {
   cascaderStyles,

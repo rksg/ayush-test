@@ -1,2 +1,2 @@
 export * from './BaseCascader'
-export * from './Select'
+export * from './Cascader'

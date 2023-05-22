@@ -1,4 +1,4 @@
-import { Select, CascaderOption } from '..'
+import { Cascader, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
@@ -60,7 +60,7 @@ const options: CascaderOption[] = [
 
 export function NestedListSingle () {
   return <div style={{ width: 200 }}>
-    <Select
+    <Cascader
       placeholder='Entire Organization'
       defaultValue={['v1', 'v1-s', 'v1-s-s2']}
       options={options}

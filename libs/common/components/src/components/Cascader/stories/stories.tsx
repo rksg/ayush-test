@@ -5,7 +5,7 @@ import { LazyNested, LazyNestedWithBand, LazyNestedWithBandDisabled } from './La
 import { NestedListSingle }                                           from './NestedListSingle'
 import { SingleSelect }                                               from './SingleSelect'
 
-storiesOf('Select', module)
+storiesOf('Cascader', module)
   .add('With Nested List - single', NestedListSingle)
   .add('With Simple List - multi', FlatListMulti)
   .add('With Lazy Loading', LazyNested)

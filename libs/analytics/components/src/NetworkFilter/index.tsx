@@ -9,10 +9,10 @@ import {
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
-import { Select, Loader, RadioBand } from '@acx-ui/components'
-import type { CascaderOption }       from '@acx-ui/components'
-import { useReportsFilter }          from '@acx-ui/reports/utils'
-import { NetworkPath, getIntl }      from '@acx-ui/utils'
+import { Cascader, Loader, RadioBand } from '@acx-ui/components'
+import type { CascaderOption }         from '@acx-ui/components'
+import { useReportsFilter }            from '@acx-ui/reports/utils'
+import { NetworkPath, getIntl }        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -249,7 +249,7 @@ function ConnectedNetworkFilter (
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>
-        <Select
+        <Cascader
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={multiple}
           checkable={multiple}

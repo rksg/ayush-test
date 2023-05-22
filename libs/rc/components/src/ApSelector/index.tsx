@@ -3,7 +3,7 @@ import { SingleValueType }     from 'rc-cascader/lib/Cascader'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Select }         from '@acx-ui/components'
+import { Cascader }       from '@acx-ui/components'
 import { useApListQuery } from '@acx-ui/rc/services'
 import { APExtended }     from '@acx-ui/rc/utils'
 
@@ -55,7 +55,7 @@ export function ApSelector (props: ApSelectorProps) {
 
   return (
     <Form.Item {...formItemProps}>
-      <Select
+      <Cascader
         placeholder={placeholder}
         options={apOptions}
         onApply={(selectedOptions: SingleValueType | SingleValueType[] | undefined) => {

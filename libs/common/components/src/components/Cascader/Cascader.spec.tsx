@@ -7,15 +7,15 @@ import { act }   from 'react-dom/test-utils'
 
 import { render, screen, cleanup, waitFor } from '@acx-ui/test-utils'
 
-import { Select, CascaderProps, CascaderOption } from './index'
+import { Cascader, CascaderProps, CascaderOption } from './index'
 
 afterEach(cleanup)
 
-describe('Select', () => {
+describe('Cascader', () => {
   const CustomCascader: React.FC<CascaderProps> = (props: CascaderProps) => (
-    <Select {...props} />
+    <Cascader {...props} />
   )
-  const entityName = Select.defaultProps.entityName
+  const entityName = Cascader.defaultProps.entityName
 
   it('renders empty list & placeholder', async () => {
     const placeholder = 'test cascader'

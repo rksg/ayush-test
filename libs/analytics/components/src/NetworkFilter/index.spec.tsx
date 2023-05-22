@@ -1,5 +1,4 @@
-import userEvent             from '@testing-library/user-event'
-import { DefaultOptionType } from 'antd/lib/select'
+import userEvent from '@testing-library/user-event'
 
 import { defaultNetworkPath }                                    from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                           from '@acx-ui/store'

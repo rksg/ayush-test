@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RadioBand, Select, CascaderOption } from '..'
+import { RadioBand, Cascader, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
@@ -53,7 +53,7 @@ export function LazyNested ({ multiple=false,
   }
 
   return <div style={{ width: 200 }}>
-    <Select
+    <Cascader
       multiple={multiple}
       checkable
       showRadioBand={showRadioBand}

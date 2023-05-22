@@ -1,10 +1,10 @@
-import { Select } from '..'
+import { Cascader } from '..'
 
 import { onApply } from './utils'
 
 export function SingleSelect () {
   return <div style={{ width: 300 }}>
-    <Select
+    <Cascader
       placeholder='Select AP...'
       options={new Array(100).fill(0).map((_, i) => ({
         value: `${i}`, label: `Mock AP ${i}`

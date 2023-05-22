@@ -1,4 +1,4 @@
-import { Select, CascaderOption } from '..'
+import { Cascader, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
@@ -31,7 +31,7 @@ const options: CascaderOption[] = [
 
 export function FlatListMulti () {
   return <div style={{ width: 300 }}>
-    <Select
+    <Cascader
       multiple
       defaultValue={[['n3'], ['n6']]}
       placeholder='Entire Organization'
