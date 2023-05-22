@@ -109,7 +109,8 @@ const ApplicationUseCases = [
 const AccessControlUseCases = [
   'AddAccessControlProfile',
   'UpdateAccessControlProfile',
-  'DeleteAccessControlProfile'
+  'DeleteAccessControlProfile',
+  'DeleteBulkAccessControlProfiles'
 ]
 
 export const policyApi = basePolicyApi.injectEndpoints({
@@ -235,7 +236,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
     deleteAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    deleteAccessControlProfiles: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfiles, params)
         return {
           ...req,
           body: payload
@@ -245,7 +257,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params)
         return {
           ...req
         }
@@ -323,7 +335,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params)
         return {
           ...req,
           body: payload
@@ -333,7 +345,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAppPolicy: build.query<appPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params)
         return {
           ...req
         }
@@ -1886,6 +1898,7 @@ export const {
   useAddAccessControlProfileMutation,
   useUpdateAccessControlProfileMutation,
   useDeleteAccessControlProfileMutation,
+  useDeleteAccessControlProfilesMutation,
   useGetAccessControlProfileQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
