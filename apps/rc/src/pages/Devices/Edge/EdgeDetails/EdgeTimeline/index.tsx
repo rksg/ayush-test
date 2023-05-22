@@ -1,4 +1,4 @@
-import { omit }                   from 'lodash'
+import { pick }                   from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -7,9 +7,9 @@ import {
   ActivityTable,
   EventTable,
   activityTableColumnState,
+  eventDefaultFilters,
   eventTableColumnState,
   eventTypeMapping,
-  eventDefaultFilters,
   useActivityTableQuery,
   useEventsTableQuery
 } from '@acx-ui/rc/components'
@@ -43,7 +43,7 @@ const EdgeEventTable = () => {
       settingsId='edge-event-table'
       tableQuery={tableQuery}
       filterables={['severity', 'entity_type']}
-      eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
+      eventTypeMap={pick(eventTypeMapping, 'EDGE')}
       columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
     />
   )
