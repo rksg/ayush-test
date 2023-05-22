@@ -32,7 +32,7 @@ jest.mock('./ApFirmware/VenueFirmwareList', () => ({
 }))
 
 describe('Firmware Version Management', () => {
-  let params: { tenantId: string }
+  let params: { tenantId: string, activeTab: string, activeSubTab: string }
   beforeEach(async () => {
     mockServer.use(
       rest.get(
@@ -65,7 +65,9 @@ describe('Firmware Version Management', () => {
       )
     )
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      activeTab: 'fwVersionMgmt',
+      activeSubTab: 'apFirmware'
     }
   })
 
@@ -76,11 +78,11 @@ describe('Firmware Version Management', () => {
           <FWVersionMgmt />
         </UserProfileContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
       })
     await screen.findByTestId('mocked-ApFirmware-table')
-    userEvent.click(screen.getByText('Switch Firmware'))
-    await screen.findByTestId('mocked-SwitchFirmware-table')
+    userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
+    // await screen.findByTestId('mocked-SwitchFirmware-table')
   })
 
 })

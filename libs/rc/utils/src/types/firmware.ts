@@ -166,10 +166,6 @@ export interface FirmwareSwitchVenue {
   lastSkippedVersions: SkippedVersion[];
   versionHistory: VersionHistory[];
   lastScheduleUpdateTime: string;
-  upgradeVenueViewList?: {
-    // TODO: check
-    nextSchedule: string;
-  }[]
 }
 
 export interface CurrentVersions {

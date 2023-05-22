@@ -8,9 +8,6 @@ import { Alert, Button }                  from '@acx-ui/components'
 import {
   useLazyGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
-import {
-  FirmwareSwitchVenue
-} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import {
   CloudVersion,
@@ -38,15 +35,19 @@ export function CloudMessageBanner () {
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
   const [getCloudScheduleVersion] = useLazyGetCloudScheduleVersionQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
-  const showMessageBanner = data && data.description && cloudVersion
+  const showMessageBanner = !!(data && data.description)
 
   useEffect(() => {
-    const checkScheduleExists = async () => {
-      try {
-        const [cloudScheduleVersion, switchVenueVersionList ] = await Promise.all([
-          getCloudScheduleVersion({ params }).unwrap(),
-          getSwitchVenueVersionList({ params }).unwrap()
-        ])
+    if (cloudVersion && userSettings) {
+      setVersion(version)
+      checkWifiScheduleExists()
+      checkSwitchScheduleExists()
+    }
+  }, [cloudVersion, userSettings])
+
+  const checkWifiScheduleExists = async () => {
+    return await getCloudScheduleVersion({ params }).unwrap()
+      .then(cloudScheduleVersion => {
         if (cloudScheduleVersion) {
           const updateVersion = {
             ...version,
@@ -55,27 +56,28 @@ export function CloudMessageBanner () {
           setVersion(updateVersion)
           setNewWifiScheduleExists(
             isThereNewSchedule(
-            updateVersion as CloudVersion,
-            userSettings as UserSettingsUIModel,
-            dismissUpgradeSchedule)
+          updateVersion as CloudVersion,
+          userSettings as UserSettingsUIModel,
+          dismissUpgradeSchedule)
           )
         }
-        if (switchVenueVersionList) {
-          const upgradeVenueViewList
-          = (switchVenueVersionList as unknown as FirmwareSwitchVenue)?.upgradeVenueViewList ?? []
-          setNewSwitchScheduleExists(upgradeVenueViewList.filter(
-            (item) => item.nextSchedule).length > 0
-          )
-        }
-      } catch (error) {
+      }).catch((error) => {
         console.log(error) // eslint-disable-line no-console
-      }
-    }
-    if (cloudVersion && userSettings) {
-      setVersion(version)
-      checkScheduleExists()
-    }
-  }, [cloudVersion, userSettings])
+      })
+  }
+
+  const checkSwitchScheduleExists = async () => {
+    return await getSwitchVenueVersionList({ params })
+      .unwrap()
+      .then(result => {
+        const upgradeVenueViewList = result?.data ?? []
+        setNewSwitchScheduleExists(upgradeVenueViewList.filter(
+          item => item.nextSchedule).length > 0
+        )
+      }).catch((error) => {
+        console.log(error) // eslint-disable-line no-console
+      })
+  }
 
   /* eslint-disable max-len */
   const MessageBanner = () => {

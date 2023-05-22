@@ -26,7 +26,7 @@ export const scheduleVersion = {
 }
 
 export const switchVenueVersionList = {
-  upgradeVenueViewList: {
+  upgradeVenueViewList: [{
     availableVersions: [
       { id: '09010f_b19', name: '09010f_b19', category: 'RECOMMENDED' },
       { id: '10010_rc2', name: '10010_rc2', category: 'RECOMMENDED' }
@@ -37,5 +37,5 @@ export const switchVenueVersionList = {
     witchFirmwareVersion: { id: '09010e_b392', name: '09010e_b392', category: 'RECOMMENDED' },
     switchFirmwareVersionAboveTen: { id: '10010_b176', name: '10010_b176', category: 'RECOMMENDED' },
     upgradeVenueViewList: null
-  }
+  }]
 }
