@@ -24,18 +24,22 @@ export const isLocalHost = () => {
 
 export const isDev = () => {
   return window.location.hostname.includes('dev.ruckus.cloud')
+  || window.location.hostname.includes('devalto.ruckuswireless.com')
 }
 
 export const isQA = () => {
   return window.location.hostname.includes('qa.ruckus.cloud')
+  || window.location.hostname.includes('qaalto.ruckuswireless.com')
 }
 
 export const isScale = () => {
   return window.location.hostname.includes('scale.ruckus.cloud')
+  || window.location.hostname.includes('scalealto.ruckuswireless.com')
 }
 
 export const isIntEnv = () => {
   return window.location.hostname.includes('int.ruckus.cloud')
+  || window.location.hostname.includes('intalto.ruckuswireless.com')
 }
 
 export const isStage = () => {
