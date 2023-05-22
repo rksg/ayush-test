@@ -53,4 +53,14 @@ describe('cloud Message Banner', () => {
     // eslint-disable-next-line max-len
     await screen.findAllByText('we are aware of ongoing problem with User management, RUCKUS engineering is working on a solution')
   })
+  it('should render upgrade schedule message', async () => {
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getCloudMessageBanner.url,
+        (_, res, ctx) => res(ctx.json(null))
+      )
+    )
+    render(<Provider><CloudMessageBanner /></Provider>, { route })
+    await screen.findAllByText('An upgrade schedule for the new firmware version is available.')
+  })
 })

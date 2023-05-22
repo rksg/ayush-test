@@ -42,27 +42,33 @@ export function CloudMessageBanner () {
 
   useEffect(() => {
     const checkScheduleExists = async () => {
-      const cloudScheduleVersion = await getCloudScheduleVersion({ params }).unwrap()
-      const switchVenueVersionList = await getSwitchVenueVersionList({ params }).unwrap()
-      if (cloudScheduleVersion) {
-        const updateVersion = {
-          ...version,
-          scheduleVersionList: cloudScheduleVersion?.scheduleVersionList
-        }
-        setVersion(updateVersion)
-        setNewWifiScheduleExists(
-          isThereNewSchedule(
+      try {
+        const [cloudScheduleVersion, switchVenueVersionList ] = await Promise.all([
+          getCloudScheduleVersion({ params }).unwrap(),
+          getSwitchVenueVersionList({ params }).unwrap()
+        ])
+        if (cloudScheduleVersion) {
+          const updateVersion = {
+            ...version,
+            scheduleVersionList: cloudScheduleVersion?.scheduleVersionList
+          }
+          setVersion(updateVersion)
+          setNewWifiScheduleExists(
+            isThereNewSchedule(
             updateVersion as CloudVersion,
             userSettings as UserSettingsUIModel,
             dismissUpgradeSchedule)
-        )
-      }
-      if (switchVenueVersionList) {
-        const upgradeVenueViewList
+          )
+        }
+        if (switchVenueVersionList) {
+          const upgradeVenueViewList
           = (switchVenueVersionList as unknown as FirmwareSwitchVenue)?.upgradeVenueViewList ?? []
-        setNewSwitchScheduleExists(upgradeVenueViewList.filter(
-          (item) => item.nextSchedule).length > 0
-        )
+          setNewSwitchScheduleExists(upgradeVenueViewList.filter(
+            (item) => item.nextSchedule).length > 0
+          )
+        }
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     }
     if (cloudVersion && userSettings) {
