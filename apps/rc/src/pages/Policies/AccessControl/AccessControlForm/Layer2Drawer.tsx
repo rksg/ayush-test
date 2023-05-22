@@ -614,7 +614,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
-        mask={true}
         onClose={() => !isViewMode()
           ? showUnsavedConfirmModal(handleLayer2DrawerClose)
           : handleLayer2DrawerClose()

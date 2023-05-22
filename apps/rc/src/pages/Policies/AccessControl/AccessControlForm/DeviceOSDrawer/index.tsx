@@ -583,7 +583,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
-        mask={true}
         zIndex={10}
         onClose={() => !isViewMode()
           ? showUnsavedConfirmModal(handleDeviceOSDrawerClose)
