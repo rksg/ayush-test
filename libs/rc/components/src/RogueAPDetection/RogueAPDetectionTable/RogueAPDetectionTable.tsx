@@ -52,7 +52,9 @@ const useDefaultVenuePayload = (): RequestPayload => {
     searchTargetFields: ['name', 'description'],
     filters: {},
     sortField: 'name',
-    sortOrder: 'ASC'
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 2048
   }
 }
 
