@@ -24,6 +24,7 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
+import { PhoneInput }         from '@acx-ui/rc/components'
 import {
   useAddMspLabelMutation,
   useExternalProvidersQuery,
@@ -857,7 +858,13 @@ export function PortalSettings () {
               rules={[
                 { validator: (_, value) => phoneRegExp(value) }
               ]}
-              children={<Input/>}
+              children={
+                <PhoneInput
+                  name={'msp_phone'}
+                  callback={(value) => formRef.current?.setFieldValue('msp_phone', value)}
+                  onTop={false}
+                />
+              }
             />
             <Form.Item
               name='msp_email'

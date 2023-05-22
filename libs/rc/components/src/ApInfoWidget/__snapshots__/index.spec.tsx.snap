@@ -205,7 +205,6 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
             </div>
           </div>
         </div>
-        <div />
       </div>
     </div>
   </div>
