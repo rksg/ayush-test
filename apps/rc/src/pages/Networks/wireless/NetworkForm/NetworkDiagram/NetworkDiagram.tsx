@@ -46,7 +46,8 @@ interface DiagramProps {
 interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
-  isCloudpathEnabled?: boolean
+  isCloudpathEnabled?: boolean;
+  enableAuthProxy?: boolean
 }
 
 interface OpenDiagramProps extends DiagramProps {
@@ -91,7 +92,7 @@ function getDiagram (props: NetworkDiagramProps) {
   let diagram = null
   switch (props.type) {
     case NetworkTypeEnum.DPSK:
-      diagram = GetDPSKDiagram(props)
+      diagram = getDPSKDiagram(props)
       break
     case NetworkTypeEnum.PSK:
       diagram = getPSKDiagram(props)
@@ -118,9 +119,8 @@ function getDiagram (props: NetworkDiagramProps) {
   return diagram
 }
 
-function GetDPSKDiagram (props:DpskDiagramProps) {
-  const { data } = useContext(NetworkFormContext)
-  return props?.isCloudpathEnabled ? (!!data?.enableAuthProxy? DpskUsingRadiusDiagram
+function getDPSKDiagram (props:DpskDiagramProps) {
+  return props?.isCloudpathEnabled ? (!!props?.enableAuthProxy? DpskUsingRadiusDiagram
     : DpskUsingRadiusNonProxyDiagram) : DpskDiagram
 }
 function getPSKDiagram (props: PskDiagramProps) {
