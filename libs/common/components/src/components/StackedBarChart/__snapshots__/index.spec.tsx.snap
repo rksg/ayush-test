@@ -21,21 +21,50 @@ exports[`StackedBarChart should render chart with formatTotal enabled 1`] = `
   />
   <g>
     <path
-      d="M22 385.5L689.875 385.5L689.875 405.5L22 405.5L22 385.5"
+      d="M-75 -0.5l75 0l0 1l-75 0Z"
       fill="none"
+      transform="translate(80 395.5)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      text-anchor="start"
+      transform="translate(80 395.5)"
+      x="-75"
+    >
+      Something
+    </text>
+    <path
+      d="M88 385.5L720.125 385.5L720.125 405.5L88 405.5L88 385.5"
+      fill="#23AB36"
     />
     <path
-      d="M689.875 385.5L792.625 385.5L792.625 405.5L689.875 405.5L689.875 385.5"
-      fill="none"
+      d="M720.125 385.5L817.375 385.5L817.375 405.5L720.125 405.5L720.125 385.5"
+      fill="#F9C34B"
     />
     <path
-      d="M792.625 385.5L998.125 385.5L998.125 405.5L792.625 405.5L792.625 385.5"
-      fill="none"
+      d="M817.375 385.5L1011.875 385.5L1011.875 405.5L817.375 405.5L817.375 385.5"
+      fill="#ED1C24"
     />
     <path
-      d="M998.125 385.5L1253 385.5A2 2 0 0 1 1255 387.5L1255 403.5A2 2 0 0 1 1253 405.5L998.125 405.5L998.125 385.5"
-      fill="none"
+      d="M1011.875 385.5L1253 385.5A2 2 0 0 1 1255 387.5L1255 403.5A2 2 0 0 1 1253 405.5L1011.875 405.5L1011.875 385.5"
+      fill="#ACAEB0"
     />
+    <path
+      d="M0 -8l12 0l0 16l-12 0Z"
+      fill="none"
+      transform="translate(1260 395.5)"
+    />
+    <text
+      dominant-baseline="central"
+      fill="#333333"
+      style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+      text-anchor="start"
+      transform="translate(1260 395.5)"
+    >
+      formatted-24
+    </text>
   </g>
 </svg>
 `;
@@ -62,19 +91,19 @@ exports[`StackedBarChart should render chart with proper width 1`] = `
   <g>
     <path
       d="M0 390L693.3333 390L693.3333 410L0 410L0 390"
-      fill="none"
+      fill="#23AB36"
     />
     <path
       d="M693.3333 390L800 390L800 410L693.3333 410L693.3333 390"
-      fill="none"
+      fill="#F9C34B"
     />
     <path
       d="M800 390L1013.3333 390L1013.3333 410L800 410L800 390"
-      fill="none"
+      fill="#ED1C24"
     />
     <path
       d="M1013.3333 390L1278 390A2 2 0 0 1 1280 392L1280 408A2 2 0 0 1 1278 410L1013.3333 410L1013.3333 390"
-      fill="none"
+      fill="#ACAEB0"
     />
   </g>
 </svg>
