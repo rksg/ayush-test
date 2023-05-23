@@ -5,55 +5,61 @@ import { screen, render, mockGraphqlQuery, waitForElementToBeRemoved } from '@ac
 import { getAllCallQoeTests, getAllCallQoeTestsWithNotStarted } from './__tests__/fixtures'
 import { api }                                                  from './services'
 
-import VideoCallQoeListPage from '.'
+import { useVideoCallQoe } from '.'
+
+jest.mock('./VideoCallQoeTable', () => ({
+  ...jest.requireActual('./VideoCallQoeTable'),
+  VideoCallQoeTable: () => <div data-testid='VideoCallQoeTable' />
+}))
 
 describe('VideoCallQoeListPage', () => {
-  const params = {
-    tenantId: 'tenant-id'
-  }
+  const params = { tenantId: 'tenant-id' }
 
-  beforeEach(() => store.dispatch(api.util.resetApiState()))
-
-  it('should render page header', async () => {
+  beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    store.dispatch(api.util.resetApiState())
+  })
+
+  it('should render page correctly', async () => {
     mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
       data: getAllCallQoeTests
     })
-    render(<Provider>
-      <VideoCallQoeListPage />
-    </Provider>, { route: { params } })
-    expect(await screen.findByText('Video Call QoE')).toBeVisible()
-    // eslint-disable-next-line testing-library/no-debugging-utils
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
-    expect(await screen.findByRole('button', {
-      name: /create test call/i
-    })).toBeEnabled()
+    const Component = () => {
+      const { component } = useVideoCallQoe()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: { params } })
+    expect(await screen.findByTestId('VideoCallQoeTable')).toBeVisible()
   })
 
   it('should disable the create test call button', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
       data: getAllCallQoeTestsWithNotStarted
     })
-    render(<Provider>
-      <VideoCallQoeListPage />
-    </Provider>, { route: { params } })
-    expect(await screen.findByText('Video Call QoE')).toBeVisible()
-    // eslint-disable-next-line testing-library/no-debugging-utils
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
-    expect(await screen.findByRole('button', {
-      name: /create test call/i
-    })).toBeDisabled()
+    const Component = () => {
+      const { headerExtra } = useVideoCallQoe()
+      return <span>{headerExtra}</span>
+    }
+    render(<Component/>, { wrapper: Provider, route: { params } })
+    expect(await screen.findByRole('button', { name: /create test call/i })).toBeDisabled()
   })
 
-  it('should not render page if feature flag is off', async () => {
+  it.todo('should not render page if feature flag VIDEO_CALL_QOE is off', async () => {
+  })
+
+  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
       data: getAllCallQoeTests
     })
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider>
-      <VideoCallQoeListPage />
-    </Provider>, { route: { params } })
-    expect(await screen.findByText('Video Call QoE is not enabled')).toBeInTheDocument()
+    const Component = () => {
+      const { component } = useVideoCallQoe()
+      return component
+    }
+    render(<Component/>, { wrapper: Provider, route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+    expect(await screen.findByText('Video Call QoE')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoeTable')).toBeVisible()
+    expect(await screen.findByRole('button', { name: /create test call/i })).toBeEnabled()
   })
 })

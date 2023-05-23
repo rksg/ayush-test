@@ -1,22 +1,37 @@
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader }                 from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Outlet }                 from '@acx-ui/react-router-dom'
+import { PageHeader, Button }     from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 
-function ServiceGuard () {
-  const isServiceGuardEnabled = useIsSplitOn(Features.SERVICE_VALIDATION)
+import { ServiceGuardTable }            from './ServiceGuardTable'
+import { useAllServiceGuardSpecsQuery } from './services'
+
+export function useServiceGuard () {
   const { $t } = useIntl()
+  const isNavbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const queryResults = useAllServiceGuardSpecsQuery()
+  const title = defineMessage({
+    defaultMessage: 'Service Validation {count, select, null {} other {({count})}}'
+  })
 
-  if (!isServiceGuardEnabled) {
-    return <span>{ $t({ defaultMessage: 'Service Validation is not enabled' }) }</span>
+  const extra = [
+    <TenantLink to='/analytics/serviceValidation/add' key='add'>
+      <Button type='primary'>{ $t({ defaultMessage: 'Create Test' }) }</Button>
+    </TenantLink>
+  ]
+
+  const component = <>
+    {!isNavbarEnhancement && <PageHeader
+      title={$t(title, { count: null })}
+      extra={extra}
+    />}
+    <ServiceGuardTable />
+  </>
+
+  return {
+    title: $t(title, { count: queryResults.data?.length || 0 }),
+    headerExtra: extra,
+    component
   }
-
-  return (
-    <Loader>
-      <Outlet />
-    </Loader>
-  )
 }
-
-export default ServiceGuard
