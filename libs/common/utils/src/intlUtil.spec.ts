@@ -35,7 +35,7 @@ describe('IntlUtils', () => {
   })
   it('should throw error when called without setup', () => {
     intlUtil.setUpIntl()
-    expect(() => intlUtil.getIntl()).toThrow('setUpIntl must be called before getIntl')
+    expect(() => intlUtil.getIntl()).toThrow(intlUtil.IntlSetUpError)
     // restore intl
     intlUtil.setUpIntl({
       locale: 'en-US',

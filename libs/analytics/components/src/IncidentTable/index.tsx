@@ -254,15 +254,16 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         filterableWidth={155}
         searchableWidth={240}
       />
-      {drawerSelection &&
       <Drawer
-        visible
+        visible={!!drawerSelection}
         title={$t(defineMessage({ defaultMessage: 'Incident Description' }))}
         onClose={onDrawerClose}
-        children={<IncidentDrawerContent selectedIncidentToShowDescription={drawerSelection} />}
+        children={drawerSelection
+          ? <IncidentDrawerContent selectedIncidentToShowDescription={drawerSelection} />
+          : null
+        }
         width={400}
       />
-      }
     </Loader>
   )
 }

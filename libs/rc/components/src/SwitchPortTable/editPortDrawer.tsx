@@ -150,6 +150,7 @@ export function EditPortDrawer ({
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
+  const hasBreakoutPort = selectedPorts.filter(p => p.portIdentifier.includes(':')).length > 0
 
   const [aclsOptions, setAclsOptions] = useState([] as DefaultOptionType[])
   const [vlansOptions, setVlansOptions] = useState([] as DefaultOptionType[])
@@ -348,7 +349,9 @@ export function EditPortDrawer ({
       portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
         ? portSetting.portSpeed : portSpeed?.[0],
       taggedVlans: (portSetting.revert ? tagged : (portSetting.taggedVlans || '')).toString(),
-      untaggedVlan: (portSetting.revert ? untagged : portSetting.untaggedVlan) || defaultVlan
+      untaggedVlan: portSetting.revert ? (untagged || defaultVlan) :
+        (portSetting.untaggedVlan ? portSetting.untaggedVlan :
+          (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
   }
 
@@ -390,7 +393,8 @@ export function EditPortDrawer ({
       taggedVlans: !hasMultipleValueFields?.includes('taggedVlans')
         ? (portSetting?.taggedVlans || vlansValue.tagged)?.toString() : '',
       untaggedVlan: (!hasMultipleValueFields?.includes('untaggedVlan')
-        && vlansValue.untagged) || portSetting?.untaggedVlan || defaultVlan
+        && vlansValue.untagged) || (portSetting.untaggedVlan ? portSetting.untaggedVlan :
+        (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
   }
 
@@ -485,14 +489,18 @@ export function EditPortDrawer ({
     }
 
     const originalUntaggedVlan = editPortData?.untaggedVlan
-    const isDirtyUntaggedVlan = !_.isEqual(originalUntaggedVlan, untaggedVlan?.toString)
+    const originalTaggedVlan = editPortData?.taggedVlans
+    const isDirtyUntaggedVlan = !_.isEqual(originalUntaggedVlan, untaggedVlan?.toString())
+    const isDirtyTaggedVlan = !_.isEqual(originalTaggedVlan ?
+      originalTaggedVlan : [''], taggedVlans?.split(','))
+    const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
       isMultipleEdit && !portVlansCheckbox && 'revert',
       checkVlanIgnore(
-        'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+        'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
-        'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+        'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkAclIgnore('egressAcl', data?.egressAcl, aclsOptions),
       checkAclIgnore('ingressAcl', data?.ingressAcl, aclsOptions)
     ]
@@ -516,8 +524,9 @@ export function EditPortDrawer ({
       ...(lldpQosList && { lldpQos: // remove fake lldp id
         lldpQosList?.map(lldp => ( lldp.id.includes('lldp') ? _.omit(lldp, ['id']) : lldp ))
       }),
-      taggedVlans: (useVenueSettings || !form.getFieldValue('taggedVlans'))
-        ? null : form.getFieldValue('taggedVlans')?.split(','),
+      taggedVlans: useVenueSettings ? null :
+        (form.getFieldValue('taggedVlans') ?
+          form.getFieldValue('taggedVlans').split(',') : []),
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
       voiceVlan: form.getFieldValue('voiceVlan') ?? null
     }
@@ -715,7 +724,6 @@ export function EditPortDrawer ({
     visible={visible}
     onClose={onClose}
     footer={footer}
-    mask={false}
     children={<Loader states={[{
       isLoading: loading,
       isFetching: isPortsSettingUpdating
@@ -909,7 +917,8 @@ export function EditPortDrawer ({
                         ? $t({ defaultMessage: 'Customize' })
                         : $t({ defaultMessage: 'Edit' })
                       }</UI.LinkButton>
-                    {(!useVenueSettings || !portEditStatus || portEditStatus === 'port') &&
+                    {((!useVenueSettings || !portEditStatus || portEditStatus === 'port')
+                      && !hasBreakoutPort) &&
                       <Tooltip title={getFieldTooltip('useVenuesettings')} >
                         <Space>
                           <UI.LinkButton type='link'

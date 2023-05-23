@@ -314,8 +314,8 @@ export function SwitchTable (props : SwitchTableProps) {
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
 
-  const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name }) => ({
-    key, value: name
+  const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
+    key, value: name, label: <Badge color={color} text={name} />
   }))
 
   const switchType = () => [

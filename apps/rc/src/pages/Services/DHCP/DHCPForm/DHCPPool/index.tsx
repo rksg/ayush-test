@@ -352,7 +352,6 @@ export default function DHCPPoolTable ({
           $t({ defaultMessage: 'Add DHCP Pool' })}
         visible={visible}
         onClose={onClose}
-        mask={true}
         children={getContent}
         destroyOnClose={true}
         width={900}

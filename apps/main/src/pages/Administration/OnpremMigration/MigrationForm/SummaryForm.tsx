@@ -29,19 +29,6 @@ const SummaryForm = (props: SummaryFormProps) => {
   const { $t } = useIntl()
   const { taskId } = props
   const params = useParams()
-  // const dataMock = [{
-  //   name: 'AP-1',
-  //   description: 'zd ap',
-  //   serialNumber: '123456789021',
-  //   status: 'Failed',
-  //   failure: 'Not support model'
-  // },{
-  //   name: 'AP-2',
-  //   description: 'zd ap2',
-  //   serialNumber: '234789879791',
-  //   status: 'Success',
-  //   failure: 'Not found ap serial number'
-  // }]
 
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
@@ -65,10 +52,10 @@ const SummaryForm = (props: SummaryFormProps) => {
   const columns: TableProps<MigrationResultType>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'apName',
+      dataIndex: 'apName',
       render: (_, row) => {
-        return row.name ?? '--'
+        return row.apName ?? '--'
       }
     },
     {
@@ -86,7 +73,6 @@ const SummaryForm = (props: SummaryFormProps) => {
       render: (_, row) => {
         return row.serial ?? '--'
       }
-
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -98,10 +84,11 @@ const SummaryForm = (props: SummaryFormProps) => {
     },
     {
       title: $t({ defaultMessage: 'Failure Reason' }),
-      key: 'failure',
-      dataIndex: 'failure',
+      key: 'validationErrors',
+      dataIndex: 'validationErrors',
       render: (_, row) => {
-        return row.failure ?? '--'
+        // eslint-disable-next-line max-len
+        return row.validationErrors && row.validationErrors.length > 0 ? row.validationErrors.join(',') : '--'
       }
     }
   ]
@@ -114,15 +101,18 @@ const SummaryForm = (props: SummaryFormProps) => {
     ]}>
       <Row>
         <Col span={12}>
-          <Subtitle level={4}>
+          <Subtitle level={3}>
             {$t({ defaultMessage: 'Summary Table' })}
+          </Subtitle>
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Summary State' })}: {migrateResult?.state ?? '--'}
           </Subtitle>
         </Col>
       </Row>
       <Table
         columns={columns}
         dataSource={validateZdApsResult}
-        rowKey='id'
+        rowKey='serial'
         locale={{
           // eslint-disable-next-line max-len
           emptyText: <Empty description={$t({ defaultMessage: 'No migration data' })} />

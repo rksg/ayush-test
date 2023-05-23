@@ -3,10 +3,10 @@
 // Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener(function(tab) {
   console.log("Extract cookie extension clicked");
-  var source_domain = 'devalto.ruckuswireless.com';
+  var source_domain = 'dev.ruckus.cloud';
 
   chrome.storage.sync.get({
-    env: 'devalto.ruckuswireless.com'
+    env: 'dev.ruckus.cloud'
   }, function(items) {
     source_domain = items.env;
     execute_copy(source_domain, tab);

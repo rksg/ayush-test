@@ -20,6 +20,7 @@ declare global {
     generateToken?: (callback:CallableFunction) => void
     tdiConfig: {
       displayButton: boolean,
+      skin: string,
       events: {
         start: (event?:unknown) => void,
         ready: (event?:unknown) => void,
@@ -55,6 +56,7 @@ export function FetchBot (props:FetchBotProps) {
     window.tdiConfig = {
     // disable the display of the "Chat now" button to allow your application to implement its own logic
       displayButton: false,
+      skin: 'r1',
       events: {
         start: function () {
           statusCallback && statusCallback('start')
