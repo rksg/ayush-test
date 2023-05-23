@@ -287,9 +287,6 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
-        const ids = selectedItems.map(i => i.id)
-        const names = selectedItems.map(i => i.name).join(', ')
-
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -299,18 +296,8 @@ export function VenuePropertyTab () {
             numOfEntities: selectedItems.length
           },
           onOk: () => {
-            deleteUnitByIds({ params: { venueId }, payload: ids })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Unit {names} was deleted' }, { names })
-                })
-                clearSelection()
-              })
-              .catch((e) => {
-                console.log(e) // eslint-disable-line no-console
-              })
+            deleteUnitByIds({ params: { venueId }, payload: selectedItems.map(i => i.id) })
+              .then(() => clearSelection())
           }
         })
       }
