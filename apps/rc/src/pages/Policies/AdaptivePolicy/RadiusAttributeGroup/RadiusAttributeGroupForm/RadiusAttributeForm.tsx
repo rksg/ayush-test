@@ -1,7 +1,7 @@
 import React, { Key, useEffect, useState } from 'react'
 
-import { Form, FormInstance, Input, Select, Space, TreeSelect } from 'antd'
-import {  useIntl }                                             from 'react-intl'
+import { Form, FormInstance, Input, Select, TreeSelect } from 'antd'
+import {  useIntl }                                      from 'react-intl'
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { useLazyRadiusAttributeListWithQueryQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
@@ -17,6 +17,8 @@ import {
 import { validationMessages } from '@acx-ui/utils'
 
 import { AttributeOperationLabelMapping } from '../../../contentsMap'
+
+import { FieldSpace } from './styledComponents'
 
 interface RadiusAttributeFormProps {
   form: FormInstance,
@@ -113,11 +115,11 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const attributeValueValidator = async (value: any) => {
     let result = true
-    if(dataType === DataType.INTEGER || dataType === DataType.BYTE) {
+    if(dataType === DataType.INTEGER || dataType === DataType.BYTE || dataType === DataType.SHORT) {
       result = !isNaN(value)
-    } else if(dataType === DataType.IPADDR){
+    } else if(dataType === DataType.IPADDR || dataType === DataType.COMBO_IP){
       return cliIpAddressRegExp(value)
-    } else if(dataType === DataType.IPV6ADDR){
+    } else if(dataType === DataType.IPV6ADDR || dataType === DataType.IPV6PREFIX){
       return ipv6RegExp(value)
     }
     return result ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
@@ -182,11 +184,11 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
           </Form.Item>
         </Form.Item>
         <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
-          <Space direction='horizontal'>
+          <FieldSpace>
             <Form.Item name='operator' initialValue={OperatorType.ADD}>
               <Select
                 options={Object.keys(OperatorType).map(option =>
-                // eslint-disable-next-line max-len
+                  // eslint-disable-next-line max-len
                   ({ label: $t(AttributeOperationLabelMapping[option as OperatorType]), value: option }))}>
               </Select>
             </Form.Item>
@@ -195,7 +197,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
                 { required: true },
                 { validator: (_, value) => attributeValueValidator(value) }]}
               children={<Input/>}/>
-          </Space>
+          </FieldSpace>
         </Form.Item>
         <Form.Item name='dataType' hidden children={<Input/>}/>
       </Form>
