@@ -7,9 +7,9 @@ import _                                                                       f
 import moment                                                                  from 'moment-timezone'
 import { useIntl }                                                             from 'react-intl'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { ConnectionMeteringForm, ConnectionMeteringFormMode }               from '@acx-ui/rc/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                    from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -20,21 +20,24 @@ import {
   useUpdatePropertyUnitMutation,
   useUpdatePersonaMutation,
   useLazyGetPersonaGroupByIdQuery,
-  useGetConnectionMeteringListQuery
+  useGetConnectionMeteringListQuery,
+  useLazyGetPropertyUnitListQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
-  BillingCycleType,
-  ConnectionMetering,
+  checkObjectNotExists,
   emailRegExp,
   Persona,
   PersonaEthernetPort,
+  phoneRegExp,
   PropertyDpskType,
   PropertyUnit,
   PropertyUnitFormFields,
   PropertyUnitStatus,
   UnitPersonaConfig,
-  VenueLanPorts
+  VenueLanPorts,
+  BillingCycleType,
+  ConnectionMetering
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
@@ -297,6 +300,13 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
 
   const onSelectApChange = (macAddress: string) => {
     const selectedAp = apOptions?.find(ap => ap.value === macAddress)
+
+    if (!selectedAp) {
+      // When the ap can not match any device, clean the state to prevent the data inconsistency.
+      form.setFieldValue('accessAp', undefined)
+      form.setFieldValue('ports', undefined)
+    }
+
     const lanPort = venueLanPorts
       ?.find(lan => lan.model === selectedAp?.model) ?? {} as VenueLanPorts
     setSelectedModel(lanPort)
@@ -329,6 +339,9 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
           { defaultMessage: 'Select LAN Ports for ({model})' },
           { model: selectedModel?.model ?? noDataDisplay }
         )}
+        rules={[
+          { required: !!accessAp, message: $t({ defaultMessage: 'Please select the LAN ports' }) }
+        ]}
       >
         {selectedModel.lanPorts &&
           <Checkbox.Group >
@@ -385,6 +398,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const [personaGroupId, setPersonaGroupId]
     = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
 
+  const [getUnitList] = useLazyGetPropertyUnitListQuery()
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById, personaResult] = useLazyGetPersonaByIdQuery()
   const [getPersonaGroupById, personaGroupResult] = useLazyGetPersonaGroupByIdQuery()
@@ -456,8 +470,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             form.setFieldValue('accessAp', accessAp)
             form.setFieldValue('ports', ports?.map(i => i.toString()))
             form.setFieldValue('vxlan', vni ?? noDataDisplay)
-          } else {
-            form.setFieldValue(['unitPersona', 'vlan'], vlan)
           }
           if (isConnectionMeteringEnabled) {
             if (meteringProfileId && expirationEpoch) {
@@ -467,18 +479,19 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               })
             }
           }
+
+          form.setFieldValue(['unitPersona', 'vlan'], vlan)
           form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
         }
 
         if (guestResult?.data) {
           const { vlan, dpskPassphrase } = guestResult.data
-          if (!withNsg) {
-            form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
-            // if no timeout would not render exactly
-            setTimeout(() => {
-              form.setFieldValue(['guestPersona', 'vlan'], vlan)
-            }, 10)
-          }
+
+          form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
+          // if no timeout would not render exactly
+          setTimeout(() => {
+            form.setFieldValue(['guestPersona', 'vlan'], vlan)
+          }, 10)
           form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
         }
         setPersonaLoading(false)
@@ -502,19 +515,16 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       payload: { name, resident }
     }).unwrap()
 
+    // update UnitPersona
     const personaUpdateResult = withNsg
       ? await patchPersona(personaId, {
         ...unitPersona,
-        ...ports
-          ? {
-            ethernetPorts: ports.map(p => ({
-              personaId,
-              macAddress: accessAp,
-              portIndex: p,
-              name: apName
-            } as PersonaEthernetPort))
-          }
-          : {},
+        ethernetPorts: ports?.map(p => ({
+          personaId,
+          macAddress: accessAp,
+          portIndex: p,
+          name: apName
+        } as PersonaEthernetPort)) ?? [],
         meteringProfileId: isConnectionMeteringEnabled ?
           meteringProfileId !== qosSetting?.profileId ? meteringProfileId ?? null : undefined
           : undefined,
@@ -525,7 +535,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       })
       : await patchPersona(personaId, unitPersona)
 
-    // update Persona
+    // update GuestPersona
     const guestUpdateResult = await patchPersona(
       guestPersonaId,
       { ...guestPersona,
@@ -615,46 +625,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }
 
-  const withoutNsgForm = <>
-    <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
-      <Form.Item
-        noStyle
-        name={['unitPersona', 'vlan']}
-        rules={[{
-          type: 'number',
-          min: 1,
-          max: 4094,
-          message: $t(validationMessages.vlanRange)
-        }]}
-      >
-        <InputNumber />
-      </Form.Item>
-    </Form.Item>
-
-    <StepsForm.FieldLabel width={'160px'}>
-      {$t({ defaultMessage: 'Separate VLAN for guests' })}
-      <Form.Item
-        style={{ marginBottom: '10px' }}
-        name={'enableGuestVlan'}
-        valuePropName={'checked'}
-        children={<Switch />}
-      />
-    </StepsForm.FieldLabel>
-    {enableGuestVlan &&
-        <Form.Item
-          name={['guestPersona', 'vlan']}
-          rules={[{
-            type: 'number',
-            min: 1,
-            max: 4094,
-            message: $t(validationMessages.vlanRange)
-          }]}
-        >
-          <InputNumber />
-        </Form.Item>
-    }
-  </>
-
   const withNsgForm = (<>
     {isEdit &&
       <Form.Item
@@ -665,6 +635,18 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
     <AccessPointLanPortSelector venueId={venueId} />
   </>)
+
+  const nameValidator = async (name: string) => {
+    try {
+      const list = (await getUnitList({
+        params: { venueId },
+        payload: { sortField: 'name', sortOrder: 'ASC', pageSize: 10, page: 1, filters: { name } }
+      }, true).unwrap()).data.filter(u => u.id !== unitId).map(u => ({ name: u.name }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Unit' }))
+    } catch (e) {
+      return Promise.resolve()
+    }
+  }
 
   return (
     <Drawer
@@ -699,9 +681,13 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             <Form.Item
               name={'name'}
               label={$t({ defaultMessage: 'Unit Name' })}
+              hasFeedback
+              validateFirst
+              validateTrigger={['onBlur']}
               children={<Input />}
               rules={[
-                { required: true }
+                { required: true },
+                { validator: (_, value) => nameValidator(value) }
               ]}
             />
             <Form.Item
@@ -714,8 +700,45 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
               children={<Input />}
             />
+            <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
+              <Form.Item
+                noStyle
+                name={['unitPersona', 'vlan']}
+                rules={[{
+                  type: 'number',
+                  min: 1,
+                  max: 4094,
+                  message: $t(validationMessages.vlanRange)
+                }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            </Form.Item>
 
-            {withNsg ? withNsgForm : withoutNsgForm}
+            <StepsFormLegacy.FieldLabel width={'160px'}>
+              {$t({ defaultMessage: 'Separate VLAN for guests' })}
+              <Form.Item
+                style={{ marginBottom: '10px' }}
+                name={'enableGuestVlan'}
+                valuePropName={'checked'}
+                children={<Switch />}
+              />
+            </StepsFormLegacy.FieldLabel>
+            {enableGuestVlan &&
+              <Form.Item
+                name={['guestPersona', 'vlan']}
+                rules={[{
+                  type: 'number',
+                  min: 1,
+                  max: 4094,
+                  message: $t(validationMessages.vlanRange)
+                }]}
+              >
+                <InputNumber />
+              </Form.Item>
+            }
+
+            {withNsg && withNsgForm}
 
             <Form.Item
               name={['resident', 'name']}
@@ -734,7 +757,15 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             <Form.Item
               name={['resident', 'phoneNumber']}
               label={$t({ defaultMessage: 'Resident\'s Phone Number' })}
-              children={<Input />}
+              rules={[
+                { validator: (_, value) => phoneRegExp(value) }
+              ]}
+              children={<PhoneInput
+                name={['resident', 'phoneNumber']}
+                callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
+                onTop={false}
+              />}
+              validateFirst
             />
             {isConnectionMeteringEnabled &&
               <ConnectionMeteringSettingForm

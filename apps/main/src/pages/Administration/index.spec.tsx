@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider  }              from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider  }    from '@acx-ui/store'
 import {
   render,
   screen,
@@ -39,13 +39,20 @@ jest.mock('./Administrators', () => ({
     return <div data-testid='mocked-Administrators'></div>
   }
 }))
-// jest.mock('./FWVersionMgmt', () => ({
-//   ...jest.requireActual('./FWVersionMgmt'),
-//   __esModule: true,
-//   default: () => {
-//     return <div data-testid='mocked-FWVersionMgmt'></div>
-//   }
-// }))
+jest.mock('./FWVersionMgmt', () => ({
+  ...jest.requireActual('./FWVersionMgmt'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-FWVersionMgmt'></div>
+  }
+}))
+jest.mock('./OnpremMigration', () => ({
+  ...jest.requireActual('./OnpremMigration'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-OnpremMigration'></div>
+  }
+}))
 jest.mock('./LocalRadiusServer', () => ({
   ...jest.requireActual('./LocalRadiusServer'),
   __esModule: true,
@@ -105,7 +112,7 @@ describe('Administration page', () => {
       })
 
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.length).toBe(6 )
+    expect(tabs.length).toBe(7 )
   })
 
   it('should handle tab changes', async () => {
@@ -122,7 +129,7 @@ describe('Administration page', () => {
 
     fireEvent.click(screen.getByText('Notifications'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/administration/notifications`,
+      pathname: `/${params.tenantId}/t/administration/notifications`,
       hash: '',
       search: ''
     })
@@ -212,7 +219,25 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Firmware Version Management' })
+    const tab = screen.getByRole('tab', { name: 'Version Management' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render zd migration tab correctly', async () => {
+    params.activeTab = 'onpremMigration'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.getByRole('tab', { name: 'ZD Migration' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -233,39 +258,5 @@ describe('Administration page', () => {
 
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
-  })
-
-  it('should render when only edge early beta flag enabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementationOnce((flag) => {
-      return flag === Features.EDGE_EARLY_BETA ? true : false
-    })
-
-    params.activeTab = 'accountSettings'
-
-    render(
-      <Provider>
-        <Administration />
-      </Provider>, {
-        route: { params }
-      })
-
-    const tab = screen.getByRole('tab', { name: 'Account Settings' })
-    expect(tab.getAttribute('aria-selected')).toBeTruthy()
-  })
-
-  it('should not render when feature flag off', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(() => false)
-
-    render(
-      <Provider>
-        <UserProfileContext.Provider
-          value={userProfileContextValues}
-        >
-          <Administration />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-    await screen.findByText('Administration is not enabled')
   })
 })

@@ -3,10 +3,17 @@ import { useState, useContext, useEffect } from 'react'
 import { Row, Col, Form, Input, Typography } from 'antd'
 import _                                     from 'lodash'
 
-import { showActionModal, StepsForm, Table, TableProps, Button }                     from '@acx-ui/components'
-import { SwitchConfigurationProfile, SwitchModel, TrustedPort, TrustedPortTypeEnum } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                            from '@acx-ui/user'
-import { getIntl }                                                                   from '@acx-ui/utils'
+import { showActionModal, StepsFormLegacy, Table, TableProps, Button } from '@acx-ui/components'
+import {
+  defaultSort,
+  sortProp,
+  SwitchConfigurationProfile,
+  SwitchSlot2,
+  TrustedPort,
+  TrustedPortTypeEnum
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -25,6 +32,42 @@ export interface VlanTrustPortInterface {
   trustedPorts: TrustedPort[]
 }
 
+export const generateTrustedPortsModels = (profile: Partial<SwitchConfigurationProfile>) => {
+  const models: TrustedPort[] = []
+  let mergedTrustPorts: TrustedPort[] = []
+  if(profile.vlans){
+    profile.vlans.forEach((v) => {
+      if ((v.ipv4DhcpSnooping === false && v.arpInspection === false) ||
+      _.isEmpty(v.switchFamilyModels)) {
+        return
+      }
+      v.switchFamilyModels?.forEach((m) => {
+        const exist = models.find(item => item.model === m.model)
+        if (!exist) {
+          models.push({
+            vlanDemand: true,
+            model: m.model,
+            slots: m.slots as SwitchSlot2[],
+            trustPorts: [],
+            trustedPortType: TrustedPortTypeEnum.ALL
+          })
+        }
+      })
+    })
+
+    if(profile.trustedPorts){
+      const filterTrustedPortModels = models
+        .filter(item => profile.trustedPorts && !profile.trustedPorts.map(
+          tpItem => tpItem.model).includes(item.model)) || []
+
+      mergedTrustPorts = [...profile.trustedPorts, ...filterTrustedPortModels]
+    } else {
+      mergedTrustPorts = models
+    }
+  }
+  return mergedTrustPorts
+}
+
 export function TrustedPorts () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
@@ -36,38 +79,21 @@ export function TrustedPorts () {
 
   useEffect(() => {
     const trustedPortModels = generateTrustedPortsModels(currentData)
-      .map(item => ({
-        vlanDemand: true,
-        model: item.model,
-        slots: item.slots,
-        trustPorts: [],
-        trustedPortType: TrustedPortTypeEnum.ALL
-      }))
-
-    if(currentData.trustedPorts){
-      const filterTrustedPortModels = trustedPortModels
-        .filter(item => !currentData.trustedPorts.map(
-          tpItem => tpItem.model).includes(item.model)) || []
-
-      const mergedTrustPorts =
-        [...currentData.trustedPorts, ...filterTrustedPortModels] as TrustedPort[]
-
-      form.setFieldValue('trustedPorts', mergedTrustPorts)
-      setRuleList(mergedTrustPorts as TrustedPort[])
-    }else{
-      form.setFieldValue('trustedPorts', trustedPortModels)
-      setRuleList(trustedPortModels as TrustedPort[])
-    }
+    form.setFieldValue('trustedPorts', trustedPortModels)
+    setRuleList(trustedPortModels as TrustedPort[])
   }, [currentData, form])
 
   const trustedPortsColumns: TableProps<TrustedPort>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
-    key: 'model'
+    key: 'model',
+    defaultSortOrder: 'ascend',
+    sorter: { compare: sortProp('model', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Trusted' }),
     dataIndex: 'trustPorts',
     key: 'trustPorts',
+    sorter: { compare: sortProp('trustPorts', defaultSort) },
     render: (data, row) => {
       if(data?.toString() === ''){
         return <Button type='link'
@@ -137,28 +163,11 @@ export function TrustedPorts () {
     setOpenModal(false)
   }
 
-  const generateTrustedPortsModels = (profile: SwitchConfigurationProfile) => {
-    const models: SwitchModel[] = []
-    profile?.vlans.forEach((v) => {
-      if ((v.ipv4DhcpSnooping === false && v.arpInspection === false) ||
-      _.isEmpty(v.switchFamilyModels)) {
-        return
-      }
-      v.switchFamilyModels?.forEach((m) => {
-        const exist = models.find(item => item.model === m.model)
-        if (!exist) {
-          models.push(m)
-        }
-      })
-    })
-    return models
-  }
-
   return (
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'Trusted Ports' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Trusted Ports' })} />
           <Typography.Paragraph>
             {
               // eslint-disable-next-line max-len
@@ -196,6 +205,11 @@ export function TrustedPorts () {
         initialValue={ruleList}
         hidden={true}
         children={<Input />}
+        rules={[
+          { validator: (_, value) => value?.some(
+            (port: Partial<TrustedPort>) => port.trustPorts && port.trustPorts.length === 0) ?
+            Promise.reject() : Promise.resolve() }
+        ]}
       />
       <TrustedPortsModal
         open={openModal}

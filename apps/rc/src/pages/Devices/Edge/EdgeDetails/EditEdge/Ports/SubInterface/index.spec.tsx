@@ -8,6 +8,7 @@ import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
+import { EdgeEditContext }                           from '../..'
 import { mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
 
 import SubInterface from '.'
@@ -30,6 +31,20 @@ jest.mock('./SubInterfaceDrawer', () => (
       <div>{data?.vlan+''}</div>
     </div>
 ))
+
+const defaultContextData = {
+  activeSubTab: {
+    key: 'sub-interface',
+    title: 'Sub-interface'
+  },
+  formControl: {
+    isDirty: false,
+    hasError: false,
+    applyFn: jest.fn()
+  },
+  setActiveSubTab: jest.fn(),
+  setFormControl: jest.fn()
+}
 
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -56,11 +71,15 @@ describe('EditEdge ports - sub-interface', () => {
   it('no SubInterface', async () => {
     render(
       <Provider>
-        <SubInterface data={[]} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={[]} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     expect(await screen.findByText('No data to display')).toBeVisible()
@@ -69,11 +88,15 @@ describe('EditEdge ports - sub-interface', () => {
   it('should create SubInterface successfully', async () => {
     render(
       <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     expect((await screen.findAllByRole('row')).length).toBe(11)
@@ -83,11 +106,15 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
     const rows = await screen.findAllByRole('row')
@@ -105,11 +132,15 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
 
@@ -129,14 +160,18 @@ describe('EditEdge ports - sub-interface', () => {
       ({ children }: { children: React.ReactElement }) => (
         <IntlProvider locale='en'>
           <Provider>
-            <MemoryRouter initialEntries={['/t/t-id/devices/edge/001/edit/ports/sub-interface']}>
+            <MemoryRouter initialEntries={['/t-id/t/devices/edge/001/edit/ports/sub-interface']}>
               <Routes>
                 {
                 // eslint-disable-next-line max-len
-                  <Route path={`${basePath}/t/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab`}
+                  <Route path={`${basePath}/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab`}
                     element={
                       <div>
-                        <SubInterface data={mockEdgePortConfig.ports} />
+                        <EdgeEditContext.Provider
+                          value={defaultContextData}
+                        >
+                          <SubInterface data={mockEdgePortConfig.ports} />
+                        </EdgeEditContext.Provider>
                         {children}
                       </div>
                     } />
@@ -154,7 +189,7 @@ describe('EditEdge ports - sub-interface', () => {
     expect(within(dialog).queryByText('visible')).toBeValid()
     act(() => {
       // eslint-disable-next-line max-len
-      result.current(`/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
+      result.current(`/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
     })
 
     await waitFor(async () => {

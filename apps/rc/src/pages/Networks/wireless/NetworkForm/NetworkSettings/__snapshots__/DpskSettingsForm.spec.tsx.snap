@@ -23,7 +23,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
           >
             <div>
               <h3
-                class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
+                class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
               >
                 DPSK Settings
               </h3>
@@ -185,7 +185,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                                   />
                                 </span>
                                 <span>
-                                  Use Radius Server
+                                  Use RADIUS Server
                                 </span>
                               </label>
                             </div>

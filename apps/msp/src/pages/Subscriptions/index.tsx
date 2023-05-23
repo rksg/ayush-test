@@ -1,15 +1,13 @@
 
 import { useEffect, useState } from 'react'
 
-import { Row, Space } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Space }              from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
-  cssStr,
   Loader,
   PageHeader,
-  StackedBarChart,
   Subtitle,
   Table,
   TableProps
@@ -19,6 +17,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
+import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
@@ -27,6 +26,7 @@ import {
 import {
   dateSort,
   defaultSort,
+  EntitlementDeviceType,
   EntitlementUtil,
   MspEntitlement,
   sortProp
@@ -34,6 +34,18 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponent'
+
+const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: $t({ defaultMessage: 'Show All' }) },
+  {
+    key: 'VALID',
+    value: $t({ defaultMessage: 'Show Active' })
+  },
+  {
+    key: 'EXPIRED',
+    value: $t({ defaultMessage: 'Show Expired' })
+  }
+]
 
 export function Subscriptions () {
   const { $t } = useIntl()
@@ -101,7 +113,8 @@ export function Subscriptions () {
       // key needs to be unique
       key: 'timeLeft',
       sorter: { compare: sortProp('expirationDate', dateSort) },
-      defaultSortOrder: 'ascend',
+      // active license should be first
+      defaultSortOrder: 'descend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
         const TimeLeftWrapper = remainingDays < 0
@@ -116,7 +129,17 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      filterable: true
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: statusTypeFilterOpts($t),
+      sorter: { compare: sortProp('status', defaultSort) },
+      render: function (_, row) {
+        if( row.status === 'VALID') {
+          return $t({ defaultMessage: 'Active' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
+      }
     }
   ]
 
@@ -177,66 +200,27 @@ export function Subscriptions () {
       }
     })
 
-    const barColors = [
-      cssStr('--acx-accents-blue-50'),
-      cssStr('--acx-neutrals-30')
-    ]
-
     return (
       <>
         <Subtitle level={4}>
-          {$t({ defaultMessage: 'Subscription Utilization' })}</Subtitle>
-        <Row>
-          <label>{$t({ defaultMessage: 'Wi-Fi' })}</label>
-          <StackedBarChart
-            style={{ marginLeft: 8, height: 16, width: 135 }}
-            showLabels={false}
-            showTotal={false}
-            showTooltip={false}
-            barWidth={12}
-            data={[{
-              category: 'Wi-Fi Licenses: ',
-              series: [
-                { name: 'used',
-                  value: usedWifiCount * 100/totalWifiCount },
-                { name: 'available',
-                  value: (totalWifiCount-usedWifiCount)* 100/totalWifiCount }
-              ]
-            }]}
-            barColors={barColors}
+          {$t({ defaultMessage: 'Subscription Utilization' })}
+        </Subtitle>
+        <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
+          <SubscriptionUtilizationWidget
+            deviceType={EntitlementDeviceType.MSP_WIFI}
+            title={$t({ defaultMessage: 'Wi-Fi' })}
+            total={totalWifiCount}
+            used={usedWifiCount}
           />
-          <label style={{ marginLeft: 8 }}>{usedWifiCount} / {totalWifiCount}</label>
-
-          <label style={{ marginLeft: 40 }}>{$t({ defaultMessage: 'Switch' })}</label>
-          <StackedBarChart
-            style={{ marginLeft: 8, height: 16, width: 135 }}
-            showLabels={false}
-            showTotal={false}
-            showTooltip={false}
-            barWidth={12}
-            data={[{
-              category: 'Switch Licenses: ',
-              series: [
-                { name: 'used',
-                  value: usedSwitchCount * 100/totalSwitchCount },
-                { name: 'available',
-                  value: (totalSwitchCount-usedSwitchCount)* 100/totalSwitchCount }
-              ]
-            }]}
-            barColors={barColors}
+          <SubscriptionUtilizationWidget
+            deviceType={EntitlementDeviceType.MSP_SWITCH}
+            title={$t({ defaultMessage: 'Switch' })}
+            total={totalSwitchCount}
+            used={usedSwitchCount}
           />
-          <label style={{ marginLeft: 8 }}>{usedSwitchCount} / {totalSwitchCount}</label>
-        </Row>
+        </SpaceWrapper>
       </>
     )
-  }
-
-  const GetStatus = (status: String) => {
-    if( status === 'VALID') {
-      return $t({ defaultMessage: 'Active' })
-    } else {
-      return $t({ defaultMessage: 'Expired' })
-    }
   }
 
   const SubscriptionTable = () => {
@@ -251,8 +235,7 @@ export function Subscriptions () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType),
-        status: GetStatus(response?.status as String)
+        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
       }
     })
 

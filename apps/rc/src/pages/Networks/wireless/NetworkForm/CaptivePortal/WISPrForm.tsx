@@ -8,31 +8,32 @@ import {
   Input,
   InputRef
 } from 'antd'
-import _                             from 'lodash'
-import { FormattedMessage, useIntl } from 'react-intl'
-import { useParams }                 from 'react-router-dom'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   InformationSolid,
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useExternalProvidersQuery }                                                                                                                                                                                                                                                                    from '@acx-ui/rc/services'
-import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, walledGardensRegExp, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useExternalProvidersQuery, useGetMspEcProfileQuery }                                                                                                                                                                                                                                from '@acx-ui/rc/services'
+import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, MSPUtils } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { AuthAccServerSetting } from './AuthAccServerSetting'
-import { AuthAccServerSummary } from './AuthAccServerSummary'
-import { DhcpCheckbox }         from './DhcpCheckbox'
-import { RedirectUrlInput }     from './RedirectUrlInput'
+import { AuthAccServerSetting }                  from './AuthAccServerSetting'
+import { AuthAccServerSummary }                  from './AuthAccServerSummary'
+import { DhcpCheckbox }                          from './DhcpCheckbox'
+import { RedirectUrlInput }                      from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 
-
-
+const mspUtils = MSPUtils()
 export function WISPrForm () {
   const {
     data,
@@ -42,6 +43,7 @@ export function WISPrForm () {
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const { $t } = useIntl()
   const params = useParams()
+  const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
   const inputKey = useRef<InputRef>(null)
   const { useWatch } = Form
   const form = Form.useFormInstance()
@@ -52,10 +54,43 @@ export function WISPrForm () {
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
   const [regionOption, setRegionOption]=useState<Regions[]>()
   const [isOtherProvider, setIsOtherProvider]=useState(false)
+  const [isMspEc, setIsMspEc]=useState(false)
+  const setProvider = (value: string, regions: Regions[]|undefined) =>{
+    form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], false)
+    form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], '')
+    if(regions?.length===1){
+      form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'],
+        regions[0].name)
+      if(regions[0].captivePortalUrl){
+        form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'],
+          regions[0].captivePortalUrl)
+      }
+      if(regions[0].redirectUrl){
+        form.setFieldValue('redirectCheckbox', true)
+        form.setFieldValue(['guestPortal','redirectUrl'], regions[0].redirectUrl)
+      }
+    }else form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], '')
+    if(value==='Other provider'){
+      setIsOtherProvider(true)
+      form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], true)
+    }else{
+      setIsOtherProvider(false)
+    }
+    setRegionOption(regions)
+  }
+  useEffect(()=>{
+    if(mspEcProfileData){
+      setIsMspEc(mspUtils.isMspEc(mspEcProfileData))
+    }
+  },[mspEcProfileData])
   useEffect(()=>{
     if(providerData.data){
       const providers = providerData.data.providers
       setExternalProviders(providers)
+      if(isMspEc){
+        form.setFieldValue(['guestPortal','wisprPage','externalProviderName'],providers[0].name)
+        setProvider(providers[0].name, providers[0].regions)
+      }
     }
     if((editMode || cloneMode) && data){
       if(data.guestPortal?.wisprPage?.accountingRadius){
@@ -73,10 +108,6 @@ export function WISPrForm () {
       form.setFieldsValue({ ...data })
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
-      }
-      if(data.guestPortal?.walledGardens){
-        form.setFieldValue('walledGardensString',
-          data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
       }
       let pName = data.guestPortal?.wisprPage?.externalProviderName
       if(data.guestPortal?.wisprPage?.customExternalProvider){
@@ -97,14 +128,14 @@ export function WISPrForm () {
       if(data.guestPortal?.wisprPage?.authRadius?.secondary){
         form.setFieldValue('enableSecondaryAuthServer',true)
       }
-      if(data.guestPortal?.wisprPage?.accountingRadius){
+      if(data.enableAccountingService&&data.guestPortal?.wisprPage?.accountingRadius){
         form.setFieldValue('enableAccountingService', true)
         if(data.guestPortal?.wisprPage?.accountingRadius.secondary){
           form.setFieldValue('enableSecondaryAcctServer',true)
         }
       }
     }
-  },[providerData.data,data])
+  },[providerData.data,data,isMspEc])
   useEffect(()=>{
     form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
   },[])
@@ -148,7 +179,7 @@ export function WISPrForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
         <Form.Item
           name={['guestPortal','wisprPage','externalProviderName']}
           rules={
@@ -156,29 +187,9 @@ export function WISPrForm () {
           }
           label={$t({ defaultMessage: 'Portal Provider' })}
           initialValue=''
-          children={<Select onChange={(value)=>{
+          children={!isMspEc?<Select onChange={(value)=>{
             const regions = _.find(externalProviders,{ name: value })?.regions
-            form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], false)
-            form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], '')
-            if(regions?.length===1){
-              form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'],
-                regions[0].name)
-              if(regions[0].captivePortalUrl){
-                form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'],
-                  regions[0].captivePortalUrl)
-              }
-              if(regions[0].redirectUrl){
-                form.setFieldValue('redirectCheckbox', true)
-                form.setFieldValue(['guestPortal','redirectUrl'], regions[0].redirectUrl)
-              }
-            }else form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], '')
-            if(value==='Other provider'){
-              setIsOtherProvider(true)
-              form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], true)
-            }else{
-              setIsOtherProvider(false)
-            }
-            setRegionOption(regions)
+            setProvider(value, regions)
           }}>
             <Select.Option value={''}>
               {$t({ defaultMessage: 'Select provider' })}
@@ -191,7 +202,7 @@ export function WISPrForm () {
             <Select.Option value={'Other provider'}>
               {$t({ defaultMessage: 'Other provider' })}
             </Select.Option>
-          </Select>}
+          </Select>:externalProviders?.[0].name}
         />
         {isOtherProvider&&<Form.Item
           name={['guestPortal','wisprPage','providerName']}
@@ -369,53 +380,11 @@ export function WISPrForm () {
           }
         />}
         <DhcpCheckbox />
-        <Form.Item
-          name={['walledGardensString']}
-          rules={[
-            { validator: (_, value) => walledGardensRegExp(value.toString()) }
-          ]}
-          initialValue={[]}
-          label={<>{$t({ defaultMessage: 'Walled Garden' })}
-            <Tooltip.Question
-              placement='bottom'
-              title={<FormattedMessage
-                values={{ br: (chunks) => <>{chunks}<br /></> }}
-                /* eslint-disable max-len */
-                defaultMessage={`
-                  Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).<br></br><br></br>
-                  Each destination should be entered in a new line. Accepted formats for destinations are:<br></br><br></br>
-                  - IP address(e.g. 10.11.12.13)<br></br>
-                  - IP address range(e.g. 10.11.12.13-10.11.12.15)<br></br>
-                  - CIDR(e.g. 10.11.12.13/28)<br></br>
-                  - IP address and mask(e.g. 10.11.12.13 255.255.255.0)<br></br>
-                  - Website FQDN(e.g. www.ruckus.com)<br></br>
-                  - Website FQDN with a wildcard(e.g. *.amazon.com; *.com)
-                `}
-                /* eslint-enable */
-              />}
-            />
-          </>}
-          children={
-            <Input.TextArea rows={15}
-              style={{ resize: 'none' }}
-              onChange={(e)=>{
-                const values = e.target.value.split('\n')
-                const walledGardens = [] as string[]
-                values.map(value=>{
-                  if(value.trim())walledGardens.push(value)
-                })
-                form.setFieldValue(['guestPortal','walledGardens'],walledGardens)}}
-              placeholder={$t({ defaultMessage: 'Enter permitted walled '+
-              'garden destinations and IP subnets, a new line for each '+
-              'entry. Hover over the question mark for help with this field.' })}
-            />
-          }
-        />
-        <Form.Item
-          hidden
-          initialValue={[]}
-          name={['guestPortal','walledGardens']}
-        />
+        <BypassCaptiveNetworkAssistantCheckbox
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr} />
+        <WalledGardenTextArea
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr}
+          enableDefaultWalledGarden={false} />
         {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}

@@ -4,7 +4,7 @@ import { Form, Select, Switch, Row, Button, Col } from 'antd'
 import { isEqual }                                from 'lodash'
 import { useIntl }                                from 'react-intl'
 
-import { Loader, StepsForm, showToast, StepsFormInstance, showActionModal } from '@acx-ui/components'
+import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal } from '@acx-ui/components'
 import {
   useGetApQuery,
   useGetApSnmpPolicyListQuery,
@@ -47,7 +47,7 @@ export function ApSnmp () {
 
   const { editContextData, setEditContextData } = useContext(ApEditContext)
 
-  const formRef = useRef<StepsFormInstance<ApSnmpSettings>>()
+  const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
 
   // Store database AP SNMP settings, reset the form once user discard/switch customized settings
   const [stateOfApSnmpSettings, setStateOfApSnmpSettings] = useState(defaultApSnmpSettings)
@@ -188,7 +188,7 @@ export function ApSnmp () {
     isFetching: isUpdatingApSnmpSettings|| isResettingApSnmpSettings
   }]}>
 
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFormChange={() => handleFormApSnmpChange()}
       onFinish={sendApSnmpSetting}
@@ -200,14 +200,16 @@ export function ApSnmp () {
         submit: $t({ defaultMessage: 'Apply' })
       }}
     >
-      <StepsForm.StepForm
+      <StepsFormLegacy.StepForm
         layout='horizontal'
         initialValues={stateOfApSnmpSettings}>
         <Row style={{ backgroundColor: '#F2F2F2', marginBottom: '10px' }} align='middle'>
-          <Col span={3}>
-            <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>Cutsom  settings</p>
+          <Col span={8}>
+            <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>
+              {$t({ defaultMessage: 'Custom  settings' })}
+            </p>
           </Col>
-          <Col span={3}>
+          <Col span={8}>
             {stateOfUseVenueSettings ? <Button
               data-testid='use-venue-true'
               type='link'
@@ -244,38 +246,37 @@ export function ApSnmp () {
           {stateOfEnableApSnmp &&
         <Col data-testid='hidden-block' span={12}>
           <Row align='middle'>
-            <Col span={10}>
-              <Form.Item name='apSnmpAgentProfileId'
-                label='SNMP Agent'
-                style={{ marginBottom: '0px' }}>
-                <Select
-                  data-testid='snmp-select'
-                  disabled={stateOfUseVenueSettings}
-                  options={[
-                    { label: $t({ defaultMessage: 'Select...' }), value: '' },
-                    ...RetrievedApSnmpAgentList?.data?.map(
-                      item => ({ label: item.policyName, value: item.id })
-                    ) ?? []
-                  ]}
-                  style={{ width: '200px' }}
-                />
-              </Form.Item>
-            </Col>
-            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) && <Col span={12}>
-              <TenantLink
-                to={getPolicyRoutePath({
-                  type: PolicyType.SNMP_AGENT,
-                  oper: PolicyOperation.CREATE
-                })}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </TenantLink>
-            </Col>}
+            <Form.Item name='apSnmpAgentProfileId'
+              label='SNMP Agent'
+              style={{ marginBottom: '0px' }}>
+              <Select
+                data-testid='snmp-select'
+                disabled={stateOfUseVenueSettings}
+                options={[
+                  { label: $t({ defaultMessage: 'Select...' }), value: '' },
+                  ...RetrievedApSnmpAgentList?.data?.map(
+                    item => ({ label: item.policyName, value: item.id })
+                  ) ?? []
+                ]}
+                style={{ width: '200px' }}
+              />
+            </Form.Item>
+            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) &&
+                <TenantLink
+                  to={getPolicyRoutePath({
+                    type: PolicyType.SNMP_AGENT,
+                    oper: PolicyOperation.CREATE
+                  })}
+                  style={{ marginLeft: '20px' }}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </TenantLink>
+            }
           </Row>
         </Col>
           }
         </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </Loader>)
 }

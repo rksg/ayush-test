@@ -8,8 +8,8 @@ import {
   GoogleMap,
   GoogleMapMarker,
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { get }                                   from '@acx-ui/config'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
@@ -131,7 +131,7 @@ export function VenuesForm () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isNewApi = useIsSplitOn(Features.NEW_API)
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<VenueExtended>>()
+  const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
@@ -198,10 +198,17 @@ export function VenuesForm () {
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
+
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
     const isSameValue = value ===
       formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+
+    if(Object.keys(address).length === 0){
+      return Promise.reject(
+        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+      )
+    }
 
     if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
@@ -210,7 +217,6 @@ export function VenuesForm () {
     }
     return Promise.resolve()
   }
-
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
@@ -274,7 +280,7 @@ export function VenuesForm () {
           { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
       />}
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
         onCancel={() =>
@@ -284,7 +290,7 @@ export function VenuesForm () {
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add' }) }}
       >
-        <StepsForm.StepForm>
+        <StepsFormLegacy.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
@@ -301,6 +307,7 @@ export function VenuesForm () {
                 validateFirst
                 hasFeedback
                 children={<Input />}
+                validateTrigger={'onBlur'}
               />
               <Form.Item
                 name='description'
@@ -384,8 +391,8 @@ export function VenuesForm () {
             </Col>
           </Row>
           }
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

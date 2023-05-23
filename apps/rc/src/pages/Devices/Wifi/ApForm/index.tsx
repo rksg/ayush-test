@@ -13,8 +13,8 @@ import {
   Loader,
   Modal,
   showActionModal,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
@@ -47,7 +47,8 @@ import {
   VenueExtended,
   WifiNetworkMessages,
   gpsToFixed,
-  redirectPreviousPage
+  redirectPreviousPage,
+  validateTags
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -76,7 +77,7 @@ export function ApForm () {
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
   const { tenantId, action, serialNumber } = useParams()
-  const formRef = useRef<StepsFormInstance<ApDeep>>()
+  const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
   const {
@@ -269,7 +270,7 @@ export function ApForm () {
 
   const handleUpdateContext = () => {
     if (isEditMode) {
-      const form = formRef?.current as StepsFormInstance
+      const form = formRef?.current as StepsFormLegacyInstance
       const originalData = (isEmpty(apDetails?.deviceGps) ? {
         ...apDetails,
         ...{
@@ -299,7 +300,7 @@ export function ApForm () {
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />}
-    <StepsForm
+    <StepsFormLegacy
       formRef={formRef}
       onFinish={!isEditMode ? handleAddAp : handleUpdateAp}
       onFormChange={handleUpdateContext}
@@ -312,7 +313,7 @@ export function ApForm () {
           : $t({ defaultMessage: 'Apply' })
       }}
     >
-      <StepsForm.StepForm>
+      <StepsFormLegacy.StepForm>
         <Row gutter={20}>
           <Col span={8}>
             <Loader states={[{
@@ -365,10 +366,7 @@ export function ApForm () {
                 }]}
                 children={<Select
                   disabled={apMeshRoleDisabled || dhcpRoleDisabled}
-                  options={[
-                    { label: $t({ defaultMessage: 'Select venue...' }), value: null },
-                    ...venueOption
-                  ]}
+                  options={venueOption}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
@@ -401,7 +399,7 @@ export function ApForm () {
                     validator: (_, value) => {
                       const venueId = formRef?.current?.getFieldValue('venueId')
                       const nameList = apList?.data?.filter(item => (
-                        item.serialNumber !== apDetails?.serialNumber
+                        item.name !== apDetails?.name
                         && (selectedVenue ? item.venueId === venueId : false)
                       )).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
@@ -441,11 +439,14 @@ export function ApForm () {
                 initialValue=''
                 children={<Input.TextArea rows={4} maxLength={180} />}
               />
-              {/* <Form.Item // TODO: Waiting for TAG feature support
+              <Form.Item
                 name='tags'
                 label={$t({ defaultMessage: 'Tags' })}
-                children={<Select mode='tags' />}
-              /> */}
+                rules={[{
+                  validator: (_, value) => validateTags(value)
+                }]}
+                children={<Select mode='tags' maxLength={24} />}
+              />
               {isApGpsFeatureEnabled && <GpsCoordinatesFormItem />}
             </Loader>
           </Col>
@@ -461,8 +462,8 @@ export function ApForm () {
           onSaveCoordinates={onSaveCoordinates}
         />
 
-      </StepsForm.StepForm>
-    </StepsForm>
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
   </>
 
   function GpsCoordinatesFormItem () {
@@ -507,7 +508,7 @@ export function ApForm () {
 }
 
 function CoordinatesModal (props: {
-  formRef: React.MutableRefObject<StepsFormInstance<ApDeep> | undefined>,
+  formRef: React.MutableRefObject<StepsFormLegacyInstance<ApDeep> | undefined>,
   fieldName: string,
   selectedVenue: VenueExtended,
   deviceGps: DeviceGps | null,
@@ -703,7 +704,11 @@ function transformLatLng (value: string) {
   ) as DeviceGps
 }
 
-function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, deviceGps: DeviceGps) {
+function checkFormIsDirty (
+  form: StepsFormLegacyInstance,
+  originalData: ApDeep,
+  deviceGps: DeviceGps
+) {
   const formData = form?.getFieldsValue()
   const checkFields = Object.keys(form?.getFieldsValue() ?? {}).concat(['deviceGps'])
   const oldData = pick(originalData, checkFields)
@@ -713,6 +718,6 @@ function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, device
     !isEqual(omitBy(oldData, isEmpty), omitBy(newData, isEmpty))
 }
 
-function checkFormIsInvalid (form: StepsFormInstance) {
+function checkFormIsInvalid (form: StepsFormLegacyInstance) {
   return form?.getFieldsError().map(item => item.errors).flat().length > 0
 }

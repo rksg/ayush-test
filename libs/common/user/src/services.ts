@@ -10,13 +10,16 @@ import {
   MfaOtpMethod,
   PlmMessageBanner,
   UserSettings,
-  UserProfile
+  UserProfile,
+  UserSettingsUIModel
 } from './types'
 
 export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/banner'
+    url: '/upgradeConfig/banners',
+    oldUrl: '/api/upgrade/tenant/:tenantId/banner',
+    newApi: true
   },
   updateUserProfile: {
     method: 'put',
@@ -32,23 +35,35 @@ export const UserUrlsInfo = {
   },
   getCloudVersion: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
+    url: '/upgradeConfig/productVersions',
+    oldUrl: '/api/upgrade/tenant/:tenantId/upgrade-version',
+    newApi: true
   },
   getAllUserSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'
   },
+  saveUserSettings: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/admin-settings/ui/:productKey'
+  },
   wifiAllowedOperations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/allowed-operations'
+    url: '/tenants/allowedOperations?service=wifi',
+    oldUrl: '/api/tenant/:tenantId/wifi/allowed-operations',
+    newApi: true
   },
   switchAllowedOperations: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/allowed-operations'
+    url: '/tenants/allowedOperations?service=switch',
+    oldUrl: '/api/switch/tenant/:tenantId/allowed-operations',
+    newApi: true
   },
   tenantAllowedOperations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/allowed-operations'
+    url: '/tenants/allowed-operations',
+    oldUrl: '/api/tenant/:tenantId/allowed-operations',
+    newApi: true
   },
   venueAllowedOperations: {
     method: 'get',
@@ -56,11 +71,15 @@ export const UserUrlsInfo = {
   },
   guestAllowedOperations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
+    url: '/tenants/allowedOperations?service=guest',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations',
+    newApi: true
   },
   upgradeAllowedOperations: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/allowed-operations'
+    url: '/tenants/allowedOperations?service=upgradeConfig',
+    oldUrl: '/api/upgrade/tenant/:tenantId/allowed-operations',
+    newApi: true
   },
   getMfaTenantDetails: {
     method: 'get',
@@ -103,6 +122,8 @@ export const UserUrlsInfo = {
 export const {
   useAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
+  useLazyGetAllUserSettingsQuery,
+  useSaveUserSettingsMutation,
   useGetCloudVersionQuery,
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
@@ -120,15 +141,21 @@ export const {
   useDisableMFAMethodMutation
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllUserSettings: build.query<UserSettings, RequestPayload>({
+    getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
-        let result:{ [key: string]: string } = {}
+        let result:UserSettingsUIModel = {}
         Object.keys(userSettings).forEach((key: string) => {
           result[key] = JSON.parse(userSettings[key])
         })
         return result
       }
+    }),
+    saveUserSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(UserUrlsInfo.saveUserSettings, params),
+        body: payload
+      })
     }),
     getCloudVersion: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudVersion, params)

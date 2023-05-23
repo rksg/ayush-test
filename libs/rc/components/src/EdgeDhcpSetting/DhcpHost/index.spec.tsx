@@ -5,26 +5,13 @@ import {
   findTBody, render, screen, within
 } from '@acx-ui/test-utils'
 
-import HostTable from '.'
+import { mockedHostData } from '../__tests__/fixtures'
 
-const mockData = [
-  {
-    id: '1',
-    hostName: 'TestHost-1',
-    mac: '11:11:11:11',
-    fixedAddress: '1.1.1.1'
-  },
-  {
-    id: '2',
-    hostName: 'TestHost-2',
-    mac: '11:11:11:12',
-    fixedAddress: '1.1.1.2'
-  }
-]
+import HostTable from '.'
 
 describe('Host table(Edge)', () => {
   it('should render data succefully', async () => {
-    render(<HostTable value={mockData} />)
+    render(<HostTable value={mockedHostData} />)
 
     const tableRow = await screen.findAllByRole('row', { name: /TestHost-/i })
     expect(tableRow.length).toBe(2)
@@ -40,14 +27,14 @@ describe('Host table(Edge)', () => {
 
   it('should open drawer', async () => {
     const user = userEvent.setup()
-    render(<HostTable value={mockData} />)
+    render(<HostTable value={mockedHostData} />)
 
     await user.click(screen.getByRole('button', { name: 'Add Host' }))
     expect(await screen.findByRole('textbox', { name: 'Host Name' })).toBeVisible()
   })
 
   it('should show edit button', async () => {
-    render(<HostTable value={mockData} />)
+    render(<HostTable value={mockedHostData} />)
 
     const tbody = await findTBody()
 
@@ -60,7 +47,7 @@ describe('Host table(Edge)', () => {
   })
 
   it('should hidden edit button', async () => {
-    render(<HostTable value={mockData} />)
+    render(<HostTable value={mockedHostData} />)
 
     const tbody = await findTBody()
 

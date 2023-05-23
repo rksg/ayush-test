@@ -75,10 +75,10 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-ksZaOG gSmPoq"
+    class="sc-hAZoDl bAUJJB"
   >
     <div
-      class="sc-hAZoDl iGLwQc"
+      class="sc-fnykZs fpoAOn"
       data-testid="image-container"
     >
       <div
@@ -89,7 +89,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
          
         <div>
           <div
-            class="sc-jSMfEi dSrpFV device-container context-Ap"
+            class="sc-jSMfEi UOWfN device-container context-Ap"
             draggable="true"
             style="top: calc(0%); left: calc(0%); opacity: 1;"
           >
@@ -106,7 +106,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
         </div>
         <div>
           <div
-            class="sc-jSMfEi dSrpFV device-container context-Ap"
+            class="sc-jSMfEi UOWfN device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -132,7 +132,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
   </div>
   <div
     alignbottom="0"
-    class="ant-space ant-space-vertical sc-fEOsli doEjoS"
+    class="ant-space ant-space-vertical sc-bjUoiL khVJOP"
   >
     <div
       class="ant-space-item"
@@ -224,13 +224,13 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
     class="ant-row"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-iqcoie kSttUA"
+      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl kVxLL"
     >
       <div
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-crXcEl mnPNK"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-evZas hQpdCy"
           data-testid="galleryIcon"
           type="button"
         >
@@ -244,18 +244,18 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       class="ant-col ant-col-23"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-jqUVSM gwtIPG"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX dyDNDl"
       >
         <div
           class="ant-space-item"
           style="margin-right: 4px;"
         >
           <div
-            class="sc-breuTD guCzVb"
+            class="sc-ksZaOG edtJxk"
           >
             <div
               active="1"
-              class="ant-card-grid sc-kDDrLX lovraM"
+              class="ant-card-grid sc-iqcoie hLhYrV"
               data-testid="thumbnailBg"
             >
               <div
@@ -265,7 +265,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi dSrpFV device-container context-Album"
+                      class="sc-jSMfEi UOWfN device-container context-Album"
                       draggable="true"
                       style="top: calc(0%); left: calc(0%); opacity: 1;"
                     >
@@ -279,7 +279,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi dSrpFV device-container context-Album"
+                      class="sc-jSMfEi UOWfN device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -301,7 +301,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
               </div>
             </div>
             <div
-              class="sc-evZas dnlhpG"
+              class="sc-breuTD QFAjJ"
             >
               TEST_2
             </div>
@@ -311,11 +311,11 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
           class="ant-space-item"
         >
           <div
-            class="sc-breuTD guCzVb"
+            class="sc-ksZaOG edtJxk"
           >
             <div
               active="0"
-              class="ant-card-grid sc-kDDrLX ihhOgl"
+              class="ant-card-grid sc-iqcoie IvfqM"
               data-testid="thumbnailBg"
             >
               <div
@@ -333,7 +333,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
               </div>
             </div>
             <div
-              class="sc-evZas kIStNM"
+              class="sc-breuTD ckvOwr"
             >
               dscx
             </div>
@@ -420,10 +420,10 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-ksZaOG gSmPoq"
+    class="sc-hAZoDl bAUJJB"
   >
     <div
-      class="sc-hAZoDl iGLwQc"
+      class="sc-fnykZs fpoAOn"
       data-testid="image-container"
     >
       <div
@@ -434,7 +434,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
          
         <div>
           <div
-            class="sc-jSMfEi dSrpFV device-container context-Ap"
+            class="sc-jSMfEi UOWfN device-container context-Ap"
             draggable="true"
             style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
           >
@@ -451,7 +451,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         </div>
         <div>
           <div
-            class="sc-jSMfEi dSrpFV device-container context-Ap"
+            class="sc-jSMfEi UOWfN device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -477,7 +477,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
   </div>
   <div
     alignbottom="0"
-    class="ant-space ant-space-vertical sc-fEOsli doEjoS"
+    class="ant-space ant-space-vertical sc-bjUoiL khVJOP"
   >
     <div
       class="ant-space-item"
@@ -569,13 +569,13 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
     class="ant-row"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center sc-iqcoie kSttUA"
+      class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl kVxLL"
     >
       <div
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-crXcEl mnPNK"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-evZas hQpdCy"
           data-testid="galleryIcon"
           type="button"
         >
@@ -589,18 +589,18 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       class="ant-col ant-col-23"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-jqUVSM gwtIPG"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX dyDNDl"
       >
         <div
           class="ant-space-item"
           style="margin-right: 4px;"
         >
           <div
-            class="sc-breuTD guCzVb"
+            class="sc-ksZaOG edtJxk"
           >
             <div
               active="1"
-              class="ant-card-grid sc-kDDrLX lovraM"
+              class="ant-card-grid sc-iqcoie hLhYrV"
               data-testid="thumbnailBg"
             >
               <div
@@ -610,7 +610,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi dSrpFV device-container context-Album"
+                      class="sc-jSMfEi UOWfN device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -624,7 +624,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi dSrpFV device-container context-Album"
+                      class="sc-jSMfEi UOWfN device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -646,7 +646,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
               </div>
             </div>
             <div
-              class="sc-evZas dnlhpG"
+              class="sc-breuTD QFAjJ"
             >
               TEST_2
             </div>
@@ -656,11 +656,11 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           class="ant-space-item"
         >
           <div
-            class="sc-breuTD guCzVb"
+            class="sc-ksZaOG edtJxk"
           >
             <div
               active="0"
-              class="ant-card-grid sc-kDDrLX ihhOgl"
+              class="ant-card-grid sc-iqcoie IvfqM"
               data-testid="thumbnailBg"
             >
               <div
@@ -678,7 +678,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
               </div>
             </div>
             <div
-              class="sc-evZas kIStNM"
+              class="sc-breuTD ckvOwr"
             >
               dscx
             </div>
@@ -718,10 +718,10 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-ksZaOG gSmPoq"
+    class="sc-hAZoDl bAUJJB"
   >
     <div
-      class="sc-bjUoiL kXgoeF rogue-help-info"
+      class="sc-idiyUo icISrR rogue-help-info"
     >
       <svg
         class="ant-tooltip-open"
@@ -729,7 +729,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       />
     </div>
     <div
-      class="sc-hAZoDl bxWDbB"
+      class="sc-fnykZs gFEddm"
       data-testid="image-container"
     >
       <div
@@ -744,7 +744,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       />
     </div>
     <div
-      class="sc-fnykZs bCqkvW"
+      class="sc-fEOsli nrlvP"
     >
       <div
         class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
@@ -786,7 +786,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
   </div>
   <div
     alignbottom="1"
-    class="ant-space ant-space-vertical sc-fEOsli dSEfnp"
+    class="ant-space ant-space-vertical sc-bjUoiL iUoEts"
   >
     <div
       class="ant-space-item"

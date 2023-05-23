@@ -138,9 +138,8 @@ export function EditPortDrawer ({
     ipsg,
     lldpQosCheckbox,
     ingressAclCheckbox,
-    egressAclCheckbox
-    // TODO: Waiting for TAG feature support
-    // tagsCheckbox
+    egressAclCheckbox,
+    tagsCheckbox
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
@@ -151,10 +150,14 @@ export function EditPortDrawer ({
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
+  const hasBreakoutPort = selectedPorts.filter(p => p.portIdentifier.includes(':')).length > 0
 
   const [aclsOptions, setAclsOptions] = useState([] as DefaultOptionType[])
   const [vlansOptions, setVlansOptions] = useState([] as DefaultOptionType[])
   const [portSpeedOptions, setPortSpeedOptions] = useState([] as string[])
+  const [poeClassOptions, setPoeClassOptions] = useState([] as {
+    label: { defaultMessage: string; }; value: string; }[]
+  )
   const [vlanUsedByVe, setVlanUsedByVe] = useState('')
   const [lldpQosList, setLldpQosList] = useState([] as LldpQosModel[])
 
@@ -290,6 +293,7 @@ export function EditPortDrawer ({
 
       setAclsOptions(getAclOptions(aclUnion))
       setPortSpeedOptions(portSpeed)
+      setPoeClassOptions(getPoeClass(selectedPorts))
       setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
 
       setHasSwitchProfile(!!switchProfile?.length)
@@ -345,7 +349,9 @@ export function EditPortDrawer ({
       portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
         ? portSetting.portSpeed : portSpeed?.[0],
       taggedVlans: (portSetting.revert ? tagged : (portSetting.taggedVlans || '')).toString(),
-      untaggedVlan: (portSetting.revert ? untagged : portSetting.untaggedVlan) || defaultVlan
+      untaggedVlan: portSetting.revert ? (untagged || defaultVlan) :
+        (portSetting.untaggedVlan ? portSetting.untaggedVlan :
+          (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
   }
 
@@ -387,7 +393,8 @@ export function EditPortDrawer ({
       taggedVlans: !hasMultipleValueFields?.includes('taggedVlans')
         ? (portSetting?.taggedVlans || vlansValue.tagged)?.toString() : '',
       untaggedVlan: (!hasMultipleValueFields?.includes('untaggedVlan')
-        && vlansValue.untagged) || portSetting?.untaggedVlan || defaultVlan
+        && vlansValue.untagged) || (portSetting.untaggedVlan ? portSetting.untaggedVlan :
+        (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan))
     })
   }
 
@@ -416,6 +423,7 @@ export function EditPortDrawer ({
       case 'portEnable': return isCloudPort || (isMultipleEdit && !portEnableCheckbox)
       case 'poeEnable': return (isMultipleEdit && !poeEnableCheckbox) || disablePoeCapability
       case 'poeClass': return (isMultipleEdit && !poeClassCheckbox)
+        || poeClassOptions?.length === 1
         || disablePoeCapability
         || !poeEnable
         || (poeBudget && Number(poeBudget) >= 1000 && Number(poeBudget) <= 30000) // workaround for bug
@@ -481,14 +489,18 @@ export function EditPortDrawer ({
     }
 
     const originalUntaggedVlan = editPortData?.untaggedVlan
-    const isDirtyUntaggedVlan = !_.isEqual(originalUntaggedVlan, untaggedVlan?.toString)
+    const originalTaggedVlan = editPortData?.taggedVlans
+    const isDirtyUntaggedVlan = !_.isEqual(originalUntaggedVlan, untaggedVlan?.toString())
+    const isDirtyTaggedVlan = !_.isEqual(originalTaggedVlan ?
+      originalTaggedVlan : [''], taggedVlans?.split(','))
+    const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
       isMultipleEdit && !portVlansCheckbox && 'revert',
       checkVlanIgnore(
-        'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+        'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
-        'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+        'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkAclIgnore('egressAcl', data?.egressAcl, aclsOptions),
       checkAclIgnore('ingressAcl', data?.ingressAcl, aclsOptions)
     ]
@@ -512,8 +524,9 @@ export function EditPortDrawer ({
       ...(lldpQosList && { lldpQos: // remove fake lldp id
         lldpQosList?.map(lldp => ( lldp.id.includes('lldp') ? _.omit(lldp, ['id']) : lldp ))
       }),
-      taggedVlans: (useVenueSettings || !form.getFieldValue('taggedVlans'))
-        ? null : form.getFieldValue('taggedVlans')?.split(','),
+      taggedVlans: useVenueSettings ? null :
+        (form.getFieldValue('taggedVlans') ?
+          form.getFieldValue('taggedVlans').split(',') : []),
       untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
       voiceVlan: form.getFieldValue('voiceVlan') ?? null
     }
@@ -524,6 +537,10 @@ export function EditPortDrawer ({
 
     try {
       const payload = switches.map((item) => {
+        const ports = selectedPorts
+          .filter(p => p.switchSerial === item)
+          .map(p => p.portIdentifier)
+
         return {
           switchId: item,
           port: {
@@ -535,8 +552,8 @@ export function EditPortDrawer ({
               voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
             }),
             ignoreFields: ignoreFields.toString(),
-            port: selectedPorts.map(p => p.portIdentifier)?.[0],
-            ports: selectedPorts.map(p => p.portIdentifier)
+            port: ports?.[0],
+            ports: ports
           }
         }
       })
@@ -707,7 +724,6 @@ export function EditPortDrawer ({
     visible={visible}
     onClose={onClose}
     footer={footer}
-    mask={false}
     children={<Loader states={[{
       isLoading: loading,
       isFetching: isPortsSettingUpdating
@@ -804,7 +820,7 @@ export function EditPortDrawer ({
             children={isMultipleEdit && !poeClassCheckbox && hasMultipleValue.includes('poeClass')
               ? <MultipleText />
               : <Select
-                options={getPoeClass(selectedPorts).map(
+                options={poeClassOptions.map(
                   p => ({ label: $t(p.label), value: p.value }))}
                 disabled={getFieldDisabled('poeClass')}
               />}
@@ -901,7 +917,8 @@ export function EditPortDrawer ({
                         ? $t({ defaultMessage: 'Customize' })
                         : $t({ defaultMessage: 'Edit' })
                       }</UI.LinkButton>
-                    {(!useVenueSettings || !portEditStatus || portEditStatus === 'port') &&
+                    {((!useVenueSettings || !portEditStatus || portEditStatus === 'port')
+                      && !hasBreakoutPort) &&
                       <Tooltip title={getFieldTooltip('useVenuesettings')} >
                         <Space>
                           <UI.LinkButton type='link'
@@ -1250,7 +1267,7 @@ export function EditPortDrawer ({
           'egressAcl', $t({ defaultMessage: 'Egress ACL' })
         )}
 
-        {/* { getFieldTemplate( TODO: Waiting for TAG feature support
+        {getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='tags'
@@ -1258,11 +1275,11 @@ export function EditPortDrawer ({
             initialValue=''
             children={isMultipleEdit && !tagsCheckbox && hasMultipleValue.includes('tags')
               ? <MultipleText />
-              : <Input disabled={getFieldDisabled('tags')} />
+              : <Input disabled={getFieldDisabled('tags')} maxLength={255} />
             }
           />,
           'tags', $t({ defaultMessage: 'Tags' })
-        )} */}
+        )}
 
       </UI.Form>
 

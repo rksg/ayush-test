@@ -5,15 +5,17 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm }                            from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { DhcpCheckbox }     from './DhcpCheckbox'
-import { RedirectUrlInput } from './RedirectUrlInput'
+import { DhcpCheckbox }                          from './DhcpCheckbox'
+import { RedirectUrlInput }                      from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 export function OnboardingForm () {
   const {
@@ -34,9 +36,14 @@ export function OnboardingForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
         <RedirectUrlInput />
         <DhcpCheckbox />
+        <BypassCaptiveNetworkAssistantCheckbox
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.ClickThrough} />
+        <WalledGardenTextArea
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.ClickThrough}
+          enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>

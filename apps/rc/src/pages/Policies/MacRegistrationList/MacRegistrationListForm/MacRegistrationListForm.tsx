@@ -3,7 +3,8 @@ import React, { useEffect, useRef } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
@@ -13,7 +14,9 @@ import {
   MacRegistrationPoolFormFields,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, getPolicyListRoutePath
+  PolicyOperation,
+  getPolicyListRoutePath,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,7 +28,7 @@ import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/Mac
 interface MacRegistrationListFormProps {
   editMode?: boolean,
   modalMode?: boolean,
-  modalCallBack?: (name?: string) => void
+  modalCallBack?: (saveData?: MacRegistrationPool) => void
 }
 
 export default function MacRegistrationListForm (props: MacRegistrationListFormProps) {
@@ -35,21 +38,28 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<MacRegistrationPoolFormFields>>()
+  const formRef = useRef<StepsFormLegacyInstance<MacRegistrationPoolFormFields>>()
 
   const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } }, { skip: !editMode })
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
+
+  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
         name: data.name,
         autoCleanup: data.autoCleanup,
-        ...transferDataToExpirationFormFields(data),
-        defaultAccess: data.defaultAccess,
-        policySetId: data.policySetId
+        ...transferDataToExpirationFormFields(data)
       })
+
+      if(policyEnabled) {
+        formRef.current?.setFieldsValue({
+          defaultAccess: data.defaultAccess,
+          policySetId: data.policySetId
+        })
+      }
     }
   }, [data, editMode])
 
@@ -59,10 +69,10 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess,
+        defaultAccess: data.defaultAccess ?? 'ACCEPT',
         policySetId: data.policySetId
       }
-      await addMacRegList({ payload: saveData }).unwrap()
+      const result = await addMacRegList({ payload: saveData }).unwrap() as MacRegistrationPool
 
       showToast({
         type: 'success',
@@ -72,7 +82,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         )
       })
 
-      modalMode ? modalCallBack?.(data.name) : navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.(result) : navigate(linkToList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -84,8 +94,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup,
-        defaultAccess: data.defaultAccess,
-        policySetId: data.policySetId
+        defaultAccess: data.defaultAccess ?? 'ACCEPT',
+        policySetId: data.policySetId ?? null
       }
       await updateMacRegList({
         params: { policyId },
@@ -120,13 +130,13 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
             link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
         ]}
       />}
-      <StepsForm<MacRegistrationPoolFormFields>
+      <StepsFormLegacy<MacRegistrationPoolFormFields>
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Apply' }) }}
         onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
         onFinish={editMode ? handleEditList : handleAddList}>
-        <StepsForm.StepForm<MacRegistrationPoolFormFields>>
+        <StepsFormLegacy.StepForm<MacRegistrationPoolFormFields>>
           <Loader states={[{
             isLoading: isLoading,
             isFetching: isUpdating
@@ -137,8 +147,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
               </Col>
             </Row>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

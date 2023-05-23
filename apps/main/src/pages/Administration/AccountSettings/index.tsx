@@ -1,8 +1,8 @@
 import { Form, Divider } from 'antd'
-import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
-import { Loader }           from '@acx-ui/components'
+import { Loader }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetRecoveryPassphraseQuery,
   useGetMspEcProfileQuery
@@ -12,6 +12,7 @@ import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
+import { useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
@@ -25,7 +26,7 @@ interface AccountSettingsProps {
 }
 const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
-  const params = useParams()
+  const params = { tenantId: useTenantId() }
   const {
     data: userProfileData,
     isPrimeAdmin
@@ -42,6 +43,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isMspEc = hasMSPEcLabel && userProfileData?.varTenantId && canMSPDelegation === true
 
   const isPrimeAdminUser = isPrimeAdmin()
+  const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
@@ -57,15 +59,19 @@ const AccountSettings = (props : AccountSettingsProps) => {
       >
         <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-        <Divider />
-
-        <DefaultSystemLanguageFormItem />
+        { (isPrimeAdminUser && isI18n) && (
+          <>
+            <Divider />
+            <DefaultSystemLanguageFormItem />
+          </>
+        )}
 
         { isPrimeAdminUser && (
           <>
             <Divider />
             <MapRegionFormItem />
-          </>)}
+          </>
+        )}
 
         { showRksSupport && (
           <>

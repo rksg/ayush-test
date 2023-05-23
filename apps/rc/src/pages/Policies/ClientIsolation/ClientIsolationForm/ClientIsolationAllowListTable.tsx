@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { showActionModal, Table, TableProps }    from '@acx-ui/components'
 import {
-  ClientIsolationClient
+  ClientIsolationClient, defaultSort, sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -15,6 +15,7 @@ import { SelectConnectedClientsDrawer, SimpleClientRecord } from './SelectConnec
 interface ClientIsolationAllowListTableProps {
   allowList?: ClientIsolationClient[];
   setAllowList?: (c: ClientIsolationClient[]) => void;
+  showIpAddress: boolean;
 }
 
 interface AddNewClientDrawerProps {
@@ -29,7 +30,7 @@ interface SelectConnectedClientDrawerProps {
 }
 
 export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTableProps) {
-  const { allowList = [], setAllowList = () => null } = props
+  const { allowList = [], setAllowList = () => null, showIpAddress } = props
   const { $t } = useIntl()
   const [ selectedClientIndex, setSelectedClientIndex ] = useState(-1)
   // eslint-disable-next-line max-len
@@ -82,7 +83,7 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
 
   const handleAddClients = (clients: SimpleClientRecord[]) => {
     const newClients: ClientIsolationClient[] = clients.map((c: SimpleClientRecord) => {
-      return { mac: c.clientMac }
+      return { mac: c.clientMac, ipAddress: c.ipAddress }
     })
 
     setAllowList([ ...allowList, ...newClients ])
@@ -106,12 +107,21 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
     {
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      key: 'mac'
+      key: 'mac',
+      sorter: { compare: sortProp('mac', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'IP Address' }),
+      dataIndex: 'ipAddress',
+      key: 'ipAddress',
+      show: showIpAddress,
+      sorter: { compare: sortProp('ipAddress', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      key: 'description'
+      key: 'description',
+      sorter: { compare: sortProp('description', defaultSort) }
     }
   ]
 

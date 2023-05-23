@@ -32,7 +32,7 @@ describe('AlarmsButton', () => {
 
   it('should render AlarmsButton correctly', async () => {
     render(<Provider>
-      <AlarmsButton/>
+      <AlarmsButton />
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     expect(await screen.findByText('testamy_ap')).toBeVisible()

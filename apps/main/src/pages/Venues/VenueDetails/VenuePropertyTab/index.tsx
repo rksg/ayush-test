@@ -128,6 +128,7 @@ export function VenuePropertyTab () {
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
+  const hasAssociation = !!groupId
   const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
@@ -185,18 +186,15 @@ export function VenuePropertyTab () {
   }, [propertyConfigsQuery.data])
 
   useEffect(() => {
-    if (queryUnitList.isLoading || !queryUnitList.data || !groupId) return
+    if (queryUnitList.isLoading || queryUnitList.isFetching
+      || !queryUnitList.data || !groupId) return
 
     const personaIds = queryUnitList.data.data
       .filter(({ id, personaId }) => (id && personaId))
       .map(({ personaId }) => personaId)
-    // const personaIds = [
-    //   '1e0c5e78-6a1c-471a-9edd-e6d2acb4e758',
-    //   '6f700763-03e3-4515-987a-93da9e053f0b',
-    //   'b6616987-ddc4-4495-8b26-ee354f5adcd0']
 
     fetchPersonaData(personaIds)
-  }, [queryUnitList.isLoading, groupId])
+  }, [queryUnitList.isLoading, queryUnitList.isFetching, groupId])
 
   useEffect(() => {
     const apMacs: string[] = []
@@ -248,6 +246,7 @@ export function VenuePropertyTab () {
   const fetchApData = (apMac: string[]) => {
     // console.log('Fetch aps : ', apMac)
 
+    setApMap(new Map())
     getApList({ payload: { ...apViewModelPayload, filters: { apMac } } })
       .then(result => {
         if (result.data) {
@@ -263,6 +262,7 @@ export function VenuePropertyTab () {
   const fetchSwitchData = (switchMac: string[]) => {
     // console.log('Fetch switches : ', switchMac)
 
+    setSwitchMap(new Map())
     getSwitchList({
       params: { tenantId },
       payload: { ...switchViewModelPayload, filters: { switchMac } }
@@ -282,7 +282,7 @@ export function VenuePropertyTab () {
         if (result.data) {
           const residentPortalUrl = (result.data as PropertyUnit)?._links?.residentPortal?.href
           if (residentPortalUrl) {
-            window.open(decodeURIComponent(residentPortalUrl), '_blank')
+            window.open(residentPortalUrl, '_blank')
           }
         }
       })
@@ -291,10 +291,12 @@ export function VenuePropertyTab () {
   const actions: TableProps<PropertyUnit>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Unit' }),
+      disabled: !hasAssociation,
       onClick: () => setDrawerState({ isEdit: false, visible: true, unitId: undefined })
     },
     {
       label: $t({ defaultMessage: 'Import From File' }),
+      disabled: !hasAssociation,
       onClick: () => setUploadCsvDrawerVisible(true)
     },
     {
@@ -314,15 +316,50 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'Suspend' }),
+      visible: (selectedRows => {
+        const activateCount = selectedRows.filter(row => enabled(row.status)).length
+        return activateCount > 0 && activateCount === selectedRows.length
+      }),
+      onClick: (items, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({
+            defaultMessage: `Suspend "{count, plural,
+            one {{entityValue}}
+            other {{count} {entityName}}
+            }"?` }, {
+            count: items.length,
+            entityValue: items[0].name,
+            entityName: $t({ defaultMessage: 'Units' })
+          }),
+          content: $t({ defaultMessage: `Are you sure you want to suspend {count, plural,
+              one {this Unit}
+              other {these Units}
+              }?` }, { count: items.length }),
+          okText: $t({ defaultMessage: 'Suspend' }),
+          onOk () {
+            items.forEach(unit => {
+              updateUnitById({
+                params: { venueId, unitId: unit.id },
+                payload: { status: PropertyUnitStatus.DISABLED }
+              })
+                .then(clearSelection)
+            })
+          }
+        })
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Activate' }),
+      visible: (selectedRows => {
+        const suspendCount = selectedRows.filter(row => !enabled(row.status)).length
+        return suspendCount > 0 && suspendCount === selectedRows.length
+      }),
       onClick: (items, clearSelection) => {
         items.forEach(unit => {
           updateUnitById({
             params: { venueId, unitId: unit.id },
-            payload: {
-              status: enabled(unit.status)
-                ? PropertyUnitStatus.DISABLED
-                : PropertyUnitStatus.ENABLED
-            }
+            payload: { status: PropertyUnitStatus.ENABLED }
           })
             .then(clearSelection)
         })

@@ -4,7 +4,8 @@ import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Button, Fieldset, Loader, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
+import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
+import { RogueApModal }                                                                from '@acx-ui/rc/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
@@ -15,8 +16,6 @@ import { VenueMessages, redirectPreviousPage }   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import RogueApModal from '../../../../../../../rc/src/pages/Policies/RogueAPDetection/RogueApModal'
 
 import RogueApDrawer from './RogueApDrawer'
 
@@ -51,7 +50,7 @@ export function SecurityTab () {
     name: DEFAULT_PROFILE_NAME
   }]
 
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormLegacyInstance>()
   const {
     previousPath,
     editContextData,
@@ -68,6 +67,8 @@ export function SecurityTab () {
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
   const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
+  const [triggerDoSProtection, setTriggerDoSProtection] = useState(false)
+  const [triggerRogueAPDetection, setTriggerRogueAPDetection] = useState(false)
   const [rogueDrawerVisible, setRogueDrawerVisible] = useState(false)
 
   const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
@@ -125,24 +126,34 @@ export function SecurityTab () {
         roguePolicyId
       })
     }
+
+    if (venueRogueApData?.roguePolicyId) {
+      setRoguePolicyIdValue(venueRogueApData.roguePolicyId)
+    }
   }, [dosProctectionData, venueRogueApData])
 
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {
-      const dosProtectionPayload = {
-        enabled: data?.dosProtectionEnabled,
-        blockingPeriod: data?.blockingPeriod,
-        checkPeriod: data?.checkPeriod,
-        failThreshold: data?.failThreshold
+      if(triggerDoSProtection){
+        const dosProtectionPayload = {
+          enabled: data?.dosProtectionEnabled,
+          blockingPeriod: data?.blockingPeriod,
+          checkPeriod: data?.checkPeriod,
+          failThreshold: data?.failThreshold
+        }
+        await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
+        setTriggerDoSProtection(false)
       }
-      await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
 
-      const rogueApPayload = {
-        enabled: data?.rogueApEnabled,
-        reportThreshold: data?.reportThreshold,
-        roguePolicyId: data?.roguePolicyId
+      if(triggerRogueAPDetection){
+        const rogueApPayload = {
+          enabled: data?.rogueApEnabled,
+          reportThreshold: data?.reportThreshold,
+          roguePolicyId: data?.roguePolicyId
+        }
+        await updateVenueRogueAp({ params, payload: rogueApPayload })
+        setTriggerRogueAPDetection(false)
       }
-      await updateVenueRogueAp({ params, payload: rogueApPayload })
 
       setEditContextData({
         ...editContextData,
@@ -165,12 +176,18 @@ export function SecurityTab () {
     })
   }
 
+  const setRogueApPolicyId = (id: string) => {
+    formRef.current?.setFieldValue('roguePolicyId', id)
+    setTriggerRogueAPDetection(true)
+    setRoguePolicyIdValue(id)
+  }
+
   return (
     <Loader states={[{
       isLoading: false,
       isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp
     }]}>
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={handleUpdateSecuritySettings}
         onCancel={() =>
@@ -179,12 +196,13 @@ export function SecurityTab () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
         onFormChange={handleChange}
       >
-        <StepsForm.StepForm>
+        <StepsFormLegacy.StepForm>
           <FieldsetItem
             name='dosProtectionEnabled'
             label={$t({ defaultMessage: 'DoS Protection:' })}
             initialValue={false}
-            switchStyle={{ marginLeft: '78.5px' }}>
+            switchStyle={{ marginLeft: '78.5px' }}
+            triggerDirtyFunc={setTriggerDoSProtection}>
             <FormattedMessage
               defaultMessage={`
               Block a client for <blockingPeriod></blockingPeriod> seconds
@@ -204,7 +222,11 @@ export function SecurityTab () {
                         { required: true }
                       ]}
                       initialValue={60}
-                      children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                      children={<InputNumber
+                        onChange={() => setTriggerDoSProtection(true)}
+                        min={30}
+                        max={600}
+                        style={{ width: '70px' }} />}
                     />
                   </Tooltip>),
                 failThreshold: () => (
@@ -219,7 +241,11 @@ export function SecurityTab () {
                       ]}
                       name='failThreshold'
                       initialValue={5}
-                      children={<InputNumber min={2} max={25} style={{ width: '70px' }} />}
+                      children={<InputNumber
+                        onChange={() => setTriggerDoSProtection(true)}
+                        min={2}
+                        max={25}
+                        style={{ width: '70px' }} />}
                     />
                   </Tooltip>
                 ),
@@ -232,7 +258,11 @@ export function SecurityTab () {
                       }}
                       name='checkPeriod'
                       initialValue={30}
-                      children={<InputNumber min={30} max={600} style={{ width: '70px' }} />}
+                      children={<InputNumber
+                        onChange={() => setTriggerDoSProtection(true)}
+                        min={30}
+                        max={600}
+                        style={{ width: '70px' }} />}
                     />
                   </Tooltip>
                 )
@@ -243,7 +273,8 @@ export function SecurityTab () {
             name='rogueApEnabled'
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
             initialValue={false}
-            switchStyle={{}}>
+            switchStyle={{}}
+            triggerDirtyFunc={setTriggerRogueAPDetection}>
             <Form.Item
               label={<>
                 {$t({ defaultMessage: 'Report SNR Threshold:' })}
@@ -257,25 +288,28 @@ export function SecurityTab () {
                 <Form.Item noStyle
                   name='reportThreshold'
                   initialValue={0}
-                  children={<InputNumber min={0} max={100} style={{ width: '120px' }} />} />
+                  children={<InputNumber
+                    onChange={() => setTriggerRogueAPDetection(true)}
+                    min={0}
+                    max={100}
+                    style={{ width: '120px' }} />} />
                 <span style={{ marginTop: '30px' }}>dB</span>
               </Space>
             </Form.Item>
             <Form.Item
-              name='roguePolicyId'
               label={$t({ defaultMessage: 'Rogue AP Detection Policy Profile:' })}
-              initialValue={roguePolicyIdValue}
             >
               <Space>
-                <Select
-                  children={selectOptions}
-                  value={roguePolicyIdValue}
-                  onChange={(value => {
-                    formRef.current?.setFieldValue('roguePolicyId', value)
-                    setRoguePolicyIdValue(value)
-                  })}
-                  style={{ width: '200px' }}
-                />
+                <Form.Item noStyle
+                  initialValue={roguePolicyIdValue}
+                  name='roguePolicyId'>
+                  <Select
+                    children={selectOptions}
+                    value={roguePolicyIdValue}
+                    onChange={(value => setRogueApPolicyId(value))}
+                    style={{ width: '200px' }}
+                  />
+                </Form.Item>
                 <Button type='link'
                   disabled={!roguePolicyIdValue}
                   onClick={() => {
@@ -286,7 +320,9 @@ export function SecurityTab () {
                   }>
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
-                <RogueApModal setPolicyId={setRoguePolicyIdValue}/>
+                <RogueApModal
+                  setPolicyId={setRogueApPolicyId}
+                />
               </Space>
               { rogueDrawerVisible && <RogueApDrawer
                 visible={rogueDrawerVisible}
@@ -294,8 +330,8 @@ export function SecurityTab () {
                 policyId={roguePolicyIdValue} /> }
             </Form.Item>
           </FieldsetItem>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </Loader>
   )
 }
@@ -304,10 +340,19 @@ const FieldsetItem = ({
   children,
   label,
   switchStyle,
+  triggerDirtyFunc,
   ...props
-}: FormItemProps & { label: string, children: ReactNode, switchStyle: CSSProperties }) => <Form.Item
+}: FormItemProps &
+  { label: string,
+    children: ReactNode,
+    switchStyle: CSSProperties,
+    triggerDirtyFunc: (checked: boolean) => void
+  }) => <Form.Item
   {...props}
   valuePropName='checked'
 >
-  <Fieldset {...{ label, children }} switchStyle={switchStyle}/>
+  <Fieldset
+    {...{ label, children }}
+    switchStyle={switchStyle}
+    onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>

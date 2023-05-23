@@ -13,11 +13,10 @@ import {
   APMesh,
   APMeshRole
 } from '@acx-ui/rc/utils'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import { EmbeddedReport }       from '@acx-ui/reports/components'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { EmbeddedReport } from '@acx-ui/reports/components'
 import {
-  ReportType,
-  reportTypeDataStudioMapping
+  ReportType
 } from '@acx-ui/reports/components'
 
 import {
@@ -125,8 +124,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           return (
             <div>
-              <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>
-              <span><SignalUpIcon />{row.apDownRssi}</span>
+              {data && <span style={{ paddingRight: '30px' }}><SignalDownIcon />{data}</span>}
+              {row.apDownRssi && <span><SignalUpIcon />{row.apDownRssi}</span>}
             </div>
           )
         }
@@ -165,7 +164,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return <Tooltip title={
             getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
         }else{
-          return row.clients
+          return row.clients || 0
         }
       }
     },
@@ -173,32 +172,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'hops',
       title: intl.$t({ defaultMessage: 'Hop Count' }),
       dataIndex: 'hops',
-      align: 'center'
+      align: 'center',
+      render: function (data) {
+        return data || 0
+      }
     }
   ]
   return columns
-}
-
-const defaultPayload = {
-  fields: [
-    'clients',
-    'serialNumber',
-    'apDownRssis',
-    'downlink',
-    'IP',
-    'apUpRssi',
-    'apMac',
-    'venueName',
-    'meshRole',
-    'uplink',
-    'venueId',
-    'name',
-    'apUpMac',
-    'apRssis',
-    'model',
-    'hops',
-    'cog'
-  ]
 }
 
 function transformData (data: APMesh[]) {
@@ -263,7 +243,7 @@ export function VenueWifi () {
       { showIdx === 0 &&
         <div style={{ paddingTop: 20 }}>
           <EmbeddedReport
-            embedDashboardName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT]}
+            reportName={ReportType.ACCESS_POINT}
             rlsClause={`"zoneName" in ('${params?.venueId}')`}
           />
         </div>
@@ -281,6 +261,30 @@ export function VenueWifi () {
 }
 
 export function VenueMeshApsTable () {
+  const params = useParams()
+  const defaultPayload = {
+    fields: [
+      'clients',
+      'serialNumber',
+      'apDownRssis',
+      'downlink',
+      'IP',
+      'apUpRssi',
+      'apMac',
+      'venueName',
+      'meshRole',
+      'uplink',
+      'venueId',
+      'name',
+      'apUpMac',
+      'apRssis',
+      'model',
+      'hops',
+      'cog'
+    ],
+    filters: { venueId: [params.venueId] }
+  }
+
   const tableQuery = useTableQuery({
     useQuery: useMeshApsQuery,
     defaultPayload

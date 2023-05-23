@@ -1,14 +1,13 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect } from 'react'
 
-import _                          from 'lodash'
+import { Form }                   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Loader,
   PageHeader,
   showToast,
-  StepsForm,
-  StepsFormInstance
+  StepsForm
 } from '@acx-ui/components'
 import {
   useGetSwitchConfigProfileQuery,
@@ -26,7 +25,6 @@ import {
 
 import { CliStepConfiguration } from '../../onDemandCli/CliTemplateForm/CliStepConfiguration'
 import { CliStepNotice }        from '../../onDemandCli/CliTemplateForm/CliStepNotice'
-import CliTemplateFormContext   from '../../onDemandCli/CliTemplateForm/CliTemplateFormContext'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
@@ -46,26 +44,24 @@ export default function CliProfileForm () {
   const linkToNetworks = useTenantLink('/networks/wired/profiles')
   const editMode = params.action === 'edit'
 
-  const formRef = useRef<StepsFormInstance>()
+  const [form] = Form.useForm()
   const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
   const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
   const { data: cliProfile, isLoading: isProfileLoading }
     = useGetSwitchConfigProfileQuery({ params }, { skip: !editMode })
 
-  const [data, setData] = useState(null as unknown as CliConfiguration | undefined)
-  const [applyModels, setApplyModels] = useState([] as string[])
-  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
-  const [initCodeMirror, setInitCodeMirror] = useState(false)
-  const [summaryData, setSummaryData] = useState({} as CliConfiguration)
-
   const transformSaveData = (data: CliConfiguration) => {
-    const { name } = data
+    const { name, cli, overwrite, variables } = data
     return {
       name,
       profileType: 'CLI',
       venueCliTemplate: {
-        ..._.omit(data, ['selectedFamily', 'venues']),
-        switchModels: data?.models?.toString()
+        ...data.venueCliTemplate,
+        switchModels: data?.models?.toString(),
+        name,
+        cli,
+        overwrite,
+        variables
       },
       venues: data?.venues
     }
@@ -98,10 +94,15 @@ export default function CliProfileForm () {
 
   useEffect(() => {
     if (!isProfileLoading) {
-      setData({
+      const data = {
         ...cliProfile,
+        cli: cliProfile?.venueCliTemplate?.cli,
+        overwrite: cliProfile?.venueCliTemplate?.overwrite,
+        variables: cliProfile?.venueCliTemplate?.variables || [],
         models: cliProfile?.venueCliTemplate?.switchModels?.split(',')
-      })
+      }
+
+      form?.setFieldsValue(data)
     }
   }, [cliProfile])
 
@@ -116,88 +117,70 @@ export default function CliProfileForm () {
         ]}
       />
 
-      <CliTemplateFormContext.Provider value={{
-        data,
-        editMode,
-        cliValidation,
-        setCliValidation,
-        applyModels,
-        setApplyModels,
-        initCodeMirror
-      }}>
-        <Loader states={[{ isLoading: editMode && isProfileLoading }]}>
-          <StepsForm
-            formRef={formRef}
-            editMode={editMode}
-            onCurrentChange={(current) => {
-              if (current === 2 && !initCodeMirror) {
-                setInitCodeMirror(true)
-              }
-            }}
-            onCancel={() => navigate(linkToNetworks)}
-            onFinish={editMode ? handleEditCliProfile : handleAddCliProfile}
+      <Loader states={[{ isLoading: editMode && isProfileLoading }]}>
+        <StepsForm
+          form={form}
+          editMode={editMode}
+          initialValues={{
+            venues: cliProfile?.venues
+          }}
+          onCancel={() => navigate(linkToNetworks)}
+          onFinish={editMode ? handleEditCliProfile : handleAddCliProfile}
+        >
+          <StepsForm.StepForm
+            name='notice'
+            title={$t({ defaultMessage: 'Important Notice' })}
+            layout='horizontal'
           >
-            <StepsForm.StepForm
-              name='notice'
-              title={$t({ defaultMessage: 'Important Notice' })}
-              layout='horizontal'
-            >
-              <CliStepNotice />
-            </StepsForm.StepForm>
+            <CliStepNotice />
+          </StepsForm.StepForm>
 
-            <StepsForm.StepForm
-              name='models'
-              title={$t({ defaultMessage: 'Models' })}
-              onFinish={async (data) => {
-                setSummaryData({ ...summaryData, ...data })
-                if (!data?.models?.length) {
-                  showToast({
-                    type: 'error', duration: 2,
-                    content: 'Please select at least one model'
-                  })
-                }
-                return !!data?.models?.length ?? true
-              }}
-            >
-              <CliStepModels />
-            </StepsForm.StepForm>
+          <StepsForm.StepForm
+            name='models'
+            title={$t({ defaultMessage: 'Models' })}
+            onFinish={async (data: CliConfiguration) => {
+              if (!data?.models?.length) {
+                showToast({
+                  type: 'error', duration: 2,
+                  content: 'Please select at least one model'
+                })
+              }
+              return true
+            }}
+          >
+            <CliStepModels />
+          </StepsForm.StepForm>
 
-            <StepsForm.StepForm
-              name='settings'
-              title={$t({ defaultMessage: 'CLI Configuration' })}
-              onFinish={async (data) => {
-                setSummaryData({ ...summaryData, ...data })
-                if (!cliValidation?.valid) {
-                  showToast({ type: 'error', duration: 2, content: cliValidation?.tooltip })
-                }
-                return cliValidation?.valid ?? true
-              }}
-            >
-              <CliStepConfiguration />
-            </StepsForm.StepForm>
+          <StepsForm.StepForm
+            name='settings'
+            title={$t({ defaultMessage: 'CLI Configuration' })}
+            onFinish={async (data: CliConfiguration) => {
+              if (!data?.cliValid?.valid) {
+                showToast({ type: 'error', duration: 2, content: data?.cliValid?.tooltip })
+              }
+              return true
+            }}
+          >
+            <CliStepConfiguration />
+          </StepsForm.StepForm>
 
-            <StepsForm.StepForm
-              name='venues'
-              title={$t({ defaultMessage: 'Venues' })}
-              onFinish={async (data) => {
-                setSummaryData({ ...summaryData, ...data })
-                return true
-              }}
-            >
-              <CliStepVenues />
-            </StepsForm.StepForm>
+          <StepsForm.StepForm
+            name='venues'
+            title={$t({ defaultMessage: 'Venues' })}
+          >
+            <CliStepVenues />
+          </StepsForm.StepForm>
 
-            {!editMode &&
+          {!editMode &&
               <StepsForm.StepForm
                 name='summary'
                 title={$t({ defaultMessage: 'Summary' })}
               >
-                <CliStepSummary data={summaryData} />
+                <CliStepSummary />
               </StepsForm.StepForm>
-            }
-          </StepsForm>
-        </Loader>
-      </CliTemplateFormContext.Provider>
+          }
+        </StepsForm>
+      </Loader>
     </>
   )
 }

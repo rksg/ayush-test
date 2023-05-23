@@ -1,10 +1,11 @@
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
-import { Loader, Table, TableProps }             from '@acx-ui/components'
-import { useNetworkListQuery }                   from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { useIntl } from 'react-intl'
+
+import { Loader, Table, TableProps }                            from '@acx-ui/components'
+import { useNetworkListQuery }                                  from '@acx-ui/rc/services'
+import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                           from '@acx-ui/react-router-dom'
 
 interface NetworkTableProps {
   networkIds: string[]
@@ -13,7 +14,7 @@ interface NetworkTableProps {
 export const NetworkTable = (props: NetworkTableProps) => {
 
   const { $t } = useIntl()
-  const params = useParams()
+  const [isPayloadReady,setIsPayloadReady] = useState(false)
   const defaultNetworkPayload = {
     fields: [
       'id',
@@ -23,10 +24,26 @@ export const NetworkTable = (props: NetworkTableProps) => {
     ],
     filters: { id: props.networkIds }
   }
-  const{ data, isLoading } = useNetworkListQuery(
-    { params, payload: defaultNetworkPayload },
-    { skip: props.networkIds.length === 0 }
-  )
+  const tableQuery = useTableQuery({
+    useQuery: useNetworkListQuery,
+    defaultPayload: defaultNetworkPayload,
+    option: {
+      skip: !isPayloadReady || props.networkIds.length === 0
+    }
+  })
+
+  useEffect(() => {
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { id: props.networkIds }
+    })
+  }, [props.networkIds])
+
+  useEffect(() => {
+    if(tableQuery?.payload?.filters?.id.length > 0) {
+      setIsPayloadReady(true)
+    }
+  }, [tableQuery.payload.filters])
 
   const columns: TableProps<Network>['columns'] = [
     {
@@ -65,14 +82,12 @@ export const NetworkTable = (props: NetworkTableProps) => {
   ]
 
   return (
-    <Loader states={[{
-      isLoading: false,
-      isFetching: isLoading
-    }]}>
+    <Loader states={[tableQuery]}>
       <Table
         rowKey='id'
         columns={columns}
-        dataSource={data?.data}
+        dataSource={tableQuery.data?.data}
+        onChange={tableQuery.handleTableChange}
       />
     </Loader>
   )

@@ -19,10 +19,7 @@ export enum LicenseBannerTypeEnum {
   closeToExpiration = 'CLOSE_TO_EXPIRATION',
   gracePeriod = 'GRACE_PERIOD',
   expired = 'AFTER_GRACE_PERIOD',
-  msp_expired = 'EXPIRED',
-  ra_below_50_percent = 'RA_BELOW_50_PERCENT_OF_DEVICES',
-  ra_50_to_90_percent = 'RA_BELOW_90_PERCENT_OF_DEVICES',
-  ra_onboard_only = 'RA_ONBOARD_ONLY'
+  msp_expired = 'EXPIRED'
 }
 
 export enum EntitlementDeviceType {
@@ -132,6 +129,8 @@ export interface VarCustomer {
   tenantId: string;
   tenantName: string;
   tenantEmail: string;
+  wifiLicenses: string;
+  switchLicenses: string;
   entitlements: DelegationEntitlementRecord[];
   entitlement: DelegationEntitlementRecord;
 }
@@ -415,4 +414,3 @@ export interface MspLogoFile {
 export interface ParentLogoUrl {
   logo_url: string
 }
-

@@ -7,6 +7,7 @@ import { Button, Drawer, Modal, Subtitle, Table }                               
 import { useGetAccessSwitchesByDSQuery, useValidateDistributionSwitchInfoMutation } from '@acx-ui/rc/services'
 import {
   AccessSwitch,
+  checkVlanMember,
   DistributionSwitch,
   DistributionSwitchSaveData,
   networkWifiIpRegExp,
@@ -70,7 +71,6 @@ export function DistributionSwitchDrawer (props: {
         $t({ defaultMessage: 'Edit Distribution Switch' }) :
         $t({ defaultMessage: 'Add Distribution Switch' })}
       visible={open}
-      mask={true}
       onClose={onClose}
       destroyOnClose={true}
       width={450}
@@ -116,7 +116,7 @@ export function DistributionSwitchDrawer (props: {
         </Form.Item>
         <Form.Item name='vlans'
           label={$t({ defaultMessage: 'VLAN Range' })}
-          rules={[{ required: true }]}>
+          rules={[{ required: true }, { validator: (_, value) => checkVlanMember(value || '') }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceId'

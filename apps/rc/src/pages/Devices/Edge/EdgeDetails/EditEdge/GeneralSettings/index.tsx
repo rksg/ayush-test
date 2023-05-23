@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
 
-import { StepsForm, StepsFormInstance }           from '@acx-ui/components'
+import { StepsForm }                              from '@acx-ui/components'
 import { EdgeSettingForm }                        from '@acx-ui/rc/components'
 import { useGetEdgeQuery, useUpdateEdgeMutation } from '@acx-ui/rc/services'
 import { EdgeGeneralSetting }                     from '@acx-ui/rc/utils'
@@ -19,7 +19,7 @@ const GeneralSettings = () => {
   const navigate = useNavigate()
   const params = useParams()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const formRef = useRef<StepsFormInstance<EdgeGeneralSetting>>()
+  const [form] = Form.useForm()
   const { data: edgeGeneralSettings } = useGetEdgeQuery({
     params: { serialNumber: params.serialNumber }
   })
@@ -27,7 +27,7 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     if(edgeGeneralSettings) {
-      formRef.current?.setFieldsValue(edgeGeneralSettings)
+      form.setFieldsValue(edgeGeneralSettings)
     }
   }, [edgeGeneralSettings])
 
@@ -46,7 +46,7 @@ const GeneralSettings = () => {
 
   return (
     <StepsForm
-      formRef={formRef}
+      form={form}
       onFinish={handleUpdateEdge}
       onCancel={() => navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}

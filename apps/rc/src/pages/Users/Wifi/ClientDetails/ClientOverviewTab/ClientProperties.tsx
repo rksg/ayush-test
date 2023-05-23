@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
-import { Divider, Space } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Divider, List, Space } from 'antd'
+import moment                   from 'moment'
+import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions }                       from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                           from '@acx-ui/formatter'
-import { WifiSignal }                                                          from '@acx-ui/rc/components'
+import { Card, Loader, Subtitle, Tooltip, Descriptions } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                     from '@acx-ui/formatter'
+import { PassphraseViewer, WifiSignal }                  from '@acx-ui/rc/components'
 import {
+  useGetPassphraseClientQuery,
   useLazyGetApQuery,
   useLazyGetGuestsListQuery,
   useLazyGetNetworkQuery,
   useLazyGetVenueQuery
-  // TODO:
-  // useLazyGetDpskPassphraseByQueryQuery,
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -25,7 +25,12 @@ import {
   transformQosPriorityType,
   QosPriorityEnum,
   VenueExtended,
-  Guest
+  Guest,
+  GuestNetworkTypeEnum,
+  NetworkTypeEnum,
+  EXPIRATION_TIME_FORMAT,
+  transformAdvancedDpskExpirationText,
+  ExpirationType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -44,17 +49,15 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   clientDetails: Client
 }) {
   const { tenantId } = useParams()
-  const [client, setClient] = useState({} as ClientExtended)
-  const [networkType, setNetworkType] = useState('')
-
+  const [client, setClient] = useState(undefined as unknown as ClientExtended)
+  const [networkType, setNetworkType] = useState<NetworkTypeEnum>()
+  const [guestType, setGuestType] = useState<GuestNetworkTypeEnum>()
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
   const [getGuestsList] = useLazyGetGuestsListQuery()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
-
-  // TODO: dpsk
-  // const [getDpskPassphraseByQuery] = useLazyGetDpskPassphraseByQueryQuery()
+  const [isExternalDpskClient, setIsExternalDpskClient] = useState(false)
 
   useEffect(() => {
     if (Object.keys(clientDetails)?.length) {
@@ -95,9 +98,10 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
 
       const getGuestData = async () => {
         const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
-          .unwrap()).data || []
-        if (list.length === 1) {
-          setGuestDetail(list[0])
+          .unwrap())?.data || []
+        if (list.length > 0) {
+          setGuestDetail(list.filter(item => (item.networkId === clientDetails.networkId
+            &&item.name===clientDetails.username))[0])
         }
       }
 
@@ -124,7 +128,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
 
       const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
       ) => {
-        setNetworkType(networkData?.type || '')
+        setNetworkType(networkData?.type)
+        setGuestType(networkData?.guestPortal?.guestNetworkType)
         setClient({
           ...clientDetails,
           hasSwitch: false, // TODO: this.userProfileService.isSwitchEnabled(profile);
@@ -137,6 +142,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             !!clientDetails.isVenueExists : !!venueData,
           enableLinkToNetwork: !!networkData
         })
+        setIsExternalDpskClient(!networkData?.dpskServiceProfileId)
 
         if ('guest' === networkData?.type) {
           getGuestData()
@@ -144,16 +150,24 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       }
 
       getMetaData()
-      // TODO: get dpsk/guest data
-      // if (networkData?.type === 'dpsk') {
-      //   const dpskData = await getDpskPassphraseByQuery({
-      //     params: { tenantId }, payload: {}
-      //   }, true).unwrap()
-      // }
+    } else {
+      setClient({} as ClientExtended)
     }
   }, [clientDetails])
 
-  const getProperties = (clientStatus: string, networkType: string, clientMac: string) => {
+  const shouldDisplayDpskPassphraseDetail = () => {
+    return networkType === NetworkTypeEnum.DPSK && !isExternalDpskClient
+  }
+
+  const shouldDisplayGuestDetail = () => {
+    return networkType === NetworkTypeEnum.CAPTIVEPORTAL && (
+      guestType === GuestNetworkTypeEnum.GuestPass ||
+      guestType === GuestNetworkTypeEnum.HostApproval ||
+      guestType === GuestNetworkTypeEnum.SelfSignIn
+    )
+  }
+
+  const getProperties = (clientStatus: string, clientMac: string) => {
     let obj = null
     switch (clientStatus) {
       case ClientStatusEnum.CONNECTED:
@@ -161,20 +175,22 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           <ClientDetails client={client} />,
           <OperationalData client={client} />,
           <Connection client={client} />,
-          (networkType === 'guest' &&
+          (shouldDisplayGuestDetail() &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
-          (networkType === 'dpsk' && <DpskPassphraseDetails />),
-          <WiFiCallingDetails client={client} />
+          (shouldDisplayDpskPassphraseDetail() &&
+            <DpskPassphraseDetails networkId={client.networkId} clientMac={client.clientMac} />),
+          (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
       case ClientStatusEnum.HISTORICAL:
         obj = [
           <ClientDetails client={client} />,
           <LastSession client={client} />,
-          (networkType === 'guest' &&
+          (shouldDisplayGuestDetail() &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
-          (networkType === 'dpsk' && <DpskPassphraseDetails />),
-          <WiFiCallingDetails client={client} />
+          (shouldDisplayDpskPassphraseDetail() &&
+            <DpskPassphraseDetails networkId={client.networkId} clientMac={client.clientMac} />),
+          (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
     }
@@ -191,9 +207,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
 
   return <Card>
     <Loader states={[{
-      isLoading: !Object.keys(client).length
+      isLoading: !client
     }]}>
-      { getProperties(clientStatus, networkType, clientDetails.clientMac) }
+      { getProperties(clientStatus, clientDetails.clientMac) }
     </Loader>
   </Card>
 }
@@ -229,10 +245,10 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Username' })}
         children={client?.username || client?.userId || '--'}
       />
-      <Descriptions.Item // TODO
+      {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
         children={'--'}
-      />
+      /> */}
     </Descriptions>
   </>
 }
@@ -582,37 +598,58 @@ function GuestDetails ({ guestDetail, clientMac }: {
   </>
 }
 
-// TODO
-function DpskPassphraseDetails () {
-  const { $t } = getIntl()
+function DpskPassphraseDetails (props: { networkId: string, clientMac: string }) {
+  const { networkId, clientMac } = props
+  const intl = getIntl()
+  const { data: passphraseClient } = useGetPassphraseClientQuery({
+    param: {}, payload: { networkId, mac: clientMac }
+  })
+
   return <>
     <Subtitle level={4}>
-      {$t({ defaultMessage: 'DPSK Passphrase Details' })}
+      {intl.$t({ defaultMessage: 'DPSK Passphrase Details' })}
     </Subtitle>
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Username' })}
-        children={'--'}
+        label={intl.$t({ defaultMessage: 'Username' })}
+        children={passphraseClient?.username}
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'No. of Devices' })}
-        children={'--'}
+        label={intl.$t({ defaultMessage: 'No. of Devices' })}
+        children={passphraseClient?.numberOfDevices}
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Creation Time' })}
-        children={'--'}
+        label={intl.$t({ defaultMessage: 'Creation Time' })}
+        children={passphraseClient &&
+          moment(passphraseClient.createDate).format(EXPIRATION_TIME_FORMAT)
+        }
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Expireation Time' })}
-        children={'--'}
+        label={intl.$t({ defaultMessage: 'Expireation Time' })}
+        children={passphraseClient &&
+          transformAdvancedDpskExpirationText(intl, {
+            expirationType: ExpirationType.SPECIFIED_DATE,
+            expirationDate: passphraseClient.expirationDate,
+            displayTime: true
+          })
+        }
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Passphrase' })}
-        children={'--'}
+        label={intl.$t({ defaultMessage: 'Passphrase' })}
+        children={passphraseClient && <PassphraseViewer passphrase={passphraseClient.passphrase}/>}
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Other clients' })}
-        children={'--'}
+        label={intl.$t({ defaultMessage: 'Other clients' })}
+        children={passphraseClient &&
+          <List<string>
+            dataSource={passphraseClient.clientMac}
+            renderItem={item => {
+              return <List.Item>
+                <TenantLink to={`users/switch/clients/${item}`}>{item}</TenantLink>
+              </List.Item>
+            }}
+          />
+        }
       />
     </Descriptions>
   </>

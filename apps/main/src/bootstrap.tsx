@@ -5,13 +5,13 @@ import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import {
   ConfigProvider,
-  ConfigProviderProps,
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }           from '@acx-ui/config'
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
+import { get }                    from '@acx-ui/config'
+import { useGetPreferencesQuery } from '@acx-ui/rc/services'
+import { BrowserRouter }          from '@acx-ui/react-router-dom'
+import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -20,7 +20,9 @@ import {
 import {
   getTenantId,
   createHttpRequest,
-  useLocaleContext
+  useLocaleContext,
+  LangKey,
+  DEFAULT_SYS_LANG
 } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
@@ -29,13 +31,18 @@ import { errorMiddleware } from './errorMiddleware'
 import '@acx-ui/theme'
 
 // Needed for Browser language detection
-const supportedLocales = {
+const supportedLocales: Record<string, LangKey> = {
   'en-US': 'en-US',
   'en': 'en-US',
+  'es': 'es-ES',
+  'es-ES': 'es-ES',
   'de-DE': 'de-DE',
   'de': 'de-DE',
   'ja-JP': 'ja-JP',
-  'ja': 'ja-JP'
+  'ja': 'ja-JP',
+  'fr-FR': 'fr-FR',
+  'ko-KR': 'ko-KR',
+  'pt-BR': 'pt-BR'
 }
 declare global {
   /* eslint-disable no-var */
@@ -44,9 +51,9 @@ declare global {
   }
   function pendoInitalization (): void
 }
-export function loadMessages (locales: readonly string[]): string {
+export function loadMessages (locales: readonly string[]): LangKey {
   const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || 'en-US'
+    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
   return supportedLocales[locale as keyof typeof supportedLocales]
 }
 
@@ -107,6 +114,17 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
+function PreferredLangConfigProvider (props: React.PropsWithChildren) {
+  const request = useGetPreferencesQuery({ tenantId: getTenantId() })
+  const lang = String(request.data?.global.defaultLanguage)
+
+  return <Loader
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+    states={[{ isLoading: request.isLoading || request.isFetching }]}
+    children={<ConfigProvider {...props} lang={loadMessages([lang])} />}
+  />
+}
+
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
@@ -122,10 +140,6 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
-  const browserLang = loadMessages(navigator.languages)
-  const queryParams = new URLSearchParams(window.location.search)
-  const lang = (queryParams.get('lang') ?? browserLang) as ConfigProviderProps['lang']
-
   // Pendo initialization
   // @ts-ignore
   if ( get('DISABLE_PENDO') === 'false' ) {
@@ -137,8 +151,8 @@ export async function init (root: Root) {
   root.render(
     <React.StrictMode>
       <Provider>
-        <BrowserRouter>
-          <ConfigProvider lang={lang}>
+        <PreferredLangConfigProvider>
+          <BrowserRouter>
             <UserProfileProvider>
               <DataGuardLoader>
                 <React.Suspense fallback={null}>
@@ -146,8 +160,8 @@ export async function init (root: Root) {
                 </React.Suspense>
               </DataGuardLoader>
             </UserProfileProvider>
-          </ConfigProvider>
-        </BrowserRouter>
+          </BrowserRouter>
+        </PreferredLangConfigProvider>
       </Provider>
     </React.StrictMode>
   )

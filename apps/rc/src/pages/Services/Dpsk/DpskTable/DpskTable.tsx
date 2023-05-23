@@ -5,11 +5,10 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Loader,
-  showActionModal
+  Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -21,12 +20,21 @@ import {
   DpskNetworkType,
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
-  getServiceListRoutePath
+  getServiceListRoutePath,
+  PassphraseFormatEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
 
 import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
+
+const defaultPayload = {
+  filters: {}
+}
+const defaultSearch = {
+  searchTargetFields: ['name'],
+  searchString: ''
+}
 
 export default function DpskTable () {
   const intl = useIntl()
@@ -35,30 +43,29 @@ export default function DpskTable () {
   const [ deleteDpsk ] = useDeleteDpskMutation()
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
-  const tableQuery = useTableQuery({ useQuery: useGetDpskListQuery, defaultPayload: {} })
+  const tableQuery = useTableQuery({
+    useQuery: useGetEnhancedDpskListQuery,
+    defaultPayload,
+    search: defaultSearch
+  })
+
+  const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
+    doProfileDelete(
+      [selectedRow],
+      intl.$t({ defaultMessage: 'DPSK Service' }),
+      selectedRow.name,
+      [
+        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Persona' }) },
+        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
+      ],
+      async () => deleteDpsk({ params: { serviceId: selectedRow.id } }).then(callback)
+    )
+  }
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
-      visible: ([selectedRow]) => selectedRow && !selectedRow.identityId,
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
-            entityValue: name
-          },
-          onOk: async () => {
-            try {
-              await deleteDpsk({ params: { serviceId: id } }).unwrap()
-              clearSelection()
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            }
-          }
-        })
-      }
+      onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
@@ -75,6 +82,10 @@ export default function DpskTable () {
     }
   ]
 
+  const passphraseFormatOptions = Object.keys(PassphraseFormatEnum).map((key =>
+    ({ key, value: transformDpskNetwork(intl, DpskNetworkType.FORMAT, key) })
+  ))
+
   const columns: TableProps<DpskSaveData>['columns'] = [
     {
       key: 'name',
@@ -82,6 +93,7 @@ export default function DpskTable () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       fixed: 'left',
       render: function (data, row) {
         return (
@@ -102,6 +114,8 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Passphrase Format' }),
       dataIndex: 'passphraseFormat',
       sorter: true,
+      filterKey: 'passphraseFormat',
+      filterable: passphraseFormatOptions,
       render: function (data) {
         return transformDpskNetwork(
           intl,
@@ -114,7 +128,8 @@ export default function DpskTable () {
       key: 'passphraseLength',
       title: intl.$t({ defaultMessage: 'Passphrase Length' }),
       dataIndex: 'passphraseLength',
-      align: 'center'
+      align: 'center',
+      sorter: true
     },
     {
       key: 'expirationType',
@@ -145,6 +160,7 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
       dataIndex: 'deviceCountLimit',
       show: isCloudpathEnabled,
+      sorter: true,
       render: function (data, row) {
         return displayDeviceCountLimit(row.deviceCountLimit)
       }
@@ -154,6 +170,7 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Default Access' }),
       dataIndex: 'policyDefaultAccess',
       show: isCloudpathEnabled,
+      sorter: true,
       render: function (data, row) {
         return displayDefaultAccess(row.policyDefaultAccess)
       }
@@ -178,6 +195,7 @@ export default function DpskTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
+          settingsId='dpsk-table'
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -185,6 +203,8 @@ export default function DpskTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>

@@ -23,7 +23,8 @@ import {
   mockedTenantId,
   mockedServiceId,
   mockedDpskPassphrase,
-  mockedDpskPassphraseListWithPersona
+  mockedDpskPassphraseListWithPersona,
+  mockedDpskPassphraseDevices
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
@@ -39,12 +40,12 @@ describe('DpskPassphraseManagement', () => {
     activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
   }
   // eslint-disable-next-line max-len
-  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        DpskUrls.getPassphraseList.url,
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       )
     )
@@ -59,20 +60,14 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     expect(targetRow).toBeInTheDocument()
 
-    await userEvent.click(await within(targetRow).findByRole('img', { name: /eye-invisible/ }))
-    const passwordElem = await within(targetRow).findByDisplayValue(targetRecord.passphrase)
-    expect(passwordElem).toBeInTheDocument()
-
     // Verify Add Passphrases
     await userEvent.click(await screen.findByRole('button', { name: /Add Passphrases/ }))
-    expect(await screen.findByRole('spinbutton', {
-      name: /Number of Passphrases/
-    })).toBeVisible()
+    expect(await screen.findByRole('spinbutton', { name: /Number of Passphrases/ })).toBeVisible()
 
     // Verify Add DPSK Network
     await userEvent.click(await screen.findByRole('button', { name: /Add DPSK Network/ }))
@@ -93,7 +88,7 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
@@ -105,10 +100,10 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Delete Passphrase/i }))
   })
 
-  it.skip('should not delete selected passphrase when it is mapped to Persona', async () => {
+  it('should not delete selected passphrase when it is mapped to Persona', async () => {
     mockServer.use(
-      rest.get(
-        DpskUrls.getPassphraseList.url,
+      rest.post(
+        DpskUrls.getEnhancedPassphraseList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseListWithPersona }))
       )
     )
@@ -121,12 +116,15 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseListWithPersona.content[0]
+    const targetRecord = mockedDpskPassphraseListWithPersona.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
-    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Persona')).toBeVisible()
   })
 
   it('should show error message when import CSV file failed', async () => {
@@ -151,7 +149,9 @@ describe('DpskPassphraseManagement', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
 
-    const dialog = await screen.findByRole('dialog')
+    const importTextElement = await screen.findByText('Import from file')
+    // eslint-disable-next-line testing-library/no-node-access
+    const dialog = importTextElement.closest('.ant-drawer-content') as HTMLDivElement
 
     const csvFile = new File([''], 'DPSK_import_template_expiration.csv', { type: 'text/csv' })
 
@@ -222,14 +222,16 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: /Edit Passphrase/i }))
 
-    const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByRole('button', { name: /Save/i })).toBeVisible()
+    await waitFor(() => {
+      // eslint-disable-next-line max-len
+      expect(screen.getByRole('textbox', { name: 'User Name' })).toHaveValue(mockedDpskPassphrase.username)
+    })
   })
 
   it('should revoke/unrevoke the passphrases', async () => {
@@ -261,14 +263,19 @@ describe('DpskPassphraseManagement', () => {
       }
     )
 
-    const targetRecord = mockedDpskPassphraseList.content[0]
+    const targetRecord = mockedDpskPassphraseList.data[0]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
 
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Revoke' }))
 
-    const dialog = await screen.findByRole('dialog')
-    expect(await within(dialog).findByText('Revoke "' + targetRecord.username + '"?')).toBeVisible()
+    const revokeTextElement = await screen.findByText('Revoke "' + targetRecord.username + '"?')
+    // eslint-disable-next-line testing-library/no-node-access
+    const dialog = revokeTextElement.closest('.ant-modal-confirm') as HTMLDivElement
+
+    // const dialog = await screen.findByRole('dialog')
+    // expect(await within(dialog).findByText('Revoke "' + targetRecord.username + '"?')).toBeVisible()
+
 
     await userEvent.type(
       within(dialog).getByRole('textbox', { name: /Type the reason to revoke/i }),
@@ -290,6 +297,109 @@ describe('DpskPassphraseManagement', () => {
         ids: [targetRecord.id],
         changes: { revocationReason: null }
       })
+    })
+  })
+
+  it('should be able to add device in DpskPassphrase', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
+      ),
+      rest.patch(
+        DpskUrls.updatePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
+      ),
+      rest.delete(
+        DpskUrls.deletePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
+
+    await screen.findByText(/ad:2c:3b:1d:4d:4e/i)
+
+    await userEvent.click(await screen.findByRole('button', {
+      name: /add device/i
+    }))
+
+    await screen.findByRole('dialog', {
+      name: /add device/i
+    })
+
+    await userEvent.type(
+      screen.getByRole('textbox', {
+        name: /mac address/i
+      }), 'DC:AE:EB:22:5E:60'
+    )
+
+    await userEvent.click(screen.getByText(/add another device/i))
+
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Add' })
+    )
+
+    await userEvent.click(screen.getAllByText(/cancel/i)[1])
+
+    await userEvent.click(screen.getAllByText(/cancel/i)[0])
+  })
+
+  it('should be able to delete device in DpskPassphrase', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
+      ),
+      rest.patch(
+        DpskUrls.updatePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
+      ),
+      rest.delete(
+        DpskUrls.deletePassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Manage Devices' }))
+
+    const dialogTextElement = await screen.findByText('Manage Passphrase Devices')
+    // eslint-disable-next-line testing-library/no-node-access
+    const dialog = dialogTextElement.closest('.ant-drawer-content') as HTMLDivElement
+
+    const targetDevice = await within(dialog).findByRole('row', { name: /ad:2c:3b:1d:4d:4e/i })
+
+    await userEvent.click(within(targetDevice).getByRole('checkbox'))
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Delete' }))
+
+    await waitFor(() => {
+      expect(within(dialog).queryByRole('button', { name: 'Delete' })).toBeNull()
     })
   })
 })

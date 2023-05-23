@@ -9,8 +9,8 @@ import {
   Button,
   Loader,
   Tabs,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { LanPortSettings }          from '@acx-ui/rc/components'
 import {
@@ -46,7 +46,7 @@ export function LanPorts () {
 
   const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
 
-  const formRef = useRef<StepsFormInstance<WifiApSetting>>()
+  const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
   const { data: apCaps } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
   const { data: apLanPorts, isLoading: isApLanPortsLoading }
@@ -107,7 +107,7 @@ export function LanPorts () {
       ...selectedModel,
       lanPorts: formRef?.current?.getFieldsValue()?.lan as LanPort[]
     })
-    updateEditContext(formRef?.current as StepsFormInstance, useVenueSettings)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, useVenueSettings)
   }, [lanData])
 
   const onTabChange = (tab: string) => {
@@ -126,7 +126,7 @@ export function LanPorts () {
       lan: lanPorts?.lanPorts,
       useVenueSettings: useVenueSettings
     })
-    updateEditContext(formRef?.current as StepsFormInstance, useVenueSettings)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, useVenueSettings)
   }
 
   const handleFinish = async (values: WifiApSetting) => {
@@ -173,22 +173,22 @@ export function LanPorts () {
     setLanData(newLanData)
   }
 
-  const updateEditContext = (form: StepsFormInstance, useVenueSettings: boolean) => {
+  const updateEditContext = (form: StepsFormLegacyInstance, useVenueSettings: boolean) => {
     setEditContextData && setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'LAN Port' }),
-      isDirty: checkFormIsDirty(form as StepsFormInstance, useVenueSettings),
-      hasError: checkFormIsInvalid(form as StepsFormInstance),
+      isDirty: checkFormIsDirty(form as StepsFormLegacyInstance, useVenueSettings),
+      hasError: checkFormIsInvalid(form as StepsFormLegacyInstance),
       updateChanges: () => handleFinish(form?.getFieldsValue() as WifiApSetting),
       discardChanges: () => handleDiscard()
     })
   }
 
-  const checkFormIsInvalid = (form: StepsFormInstance) => {
+  const checkFormIsInvalid = (form: StepsFormLegacyInstance) => {
     return form?.getFieldsError().map(item => item.errors).flat().length > 0
   }
 
-  const checkFormIsDirty = (form: StepsFormInstance, useVenueSettings: boolean) => {
+  const checkFormIsDirty = (form: StepsFormLegacyInstance, useVenueSettings: boolean) => {
     const newData = {
       lanPorts: form?.getFieldsValue()?.lan,
       useVenueSettings: useVenueSettings
@@ -205,7 +205,7 @@ export function LanPorts () {
     isFetching: isApLanPortsUpdating || isApLanPortsResetting
   }]}>
     {selectedModel?.lanPorts
-      ? <StepsForm
+      ? <StepsFormLegacy
         formRef={formRef}
         onFinish={handleFinish}
         onFormChange={handleFormChange}
@@ -214,7 +214,7 @@ export function LanPorts () {
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           initialValues={{ lan: selectedModel?.lanPorts }}
         >
           <Row gutter={24}>
@@ -271,8 +271,8 @@ export function LanPorts () {
               </Col>
             </Col>}
           </Row>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
       : <SettingMessage showButton={!!selectedModel?.lanPorts} />
     }
   </Loader>

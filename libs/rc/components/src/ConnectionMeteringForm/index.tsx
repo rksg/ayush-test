@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import {
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   Loader,
   showToast
 } from '@acx-ui/components'
@@ -75,7 +75,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { mode, useModalMode, modalCallback } = props
-  const form = useRef<StepsFormInstance<ConnectingMeteringFormField>>()
+  const form = useRef<StepsFormLegacyInstance<ConnectingMeteringFormField>>()
   const originData = useRef<ConnectionMetering>()
   const tablePath = mode === ConnectionMeteringFormMode.CREATE ?
     getPolicyRoutePath( { type: PolicyType.CONNECTION_METERING,
@@ -173,12 +173,12 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
   }
 
   return (
-    <StepsForm<ConnectingMeteringFormField>
+    <StepsFormLegacy<ConnectingMeteringFormField>
       formRef={form}
       buttonLabel={buttonLabel}
       onCancel={()=>onCancel()}
       onFinish={()=> onFinish(props.mode)}>
-      <StepsForm.StepForm<ConnectingMeteringFormField>
+      <StepsFormLegacy.StepForm<ConnectingMeteringFormField>
         name='settings'
         title={$t({ defaultMessage: 'Settings' })}
       >
@@ -188,6 +188,6 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
         }]}>
           <ConnectionMeteringSettingForm/>
         </Loader>
-      </StepsForm.StepForm>
-    </StepsForm>)
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>)
 }

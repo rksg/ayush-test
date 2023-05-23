@@ -1,11 +1,11 @@
-import { useRef, useReducer } from 'react'
+import { useReducer } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsForm
 } from '@acx-ui/components'
 import { useCreateWifiCallingServiceMutation } from '@acx-ui/rc/services'
 import {
@@ -28,7 +28,9 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 const WifiCallingForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink(getServiceRoutePath({
+    type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST
+  }))
   const params = useParams()
 
   const serviceName = ''
@@ -40,7 +42,7 @@ const WifiCallingForm = () => {
   const networksName:string[] = []
   const epdgs:EPDG[] = []
 
-  const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
+  const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
     serviceName,
     ePDG,
@@ -79,7 +81,7 @@ const WifiCallingForm = () => {
         ]}
       />
       <StepsForm<CreateNetworkFormFields>
-        formRef={formRef}
+        form={form}
         onCancel={() => navigate(linkToServices, { replace: true })}
         onFinish={handleAddWifiCallingService}
       >

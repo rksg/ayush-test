@@ -8,6 +8,8 @@ export const DpskPassphraseBaseUrl = '/api/dpskServices/:serviceId/passphrases'
 
 export const DpskPassphraseBaseUrlWithId = DpskPassphraseBaseUrl + '/:passphraseId'
 
+export const DpskPassphraseDevices = DpskPassphraseBaseUrl + '/:passphraseId/devices'
+
 export const NewDpskBaseUrl = '/dpskServices'
 
 export const NewDpskBaseUrlWithId = NewDpskBaseUrl + '/:serviceId'
@@ -15,6 +17,8 @@ export const NewDpskBaseUrlWithId = NewDpskBaseUrl + '/:serviceId'
 export const NewDpskPassphraseBaseUrl = '/dpskServices/:serviceId/passphrases'
 
 export const NewDpskPassphraseBaseUrlWithId = NewDpskPassphraseBaseUrl + '/:passphraseId'
+
+export const NewDpskPassphraseDevices = NewDpskPassphraseBaseUrl + '/:passphraseId/devices'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -29,6 +33,12 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: NewDpskBaseUrl + paginationParams,
     oldUrl: DpskBaseUrl + paginationParams,
+    newApi: true
+  },
+  getEnhancedDpskList: {
+    method: 'post',
+    url: NewDpskBaseUrl + '/query',
+    oldUrl: DpskBaseUrl + '/query',
     newApi: true
   },
   addDpsk: {
@@ -49,10 +59,10 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     oldUrl: DpskBaseUrlWithId,
     newApi: true
   },
-  getPassphraseList: {
-    method: 'get',
-    url: NewDpskPassphraseBaseUrl + paginationParams,
-    oldUrl: DpskPassphraseBaseUrl + paginationParams,
+  getEnhancedPassphraseList: {
+    method: 'post',
+    url: NewDpskPassphraseBaseUrl + '/query',
+    oldUrl: DpskPassphraseBaseUrl + '/query',
     newApi: true
   },
   getPassphrase: {
@@ -95,6 +105,29 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
+    newApi: true
+  },
+  getPassphraseClient: {
+    method: 'post',
+    url: '/dpskpassphrases/client',
+    newApi: true
+  },
+  getPassphraseDevices: {
+    method: 'get',
+    url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
+    oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
+    newApi: true
+  },
+  updatePassphraseDevices: {
+    method: 'PATCH',
+    url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
+    oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
+    newApi: true
+  },
+  deletePassphraseDevices: {
+    method: 'delete',
+    url: NewDpskPassphraseDevices + '?tenantId=:tenantId',
+    oldUrl: DpskPassphraseDevices + '?tenantId=:tenantId',
     newApi: true
   }
 }

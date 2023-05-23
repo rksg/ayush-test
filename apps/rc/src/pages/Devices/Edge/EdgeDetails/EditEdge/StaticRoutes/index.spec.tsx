@@ -44,7 +44,7 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     expect((await screen.findAllByRole('row')).length).toBe(2)
   })
@@ -55,7 +55,7 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     await user.click(await screen.findByRole('button', { name: 'Add Route' }))
     await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -74,9 +74,31 @@ describe('EditEdge static routes', () => {
 
     fireEvent.change(ipInput, { target: { value: '10.100.2.0' } })
     fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
-    expect(await screen.findByText('Each route should have unique Network Address + Subnet Mask'))
-      .toBeVisible()
+    expect(
+      (await screen.findAllByText(
+        'Each route should have unique Network Address + Subnet Mask'
+      )).length
+    ).toBe(2)
+  })
 
+  it('Add a route setting will be blocked by invalid ip + subnet', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StaticRoutes />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
+      })
+    await user.click(await screen.findByRole('button', { name: 'Add Route' }))
+    const ipInput = await screen.findByRole('textbox', { name: 'Network Address' })
+    const subnetInput = screen.getByRole('textbox', { name: 'Subnet Mask' })
+    fireEvent.change(ipInput, { target: { value: '10.100.2.1' } })
+    fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
+    expect(
+      (await screen.findAllByText(
+        'Please enter a valid Network Address + Subnet Mask'
+      )).length
+    ).toBe(2)
   })
 
   it('Add a route setting', async () => {
@@ -85,17 +107,17 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     await user.click(await screen.findByRole('button', { name: 'Add Route' }))
     const ipInput = await screen.findByRole('textbox', { name: 'Network Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(ipInput, { target: { value: '1.1.1.0' } })
     const subnetInput = screen.getByRole('textbox', { name: 'Subnet Mask' })
     fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
     const gatewayInput = screen.getByRole('textbox', { name: 'Gateway' })
     fireEvent.change(gatewayInput, { target: { value: '1.1.1.1' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    expect(await screen.findByRole('row', { name: /1.1.1.1/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /1.1.1.0/i })).toBeVisible()
   })
 
   it('Add a route setting with "Add another route" checked', async () => {
@@ -104,18 +126,18 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     await user.click(await screen.findByRole('button', { name: 'Add Route' }))
     await user.click(await screen.findByRole('checkbox', { name: 'Add another route' }))
     const ipInput = screen.getByRole('textbox', { name: 'Network Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(ipInput, { target: { value: '1.1.1.0' } })
     const subnetInput = screen.getByRole('textbox', { name: 'Subnet Mask' })
     fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
     const gatewayInput = screen.getByRole('textbox', { name: 'Gateway' })
     fireEvent.change(gatewayInput, { target: { value: '1.1.1.1' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    expect(await screen.findByRole('row', { name: /1.1.1.1/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /1.1.1.0/i })).toBeVisible()
     expect(screen.getByText('Add Static Route')).toBeVisible()
   })
 
@@ -125,19 +147,19 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     const row = await screen.findByRole('row', { name: /10.100.120.0/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(await screen.findByRole('button', { name: 'Edit' }))
     const ipInput = await screen.findByRole('textbox', { name: 'Network Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(ipInput, { target: { value: '1.1.1.0' } })
     const subnetInput = screen.getByRole('textbox', { name: 'Subnet Mask' })
     fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
     const gatewayInput = screen.getByRole('textbox', { name: 'Gateway' })
     fireEvent.change(gatewayInput, { target: { value: '1.1.1.1' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(await screen.findByRole('row', { name: /1.1.1.1/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: /1.1.1.0/i })).toBeVisible()
   })
 
   it('delete existing route setting', async () => {
@@ -146,7 +168,7 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     const row = await screen.findByRole('row', { name: /10.100.120.0/i })
     await user.click(within(row).getByRole('checkbox'))
@@ -160,18 +182,18 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     await user.click(await screen.findByRole('button', { name: 'Add Route' }))
     const ipInput = await screen.findByRole('textbox', { name: 'Network Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(ipInput, { target: { value: '1.1.1.0' } })
     const subnetInput = screen.getByRole('textbox', { name: 'Subnet Mask' })
     fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
     const gatewayInput = screen.getByRole('textbox', { name: 'Gateway' })
     fireEvent.change(gatewayInput, { target: { value: '1.1.1.1' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
 
-    const row = await screen.findByRole('row', { name: /1.1.1.1/i })
+    const row = await screen.findByRole('row', { name: /1.1.1.0/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(await screen.findByRole('button', { name: 'Delete' }))
     expect(row).not.toBeVisible()
@@ -183,7 +205,7 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     await user.click(await screen.findByRole('button', { name: 'Apply Static Routes' }))
   })
@@ -194,11 +216,11 @@ describe('EditEdge static routes', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge/list`,
       hash: '',
       search: ''
     })
@@ -231,7 +253,7 @@ describe('EditEdge static routes api fail', () => {
       <Provider>
         <StaticRoutes />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
+        route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/routes' }
       })
     await user.click(await screen.findByRole('button', { name: 'Apply Static Routes' }))
     // TODO

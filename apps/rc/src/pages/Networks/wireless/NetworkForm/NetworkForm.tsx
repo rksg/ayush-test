@@ -6,14 +6,16 @@ import { defineMessage, useIntl, IntlShape } from 'react-intl'
 import {
   PageHeader,
   showActionModal,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
   useLazyValidateRadiusQuery
+  //useAddNetworkVenuesMutation,
+  //useDeleteNetworkVenuesMutation
 } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -27,6 +29,8 @@ import {
   GuestPortal,
   redirectPreviousPage,
   LocationExtended
+  //NetworkVenue,
+  //Network
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -110,8 +114,10 @@ export default function NetworkForm (props:{
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
+  //const [addNetworkVenues] = useAddNetworkVenuesMutation()
+  //const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
-  const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
+  const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
@@ -140,7 +146,8 @@ export default function NetworkForm (props:{
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
       updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
-        enableAccountingService: data.accountingRadius?true:false })
+        enableAccountingService: (data.accountingRadius||
+          data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
   }, [data])
 
@@ -235,15 +242,62 @@ export default function NetworkForm (props:{
     return true
   }
 
+  /*
+  const handleNetworkVenues = async (
+    networkId : string,
+    newNetworkVenues? : NetworkVenue[],
+    oldNetworkVenues? : NetworkVenue[]
+  )=> {
+    let added: NetworkVenue[] = []
+    let newIds: string[] = []
+    let removed: string[] = []
+
+    if (newNetworkVenues?.length) {
+      newNetworkVenues?.forEach(networkVenue => {
+        if (_.isUndefined(networkVenue.id)) {
+          networkVenue.networkId = networkId
+          added.push(networkVenue)
+        } else {
+          newIds.push(networkVenue.id as string)
+        }
+      })
+    }
+    if (oldNetworkVenues?.length) {
+      oldNetworkVenues?.forEach(networkVenue => {
+        if (!_.isUndefined(networkVenue.id) && !newIds.includes(networkVenue.id)) {
+          removed.push(networkVenue.id)
+        }
+      })
+    }
+
+    if (added.length) {
+      await addNetworkVenues({ payload: added }).unwrap()
+    }
+    if (removed.length) {
+      await deleteNetworkVenues({ payload: removed }).unwrap()
+    }
+  }
+  */
+
+
   const handleAddNetwork = async () => {
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
       await addNetwork({ params, payload }).unwrap()
+      /*
+      const result = await addNetwork({ params, payload }).unwrap()
+      if (result && result.response && payload.venues) {
+        // @ts-ignore
+        const network: Network = result.response
+        await handleNetworkVenues(network.id, payload.venues)
+      }
+      */
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
 
   const deleteUnnecessaryFields = function () {
     if(saveState.enableAccountingService === false) {
@@ -251,11 +305,16 @@ export default function NetworkForm (props:{
     }
   }
 
-  const handleEditNetwork = async (data: NetworkSaveData) => {
+  const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       deleteUnnecessaryFields()
-      const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
+      const payload = updateClientIsolationAllowlist({ ...saveState, venues: formData.venues })
       await updateNetwork({ params, payload }).unwrap()
+      /*
+      if (payload.id && (payload.venues || data?.venues)) {
+        await handleNetworkVenues(payload.id, payload.venues, data?.venues)
+      }
+      */
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -368,7 +427,7 @@ export default function NetworkForm (props:{
         data: saveState,
         setData: updateSaveState
       }}>
-        <StepsForm<NetworkSaveData>
+        <StepsFormLegacy<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
           onCancel={() => modalMode
@@ -377,7 +436,7 @@ export default function NetworkForm (props:{
           }
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='details'
             title={intl.$t({ defaultMessage: 'Network Details' })}
             onFinish={async (data) => {
@@ -394,9 +453,9 @@ export default function NetworkForm (props:{
             }}
           >
             <NetworkDetailForm />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
 
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
@@ -448,9 +507,9 @@ export default function NetworkForm (props:{
             {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
 
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-              <StepsForm.StepForm
+              <StepsFormLegacy.StepForm
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async (data) => {
@@ -485,22 +544,11 @@ export default function NetworkForm (props:{
                   return true
                 }}
               >
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.ClickThrough&&<OnboardingForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.SelfSignIn&&<SelfSignInForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.Cloudpath&&<CloudpathForm/>}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.HostApproval&&<HostApprovalForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.GuestPass&&<GuestPassForm />}
-                {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.WISPr&&<WISPrForm />}
-              </StepsForm.StepForm>
+                {pickOneCaptivePortalForm(saveState)}
+              </StepsFormLegacy.StepForm>
           }
           {editMode &&
-            <StepsForm.StepForm
+            <StepsFormLegacy.StepForm
               name='moreSettings'
               title={intl.$t({ defaultMessage: 'More Settings' })}
               onFinish={async (data) => {
@@ -513,22 +561,16 @@ export default function NetworkForm (props:{
 
               <NetworkMoreSettingsForm wlanData={saveState} />
 
-            </StepsForm.StepForm>}
-          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&(
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.ClickThrough||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.GuestPass||
-            saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.HostApproval
-          )
-              &&<StepsForm.StepForm
-                name='portalweb'
-                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
-                onFinish={handlePortalWebPage}
-              >
-                <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-              </StepsForm.StepForm>
+            </StepsFormLegacy.StepForm>}
+          { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
+            name='portalweb'
+            title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+            onFinish={handlePortalWebPage}
+          >
+            <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
+          </StepsFormLegacy.StepForm>
           }
-          <StepsForm.StepForm
+          <StepsFormLegacy.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
@@ -552,16 +594,55 @@ export default function NetworkForm (props:{
             }}
           >
             <Venues />
-          </StepsForm.StepForm>
+          </StepsFormLegacy.StepForm>
           {!editMode &&
-            <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
+            <StepsFormLegacy.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
               <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-            </StepsForm.StepForm>
+            </StepsFormLegacy.StepForm>
           }
-        </StepsForm>
+        </StepsFormLegacy>
       </NetworkFormContext.Provider>
     </>
   )
+}
+
+function isPortalWebRender (saveState: NetworkSaveData): boolean {
+  if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
+    return false
+  }
+
+  switch (saveState.guestPortal?.guestNetworkType) {
+    case GuestNetworkTypeEnum.ClickThrough:
+    case GuestNetworkTypeEnum.SelfSignIn:
+    case GuestNetworkTypeEnum.GuestPass:
+    case GuestNetworkTypeEnum.HostApproval:
+      return true
+    default:
+      // eslint-disable-next-line no-console
+      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+      return false
+  }
+}
+
+function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
+  switch (saveState?.guestPortal?.guestNetworkType) {
+    case GuestNetworkTypeEnum.ClickThrough:
+      return <OnboardingForm />
+    case GuestNetworkTypeEnum.SelfSignIn:
+      return <SelfSignInForm />
+    case GuestNetworkTypeEnum.Cloudpath:
+      return <CloudpathForm/>
+    case GuestNetworkTypeEnum.HostApproval:
+      return <HostApprovalForm />
+    case GuestNetworkTypeEnum.GuestPass:
+      return <GuestPassForm />
+    case GuestNetworkTypeEnum.WISPr:
+      return <WISPrForm />
+    default:
+      // eslint-disable-next-line no-console
+      console.error(`Unknown Network Type: ${saveState?.guestPortal?.guestNetworkType}`)
+      return <OnboardingForm />
+  }
 }
 
 function showConfigConflictModal (
@@ -569,7 +650,7 @@ function showConfigConflictModal (
   data: Partial<CreateNetworkFormFields>,
   errors: RadiusValidateErrors[],
   errorList: Record<string, boolean | number>,
-  form: StepsFormInstance<NetworkSaveData> | undefined,
+  form: StepsFormLegacyInstance<NetworkSaveData> | undefined,
   saveState: NetworkSaveData,
   updateSaveData: Function,
   editMode: boolean,

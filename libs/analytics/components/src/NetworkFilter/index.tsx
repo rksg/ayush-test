@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
+import Highlighter                   from 'react-highlight-words'
 import { useIntl }                   from 'react-intl'
 
 import {
@@ -16,7 +17,7 @@ import { NetworkPath, getIntl }              from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { LabelWithSeverityCircle }                  from './LabelWithSeverityCircles'
+import { LabelWithSeverityCircle, SeverityCircles } from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
@@ -115,20 +116,22 @@ export const getNetworkFilterData = (
       ? [path[0], { ...path[1], name: id }]
       : path
     if (shouldPushVenue() && !venues[name]) {
+      const severityData = getSeverityCircles(
+        getApsAndSwitches(data, name),
+        nodesWithSeverities[name],
+        'venue'
+      )
       venues[name] = {
         label: (
           <LabelWithSeverityCircle
-            severityCircles={getSeverityCircles(
-              getApsAndSwitches(data, name),
-              nodesWithSeverities[name],
-              'venue'
-            )}
+            severityCircles={severityData}
             name={name}
           />
         ),
         value: JSON.stringify(venuePath),
         displayLabel: name,
-        children: [] as Option[]
+        children: [] as Option[],
+        extraLabel: <SeverityCircles severityCircles={severityData} />
       }
     }
     const venue = venues[name]
@@ -149,18 +152,20 @@ export const getNetworkFilterData = (
         ignoreSelection: true,
         value: `aps${replaceVenueNameWithId ? id : name}`,
         children: aps.map((ap: ApOrSwitch) => {
+          const severityData = getSeverityCircles(
+            [ap],
+            nodesWithSeverities[name]
+          )
           return {
             label: (
               <LabelWithSeverityCircle
-                severityCircles={getSeverityCircles(
-                  [ap],
-                  nodesWithSeverities[name]
-                )}
+                severityCircles={severityData}
                 name={ap.name}
               />
             ),
             displayLabel: ap.name,
-            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }])
+            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }]),
+            extraLabel: <SeverityCircles severityCircles={severityData} />
           }
         })
       })
@@ -182,18 +187,20 @@ export const getNetworkFilterData = (
         ignoreSelection: true,
         value: `switches${replaceVenueNameWithId ? id : name}`,
         children: switches.map((switchNode: ApOrSwitch) => {
+          const severityData = getSeverityCircles(
+            [switchNode],
+            nodesWithSeverities[name]
+          )
           return {
             label: (
               <LabelWithSeverityCircle
-                severityCircles={getSeverityCircles(
-                  [switchNode],
-                  nodesWithSeverities[name]
-                )}
+                severityCircles={severityData}
                 name={switchNode.name}
               />
             ),
             displayLabel: switchNode.name,
-            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
+            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }]),
+            extraLabel: <SeverityCircles severityCircles={severityData} />
           }
         })
       })
@@ -206,12 +213,44 @@ export const getNetworkFilterData = (
   )
 }
 
+const searchHelper = (str: string, input: string) =>
+  str.toLowerCase().includes(input.toLowerCase())
+
 const search = (input: string, path: DefaultOptionType[]): boolean => {
   const item = path.slice(-1)[0]
   return item.ignoreSelection // non-selection implies non-searchable
     ? false
-    : (item?.displayLabel as string)?.toLowerCase().includes(input.toLowerCase())
+    : searchHelper(item?.displayLabel as string, input)
 }
+
+const reportSearch = (input: string, path: DefaultOptionType[]): boolean => {
+  const device = path.slice(-1)[0]
+  const venue = path.slice(0)[0]
+  const matchVenue = searchHelper(venue?.displayLabel as string, input)
+  const matchDevice = searchHelper(device?.displayLabel as string, input)
+  return device.ignoreSelection // non-selection implies non-searchable
+    ? false
+    : matchVenue || matchDevice
+}
+
+const searchResultsRender = (input: string, path: DefaultOptionType[]) => {
+  const items = path.map((val) => (val?.displayLabel as string))
+  const labels = path.map(item => item?.extraLabel as unknown as ReactNode)
+  const label = labels.length ? labels[labels.length - 1] : null
+  const text = items.join(' / ')
+  return <UI.LabelContainer title={text}>
+    <UI.SearchLabel $isDeep={items.length > 1}>
+      <Highlighter
+        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
+        searchWords={[input]}
+        textToHighlight={text}
+        autoEscape
+      />
+    </UI.SearchLabel>
+    {label}
+  </UI.LabelContainer>
+}
+
 // eslint-disable-next-line no-empty-pattern
 export const displayRender = ({}, selectedOptions: DefaultOptionType[] | undefined) =>
   selectedOptions?.map((option) => option?.displayLabel || option?.label).join(' / ')
@@ -244,7 +283,7 @@ function ConnectedNetworkFilter (
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
-  const { bands: selectedBands } = reportsFilter
+  let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
     omit({
       ...filters, path: defaultNetworkPath, includeMuted: false
@@ -266,7 +305,19 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
-  const rawVal = filterFor === 'reports' ? reportsRaw : raw
+  const isReports = filterFor === 'reports'
+  let rawVal:string[][] = isReports ? reportsRaw : raw
+  // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
+  if(filterMode === 'switch'){
+    selectedBands=[]
+    rawVal=rawVal.filter(value=>{
+      return !value[0].includes('zone')
+    })
+  }else if(filterMode === 'ap'){
+    rawVal=rawVal.filter(value=>{
+      return !value[0].includes('switchGroup')
+    })
+  }
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>
@@ -309,7 +360,10 @@ function ConnectedNetworkFilter (
             }
           }}
           displayRender={displayRender}
-          showSearch={{ filter: search }}
+          showSearch={{
+            filter: isReports ? reportSearch : search,
+            render: (input, options) => searchResultsRender(input, options)
+          }}
           allowClear
           open={open}
           onDropdownVisibleChange={setOpen}

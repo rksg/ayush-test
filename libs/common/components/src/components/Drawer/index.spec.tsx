@@ -10,13 +10,14 @@ const resetFields = jest.fn()
 const content = <p>some content</p>
 
 describe('Drawer', () => {
+  afterEach(() => jest.resetAllMocks())
+
   it('should match snapshot for basic drawer', () => {
     render(<Drawer
       title={'Test Drawer'}
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
     />)
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
@@ -30,7 +31,6 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
     />)
     expect(screen.getAllByRole('dialog')).toMatchSnapshot()
   })
@@ -41,11 +41,26 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
     />)
 
     const button = screen.getByRole('button', { name: /close/i })
     await screen.findByText('Test Drawer')
+    await screen.findByText('some content')
+
+    fireEvent.click(button)
+    expect(onClose).toBeCalled()
+  })
+
+  it('should render drawer without mask attribute correctly', async () => {
+    render(<Drawer
+      title={'Test Mask Drawer'}
+      visible={true}
+      onClose={onClose}
+      children={content}
+    />)
+
+    const button = screen.getByRole('button', { name: /close/i })
+    await screen.findByText('Test Mask Drawer')
     await screen.findByText('some content')
 
     fireEvent.click(button)
@@ -66,7 +81,6 @@ describe('Drawer', () => {
       visible={true}
       onClose={onClose}
       children={content}
-      mask={false}
       footer={footer}
     />)
 

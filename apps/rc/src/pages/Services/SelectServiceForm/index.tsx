@@ -6,7 +6,7 @@ import {
   GridRow,
   PageHeader,
   RadioCardCategory,
-  StepsForm
+  StepsFormLegacy
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -27,7 +27,10 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
-  const isEdgesEnable = useIsSplitOn(Features.EDGES)
+  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -49,13 +52,22 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgesEnable
+          disabled: !isEdgeDhcpEnabled
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
           disabled: !networkSegmentationEnabled
+        }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Security' }),
+      items: [
+        { type: ServiceType.EDGE_FIREWALL,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeFirewallEnabled
         }
       ]
     },
@@ -74,6 +86,11 @@ export default function SelectServiceForm () {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
           disabled: !networkSegmentationEnabled
+        },
+        {
+          type: ServiceType.RESIDENT_PORTAL,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !propertyManagementEnabled
         }
       ]
     }
@@ -87,11 +104,11 @@ export default function SelectServiceForm () {
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         onCancel={() => navigate(myServicesPath)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='selectService'
           onFinish={(data) => navigateToCreateService(data)}
         >
@@ -121,8 +138,8 @@ export default function SelectServiceForm () {
               )}
             </Radio.Group>
           </Form.Item>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

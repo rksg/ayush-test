@@ -5,16 +5,17 @@ import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { GridCol, GridRow, StepsForm }                            from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
 import { useGetPortalLangMutation, useGetPortalProfileListQuery } from '@acx-ui/rc/services'
 import { Demo, Portal, TableResult }                              from '@acx-ui/rc/utils'
 import { loadImageWithJWT }                                       from '@acx-ui/utils'
 
-import Photo              from '../../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered            from '../../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo               from '../../../../../assets/images/portal-demo/RuckusCloud.svg'
-import PortalDemo         from '../../../../Services/Portal/PortalDemo'
-import NetworkFormContext from '../NetworkFormContext'
+import Photo                 from '../../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered               from '../../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo                  from '../../../../../assets/images/portal-demo/RuckusCloud.svg'
+import PortalDemo            from '../../../../Services/Portal/PortalDemo'
+import { initialPortalData } from '../../../../Services/Portal/PortalForm/PortalForm'
+import NetworkFormContext    from '../NetworkFormContext'
 
 import PortalServiceModal from './PortalServiceModal'
 
@@ -49,13 +50,13 @@ const PortalInstance = (props:{
   const setPortal = async (value:string)=>{
     const currentPortal = _.find(portalData,{ id: value })
     const content = currentPortal?.content as Demo
-    const tempValue={ ...content,
-      poweredImg: content.poweredImg?
+    const tempValue={ ...initialPortalData.content, ...content,
+      poweredImg: content?.poweredImg?
         await loadImageWithJWT(content.poweredImg):Powered,
-      logo: content.logo?await loadImageWithJWT(content.logo):Logo,
-      photo: content.photo?await loadImageWithJWT(content.photo): Photo,
-      bgImage: content.bgImage?await loadImageWithJWT(content.bgImage):'' ,
-      wifi4EUNetworkId: content.wifi4EUNetworkId || '' }
+      logo: content?.logo?await loadImageWithJWT(content.logo):Logo,
+      photo: content?.photo?await loadImageWithJWT(content.photo): Photo,
+      bgImage: content?.bgImage?await loadImageWithJWT(content.bgImage):'' ,
+      wifi4EUNetworkId: content?.wifi4EUNetworkId || '' }
     setDemoValue(tempValue)
     props.updatePortalData?.(tempValue)
   }
@@ -67,13 +68,13 @@ const PortalInstance = (props:{
         form.setFieldValue('portalServiceProfileId',networkData.portalServiceProfileId)
         const currentPortal = _.find(data.data,{ id: networkData.portalServiceProfileId })
         const content = currentPortal?.content as Demo
-        const tempValue={ ...content,
-          poweredImg: content.poweredImg?
+        const tempValue={ ...initialPortalData.content, ...content,
+          poweredImg: content?.poweredImg?
             await loadImageWithJWT(content.poweredImg):Powered,
-          logo: content.logo?await loadImageWithJWT(content.logo):Logo,
-          photo: content.photo?await loadImageWithJWT(content.photo): Photo,
-          bgImage: content.bgImage?await loadImageWithJWT(content.bgImage):'' ,
-          wifi4EUNetworkId: content.wifi4EUNetworkId || '' }
+          logo: content?.logo?await loadImageWithJWT(content.logo):Logo,
+          photo: content?.photo?await loadImageWithJWT(content.photo): Photo,
+          bgImage: content?.bgImage?await loadImageWithJWT(content.bgImage):'' ,
+          wifi4EUNetworkId: content?.wifi4EUNetworkId || '' }
         setDemoValue(tempValue)
       }
     }
@@ -96,7 +97,7 @@ const PortalInstance = (props:{
     <>
       <GridRow>
         <GridCol col={{ span: 10 }}>
-          <StepsForm.Title>{$t({ defaultMessage: 'Portal Web Page' })}</StepsForm.Title>
+          <StepsFormLegacy.Title>{$t({ defaultMessage: 'Portal Web Page' })}</StepsFormLegacy.Title>
           <Form.Item
             label={$t({ defaultMessage: 'Define the captive portal web page.' })}
           />

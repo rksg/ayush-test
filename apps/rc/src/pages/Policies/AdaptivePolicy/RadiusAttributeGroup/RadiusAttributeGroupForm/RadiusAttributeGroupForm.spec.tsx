@@ -47,9 +47,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('RadiusAttributeGroupForm', () => {
   // eslint-disable-next-line max-len
-  const createPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })
+  const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })
   // eslint-disable-next-line max-len
-  const editPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
+  const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
 
   beforeEach(async () => {
     mockServer.use(
@@ -102,7 +102,7 @@ describe('RadiusAttributeGroupForm', () => {
 
     const inputs = await screen.findAllByRole('textbox')
     const attributeValue = inputs[2]
-    await userEvent.type(attributeValue, 'testValue')
+    await userEvent.type(attributeValue, '123')
 
     const comboBoxes = await screen.findAllByRole('combobox')
     await userEvent.click(comboBoxes[0])
@@ -112,12 +112,12 @@ describe('RadiusAttributeGroupForm', () => {
 
     await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
-    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
+    await userEvent.click(await screen.findByText('Foundry-Privilege-Level (INTEGER)'))
 
     const buttons = screen.getAllByText('Add')
     await userEvent.click(buttons[1])
 
-    await screen.findByRole('row', { name: /Foundry-Privilege-Level/ })
+    await screen.findByRole('row', { name: /Foundry-Privilege-Level / })
 
     await userEvent.click(screen.getByText('Apply'))
 

@@ -3,22 +3,25 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsFormNew } from '@acx-ui/components'
+import { StepsForm }                  from '@acx-ui/components'
 import {
-  CommonUrlsInfo
+  CommonUrlsInfo, TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
   renderHook,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
+import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
   mockVenueNetworkData,
   mockNetworkGroup
 } from '../../__tests__/fixtures'
+
 
 import { WirelessNetworkForm } from '.'
 
@@ -72,6 +75,14 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.status(200))
+      ),
+      rest.post(
+        TunnelProfileUrls.createTunnelProfile.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       )
     )
   })
@@ -85,11 +96,11 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew form={formRef.current} onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <WirelessNetworkForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.selectOptions(
@@ -104,14 +115,49 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <StepsFormNew onFinish={mockedFinishFn}>
-          <StepsFormNew.StepForm>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
             <WirelessNetworkForm />
-          </StepsFormNew.StepForm>
-        </StepsFormNew>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Provider>,
       { route: { params, path: createNsgPath } })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
     await screen.findByText('Please select at least 1 network')
+  })
+
+  it('Add tunnel profile', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
+            <WirelessNetworkForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>,
+      { route: { params, path: createNsgPath } })
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    const tunnelDialog = await screen.findByRole('dialog')
+    const policyNameField = within(tunnelDialog).getByRole('textbox', { name: 'Policy Name' })
+    await user.type(policyNameField, 'TestTunnel')
+    await user.click(within(tunnelDialog).getByRole('radio', { name: 'Auto' }))
+    await user.click(within(tunnelDialog).getByRole('button', { name: 'Add' }))
+  })
+
+  it('Click cancel in dialog will close dialog', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm.StepForm>
+            <WirelessNetworkForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>,
+      { route: { params, path: createNsgPath } })
+    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    const tunnelDialog = await screen.findByRole('dialog')
+    await user.click(within(tunnelDialog).getByRole('button', { name: 'Cancel' }))
   })
 })

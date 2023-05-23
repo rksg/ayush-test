@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsFormLegacy,
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
@@ -32,7 +32,7 @@ const AAAForm = (props: AAAFormProps) => {
   const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const edit = props.edit && !props.networkView
-  const formRef = useRef<StepsFormInstance<AAAPolicyType>>()
+  const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
   const [ createAAAPolicy ] = useAddAAAPolicyMutation()
 
@@ -79,24 +79,24 @@ const AAAForm = (props: AAAFormProps) => {
     <>
       {!props.networkView &&<PageHeader
         title={edit
-          ? $t({ defaultMessage: 'Edit Radius Server' })
-          : $t({ defaultMessage: 'Add Radius Server' })}
+          ? $t({ defaultMessage: 'Edit RADIUS Server' })
+          : $t({ defaultMessage: 'Add RADIUS Server' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Radius Server' }), link: tablePath }
+          { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
         ]}
       />}
-      <StepsForm<AAAPolicyType>
+      <StepsFormLegacy<AAAPolicyType>
         formRef={formRef}
         onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
         onFinish={async (data) => {return handleAAAPolicy(data)}}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
           <AAASettingForm edit={edit} saveState={saveState} type={props.type}/>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }

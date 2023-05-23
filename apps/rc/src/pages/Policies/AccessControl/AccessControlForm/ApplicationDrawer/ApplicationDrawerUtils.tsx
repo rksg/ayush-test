@@ -40,7 +40,9 @@ export const transformToApplicationRule = (
   return appPolicyInfo.rules.map((rule, ruleId) => {
     let systemDefined = {} as { [key: string]: string | number }
     let userDefined = {} as { [key: string]: string | number }
+    let application = rule.applicationName
     if (rule.ruleType === ApplicationRuleType.SIGNATURE) {
+      application = `${rule.category} > ${rule.applicationName}`
       systemDefined.appNameSystemDefined = `${rule.category}_${rule.applicationName}`
       systemDefined.category = rule.category
     }
@@ -49,12 +51,11 @@ export const transformToApplicationRule = (
 
       if (rule.portMapping === ApplicationPortMappingType.IP_WITH_PORT
         && rule.destinationIp
-        && rule.protocol
         && rule.netmask) {
         userDefined.netmask = rule.netmask
-        userDefined.protocol = rule.protocol
       }
 
+      userDefined.protocol = rule.protocol!
       userDefined.destinationPort = rule.destinationPort!
       userDefined.destinationIp = rule.destinationIp!
     }
@@ -82,6 +83,7 @@ export const transformToApplicationRule = (
       ruleName: rule.name,
       ruleType: rule.ruleType,
       applications: rule.applicationName,
+      application: application,
       accessControl: rule.accessControl,
       details: rule.accessControl,
       ruleSettings: {
@@ -96,10 +98,14 @@ export const transformToApplicationRule = (
 }
 
 export const genRuleObject = (drawerForm: FormInstance) => {
+  const application = drawerForm.getFieldValue('ruleType') === ApplicationRuleType.USER_DEFINED ?
+    // eslint-disable-next-line max-len
+    drawerForm.getFieldValue('applicationNameUserDefined') : drawerForm.getFieldValue('applicationNameSystemDefined').replace('_', ' > ')
   return {
     ruleName: drawerForm.getFieldValue('ruleName') ?? '',
     ruleType: drawerForm.getFieldValue('ruleType'),
     applications: '-',
+    application: application,
     accessControl: drawerForm.getFieldValue('accessControl'),
     details: drawerForm.getFieldValue('accessControl'),
     ruleSettings: {

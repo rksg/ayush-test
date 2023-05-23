@@ -51,6 +51,7 @@ describe('DpskSettingsForm', () => {
 
     const nameInput = await screen.findByRole('textbox', { name: /Service Name/ })
     await userEvent.type(nameInput, mockedDpskList.content[0].name)
+    nameInput.blur()
 
     const errorMessageElem = await screen.findByRole('alert')
     expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists')
@@ -59,7 +60,7 @@ describe('DpskSettingsForm', () => {
   it('should render the cloudpath form items', async () => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySets.url.split('?')[0],
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...mockedPolicySet }))
       )
     )

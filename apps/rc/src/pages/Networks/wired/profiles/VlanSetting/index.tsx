@@ -3,11 +3,14 @@ import { useContext, useState, useEffect } from 'react'
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
-import { showActionModal, Table, TableProps, StepsForm, Tooltip } from '@acx-ui/components'
+import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import {
   Vlan,
   SwitchModel,
-  SpanningTreeProtocolName } from '@acx-ui/rc/utils'
+  SpanningTreeProtocolName,
+  sortProp,
+  defaultSort
+} from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
@@ -29,7 +32,7 @@ export function VlanSetting () {
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(currentData.vlans && editMode){
+    if(currentData.vlans){
       form.setFieldsValue(currentData)
 
       const defaultVlanData = currentData.vlans.filter(
@@ -38,30 +41,35 @@ export function VlanSetting () {
 
       const vlanList = currentData.vlans.filter(item => item.vlanName !== 'DEFAULT-VLAN' )
       setVlanTable(vlanList)
-
     }
   }, [currentData, editMode])
 
   const vlansColumns: TableProps<Vlan>['columns']= [{
     title: $t({ defaultMessage: 'VLAN ID' }),
     dataIndex: 'vlanId',
-    key: 'vlanId'
+    key: 'vlanId',
+    defaultSortOrder: 'ascend',
+    sorter: { compare: sortProp('vlanId', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'VLAN Name' }),
     dataIndex: 'vlanName',
-    key: 'vlanName'
+    key: 'vlanName',
+    sorter: { compare: sortProp('vlanName', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'IGMP Snooping' }),
     dataIndex: 'igmpSnooping',
-    key: 'igmpSnooping'
+    key: 'igmpSnooping',
+    sorter: { compare: sortProp('igmpSnooping', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Multicast Version' }),
     dataIndex: 'multicastVersion',
-    key: 'multicastVersion'
+    key: 'multicastVersion',
+    sorter: { compare: sortProp('multicastVersion', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Spanning Tree' }),
     dataIndex: 'spanningTreeProtocol',
     key: 'spanningTreeProtocol',
+    sorter: { compare: sortProp('spanningTreeProtocol', defaultSort) },
     render: (data) => {
       return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
     }
@@ -186,7 +194,7 @@ export function VlanSetting () {
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'VLANs' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
             rowKey='vlanId'
             columns={vlansColumns}

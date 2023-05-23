@@ -31,9 +31,7 @@ import * as UI     from './styledComponents'
 
 const MAX_VIEWPORT_CHANGE = 1510
 const getBulbIcon = (expireType:LicenseBannerTypeEnum | undefined) => {
-  if(expireType === LicenseBannerTypeEnum.initial ||
-     expireType === LicenseBannerTypeEnum.ra_50_to_90_percent ||
-     expireType === LicenseBannerTypeEnum.ra_onboard_only){
+  if(expireType === LicenseBannerTypeEnum.initial){
     return <UI.BulbLesserInitial/>
   }
   else if(expireType === LicenseBannerTypeEnum.closeToExpiration){
@@ -43,8 +41,7 @@ const getBulbIcon = (expireType:LicenseBannerTypeEnum | undefined) => {
     return <UI.BulbGrace/>
   }
   else if(expireType === LicenseBannerTypeEnum.expired ||
-    expireType === LicenseBannerTypeEnum.msp_expired ||
-    expireType === LicenseBannerTypeEnum.ra_below_50_percent
+    expireType === LicenseBannerTypeEnum.msp_expired
   ){
     return <UI.Expired/>
   }
@@ -63,18 +60,20 @@ export interface ExpireInfo {
 const getExpireInfo = (bannerList:EntitlementBanner[])=>{
   const expireList:ExpireInfo[] = []
   if(!_.isEmpty(bannerList)){
-    bannerList.forEach(item => {
-      expireList.push(
-        {
-          deviceCount: item!.deviceCount,
-          effectDate: item!.effectDate,
-          effectDays: item!.effectDays,
-          deviceType: item!.deviceType,
-          isMultipleLicense: item!.multipleLicense,
-          expireType: item!.type
-        }
-      )
-    })
+    bannerList
+      .filter(item => item.deviceType !== 'ANALYTICS')
+      .forEach(item => {
+        expireList.push(
+          {
+            deviceCount: item!.deviceCount,
+            effectDate: item!.effectDate,
+            effectDays: item!.effectDays,
+            deviceType: item!.deviceType,
+            isMultipleLicense: item!.multipleLicense,
+            expireType: item!.type
+          }
+        )
+      })
   }
   return expireList
 }
@@ -117,9 +116,7 @@ export function LicenseBanner (props: BannerProps) {
   const getIsExpired = (expireInfo:ExpireInfo)=>
     expireInfo.expireType===LicenseBannerTypeEnum.expired ||
     expireInfo!.expireType===LicenseBannerTypeEnum.gracePeriod ||
-    expireInfo.expireType===LicenseBannerTypeEnum.msp_expired ||
-    expireInfo.expireType===LicenseBannerTypeEnum.ra_below_50_percent
-
+    expireInfo.expireType===LicenseBannerTypeEnum.msp_expired
 
   const getCardItem = (expireInfo:ExpireInfo) => {
     const isExpired = getIsExpired(expireInfo)
@@ -218,6 +215,7 @@ export function LicenseBanner (props: BannerProps) {
     return multipleRender()
   }
 
-  return <> { !_.isEmpty(expireList) && isFFEnabled && licenseRender()}
-  </>
+  return <UI.LicenseWrapper>
+    {!_.isEmpty(expireList) && isFFEnabled && licenseRender()}
+  </UI.LicenseWrapper>
 }

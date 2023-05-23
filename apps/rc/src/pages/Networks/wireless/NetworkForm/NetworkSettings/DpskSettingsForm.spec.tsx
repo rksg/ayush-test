@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
 import { mockServer, render, screen }             from '@acx-ui/test-utils'
@@ -17,6 +18,7 @@ import {
 import NetworkFormContext from '../NetworkFormContext'
 
 import { DpskSettingsForm } from './DpskSettingsForm'
+
 
 describe('DpskSettingsForm', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -57,7 +59,7 @@ describe('DpskSettingsForm', () => {
       }
     )
 
-    await userEvent.click(screen.getByText('Use Radius Server'))
+    await userEvent.click(screen.getByText('Use RADIUS Server'))
   })
 
   it('should render edit form with DPSK service profile', async () => {
@@ -116,4 +118,26 @@ describe('DpskSettingsForm', () => {
 
     expect(dialog).not.toBeInTheDocument()
   })
+
+  it('should render proxy service', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: false,
+          cloneMode: false,
+          data: { ...partialDpskNetworkEntity, enableAuthProxy: true },
+          setData: jest.fn()
+        }}>
+          <Form><DpskSettingsForm /></Form>
+        </NetworkFormContext.Provider>
+      </Provider>, {
+        route: { params }
+      }
+    )
+    await userEvent.click(screen.getByRole('radio', { name: 'Use RADIUS Server' }))
+    expect(screen.getByRole('radio', { name: 'Use RADIUS Server' })).toBeChecked()
+    expect(screen.getByRole('switch', { name: 'Proxy Service' })).toBeChecked()
+  })
+
 })

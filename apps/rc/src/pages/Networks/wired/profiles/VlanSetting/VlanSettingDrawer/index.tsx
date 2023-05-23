@@ -105,10 +105,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, editMode, vlan, setVlan, vlansList } = props
+  const { form, vlan, setVlan, vlansList } = props
 
   useEffect(() => {
-    if(vlan && editMode){
+    if(vlan){
       form.setFieldsValue(vlan)
       const vlanPortsData = vlan.switchFamilyModels?.map(item => {
         return {
@@ -120,6 +120,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         }
       }) as unknown
       setRuleList(vlanPortsData as SwitchModelPortData[])
+      setArpInspection(vlan.arpInspection || false)
+      setIpv4DhcpSnooping(vlan.ipv4DhcpSnooping || false)
     }
   }, [form, vlan])
 

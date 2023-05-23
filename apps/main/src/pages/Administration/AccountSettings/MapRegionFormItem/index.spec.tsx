@@ -64,7 +64,7 @@ jest.mock('@acx-ui/rc/components', () => ({
         mapRegion: 'TW'
       } },
       currentMapRegion: 'TW',
-      update: mockedUpdatePreference,
+      updatePartial: mockedUpdatePreference,
       getReqState: { isLoading: false, isFetching: false } as UseQueryResult<TenantPreferenceSettings>,
       updateReqState: { isLoading: false } as UseQueryResult<TenantPreferenceSettings>
     }
@@ -109,7 +109,7 @@ describe('Map Region Selector', () => {
     )
   })
 
-  it('should be able to clear selector input', async () => {
+  it('should not update when the selected value is empty', async () => {
     render(
       <Provider>
         <MapRegionFormItem />

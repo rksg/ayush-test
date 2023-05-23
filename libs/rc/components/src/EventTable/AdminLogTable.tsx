@@ -6,6 +6,7 @@ import { Loader, Table, TableProps, Button }    from '@acx-ui/components'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import { DownloadOutlined }                     from '@acx-ui/icons'
 import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { noDataDisplay }                        from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -72,7 +73,6 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
-      sorter: true,
       searchable: true,
       render: (_, row, __, highlightFn) => getDescription(row, highlightFn)
     }
@@ -91,6 +91,10 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       value: valueFrom(adminLogTypeMapping, data.entity_type)
     },
     {
+      title: defineMessage({ defaultMessage: 'IP Address' }),
+      value: data.ipAddress?? noDataDisplay
+    },
+    {
       title: defineMessage({ defaultMessage: 'Source' }),
       value: getSource(data)
     },
@@ -102,7 +106,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
 
   return <Loader states={[tableQuery]}>
     <Table
-      rowKey='id'
+      rowKey='tableKey'
       columns={columns}
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}

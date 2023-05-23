@@ -17,11 +17,11 @@ export function CliStepNotice () {
   const isTemplate = params?.configType !== 'profiles'
   const editMode = params.action === 'edit'
   // eslint-disable-next-line max-len
-  const documentLink = 'https://support.ruckuswireless.com/documents/3450-fastiron-08-0-95-ga-command-reference-guide'
+  const documentLink = 'https://support.ruckuswireless.com/documents/4026-fastiron-09-0-10-ga-command-reference-guide'
 
   return <Row gutter={20}>
     <Col span={10}>
-      <StepsForm.Title>{$t({ defaultMessage: 'Important Notice' })}</StepsForm.Title>
+      <StepsForm.Title children={$t({ defaultMessage: 'Important Notice' })} />
       <Typography.Text style={{
         fontWeight: 600,
         display: 'block', margin: '4px 0 12px',
@@ -72,6 +72,7 @@ export function CliStepNotice () {
         children={
           <Input style={{ width: '120px' }} />
         }
+        validateTrigger={'onBlur'}
       />}
     </Col>
   </Row>

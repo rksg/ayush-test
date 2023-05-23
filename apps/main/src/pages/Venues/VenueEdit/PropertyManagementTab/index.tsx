@@ -5,8 +5,9 @@ import { Col, Form, Row, Select, Switch } from 'antd'
 import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
 import { useIntl }                        from 'react-intl'
 
-import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { PersonaGroupSelect }                           from '@acx-ui/rc/components'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -14,6 +15,7 @@ import {
   useGetVenueQuery,
   useLazyGetPersonaGroupByIdQuery,
   usePatchPropertyConfigsMutation,
+  usePutRegistrationByIdMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
 import { PropertyConfigs, PropertyConfigStatus } from '@acx-ui/rc/utils'
@@ -37,24 +39,44 @@ const defaultPropertyConfigs: PropertyConfigs = {
     guestAllowed: false,
     residentPortalAllowed: false
   },
-  communicationConfiguration: {
+  communicationConfig: {
+    type: 'communicationConfig',
     sendEmail: false,
     sendSms: false
   }
+}
+
+const templateScopeIds = {
+  email: [
+    '648269aa-23c7-41da-baa4-811e92d89ed1',
+    '45b68446-c970-4ade-9d64-5ee71f5555d9',
+    'b9139125-5c15-469c-a5a8-43c2b3fd6151',
+    'e0220126-6e6c-4e10-88ba-42713bddd2a1',
+    '56256b0c-d7a0-4957-8e43-d03ecb073e9a'
+  ],
+  sms: [
+    '2baa7cc6-f036-462a-a531-fefb9e531d27',
+    'c4a8d5bd-ae48-42d9-b86c-0641942a0ae3',
+    '88553d8d-c2bc-4bc8-90b5-cda6b0ff2fb4',
+    '6eb696cd-fd12-4c20-930d-65550a1e3eca',
+    'd1d41a63-da64-43bf-bde1-f524d920cfbe'
+  ]
 }
 
 export function PropertyManagementTab () {
   const { $t } = useIntl()
   const basePath = useTenantLink('/venues/')
   const { tenantId, venueId } = useParams()
+  const msgTemplateEnabled = useIsSplitOn(Features.MSG_TEMPLATE)
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
+  const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const [groupData, setGroupData] = useState<{ id?: string, name?: string }>()
   const [selectedGroupId, setSelectedGroupId] = useState<string|undefined>()
+  const [updateRegistration, registrationResult] = usePutRegistrationByIdMutation()
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId },
@@ -97,11 +119,39 @@ export function PropertyManagementTab () {
     }
   }, [propertyConfigsQuery.data, formRef])
 
+  const registerMessageTemplates = async () => {
+    const registerPromises = [...templateScopeIds.email, ...templateScopeIds.sms]
+      .map(scopeId => {
+        let selectedOption = formRef?.current?.getFieldValue(scopeId)
+
+        if(selectedOption && selectedOption.value !== '') {
+          return updateRegistration({
+            params: {
+              templateScopeId: scopeId,
+              registrationId: venueId
+            },
+            payload: {
+              id: scopeId,
+              templateId: selectedOption.value,
+              usageLocalizationKey: 'venue.property.management',
+              usageDescriptionFieldOne: venueData?.name ?? venueId,
+              usageDescriptionFieldTwo: venueId
+            }
+          })
+        } else {
+          return Promise.resolve()
+        }
+      })
+
+    await Promise.all(registerPromises)
+  }
+
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const enableProperty = info.values.isPropertyEnable
 
     try {
       if (enableProperty) {
+        await registerMessageTemplates()
         await updatePropertyConfigs({
           params: { venueId },
           payload: {
@@ -141,9 +191,12 @@ export function PropertyManagementTab () {
 
   return (
     <Loader
-      states={[{ ...propertyConfigsQuery, error: undefined }]}
+      states={[
+        { ...propertyConfigsQuery, error: undefined },
+        { isLoading: false, isFetching: registrationResult.isLoading }
+      ]}
     >
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFormFinish={onFormFinish}
         onFormChange={handleFormChange}
@@ -153,17 +206,17 @@ export function PropertyManagementTab () {
         })}
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
-        <StepsForm.StepForm
+        <StepsFormLegacy.StepForm
           initialValues={defaultPropertyConfigs}
         >
-          <StepsForm.FieldLabel width={'200px'}>
+          <StepsFormLegacy.FieldLabel width={'200px'}>
             {$t({ defaultMessage: 'Enable Property Management' })}
             <Form.Item
               name='isPropertyEnable'
               valuePropName={'checked'}
               children={<Switch />}
             />
-          </StepsForm.FieldLabel>
+          </StepsFormLegacy.FieldLabel>
           {formRef?.current?.getFieldValue('isPropertyEnable') &&
             <Row gutter={20}>
               <Col span={8}>
@@ -199,7 +252,7 @@ export function PropertyManagementTab () {
                   hidden
                   name={['unitConfig', 'type']}
                 />
-                <StepsForm.FieldLabel width={'190px'}>
+                <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
                   <Form.Item
                     name={['unitConfig', 'guestAllowed']}
@@ -207,8 +260,8 @@ export function PropertyManagementTab () {
                     valuePropName={'checked'}
                     children={<Switch />}
                   />
-                </StepsForm.FieldLabel>
-                <StepsForm.FieldLabel width={'190px'}>
+                </StepsFormLegacy.FieldLabel>
+                <StepsFormLegacy.FieldLabel width={'190px'}>
                   {$t({ defaultMessage: 'Enable Resident Portal' })}
                   <Form.Item
                     name={['unitConfig', 'residentPortalAllowed']}
@@ -216,7 +269,7 @@ export function PropertyManagementTab () {
                     valuePropName={'checked'}
                     children={<Switch />}
                   />
-                </StepsForm.FieldLabel>
+                </StepsFormLegacy.FieldLabel>
                 {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
                     <Form.Item
                       name='residentPortalId'
@@ -226,16 +279,68 @@ export function PropertyManagementTab () {
                         .map(r => ({ value: r.id, label: r.name })) ?? []}/>}
                     />
                 }
+
+                {msgTemplateEnabled &&
+                  <>
+                    <Form.Item
+                      hidden
+                      name={['communicationConfig', 'type']}/><Subtitle level={4}>
+                      {$t({ defaultMessage: 'Communication Templates' })}
+                    </Subtitle><StepsFormLegacy.FieldLabel width={'190px'}>
+                      {$t({ defaultMessage: 'Enable Email Notification' })}
+                      <Form.Item
+                        name={['communicationConfig', 'sendEmail']}
+                        rules={[{ required: true }]}
+                        valuePropName={'checked'}
+                        children={<Switch/>}/>
+                    </StepsFormLegacy.FieldLabel><StepsFormLegacy.FieldLabel width={'190px'}>
+                      {$t({ defaultMessage: 'Enable SMS Notification' })}
+                      <Form.Item
+                        name={['communicationConfig', 'sendSms']}
+                        rules={[{ required: true }]}
+                        valuePropName={'checked'}
+                        children={<Switch/>}/>
+                    </StepsFormLegacy.FieldLabel><Tabs
+                      defaultActiveKey={'email'}
+                    >
+                      <Tabs.TabPane
+                        forceRender
+                        key={'email'}
+                        tab={$t({ defaultMessage: 'Email' })}
+                        children={templateScopeIds.email.map(id => venueId &&
+                        <TemplateSelector
+                          key={id}
+                          formItemProps={{ name: id }}
+                          scopeId={id}
+                          registrationId={venueId}/>)}/>
+                      <Tabs.TabPane
+                        forceRender
+                        key={'sms'}
+                        tab={$t({ defaultMessage: 'SMS' })}
+                        children={templateScopeIds.sms.map(id => venueId &&
+                        <TemplateSelector
+                          key={id}
+                          formItemProps={{ name: id }}
+                          scopeId={id}
+                          registrationId={venueId}/>)}/>
+                    </Tabs>
+                  </>
+                }
               </Col>
             </Row>
           }
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
 
       <PersonaGroupDrawer
         isEdit={false}
         visible={personaGroupVisible}
-        onClose={() => setPersonaGroupVisible(false)}
+        onClose={(result) => {
+          if (result) {
+            formRef?.current?.setFieldValue('personaGroupId', result?.id)
+          }
+          setPersonaGroupVisible(false)
+        }}
       />
     </Loader>
   )

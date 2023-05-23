@@ -66,7 +66,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -96,7 +96,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/regular/:profileId/:action' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
       })
 
     expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
@@ -113,7 +113,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -158,7 +158,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -223,7 +223,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/regular/:profileId/:action' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -255,7 +255,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -317,7 +317,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -347,11 +347,6 @@ describe('Wired', () => {
     await userEvent.click(venueCheckbox[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Deactivate' }) )
     await userEvent.click(await screen.findByRole('button', { name: 'Activate' }) )
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Summary/ })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }) )
   })
 
   it('should create Switch Configuration Profile with trust ports correctly', async () => {
@@ -364,7 +359,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -403,18 +398,9 @@ describe('Wired', () => {
     const saveTrustPortButton =
       await within(trustedPortModal).findByRole('button', { name: 'Finish' })
     await userEvent.click(saveTrustPortButton)
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Venues/i })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Summary/i })
-
-    const finishButton = await screen.findAllByRole('button', { name: /Finish/i })
-    await userEvent.click(finishButton[1])
   })
 
-  xit('should create Switch Configuration Profile with trust ports ICX7550 correctly', async () => {
+  it('should create Switch Configuration Profile with trust ports ICX7550 correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -424,7 +410,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -473,14 +459,5 @@ describe('Wired', () => {
     const saveTrustPortButton =
       await within(trustedPortModal).findByRole('button', { name: 'Finish' })
     await userEvent.click(saveTrustPortButton)
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Venues/i })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /Summary/i })
-
-    const finishButton = await screen.findAllByRole('button', { name: /Finish/i })
-    await userEvent.click(finishButton[1])
   })
 })

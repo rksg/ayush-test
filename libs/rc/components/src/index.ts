@@ -60,6 +60,7 @@ export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboar
 export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'
+export { ApFloorplan } from './ApFloorplan'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchCliSession } from './SwitchCliSession'
 export { SwitchClientsTable } from './SwitchClientsTable'
@@ -69,18 +70,27 @@ export { PersonaGroupSelect } from './PersonaGroupSelect'
 export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
 export { usePreference, countryCodes } from './usePreference'
-export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
 export type { updatePreferenceProps } from './usePreference'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
+export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
 
 export { TunnelProfileForm } from './TunnelProfileForm'
+export type { TunnelProfileFormType } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
-// eslint-disable-next-line max-len
-export { ConnectionMeteringForm, ConnectionMeteringFormMode, ConnectionMeteringFormProps } from './ConnectionMeteringForm'
+export {
+  ConnectionMeteringForm,
+  ConnectionMeteringFormMode,
+  ConnectionMeteringFormProps
+} from './ConnectionMeteringForm'
+export { RadiusOptionsForm } from './RadiusOptionsForm'
+export { PassphraseViewer } from './PassphraseViewer'
+export { PhoneInput } from './PhoneInput'
+
 export * from './services'
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
 export * from './SimpleListTooltip'
+export * from './RogueAPDetection'

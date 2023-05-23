@@ -12,6 +12,7 @@ import {
   baseEdgeDhcpApi as edgeDhcpApi,
   baseEventAlarmApi as eventAlarmApi,
   baseFirmwareApi as firmwareApi,
+  baseMigrationApi as migrationApi,
   baseLicenseApi as licenseApi,
   baseMspApi as mspApi,
   baseNetworkApi as networkApi,
@@ -25,9 +26,13 @@ import {
   baseTunnelProfileApi as tunnelProfileApi,
   baseConnectionMeteringApi as connectionMeteringApi,
   dataApi,
-  networkHealthApi,
+  dataApiSearch,
+  serviceGuardApi,
   userApi,
-  baseMsgTemplateApi as msgTemplateApi
+  baseMsgTemplateApi as msgTemplateApi,
+  videoCallQoeApi,
+  baseEdgeFirewallApi as edgeFirewallApi,
+  baseSigPackApi as sigPackApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -40,9 +45,9 @@ export const store = configureStore({
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer,
     [timelineApi.reducerPath]: timelineApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
+    [dataApiSearch.reducerPath]: dataApiSearch.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
-    [dataApi.reducerPath]: dataApi.reducer,
     [dhcpApi.reducerPath]: dhcpApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer,
@@ -53,13 +58,17 @@ export const store = configureStore({
     [switchApi.reducerPath]: switchApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [firmwareApi.reducerPath]: firmwareApi.reducer,
+    [migrationApi.reducerPath]: migrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
-    [networkHealthApi.reducerPath]: networkHealthApi.reducer,
+    [serviceGuardApi.reducerPath]: serviceGuardApi.reducer,
     [nsgApi.reducerPath]: nsgApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
-    [connectionMeteringApi.reducerPath]: connectionMeteringApi.reducer
+    [connectionMeteringApi.reducerPath]: connectionMeteringApi.reducer,
+    [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
+    [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
+    [sigPackApi.reducerPath]: sigPackApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -74,9 +83,9 @@ export const store = configureStore({
       eventAlarmApi.middleware,
       timelineApi.middleware,
       dataApi.middleware,
+      dataApiSearch.middleware,
       apApi.middleware,
       userApi.middleware,
-      dataApi.middleware,
       dhcpApi.middleware,
       serviceApi.middleware,
       mspApi.middleware,
@@ -87,17 +96,21 @@ export const store = configureStore({
       switchApi.middleware,
       administrationApi.middleware,
       firmwareApi.middleware,
+      migrationApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware,
-      networkHealthApi.middleware,
+      serviceGuardApi.middleware,
       nsgApi.middleware,
       tunnelProfileApi.middleware,
       msgTemplateApi.middleware,
-      connectionMeteringApi.middleware
+      connectionMeteringApi.middleware,
+      videoCallQoeApi.middleware,
+      edgeFirewallApi.middleware,
+      sigPackApi.middleware
     ])
   },
 
-  devTools: !isDev
+  devTools: isDev
 })
 
 export type AppState = ReturnType<typeof store.getState>

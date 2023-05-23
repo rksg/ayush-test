@@ -4,8 +4,7 @@ import { Form, Select, Space, Switch, Typography } from 'antd'
 import { isEqual }                                 from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
-import { Loader, StepsForm }       from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy } from '@acx-ui/components'
 import {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogApQuery,
@@ -39,9 +38,6 @@ export function Syslog () {
   const { Paragraph } = Typography
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
-
-  const unreleased = useIsSplitOn(Features.UNRELEASED)
-
   const {
     editContextData,
     setEditContextData,
@@ -137,7 +133,7 @@ export function Syslog () {
       isFetching: isUpdatingVenueSyslog
     }]}>
       <Space align='start'>
-        <StepsForm.FieldLabel
+        <StepsFormLegacy.FieldLabel
           width='max-content'
           style={{ height: '32px', display: 'flex', alignItems: 'center' }}
         >
@@ -150,7 +146,7 @@ export function Syslog () {
             }}
             style={{ marginLeft: '20px' }}
           />
-        </StepsForm.FieldLabel>
+        </StepsFormLegacy.FieldLabel>
         {enableServerRadio &&
         <Space direction='vertical'>
           <Form.Item style={{ margin: '0' }}>
@@ -166,7 +162,6 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            {unreleased &&
             <TenantLink
               to={getPolicyRoutePath({
                 type: PolicyType.SYSLOG,
@@ -176,7 +171,6 @@ export function Syslog () {
             >
               {$t({ defaultMessage: 'Add Server Profile:' })}
             </TenantLink>
-            }
           </Form.Item>
           {defaultSyslogValue &&
           <UI.FieldGroup>

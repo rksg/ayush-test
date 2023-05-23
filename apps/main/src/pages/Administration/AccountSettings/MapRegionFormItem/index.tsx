@@ -6,15 +6,15 @@ import { countryCodes, usePreference } from '@acx-ui/rc/components'
 
 import { MessageMapping } from '../MessageMapping'
 
+const DEFAULT_MAP_REGION = 'US'
 
 const MapRegionFormItem = () => {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const {
-    data: preferenceData,
     currentMapRegion,
-    update: updatePreferences,
+    updatePartial: updatePreferences,
     getReqState,
     updateReqState
   } = usePreference()
@@ -22,7 +22,7 @@ const MapRegionFormItem = () => {
   const handleMapRegionChange = (regionCode:string) => {
     if (!regionCode) return
     const payload = {
-      global: { ...preferenceData?.global, mapRegion: regionCode }
+      global: { mapRegion: regionCode }
     }
 
     updatePreferences({ newData: payload })
@@ -39,10 +39,9 @@ const MapRegionFormItem = () => {
         >
           {isMapEnabled ? (
             <Select
-              value={currentMapRegion}
+              value={currentMapRegion || DEFAULT_MAP_REGION}
               onChange={handleMapRegionChange}
               showSearch
-              allowClear
               optionFilterProp='children'
               disabled={isUpdatingPreference || isLoadingPreference}
             >

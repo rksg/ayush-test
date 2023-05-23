@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import { useState } from 'react'
 
-
 import { Badge } from 'antd'
 
 import {
@@ -32,11 +31,11 @@ export default function AlarmsHeaderButton () {
       count={getCount()}
       overflowCount={9}
       offset={[-3, 0]}
-      children={<LayoutUI.ButtonSolid icon={<NotificationSolid />}
-        onClick={()=>{
-          setVisible(true)
-        }}/>}
+      children={<LayoutUI.ButtonSolid
+        icon={<NotificationSolid />}
+        onClick={()=> setVisible(!visible)}
+      />}
     />
-    <AlarmsDrawer visible={visible} setVisible={setVisible} />
+    <AlarmsDrawer visible={visible} setVisible={setVisible}/>
   </>
 }

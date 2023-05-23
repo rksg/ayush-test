@@ -6,13 +6,13 @@ import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/c
 import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
   useDeleteMacRegistrationMutation, useGetMacRegListQuery,
-  useMacRegistrationsQuery,
+  useSearchMacRegistrationsQuery,
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
-import { MacRegistration, MacRegistrationPool, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
+import { FILTER, MacRegistration, MacRegistrationPool, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                                           from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                      from '@acx-ui/user'
 
 import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
@@ -28,12 +28,26 @@ export function MacRegistrationsTab () {
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
 
+  const sorter = {
+    sortField: 'macAddress',
+    sortOrder: 'ASC'
+  }
+
+  const filter = {
+    filterKey: 'macAddress',
+    operation: 'cn',
+    value: ''
+  }
+
   const tableQuery = useTableQuery({
-    useQuery: useMacRegistrationsQuery,
-    defaultPayload: {},
-    sorter: {
-      sortField: 'macAddress',
-      sortOrder: 'asc'
+    useQuery: useSearchMacRegistrationsQuery,
+    sorter,
+    defaultPayload: {
+      sorter,
+      dataOption: 'all',
+      searchCriteriaList: [
+        { ...filter }
+      ]
     }
   })
 
@@ -122,7 +136,8 @@ export function MacRegistrationsTab () {
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
-      dataIndex: 'status',
+      dataIndex: 'revoked',
+      sorter: true,
       render: function (data, row) {
         if (row.revoked) {
           return $t({ defaultMessage: 'Revoked' })
@@ -143,12 +158,14 @@ export function MacRegistrationsTab () {
     {
       title: $t({ defaultMessage: 'E-Mail' }),
       key: 'email',
-      dataIndex: 'email'
+      dataIndex: 'email',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Registration Date' }),
       key: 'registrationDate',
-      dataIndex: 'registrationDate',
+      dataIndex: 'createdDate',
+      sorter: true,
       render: function (data, row) {
         return toDateTimeString(row.createdDate)
       }
@@ -160,10 +177,21 @@ export function MacRegistrationsTab () {
       sorter: true,
       render: function (data, row) {
         return row.expirationDate ? toDateTimeString(row.expirationDate) :
-          returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)
+          $t({ defaultMessage: 'Never Expire' })
       }
     }
   ]
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...tableQuery.payload,
+      dataOption: 'all',
+      searchCriteriaList: [
+        { ...filter, value: customSearch?.searchString ?? '' }
+      ]
+    }
+    tableQuery.setPayload(payload)
+  }
 
   return (
     <Loader states={[
@@ -197,12 +225,15 @@ export function MacRegistrationsTab () {
         }}
         onClose={() => setUploadCsvDrawerVisible(false)} />
       <Table
+        enableApiFilter
+        settingsId='mac-regs-table'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
+        onFilterChange={handleFilterChange}
         rowSelection={{ type: 'radio' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add MAC Address' }),

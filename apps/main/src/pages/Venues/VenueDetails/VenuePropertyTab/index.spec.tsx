@@ -10,8 +10,9 @@ import { mockServer, render, screen, waitForElementToBeRemoved }                
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { mockPersona } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
 import {
-  mockEnabledNSGPropertyConfig,
-  mockPersonaGroupWithoutNSG, mockPropertyUnitList,
+  mockEnabledNoNSGPropertyConfig,
+  mockPersonaGroupWithoutNSG,
+  mockPropertyUnitList,
   mockConnectionMeteringTableResult,
   mockConnectionMeterings,
   replacePagination
@@ -30,7 +31,7 @@ describe('Property Unit Page', () => {
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
-        (_, res, ctx) => res(ctx.json(mockEnabledNSGPropertyConfig))
+        (_, res, ctx) => res(ctx.json(mockEnabledNoNSGPropertyConfig))
       ),
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
@@ -116,6 +117,8 @@ describe('Property Unit Page', () => {
     // 'Suspend' Unit action
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /suspend/i }))
+    const confirmDialog = await screen.findByRole('dialog')
+    await userEvent.click(await within(confirmDialog).findByRole('button', { name: /suspend/i }))
     // Wait api processing
     await waitFor(() => expect(updateUnitFn).toHaveBeenCalled())
     await waitFor(async () => await screen.findByRole('textbox'))

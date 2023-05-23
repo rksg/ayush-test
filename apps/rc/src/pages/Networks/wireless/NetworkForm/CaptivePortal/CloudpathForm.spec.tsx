@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                             from '@acx-ui/components'
+import { StepsFormLegacy }                       from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -58,12 +58,12 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
       value={{
         editMode: true, cloneMode: true, data: cloudPathDataNone
       }}
-    ><StepsForm><StepsForm.StepForm><CloudpathForm /></StepsForm.StepForm>
-      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    ><StepsFormLegacy><StepsFormLegacy.StepForm><CloudpathForm /></StepsFormLegacy.StepForm>
+      </StepsFormLegacy></NetworkFormContext.Provider></Provider>, { route: { params } })
     const insertInput = await screen.findByLabelText(/Enrollment Workflow URL/)
     fireEvent.change(insertInput, { target: { value: 'http://ruckus.abc.com' } })
     fireEvent.blur(insertInput)
-    const walledGarden = (await screen.findAllByLabelText(/Walled Garden/))[1]
+    const walledGarden = screen.getByTestId('walled-garden-showed-textarea')
     fireEvent.change(walledGarden, { target: { value: 'test123.com' } })
     fireEvent.blur(walledGarden)
     await userEvent.click(await screen.findByText('Reset to default'))

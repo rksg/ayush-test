@@ -3,7 +3,7 @@
 exports[`VenueEdit should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -17,7 +17,7 @@ exports[`VenueEdit should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/venues"
+                href="/tenant-id/t/venues"
               >
                 Venues
               </a>

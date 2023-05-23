@@ -4,7 +4,7 @@ import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
 
-import { StepsForm }          from '@acx-ui/components'
+import { StepsFormLegacy }    from '@acx-ui/components'
 import { useVenuesListQuery } from '@acx-ui/rc/services'
 import { Venue }              from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
@@ -13,6 +13,8 @@ import { ConfigurationProfileFormContext } from './ConfigurationProfileFormConte
 
 const defaultPayload = {
   searchString: '',
+  page: 1,
+  pageSize: 10000,
   fields: [
     'name',
     'id'
@@ -24,8 +26,7 @@ export function Summary () {
   const params = useParams()
   const { currentData } = useContext(ConfigurationProfileFormContext)
 
-  const { data } = useVenuesListQuery({ params:
-    { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' }, payload: defaultPayload })
+  const { data } = useVenuesListQuery({ params, payload: defaultPayload })
 
   const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
     map[obj.id] = obj
@@ -49,7 +50,7 @@ export function Summary () {
   return (
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title
+        <StepsFormLegacy.Title
           children={$t({ defaultMessage: 'Summary' })}
         />
         <Form.Item

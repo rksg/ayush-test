@@ -10,6 +10,7 @@ import { deviceTypeLabelMapping, osVenderLabelMapping } from '../../../contentsM
 
 import {
   deviceOsVendorMappingTable,
+  getDeviceOsVendorMap,
   getDeviceTypeOptions,
   getOsVendorOptions,
   isDeviceOSEnabled, isDeviceTypeEnabled
@@ -55,7 +56,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
   )
   const [deviceOSMappingTable] = useState(
-    deviceOsVendorMappingTable(deviceOSRuleList) as { [key: string]: string[] }
+    deviceOsVendorMappingTable(
+      getDeviceOsVendorMap(), deviceOSRuleList
+    ) as { [key: string]: string[] }
   )
 
   const [
@@ -198,6 +201,8 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
       validateFirst
       rules={[
         { required: true },
+        { min: 2 },
+        { max: 32 },
         { validator: (_, value) => {
           if (deviceOSRuleList
             .filter((rule: DeviceOSRule) => ruleDrawerEditMode ? (rule.ruleName !== value) : true)

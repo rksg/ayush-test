@@ -23,19 +23,27 @@ export const isLocalHost = () => {
 }
 
 export const isDev = () => {
-  return window.location.hostname.includes('devalto.ruckuswireless.com')
+  return window.location.hostname.includes('dev.ruckus.cloud')
+  || window.location.hostname.includes('devalto.ruckuswireless.com')
 }
 
 export const isQA = () => {
-  return window.location.hostname.includes('qaalto.ruckuswireless.com')
+  return window.location.hostname.includes('qa.ruckus.cloud')
+  || window.location.hostname.includes('qaalto.ruckuswireless.com')
 }
 
 export const isScale = () => {
-  return window.location.hostname.includes('scalealto.ruckuswireless.com')
+  return window.location.hostname.includes('scale.ruckus.cloud')
+  || window.location.hostname.includes('scalealto.ruckuswireless.com')
 }
 
 export const isIntEnv = () => {
-  return window.location.hostname.includes('intalto.ruckuswireless.com')
+  return window.location.hostname.includes('int.ruckus.cloud')
+  || window.location.hostname.includes('intalto.ruckuswireless.com')
+}
+
+export const isStage = () => {
+  return window.location.hostname.includes('opsalto.ruckuswireless.com')
 }
 
 export const isProdEnv = () => {
@@ -55,10 +63,14 @@ export const createHttpRequest = (
     ...customHeaders,
     ...getJwtHeaders({ ignoreDelegation })
   }
-  const newApiHostName = window.location.origin.replace(
+
+  const origin = window.location.origin
+  const newApiHostName = origin.replace(
     window.location.hostname, get('NEW_API_DOMAIN_NAME'))
-  const domain = (enableNewApi(apiInfo) && !isLocalHost()) ?
-    newApiHostName : window.location.origin
+  const domain = (enableNewApi(apiInfo) && !isLocalHost())
+    ? newApiHostName
+    : origin
+
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
   const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
@@ -95,7 +107,7 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if (apiInfo.newApi) {
     return !hasOldUrl || isDev() || isQA() || isScale() ||
-      isLocalHost() || isIntEnv() || isProdEnv()
+      isLocalHost() || isIntEnv() || isStage() || isProdEnv()
   } else {
     return false
   }

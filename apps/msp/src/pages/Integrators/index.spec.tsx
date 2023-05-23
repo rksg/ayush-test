@@ -43,6 +43,10 @@ const list = {
   ]
 }
 
+const mspPortal = {
+  msp_label: 'eleu1658'
+}
+
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
@@ -64,6 +68,9 @@ jest.mock('react-router-dom', () => ({
 describe('Integrators', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
+      return { data: mspPortal }
+    })
     utils.useTableQuery = jest.fn().mockImplementation(() => {
       return { data: list }
     })
@@ -91,7 +98,7 @@ describe('Integrators', () => {
     render(
       <Provider>
         <Integrators />
-      </Provider>, { route: { params, path: '/:tenantId/integrators' } })
+      </Provider>, { route: { params, path: '/:tenantId/v/integrators' } })
     expect(screen.getByText('Tech Partners')).toBeVisible()
     expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add Tech Partner')).toBeVisible()
@@ -111,7 +118,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/integrators' }
+        route: { params, path: '/:tenantId/v/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -146,7 +153,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -162,7 +169,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -173,7 +180,7 @@ describe('Integrators', () => {
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/v/${params.tenantId}/integrators/edit/${list.data.at(0)?.tenantType}/${list.data.at(0)?.id}`,
+      pathname: `/${params.tenantId}/v/integrators/edit/${list.data.at(0)?.tenantType}/${list.data.at(0)?.id}`,
       hash: '',
       search: ''
     })
@@ -183,7 +190,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -196,7 +203,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
@@ -214,7 +221,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/integrators' }
+        route: { params, path: '/:tenantId/v/dashboard/integrators' }
       })
 
     // eslint-disable-next-line testing-library/no-node-access

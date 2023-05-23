@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 dngobH"
+    class="styledComponents__Wrapper-sc-iwostn-0 epCiaB"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -28,11 +28,9 @@ exports[`Layout should render correctly 1`] = `
             >
               <a
                 class=""
-                href="/t/undefined/dashboard"
+                href="/undefined/t/dashboard"
               >
-                <svg
-                  data-testid="Logo"
-                />
+                <div />
               </a>
             </div>
             <div
@@ -56,7 +54,7 @@ exports[`Layout should render correctly 1`] = `
                     <a
                       class=""
                       data-label="Dashboard"
-                      href="/t/undefined/dashboard"
+                      href="/undefined/t/dashboard"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
@@ -111,7 +109,7 @@ exports[`Layout should render correctly 1`] = `
                     <a
                       class=""
                       data-label="Venues"
-                      href="/t/undefined/venues"
+                      href="/undefined/t/venues"
                     >
                       <span
                         class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
@@ -330,11 +328,11 @@ exports[`Layout should render correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
+                      class="styledComponents__Arrow-sc-iwostn-5 kqELAN"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-7 dGuosP ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -367,14 +365,10 @@ exports[`Layout should render correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 dMzeox"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 eOVnKH"
                 >
-                  <div
-                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-4 ccpxFp"
-                    role="separator"
-                  />
                   <span
-                    class="styledComponents__DropdownText-sc-iwostn-11 iEmwpR"
+                    class="styledComponents__DropdownText-sc-iwostn-10 cPrxgo"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -389,7 +383,7 @@ exports[`Layout should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 jckUtx"
               >
                 <div>
                   Right header
@@ -418,7 +412,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 dngobH"
+    class="styledComponents__Wrapper-sc-iwostn-0 epCiaB"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -443,11 +437,9 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
             >
               <a
                 class=""
-                href="/v/undefined/dashboard"
+                href="/undefined/v/dashboard"
               >
-                <svg
-                  data-testid="Logo"
-                />
+                <div />
               </a>
             </div>
             <div
@@ -515,11 +507,11 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
+                      class="styledComponents__Arrow-sc-iwostn-5 kqELAN"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-7 dGuosP ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -552,19 +544,15 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 dMzeox"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 eOVnKH"
                 >
-                  <div
-                    class="ant-divider ant-divider-vertical styledComponents__LogoDivider-sc-iwostn-4 ccpxFp"
-                    role="separator"
-                  />
                   <div>
                     Left header
                   </div>
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 jckUtx"
               >
                 <div>
                   Right header

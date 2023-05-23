@@ -209,8 +209,12 @@ function Table <RecordType extends Record<string, any>> ({
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
-    return props.dataSource?.filter(item => {
-      return selectedRowKeys.includes(typeof rowKey === 'function' ?
+
+    const dataSource = (!isGroupByActive ?
+      props.dataSource : props.dataSource?.flatMap(item => item.children)) as RecordType[]
+
+    return dataSource?.filter((item: RecordType) => {
+      return item && selectedRowKeys.includes(typeof rowKey === 'function' ?
         rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
   }, [props.dataSource, rowKey])
@@ -257,7 +261,7 @@ function Table <RecordType extends Record<string, any>> ({
   const searchables = aggregator(columns, 'searchable')
 
   const activeFilters = filterables.filter(column => {
-    const key = column.dataIndex as keyof RecordType
+    const key = column.filterKey || column.dataIndex as keyof RecordType
     const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
@@ -285,7 +289,7 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall') {
     pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-    if ((pagination.total || dataSource?.length || 0) < pagination.defaultPageSize!) {
+    if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
     }
   }

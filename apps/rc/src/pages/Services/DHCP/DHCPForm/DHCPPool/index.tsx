@@ -14,7 +14,9 @@ import {
   validateNetworkBaseIp,
   countIpMaxRange,
   countIpSize,
-  IpInSubnetPool } from '@acx-ui/rc/utils'
+  IpInSubnetPool,
+  IpUtilsService
+} from '@acx-ui/rc/utils'
 import { DHCPConfigTypeEnum }          from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
@@ -139,6 +141,7 @@ export default function DHCPPoolTable ({
   const onSubmit = (data: DHCPPool) => {
     let id = data.id
     if (id === initPoolData.id) { id = data.id = '_NEW_'+String(Date.now()) }
+    data.numberOfHosts = IpUtilsService.countIpRangeSize(data.startIpAddress, data.endIpAddress)
     valueMap.current[id] = data
     handleChanged()
     form.resetFields()
@@ -195,7 +198,7 @@ export default function DHCPPoolTable ({
         />
         <Form.Item
           name='subnetAddress'
-          label={$t({ defaultMessage: 'IP Address' })}
+          label={$t({ defaultMessage: 'Subnet Address' })}
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
@@ -349,7 +352,6 @@ export default function DHCPPoolTable ({
           $t({ defaultMessage: 'Add DHCP Pool' })}
         visible={visible}
         onClose={onClose}
-        mask={true}
         children={getContent}
         destroyOnClose={true}
         width={900}

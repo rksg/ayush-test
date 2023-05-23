@@ -1,16 +1,18 @@
 import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
-import { Alert, StepsForm, Subtitle } from '@acx-ui/components'
+import { Alert, StepsFormLegacy, Subtitle } from '@acx-ui/components'
 import {
   EdgeDhcpSetting,
   LeaseTimeUnit
 } from '@acx-ui/rc/utils'
 
+import { SpaceWrapper } from '../SpaceWrapper'
 import { ToggleButton } from '../ToggleButton'
 
-import DHCPHostTable from './DhcpHost'
-import DHCPPoolTable from './DhcpPool'
+import DHCPHostTable   from './DhcpHost'
+import DHCPOptionTable from './DhcpOption'
+import DHCPPoolTable   from './DhcpPool'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -45,7 +47,7 @@ export const EdgeDhcpSettingForm = () => {
             }]}
             children={<Input />}
           />
-          <StepsForm.FieldLabel width='100px'>
+          <StepsFormLegacy.FieldLabel width='100px'>
             {$t({ defaultMessage: 'DHCP Relay:' })}
             <Form.Item
               name='dhcpRelay'
@@ -53,7 +55,7 @@ export const EdgeDhcpSettingForm = () => {
               initialValue={false}
               children={<Switch />}
             />
-          </StepsForm.FieldLabel>
+          </StepsFormLegacy.FieldLabel>
           {dhcpRelay &&
             <>
               <Form.Item
@@ -65,7 +67,7 @@ export const EdgeDhcpSettingForm = () => {
                 children={<Input />}
               />
               <Alert message={
-                $t({ defaultMessage: `If this DHCP service is going to be used for 
+                $t({ defaultMessage: `If this DHCP service is going to be used for
                 Network Segmentation service, please make sure you set the DHCP pool for it.` })
               }
               type='info'
@@ -123,33 +125,52 @@ export const EdgeDhcpSettingForm = () => {
         </Col>
       </Row>
 
-      <Subtitle level={3}>
-        { $t({ defaultMessage: 'Set DHCP Pools' }) }
-      </Subtitle>
-      <Row gutter={20}>
-        <Col span={15}>
-          <Form.Item
-            name='dhcpPools'
-            rules={[
-              { required: true, message: $t({ defaultMessage: 'Please create DHCP pools' }) }
-            ]}
-            children={<DHCPPoolTable></DHCPPoolTable>}
-          />
-        </Col>
-      </Row>
+      <SpaceWrapper direction='vertical' size='middle' fullWidth>
+        <Row gutter={20}>
+          <Col span={24}>
+            <Subtitle level={3}>
+              { $t({ defaultMessage: 'Set DHCP Pools' }) }
+            </Subtitle>
+          </Col>
+          <Col span={15}>
+            <Form.Item
+              name='dhcpPools'
+              rules={[
+                { required: true, message: $t({ defaultMessage: 'Please create DHCP pools' }) }
+              ]}
+              children={<DHCPPoolTable />}
+            />
+          </Col>
+        </Row>
 
-      <Subtitle level={3}>
-        { $t({ defaultMessage: 'Host' }) }
-      </Subtitle>
-      <Row gutter={20}>
-        <Col span={15}>
-          <Form.Item
-            name='hosts'
-            children={<DHCPHostTable></DHCPHostTable>}
-          />
-        </Col>
-      </Row>
+        <Row gutter={20}>
+          <Col span={24}>
+            <Subtitle level={3}>
+              { $t({ defaultMessage: 'DHCP Option' }) }
+            </Subtitle>
+          </Col>
+          <Col span={15}>
+            <Form.Item
+              name='dhcpOptions'
+              children={<DHCPOptionTable />}
+            />
+          </Col>
+        </Row>
 
+        <Row gutter={20}>
+          <Col span={24}>
+            <Subtitle level={3}>
+              { $t({ defaultMessage: 'Host' }) }
+            </Subtitle>
+          </Col>
+          <Col span={15}>
+            <Form.Item
+              name='hosts'
+              children={<DHCPHostTable />}
+            />
+          </Col>
+        </Row>
+      </SpaceWrapper>
     </>
   )
 }

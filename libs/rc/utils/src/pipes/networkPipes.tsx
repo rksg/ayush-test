@@ -9,6 +9,7 @@ import {
   useIntl
 } from 'react-intl'
 
+
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -18,6 +19,8 @@ import {
 } from '../constants'
 import { ExpirationType } from '../types'
 import { Network }        from '../types/network'
+
+import * as UI from './styledComponents'
 
 export enum DpskNetworkType {
   FORMAT = 'PassphraseFormat',
@@ -66,19 +69,27 @@ interface AdvancedPassphraseExpirationProps {
   expirationType: ExpirationType | null;
   expirationOffset?: number;
   expirationDate?: string;
+  displayTime?: boolean;
 }
 
 export function transformAdvancedDpskExpirationText (
   { $t }: IntlShape,
   props: AdvancedPassphraseExpirationProps
 ) {
-  const { expirationType, expirationOffset, expirationDate } = props
+  const { expirationType, expirationOffset, expirationDate, displayTime = false } = props
   if (!expirationType) {
     return $t(passphraseExpirationLabel[PassphraseExpirationEnum.UNLIMITED])
   } else if (expirationType === ExpirationType.SPECIFIED_DATE) {
-    return $t(advancedPassphraseExpirationLabel[ExpirationType.SPECIFIED_DATE], {
-      date: moment(expirationDate).format(EXPIRATION_DATE_FORMAT)
+    const expirationDateMoment = moment(expirationDate)
+    const text = $t(advancedPassphraseExpirationLabel[ExpirationType.SPECIFIED_DATE], {
+      // eslint-disable-next-line max-len
+      date: expirationDateMoment.format(displayTime ? EXPIRATION_TIME_FORMAT : EXPIRATION_DATE_FORMAT)
     })
+    const isSameOrBeforeToday = expirationDateMoment.isSameOrBefore(new Date())
+
+    return isSameOrBeforeToday
+      ? <UI.ExpiredDateWrapper>{text}</UI.ExpiredDateWrapper>
+      : text
   } else {
     return $t(advancedPassphraseExpirationLabel[expirationType], { offset: expirationOffset })
   }

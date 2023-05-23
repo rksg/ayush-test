@@ -9,25 +9,27 @@ import {
 import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
-import { RolesEnum }                         from '@acx-ui/types'
-import { hasRoles }                          from '@acx-ui/user'
+import { hasAccess }                         from '@acx-ui/user'
 
-import IncidentDetailsPage                                from './pages/IncidentDetails'
-import NetworkHealthDetails                               from './pages/NetworkHealth/NetworkHealthDetails'
-import NetworkHealthForm                                  from './pages/NetworkHealth/NetworkHealthForm'
-import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
-import NetworkHealthList                                  from './pages/NetworkHealth/NetworkHealthList'
-import VideoCallQoePage                                   from './pages/VideoCallQoe'
+import IncidentDetailsPage                              from './pages/IncidentDetails'
+import ServiceGuard                                     from './pages/ServiceGuard'
+import ServiceGuardDetails                              from './pages/ServiceGuard/ServiceGuardDetails'
+import ServiceGuardForm                                 from './pages/ServiceGuard/ServiceGuardForm'
+import { ServiceGuardSpecGuard, ServiceGuardTestGuard } from './pages/ServiceGuard/ServiceGuardGuard'
+import ServiceGuardList                                 from './pages/ServiceGuard/ServiceGuardList'
+import VideoCallQoeListPage                             from './pages/VideoCallQoe'
+import { VideoCallQoeForm }                             from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
+import { VideoCallQoeDetails }                          from './pages/VideoCallQoeDetails'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
   const canUseSV = useIsTierAllowed('ANLT-ADV')
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) return <React.Fragment />
+  if (!hasAccess()) return <React.Fragment />
 
   const routes = rootRoutes(
-    <Route path='t/:tenantId'>
+    <Route path=':tenantId/t'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents' element={<IncidentListPage />} />
       <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPage />} />
@@ -39,29 +41,30 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/configChange'
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
 
-      {canUseSV && <Route path='serviceValidation'>
-        <Route path=''
-          element={<TenantNavigate replace to='./serviceValidation/networkHealth' />}
-        />
-        <Route path='networkHealth' element={<NetworkHealthList />} />
-        <Route path='networkHealth/add' element={<NetworkHealthForm />} />
-        <Route path='networkHealth/:specId'>
-          <Route
-            path='edit'
-            element={<NetworkHealthSpecGuard children={<NetworkHealthForm />} />}
-          />
-          <Route path='tests/:testId'>
+      {canUseSV && <Route>
+        <Route path='analytics/serviceValidation/*' element={<ServiceGuard />}>
+          <Route path='' element={<ServiceGuardList />} />
+          <Route path='add' element={<ServiceGuardForm />} />
+          <Route path=':specId'>
             <Route
-              path=''
-              element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+              path='edit'
+              element={<ServiceGuardSpecGuard children={<ServiceGuardForm />} />}
             />
-            <Route
-              path='tab/:activeTab'
-              element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
-            />
+            <Route path='tests/:testId'>
+              <Route
+                path=''
+                element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
+              />
+              <Route
+                path='tab/:activeTab'
+                element={<ServiceGuardTestGuard children={<ServiceGuardDetails />} />}
+              />
+            </Route>
           </Route>
         </Route>
-        <Route path='videoCallQoe' element={<VideoCallQoePage />} />
+        <Route path='analytics/videoCallQoe' element={<VideoCallQoeListPage />} />
+        <Route path='analytics/videoCallQoe/:testId' element={<VideoCallQoeDetails/>} />
+        <Route path='analytics/videoCallQoe/add' element={<VideoCallQoeForm />} />
       </Route>}
     </Route>
   )

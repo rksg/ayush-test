@@ -88,16 +88,20 @@ describe('MacRegistrationListsTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        RulesManagementUrlsInfo.getPolicySet.url,
         (req, res, ctx) => res(ctx.json(policySet))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(networkList))
+      ),
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
   })
@@ -134,7 +138,7 @@ describe('MacRegistrationListsTable', () => {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
         policyId: '79c439e1e5474f68acc9da38fa08a37b'
-      }, path: '/:tenantId/:policyId' }
+      }, path: '/:tenantId/t/:policyId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -145,9 +149,6 @@ describe('MacRegistrationListsTable', () => {
     fireEvent.click(screen.getByRole('button', { name: /delete/i }))
 
     await screen.findByText('Delete "Registration pool-2"?')
-
-    fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
-      { target: { value: 'Delete' } })
 
     const deleteListButton = screen.getByRole('button', { name: 'Delete List' })
     await waitFor(() => expect(deleteListButton).toBeEnabled())

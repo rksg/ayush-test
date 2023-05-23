@@ -15,16 +15,13 @@ import {
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
 import { MSPUtils }                           from '@acx-ui/rc/utils'
-import { useParams }                          from '@acx-ui/react-router-dom'
 import { RegionValue, useUserProfileContext } from '@acx-ui/user'
-
-
-import * as UI from '../styledComponents'
+import { useTenantId }                        from '@acx-ui/utils'
 
 const mspUtils = MSPUtils()
 
 export default function RegionButton () {
-  const params = useParams()
+  const params = { tenantId: useTenantId() }
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
@@ -71,11 +68,11 @@ export default function RegionButton () {
     }
   />
 
-  return <UI.RegionBtnWrapper> {regionEnable &&
-  <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
-    <LayoutUI.Icon children={<WorldSolid />} />
-    {selectedKeys}
-    <LayoutUI.Icon children={<ArrowExpand />} />
-  </LayoutUI.DropdownText>}</Dropdown>}
-  </UI.RegionBtnWrapper>
+  return regionEnable
+    ? <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
+      <LayoutUI.Icon children={<WorldSolid />} />
+      {selectedKeys}
+      <LayoutUI.Icon children={<ArrowExpand />} />
+    </LayoutUI.DropdownText>}</Dropdown>
+    : null
 }

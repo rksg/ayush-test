@@ -12,7 +12,8 @@ import {
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
-  useGetConnectionMeteringListQuery
+  useGetConnectionMeteringListQuery,
+  useAdaptivePolicyListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -96,6 +97,9 @@ function useCardData (): CardDataProps[] {
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const attributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
+
   return [
     {
       type: PolicyType.AAA,
@@ -185,6 +189,15 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
       disabled: !isConnectionMeteringEnabled
+    },
+    {
+      type: PolicyType.ADAPTIVE_POLICY,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }, { skip: !adaptivePolicyEnabled || !attributeGroupEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
+      disabled: !adaptivePolicyEnabled || !attributeGroupEnabled
     }
   ]
 }

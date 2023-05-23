@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Space, Badge }        from 'antd'
+import { Badge }               from 'antd'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -12,6 +12,13 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
+import {
+  Features,
+  useIsSplitOn
+} from '@acx-ui/feature-toggle'
+import {
+  DownloadOutlined
+} from '@acx-ui/icons'
 import { useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -27,7 +34,8 @@ import {
   TableQuery,
   RequestPayload,
   SwitchStatusEnum,
-  isStrictOperationalSwitch
+  isStrictOperationalSwitch,
+  transformSwitchUnitStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -37,15 +45,29 @@ import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { SwitchCliSession }          from '../SwitchCliSession'
 import { useSwitchActions }          from '../useSwitchActions'
 
+import {
+  getGroupableConfig
+} from './config'
+import { useExportCsv } from './useExportCsv'
+
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
   if(row){
-    const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    let rowData = { ...row }
+    if(row.isGroup && row.deviceStatus?.toLocaleUpperCase() === SwitchStatusEnum.OPERATIONAL) {
+      // For groupBy table display
+      rowData.configReady = true
+      rowData.syncedSwitchConfig = true
+    }
+    const switchStatus = transformSwitchStatus(rowData.deviceStatus, rowData.configReady, rowData.syncedSwitchConfig, rowData.suspendingDeployTime)
+    const switchStatusString = rowData.isFirstLevel || rowData.isGroup
+      ? getSwitchStatusString(rowData)
+      : transformSwitchUnitStatus(rowData.deviceStatus, rowData.configReady, rowData.syncedSwitchConfig)
     return (
       <span>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
-          text={showText ? getSwitchStatusString(row) : ''}
+          text={showText ? switchStatusString : ''}
         />
       </span>
     )
@@ -99,12 +121,14 @@ export function SwitchTable (props : SwitchTableProps) {
     option: { skip: Boolean(props.tableQuery) }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+  const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
 
-  const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name }) => ({
-    key, value: name
+  const statusFilterOptions = seriesSwitchStatusMapping().map(({ key, name, color }) => ({
+    key, value: name, label: <Badge color={color} text={name} />
   }))
 
   const switchType = () => [
@@ -144,10 +168,10 @@ export function SwitchTable (props : SwitchTableProps) {
           <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
             {getSwitchName(row)}
           </TenantLink> :
-          <Space>
-            <>{getSwitchName(row)}</>
-            <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-          </Space>
+          <div>
+            {getSwitchName(row)}
+            <span style={{ marginLeft: '4px' }}>({getStackMemberStatus(row.unitStatus || '', true)})</span>
+          </div>
       }
     }, {
       key: 'deviceStatus',
@@ -157,6 +181,7 @@ export function SwitchTable (props : SwitchTableProps) {
       fixed: 'left',
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
+      groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (data, row) => <SwitchStatus row={row}/>
     }, {
       key: 'model',
@@ -164,7 +189,8 @@ export function SwitchTable (props : SwitchTableProps) {
       dataIndex: 'model',
       filterable: filterableKeys ? filterableKeys['model'] : false,
       sorter: true,
-      searchable: searchable
+      searchable: searchable,
+      groupable: getGroupableConfig()?.modelGroupableOptions
     }, {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -308,7 +334,7 @@ export function SwitchTable (props : SwitchTableProps) {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
+      rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
@@ -335,6 +361,8 @@ export function SwitchTable (props : SwitchTableProps) {
         }
       }
       ] : [])}
+      // eslint-disable-next-line max-len
+      iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
     />
     <SwitchCliSession
       modalState={cliModalState}
@@ -352,8 +380,13 @@ export function SwitchTable (props : SwitchTableProps) {
       visible={importVisible}
       isLoading={importResult.isLoading}
       importError={importResult.error as FetchBaseQueryError}
-      importRequest={(formData) => {
-        importCsv({ params, payload: formData })
+      importRequest={async (formData) => {
+        await importCsv({ params, payload: formData }
+        ).unwrap().then(() => {
+          setImportVisible(false)
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
       }}
       onClose={() => setImportVisible(false)}
     />

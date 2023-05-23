@@ -1,6 +1,7 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import _                       from 'lodash'
 
+import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   createHttpRequest,
@@ -54,24 +55,46 @@ import {
   SwitchRearView,
   Lag,
   SwitchVlan,
-  enableNewApi
+  enableNewApi,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi } from '@acx-ui/store'
 
+export type SwitchsExportPayload = {
+  filters: Filter
+  tenantId: string
+} & SEARCH & SORTER
+
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
-    switchList: build.query<TableResult<SwitchRow>, RequestPayload>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const hasGroupBy = !!arg.payload?.groupBy
+        const req = hasGroupBy
+          ? createHttpRequest(SwitchUrlsInfo.getSwitchListByGroup, arg.params)
+          : createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params)
         const listInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
+          ...req,
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)
         const list = listQuery.data as TableResult<SwitchRow>
         const stackMembers:{ [index:string]: StackMember[] } = {}
         const stacks: string[] = []
+        if(!list) return { error: listQuery.error as FetchBaseQueryError }
+
         list.data.forEach(async (item:SwitchRow) => {
-          if(item.isStack || item.formStacking){
+          if(hasGroupBy){
+            item.children = item.switches
+            item.switches?.forEach((i:SwitchRow) => {
+              if(i.isStack || i.formStacking){
+                stacks.push(i.serialNumber)
+              }
+            })
+          }else if(item.isStack || item.formStacking){
             stacks.push(item.serialNumber)
           }
         })
@@ -83,11 +106,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           stackMembers[id] = allStacksMember[index]?.data.data
         })
 
-        const aggregatedList = aggregatedSwitchListData(list, stackMembers)
+        const aggregatedList = hasGroupBy
+          ? aggregatedSwitchGroupByListData(list, stackMembers)
+          : aggregatedSwitchListData(list, stackMembers)
 
-        return listQuery.data
-          ? { data: aggregatedList }
-          : { error: listQuery.error as FetchBaseQueryError }
+        return { data: aggregatedList }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Switch', id: 'LIST' }],
@@ -957,7 +980,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      keepUnusedDataFor: 0
     }),
     addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1038,6 +1062,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    downloadSwitchsCSV: build.mutation<Blob, SwitchsExportPayload>({
+      query: (payload) => {
+        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchsCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
     // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
     //   query: ({ params, payload }) => {
@@ -1088,6 +1130,31 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
         activeUnitId: [serialNumber]
       }
     }
+  }
+}
+
+const aggregatedSwitchGroupByListData = (switches: TableResult<SwitchRow>,
+  stackMembers:{ [index:string]: StackMember[] }) => {
+  const data = JSON.parse(JSON.stringify(switches.data))
+  data.forEach((item:SwitchRow, index:number) => {
+    item.isGroup = 'group' + index // for table rowKey
+    item.children?.forEach(i => {
+      i.isFirstLevel = true
+      if (stackMembers[i.serialNumber]) {
+        const tmpMember = _.cloneDeep(stackMembers[i.serialNumber])
+        tmpMember.forEach((member: StackMember, index: number) => {
+          if (member.serialNumber === i.serialNumber) {
+            tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
+          }
+        })
+        // i.children = tmpMember // TODO: stack members in group by table
+      }
+    })
+  })
+
+  return {
+    ...switches,
+    data
   }
 }
 
@@ -1237,5 +1304,6 @@ export const {
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
-  useGetSwitchModelListQuery
+  useGetSwitchModelListQuery,
+  useDownloadSwitchsCSVMutation
 } = switchApi

@@ -11,8 +11,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
-import { get }                                  from '@acx-ui/config'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { get }                                        from '@acx-ui/config'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -26,13 +26,14 @@ import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import * as UI                     from '../styledComponents'
 
-import { DhcpCheckbox }     from './DhcpCheckbox'
-import FacebookSetting      from './FacebookSetting'
-import GoogleSetting        from './GoogleSetting'
-import LinkedInSetting      from './LinkedInSetting'
-import { RedirectUrlInput } from './RedirectUrlInput'
-import TwitterSetting       from './TwitterSetting'
-
+import { DhcpCheckbox }                          from './DhcpCheckbox'
+import FacebookSetting                           from './FacebookSetting'
+import GoogleSetting                             from './GoogleSetting'
+import LinkedInSetting                           from './LinkedInSetting'
+import { RedirectUrlInput }                      from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import TwitterSetting                            from './TwitterSetting'
 
 export function SelfSignInForm () {
   const {
@@ -157,7 +158,7 @@ export function SelfSignInForm () {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsForm.Title>
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsFormLegacy.Title>
         <Form.Item
           name='allowSign'
           initialValue={[]}
@@ -336,6 +337,11 @@ export function SelfSignInForm () {
           </Space>
         </Form.Item>}
         <DhcpCheckbox />
+        <BypassCaptiveNetworkAssistantCheckbox
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn} />
+        <WalledGardenTextArea
+          guestNetworkTypeEnum={GuestNetworkTypeEnum.SelfSignIn}
+          enableDefaultWalledGarden={false} />
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 12 }}>

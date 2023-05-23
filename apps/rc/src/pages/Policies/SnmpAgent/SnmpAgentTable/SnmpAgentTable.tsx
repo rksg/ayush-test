@@ -210,6 +210,7 @@ function useColumns (
       title: $t({ defaultMessage: 'SNMP v2' }),
       dataIndex: 'v2Agents',
       align: 'center',
+      sorter: true,
       render: function (data, row) {
         return renderToListTooltip(intl, row.v2Agents)
       }
@@ -219,6 +220,7 @@ function useColumns (
       title: $t({ defaultMessage: 'SNMP v3' }),
       dataIndex: 'v3Agents',
       align: 'center',
+      sorter: true,
       render: function (data, row) {
         return renderToListTooltip(intl, row.v3Agents)
       }
@@ -228,6 +230,7 @@ function useColumns (
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venues',
       align: 'center',
+      sorter: true,
       filterKey: 'venues.name.keyword',
       filterable: filterables ? filterables['venues'] : false,
       render: function (data, row) {
@@ -239,6 +242,7 @@ function useColumns (
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       align: 'center',
+      sorter: true,
       render: function (data, row) {
         return renderToListTooltip(intl, row.aps)
       }

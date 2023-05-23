@@ -1,6 +1,5 @@
-import React, { MutableRefObject, useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 
-import { ProFormInstance }               from '@ant-design/pro-form'
 import { Col, Form, Input, Row, Select } from 'antd'
 import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
@@ -8,7 +7,7 @@ import { useParams }                     from 'react-router-dom'
 
 import { StepsForm }                                                        from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
-import { CreateNetworkFormFields, QosPriorityEnum, WifiCallingActionTypes } from '@acx-ui/rc/utils'
+import { QosPriorityEnum, WifiCallingActionTypes }                          from '@acx-ui/rc/utils'
 
 import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 import WifiCallingFormContext                 from '../WifiCallingFormContext'
@@ -16,13 +15,14 @@ import WifiCallingFormContext                 from '../WifiCallingFormContext'
 import EpdgTable from './EpdgTable'
 
 type WifiCallingSettingFormProps = {
-  edit?: boolean,
-  formRef?: MutableRefObject<ProFormInstance<CreateNetworkFormFields> | undefined>
+  edit?: boolean
 }
 
 const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const { $t } = useIntl()
-  const { edit, formRef } = props
+  const { edit } = props
+
+  const form = Form.useFormInstance()
 
   const {
     state, dispatch
@@ -94,10 +94,10 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
         }
       })
     }
-    if (data && formRef) {
-      formRef.current?.setFieldValue('serviceName', data.serviceName)
-      formRef.current?.setFieldValue('description', data.description)
-      formRef.current?.setFieldValue('qosPriority', data.qosPriority)
+    if (data && form) {
+      form.setFieldValue('serviceName', data.serviceName)
+      form.setFieldValue('description', data.description)
+      form.setFieldValue('qosPriority', data.qosPriority)
     }
   }, [data, state.ePDG.length])
 

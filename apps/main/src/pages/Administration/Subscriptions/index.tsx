@@ -11,6 +11,7 @@ import {
 import { get }                             from '@acx-ui/config'
 import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
+import { SpaceWrapper }                    from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -28,8 +29,8 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import * as UI                     from './styledComponent'
-import { SubscriptionUtilization } from './SubscriptionUtilization'
+import * as UI                from './styledComponent'
+import { SubscriptionHeader } from './SubscriptionHeader'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
@@ -58,11 +59,11 @@ const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'Show All' }) },
   {
-    key: 'valid',
+    key: 'active',
     value: $t({ defaultMessage: 'Show Active' })
   },
   {
-    key: 'invalid',
+    key: 'expired',
     value: $t({ defaultMessage: 'Show Expired' })
   }
 ]
@@ -90,6 +91,7 @@ const SubscriptionTable = () => {
         (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
         || o.key !== EntitlementDeviceType.EDGE
       ),
+      sorter: { compare: sortProp('deviceType', defaultSort) },
       render: function (_, row) {
         return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
       }
@@ -98,6 +100,7 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
+      sorter: { compare: sortProp('deviceSubType', defaultSort) },
       render: function (_, row) {
         if (row.tempLicense === true) {
           return EntitlementUtil.tempLicenseToString(true)
@@ -142,7 +145,8 @@ const SubscriptionTable = () => {
       // key needs to be unique
       key: 'timeLeft',
       sorter: { compare: sortProp('expirationDate', dateSort) },
-      defaultSortOrder: 'ascend',
+      // active license should be first
+      defaultSortOrder: 'descend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
         const TimeLeftWrapper = remainingDays < 0
@@ -160,8 +164,9 @@ const SubscriptionTable = () => {
       filterMultiple: false,
       filterValueNullable: true,
       filterable: statusTypeFilterOpts($t),
+      sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        return row.status === 'valid'
+        return row.status === 'active'
           ? $t({ defaultMessage: 'Active' })
           : $t({ defaultMessage: 'Expired' })
       }
@@ -196,7 +201,7 @@ const SubscriptionTable = () => {
 
   const GetStatus = (expirationDate: string) => {
     const isValid = moment(expirationDate).isAfter(Date.now())
-    return isValid ? 'valid' : 'invalid'
+    return isValid ? 'active' : 'expired'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
@@ -220,10 +225,10 @@ const SubscriptionTable = () => {
 
 const Subscriptions = () => {
   return (
-    <UI.FullWidthSpace size='large' direction='vertical'>
-      <SubscriptionUtilization />
+    <SpaceWrapper fullWidth size='large' direction='vertical'>
+      <SubscriptionHeader />
       <SubscriptionTable />
-    </UI.FullWidthSpace>
+    </SpaceWrapper>
   )
 }
 

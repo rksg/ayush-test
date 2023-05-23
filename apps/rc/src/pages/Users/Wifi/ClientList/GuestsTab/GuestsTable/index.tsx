@@ -3,12 +3,10 @@ import { useEffect, useState } from 'react'
 import {
   FetchBaseQueryError
 } from '@reduxjs/toolkit/query/react'
-import { Drawer }  from 'antd'
 import _           from 'lodash'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
+import { Drawer, Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
 import {
   Button,
   Table,
@@ -68,45 +66,36 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
+export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => {
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
-  const { startDate, endDate, range } = props.dateFilter
+  const filters = {
+    includeExpired: ['true'],
+    ...(dateFilter.range === DateRange.allTime ? {} : { dateFilter })
+  }
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
-      filters: {
-        includeExpired: ['true'],
-        ...(range === DateRange.allTime ? {} : {
-          fromTime: [moment(startDate).utc().format()],
-          toTime: [moment(endDate).utc().format()]
-        })
-      }
+      filters: filters
     },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
   })
 
-  useEffect(()=>{
-    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
-    let customPayload = {
+  useEffect(() => {
+    tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        ..._.omit(payload.filters, ['fromTime', 'toTime']),
-        includeExpired: ['true'],
-        ...(range === DateRange.allTime ? {} : {
-          fromTime: [moment(startDate).utc().format()],
-          toTime: [moment(endDate).utc().format()]
-        })
+        ..._.omit(tableQuery.payload.filters, ['dateFilter']),
+        ...filters
       }
-    }
-    tableQuery.setPayload(customPayload)
-  }, [startDate, endDate, range])
+    })
+  }, [dateFilter])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
@@ -296,7 +285,7 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
       key: 'guestStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'guestStatus',
-      sorter: false,
+      sorter: true,
       render: function (data) {
         return data === GuestStatusEnum.EXPIRED ?
           <span style={{ color: cssStr('--acx-semantics-red-50') }}>{data}</span> : data
@@ -428,7 +417,6 @@ export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
         title={$t({ defaultMessage: 'Guest Details' })}
         visible={visible}
         onClose={onClose}
-        mask={false}
         children={
           <GuestsDetail
             triggerClose={onClose}

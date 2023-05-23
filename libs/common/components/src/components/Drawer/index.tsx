@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { KeyboardEvent, MouseEvent as ReactMouseEvent, RefObject, useRef, useEffect, useState, ReactNode } from 'react'
 
-import { DrawerProps as AntDrawerProps } from 'antd'
-import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useIntl }                       from 'react-intl'
+import {  DrawerProps as AntDrawerProps } from 'antd'
+import Checkbox, { CheckboxChangeEvent }  from 'antd/lib/checkbox'
+import { useIntl }                        from 'react-intl'
 
 import { CloseSymbol, ArrowBack } from '@acx-ui/icons'
 
@@ -18,7 +18,8 @@ interface DrawerHeaderProps {
 }
 
 export interface DrawerProps extends
-  Omit<AntDrawerProps, 'title'|'placement'|'extra'|'footerStyle'>,
+  Omit<AntDrawerProps,
+    'title'|'placement'|'extra'|'footerStyle'|'maskClosable'|'maskStyle'|'mask'|'closeIcon'>,
   DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {
@@ -35,26 +36,48 @@ const Header = (props: DrawerHeaderProps) => {
   </>
 }
 
+let currentDrawer: {
+  ref: RefObject<boolean>,
+  onClose: CallableFunction
+}
+
+export function useCloseOutsideClick (
+  onClose: CallableFunction,
+  footer: ReactNode | undefined,
+  visible: boolean
+) {
+  const wasVisible = useRef<boolean>(false)
+  useEffect(() => {
+    if (!footer && visible && !wasVisible.current && currentDrawer?.ref !== wasVisible) {
+      currentDrawer?.onClose?.()
+      currentDrawer = { ref: wasVisible, onClose }
+    }
+    wasVisible.current = visible
+  }, [onClose, footer, wasVisible, visible])
+}
+
 export const Drawer = (props: DrawerProps) => {
   const { title, icon, subTitle, onBackClick, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
-  return (
-    <UI.Drawer
-      {...rest}
-      title={<Header {...headerProps}/>}
-      placement='right'
-      mask={false}
-      width={props.width || '336px'}
-      closeIcon={<CloseSymbol />}
-    />
-  )
+  const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
+  useCloseOutsideClick(onClose, props.footer, Boolean(props.visible))
+  return <UI.Drawer
+    {...rest}
+    title={<Header {...headerProps}/>}
+    placement='right'
+    mask={false}
+    maskStyle={{ background: 'none' }}
+    maskClosable={false}
+    width={props.width || '336px'}
+    closeIcon={<CloseSymbol />}
+  />
 }
 
 interface FormFooterProps {
   showAddAnother?: boolean
   showSaveButton?: boolean
   onCancel: () => void
-  onSave: (checked: boolean) => Promise<void>
+  onSave?: (checked: boolean) => Promise<void>
   buttonLabel?: {
     addAnother?: string
     cancel?: string
@@ -93,7 +116,7 @@ const FormFooter = (props: FormFooterProps) => {
         <Button onClick={onCancel}>
           {buttonLabel.cancel}
         </Button>
-        {showSaveButton && <Button
+        {showSaveButton && onSave && <Button
           loading={loading}
           onClick={() => {
             setLoading(true)

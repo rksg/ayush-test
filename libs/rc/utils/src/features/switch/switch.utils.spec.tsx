@@ -32,6 +32,7 @@ const switchRow ={
   venueId: '5c05180d54d84e609a4d653a3a8332d1',
   venueName: 'My-Venue',
   configReady: false,
+  syncedSwitchConfig: true,
   syncDataEndTime: '',
   cliApplied: false,
   formStacking: false,
@@ -132,32 +133,32 @@ describe('switch.utils', () => {
       })
       expect(transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_START)).toStrictEqual({
         message: 'Firmware Updating',
-        deviceStatus: DeviceConnectionStatus.CONNECTED,
+        deviceStatus: DeviceConnectionStatus.ALERTING,
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS)).toStrictEqual({
         message: 'Firmware Update - Validating Parameters',
-        deviceStatus: DeviceConnectionStatus.CONNECTED,
+        deviceStatus: DeviceConnectionStatus.ALERTING,
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING)).toStrictEqual({
         message: 'Firmware Update - Downloading',
-        deviceStatus: DeviceConnectionStatus.CONNECTED,
+        deviceStatus: DeviceConnectionStatus.ALERTING,
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE)).toStrictEqual({
         message: 'Firmware Update - Validating Image',
-        deviceStatus: DeviceConnectionStatus.CONNECTED,
+        deviceStatus: DeviceConnectionStatus.ALERTING,
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE)).toStrictEqual({
         message: 'Firmware Update - Syncing To Remote',
-        deviceStatus: DeviceConnectionStatus.CONNECTED,
+        deviceStatus: DeviceConnectionStatus.ALERTING,
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH)).toStrictEqual({
         message: 'Firmware Update - Writing To Flash',
-        deviceStatus: DeviceConnectionStatus.CONNECTED,
+        deviceStatus: DeviceConnectionStatus.ALERTING,
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.FIRMWARE_UPD_FAIL)).toStrictEqual({
@@ -167,7 +168,7 @@ describe('switch.utils', () => {
       })
       expect(transformSwitchStatus(SwitchStatusEnum.APPLYING_FIRMWARE)).toStrictEqual({
         message: 'Firmware updating',
-        deviceStatus: DeviceConnectionStatus.CONNECTED,
+        deviceStatus: DeviceConnectionStatus.ALERTING,
         isOperational: false
       })
       expect(transformSwitchStatus(SwitchStatusEnum.OPERATIONAL, true, true, '1 minute')).toStrictEqual({

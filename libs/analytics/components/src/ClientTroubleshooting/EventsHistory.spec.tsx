@@ -3,6 +3,8 @@ import { cleanup } from '@testing-library/react'
 import { Incident }                       from '@acx-ui/analytics/utils'
 import { Provider }                       from '@acx-ui/store'
 import { act, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
@@ -24,14 +26,12 @@ const incidents = [{
   code: 'ttc',
   slaThreshold: 2000
 }] as Incident[]
+
+const params = { tenantId: 'tenant-id', clientId: 'clientMac', activeTab: 'troubleshooting' }
+
 describe('EventsHistory', () => {
   afterEach(() => jest.restoreAllMocks())
   it('should render correctly without data', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      clientId: 'clientMac',
-      activeTab: 'troubleshooting'
-    }
     const data = {
       connectionEvents: [],
       incidents: [] as Incident[],
@@ -59,11 +59,6 @@ describe('EventsHistory', () => {
     expect(await screen.findByText('History')).toBeVisible()
   })
   it('should render with data', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      clientId: 'clientMac',
-      activeTab: 'troubleshooting'
-    }
     const data = {
       connectionEvents,
       incidents,
@@ -91,13 +86,9 @@ describe('EventsHistory', () => {
     expect(await screen.findByText('History')).toBeVisible()
     expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
+    expect(screen.queryByRole('link')).toBeValid()
   })
   it('should render with data and filters', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      clientId: 'clientMac',
-      activeTab: 'troubleshooting'
-    }
     const data = {
       connectionEvents,
       incidents,
@@ -153,11 +144,6 @@ describe('EventsHistory', () => {
     expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
   })
   it('should toggle history panel', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      clientId: 'clientMac',
-      activeTab: 'troubleshooting'
-    }
     const data = {
       connectionEvents: [],
       incidents: [] as Incident[],
@@ -189,11 +175,6 @@ describe('EventsHistory', () => {
     expect(setHistoryContentToggle).toBeCalledWith(false)
   })
   it('should handle event clicks', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      clientId: 'clientMac',
-      activeTab: 'troubleshooting'
-    }
     const data = {
       connectionEvents,
       incidents,
@@ -230,9 +211,43 @@ describe('EventsHistory', () => {
     const firstEvent = events[0]
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => { fireEvent.click(firstEvent) })
-    expect(onPanelCallback).toBeCalledTimes(4)
+    expect(onPanelCallback).toBeCalledTimes(5)
     expect(onClick).toBeCalledTimes(1)
-    expect(scrollIntoView).toBeCalledTimes(3)
+    expect(scrollIntoView).toBeCalledTimes(4)
     HTMLElement.prototype.scrollIntoView = ogView
+  })
+  it('should hide link when role is READ_ONLY', async () => {
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
+    const data = {
+      connectionEvents,
+      incidents,
+      connectionDetailsByAp: [],
+      connectionQualities: []
+    }
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
+    render(
+      <Provider>
+        <History
+          data={data}
+          filters={{}}
+          historyContentToggle
+          setHistoryContentToggle={jest.fn()}
+          onPanelCallback={onPanelCallback}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(await screen.findByText('History')).toBeVisible()
+    expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
+    expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
+    expect(screen.queryByRole('link')).toBeNull()
   })
 })

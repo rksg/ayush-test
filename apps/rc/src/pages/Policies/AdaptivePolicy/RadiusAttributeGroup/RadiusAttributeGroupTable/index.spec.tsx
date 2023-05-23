@@ -6,13 +6,13 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  RadiusAttributeGroupUrlsInfo
+  RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Path }                                                                              from '@acx-ui/react-router-dom'
-import { Provider }                                                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { Path }                                                   from '@acx-ui/react-router-dom'
+import { Provider }                                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { groupList } from './__tests__/fixtures'
+import { groupList, adaptivePolicyList, groupListByPost } from './__tests__/fixtures'
 
 import RadiusAttributeGroupTable from './index'
 
@@ -35,13 +35,21 @@ describe('RadiusAttributeGroupTable', () => {
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
+  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
 
   beforeEach(() => {
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
         (req, res, ctx) => res(ctx.json(groupList))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url,
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
+        (req, res, ctx) => res(ctx.json(groupListByPost))
       )
     )
   })
@@ -51,12 +59,7 @@ describe('RadiusAttributeGroupTable', () => {
       route: { params, path: tablePath }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    const row = await screen.findByRole('row', { name: /group1/ })
-    expect(row).toHaveTextContent('2')
-
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(await screen.findByRole('row', { name: /group1/ })).getByRole('radio'))
 
     await screen.findByText('Delete')
     await screen.findByText('Edit')
@@ -78,16 +81,13 @@ describe('RadiusAttributeGroupTable', () => {
       route: { params, path: tablePath }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const row = await screen.findByRole('row', { name: /group1/ })
     await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
     expect(await screen.findByText('Delete "' + groupList.content[0].name + '"?')).toBeVisible()
-    fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
-      { target: { value: 'Delete' } })
+
     await userEvent.click(await screen.findByRole('button', { name: /Delete group/i }))
 
     await waitFor(() => {
@@ -99,8 +99,6 @@ describe('RadiusAttributeGroupTable', () => {
     render(<Provider><RadiusAttributeGroupTable /></Provider>, {
       route: { params, path: tablePath }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /group1/ })
     fireEvent.click(within(row).getByRole('radio'))
@@ -123,8 +121,6 @@ describe('RadiusAttributeGroupTable', () => {
     render(<Provider><RadiusAttributeGroupTable /></Provider>, {
       route: { params, path: tablePath }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('Add Group'))
 

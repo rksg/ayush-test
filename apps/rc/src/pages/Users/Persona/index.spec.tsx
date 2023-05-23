@@ -22,7 +22,7 @@ describe('Persona Portal', () => {
       <Provider>
         <PersonaPortal />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group' }
       }
     )
 
@@ -30,7 +30,7 @@ describe('Persona Portal', () => {
 
     await userEvent.click(await screen.findByRole('tab', { name: 'Persona' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/users/persona-management/persona`,
+      pathname: `/${params.tenantId}/t/users/persona-management/persona`,
       hash: '',
       search: ''
     })

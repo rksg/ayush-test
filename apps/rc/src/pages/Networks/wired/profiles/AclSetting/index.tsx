@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 
-import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
+import { showActionModal, StepsFormLegacy, Table, TableProps } from '@acx-ui/components'
 import {
   Acl,
   AclRule,
+  defaultSort,
+  sortProp,
   transformTitleCase
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
@@ -40,14 +42,14 @@ export const defaultExtendedRuleList = {
 export function AclSetting () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ aclsTable, setAclsTable ] = useState<Acl[]>([])
   const [ drawerFormRule, setDrawerFormRule ] = useState<Acl>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(currentData.acls && editMode){
+    if(currentData.acls){
       form.setFieldValue('acls', currentData.acls)
       setAclsTable(currentData.acls)
     }
@@ -56,11 +58,14 @@ export function AclSetting () {
   const aclsColumns: TableProps<Acl>['columns']= [{
     title: $t({ defaultMessage: 'ACL Name' }),
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
+    defaultSortOrder: 'ascend',
+    sorter: { compare: sortProp('name', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'ACL Type' }),
     dataIndex: 'aclType',
     key: 'aclType',
+    sorter: { compare: sortProp('aclType', defaultSort) },
     render: (data) => transformTitleCase(data as string)
   }]
 
@@ -118,7 +123,7 @@ export function AclSetting () {
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'ACLs' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'ACLs' })} />
           <Table
             rowKey='name'
             rowActions={filterByAccess(rowActions)}

@@ -18,7 +18,8 @@ import {
   NetworkDetail,
   RadiusValidate,
   WifiUrlsInfo,
-  ExternalProviders
+  ExternalProviders,
+  enableNewApi
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi } from '@acx-ui/store'
 
@@ -55,6 +56,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       }
     }),
     addNetwork: build.mutation<Network, RequestPayload>({
+    //addNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params, RKS_NEW_UI)
         return {
@@ -65,6 +67,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
     updateNetwork: build.mutation<Network, RequestPayload>({
+    //updateNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params, RKS_NEW_UI)
         return {
@@ -93,6 +96,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
+    addNetworkVenues: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenues, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
+    }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI)
@@ -108,6 +121,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
+    }),
+    deleteNetworkVenues: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenues, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
@@ -270,11 +293,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     dashboardV2Overview: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
-        const dashboardOverviewReq
-          = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
-        return {
-          ...dashboardOverviewReq,
-          body: payload
+        if(enableNewApi(CommonUrlsInfo.getDashboardV2Overview)) {
+          return {
+            ...createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params),
+            body: payload
+          }
+        } else {
+          return {
+            ...createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
+          }
         }
       },
       providesTags: [{ type: 'Network', id: 'Overview' }]
@@ -396,8 +423,10 @@ export const {
   useUpdateNetworkMutation,
   useDeleteNetworkMutation,
   useAddNetworkVenueMutation,
+  useAddNetworkVenuesMutation,
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
+  useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,

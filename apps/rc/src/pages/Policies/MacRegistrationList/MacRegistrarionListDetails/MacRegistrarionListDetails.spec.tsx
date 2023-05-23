@@ -74,7 +74,7 @@ describe('MacRegistrationListDetails', () => {
         (req, res, ctx) => res(ctx.json(networkList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        RulesManagementUrlsInfo.getPolicySet.url,
         (req, res, ctx) => res(ctx.json(policySet))
       )
     )
@@ -89,7 +89,7 @@ describe('MacRegistrationListDetails', () => {
 
     render(<Provider><MacRegistrationListDetails /></Provider>, {
       // eslint-disable-next-line max-len
-      route: { params, path: '/:tenantId/:policyId/:activeTab' }
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
     })
 
     const names = await screen.findAllByText('Registration pool')
@@ -113,7 +113,7 @@ describe('MacRegistrationListDetails', () => {
       activeTab: 'not-exist'
     }
     render(<Provider><MacRegistrationListDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:policyId/:activeTab' }
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))

@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 
 import { getIntl } from '@acx-ui/utils'
 
-type SortResult = -1 | 0 | 1
+export type SortResult = -1 | 0 | 1
 
 export function defaultSort (a: unknown, b: unknown): SortResult {
   if (typeof a === 'number' && typeof b === 'number') {
@@ -22,9 +22,15 @@ export function dateSort (a: unknown, b: unknown): SortResult {
   return Math.sign(moment(String(a)).diff(moment(String(b)))) as SortResult
 }
 
-export function sortProp<RecordType> (
+export function arraySizeSort (a: string[], b: string[]): SortResult {
+  if (a.length < b.length) return -1
+  if (a.length > b.length) return 1
+  return 0
+}
+
+export function sortProp<RecordType, PropType = unknown> (
   prop: string,
-  sortFn: (a: unknown, b: unknown) => SortResult
+  sortFn: (a: PropType, b: PropType) => SortResult
 ) {
   return (a: RecordType, b: RecordType) => {
     const valueA = _.get(a, prop)

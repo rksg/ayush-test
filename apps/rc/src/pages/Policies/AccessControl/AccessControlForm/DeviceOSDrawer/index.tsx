@@ -19,10 +19,11 @@ import {
   useGetDevicePolicyQuery,
   useUpdateDevicePolicyMutation
 } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
-import { useParams }                              from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
+import { AccessStatus, CommonResult, defaultSort, DeviceRule, sortProp } from '@acx-ui/rc/utils'
+import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                from '@acx-ui/user'
 
+import { showUnsavedConfirmModal }     from '../AccessControlComponent'
 import { AddModeProps, editModeProps } from '../AccessControlForm'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
@@ -209,22 +210,26 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     {
       title: $t({ defaultMessage: 'Rule Name' }),
       dataIndex: 'ruleName',
-      key: 'ruleName'
+      key: 'ruleName',
+      sorter: { compare: sortProp('ruleName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceType',
-      key: 'deviceType'
+      key: 'deviceType',
+      sorter: { compare: sortProp('deviceType', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'OS Vendor' }),
       dataIndex: 'osVendor',
-      key: 'osVendor'
+      key: 'osVendor',
+      sorter: { compare: sortProp('osVendor', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Access' }),
       dataIndex: 'access',
       key: 'access',
+      sorter: { compare: sortProp('access', defaultSort) },
       render: (data, row) => {
         return row.access
       }
@@ -518,8 +523,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         <Form.Item
           name={[...inputName, 'devicePolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Device & OS profile' })
           }]}
           children={
@@ -568,7 +572,10 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
         zIndex={10}
-        onClose={handleDeviceOSDrawerClose}
+        onClose={() => !isViewMode()
+          ? showUnsavedConfirmModal(handleDeviceOSDrawerClose)
+          : handleDeviceOSDrawerClose()
+        }
         children={content}
         footer={
           <Drawer.FormFooter

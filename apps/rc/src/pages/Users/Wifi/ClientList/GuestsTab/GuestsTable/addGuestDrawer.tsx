@@ -12,7 +12,6 @@ import {
   Row,
   Select
 } from 'antd'
-import { PhoneNumberUtil }                            from 'google-libphonenumber'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
 import moment, { LocaleSpecifier }                    from 'moment-timezone'
@@ -21,13 +20,13 @@ import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
 import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
+import { PhoneInput }                              from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,
   useLazyGetNetworkQuery
 } from '@acx-ui/rc/services'
 import {
-  excludeExclamationRegExp,
   phoneRegExp,
   emailRegExp,
   NetworkTypeEnum,
@@ -37,7 +36,8 @@ import {
   base64Images,
   PdfGeneratorService,
   Guest,
-  LangCode
+  LangCode,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -259,8 +259,6 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
 
-  const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
-
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
@@ -287,7 +285,8 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
   }
   const numberOfDevicesOptions = createNumberOfDevicesList()
 
-  const onPhoneNumberChange = () => {
+  const onPhoneNumberChange = (phoneNumber: string) => {
+    form.setFieldValue('mobilePhoneNumber', phoneNumber)
     const deliveryMethods = form.getFieldValue('deliveryMethods')
     form.validateFields(['mobilePhoneNumber']).then(() => {
       if(form.getFieldValue('mobilePhoneNumber') !== ''){
@@ -344,7 +343,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           { required: true },
           { min: 1 },
           { max: 256 },
-          { validator: (_, value) => excludeExclamationRegExp(value) }
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}
         children={<Input />}
       />
@@ -356,11 +355,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         ]}
         initialValue={null}
         children={
-          <Input
-            // eslint-disable-next-line max-len
-            placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-            onChange={onPhoneNumberChange}
-          />
+          <PhoneInput name={'mobilePhoneNumber'} callback={onPhoneNumberChange} onTop={false} />
         }
       />
       <Form.Item
@@ -497,6 +492,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
 
   const onClose = () => {
     setVisible(false)
+    form.resetFields()
   }
 
   const onSave = async () => {
@@ -520,6 +516,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
         })
       setVisible(false)
     }
+    form.resetFields()
   }
 
 
@@ -544,13 +541,13 @@ export function AddGuestDrawer (props: AddGuestProps) {
       title={'Add Guest Pass'}
       visible={visible}
       onClose={onClose}
+      destroyOnClose={true}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
           <GuestFields />
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
-      maskClosable={true}
     />
   )
 }

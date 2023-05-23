@@ -42,7 +42,7 @@ const config: LayoutProps['menuConfig'] = [
         label: 'Health'
       },
       {
-        uri: '/serviceValidation/networkHealth',
+        uri: '/analytics/serviceValidation',
         label: 'Service Validation'
       }
     ]
@@ -257,6 +257,10 @@ const config: LayoutProps['menuConfig'] = [
           {
             uri: '/administration/fwVersionMgmt',
             label: 'Firmware Version Management'
+          },
+          {
+            uri: '/administration/onpremMigration',
+            label: 'ZD Migration'
           },
           {
             uri: '/administration/localRadiusServer',

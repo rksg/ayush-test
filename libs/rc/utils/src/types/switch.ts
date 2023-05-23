@@ -253,7 +253,7 @@ export interface SwitchRow {
   suspendingDeployTime: string
   uptime?: string
   syncedSwitchConfig?: boolean
-  children?: StackMember[]
+  children?: StackMember[] | SwitchRow[]
   isFirstLevel?: boolean
   unitStatus?: STACK_MEMBERSHIP
   syncDataId?: string
@@ -261,9 +261,15 @@ export interface SwitchRow {
   switchName?: string
   xPercent?: number
   yPercent?: number
+  switches?: SwitchRow[]
+  isGroup?: string
+  members?: number
+  clients?: number
+  incidents?: number
 }
 
 export interface StackMember {
+  isFirstLevel: boolean
   venueName: string
   serialNumber: string
   operStatusFound?: boolean
@@ -278,6 +284,7 @@ export interface StackMember {
   deviceStatus?: SwitchStatusEnum
   needAck?: boolean
   newSerialNumber?: string
+  children?: SwitchRow
 }
 
 export interface StackMemberList {
@@ -416,6 +423,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitStatus: string; // stack unit role (Standalone/Member...etc)
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
+  mediaType?: string;
 }
 
 export interface SwitchPortStatus {
@@ -720,13 +728,24 @@ export interface CliTemplateVenueSwitches {
   switches: string[]
 }
 
+export interface ApplySwitch {
+  id: string
+  name?: string
+  venueName: string
+}
+
 export interface CliConfiguration {
   id?: string
   name?: string
   cli?: string
+  cliValid?: {
+    tooltip: string
+    valid: boolean
+  }
   reload?: boolean
   applyNow?: boolean
   applyLater?: boolean
+  applySwitch?: ApplySwitch[]
   venueSwitches?: CliTemplateVenueSwitches[]
   variables?: CliTemplateVariable[]
 
@@ -734,7 +753,7 @@ export interface CliConfiguration {
   overwrite?: boolean
   venues?: string[]
   models?: string[]
-  venueCliTemplate?: { //
+  venueCliTemplate?: {
 		cli?: string,
 		id?: string,
 		name?: string,

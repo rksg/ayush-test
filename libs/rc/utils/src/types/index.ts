@@ -35,13 +35,14 @@ export * from './components'
 export * from './switch'
 export * from './administration'
 export * from './firmware'
+export * from './migration'
 export * from './timeline'
 export * from './persona'
 export * from './radiusClientConfig'
 export * from './msgTemplate'
 export * from './property'
 export * from './googleMaps'
-
+export * from './applicationPolicy'
 export interface CommonResult {
   requestId: string
   response?:{}
@@ -124,6 +125,7 @@ export interface Venue {
   networkId? : string
   vlanPoolId?: string
   activatedApsId?: string[]
+  dhcp?: { enabled: boolean }
 }
 
 export interface AlarmBase {

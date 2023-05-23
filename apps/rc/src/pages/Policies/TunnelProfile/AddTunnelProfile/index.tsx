@@ -2,17 +2,16 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { PageHeader, StepsFormNew }       from '@acx-ui/components'
-import { TunnelProfileForm }              from '@acx-ui/rc/components'
-import { useCreateTunnelProfileMutation } from '@acx-ui/rc/services'
+import { PageHeader, StepsForm }                    from '@acx-ui/components'
+import { TunnelProfileForm, TunnelProfileFormType } from '@acx-ui/rc/components'
+import { useCreateTunnelProfileMutation }           from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   LocationExtended,
   MtuTypeEnum,
   PolicyOperation,
   PolicyType,
-  redirectPreviousPage,
-  TunnelProfile
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -29,8 +28,13 @@ const AddTunnelProfile = () => {
   const linkToTableView = useTenantLink(tablePath)
   const [createTunnelProfile] = useCreateTunnelProfileMutation()
 
-  const handleAddTunnelProfile = async (data: TunnelProfile) => {
+  const handleAddTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
+      if (data.ageTimeUnit === 'week') {
+        data.ageTimeMinutes = data.ageTimeMinutes* 7 * 24 * 60
+      } else if (data.ageTimeUnit === 'days') {
+        data.ageTimeMinutes = data.ageTimeMinutes * 24 * 60
+      }
       await createTunnelProfile({ payload: data }).unwrap()
       redirectPreviousPage(navigate, previousPath, linkToTableView)
     } catch (error) {
@@ -49,7 +53,7 @@ const AddTunnelProfile = () => {
           }
         ]}
       />
-      <StepsFormNew
+      <StepsForm
         onFinish={handleAddTunnelProfile}
         onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
@@ -57,14 +61,14 @@ const AddTunnelProfile = () => {
           mtuType: MtuTypeEnum.AUTO
         }}
       >
-        <StepsFormNew.StepForm>
+        <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <TunnelProfileForm />
             </Col>
           </Row>
-        </StepsFormNew.StepForm>
-      </StepsFormNew>
+        </StepsForm.StepForm>
+      </StepsForm>
     </>
   )
 }

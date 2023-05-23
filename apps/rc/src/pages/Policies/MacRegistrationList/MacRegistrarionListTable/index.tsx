@@ -16,16 +16,17 @@ import {
   useDeleteMacRegListMutation,
   useLazyGetAdaptivePolicySetQuery,
   useLazyNetworkListQuery,
-  useMacRegListsQuery
+  useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
+  FILTER,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   MacRegistrationDetailsTabKey,
   MacRegistrationPool,
   PolicyOperation,
-  PolicyType,
+  PolicyType, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
@@ -38,15 +39,25 @@ export default function MacRegistrationListsTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [policySetMap, setPolicySetMap] = useState(new Map())
-  // const [venuesMap, setVenuesMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
 
   const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
+  const filter = {
+    filterKey: 'name',
+    operation: 'cn',
+    value: ''
+  }
+
   const tableQuery = useTableQuery({
-    useQuery: useMacRegListsQuery,
-    defaultPayload: {}
+    useQuery: useSearchMacRegListsQuery,
+    defaultPayload: {
+      dataOption: 'all',
+      searchCriteriaList: [
+        { ...filter }
+      ]
+    }
   })
 
   const [
@@ -75,7 +86,7 @@ export default function MacRegistrationListsTable () {
       tableQuery.data?.data.forEach(macPools => {
         const { policySetId } = macPools
         if (policySetId) {
-          getAdaptivePolicySet({ params: { policyId: policySetId } })
+          getAdaptivePolicySet({ params: { policySetId } })
             .then(result => {
               // eslint-disable-next-line max-len
               setPolicySetMap(map => new Map(map.set(policySetId, result.data?.name ?? policySetId)))
@@ -109,8 +120,9 @@ export default function MacRegistrationListsTable () {
       },
       {
         title: $t({ defaultMessage: 'List Expiration' }),
-        key: 'listExpiration',
-        dataIndex: 'listExpiration',
+        key: 'expirationType',
+        dataIndex: 'expirationType',
+        sorter: true,
         render: function (data, row) {
           return returnExpirationString(row)
         }
@@ -118,16 +130,23 @@ export default function MacRegistrationListsTable () {
       {
         title: $t({ defaultMessage: 'Default Access' }),
         key: 'defaultAccess',
-        dataIndex: 'defaultAccess'
+        dataIndex: 'defaultAccess',
+        show: policyEnabled,
+        sorter: true,
+        render: function (data:ReactNode, row:MacRegistrationPool) {
+          return row.policySetId ? row.defaultAccess: ''
+        }
       },
-      ...(policyEnabled) ? [{
+      {
         title: $t({ defaultMessage: 'Access Policy Set' }),
         key: 'policySet',
-        dataIndex: 'policySet',
+        dataIndex: 'policySetId',
+        show: policyEnabled,
+        sorter: true,
         render: function (data:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
         }
-      }]: [],
+      },
       {
         title: $t({ defaultMessage: 'MAC Addresses' }),
         key: 'registrationCount',
@@ -167,7 +186,6 @@ export default function MacRegistrationListsTable () {
   }
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -186,14 +204,19 @@ export default function MacRegistrationListsTable () {
       (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
         ? selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0: false
     ),
+    tooltip: (([selectedItem]) =>
+      (selectedItem && selectedItem.associationIds && selectedItem.networkIds)
+        ? (selectedItem.associationIds.length > 0 || selectedItem.networkIds.length > 0 ?
+          // eslint-disable-next-line max-len
+          $t({ defaultMessage: 'This list is in use by one or more Networks and one or more Personas.' }) : undefined ) : undefined
+    ),
     onClick: ([{ name, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'List' }),
-          entityValue: name,
-          confirmationText: 'Delete'
+          entityValue: name
         },
         onOk: () => {
           deleteMacRegList({ params: { policyId: id } })
@@ -211,6 +234,16 @@ export default function MacRegistrationListsTable () {
       })
     }
   }]
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      dataOption: 'all',
+      searchCriteriaList: [
+        { ...filter, value: customSearch?.searchString ?? '' }
+      ]
+    }
+    tableQuery.setPayload(payload)
+  }
 
   return (
     <>
@@ -234,13 +267,16 @@ export default function MacRegistrationListsTable () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteMacRegListUpdating }
       ]}>
-        <Table
+        <Table<MacRegistrationPool>
+          enableApiFilter
+          settingsId='mac-reg-list-table'
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={rowActions}
+          onFilterChange={handleFilterChange}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

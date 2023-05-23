@@ -24,7 +24,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('EdgeDhcpTable', () => {
   let params: { tenantId: string }
-  const tablePath = '/:tenantId/' + getServiceRoutePath({
+  const tablePath = '/:tenantId/t/' + getServiceRoutePath({
     type: ServiceType.EDGE_DHCP,
     oper: ServiceOperation.LIST
   })
@@ -74,7 +74,7 @@ describe('EdgeDhcpTable', () => {
     const edgeDhcpServiceDetailLink = await screen.findByRole('link',
       { name: 'TestDHCP-1' }) as HTMLAnchorElement
     expect(edgeDhcpServiceDetailLink.href)
-      .toContain(`/t/${params.tenantId}/${getServiceDetailsLink({
+      .toContain(`/${params.tenantId}/t/${getServiceDetailsLink({
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.DETAIL,
         serviceId: '1'
@@ -93,7 +93,7 @@ describe('EdgeDhcpTable', () => {
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/${getServiceDetailsLink({
+      pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.EDIT,
         serviceId: '1'

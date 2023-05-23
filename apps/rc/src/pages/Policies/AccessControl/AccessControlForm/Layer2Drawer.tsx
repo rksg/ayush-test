@@ -21,10 +21,17 @@ import {
   useL2AclPolicyListQuery,
   useUpdateL2AclPolicyMutation
 } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
-import { useParams }                                          from '@acx-ui/react-router-dom'
-import { filterByAccess }                                     from '@acx-ui/user'
+import {
+  AccessStatus,
+  CommonResult,
+  defaultSort,
+  MacAddressFilterRegExp,
+  sortProp
+} from '@acx-ui/rc/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
+import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
@@ -202,6 +209,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       dataIndex: 'macAddress',
       key: 'macAddress',
       searchable: true,
+      sorter: { compare: sortProp('macAddress', defaultSort) },
       render: (data, row: { macAddress: string }) => {
         return row.macAddress
       }
@@ -567,8 +575,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         <Form.Item
           name={[...inputName, 'l2AclPolicyId']}
           rules={[{
-            required: true
-          }, {
+            required: true,
             message: $t({ defaultMessage: 'Please select Layer 2 profile' })
           }]}
           children={
@@ -615,7 +622,10 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
-        onClose={handleLayer2DrawerClose}
+        onClose={() => !isViewMode()
+          ? showUnsavedConfirmModal(handleLayer2DrawerClose)
+          : handleLayer2DrawerClose()
+        }
         destroyOnClose={true}
         children={content}
         footer={

@@ -24,6 +24,7 @@ export function OnDemandCliTab () {
     key: 'name',
     title: $t({ defaultMessage: 'CLI Template Name' }),
     dataIndex: 'name',
+    defaultSortOrder: 'ascend',
     sorter: true
   },{
     key: 'switches',
@@ -41,7 +42,7 @@ export function OnDemandCliTab () {
       if (row.venueSwitches) {
         return <Tooltip
           title={switchArray.join('\n')}>
-          {row.venueSwitches.length}
+          {switchArray.length}
         </Tooltip>
       }
       return 0

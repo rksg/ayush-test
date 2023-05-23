@@ -1,17 +1,17 @@
-import { useRef, useReducer } from 'react'
+import { useReducer } from 'react'
 
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsForm,
-  StepsFormInstance
+  StepsForm
 } from '@acx-ui/components'
-import { useUpdateWifiCallingServiceMutation } from '@acx-ui/rc/services'
+import { useUpdateWifiCallingServiceMutation }     from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
-  EPDG,
-  QosPriorityEnum
+  EPDG, getServiceRoutePath,
+  QosPriorityEnum, ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,7 +25,9 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 const WifiCallingConfigureForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink(getServiceRoutePath({
+    type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST
+  }))
   const params = useParams()
 
   const [ updateWifiCallingService ] = useUpdateWifiCallingServiceMutation()
@@ -42,7 +44,7 @@ const WifiCallingConfigureForm = () => {
   const networksName:string[] = []
   const epdgs:EPDG[] = []
 
-  const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
+  const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
     serviceName,
     ePDG,
@@ -75,7 +77,8 @@ const WifiCallingConfigureForm = () => {
         ]}
       />
       <StepsForm<CreateNetworkFormFields>
-        formRef={formRef}
+        form={form}
+        editMode={true}
         onCancel={() => navigate(linkToServices)}
         onFinish={handleUpdateWifiCallingService}
       >
@@ -83,7 +86,7 @@ const WifiCallingConfigureForm = () => {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <WifiCallingSettingForm edit={true} formRef={formRef} />
+          <WifiCallingSettingForm edit={true} />
         </StepsForm.StepForm>
 
         <StepsForm.StepForm

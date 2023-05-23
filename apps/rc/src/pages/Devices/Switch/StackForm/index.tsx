@@ -26,8 +26,8 @@ import {
   Button,
   PageHeader,
   Loader,
-  StepsForm,
-  StepsFormInstance,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
   TableProps,
   Table,
   Tabs,
@@ -86,7 +86,7 @@ export function StackForm () {
   const { $t } = useIntl()
   const { tenantId, switchId, action, venueId, stackList } = useParams()
   const editMode = action === 'edit'
-  const formRef = useRef<StepsFormInstance<Switch>>()
+  const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('/devices/')
@@ -200,7 +200,9 @@ export function StackForm () {
               model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
-              disabled: _.get(switchDetail, 'activeSerial') === item.id || !!switchDetail.cliApplied
+              disabled: _.get(switchDetail, 'activeSerial') === item.id ||
+                !!switchDetail.cliApplied ||
+                switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL
             }
           })
 
@@ -611,7 +613,7 @@ export function StackForm () {
           }
         ]}
       />
-      <StepsForm
+      <StepsFormLegacy
         formRef={formRef}
         onFinish={editMode
           ? handleEditSwitchStack
@@ -627,7 +629,7 @@ export function StackForm () {
           cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
         }}
       >
-        <StepsForm.StepForm>
+        <StepsFormLegacy.StepForm>
           <Loader
             states={[
               {
@@ -662,13 +664,7 @@ export function StackForm () {
                     initialValue={null}
                     children={
                       <Select
-                        options={[
-                          {
-                            label: $t({ defaultMessage: 'Select venue...' }),
-                            value: null
-                          },
-                          ...venueOption
-                        ]}
+                        options={venueOption}
                         onChange={async (value) => await handleVenueChange(value)}
                         disabled={readOnly || editMode || isStackSwitches}
                       />
@@ -800,8 +796,8 @@ export function StackForm () {
               </Col>
             </Row>
           </Loader>
-        </StepsForm.StepForm>
-      </StepsForm>
+        </StepsFormLegacy.StepForm>
+      </StepsFormLegacy>
     </>
   )
 }
