@@ -29,19 +29,6 @@ const SummaryForm = (props: SummaryFormProps) => {
   const { $t } = useIntl()
   const { taskId } = props
   const params = useParams()
-  // const dataMock = [{
-  //   name: 'AP-1',
-  //   description: 'zd ap',
-  //   serialNumber: '123456789021',
-  //   status: 'Failed',
-  //   failure: 'Not support model'
-  // },{
-  //   name: 'AP-2',
-  //   description: 'zd ap2',
-  //   serialNumber: '234789879791',
-  //   status: 'Success',
-  //   failure: 'Not found ap serial number'
-  // }]
 
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
@@ -114,10 +101,10 @@ const SummaryForm = (props: SummaryFormProps) => {
     ]}>
       <Row>
         <Col span={12}>
-          <Subtitle level={4}>
+          <Subtitle level={3}>
             {$t({ defaultMessage: 'Summary Table' })}
           </Subtitle>
-          <Subtitle level={3}>
+          <Subtitle level={4}>
             {$t({ defaultMessage: 'Summary State' })}: {migrateResult?.state ?? '--'}
           </Subtitle>
         </Col>

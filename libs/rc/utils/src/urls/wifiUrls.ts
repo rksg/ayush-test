@@ -26,15 +26,17 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addNetworkDeep: {
     method: 'post',
-    url: '/networks',
-    oldUrl: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true',
-    newApi: true
+    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+    //url: '/networks',
+    //oldUrl: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true',
+    //newApi: true
   },
   updateNetworkDeep: {
     method: 'put',
-    url: '/networks/:networkId',
-    oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true',
-    newApi: true
+    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true'
+    //url: '/networks/:networkId',
+    //oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true',
+    //newApi: true
   },
   deleteNetwork: {
     method: 'delete',
@@ -48,6 +50,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
     newApi: true
   },
+  addNetworkVenues: {
+    method: 'post',
+    url: '/networkActivations/mappings',
+    oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
+    newApi: true
+  },
   updateNetworkVenue: {
     method: 'put',
     url: '/networkActivations/:networkVenueId?quickAck=true',
@@ -58,6 +66,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/networkActivations/:networkVenueId',
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId',
+    newApi: true
+  },
+  deleteNetworkVenues: {
+    method: 'delete',
+    url: '/networkActivations',
+    oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
     newApi: true
   },
   getVenueExternalAntenna: {

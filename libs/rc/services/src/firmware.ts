@@ -9,8 +9,7 @@ import {
   FirmwareVenue,
   FirmwareSwitchVenue,
   createHttpRequest,
-  RequestPayload,
-  enableNewApi
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi } from '@acx-ui/store'
 
@@ -90,16 +89,18 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     getLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getLatestFirmwareList, params)
-        return enableNewApi(FirmwareUrlsInfo.getLatestFirmwareList) ?
-          { ...req, body: { status: 'latest' } } : { ...req }
+        return {
+          ...req
+        }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
     getAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.getAvailableFirmwareList, params)
-        return enableNewApi(FirmwareUrlsInfo.getAvailableFirmwareList) ?
-          { ...req, body: { status: 'release' } } : { ...req }
+        return {
+          ...req
+        }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
@@ -272,6 +273,7 @@ export const {
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
+  useLazyGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,

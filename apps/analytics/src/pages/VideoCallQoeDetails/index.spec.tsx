@@ -85,7 +85,6 @@ describe('VideoCallQoe Details Page', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
-    await screen.findByText('Select Client MAC')
     await screen.findByText('A8:64:F1:1A:D0:33')
     const radioButtons = screen.getAllByRole('radio')
     await userEvent.click(radioButtons[2])

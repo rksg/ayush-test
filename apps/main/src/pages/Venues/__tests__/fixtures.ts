@@ -652,7 +652,6 @@ export const networkDeepList = {
           l2AclEnable: false,
           l3AclEnable: false,
           wifiCallingEnabled: false,
-          singleSessionIdAccounting: false,
           proxyARP: false,
           enableAirtimeDecongestion: false,
           enableJoinRSSIThreshold: false,
@@ -1513,6 +1512,20 @@ export const mockDirectedMulticast = {
   wiredEnabled: true,
   wirelessEnabled: true,
   networkEnabled: true
+}
+
+export const mockRadiusOptions = {
+  radiusOptions: {
+    overrideEnabled: false,
+    nasIdType: 'BSSID',
+    nasRequestTimeoutSec: 3,
+    nasMaxRetry: 2,
+    nasReconnectPrimaryMin: 5,
+    calledStationIdType: 'BSSID',
+    nasIdDelimiter: 'DASH',
+    userDefinedNasId: '',
+    singleSessionIdAccounting: false
+  }
 }
 
 export const mockLoadBalabcing = {

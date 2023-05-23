@@ -6,6 +6,7 @@ import _                                                             from 'lodas
 import { useIntl }                                                   from 'react-intl'
 
 import { Drawer, Loader, StepsFormLegacy } from '@acx-ui/components'
+import { PhoneInput }                      from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -259,23 +260,20 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       payload: { name, resident }
     }).unwrap()
 
+    // update UnitPersona
     const personaUpdateResult = withNsg
       ? await patchPersona(personaId, {
         ...unitPersona,
-        ...ports
-          ? {
-            ethernetPorts: ports.map(p => ({
-              personaId,
-              macAddress: accessAp,
-              portIndex: p,
-              name: apName
-            } as PersonaEthernetPort))
-          }
-          : {}
+        ethernetPorts: ports?.map(p => ({
+          personaId,
+          macAddress: accessAp,
+          portIndex: p,
+          name: apName
+        } as PersonaEthernetPort)) ?? []
       })
       : await patchPersona(personaId, unitPersona)
 
-    // update Persona
+    // update GuestPersona
     const guestUpdateResult = await patchPersona(
       guestPersonaId,
       { ...guestPersona, vlan: guestPersona?.vlan ?? unitPersona?.vlan }
@@ -484,7 +482,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               rules={[
                 { validator: (_, value) => phoneRegExp(value) }
               ]}
-              children={<Input />}
+              children={<PhoneInput
+                name={['resident', 'phoneNumber']}
+                callback={(value) => form.setFieldValue(['resident', 'phoneNumber'], value)}
+                onTop={false}
+              />}
+              validateFirst
             />
           </Form>
         </Loader>

@@ -6,7 +6,7 @@ import {
 } from '@acx-ui/store'
 import { screen } from '@acx-ui/test-utils'
 
-import { renderForm } from '../../../NetworkHealth/__tests__/fixtures'
+import { renderForm } from '../../../ServiceGuard/__tests__/fixtures'
 
 import { TestLink } from './TestLink'
 

@@ -106,7 +106,7 @@ npm install
 ### Run UI
 
 Execute command below and access the UI by logging into
-[devalto](https://devalto.ruckuswireless.com/) and clicking on the Extract RC Cookie extension. UI
+[dev ruckus cloud](https://dev.ruckus.cloud/) and clicking on the Extract RC Cookie extension. UI
 will open in a new tab at [http://localhost:3000](http://localhost:3000).
 
 API calls will be proxied to services on devalto (see `apps/main/src/setupProxy.js`).

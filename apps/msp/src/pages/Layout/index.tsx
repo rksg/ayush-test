@@ -30,7 +30,6 @@ function Layout () {
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [supportStatus,setSupportStatus] = useState('')
-  const [isShown, setIsShown] = useState<boolean | null>(null)
   const basePath = useTenantLink('/users/guestsManager')
   const navigate = useNavigate()
   const params = useParams()
@@ -80,11 +79,11 @@ function Layout () {
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
         {!isGuestManager &&
           <>
-            <AlarmsButton isShown={isShown} setIsShown={setIsShown}/>
-            <ActivityButton isShown={isShown !== null ? !isShown : false} setIsShown={setIsShown}/>
+            <AlarmsButton/>
+            <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus} setIsShown={setIsShown}/>
+        <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />

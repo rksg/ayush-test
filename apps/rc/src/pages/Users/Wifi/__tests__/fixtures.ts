@@ -103,7 +103,7 @@ export const UserProfile = {
     {
       name: 'US',
       description: 'United States of America',
-      link: 'https://devalto.ruckuswireless.com',
+      link: 'https://dev.ruckus.cloud',
       current: true
     }
   ],
@@ -356,7 +356,6 @@ export const wifiNetworkDetail = {
       l2AclEnable: false,
       l3AclEnable: false,
       wifiCallingEnabled: false,
-      singleSessionIdAccounting: false,
       proxyARP: false,
       enableAirtimeDecongestion: false,
       enableJoinRSSIThreshold: false,

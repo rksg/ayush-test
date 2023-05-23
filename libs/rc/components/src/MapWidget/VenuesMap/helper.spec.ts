@@ -3,6 +3,7 @@ import { initialize, mockInstances } from '@googlemaps/jest-mocks'
 import {
   ApVenueStatusEnum,
   Dashboard,
+  EdgeStatusSeverityEnum,
   SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import {
@@ -52,6 +53,10 @@ describe('Venues Map Helper', () => {
             summary: {},
             totalCount: 0
           },
+          edges: {
+            summary: {},
+            totalCount: 0
+          },
           venues: {
             summary: {
               [ApVenueStatusEnum.IN_SETUP_PHASE]: 1,
@@ -92,6 +97,21 @@ describe('Venues Map Helper', () => {
                   [SwitchStatusEnum.NEVER_CONTACTED_CLOUD]: 1,
                   [SwitchStatusEnum.INITIALIZING]: 1,
                   [SwitchStatusEnum.OPERATIONAL]: 1
+                }
+              }
+            }],
+          totalCount: 1
+        },
+        edges: {
+          edgesStatus: [
+            {
+              '01d74a2c947346a1a963a310ee8c9f6f': {
+                totalCount: 4,
+                edgeStatus: {
+                  [EdgeStatusSeverityEnum.OFFLINE]: 1,
+                  [EdgeStatusSeverityEnum.IN_SETUP_PHASE]: 1,
+                  [EdgeStatusSeverityEnum.REQUIRES_ATTENTION]: 1,
+                  [EdgeStatusSeverityEnum.OPERATIONAL]: 1
                 }
               }
             }],
@@ -187,9 +207,34 @@ describe('Venues Map Helper', () => {
               ]
             }
           ],
+          edgeStat: [
+            {
+              category: 'Edges',
+              series: [
+                {
+                  name: '1 Requires Attention',
+                  value: 1
+                },
+                {
+                  name: '2 Transient Issue',
+                  value: 0
+                },
+                {
+                  name: '3 In Setup Phase',
+                  value: 2
+                },
+                {
+                  name: '4 Operational',
+                  value: 1
+                }
+              ]
+            }
+          ],
           apsCount: 5,
           switchesCount: 4,
+          edgesCount: 4,
           clientsCount: undefined,
+          edgeClientsCount: 0,
           visible: true
         },
         {
@@ -245,16 +290,42 @@ describe('Venues Map Helper', () => {
               ]
             }
           ],
+          edgeStat: [
+            {
+              category: 'Edges',
+              series: [
+                {
+                  name: '1 Requires Attention',
+                  value: 0
+                },
+                {
+                  name: '2 Transient Issue',
+                  value: 0
+                },
+                {
+                  name: '3 In Setup Phase',
+                  value: 0
+                },
+                {
+                  name: '4 Operational',
+                  value: 0
+                }
+              ]
+            }
+          ],
           apsCount: 0,
           switchesCount: 0,
+          edgesCount: 0,
           clientsCount: undefined,
+          edgeClientsCount: 0,
           visible: true
         }
       ])
     })
 
 
-    it('should massage the data correctly when ap and switch status are not present', async () => {
+    // eslint-disable-next-line max-len
+    it('should massage the data correctly when ap, switch and edge status are not present', async () => {
       const data: Dashboard = {
         summary: {
           clients: {
@@ -370,9 +441,34 @@ describe('Venues Map Helper', () => {
               ]
             }
           ],
+          edgeStat: [
+            {
+              category: 'Edges',
+              series: [
+                {
+                  name: '1 Requires Attention',
+                  value: 0
+                },
+                {
+                  name: '2 Transient Issue',
+                  value: 0
+                },
+                {
+                  name: '3 In Setup Phase',
+                  value: 0
+                },
+                {
+                  name: '4 Operational',
+                  value: 0
+                }
+              ]
+            }
+          ],
           apsCount: 0,
           switchesCount: 0,
+          edgesCount: 0,
           clientsCount: undefined,
+          edgeClientsCount: 0,
           visible: true
         }
       ])

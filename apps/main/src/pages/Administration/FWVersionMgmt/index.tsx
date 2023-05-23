@@ -6,12 +6,17 @@ import { Tabs, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
 import {
+  useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
+  useGetSigPackQuery,
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchVenueVersionListQuery,
+  useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
 import ApFirmware      from './ApFirmware'
 import EdgeFirmware    from './EdgeFirmware'
@@ -27,20 +32,35 @@ import SwitchFirmware from './SwitchFirmware'
 const FWVersionMgmt = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
   const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
-
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
+  const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
+    selectFromResult: ({ data }) => ({
+      latestEdgeReleaseVersion: data?.[0]
+    })
+  })
+  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
   const [isApFirmwareAvailable, setIsApFirmwareAvailable] = useState(false)
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false) // TODO: GetDpFirmwareUpgradeAvailable API
+  const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
+  const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
 
   const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
-
+  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
+  useEffect(()=>{
+    if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
+      setIsAPPLibraryAvailable(true)
+    }else{
+      setIsAPPLibraryAvailable(false)
+    }
+  }, [sigPackUpdate])
   useEffect(()=>{
     if (latestReleaseVersions && venueVersionList) {
       // As long as one of the venues' version smaller than the latest release version, it would be the available
@@ -66,6 +86,12 @@ const FWVersionMgmt = () => {
     }
   }, [latestSwitchReleaseVersions, switchVenueVersionList])
 
+  useEffect(() => {
+    const hasOutdated = edgeVenueVersionList?.some(item=>
+      item.versions?.[0].id !== latestEdgeReleaseVersion?.id)
+    setIsEdgeFirmwareAvailable(!!hasOutdated)
+  }, [edgeVenueVersionList, latestEdgeReleaseVersion])
+
   const tabs = {
     apFirmware: {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'AP Firmware' })}
@@ -90,13 +116,30 @@ const FWVersionMgmt = () => {
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
       visible: isEdgeEnabled
+    },
+    appLibrary: {
+      title: <UI.TabWithHint>{$t({ defaultMessage: 'Application Library' })}
+        {isAPPLibraryAvailable && <Tooltip children={<InformationSolid />}
+          title={$t({ defaultMessage: 'There are new Application update available' })} />}
+      </UI.TabWithHint>,
+      content: <ApplicationPolicyMgmt />,
+      visible: enableSigPackUpgrade
     }
+  }
+
+  const onTabChange = (activeKey: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${activeKey}`
+    })
   }
 
   return (
     <Tabs
       defaultActiveKey='apFirmware'
       type='card'
+      onChange={onTabChange}
+      activeKey={params.activeSubTab}
     >
       {
         Object.entries(tabs).map((item) =>
