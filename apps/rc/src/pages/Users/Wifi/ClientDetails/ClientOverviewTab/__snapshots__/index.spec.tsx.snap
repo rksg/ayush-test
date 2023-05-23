@@ -268,17 +268,119 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -1029,17 +1131,119 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -1789,17 +1993,119 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -2549,17 +2855,119 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -3309,17 +3717,119 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -3876,6 +4386,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
+                                      style="color: rgb(237, 28, 36);"
                                     >
                                       <div
                                         class="ant-space-item"
@@ -4353,17 +4864,119 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -4920,6 +5533,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
+                                      style="color: rgb(237, 28, 36);"
                                     >
                                       <div
                                         class="ant-space-item"
@@ -5397,17 +6011,119 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -5964,6 +6680,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
+                                      style="color: rgb(237, 28, 36);"
                                     >
                                       <div
                                         class="ant-space-item"
@@ -6441,17 +7158,119 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
@@ -7008,6 +7827,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                   >
                                     <div
                                       class="ant-space ant-space-horizontal ant-space-align-center"
+                                      style="color: rgb(237, 28, 36);"
                                     >
                                       <div
                                         class="ant-space-item"
@@ -7485,17 +8305,119 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                       />
                                       <g>
                                         <path
-                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
                                           fill="none"
+                                          transform="translate(7 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 178.3333)"
+                                          xml:space="preserve"
+                                        >
+                                          6 GHz
+                                        </text>
+                                        <path
+                                          d="M-5 -8l5 0l0 16l-5 0Z"
+                                          fill="none"
+                                          transform="translate(7 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 155)"
+                                          xml:space="preserve"
+                                        >
+                                          5 GHz
+                                        </text>
+                                        <path
+                                          d="M-7 -8l7 0l0 16l-7 0Z"
+                                          fill="none"
+                                          transform="translate(7 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                          text-anchor="end"
+                                          transform="translate(7 131.6667)"
+                                          xml:space="preserve"
+                                        >
+                                          2.4 GHz
+                                        </text>
+                                        <path
+                                          d="M15 172.3333L15 184.3333L15 172.3333"
+                                          fill="#ADCFFA"
                                         />
                                         <path
                                           d="M15 149L1225.4 149A4 4 0 0 1 1229.4 153L1229.4 157A4 4 0 0 1 1225.4 161L15 161L15 149"
-                                          fill="none"
+                                          fill="#5496EA"
                                         />
                                         <path
                                           d="M15 125.6667L15 137.6667L15 125.6667"
-                                          fill="none"
+                                          fill="#2565B6"
                                         />
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 178.3333)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 178.3333)"
+                                        >
+                                          --
+                                        </text>
+                                        <path
+                                          d="M0 -8l6 0l0 16l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l6 0l0 1l-6 0Z"
+                                          fill="none"
+                                          transform="translate(1234.4 155)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(1234.4 155)"
+                                        >
+                                          1.44GB
+                                        </text>
+                                        <path
+                                          d="M0 -8l2 0l0 16l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <path
+                                          d="M0 -0.5l2 0l0 1l-2 0Z"
+                                          fill="none"
+                                          transform="translate(20 131.6667)"
+                                        />
+                                        <text
+                                          dominant-baseline="central"
+                                          fill="#333333"
+                                          style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                          text-anchor="start"
+                                          transform="translate(20 131.6667)"
+                                        >
+                                          --
+                                        </text>
                                         <path
                                           d="M-5 -5l10 0l0 10l-10 0Z"
                                           fill="rgb(0,0,0)"
