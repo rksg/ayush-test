@@ -68,7 +68,7 @@ describe('Edge Statistic Widget', () => {
       <Provider>
         <EdgePortsByTrafficWidget edgePortsSetting={edgePortsSetting} isLoading={false}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     expect(asFragment().querySelector('svg')).toBeDefined()
@@ -80,7 +80,7 @@ describe('Edge Statistic Widget', () => {
       <Provider>
         <EdgeTrafficByVolumeWidget/>
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     expect(asFragment().querySelector('svg')).toBeDefined()
@@ -92,7 +92,7 @@ describe('Edge Statistic Widget', () => {
       <Provider>
         <EdgeResourceUtilizationWidget/>
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     expect(asFragment().querySelector('svg')).toBeDefined()

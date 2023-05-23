@@ -25,7 +25,7 @@ describe('Edge Ports List', () => {
           }}
           edgePortsSetting={edgePortsSetting}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       }
     )
 
@@ -43,7 +43,7 @@ describe('Edge Ports List', () => {
           }}
           edgePortsSetting={edgePortsSetting}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     fireEvent.click(await screen.findByText('Configure Port Settings'))

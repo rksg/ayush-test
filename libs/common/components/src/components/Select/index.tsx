@@ -111,6 +111,11 @@ export function Select (props: CascaderProps) {
     setSavedValues(initialValues)
     setOpen(false)
   }
+  const handleKeyDown: CascaderProps['onInputKeyDown'] = (e) => {
+    if (e.key.startsWith('Arrow')) {
+      e.stopPropagation()
+    }
+  }
 
   if (props.multiple || showRadioBand) {
     const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -219,6 +224,7 @@ export function Select (props: CascaderProps) {
             })}
           </div>
         }
+        onInputKeyDown={handleKeyDown}
       />
     )
   } else {
@@ -243,6 +249,7 @@ export function Select (props: CascaderProps) {
       open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
       onClear={antProps.allowClear ? onClear : undefined}
+      onInputKeyDown={handleKeyDown}
     />
   }
 }

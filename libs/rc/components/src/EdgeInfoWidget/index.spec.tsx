@@ -26,7 +26,7 @@ describe('Edge Information Widget', () => {
       <Provider>
         <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isEdgeStatusLoading={false} isPortListLoading={false} />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     expect(asFragment().querySelector('svg')).toBeDefined()
@@ -38,7 +38,7 @@ describe('Edge Information Widget', () => {
       <Provider>
         <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isEdgeStatusLoading={false} isPortListLoading={false} />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     const firstRender = asFragment()
@@ -54,7 +54,7 @@ describe('Edge Information Widget', () => {
       <Provider>
         <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isEdgeStatusLoading={true} isPortListLoading={true} />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     expect(await screen.findAllByRole('img', { name: 'loader' })).toBeTruthy()
