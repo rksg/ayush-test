@@ -22,12 +22,13 @@ import {
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
   getServiceListRoutePath,
-  PassphraseFormatEnum
+  PassphraseFormatEnum,
+  displayDeviceCountLimit
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
+import { displayDefaultAccess } from '../utils'
 
 const defaultPayload = {
   filters: {}
