@@ -1626,7 +1626,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
         return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
-      }
+      },
+      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     }),
     getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
       query: ({ params }) => {
@@ -1679,10 +1680,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.createPolicy, params)
+        const req = createHttpRequest(
+          RulesManagementUrlsInfo.createPolicy,
+          params,
+          { 'Content-Type': 'application/ruckus.one.v1-synchronous+json' })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
