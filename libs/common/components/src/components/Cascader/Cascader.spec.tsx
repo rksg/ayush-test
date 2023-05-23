@@ -540,6 +540,43 @@ describe('Cascader', () => {
     })
   })
 
+  it('allows use of left arrow when searching', async () => {
+    const options: CascaderOption[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      },
+      {
+        value: 'n3',
+        label: 'SSID 3'
+      },
+      {
+        value: 'n4',
+        label: 'SSID 4'
+      }
+    ]
+    const placeholder = 'test cascader'
+    const onApplyMock = jest.fn()
+    render(<CustomCascader
+      options={options}
+      placeholder={placeholder}
+      multiple={true}
+      onApply={onApplyMock}
+      entityName={entityName}
+      showSearch
+    />)
+
+    expect(screen.getByText(placeholder)).toBeVisible()
+    await userEvent.type(screen.getByRole('combobox'), 'SSID')
+    await waitFor(() => expect(screen.getAllByText('SSID')).toHaveLength(5))
+    await userEvent.keyboard('[ArrowLeft][Delete]D[ArrowRight]')
+    await waitFor(() => expect(screen.getAllByText('SSID')).toHaveLength(5))
+  })
+
   it('handles labels that are components', async () => {
     const options: CascaderOption[] = [
       {
@@ -584,42 +621,5 @@ describe('Cascader', () => {
     await userEvent.click(await screen.findByRole('combobox'))
     await userEvent.hover(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
     expect(loadDataMock).toHaveBeenCalledWith(options)
-  })
-
-  it('render search result correctly', async () => {
-    const options: CascaderOption[] = [
-      {
-        value: 'n1',
-        label: 'SSID 1'
-      },
-      {
-        value: 'n2',
-        label: 'SSID 2'
-      },
-      {
-        value: 'n3',
-        label: 'SSID 3'
-      },
-      {
-        value: 'n4',
-        label: 'SSID 4'
-      }
-    ]
-    const placeholder = 'test cascader'
-    const onApplyMock = jest.fn()
-    render(<CustomCascader
-      options={options}
-      placeholder={placeholder}
-      multiple={true}
-      onApply={onApplyMock}
-      entityName={entityName}
-      showSearch
-    />)
-
-    expect(screen.getByText(placeholder)).toBeVisible()
-    await userEvent.type(screen.getByRole('combobox'), 'SSID')
-    await waitFor(() => expect(screen.getAllByText('SSID')).toHaveLength(5))
-    await userEvent.keyboard('[ArrowLeft][Delete]D[ArrowRight]')
-    await waitFor(() => expect(screen.getAllByText('SSID')).toHaveLength(5))
   })
 })
