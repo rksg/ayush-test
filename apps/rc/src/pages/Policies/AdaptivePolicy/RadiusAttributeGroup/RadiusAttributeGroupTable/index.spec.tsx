@@ -122,7 +122,7 @@ describe('RadiusAttributeGroupTable', () => {
       route: { params, path: tablePath }
     })
 
-    const row = await screen.findByRole('row', { name: /group1/ })
+    const row = await screen.findByRole('row', { name: /group1 2 1/i })
     await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))

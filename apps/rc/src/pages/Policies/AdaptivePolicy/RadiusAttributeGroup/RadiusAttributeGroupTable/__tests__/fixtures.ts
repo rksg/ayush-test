@@ -54,7 +54,13 @@ export const adaptivePolicyList = {
     pageSize: 0,
     pageCount: 0
   },
-  content: []
+  content: [{
+    id: 'd5b8b080-5390-459c-b17c-0e1677c3f5a8',
+    name: 'test1',
+    description: 'for test',
+    policyType: 'RADIUS',
+    onMatchResponse: 'test'
+  }]
 }
 
 export const assignments = {
