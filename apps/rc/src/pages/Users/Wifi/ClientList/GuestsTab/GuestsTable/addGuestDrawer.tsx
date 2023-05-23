@@ -12,7 +12,6 @@ import {
   Row,
   Select
 } from 'antd'
-import { PhoneNumberUtil }                            from 'google-libphonenumber'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
 import moment, { LocaleSpecifier }                    from 'moment-timezone'
@@ -21,6 +20,7 @@ import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
 import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
+import { PhoneInput }                              from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,
@@ -259,8 +259,6 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
 
-  const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
-
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
@@ -287,7 +285,8 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
   }
   const numberOfDevicesOptions = createNumberOfDevicesList()
 
-  const onPhoneNumberChange = () => {
+  const onPhoneNumberChange = (phoneNumber: string) => {
+    form.setFieldValue('mobilePhoneNumber', phoneNumber)
     const deliveryMethods = form.getFieldValue('deliveryMethods')
     form.validateFields(['mobilePhoneNumber']).then(() => {
       if(form.getFieldValue('mobilePhoneNumber') !== ''){
@@ -356,11 +355,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         ]}
         initialValue={null}
         children={
-          <Input
-            // eslint-disable-next-line max-len
-            placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-            onChange={onPhoneNumberChange}
-          />
+          <PhoneInput name={'mobilePhoneNumber'} callback={onPhoneNumberChange} onTop={false} />
         }
       />
       <Form.Item
@@ -553,7 +548,6 @@ export function AddGuestDrawer (props: AddGuestProps) {
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
-      maskClosable={true}
     />
   )
 }

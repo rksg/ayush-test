@@ -18,8 +18,8 @@ import {
   InformationSolid,
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useExternalProvidersQuery }                                                                                                                                                                                                                                               from '@acx-ui/rc/services'
-import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useExternalProvidersQuery, useGetMspEcProfileQuery }                                                                                                                                                                                                                                from '@acx-ui/rc/services'
+import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, MSPUtils } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -33,7 +33,7 @@ import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassC
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
 
-
+const mspUtils = MSPUtils()
 export function WISPrForm () {
   const {
     data,
@@ -43,6 +43,7 @@ export function WISPrForm () {
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const { $t } = useIntl()
   const params = useParams()
+  const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
   const inputKey = useRef<InputRef>(null)
   const { useWatch } = Form
   const form = Form.useFormInstance()
@@ -53,10 +54,43 @@ export function WISPrForm () {
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
   const [regionOption, setRegionOption]=useState<Regions[]>()
   const [isOtherProvider, setIsOtherProvider]=useState(false)
+  const [isMspEc, setIsMspEc]=useState(false)
+  const setProvider = (value: string, regions: Regions[]|undefined) =>{
+    form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], false)
+    form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], '')
+    if(regions?.length===1){
+      form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'],
+        regions[0].name)
+      if(regions[0].captivePortalUrl){
+        form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'],
+          regions[0].captivePortalUrl)
+      }
+      if(regions[0].redirectUrl){
+        form.setFieldValue('redirectCheckbox', true)
+        form.setFieldValue(['guestPortal','redirectUrl'], regions[0].redirectUrl)
+      }
+    }else form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], '')
+    if(value==='Other provider'){
+      setIsOtherProvider(true)
+      form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], true)
+    }else{
+      setIsOtherProvider(false)
+    }
+    setRegionOption(regions)
+  }
+  useEffect(()=>{
+    if(mspEcProfileData){
+      setIsMspEc(mspUtils.isMspEc(mspEcProfileData))
+    }
+  },[mspEcProfileData])
   useEffect(()=>{
     if(providerData.data){
       const providers = providerData.data.providers
       setExternalProviders(providers)
+      if(isMspEc){
+        form.setFieldValue(['guestPortal','wisprPage','externalProviderName'],providers[0].name)
+        setProvider(providers[0].name, providers[0].regions)
+      }
     }
     if((editMode || cloneMode) && data){
       if(data.guestPortal?.wisprPage?.accountingRadius){
@@ -101,7 +135,7 @@ export function WISPrForm () {
         }
       }
     }
-  },[providerData.data,data])
+  },[providerData.data,data,isMspEc])
   useEffect(()=>{
     form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
   },[])
@@ -153,29 +187,9 @@ export function WISPrForm () {
           }
           label={$t({ defaultMessage: 'Portal Provider' })}
           initialValue=''
-          children={<Select onChange={(value)=>{
+          children={!isMspEc?<Select onChange={(value)=>{
             const regions = _.find(externalProviders,{ name: value })?.regions
-            form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], false)
-            form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], '')
-            if(regions?.length===1){
-              form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'],
-                regions[0].name)
-              if(regions[0].captivePortalUrl){
-                form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'],
-                  regions[0].captivePortalUrl)
-              }
-              if(regions[0].redirectUrl){
-                form.setFieldValue('redirectCheckbox', true)
-                form.setFieldValue(['guestPortal','redirectUrl'], regions[0].redirectUrl)
-              }
-            }else form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], '')
-            if(value==='Other provider'){
-              setIsOtherProvider(true)
-              form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], true)
-            }else{
-              setIsOtherProvider(false)
-            }
-            setRegionOption(regions)
+            setProvider(value, regions)
           }}>
             <Select.Option value={''}>
               {$t({ defaultMessage: 'Select provider' })}
@@ -188,7 +202,7 @@ export function WISPrForm () {
             <Select.Option value={'Other provider'}>
               {$t({ defaultMessage: 'Other provider' })}
             </Select.Option>
-          </Select>}
+          </Select>:externalProviders?.[0].name}
         />
         {isOtherProvider&&<Form.Item
           name={['guestPortal','wisprPage','providerName']}
