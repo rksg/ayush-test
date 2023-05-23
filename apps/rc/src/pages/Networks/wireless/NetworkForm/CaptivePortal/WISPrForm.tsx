@@ -41,6 +41,7 @@ export function WISPrForm () {
     cloneMode
   } = useContext(NetworkFormContext)
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
+  const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
@@ -385,7 +386,9 @@ export function WISPrForm () {
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr}
           enableDefaultWalledGarden={false} />
-        {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}
+        {!regionOption &&
+         isOtherProvider &&
+         (enableWISPRAlwaysAccept? null : <AuthAccServerSetting/>)}
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
