@@ -11,7 +11,7 @@ describe('Switch Pipes', () => {
     expect(transformConfigType(ConfigTypeEnum.DNS_SERVER)).toBe('DNS Server')
     expect(transformConfigType(ConfigTypeEnum.LAG_SETTINGS)).toBe('LAG Setting')
     expect(transformConfigType(ConfigTypeEnum.MODEL)).toBe('Model')
-    expect(transformConfigType(ConfigTypeEnum.OVERWRITE_CONFIGURATION)).toBe('Overwrite Configuration')
+    expect(transformConfigType(ConfigTypeEnum.OVERWRITE)).toBe('Overwrite Configuration')
     expect(transformConfigType(ConfigTypeEnum.PORT_CONFIGURATION)).toBe('Port Configuration')
     expect(transformConfigType(ConfigTypeEnum.PROVISIONING)).toBe('Provisioning')
     expect(transformConfigType(ConfigTypeEnum.STACK)).toBe('Stack')
