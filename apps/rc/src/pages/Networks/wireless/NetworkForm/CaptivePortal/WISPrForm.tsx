@@ -70,7 +70,7 @@ export function WISPrForm () {
         form.setFieldValue(['guestPortal','redirectUrl'], regions[0].redirectUrl)
       }
     }else form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], '')
-    if(value==='Other provider'){
+    if(value==='Custom Provider'){
       setIsOtherProvider(true)
       form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], true)
     }else{
@@ -112,7 +112,7 @@ export function WISPrForm () {
       let pName = data.guestPortal?.wisprPage?.externalProviderName
       if(data.guestPortal?.wisprPage?.customExternalProvider){
         form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
-        pName = 'Other provider'
+        pName = 'Custom Provider'
       }
       if(pName){
         const regions = _.find(externalProviders,{ name: pName })?.regions
@@ -121,8 +121,8 @@ export function WISPrForm () {
       if(data.wlan?.wlanSecurity!== WlanSecurityEnum.None){
         form.setFieldValue('enablePreShared',true)
       }
-      if(!pName?.trim() || pName==='Other provider'){
-        form.setFieldValue(['guestPortal','wisprPage','externalProviderName'],'Other provider')
+      if(!pName?.trim() || pName==='Custom Provider'){
+        form.setFieldValue(['guestPortal','wisprPage','externalProviderName'], 'Custom Provider')
         setIsOtherProvider(true)
       }else setIsOtherProvider(false)
       if(data.guestPortal?.wisprPage?.authRadius?.secondary){
