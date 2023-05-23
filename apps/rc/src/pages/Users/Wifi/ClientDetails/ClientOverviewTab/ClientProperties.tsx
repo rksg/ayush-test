@@ -107,20 +107,28 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
 
       const getMetaData = async () => {
         try {
-          if (serialNumber && !clientDetails.hasOwnProperty('isApExists')) {
-            apData = await getAp({
-              params: { tenantId, serialNumber }
-            }, true).unwrap()
-          }
-          if (!clientDetails.hasOwnProperty('isVenueExists')) {
-            venueData = await getVenue({
-              params: { tenantId, venueId: clientDetails?.venueId }
-            }, true).unwrap()
-          }
-          networkData = await getNetwork({
-            params: { tenantId, networkId: clientDetails?.networkId }
-          }, true).unwrap()
-          setData(apData, venueData, networkData)
+          const shouldGetAp = serialNumber && !clientDetails.hasOwnProperty('isApExists')
+          const shouldGetVenue = !clientDetails.hasOwnProperty('isVenueExists')
+
+          await Promise.all([
+            ...( shouldGetAp
+              ? [getAp({ params: { tenantId, serialNumber } }, true)] : [[]]
+            ),
+            ...( shouldGetVenue
+              ? [getVenue({ params: { tenantId, venueId: clientDetails?.venueId } }, true)] : [[]]
+            ),
+            getNetwork({ params: { tenantId, networkId: clientDetails?.networkId } }, true)
+          ]).then(([ ap, venue, network ]) => {
+            /* eslint-disable @typescript-eslint/no-explicit-any */
+            setData(
+              ((ap as any)?.data ?? {}) as unknown as ApDeep,
+              ((venue as any)?.data ?? {}) as unknown as VenueExtended,
+              ((network as any)?.data ?? {}) as unknown as NetworkSaveData
+            )
+            /* eslint-enable @typescript-eslint/no-explicit-any */
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
         } catch {
           setData(apData, venueData, networkData)
         }

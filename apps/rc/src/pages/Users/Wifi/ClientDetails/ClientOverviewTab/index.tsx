@@ -83,16 +83,20 @@ export function ClientOverviewTab () {
         setClientDetails(clientData as Client)
       } catch {
         setClientStatus(ClientStatusEnum.HISTORICAL)
-        getHistoricalClientData()
+        await getHistoricalClientData()
       }
     }
 
     const getHistoricalClientData = async () => {
-      const historicalisData = await getHistoricalClientList({
-        params: { tenantId },
-        payload: { ...historicalPayload, searchString: clientId }
-      }, true)?.unwrap()
-      setClientDetails((historicalisData?.data?.[0] ?? {}) as Client)
+      try {
+        const historicalisData = await getHistoricalClientList({
+          params: { tenantId },
+          payload: { ...historicalPayload, searchString: clientId }
+        }, true)?.unwrap()
+        setClientDetails((historicalisData?.data?.[0] ?? {}) as Client)
+      } catch {
+        setClientDetails({} as Client)
+      }
     }
 
     clientStatus === ClientStatusEnum.CONNECTED
@@ -105,16 +109,15 @@ export function ClientOverviewTab () {
     const isApNotExists = clientDetails.isApExists === false
     if (serialNumber && !isApNotExists) {
       const checkTribandAp = async () => {
-        const apDetails = await getAp({
-          params: { tenantId, serialNumber }
-        }, true)?.unwrap()
-
-        const capabilities = await getApCapabilities({
-          params: { tenantId, serialNumber }
-        }, true)?.unwrap()
-
-        const apCapabilities = capabilities?.apModels?.find(cap => cap.model === apDetails?.model)
-        setIsTribandAp(apCapabilities?.supportTriRadio ?? false)
+        await Promise.all([
+          getAp({ params: { tenantId, serialNumber } }, true),
+          getApCapabilities({ params: { tenantId, serialNumber } }, true)
+        ]).then(([ apDetails, capabilities ]) => {
+          const apCapabilities = capabilities?.data?.apModels?.find(cap => cap.model === apDetails?.data?.model)
+          setIsTribandAp(apCapabilities?.supportTriRadio ?? false)
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
       }
       checkTribandAp()
     }
