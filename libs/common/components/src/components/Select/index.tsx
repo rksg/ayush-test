@@ -112,7 +112,7 @@ export function Select (props: CascaderProps) {
     setOpen(false)
   }
   const handleKeyDown: CascaderProps['onInputKeyDown'] = (e) => {
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    if (e.key.startsWith('Arrow')) {
       e.stopPropagation()
     }
   }
