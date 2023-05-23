@@ -14,14 +14,13 @@ import HelpPage          from './HelpPage'
 import { ButtonWrapper } from './styledComponents'
 
 export interface HelpButtonProps{
-  supportStatus?: string,
-  setIsShown?: (b: boolean | null) => void
+  supportStatus?: string
 }
 
 let timeout:NodeJS.Timeout
 
 const HelpButton = (props:HelpButtonProps) => {
-  const { supportStatus, setIsShown } = props
+  const { supportStatus } = props
   const { $t } = useIntl()
 
   const [firewallModalState, setFirewallModalOpen] = useState(false)
@@ -131,7 +130,7 @@ const HelpButton = (props:HelpButtonProps) => {
     />
   )
 
-  return (<ButtonWrapper onClick={() => setIsShown && setIsShown(null)}>
+  return (<ButtonWrapper>
     <Dropdown
       overlay={menuHeaderDropdown}
       trigger={['click']}

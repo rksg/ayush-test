@@ -119,7 +119,6 @@ export const OptionDrawer = (props: OptionDrawerProps) => {
       title={getTitle()}
       visible={visible}
       onClose={onClose}
-      mask={true}
       children={drawerContent}
       destroyOnClose={true}
       width={475}
