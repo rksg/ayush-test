@@ -3,7 +3,7 @@
 exports[`Cascader renders simple list with bands, triggers onApply with multi-select 1`] = `
 <DocumentFragment>
   <div
-    class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 dbEqQn ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+    class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
   >
     <div
       class="ant-select-selector"
@@ -346,7 +346,7 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
 exports[`Cascader should render bands disabled, reset default bands and apply 1`] = `
 <DocumentFragment>
   <div
-    class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 dbEqQn ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+    class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
   >
     <div
       class="ant-select-selector"

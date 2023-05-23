@@ -21,6 +21,15 @@ export const GlobalStyle = createGlobalStyle<{
   menuMaxWidth?: string
   labelMaxWidth?: string
 }>`
+  .ant-page-header-heading-extra {
+    .ant-select-selector {
+      border-color: var(--acx-primary-black) !important;
+    }
+    .ant-select-selection-placeholder {
+      color: var(--acx-primary-black);
+    }
+  }
+
   .ant-cascader {
     width: 100%;
     // fixes extra space appearing when clicking on selected items
@@ -75,12 +84,6 @@ export const GlobalStyle = createGlobalStyle<{
   }
 `
 export const Cascader = styled(AntCascader)<BaseCascaderProps>`
-  .ant-select-selector {
-    border-color: var(--acx-primary-black) !important;
-  }
-  .ant-select-selection-placeholder {
-    color: var(--acx-primary-black);
-  }
   .ant-select-focused {
     .ant-select-selection-placeholder {
       color: var(--acx-neutrals-50);
