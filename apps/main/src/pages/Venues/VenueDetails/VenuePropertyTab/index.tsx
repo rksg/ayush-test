@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer }                  from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
