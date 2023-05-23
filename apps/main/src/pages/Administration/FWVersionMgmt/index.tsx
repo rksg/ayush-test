@@ -35,7 +35,7 @@ const FWVersionMgmt = () => {
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
-
+  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
   const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
@@ -46,14 +46,14 @@ const FWVersionMgmt = () => {
       latestEdgeReleaseVersion: data?.[0]
     })
   })
-  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
+  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
+    { skip: !enableSigPackUpgrade })
   const [isApFirmwareAvailable, setIsApFirmwareAvailable] = useState(false)
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
 
   const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
-  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
       setIsAPPLibraryAvailable(true)
