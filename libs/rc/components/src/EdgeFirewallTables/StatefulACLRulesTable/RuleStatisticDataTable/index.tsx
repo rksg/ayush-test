@@ -10,7 +10,8 @@ export interface StatefulAclRuleStatisticModel extends StatefulAclRule {
   bytes: number;
 }
 
-export const RuleStatisticDataTable = ({ data }: { data: StatefulAclRuleStatisticModel[] }) => {
+export const RuleStatisticDataTable = ({ dataSource }:
+   { dataSource: StatefulAclRuleStatisticModel[] }) => {
   const { $t } = useIntl()
   const defaultColumns = useDefaultColumns()
   const statisticColumns: TableProps<StatefulAclRule | StatefulAclRuleStatisticModel>['columns'] = [
@@ -31,7 +32,7 @@ export const RuleStatisticDataTable = ({ data }: { data: StatefulAclRuleStatisti
   return (
     <StatefulACLRulesTable
       columns={defaultColumns.concat(statisticColumns)}
-      dataSource={data}
+      dataSource={dataSource}
     />
   )
 }

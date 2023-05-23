@@ -10,7 +10,8 @@ export interface DDoSRuleStatisticModel extends DdosRateLimitingRule {
   passPacket: number;
 }
 
-export const RuleStatisticDataTable = ({ data }: { data: DDoSRuleStatisticModel[] }) => {
+export const RuleStatisticDataTable = ({ dataSource }:
+   { dataSource: DDoSRuleStatisticModel[] }) => {
   const { $t } = useIntl()
   const defaultColumns = useDefaultColumns()
   const statisticColumns: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns'] = [
@@ -31,7 +32,7 @@ export const RuleStatisticDataTable = ({ data }: { data: DDoSRuleStatisticModel[
   return (
     <DDoSRulesTable
       columns={defaultColumns.concat(statisticColumns)}
-      dataSource={data}
+      dataSource={dataSource}
     />
   )
 }

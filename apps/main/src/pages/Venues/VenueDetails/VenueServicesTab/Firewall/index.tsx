@@ -6,37 +6,57 @@ import { useIntl }                   from 'react-intl'
 import styled                        from 'styled-components/macro'
 
 import { Card, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
-import { useGetEdgeFirewallQuery }                           from '@acx-ui/rc/services'
+import { useGetEdgeFirewallQuery, useGetEdgeListQuery }      from '@acx-ui/rc/services'
 import {
   ACLDirection,
   getACLDirectionOptions,
-  // EdgeFirewallSetting,
   getServiceDetailsLink,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink/*, useParams*/ } from '@acx-ui/react-router-dom'
-import { filterByAccess }            from '@acx-ui/user'
-import { useDateFilter }             from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
+import { useDateFilter }         from '@acx-ui/utils'
 
-// import { mockFirewall }          from './__tests__/fixtures'
 import { DDoSRulesTable }        from './DDoSRulesTable'
 import { StatefulACLRulesTable } from './StatefulACLRulesTable'
 import * as UI                   from './styledComponents'
 
 const EdgeFirewall = styled(({ className }: { className?: string }) => {
   const { $t } = useIntl()
-  // const params = useParams()
+  const { venueId } = useParams()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
   const directionOpts = getACLDirectionOptions($t)
 
-  const serviceId = '3cec3a33-7780-4d9b-9717-26d85655e287'
+  // 1. get edge by venueId, use 'firewallId' in edge data
+  const edgeDataPayload = {
+    fields: [
+      'name',
+      'serialNumber',
+      'firewallId'
+    ],
+    filter: { venueId: [venueId] }
+  }
+  const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
+    { payload: edgeDataPayload },
+    {
+      skip: !!!venueId,
+      selectFromResult: ({ data, isLoading }) => ({
+        edgeData: data?.data[0],
+        isEdgeLoading: isLoading
+      })
+    }
+  )
 
+  const serviceId = edgeData?.firewallId
 
-  // get edge by venueId
-  // get firewall by edgeId?
-  const { data: edgeFirewallData, isLoading } = useGetEdgeFirewallQuery({ params: { serviceId } })
+  // 2. get firewall by firewallId
+  const {
+    data: edgeFirewallData,
+    isLoading: isFWInfoLoading
+  } = useGetEdgeFirewallQuery({ params: { serviceId } },
+    { skip: !!!serviceId })
 
   const infoFields = edgeFirewallData ? [
     {
@@ -51,13 +71,15 @@ const EdgeFirewall = styled(({ className }: { className?: string }) => {
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
+      // TODO: query statistic data and aggregate with rules.
       content: () => (<></>)
     },
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),
       content: () => (
         $t(
-          { defaultMessage: '{status} ({rulesCount} rules)' },
+          { defaultMessage:
+            '{status} ({rulesCount} {rulesCount, plural, one {rule} other {rules}})' },
           {
             status: edgeFirewallData.ddosRateLimitingEnabled ?
               $t({ defaultMessage: 'ON' }):
@@ -71,17 +93,18 @@ const EdgeFirewall = styled(({ className }: { className?: string }) => {
       title: $t({ defaultMessage: 'Stateful ACL' }),
       content: () => (
         $t(
-          { defaultMessage: '{status} (IN: {inCount} rules, OUT: {outCount} rules)' },
+          { defaultMessage: `{status} (IN: {inCount} {inCount, plural, one {rule} other {rules}},
+             OUT: {outCount} {outCount, plural, one {rule} other {rules}})` },
           {
             status: edgeFirewallData.statefulAclEnabled ?
               $t({ defaultMessage: 'ON' }):
               $t({ defaultMessage: 'OFF' }),
-            inCount: edgeFirewallData.statefulAcls?.filter(item =>
+            inCount: edgeFirewallData.statefulAcls.filter(item =>
               item.direction === ACLDirection.INBOUND
-            )[0]?.rules.length || 0,
-            outCount: edgeFirewallData.statefulAcls?.filter(item =>
+            )[0].rules.length,
+            outCount: edgeFirewallData.statefulAcls.filter(item =>
               item.direction === ACLDirection.OUTBOUND
-            )[0]?.rules.length || 0
+            )[0].rules.length
           }
         )
       )
@@ -94,8 +117,8 @@ const EdgeFirewall = styled(({ className }: { className?: string }) => {
 
   return (<Loader states={[
     {
-      isFetching: false,//isLoading,
-      isLoading: isLoading
+      isFetching: false,
+      isLoading: isEdgeLoading || isFWInfoLoading
     }
   ]}>
     <Space direction='vertical' size={30} className={className}>
@@ -143,8 +166,11 @@ const EdgeFirewall = styled(({ className }: { className?: string }) => {
             <Select
               value={aclDirection}
               onChange={handleACLDirectionChange}
-              options={directionOpts}
-            />
+            >
+              {directionOpts.map(({ label, value }) =>
+                (<Select.Option value={value} key={value} children={label} />)
+              )}
+            </Select>
           </UI.ActionsContainer>
           <StatefulACLRulesTable firewallData={edgeFirewallData} direction={aclDirection} />
         </Tabs.TabPane>

@@ -21,6 +21,10 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   return (
     <DefaultStatefulACLRulesTable
       dataSource={aclRules}
+      pagination={{
+        pageSize: 5,
+        defaultPageSize: 5
+      }}
     />
   )
 }
