@@ -9,7 +9,7 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -153,11 +153,11 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
                           title="swg"
                         >
                           <div
-                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
                           >
                             swg
                           </div>
@@ -207,11 +207,11 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
                           title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
                           >
                             swg1
                           </div>
@@ -261,11 +261,11 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
                           title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
                           >
                             venue
                           </div>
@@ -301,16 +301,16 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -372,7 +372,7 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -410,7 +410,7 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-2 dkxaGc ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -554,11 +554,11 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
                           title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
                           >
                             swg1
                           </div>
@@ -608,11 +608,11 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
                           title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
                           >
                             venue
                           </div>
@@ -662,11 +662,11 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-9z6ynb-0 jtyVT"
+                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
                           title="venue1"
                         >
                           <div
-                            class="styledComponents__Label-sc-9z6ynb-1 eXuayD"
+                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
                           >
                             venue1
                           </div>
@@ -702,16 +702,16 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-6 hxTBzM"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-9z6ynb-7 kTiSLU"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-8 ewaHe"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -773,7 +773,7 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-9z6ynb-4 eWoskB"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
