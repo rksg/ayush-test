@@ -62,6 +62,7 @@ export function VenuePropertyTab () {
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
+  const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
 
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
@@ -277,7 +278,7 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'View Portal' }),
-      visible: (selectedItems => selectedItems.length <= 1),
+      visible: (selectedItems => (selectedItems.length <= 1 && hasResidentPortalAssignment)),
       onClick: ([{ id }], clearSelection) => {
         directToPortal(id)
         clearSelection()
