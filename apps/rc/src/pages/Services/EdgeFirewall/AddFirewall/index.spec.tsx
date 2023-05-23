@@ -7,7 +7,6 @@ import {
 } from '@acx-ui/store'
 import {
   cleanup,
-  logRoles,
   mockServer,
   render,
   screen,
