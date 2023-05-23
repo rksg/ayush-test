@@ -199,8 +199,8 @@ export function WISPrForm () {
                 {item.name}
               </Select.Option>
             })}
-            <Select.Option value={'Other provider'}>
-              {$t({ defaultMessage: 'Other provider' })}
+            <Select.Option value={'Custom Provider'}>
+              {$t({ defaultMessage: 'Custom Provider' })}
             </Select.Option>
           </Select>:externalProviders?.[0].name}
         />
