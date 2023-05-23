@@ -64,7 +64,7 @@ export const eventDefaultFilters = {
 }
 
 export const eventDefaultSearch = {
-  searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+  searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac', 'switchMacAddress']
 }
 
 const adminLogsDefaultFilters = {

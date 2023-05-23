@@ -13,9 +13,9 @@ import {
   useAddNetworkMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
-  useLazyValidateRadiusQuery,
-  useAddNetworkVenuesMutation,
-  useDeleteNetworkVenuesMutation
+  useLazyValidateRadiusQuery
+  //useAddNetworkVenuesMutation,
+  //useDeleteNetworkVenuesMutation
 } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -28,9 +28,9 @@ import {
   Demo,
   GuestPortal,
   redirectPreviousPage,
-  LocationExtended,
-  NetworkVenue,
-  Network
+  LocationExtended
+  //NetworkVenue,
+  //Network
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -114,8 +114,8 @@ export default function NetworkForm (props:{
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  //const [addNetworkVenues] = useAddNetworkVenuesMutation()
+  //const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
 
@@ -242,45 +242,62 @@ export default function NetworkForm (props:{
     return true
   }
 
+  /*
   const handleNetworkVenues = async (
     networkId : string,
     newNetworkVenues? : NetworkVenue[],
     oldNetworkVenues? : NetworkVenue[]
   )=> {
-    const newIds = newNetworkVenues?.map(({ id }) => id) ?? []
-    const oldIds = oldNetworkVenues?.map(({ id }) => id) ?? []
+    let added: NetworkVenue[] = []
+    let newIds: string[] = []
+    let removed: string[] = []
 
-    if (newIds.length && oldIds.length) {
-      const added = newNetworkVenues
-        ?.filter(({ id }) => !oldIds.includes(id))
-        .map(({ venueId }) => ({ venueId, networkId }))
-      const removed = oldIds.filter((id) => !newIds.includes(id))
-      await Promise.all([
-        addNetworkVenues({ payload: added }).unwrap(),
-        deleteNetworkVenues({ payload: removed }).unwrap()
-      ])
-    } else if (newIds.length) {
-      const added = newNetworkVenues?.map(({ venueId }) => ({ venueId, networkId }))
+    if (newNetworkVenues?.length) {
+      newNetworkVenues?.forEach(networkVenue => {
+        if (_.isUndefined(networkVenue.id)) {
+          networkVenue.networkId = networkId
+          added.push(networkVenue)
+        } else {
+          newIds.push(networkVenue.id as string)
+        }
+      })
+    }
+    if (oldNetworkVenues?.length) {
+      oldNetworkVenues?.forEach(networkVenue => {
+        if (!_.isUndefined(networkVenue.id) && !newIds.includes(networkVenue.id)) {
+          removed.push(networkVenue.id)
+        }
+      })
+    }
+
+    if (added.length) {
       await addNetworkVenues({ payload: added }).unwrap()
-    } else if (oldIds.length) {
-      await deleteNetworkVenues({ payload: oldIds }).unwrap()
+    }
+    if (removed.length) {
+      await deleteNetworkVenues({ payload: removed }).unwrap()
     }
   }
+  */
+
 
   const handleAddNetwork = async () => {
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
+      await addNetwork({ params, payload }).unwrap()
+      /*
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = result.response
         await handleNetworkVenues(network.id, payload.venues)
       }
+      */
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
 
   const deleteUnnecessaryFields = function () {
     if(saveState.enableAccountingService === false) {
@@ -293,9 +310,11 @@ export default function NetworkForm (props:{
       deleteUnnecessaryFields()
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: formData.venues })
       await updateNetwork({ params, payload }).unwrap()
+      /*
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
+      */
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

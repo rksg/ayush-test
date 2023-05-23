@@ -261,6 +261,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
       onOk={() => form.submit()}
       onCancel={handleClose}
       okButtonProps={{ disabled: disableSave || isLoading }}
+      destroyOnClose={true}
     >
       <Form
         form={form}
