@@ -97,6 +97,11 @@ export function Cascader (props: CascaderProps) {
     setSavedValues(initialValues)
     setOpen(false)
   }
+  const handleKeyDown: CascaderProps['onInputKeyDown'] = (e) => {
+    if (e.key.startsWith('Arrow')) {
+      e.stopPropagation()
+    }
+  }
 
   const multiple = props.multiple || showRadioBand
 
@@ -208,6 +213,7 @@ export function Cascader (props: CascaderProps) {
           })}
         </div>
       }
+      onInputKeyDown={handleKeyDown}
     />
   } else {
     return <BaseCascader
@@ -229,6 +235,7 @@ export function Cascader (props: CascaderProps) {
       open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
       onClear={cascaderProps.allowClear ? onClear : undefined}
+      onInputKeyDown={handleKeyDown}
     />
   }
 }
