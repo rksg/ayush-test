@@ -7,6 +7,7 @@ import {
 } from '@acx-ui/store'
 import {
   cleanup,
+  logRoles,
   mockServer,
   render,
   screen,
@@ -190,7 +191,7 @@ describe('Add edge firewall service', () => {
     await click(await within(dialog).findByText(/Block/))
     await selectOptions(
       await within(dialog).findByRole('combobox', { name: 'Protocol Type' }),
-      'UDP')
+      'ESP')
     const src = await screen.findByRole('group', { name: 'Source' })
     await click(await within(src).findByRole('radio', { name: 'Subnet Address' }))
     await type(within(src).getByPlaceholderText('Network address'), '1.1.1.1')
@@ -199,7 +200,7 @@ describe('Add edge firewall service', () => {
     await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
     await type(within(destination).getByRole('textbox', { name: 'Port' }), '2-10')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
-    await click(await within(drawer).findByRole('row', { name: /UDP/ }))
+    await click(await within(drawer).findByRole('row', { name: /ESP/ }))
     await click(within(drawer).getByRole('button', { name: 'Add' }))
 
     // Navigate to Step 2
@@ -252,11 +253,13 @@ describe('Add edge firewall service', () => {
           rules: [
             {
               accessAction: 'BLOCK',
-              protocolType: ProtocolType.UDP,
+              protocolType: ProtocolType.ESP,
               sourceAddressType: AddressType.SUBNET_ADDRESS,
               sourceAddress: '1.1.1.1',
               sourceAddressMask: '255.255.255.254',
               destinationAddressType: AddressType.ANY_IP_ADDRESS,
+              destinationAddress: '',
+              destinationAddressMask: '',
               destinationPort: '2-10'
             }]
         }]
