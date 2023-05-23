@@ -8,6 +8,7 @@ import {
 } from '@acx-ui/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
+  useGetLatestEdgeFirmwareQuery,
   useGetVenueEdgeFirmwareListQuery,
   useUpdateEdgeFirmwareMutation
 } from '@acx-ui/rc/services'
@@ -36,6 +37,11 @@ export function VenueFirmwareList () {
     data: venueFirmwareList,
     isLoading: isVenueFirmwareListLoading
   } = useGetVenueEdgeFirmwareListQuery({})
+  const { latestReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
+    selectFromResult: ({ data }) => ({
+      latestReleaseVersion: data?.[0]
+    })
+  })
   const { data: availableVersions } = useGetAvailableEdgeFirmwareVersionsQuery({})
   const [updateNow] = useUpdateEdgeFirmwareMutation()
 
@@ -87,6 +93,12 @@ export function VenueFirmwareList () {
 
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
+      visible: (selectedItems) => {
+        const hasOutdatedFw = selectedItems?.some(
+          item => item.versions?.[0].id !== latestReleaseVersion?.id
+        )
+        return hasOutdatedFw
+      },
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (selectedRows) => {
         setVenueIds(selectedRows.map(item => item.id))
