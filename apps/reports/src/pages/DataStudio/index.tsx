@@ -4,7 +4,7 @@ import { useAuthenticateMutation } from '@acx-ui/reports/services'
 
 export const getHostName = (origin: string) => {
   if(process.env['NODE_ENV'] === 'development')
-    return 'https://devalto.ruckuswireless.com'
+    return 'https://dev.ruckus.cloud'
 
   return origin
 }

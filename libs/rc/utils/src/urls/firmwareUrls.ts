@@ -26,36 +26,28 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/upgrade/tenant/:tenantId/switchPreference'
   },
   getVenueVersionList: {
-    // [New API] new uri not ready
-    // method: 'get',
-    // url: '/venues/apFirmwares/schedules' + venueVersionParams,
-    // oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
-    // newApi: false
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams
+    url: '/venues/apFirmwares/schedules' + venueVersionParams,
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams,
+    newApi: true
   },
   getLatestFirmwareList: {
-    // [New API] new uri not ready
     method: 'get',
-    url: '/apFirmwares',
+    url: '/apFirmwares?status=latest',
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/latest',
-    newApi: false
+    newApi: true
   },
   getAvailableFirmwareList: {
-    // [New API] new uri not ready
-    // method: 'get',
-    // url: '/apFirmwares',
-    // oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release',
-    // newApi: false
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/version/release'
+    url: '/apFirmwares?status=release',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release',
+    newApi: true
   },
   getFirmwareVersionIdList: {
-    // [New API] new uri not ready
     method: 'get',
     url: '/apFirmwares',
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version',
-    newApi: false
+    newApi: true
   },
   skipVenueUpgradeSchedules: {
     // [New API] new uri not ready

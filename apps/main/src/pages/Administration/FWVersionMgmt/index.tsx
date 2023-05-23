@@ -6,10 +6,12 @@ import { Tabs, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
 import {
+  useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchVenueVersionListQuery,
+  useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -31,20 +33,25 @@ const FWVersionMgmt = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
-
+  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
   const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
-  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
+  const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
+    selectFromResult: ({ data }) => ({
+      latestEdgeReleaseVersion: data?.[0]
+    })
+  })
+  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
+    { skip: !enableSigPackUpgrade })
   const [isApFirmwareAvailable, setIsApFirmwareAvailable] = useState(false)
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false) // TODO: GetDpFirmwareUpgradeAvailable API
+  const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
 
   const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
-  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   useEffect(()=>{
     if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
       setIsAPPLibraryAvailable(true)
@@ -76,6 +83,12 @@ const FWVersionMgmt = () => {
       setIsSwitchFirmwareAvailable(hasOutdated09 || hasOutdated10)
     }
   }, [latestSwitchReleaseVersions, switchVenueVersionList])
+
+  useEffect(() => {
+    const hasOutdated = edgeVenueVersionList?.some(item=>
+      item.versions?.[0].id !== latestEdgeReleaseVersion?.id)
+    setIsEdgeFirmwareAvailable(!!hasOutdated)
+  }, [edgeVenueVersionList, latestEdgeReleaseVersion])
 
   const tabs = {
     apFirmware: {

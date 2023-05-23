@@ -13,11 +13,10 @@ import {
   APMesh,
   APMeshRole
 } from '@acx-ui/rc/utils'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import { EmbeddedReport }       from '@acx-ui/reports/components'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { EmbeddedReport } from '@acx-ui/reports/components'
 import {
-  ReportType,
-  reportTypeDataStudioMapping
+  ReportType
 } from '@acx-ui/reports/components'
 
 import {
@@ -244,7 +243,7 @@ export function VenueWifi () {
       { showIdx === 0 &&
         <div style={{ paddingTop: 20 }}>
           <EmbeddedReport
-            embedDashboardName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT]}
+            reportName={ReportType.ACCESS_POINT}
             rlsClause={`"zoneName" in ('${params?.venueId}')`}
           />
         </div>

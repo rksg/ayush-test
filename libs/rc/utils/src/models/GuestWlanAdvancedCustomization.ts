@@ -1,7 +1,9 @@
-import { ClientIsolationOptions } from './ClientIsolationOptions'
-import { DnsProxy }               from './DnsProxy'
-import { VlanPool }               from './VlanPool'
-import { WlanRadioCustomization } from './WlanRadioCustomization'
+import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
+import { ClientIsolationOptions }      from './ClientIsolationOptions'
+import { DnsProxy }                    from './DnsProxy'
+import { RadiusOptions }               from './RadiusOptions'
+import { VlanPool }                    from './VlanPool'
+import { WlanRadioCustomization }      from './WlanRadioCustomization'
 
 export class GuestWlanAdvancedCustomization {
   // Prevents client access to other clients connected to this network. Usually enabled in public networks.
@@ -79,6 +81,7 @@ export class GuestWlanAdvancedCustomization {
 
   wifiCallingIds?: string[]
 
+  // Discard. It will move to RADIUS options
   singleSessionIdAccounting?: boolean
 
   proxyARP?: boolean
@@ -116,6 +119,9 @@ export class GuestWlanAdvancedCustomization {
   dnsProxyEnabled?: boolean
 
   dnsProxy?: DnsProxy
+
+  bssPriority: BasicServiceSetPriorityEnum
+  radiusOptions?: RadiusOptions
 
   constructor () {
     this.clientIsolation = true
@@ -165,8 +171,6 @@ export class GuestWlanAdvancedCustomization {
     //@Size(    max = 5 )
     this.wifiCallingIds = []
 
-    this.singleSessionIdAccounting = false
-
     this.proxyARP = false
 
     this.enableAirtimeDecongestion = false
@@ -202,5 +206,7 @@ export class GuestWlanAdvancedCustomization {
     this.dnsProxyEnabled = false
 
     this.dnsProxy = new DnsProxy()
+
+    this.bssPriority = BasicServiceSetPriorityEnum.HIGH
   }
 }

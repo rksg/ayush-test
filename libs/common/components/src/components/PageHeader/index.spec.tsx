@@ -39,6 +39,7 @@ describe('PageHeader', () => {
         <PageHeader
           title='With Subtitle'
           breadcrumb={[
+            { text: 'Root' },
             { text: 'Networks', link: '/networks' }
           ]}
           subTitle={<span>Subtitle</span>}
@@ -59,6 +60,7 @@ describe('PageHeader', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+
   it('should render page header without bottom padding', () => {
     const { asFragment } = render(
       <BrowserRouter>
