@@ -118,20 +118,24 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: ['apDetails','apName'],
       key: 'apName',
-      render: (value:unknown)=>{
+      render: (value:unknown,row)=>{
         if(!value)
           return '-'
-        return <TenantLink to={'/devices/wifi'}>{value as string}</TenantLink>
+        return <TenantLink
+          to={`/devices/wifi/${row.apDetails?.apMac}/details/overview`}>
+          {value as string}</TenantLink>
       }
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
-      render: (value:unknown)=>{
+      render: (value:unknown,row)=>{
         if(!value)
           return '-'
-        return <TenantLink to={'/devices/wifi'}>{value as string}</TenantLink>
+        return <TenantLink
+          to={`/devices/wifi/${row.apDetails?.apMac}/details/overview`}>
+          {value as string}</TenantLink>
       }
     },
     {
