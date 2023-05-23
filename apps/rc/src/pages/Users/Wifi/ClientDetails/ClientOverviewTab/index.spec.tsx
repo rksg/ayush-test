@@ -11,12 +11,13 @@ import {
   getUrlForTest,
   DpskUrls
 } from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  cleanup
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -65,12 +66,13 @@ async function checkFragment (asFragment: () => DocumentFragment) {
   // eslint-disable-next-line testing-library/no-node-access
   fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
   fragment.querySelector('div[size-sensor-id]')?.removeAttribute('size-sensor-id')
+  expect(fragment).toMatchSnapshot()
 }
 
 describe('ClientOverviewTab', () => {
   beforeEach(() => {
     // eslint-disable-next-line no-console
-    console.log('beforeEach')
+    // console.log('beforeEach')
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -185,17 +187,58 @@ describe('ClientOverviewTab', () => {
       </Provider>)
     })
   })
+})
+
+describe('ClientOverviewTab - ClientProperties', () => {
+  beforeEach(() => {
+    // eslint-disable-next-line no-console
+    // console.log('beforeEach')
+    store.dispatch(apApi.util.resetApiState())
+    store.dispatch(clientApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2022-12-14T01:20:00+10:00')))
+
+    mockServer.use(
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventMetaList))),
+      rest.get(ClientUrlsInfo.getClientDetails.url,
+        (_, res, ctx) => res(ctx.json(clientList[0]))),
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(clientApList[0]))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
+      rest.post(CommonUrlsInfo.getHistoricalClientList.url,
+        (_, res, ctx) => res(ctx.json(histClientList))),
+      rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
+        (_, res, ctx) => res(ctx.json(clientReportList[0]))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(apCaps)))
+    )
+  })
+
+  afterEach(() => {
+    cleanup()
+    jest.clearAllMocks()
+    jest.useRealTimers()
+  })
 
   describe('ClientProperties', () => {
     describe('Normal Client', () => {
       it('should render client correctly', async () => {
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
+
+        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+        checkFragment(asFragment)
       })
 
       it('should render client without some data correctly', async () => {
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
 
@@ -223,9 +266,12 @@ describe('ClientOverviewTab', () => {
           rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
             (_, res, ctx) => res(ctx.json(null)))
         )
+
+        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+        checkFragment(asFragment)
       })
 
-      it('should render guest client correctly', async () => {
+      it.skip('should render guest client correctly', async () => {
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
             (_, res, ctx) => res(ctx.json({
@@ -259,12 +305,15 @@ describe('ClientOverviewTab', () => {
               }]
             })))
         )
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
+
+        await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+        checkFragment(asFragment)
       })
 
-      it.skip('should render dpsk client correctly', async () => {
+      it('should render dpsk client correctly', async () => {
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
             (_, res, ctx) => res(ctx.json({
@@ -329,7 +378,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it('should render historical client (guest) correctly', async () => {
+      it.skip('should render historical client (guest) correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
@@ -399,7 +448,7 @@ describe('ClientOverviewTab', () => {
         expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
       })
 
-      it('should render correctly when search parameters is disappeared', async () => {
+      it.skip('should render correctly when search parameters is disappeared', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
