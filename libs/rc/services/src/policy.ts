@@ -1782,7 +1782,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
         return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
-      }
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
     }),
     getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
       query: ({ params }) => {
