@@ -115,19 +115,19 @@ describe('EdgeDetails', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Services (0)' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/services`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/services`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'DHCP' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/dhcp/pools`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/dhcp/pools`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'Timeline' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/timeline`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/timeline`,
       hash: '',
       search: ''
     })

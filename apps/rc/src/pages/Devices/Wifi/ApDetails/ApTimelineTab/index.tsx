@@ -23,7 +23,7 @@ const Events = () => {
     settingsId='ap-event-table'
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
-    eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
+    eventTypeMap={omit(eventTypeMapping, ['SWITCH', 'EDGE'])}
     columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
   />
 }
