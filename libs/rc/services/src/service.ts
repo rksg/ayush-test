@@ -51,7 +51,6 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
-  DevicePolicy,
   ApplicationPolicy,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
@@ -120,18 +119,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const devicePolicyListReq = createHttpRequest(
-          CommonUrlsInfo.getDevicePolicyList,
-          params
-        )
-        return {
-          ...devicePolicyListReq,
-          body: payload
-        }
-      }
-    }),
     applicationPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
       query: ({ params }) => {
         const applicationPolicyListReq = createHttpRequest(
@@ -159,6 +146,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
+    }),
+    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
@@ -469,7 +466,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'AddWiFiCallingServiceProfile',
             'UpdateWiFiCallingServiceProfile',
             'DeleteWifiCallingServiceProfile',
-            'DeleteWiFiCallingServiceProfile'
+            'DeleteWifiCallingServiceProfiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
@@ -497,7 +494,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'AddWiFiCallingServiceProfile',
             'UpdateWiFiCallingServiceProfile',
             'DeleteWifiCallingServiceProfile',
-            'DeleteWiFiCallingServiceProfile'
+            'DeleteWifiCallingServiceProfiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
@@ -859,6 +856,7 @@ export const {
   useAddMdnsProxyApsMutation,
   useDeleteMdnsProxyApsMutation,
   useGetMdnsProxyApsQuery,
+  useDeleteWifiCallingServicesMutation,
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,

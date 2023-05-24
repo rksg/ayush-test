@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
 import {
-  useDelSyslogPolicyMutation,
+  useDelSyslogPoliciesMutation,
   useSyslogPolicyListQuery,
-  useGetVenuesQuery
+  useGetVenuesQuery, doProfileDelete
 } from '@acx-ui/rc/services'
 import {
   FacilityEnum,
@@ -45,32 +45,33 @@ export default function SyslogTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDelSyslogPolicyMutation()
+  const [ deleteFn ] = useDelSyslogPoliciesMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
     defaultPayload
   })
 
+  const doDelete = (selectedRows: SyslogPolicyListType[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<SyslogPolicyListType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: (rows, clearSelection) => {
+        doDelete(rows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -114,7 +115,7 @@ export default function SyslogTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={{ type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

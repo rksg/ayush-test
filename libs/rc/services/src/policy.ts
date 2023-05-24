@@ -1269,7 +1269,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
             'UpdateSyslogServerProfile',
-            'DeleteSyslogServerProfile'
+            'DeleteSyslogServerProfile',
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -1300,7 +1301,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
             'UpdateSyslogServerProfile',
-            'DeleteSyslogServerProfile'
+            'DeleteSyslogServerProfile',
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })

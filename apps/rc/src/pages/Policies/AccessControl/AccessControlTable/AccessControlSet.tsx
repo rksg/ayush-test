@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }     from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,
@@ -120,16 +120,7 @@ const AccessControlSet = () => {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
-        if (networkIds.length !== 0) {
-          showActionModal({
-            type: 'error',
-            content: $t({
-              defaultMessage: 'This policy has been applied in network'
-            })
-          })
-        } else {
-          doDelete(rows, clearSelection)
-        }
+        doDelete(rows, clearSelection)
       }
     },
     {
