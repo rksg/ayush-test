@@ -31,7 +31,7 @@ describe('Edge resource utilization chart', () => {
           totalVal={currentEdge?.diskTotalKb}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     let targetBox = await screen.findByText('Storage Usage')
@@ -52,7 +52,7 @@ describe('Edge resource utilization chart', () => {
           totalVal={memTotal}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     const exptectedStr = '(42%)'
@@ -71,7 +71,7 @@ describe('Edge resource utilization chart', () => {
           value={memUsed}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
 
@@ -91,7 +91,7 @@ describe('Edge resource utilization chart', () => {
           totalVal={memTotal}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     const exptectedStr = '0 B'
