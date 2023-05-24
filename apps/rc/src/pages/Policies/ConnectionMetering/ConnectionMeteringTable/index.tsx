@@ -33,6 +33,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel
@@ -225,9 +226,8 @@ export default function ConnectionMeteringTable () {
               link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'Connection Metering' })}
-        extra={[
+        extra={filterByAccess([
           <TenantLink
-            key='add'
             to={getPolicyRoutePath({
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.CREATE
@@ -237,7 +237,7 @@ export default function ConnectionMeteringTable () {
               { $t({ defaultMessage: 'Add Connection metering profile' }) }
             </Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Table
         enableApiFilter
