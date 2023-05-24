@@ -115,6 +115,7 @@ function AdministrationRoutes () {
         element={<TenantNavigate replace to='/administration/accountSettings' />}
       />
       <Route path=':activeTab' element={<Administration />} />
+      <Route path=':activeTab/:activeSubTab' element={<Administration />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
 
     </Route>
