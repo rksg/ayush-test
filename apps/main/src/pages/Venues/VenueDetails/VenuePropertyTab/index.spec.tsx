@@ -97,9 +97,6 @@ describe('Property Unit Page', () => {
     const firstRow = await screen.findByRole('cell', { name: firstRowName })
     await screen.findByRole('link', { name: mockConnectionMeterings[0].name })
 
-    // eslint-disable-next-line testing-library/no-debugging-utils
-    screen.debug(undefined, 1000000, undefined)
-
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
   })

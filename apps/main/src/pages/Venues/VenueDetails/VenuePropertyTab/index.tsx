@@ -77,8 +77,8 @@ function ConnectionMeteringLink (props:{
       showWarning = true
       expired = false
       const expireDate = moment(new Date(0).setUTCSeconds(expirationEpoch)).format('yyyy/MM/DD')
-      tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on' })
-        .concat(' ' + expireDate)
+      tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
+        , { expireDate })
     }
   }
   return (
@@ -87,7 +87,7 @@ function ConnectionMeteringLink (props:{
         <TenantLink to={
           getPolicyDetailsLink({
             type: PolicyType.CONNECTION_METERING,
-            oper: PolicyOperation.DETAIL, policyId: id ?? '' })
+            oper: PolicyOperation.DETAIL, policyId: id })
         }>
           {name ?? id}
         </TenantLink>
@@ -450,9 +450,9 @@ export function VenuePropertyTab () {
     },
     {
       show: isConnectionMeteringEnabled,
-      key: 'Connection Metering',
+      key: 'connectionMetering',
       title: $t({ defaultMessage: 'Connection Metering' }),
-      dataIndex: ['connectionMetering'],
+      dataIndex: 'connectionMetering',
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
         const connectionMeteringId = persona?.meteringProfileId ?? ''
