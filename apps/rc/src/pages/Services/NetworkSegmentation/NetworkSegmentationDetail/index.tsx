@@ -32,7 +32,6 @@ const NetworkSegmentationDetail = () => {
     }
   }, {
     selectFromResult: ({ data, isLoading }) => {
-      console.log(data)
       return {
         nsgViewData: data?.data[0],
         isNsgViewDataLoading: isLoading
