@@ -5,8 +5,7 @@ import { useIntl } from 'react-intl'
 import {
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  Loader,
-  showToast
+  Loader
 } from '@acx-ui/components'
 import {
   useGetConnectionMeteringByIdQuery,
@@ -126,14 +125,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
         result = await handleAddConnectionMetering(data)
       }
       useModalMode ? modalCallback?.(result) : navigate(linkToPolicies, { replace: true })
-    } catch (error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
-      })
-    }
+    } catch (error) {}
   }
 
   const onCancel = ()=> {
