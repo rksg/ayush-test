@@ -60,7 +60,7 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
         }
       },
       providesTags: [
-        { type: 'ConnectionMetering', id: 'LIST' }
+        { type: 'ConnectionMetering', id: 'ID' }
       ]
     }),
     updateConnectionMetering: build.mutation<ConnectionMetering, RequestPayload>({
