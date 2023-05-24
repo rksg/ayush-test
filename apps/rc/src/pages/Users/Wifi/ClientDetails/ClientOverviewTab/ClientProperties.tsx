@@ -66,39 +66,12 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       let networkData = null as NetworkSaveData | null
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
 
-      const payload = {
-        searchString: clientDetails.clientMac,
-        searchTargetFields: [
-          'devicesMac'
-        ],
-        fields: [
-          'creationDate',
-          'name',
-          'mobilePhoneNumber',
-          'emailAddress',
-          'guestType',
-          'ssid',
-          'expiryDate',
-          'guestStatus',
-          'id',
-          'networkId',
-          'maxNumberOfClients',
-          'devicesMac',
-          'guestStatus',
-          'socialLogin',
-          'clients',
-          'notes'
-        ],
-        filters: {
-          includeExpired: [
-            true
-          ]
-        }
-      }
-
       const getGuestData = async () => {
-        const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
-          .unwrap())?.data || []
+        const list = (await getGuestsList({
+          params: { tenantId },
+          payload: getGuestsPayload(clientDetails) }, true).unwrap()
+        )?.data || []
+
         if (list.length > 0) {
           const name = clientDetails?.userName || clientDetails?.username
           setGuestDetail(list.filter(item => (
@@ -132,6 +105,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
           })
+
         } catch {
           setData(apData, venueData, networkData)
         }
@@ -161,6 +135,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       }
 
       getMetaData()
+
     } else {
       setClient({} as ClientExtended)
     }
@@ -666,4 +641,36 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string })
       />
     </Descriptions>
   </>
+}
+
+function getGuestsPayload ({ clientMac }: Client) {
+  return {
+    searchString: clientMac,
+    searchTargetFields: [
+      'devicesMac'
+    ],
+    fields: [
+      'creationDate',
+      'name',
+      'mobilePhoneNumber',
+      'emailAddress',
+      'guestType',
+      'ssid',
+      'expiryDate',
+      'guestStatus',
+      'id',
+      'networkId',
+      'maxNumberOfClients',
+      'devicesMac',
+      'guestStatus',
+      'socialLogin',
+      'clients',
+      'notes'
+    ],
+    filters: {
+      includeExpired: [
+        true
+      ]
+    }
+  }
 }

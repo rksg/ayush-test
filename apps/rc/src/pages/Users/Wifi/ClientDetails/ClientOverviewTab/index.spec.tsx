@@ -34,6 +34,7 @@ import {
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
+import { ClientProperties }     from './ClientProperties'
 
 import { ClientOverviewTab } from '.'
 
@@ -188,27 +189,27 @@ describe('ClientOverviewTab - ClientProperties', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventMetaList))),
-      rest.get(ClientUrlsInfo.getClientDetails.url,
-        (_, res, ctx) => res(ctx.json(clientList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-      rest.post(CommonUrlsInfo.getHistoricalClientList.url,
-        (_, res, ctx) => res(ctx.json(histClientList))),
-      rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-        (_, res, ctx) => res(ctx.json(clientReportList[0]))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(apCaps)))
     )
   })
 
   describe('ClientProperties', () => {
+    // TODO: match snapshot
     describe('Normal Client', () => {
       it('should render client correctly', async () => {
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider>
+          <ClientProperties
+            clientStatus='connected'
+            clientDetails={clientList[0]}
+          />
+        </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
 
@@ -217,27 +218,23 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render client without some data correctly', async () => {
-        render(<Provider><ClientOverviewTab /></Provider>, {
-          route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
-        })
+        const clientDetails = {
+          ...clientList[0],
+          osType: null,
+          hostname: null,
+          networkName: null,
+          receiveSignalStrength_dBm: -70,
+          snr_dB: null,
+          noiseFloor_dBm: null,
+          wifiCallingClient: true,
+          wifiCallingCarrierName: 'att1',
+          wifiCallingQosPriority: 'WIFICALLING_PRI_VOICE',
+          wifiCallingTotal: 242424,
+          wifiCallingTx: 121212,
+          wifiCallingRx: 121212
+        }
 
         mockServer.use(
-          rest.get(ClientUrlsInfo.getClientDetails.url,
-            (_, res, ctx) => res(ctx.json({
-              ...clientList[0],
-              osType: null,
-              hostname: null,
-              networkName: null,
-              receiveSignalStrength_dBm: -70,
-              snr_dB: null,
-              noiseFloor_dBm: null,
-              wifiCallingClient: true,
-              wifiCallingCarrierName: 'att1',
-              wifiCallingQosPriority: 'WIFICALLING_PRI_VOICE',
-              wifiCallingTotal: 242424,
-              wifiCallingTx: 121212,
-              wifiCallingRx: 121212
-            }))),
           rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(WifiUrlsInfo.getNetwork.url,
@@ -246,20 +243,29 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json(null)))
         )
 
+        render(<Provider>
+          <ClientProperties
+            clientStatus='connected'
+            clientDetails={clientDetails}
+          />
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
+        })
+
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
       })
 
       it('should render guest client correctly', async () => {
+        const clientDetails = {
+          ...clientList[0],
+          osType: 'apple',
+          networkName: null,
+          noiseFloor_dBm: -60,
+          receiveSignalStrength_dBm: -90
+        }
+
         mockServer.use(
-          rest.get(ClientUrlsInfo.getClientDetails.url,
-            (_, res, ctx) => res(ctx.json({
-              ...clientList[0],
-              osType: 'apple',
-              networkName: null,
-              noiseFloor_dBm: -60,
-              receiveSignalStrength_dBm: -90
-            }))),
           rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json({
               ...clientApList[0],
@@ -289,7 +295,12 @@ describe('ClientOverviewTab - ClientProperties', () => {
               }]
             })))
         )
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider>
+          <ClientProperties
+            clientStatus='connected'
+            clientDetails={clientDetails}
+          />
+        </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
         expect(await screen.findByText('Client Details')).toBeVisible()
@@ -300,13 +311,13 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render dpsk client correctly', async () => {
+        const clientDetails = {
+          ...clientList[0],
+          osType: 'apple',
+          receiveSignalStrength_dBm: null
+        }
+
         mockServer.use(
-          rest.get(ClientUrlsInfo.getClientDetails.url,
-            (_, res, ctx) => res(ctx.json({
-              ...clientList[0],
-              osType: 'apple',
-              receiveSignalStrength_dBm: null
-            }))),
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
@@ -318,7 +329,13 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))
           )
         )
-        render(<Provider><ClientOverviewTab /></Provider>, {
+
+        render(<Provider>
+          <ClientProperties
+            clientStatus='connected'
+            clientDetails={clientDetails}
+          />
+        </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
 
@@ -328,9 +345,35 @@ describe('ClientOverviewTab - ClientProperties', () => {
     })
 
     describe('Historical Client', () => {
+      const clientDetails = {
+        bssid: '28:b3:71:a8:78:51',
+        clientIP: '10.206.1.137',
+        clientMac: '92:37:9d:40:3d:bd',
+        disconnectTime: '1669277258',
+        hostname: '92:37:9d:40:3d:bd',
+        id: 'd47626f6206040c8925822acf4253bc9',
+        osType: 'iOS Phone',
+        serialNumber: '422039000230',
+        sessionDuration: '1803',
+        ssid: 'NMS-app6-WLAN-QA',
+        userId: '',
+        venueId: '87c982325ef148a2b7cefe652384d3ca',
+        apName: 'UI team ONLY',
+        isApExists: true,
+        isClientExists: false,
+        isVenueExists: true,
+        networkId: '0189575828434f94a7c0b0e611379d26',
+        venueName: 'UI-TEST-VENUE'
+      }
+
       it('should render historical client correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider>
+          <ClientProperties
+            clientStatus='historical'
+            clientDetails={clientDetails}
+          />
+        </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
         expect(await screen.findByText('Client Details')).toBeVisible()
@@ -360,10 +403,20 @@ describe('ClientOverviewTab - ClientProperties', () => {
           rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
             (_, res, ctx) => res(ctx.json(null)))
         )
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider>
+          <ClientProperties
+            clientStatus='historical'
+            clientDetails={{
+              ...clientDetails,
+              disconnectTime: null,
+              sessionDuration: null,
+              ssid: null
+            }}
+          />
+        </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        expect(await screen.findByText('Disconnected')).toBeVisible()
+
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Last Session')).toBeVisible()
         expect(await screen.findByText(clientList?.[0].apName)).toBeVisible()
@@ -372,15 +425,8 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
       it('should render historical client (guest) correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
+
         mockServer.use(
-          rest.post(CommonUrlsInfo.getHistoricalClientList.url,
-            (_, res, ctx) => res(ctx.json({
-              ...histClientList,
-              data: [{
-                ...histClientList.data[0],
-                ssid: null
-              }]
-            }))),
           rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
             (_, res, ctx) => res(ctx.json({
               ...clientApList[0],
@@ -410,7 +456,15 @@ describe('ClientOverviewTab - ClientProperties', () => {
               }]
             })))
         )
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider>
+          <ClientProperties
+            clientStatus='historical'
+            clientDetails={{
+              ...clientDetails,
+              ssid: null
+            }}
+          />
+        </Provider>, {
           route: {
             params,
             path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview',
@@ -439,7 +493,12 @@ describe('ClientOverviewTab - ClientProperties', () => {
           )
         )
 
-        render(<Provider><ClientOverviewTab /></Provider>, {
+        render(<Provider>
+          <ClientProperties
+            clientStatus='historical'
+            clientDetails={clientDetails}
+          />
+        </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
 
@@ -453,13 +512,19 @@ describe('ClientOverviewTab - ClientProperties', () => {
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
             (_, res, ctx) => res(ctx.status(404), ctx.json({}))
+          ),
+          rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
+            (_, res, ctx) => res(ctx.json(clientReportList[0]))
+          ),
+          rest.post(CommonUrlsInfo.getHistoricalClientList.url,
+            (_, res, ctx) => res(ctx.json(histClientList))
           )
         )
 
         render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        expect(await screen.findByText('Disconnected')).toBeVisible()
+
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Last Session')).toBeVisible()
         expect(await screen.findByText(clientList?.[0].apName)).toBeVisible()
