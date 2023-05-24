@@ -100,8 +100,11 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
           .unwrap())?.data || []
         if (list.length > 0) {
-          setGuestDetail(list.filter(item => (item.networkId === clientDetails.networkId
-            &&item.name===clientDetails.username))[0])
+          const name = clientDetails?.userName || clientDetails?.username
+          setGuestDetail(list.filter(item => (
+            item.networkId === clientDetails.networkId
+            && item.name === name
+          ))[0])
         }
       }
 
@@ -121,9 +124,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           ]).then(([ ap, venue, network ]) => {
             /* eslint-disable @typescript-eslint/no-explicit-any */
             setData(
-              ((ap as any)?.data ?? {}) as unknown as ApDeep,
-              ((venue as any)?.data ?? {}) as unknown as VenueExtended,
-              ((network as any)?.data ?? {}) as unknown as NetworkSaveData
+              ((ap as any)?.data ?? null) as unknown as ApDeep,
+              ((venue as any)?.data ?? null) as unknown as VenueExtended,
+              ((network as any)?.data ?? null) as unknown as NetworkSaveData
             )
             /* eslint-enable @typescript-eslint/no-explicit-any */
           }).catch((error) => {
@@ -251,7 +254,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Username' })}
-        children={client?.username || client?.userId || '--'}
+        children={client?.userName || client?.username || client?.userId || '--'}
       />
       {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
@@ -524,7 +527,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
         }
         children={
           client?.enableLinkToAp
-            ? <TenantLink to={`devices/aps/${client.serialNumber}/details/overview`}>
+            ? <TenantLink to={`devices/wifi/${client.serialNumber}/details/overview`}>
               {client?.apName || '--'}
             </TenantLink>
             : client?.apName || '--'
@@ -598,7 +601,9 @@ function GuestDetails ({ guestDetail, clientMac }: {
           client =>
             <TenantLink
               // eslint-disable-next-line max-len
-              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}>
+              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}
+              key={client.clientMac}
+            >
               {client.clientMac}
             </TenantLink>) || '--'}
       />

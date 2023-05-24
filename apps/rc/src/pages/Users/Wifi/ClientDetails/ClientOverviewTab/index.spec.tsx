@@ -11,13 +11,12 @@ import {
   getUrlForTest,
   DpskUrls
 } from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved,
-  cleanup
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
@@ -60,14 +59,6 @@ const params = {
   tenantId: 'tenant-id',
   clientId: 'client-id'
 }
-
-// async function checkFragment (asFragment: () => DocumentFragment) {
-//   const fragment = asFragment()
-//   // eslint-disable-next-line testing-library/no-node-access
-//   fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
-//   fragment.querySelector('div[size-sensor-id]')?.removeAttribute('size-sensor-id')
-//   expect(fragment).toMatchSnapshot()
-// }
 
 describe('ClientOverviewTab', () => {
   beforeEach(() => {
@@ -193,8 +184,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date(Date.parse('2022-12-14T01:20:00+10:00')))
 
     mockServer.use(
       rest.post(CommonUrlsInfo.getEventListMeta.url,
@@ -214,12 +203,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(apCaps)))
     )
-  })
-
-  afterEach(() => {
-    cleanup()
-    jest.clearAllMocks()
-    jest.useRealTimers()
   })
 
   describe('ClientProperties', () => {
@@ -267,7 +250,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
       })
 
-      it.skip('should render guest client correctly', async () => {
+      it('should render guest client correctly', async () => {
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
             (_, res, ctx) => res(ctx.json({
@@ -291,20 +274,29 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
               type: 'guest',
-              name: null
+              name: null,
+              guestPortal: {
+                guestNetworkType: 'GuestPass'
+              }
             }))),
           rest.post(CommonUrlsInfo.getGuestsList.url,
             (_, res, ctx) => res(ctx.json({
               ...GuestClient,
               data: [{
-                ...GuestClient.data[3]
+                ...GuestClient.data[3],
+                name: '24418cc316df',
+                networkId: '423c3673e74f44e69c0f3b35cd579ecc'
               }]
             })))
         )
         render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        // TODO
+        expect(await screen.findByText('Client Details')).toBeVisible()
+        expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
+        expect(await screen.findByText('Guest Details')).toBeVisible()
+        expect(await screen.findByText(GuestClient.data[3].emailAddress)).toBeVisible()
+        expect(await screen.findByText(GuestClient.data[3].mobilePhoneNumber)).toBeVisible()
       })
 
       it('should render dpsk client correctly', async () => {
@@ -343,6 +335,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
         })
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Last Session')).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].apName)).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].venueName)).toBeVisible()
+        expect(await screen.findByText(histClientList?.data?.[0].ssid)).toBeVisible()
       })
 
       it('should render historical client without some data correctly', async () => {
@@ -371,9 +366,11 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText('Disconnected')).toBeVisible()
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Last Session')).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].apName)).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].venueName)).toBeVisible()
       })
 
-      it.skip('should render historical client (guest) correctly', async () => {
+      it('should render historical client (guest) correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
@@ -398,13 +395,18 @@ describe('ClientOverviewTab - ClientProperties', () => {
             (_, res, ctx) => res(ctx.json({
               ...clientNetworkList[0],
               type: 'guest',
-              name: null
+              name: '24418cc316df',
+              guestPortal: {
+                guestNetworkType: 'GuestPass'
+              }
             }))),
           rest.post(CommonUrlsInfo.getGuestsList.url,
             (_, res, ctx) => res(ctx.json({
               ...GuestClient,
               data: [{
-                ...GuestClient.data[3]
+                ...GuestClient.data[3],
+                name: '24418cc316df',
+                networkId: '423c3673e74f44e69c0f3b35cd579ecc'
               }]
             })))
         )
@@ -415,7 +417,11 @@ describe('ClientOverviewTab - ClientProperties', () => {
             search: '?clientStatus=historical'
           }
         })
-        // TODO
+        expect(await screen.findByText('Client Details')).toBeVisible()
+        expect(await screen.findByText('Last Session')).toBeVisible()
+        expect(await screen.findByText('Guest Details')).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].apName)).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].venueName)).toBeVisible()
       })
 
       it('should render historical client (dpsk) correctly', async () => {
@@ -439,9 +445,10 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
         expect(await screen.findByText(dpskPassphraseClient.username)).toBeVisible()
         expect(await screen.findByRole('link', { name: dpskPassphraseClient.clientMac[0] })).toBeVisible()
+        expect(await screen.findByText('NMS-app6-WLAN-QA')).toBeVisible()
       })
 
-      it.skip('should render correctly when search parameters is disappeared', async () => {
+      it('should render correctly when search parameters is disappeared', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
@@ -452,7 +459,12 @@ describe('ClientOverviewTab - ClientProperties', () => {
         render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
         })
-        // TODO
+        expect(await screen.findByText('Disconnected')).toBeVisible()
+        expect(await screen.findByText('Client Details')).toBeVisible()
+        expect(await screen.findByText('Last Session')).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].apName)).toBeVisible()
+        expect(await screen.findByText(clientList?.[0].venueName)).toBeVisible()
+        expect(await screen.findByText(histClientList?.data?.[0].ssid)).toBeVisible()
       })
     })
   })

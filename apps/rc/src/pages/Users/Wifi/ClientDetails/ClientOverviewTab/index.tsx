@@ -43,7 +43,7 @@ const clientPayload = {
 }
 
 const historicalPayload = {
-  fields: ['clientMac', 'clientIP', 'userId', 'hostname', 'venueId',
+  fields: ['clientMac', 'clientIP', 'userId', 'username', 'userName', 'hostname', 'venueId',
     'serialNumber', 'networkId', 'disconnectTime', 'ssid', 'osType',
     'sessionDuration', 'venueName', 'apName', 'bssid'],
   sortField: 'event_datetime',
