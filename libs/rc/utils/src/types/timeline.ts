@@ -69,6 +69,7 @@ export interface EventMeta {
   switchName: string
   venueName: string
   tableKey?: string
+  edgeName: string
 }
 
 export type Event = EventBase & EventMeta

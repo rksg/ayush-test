@@ -625,10 +625,14 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload,
           responseHandler: async (response) => {
+            const date = new Date()
+            // eslint-disable-next-line max-len
+            const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
+            const filename = 'AP Device Inventory - ' + nowTime + '.csv'
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'download.csv'
+              : filename
             downloadFile(response, fileName)
           }
         }

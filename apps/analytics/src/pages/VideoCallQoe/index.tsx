@@ -32,7 +32,7 @@ function VideoCallQoeListPage () {
         </Loader>}
         extra={[
           isCallNotStarted ?
-            <TenantLink to='/serviceValidation/videoCallQoe/add'>
+            <TenantLink to='/analytics/videoCallQoe/add'>
               <Button type='primary'>{$t({ defaultMessage: 'Create Test Call' })}</Button>
             </TenantLink>
             :

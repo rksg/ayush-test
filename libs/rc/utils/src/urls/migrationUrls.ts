@@ -24,5 +24,11 @@ export const MigrationUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/zd/migration/:id',
     oldUrl: '/venues/aps/importResults',
     newApi: true
+  },
+  deleteMigration: {
+    method: 'delete',
+    url: '/zd/migration/:id',
+    oldUrl: '/api/tenant/:tenantId/zd/migration/:id',
+    newApi: true
   }
 }

@@ -27,7 +27,7 @@ const EdgeDhcp = () => {
   const navigate = useNavigate()
   const { activeSubTab, serialNumber } = useParams()
   const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
-  const basePath = useTenantLink(`/devices/edge/${serialNumber}/edge-details/dhcp`)
+  const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const getDhcpPoolStatsPayload = {

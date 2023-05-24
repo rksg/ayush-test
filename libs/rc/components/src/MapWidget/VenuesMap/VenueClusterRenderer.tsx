@@ -47,7 +47,10 @@ export const renderItemForList = (item:VenueClusterTooltipData) => (
 )
 
 export const generateClusterInfoContent = (markers: google.maps.Marker[],
-  clusterInfoWindow: google.maps.InfoWindow, onNavigate?: (params: NavigateProps) => void) => {
+  clusterInfoWindow: google.maps.InfoWindow,
+  isEdgeEnabled: boolean,
+  onNavigate?: (params: NavigateProps) => void
+) => {
   let data: VenueClusterTooltipData[] = []
 
   const sortedMarkers = Array.from(markers).sort((a,b) => {
@@ -66,6 +69,7 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
         venueMarker={venueMarker}
         needPadding={false}
         onNavigate={onNavigate}
+        isEdgeEnabled={isEdgeEnabled}
       />
     }
   })
@@ -102,14 +106,17 @@ export default class VenueClusterRenderer implements Renderer {
   private map: google.maps.Map
   private intl: IntlShape
   private onNavigate?: (params: NavigateProps) => void
+  private isEdgeEnabled: boolean
 
   constructor (
     map: google.maps.Map,
     intl: IntlShape,
+    isEdgeEnabled: boolean,
     onNavigate?: (params: NavigateProps) => void) {
     this.map = map
     this.intl = intl
     this.onNavigate = onNavigate
+    this.isEdgeEnabled = isEdgeEnabled
   }
 
   public render (
@@ -146,7 +153,7 @@ export default class VenueClusterRenderer implements Renderer {
 
     google.maps.event.addListener(clusterMarker, 'click', () => {
       const content = generateClusterInfoContent(markers || [new google.maps.Marker({})],
-        clusterInfoWindow, this.onNavigate)
+        clusterInfoWindow, this.isEdgeEnabled, this.onNavigate)
 
       const infoDiv = document.createElement('div')
       createRoot(infoDiv).render(

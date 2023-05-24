@@ -1,7 +1,9 @@
-import { ClientIsolationOptions } from './ClientIsolationOptions'
-import { DnsProxy }               from './DnsProxy'
-import { VlanPool }               from './VlanPool'
-import { WlanRadioCustomization } from './WlanRadioCustomization'
+import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
+import { ClientIsolationOptions }      from './ClientIsolationOptions'
+import { DnsProxy }                    from './DnsProxy'
+import { RadiusOptions }               from './RadiusOptions'
+import { VlanPool }                    from './VlanPool'
+import { WlanRadioCustomization }      from './WlanRadioCustomization'
 
 export class OpenWlanAdvancedCustomization {
   // Prevents client access to other clients connected to this network. Usually enabled in public networks.
@@ -112,6 +114,9 @@ export class OpenWlanAdvancedCustomization {
 
   dnsProxy?: DnsProxy
 
+  bssPriority: BasicServiceSetPriorityEnum
+  radiusOptions?: RadiusOptions
+
   constructor () {
     this.clientIsolation = true
 
@@ -189,5 +194,7 @@ export class OpenWlanAdvancedCustomization {
     this.dnsProxyEnabled = false
 
     this.dnsProxy = new DnsProxy()
+
+    this.bssPriority = BasicServiceSetPriorityEnum.HIGH
   }
 }

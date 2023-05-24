@@ -14,7 +14,7 @@ import { useParams }                 from 'react-router-dom'
 
 import { Tooltip }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector }                     from '@acx-ui/rc/components'
+import { ExpirationDateSelector, PhoneInput }         from '@acx-ui/rc/components'
 import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
@@ -311,7 +311,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             { validator: (_, value) => phoneRegExp(value) }
           ]}
           children={
-            <Input placeholder={$t({ defaultMessage: 'Enter phone number' })} />
+            <PhoneInput
+              name={'phoneNumber'}
+              callback={(value) => form.setFieldValue('phoneNumber', value)}
+              onTop={true}
+            />
           }
         />
         <Form.Item name='revocationReason' hidden={true}/>
