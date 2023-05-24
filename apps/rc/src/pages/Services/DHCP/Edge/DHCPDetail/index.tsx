@@ -42,7 +42,7 @@ const EdgeDHCPDetail = () => {
       fixed: 'left'
       // render: function (data, row) {
       //   return (
-      //     <TenantLink to={`/devices/edge/${row.edgeId}/edge-details/overview`}>
+      //     <TenantLink to={`/devices/edge/${row.edgeId}/details/overview`}>
       //       {row.edgeName}
       //     </TenantLink>
       //   )

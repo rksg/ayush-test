@@ -94,7 +94,7 @@ const NetworkSegmentationTable = () => {
       render: (data, row) => {
         const edgeInfo = row.edgeInfos[0]
         return (
-          <TenantLink to={`/devices/edge/${edgeInfo?.edgeId}/edge-details/overview`}>
+          <TenantLink to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}>
             {edgeInfo?.edgeName}
           </TenantLink>
         )

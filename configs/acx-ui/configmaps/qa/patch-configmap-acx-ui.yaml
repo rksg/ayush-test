@@ -5,5 +5,5 @@ metadata:
 data:
   google.maps.key: "AIzaSyAUtkFCkaAcJX-6e09ZytS_WBPpmSXMx8M"
   split.io.key: "rgkslm2jd328tlh1ah1be4e8kcuqm824u511"
-  captive.portal.domain.name: "qaalto.ruckuswireless.com"
-  new.api.domain.name: "api.qaalto.ruckuswireless.com"
+  captive.portal.domain.name: "qa.ruckus.cloud"
+  new.api.domain.name: "api.qa.ruckus.cloud"

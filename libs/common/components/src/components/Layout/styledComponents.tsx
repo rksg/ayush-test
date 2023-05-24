@@ -340,7 +340,6 @@ export const RightHeaderContentWrapper = styled.div`
   align-items: center;
   gap: var(--acx-header-button-margin);
   height: 100%;
-  div:empty { display: none }
 `
 
 const arrowStyle = css`
