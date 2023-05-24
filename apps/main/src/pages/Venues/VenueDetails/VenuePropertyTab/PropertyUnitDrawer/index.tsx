@@ -70,24 +70,19 @@ function DataConsumptionLable (props: {
 }) {
   const { $t } = useIntl()
   const { billingCycleRepeat, biilingCycleType, billingCycleDays } = props
-  let displayText: string = ''
 
-  if (!billingCycleRepeat) {
-    displayText += $t({ defaultMessage: 'Once' })
-  } else {
-    displayText += $t({ defaultMessage: 'Repeating cycles' }) + ' '
-    if (biilingCycleType === 'CYCLE_MONTHLY') {
-      displayText += '(Monthly)'
-    } else if (biilingCycleType === 'CYCLE_WEEKLY') {
-      displayText += '(Weekly)'
-    } else if (biilingCycleType === 'CYCLE_NUM_DAYS' && billingCycleDays) {
-      displayText += '(Per ' + billingCycleDays + ' days)'
-    }
-  }
+  if (!billingCycleRepeat) return <span>{$t({ defaultMessage: 'Once' })}</span>
+  return <span>{ $t({ defaultMessage: `Repeating cycles ({
+    cycleType, select, 
+    CYCLE_MONTHLY {Monthly}
+    CYCLE_WEEKLY {Weekly}
+    CYCLE_NUM_DAYS {Per {cycleDays} days}
+    other {}
+  })` }, {
+    cycleType: biilingCycleType,
+    cycleDays: billingCycleDays
+  })}</span>
 
-  return (
-    <span>{displayText}</span>
-  )
 }
 
 function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
@@ -189,21 +184,19 @@ function ConnectionMeteringSettingForm (props:
                 //value={qosState.profileId}
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 options={Array.from(profileMap,
-                  (entry) => {return { label: entry[1].name, value: entry[0] }})}
+                  (entry) => ({ label: entry[1].name, value: entry[0] }))}
                 onChange={(v)=> {setQosState({ ...qosState, profileId: v })}}
               />
             </Form.Item>
           </Col>
           <Col span={3}>
-            <Form.Item label={' '}>
-              <Button
-                style={{ marginLeft: '5px' }}
-                type={'link'}
-                onClick={()=>setModalVisible(true)}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </Button>
-            </Form.Item>
+            <Button
+              style={{ marginLeft: '5px', height: '100%' }}
+              type={'link'}
+              onClick={()=>setModalVisible(true)}
+            >
+              {$t({ defaultMessage: 'Add' })}
+            </Button>
           </Col>
         </Row>
         {qosState.profileId &&
@@ -471,13 +464,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             form.setFieldValue('ports', ports?.map(i => i.toString()))
             form.setFieldValue('vxlan', vni ?? noDataDisplay)
           }
-          if (isConnectionMeteringEnabled) {
-            if (meteringProfileId && expirationEpoch) {
-              setQosSetting({
-                profileId: meteringProfileId,
-                expirationDate: moment.unix(expirationEpoch)
-              })
-            }
+
+          if (isConnectionMeteringEnabled && meteringProfileId && expirationEpoch) {
+            setQosSetting({
+              profileId: meteringProfileId,
+              expirationDate: moment.unix(expirationEpoch)
+            })
           }
 
           form.setFieldValue(['unitPersona', 'vlan'], vlan)
