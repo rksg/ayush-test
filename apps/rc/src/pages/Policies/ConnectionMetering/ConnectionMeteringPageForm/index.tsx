@@ -12,7 +12,7 @@ import {
   getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 
-export function ConnectionMeteringPageForm (props: ConnectionMeteringFormProps) {
+export default function ConnectionMeteringPageForm (props: ConnectionMeteringFormProps) {
   const { $t } = useIntl()
   const { mode } = props
   return (

@@ -21,7 +21,7 @@ import { RateLimitingTableCell } from '../RateLimitingHelper'
 import { ConnectionMeteringInstanceTable } from './ConnectionMeteringInstanceTable'
 
 
-export function ConnectionMeteringDetail () {
+export default function ConnectionMeteringDetail () {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const profileQuery = useGetConnectionMeteringByIdQuery({ params: { id: policyId } })
