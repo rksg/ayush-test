@@ -369,6 +369,7 @@ export function PortalSettings () {
       const formData = await getMspPortalToSave(values)
       await addMspLabel({ params, payload: formData }).unwrap()
       navigate(linkDashboard, { replace: true })
+      window.location.reload()
     } catch(error) {
       const respData = error as { status: number, data: { [key: string]: string } }
       showActionModal({
