@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import React                   from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { Menu, MenuProps }     from 'antd'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError }    from '@reduxjs/toolkit/query/react'
+import { Menu, MenuProps }        from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -21,9 +21,8 @@ import {
 } from '@acx-ui/rc/services'
 import { CommonResult, ImportErrorRes } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
-import { filterByAccess }               from '@acx-ui/user'
 
-export default function ApsTable () {
+export default function useApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible ] = useState(false)
@@ -122,51 +121,61 @@ export default function ApsTable () {
     ]}
   />
 
-  return (
-    <>
-      <PageHeader
-        title={!navbarEnhancement && $t({ defaultMessage: 'Wi-Fi' })}
-        extra={filterByAccess([
-          <Dropdown overlay={addMenu}>{() =>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-          }</Dropdown>
-        ])}
-      />
-      <ApTable
-        searchable={true}
-        filterables={{
-          venueId: venueFilterOptions,
-          deviceGroupId: apgroupFilterOptions
-        }}
-        rowSelection={{
-          type: 'checkbox'
-        }}
-      />
-      <ImportFileDrawer
-        type='AP'
-        title={$t({ defaultMessage: 'Import from file' })}
-        maxSize={CsvSize['5MB']}
-        maxEntries={512}
-        acceptType={['csv']}
-        templateLink={importTemplateLink}
-        visible={importVisible}
-        isLoading={isImportResultLoading}
-        importError={{ data: importErrors } as FetchBaseQueryError}
-        importRequest={(formData) => {
-          setIsImportResultLoading(true)
-          if (wifiEdaFlag) {
-            importCsv({ params: { tenantId }, payload: formData,
-              callback: async (response: CommonResult) => {
-                const result = await importQuery(
-                  { payload: { requestId: response.requestId } }, true)
-                  .unwrap()
-                setImportResult(result)
-              } }).unwrap()
-          } else {
-            importAps({ params: { tenantId }, payload: formData })
-          }
-        }}
-        onClose={() => setImportVisible(false)}/>
-    </>
-  )
+  const title = defineMessage({
+    defaultMessage: 'AP List'
+  })
+
+  const extra = [
+    <Dropdown overlay={addMenu}>{() =>
+      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+    }</Dropdown>
+  ]
+
+  const component = <>
+    {!navbarEnhancement && <PageHeader
+      title={$t(title, { count: null })}
+      extra={extra}
+    />}
+    <ApTable
+      searchable={true}
+      filterables={{
+        venueId: venueFilterOptions,
+        deviceGroupId: apgroupFilterOptions
+      }}
+      rowSelection={{
+        type: 'checkbox'
+      }}
+    />
+    <ImportFileDrawer
+      type='AP'
+      title={$t({ defaultMessage: 'Import from file' })}
+      maxSize={CsvSize['5MB']}
+      maxEntries={512}
+      acceptType={['csv']}
+      templateLink={importTemplateLink}
+      visible={importVisible}
+      isLoading={isImportResultLoading}
+      importError={{ data: importErrors } as FetchBaseQueryError}
+      importRequest={(formData) => {
+        setIsImportResultLoading(true)
+        if (wifiEdaFlag) {
+          importCsv({ params: { tenantId }, payload: formData,
+            callback: async (response: CommonResult) => {
+              const result = await importQuery(
+                { payload: { requestId: response.requestId } }, true)
+                .unwrap()
+              setImportResult(result)
+            } }).unwrap()
+        } else {
+          importAps({ params: { tenantId }, payload: formData })
+        }
+      }}
+      onClose={() => setImportVisible(false)}/>
+  </>
+
+  return {
+    title: $t(title),
+    headerExtra: extra,
+    component
+  }
 }

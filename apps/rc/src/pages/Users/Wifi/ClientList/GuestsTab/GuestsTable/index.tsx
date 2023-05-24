@@ -41,7 +41,7 @@ import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
 import { DateRange, getIntl  }                               from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
-import { GuestDateFilter }                   from '../../PageHeader'
+import { GuestDateFilter }                   from '../../index'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { Menu, MenuProps }     from 'antd'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError }    from '@reduxjs/toolkit/query/react'
+import { Menu, MenuProps }        from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Dropdown, PageHeader }           from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
@@ -13,9 +13,8 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
 
-export default function SwitchesTable () {
+export default function useSwitchesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible] = useState(false)
@@ -79,44 +78,52 @@ export default function SwitchesTable () {
     })
   })
 
-  return (
-    <>
-      <PageHeader
-        title={!navbarEnhancement && $t({ defaultMessage: 'Switch' })}
-        extra={filterByAccess([
-          <Dropdown overlay={addMenu}>{() =>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-          }</Dropdown>
-        ])}
-      />
-      <ImportFileDrawer type='Switch'
-        title={$t({ defaultMessage: 'Import from file' })}
-        maxSize={CsvSize['5MB']}
-        maxEntries={50}
-        acceptType={['csv']}
-        templateLink={importTemplateLink}
-        visible={importVisible}
-        isLoading={importResult.isLoading}
-        importError={importResult.error as FetchBaseQueryError}
-        importRequest={async (formData)=>{
-          await importCsv({ params: { tenantId }, payload: formData }
-          ).unwrap().then(() => {
-            setImportVisible(false)
-          }).catch((error) => {
-            console.log(error) // eslint-disable-line no-console
-          })
-        }}
-        onClose={()=>setImportVisible(false)}
-      />
-      <SwitchTable
-        searchable={true}
-        filterableKeys={{
-          venueId: venueFilterOptions,
-          model: getSwitchModelList
-        }}
-      />
-    </>
-  )
+  const title = defineMessage({
+    defaultMessage: 'Switch List'
+  })
+
+  const extra = [
+    <Dropdown overlay={addMenu}>{() =>
+      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+    }</Dropdown>
+  ]
+
+  const component = <>
+    {!navbarEnhancement && <PageHeader
+      title={$t(title, { count: null })}
+      extra={extra}
+    />}
+    <ImportFileDrawer type='Switch'
+      title={$t({ defaultMessage: 'Import from file' })}
+      maxSize={CsvSize['5MB']}
+      maxEntries={50}
+      acceptType={['csv']}
+      templateLink={importTemplateLink}
+      visible={importVisible}
+      isLoading={importResult.isLoading}
+      importError={importResult.error as FetchBaseQueryError}
+      importRequest={async (formData)=>{
+        await importCsv({ params: { tenantId }, payload: formData }
+        ).unwrap().then(() => {
+          setImportVisible(false)
+        }).catch((error) => {
+          console.log(error) // eslint-disable-line no-console
+        })
+      }}
+      onClose={()=>setImportVisible(false)}
+    />
+    <SwitchTable
+      searchable={true}
+      filterableKeys={{
+        venueId: venueFilterOptions,
+        model: getSwitchModelList
+      }}
+    />
+  </>
+
+  return {
+    title: $t(title),
+    headerExtra: extra,
+    component
+  }
 }
-
-

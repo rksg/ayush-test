@@ -56,7 +56,8 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       <Tabs.TabPane tab={navbarEnhancement
         ? $t({ defaultMessage: 'Settings' })
         : $t({ defaultMessage: 'Account Settings' })
-      } key='accountSettings' />
+      }
+      key='accountSettings' />
       { hasAdministratorTab &&
       ( <Tabs.TabPane
         tab={navbarEnhancement

@@ -203,6 +203,7 @@ const EdgeDhcpTable = () => {
             { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
+          { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([

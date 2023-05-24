@@ -193,7 +193,9 @@ function SwitchPageHeader () {
         titleExtra={
           <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Switches' }) },
+          { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
         ]}
         extra={filterByAccess([
           !checkTimeFilterDisabled() && <RangePicker

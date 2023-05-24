@@ -180,6 +180,7 @@ export default function PortalTable () {
           intl.$t({ defaultMessage: 'Guest Portal ({count})' }, { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
+          { text: intl.$t({ defaultMessage: 'Network Control' }) },
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([

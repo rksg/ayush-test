@@ -184,6 +184,7 @@ export default function DpskTable () {
           intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
+          { text: intl.$t({ defaultMessage: 'Network Control' }) },
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([

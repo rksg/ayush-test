@@ -91,7 +91,9 @@ function ApPageHeader () {
       title={data?.title || ''}
       titleExtra={<APStatus status={status} showText={!currentApOperational} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
+        { text: $t({ defaultMessage: 'Wi-Fi' }) },
+        { text: $t({ defaultMessage: 'Access Points' }) },
+        { text: $t({ defaultMessage: 'Access Point List' }), link: '/devices/wifi' }
       ]}
       extra={filterByAccess([
         enableTimeFilter()
