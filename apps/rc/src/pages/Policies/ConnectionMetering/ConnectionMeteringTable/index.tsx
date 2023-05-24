@@ -7,14 +7,14 @@ import {
   PageHeader,
   Table,
   TableProps,
-  showActionModal,
   showToast,
   Loader
 } from '@acx-ui/components'
 import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  doProfileDelete
 } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
@@ -152,52 +152,27 @@ export default function ConnectionMeteringTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
-        const hasUnits = !!selectedItems.find(p => (p?.unitCount ?? 0) > 0)
-        if (!hasUnits) {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Profile' }),
-              entityValue: selectedItems[0].name,
-              numOfEntities: selectedItems.length
-            },
-            content:
-              $t({
-                // Display warning while one of the Connection metering in used.
-                defaultMessage: 'Are you sure you want to delete this connection metering?'
-              }),
-            onOk: () => {
-              const id = selectedItems[0].id
-              const name = selectedItems[0].name
-              deleteConnectionMetering({ params: { id } })
-                .unwrap()
-                .then(() => {
-                  showToast({
-                    type: 'success',
-                    content: $t({ defaultMessage: 'Connection Metering {name} was deleted' },
-                      { name })
-                  })
-                  clearSelection()
-                }).catch((e) => {
-                  // eslint-disable-next-line no-console
-                  console.log(e)
+        doProfileDelete(selectedItems,
+          $t({ defaultMessage: 'Profile' }),
+          selectedItems[0].name,
+          [{ fieldName: 'unitCount', fieldText: $t({ defaultMessage: 'Unit' }) }],
+          async () => {
+            const id = selectedItems[0].id
+            const name = selectedItems[0].name
+            deleteConnectionMetering({ params: { id } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Connection Metering {name} was deleted' },
+                    { name })
                 })
-            }
+                clearSelection()
+              }).catch((e) => {
+                // eslint-disable-next-line no-console
+                console.log(e)
+              })
           })
-        } else {
-          showActionModal({
-            type: 'error',
-            content:
-              $t({
-                // Display warning while one of the Connection metering in used.
-                defaultMessage: 'Not allowed to delete the profile that is in used'
-              }),
-            onOk: () => {
-              clearSelection()
-            }
-          })
-        }
       }
     }
   ]
