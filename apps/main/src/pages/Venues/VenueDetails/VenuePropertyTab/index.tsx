@@ -86,7 +86,11 @@ export function VenuePropertyTab () {
   const downloadUnit = () => {
     downloadCsv({
       params: { venueId },
-      payload: queryUnitList.payload
+      payload: {
+        ...queryUnitList.payload,
+        pageSize: 100,
+        page: 1
+      }
     }).unwrap().catch((error) => {
       console.log(error) // eslint-disable-line no-console
     })
