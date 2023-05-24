@@ -51,7 +51,7 @@ export default function ResidentPortalTable () {
           onOk: () => {
             deleteResidentPortals({ payload: [id] })
               .then(clearSelection)
-              .catch((error) => 
+              .catch((error) =>
                 console.log(error) // eslint-disable-line no-console
               )
           }

@@ -26,12 +26,12 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
 
   const nameValidator = async (value: string) => {
     const list = (await residentPortalList({
-        payload: 
+      payload:
           { page: 1, pageSize: 100, sortField: 'name', sortOrder: 'ASC', filters: { name: value } }
-      }).unwrap()).data
-        .filter(n => n.id !== id)
-        .map(n => ({ name: n.name }))
-    
+    }).unwrap()).data
+      .filter(n => n.id !== id)
+      .map(n => ({ name: n.name }))
+
     return checkObjectNotExists(list,
       { name: value },
       intl.$t({ defaultMessage: 'Resident Portal' }))
