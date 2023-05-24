@@ -78,10 +78,10 @@ export { TunnelProfileForm } from './TunnelProfileForm'
 export type { TunnelProfileFormType } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
+export type { ConnectionMeteringFormProps } from './ConnectionMeteringForm'
 export {
   ConnectionMeteringForm,
-  ConnectionMeteringFormMode,
-  ConnectionMeteringFormProps
+  ConnectionMeteringFormMode
 } from './ConnectionMeteringForm'
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
