@@ -231,11 +231,11 @@ export function SwitchInfoWidget (props:{
           </GridCol>
         </GridRow>
       </Card>
-      {visible && <SwitchDetailsDrawer
+      <SwitchDetailsDrawer
         visible={visible}
         onClose={()=>setVisible(false)}
         switchDetail={switchDetail}
-      /> }
+      />
       <AlarmsDrawer
         visible={alarmDrawerVisible}
         setVisible={setAlarmDrawerVisible}
