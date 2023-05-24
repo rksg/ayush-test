@@ -261,7 +261,7 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows) => {
+      onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -278,6 +278,8 @@ const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
             rows.forEach((item) => {
               _.remove(currentData, { priority: item.priority })
             })
+
+            clearSelection()
 
             // re-assign priority
             adjustPriority(currentData)

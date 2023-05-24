@@ -6,7 +6,7 @@ import { useIntl }                   from 'react-intl'
 import styled                        from 'styled-components/macro'
 
 import { Card, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
-import { useGetEdgeFirewallQuery, useGetEdgeListQuery }      from '@acx-ui/rc/services'
+import { useGetEdgeFirewallQuery }                           from '@acx-ui/rc/services'
 import {
   ACLDirection,
   getACLDirectionOptions,
@@ -14,44 +14,22 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
-import { useDateFilter }         from '@acx-ui/utils'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import { DDoSRulesTable }        from './DDoSRulesTable'
 import { StatefulACLRulesTable } from './StatefulACLRulesTable'
 import * as UI                   from './styledComponents'
 
-const EdgeFirewall = styled(({ className }: { className?: string }) => {
+const EdgeFirewall = styled(({ className, serviceId }:
+   { className?: string, serviceId: string }) => {
   const { $t } = useIntl()
-  const { venueId } = useParams()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
   const directionOpts = getACLDirectionOptions($t)
 
-  // 1. get edge by venueId, use 'firewallId' in edge data
-  const edgeDataPayload = {
-    fields: [
-      'name',
-      'serialNumber',
-      'firewallId'
-    ],
-    filter: { venueId: [venueId] }
-  }
-  const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
-    { payload: edgeDataPayload },
-    {
-      skip: !!!venueId,
-      selectFromResult: ({ data, isLoading }) => ({
-        edgeData: data?.data[0],
-        isEdgeLoading: isLoading
-      })
-    }
-  )
-
-  const serviceId = edgeData?.firewallId
-
-  // 2. get firewall by firewallId
+  // get firewall by firewallId
   const {
     data: edgeFirewallData,
     isLoading: isFWInfoLoading
@@ -118,7 +96,7 @@ const EdgeFirewall = styled(({ className }: { className?: string }) => {
   return (<Loader states={[
     {
       isFetching: false,
-      isLoading: isEdgeLoading || isFWInfoLoading
+      isLoading: isFWInfoLoading
     }
   ]}>
     <Space direction='vertical' size={30} className={className}>

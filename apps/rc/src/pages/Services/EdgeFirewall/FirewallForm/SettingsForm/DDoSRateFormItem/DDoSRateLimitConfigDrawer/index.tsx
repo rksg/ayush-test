@@ -71,7 +71,7 @@ export const DDoSRateLimitRulesTable = (props: DDoSRateLimitRulesTableProps) => 
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows) => {
+      onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -91,6 +91,7 @@ export const DDoSRateLimitRulesTable = (props: DDoSRateLimitRulesTableProps) => 
               _.remove(currentData, item)
             })
 
+            clearSelection()
             form.setFieldValue('rules', currentData)
           }
         })

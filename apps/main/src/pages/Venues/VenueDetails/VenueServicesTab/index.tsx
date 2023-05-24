@@ -1,7 +1,10 @@
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Tabs }                    from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { useGetEdgeListQuery }     from '@acx-ui/rc/services'
 import { PolicyType, ServiceType } from '@acx-ui/rc/utils'
 
 
@@ -13,9 +16,30 @@ import MdnsProxyInstances       from './MdnsProxyInstances'
 import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
-
+  const { venueId } = useParams()
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const { $t } = useIntl()
+
+  // get edge by venueId, use 'firewallId' in edge data
+  const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
+    { payload: {
+      fields: [
+        'serialNumber',
+        'venueId',
+        'firewallId'
+      ],
+      filters: { venueId: [venueId] }
+    } },
+    {
+      skip: !!!venueId || !isEdgeEnabled,
+      selectFromResult: ({ data, isLoading }) => ({
+        edgeData: data?.data[0],
+        isEdgeLoading: isLoading
+      })
+    }
+  )
+
+  const isAppliedFirewall = !_.isEmpty(edgeData?.firewallId)
 
   return (
     <Tabs type='card' defaultActiveKey={ServiceType.DHCP}>
@@ -51,12 +75,12 @@ export function VenueServicesTab () {
         <VenueRogueAps />
       </Tabs.TabPane>
       {
-        isEdgeEnabled &&
+        isEdgeEnabled && isAppliedFirewall && !isEdgeLoading &&
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Firewall' })}
         key={ServiceType.EDGE_FIREWALL}
       >
-        <EdgeFirewall />
+        <EdgeFirewall serviceId={edgeData?.firewallId!}/>
       </Tabs.TabPane>
       }
     </Tabs>
