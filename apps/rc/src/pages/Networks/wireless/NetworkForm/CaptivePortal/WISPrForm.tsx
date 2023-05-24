@@ -31,6 +31,7 @@ import { DhcpCheckbox }                          from './DhcpCheckbox'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WISPrAuthAccServer }                    from './SharedComponent/WISPrAuthAccServer'
 
 
 const mspUtils = MSPUtils()
@@ -388,7 +389,9 @@ export function WISPrForm () {
           enableDefaultWalledGarden={false} />
         {!regionOption &&
          isOtherProvider &&
-         (enableWISPRAlwaysAccept? null : <AuthAccServerSetting/>)}
+         <WISPrAuthAccServer/>
+        //  (enableWISPRAlwaysAccept? null : <AuthAccServerSetting/>)}
+        }
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
