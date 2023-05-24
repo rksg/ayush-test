@@ -114,6 +114,7 @@ export const residentPortalApi = baseResidentPortalApi.injectEndpoints({
 export const {
   useGetResidentPortalListQuery,
   useGetQueriableResidentPortalsQuery,
+  useLazyGetQueriableResidentPortalsQuery,
   useLazyGetResidentPortalListQuery,
   useAddResidentPortalMutation,
   useGetResidentPortalQuery,
