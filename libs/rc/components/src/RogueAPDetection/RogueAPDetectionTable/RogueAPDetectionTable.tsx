@@ -113,18 +113,7 @@ export function RogueAPDetectionTable () {
         selectedItems.length > 0 && !selectedItems.map(item => item.name).includes(DEFAULT_PROFILE)
       ),
       onClick: (rows, clearSelection) => {
-        if (rows.some(row => Number(row.venueIds.length) > 0)) {
-          showActionModal({
-            type: 'error',
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'One of the policy has been applied in network.'
-            })
-          })
-          clearSelection()
-        } else {
-          doDelete(rows, clearSelection)
-        }
+        doDelete(rows, clearSelection)
       }
     },
     {
