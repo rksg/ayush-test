@@ -2,6 +2,7 @@ import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useGetDpskQuery }          from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -22,6 +23,7 @@ export default function DpskDetails () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { data } = useGetDpskQuery({ params: { tenantId, serviceId } })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tabsPathMapping: Record<DpskDetailsTabKey, Path> = {
     [DpskDetailsTabKey.OVERVIEW]: useTenantLink(getServiceDetailsLink({
@@ -54,7 +56,14 @@ export default function DpskDetails () {
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }) },
+          {
+            text: $t({ defaultMessage: 'DPSK' }),
+            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Services' }),
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })

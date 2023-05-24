@@ -42,6 +42,7 @@ export default function DpskTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
@@ -183,10 +184,17 @@ export default function DpskTable () {
         title={
           intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
           { text: intl.$t({ defaultMessage: 'Network Control' }) },
-          { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+          {
+            text: intl.$t({ defaultMessage: 'My Services' }),
+            link: getServiceListRoutePath(true)
+          }
+        ] : [{
+          text: intl.$t({ defaultMessage: 'My Services' }),
+          link: getServiceListRoutePath(true)
+        }]
+        }
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>

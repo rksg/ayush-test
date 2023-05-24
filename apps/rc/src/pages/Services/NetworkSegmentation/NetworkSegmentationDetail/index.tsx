@@ -5,6 +5,7 @@ import { useIntl }           from 'react-intl'
 import styled                from 'styled-components'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import {
   useApListQuery,
   useGetEdgeDhcpServiceQuery,
@@ -19,7 +20,6 @@ import {
 import {
   getPolicyDetailsLink,
   getServiceDetailsLink,
-  getServiceListRoutePath,
   getServiceRoutePath,
   Persona,
   PolicyOperation,
@@ -52,6 +52,7 @@ const NetworkSegmentationDetail = styled(({ className }) => {
   const location = useLocation()
   const [isApPayloadReady,setIsApPayloadReady] = useState(false)
   const [isPersonaPayloadReady,setIsPersonaPayloadReady] = useState(false)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const {
     data: nsgData,
@@ -326,8 +327,17 @@ const NetworkSegmentationDetail = styled(({ className }) => {
     <>
       <PageHeader
         title={nsgViewData && nsgViewData.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }) },
+          {
+            text: $t({ defaultMessage: 'Network Segmentation' }),
+            link: getServiceRoutePath({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.LIST
+            })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Network Segmentation' }),
             link: getServiceRoutePath({

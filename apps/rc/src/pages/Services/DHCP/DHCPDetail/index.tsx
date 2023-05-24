@@ -2,6 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, GridRow, GridCol, Button, Tabs } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetDHCPProfileQuery,
   useVenuesListQuery
@@ -22,10 +23,10 @@ import { PoolTable }               from '../DHCPForm/DHCPPool/PoolTable'
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
 
-
 export default function DHCPServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data } = useGetDHCPProfileQuery({ params })
   const venuesList = useVenuesListQuery({ params, payload: {
@@ -39,7 +40,14 @@ export default function DHCPServiceDetail () {
     <>
       <PageHeader
         title={data?.serviceName}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }) },
+          {
+            text: $t({ defaultMessage: 'DHCP' }),
+            link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'DHCP Services' }),
             link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
@@ -82,4 +90,3 @@ export default function DHCPServiceDetail () {
     </>
   )
 }
-

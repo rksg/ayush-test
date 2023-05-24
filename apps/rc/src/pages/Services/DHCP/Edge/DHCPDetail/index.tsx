@@ -2,11 +2,12 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps }                                         from '@acx-ui/components'
-import { useGetDhcpStatsQuery }                                                                                          from '@acx-ui/rc/services'
-import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                         from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                from '@acx-ui/user'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps }                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
+import { useGetDhcpStatsQuery }                                                                 from '@acx-ui/rc/services'
+import { DhcpStats, getServiceDetailsLink, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                       from '@acx-ui/user'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
@@ -16,6 +17,8 @@ const EdgeDHCPDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
   const getDhcpStatsPayload = {
     fields: [
       'serviceName',
@@ -104,8 +107,17 @@ const EdgeDHCPDetail = () => {
     <>
       <PageHeader
         title={dhcpStats && dhcpStats.data[0]?.serviceName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }) },
+          {
+            text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
+            link: getServiceRoutePath({
+              type: ServiceType.EDGE_DHCP,
+              oper: ServiceOperation.LIST
+            })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
             link: getServiceRoutePath({

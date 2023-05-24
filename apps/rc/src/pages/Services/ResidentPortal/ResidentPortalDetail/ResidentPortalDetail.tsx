@@ -5,13 +5,13 @@ import { useIntl }                  from 'react-intl'
 import { useParams }                from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { useGetResidentPortalQuery }                          from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceRoutePath,
-  getServiceListRoutePath
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -26,6 +26,7 @@ export default function ResidentPortalDetail () {
   const params = useParams()
   const { $t } = useIntl()
   const { data: residentPortalData, isLoading } = useGetResidentPortalQuery({ params })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [logoImage, setLogoImageString] = useState<string>('')
   const [maxLogoSize, setMaxLogoSize] = useState<number>(100)
@@ -93,8 +94,17 @@ export default function ResidentPortalDetail () {
     <>
       <PageHeader
         title={residentPortalData?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }) },
+          {
+            text: $t({ defaultMessage: 'Resident Portals' }),
+            link: getServiceRoutePath({
+              type: ServiceType.RESIDENT_PORTAL,
+              oper: ServiceOperation.LIST
+            })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Resident Portals' }),
             link: getServiceRoutePath({

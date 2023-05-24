@@ -2,6 +2,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { useGetEdgeFirewallViewDataListQuery }                from '@acx-ui/rc/services'
 import {
   ACLDirection,
@@ -9,7 +10,6 @@ import {
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
-  getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -22,6 +22,7 @@ const FirewallDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const getEdgeFirewallPayload = {
     filters: { id: [params.serviceId] }
   }
@@ -83,8 +84,17 @@ const FirewallDetail = () => {
     <>
       <PageHeader
         title={edgeFirewallData.firewallName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }) },
+          {
+            text: $t({ defaultMessage: 'Firewall' }),
+            link: getServiceRoutePath({
+              type: ServiceType.EDGE_FIREWALL,
+              oper: ServiceOperation.LIST
+            })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Firewall' }),
             link: getServiceRoutePath({
