@@ -69,7 +69,7 @@ describe('Venue Firewall Service', () => {
   it('should render correctly when ddos disabled, ACL enabled', async () => {
     render(
       <Provider>
-        <EdgeFirewall />
+        <EdgeFirewall serviceId='mock-serviceId'/>
       </Provider>, {
         route: { params }
       })
@@ -123,7 +123,7 @@ describe('Venue Firewall Service', () => {
 
     render(
       <Provider>
-        <EdgeFirewall />
+        <EdgeFirewall serviceId='mock-serviceId'/>
       </Provider>, {
         route: { params }
       })
