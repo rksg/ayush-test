@@ -249,7 +249,7 @@ function PersonaDetails () {
               <Row key={'Connection Metering'}>
                 <Col span={7}>
                   <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                    {'Connection Metering'}:
+                    {$t({ defaultMessage: 'Connection Metering' })}:
                   </Typography.Paragraph>
                 </Col>
                 <Col span={12}>{connectionMetering ?

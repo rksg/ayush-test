@@ -72,13 +72,13 @@ function DataConsumptionLable (props: {
   const { billingCycleRepeat, biilingCycleType, billingCycleDays } = props
 
   if (!billingCycleRepeat) return <span>{$t({ defaultMessage: 'Once' })}</span>
-  return <span>{ $t({ defaultMessage: `Repeating cycles ({
+  return <span>{ $t({ defaultMessage: `Repeating cycles {
     cycleType, select, 
-    CYCLE_MONTHLY {Monthly}
-    CYCLE_WEEKLY {Weekly}
-    CYCLE_NUM_DAYS {Per {cycleDays} days}
+    CYCLE_MONTHLY {(Monthly)}
+    CYCLE_WEEKLY {(Weekly)}
+    CYCLE_NUM_DAYS {(Per {cycleDays} days)}
     other {}
-  })` }, {
+  }` }, {
     cycleType: biilingCycleType,
     cycleDays: billingCycleDays
   })}</span>

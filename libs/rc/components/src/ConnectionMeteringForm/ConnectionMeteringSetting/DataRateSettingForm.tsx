@@ -17,7 +17,7 @@ function RateInput (props:RateInputProps) {
   if (props.enabled) {
     return (<span><InputNumber value={props.value}
       min={1}
-      onChange={(v)=>props.onChange(v)}/>{' Mbps'}</span>)
+      onChange={(v)=>props.onChange(v)}/>{$t({ defaultMessage: ' Mbps' })}</span>)
   }
   return (<span> {$t({ defaultMessage: 'Unlimited' })}</span>)
 }

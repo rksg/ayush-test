@@ -160,7 +160,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   return (
     <>
       <Card.Title>
-        {$t({ defaultMessage: 'Instances' })} ({propertyUnitMap.size})
+        {$t({ defaultMessage: 'Instances ({size})' }, { size: propertyUnitMap.size })}
       </Card.Title>
       <Table<ConnectionMeteringInstanceItem>
         loading={isGroupLoading || isVenueLoading || isPropertyUnitLoading}

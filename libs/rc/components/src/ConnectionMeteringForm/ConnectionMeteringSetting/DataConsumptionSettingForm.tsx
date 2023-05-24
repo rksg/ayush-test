@@ -83,10 +83,10 @@ export function DataConsumptionSettingForm () {
   }]
 
   const dataCapacityEnforcedOptions = [{
-    label: 'Ignore',
+    label: $t({ defaultMessage: 'Ignore' }),
     value: false
   },{
-    label: 'Discard',
+    label: $t({ defaultMessage: 'Discard' }),
     value: true
   }]
 

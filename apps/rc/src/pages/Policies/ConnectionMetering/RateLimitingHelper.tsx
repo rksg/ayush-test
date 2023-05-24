@@ -1,20 +1,21 @@
 import React from 'react'
 
-function rateToText (rate:number):string {
-  if (rate === 0)
-    return 'Unlimited'
-  return rate + 'Mpbs'
-}
+import { useIntl } from 'react-intl'
 
 export function RateLimitingTableCell (props: { uploadRate:number, downloadRate:number }) {
-  const uploadRateText: string = rateToText(props.uploadRate)
-  const downloadRateText: string = rateToText(props.downloadRate)
+  const { $t } = useIntl()
   return (<div>
     <div>
-      <span>UP: {uploadRateText}</span>
+      <span>{$t({ defaultMessage: `UP: {uploadRate, select, 
+        0 {Unlimited}
+        other {{uploadRate}Mbps}
+        }` }, { uploadRate: props.uploadRate })}</span>
     </div>
     <div>
-      <span>Down: {downloadRateText} </span>
+      <span>{$t({ defaultMessage: `DOWN: {downloadRate, select, 
+        0 {Unlimited}
+        other {{downloadRate}Mbps}
+        }` }, { downloadRate: props.downloadRate })}</span>
     </div>
   </div>)
 }
