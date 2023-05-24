@@ -22,7 +22,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -53,21 +53,21 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       activeKey={activeTab}
       onChange={onTabChange}
     >
-      <Tabs.TabPane tab={navbarEnhancement
+      <Tabs.TabPane tab={isNavbarEnhanced
         ? $t({ defaultMessage: 'Settings' })
         : $t({ defaultMessage: 'Account Settings' })
       }
       key='accountSettings' />
       { hasAdministratorTab &&
       ( <Tabs.TabPane
-        tab={navbarEnhancement
+        tab={isNavbarEnhanced
           ? $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })
           : $t({ defaultMessage: 'Administrators' })
         }
         key='administrators' /> )
       }
       <Tabs.TabPane
-        tab={navbarEnhancement
+        tab={isNavbarEnhanced
           ? $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })
           : $t({ defaultMessage: 'Notifications' })
         }

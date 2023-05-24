@@ -27,7 +27,7 @@ function PersonaGroupDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, onClick } = props
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const extra = filterByAccess([
     <Button type={'primary'} onClick={onClick}>
@@ -39,7 +39,7 @@ function PersonaGroupDetailsPageHeader (props: {
     <PageHeader
       title={title}
       extra={extra}
-      breadcrumb={navbarEnhancement ? [
+      breadcrumb={isNavbarEnhanced ? [
         {
           text: $t({ defaultMessage: 'Clients' })
         },

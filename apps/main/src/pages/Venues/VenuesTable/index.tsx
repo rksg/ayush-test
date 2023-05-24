@@ -288,7 +288,7 @@ export const VenueTable = (
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
@@ -309,7 +309,7 @@ export function VenuesTable () {
   return (
     <>
       <PageHeader
-        title={navbarEnhancement
+        title={isNavbarEnhanced
           ? $t({ defaultMessage: 'Venues ({count})' }, { count })
           : $t({ defaultMessage: 'Venues' })
         }

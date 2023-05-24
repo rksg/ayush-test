@@ -68,7 +68,7 @@ export default function useApsTable () {
 
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const importTemplateLink = apGpsFlag ?
     'assets/templates/aps_import_template_with_gps.csv' :
     'assets/templates/aps_import_template.csv'
@@ -132,7 +132,7 @@ export default function useApsTable () {
   ]
 
   const component = <>
-    {!navbarEnhancement && <PageHeader
+    {!isNavbarEnhanced && <PageHeader
       title={$t(title, { count: null })}
       extra={extra}
     />}

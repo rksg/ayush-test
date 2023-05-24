@@ -13,7 +13,7 @@ function PersonaPageHeader () {
   const params = useParams()
   const basePath = useTenantLink('/users/persona-management/')
   const navigate = useNavigate()
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -25,10 +25,10 @@ function PersonaPageHeader () {
     <PageHeader
       title={$t({ defaultMessage: 'Persona Management' })}
       breadcrumb={[{
-        text: navbarEnhancement
+        text: isNavbarEnhanced
           ? $t({ defaultMessage: 'Clients' })
           : $t({ defaultMessage: 'Users' }),
-        link: navbarEnhancement ? '' : '/users'
+        link: isNavbarEnhanced ? '' : '/users'
       }]}
       footer={
         <Tabs onChange={onTabChange} activeKey={params.activeTab}>
@@ -39,7 +39,7 @@ function PersonaPageHeader () {
           />
           <Tabs.TabPane
             key={'persona'}
-            tab={navbarEnhancement
+            tab={isNavbarEnhanced
               ? $t({ defaultMessage: 'Personas' })
               : $t({ defaultMessage: 'Persona' })
             }

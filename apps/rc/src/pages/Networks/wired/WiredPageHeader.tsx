@@ -11,7 +11,7 @@ import WiredTabs from './WiredTabs'
 function WiredPageHeader () {
   const { $t } = useIntl()
   const { tenantId, venueId, serialNumber } = useParams()
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -29,11 +29,11 @@ function WiredPageHeader () {
 
   return (
     <PageHeader
-      title={navbarEnhancement
+      title={isNavbarEnhanced
         ? $t({ defaultMessage: 'Wired Network Profiles' })
         : $t({ defaultMessage: 'Wired Networks' })
       }
-      breadcrumb={navbarEnhancement ? [
+      breadcrumb={isNavbarEnhanced ? [
         { text: $t({ defaultMessage: 'Wired' }) }
       ] : []}
       footer={<WiredTabs

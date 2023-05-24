@@ -9,7 +9,7 @@ import { TenantLink }                          from '@acx-ui/react-router-dom'
 
 export default function useNetworksTable () {
   const { $t } = useIntl()
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = usePollingTableQuery<Network>({
     useQuery: useNetworkListQuery,
     defaultPayload: defaultNetworkPayload
@@ -25,7 +25,7 @@ export default function useNetworksTable () {
   ]
 
   const component = <>
-    {!navbarEnhancement && <PageHeader
+    {!isNavbarEnhanced && <PageHeader
       title={$t(title, { count: null })}
       extra={extra}
     />}

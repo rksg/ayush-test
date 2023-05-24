@@ -40,7 +40,7 @@ function Timeline () {
   const { activeTab = tabs[0].key } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -52,7 +52,7 @@ function Timeline () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Timeline' })}
-        breadcrumb={navbarEnhancement ? [
+        breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Administration' }) }
         ]: []}
         footer={

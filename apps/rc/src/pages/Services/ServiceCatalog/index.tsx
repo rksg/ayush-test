@@ -23,7 +23,7 @@ export default function ServiceCatalog () {
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const sets = [
     {
@@ -85,7 +85,7 @@ export default function ServiceCatalog () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Service Catalog' })}
-        breadcrumb={navbarEnhancement ? [
+        breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) }
         ]: []}
       />

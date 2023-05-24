@@ -35,7 +35,7 @@ export default function MyServices () {
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeDhcpEnabled = isEdgeEnabled || earlyBetaEnabled
 
   const services = [
@@ -119,7 +119,7 @@ export default function MyServices () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
-        breadcrumb={navbarEnhancement ? [
+        breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) }
         ]: []}
         extra={filterByAccess([

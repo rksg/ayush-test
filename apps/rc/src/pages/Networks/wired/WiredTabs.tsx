@@ -10,7 +10,7 @@ function WiredTabs (props: { profileCount: number, cliCount: number }) {
   const params = useParams()
   const basePath = useTenantLink('/networks/wired/')
   const navigate = useNavigate()
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -27,14 +27,14 @@ function WiredTabs (props: { profileCount: number, cliCount: number }) {
       activeKey={params.activeTab}
     >
       <Tabs.TabPane
-        tab={navbarEnhancement
+        tab={isNavbarEnhanced
           ? $t({ defaultMessage: 'Configuration Profiles ({profileCount})' }, { profileCount })
           : $t({ defaultMessage: 'Configuration Profiles' })
         }
         key='profiles'
       />
       <Tabs.TabPane
-        tab={navbarEnhancement
+        tab={isNavbarEnhanced
           ? $t({ defaultMessage: 'On-Demand CLI ({cliCount})' }, { cliCount })
           : $t({ defaultMessage: 'On-Demand CLI Configuration' })
         }

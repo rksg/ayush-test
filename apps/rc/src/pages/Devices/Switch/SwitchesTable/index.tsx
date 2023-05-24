@@ -18,7 +18,7 @@ export default function useSwitchesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible] = useState(false)
-  const navbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ importCsv, importResult ] = useImportSwitchesMutation()
 
@@ -89,7 +89,7 @@ export default function useSwitchesTable () {
   ]
 
   const component = <>
-    {!navbarEnhancement && <PageHeader
+    {!isNavbarEnhanced && <PageHeader
       title={$t(title, { count: null })}
       extra={extra}
     />}
