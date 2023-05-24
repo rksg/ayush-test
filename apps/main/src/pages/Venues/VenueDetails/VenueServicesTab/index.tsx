@@ -9,6 +9,7 @@ import ClientIsolationAllowList from './ClientIsolationAllowList'
 import DHCPInstance             from './DHCPInstance'
 import EdgeDhcpTab              from './DHCPInstance/Edge'
 import MdnsProxyInstances       from './MdnsProxyInstances'
+import { NetworkSegmentation }  from './NetworkSegmentation'
 import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
@@ -34,6 +35,15 @@ export function VenueServicesTab () {
           }
         </Tabs>
       </Tabs.TabPane>
+      {
+        isEdgeEnabled &&
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Network Segmentation' })}
+            key={ServiceType.NETWORK_SEGMENTATION}
+          >
+            <NetworkSegmentation />
+          </Tabs.TabPane>
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
         <MdnsProxyInstances />
       </Tabs.TabPane>

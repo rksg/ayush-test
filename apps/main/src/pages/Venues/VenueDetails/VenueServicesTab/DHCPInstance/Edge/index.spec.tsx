@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeDhcpUrls, EdgeUrlsInfo, getServiceDetailsLink, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                         from '@acx-ui/store'
-import { mockServer, render, screen }                                                       from '@acx-ui/test-utils'
+import { EdgeDhcpUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockedDhcpStatsData, mockedEdgeDhcpData, mockedEdgeList, mockEdgeDhcpHostStats } from './__tests__/fixtures'
 
@@ -11,7 +11,8 @@ import EdgeDhcpTab from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   EdgeDhcpLeaseTable: () => <div data-testid='edge-dhcp-lease-table' />,
-  EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />
+  EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />,
+  ServiceInfo: () => <div data-testid='service-info' />
 }))
 
 const detailPath = '/:tenantId/venues/:venueId/venue-details/:activeTab'
@@ -52,18 +53,7 @@ describe('Venue Edge Dhcp Instance', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
-    const dhcpDetailLink = await screen.findByRole('link',
-      { name: 'TestDHCP-1' }) as HTMLAnchorElement
-    expect(dhcpDetailLink.href)
-      .toContain(getServiceDetailsLink({
-        type: ServiceType.EDGE_DHCP,
-        oper: ServiceOperation.DETAIL,
-        serviceId: '1'
-      }))
-    const edgeDetailLink = await screen.findByRole('link',
-      { name: 'Smart Edge 1' }) as HTMLAnchorElement
-    expect(edgeDetailLink.href)
-      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/edge-details/overview`)
+    expect(await screen.findByTestId('service-info')).toBeVisible()
     expect(await screen.findByTestId('edge-dhcp-pool-table')).toBeVisible()
     await user.click(await screen.findByRole('radio', { name: /Leases \(/i }))
     expect(await screen.findByTestId('edge-dhcp-lease-table')).toBeVisible()
