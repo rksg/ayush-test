@@ -24,6 +24,7 @@ import {
   baseTimelineApi as timelineApi,
   baseVenueApi as venueApi,
   baseTunnelProfileApi as tunnelProfileApi,
+  baseResidentPortalApi as residentPortalApi,
   dataApi,
   dataApiSearch,
   serviceGuardApi,
@@ -66,7 +67,8 @@ export const store = configureStore({
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
     [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
     [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
-    [sigPackApi.reducerPath]: sigPackApi.reducer
+    [sigPackApi.reducerPath]: sigPackApi.reducer,
+    [residentPortalApi.reducerPath]: residentPortalApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -103,7 +105,8 @@ export const store = configureStore({
       msgTemplateApi.middleware,
       videoCallQoeApi.middleware,
       edgeFirewallApi.middleware,
-      sigPackApi.middleware
+      sigPackApi.middleware,
+      residentPortalApi.middleware
     ])
   },
 

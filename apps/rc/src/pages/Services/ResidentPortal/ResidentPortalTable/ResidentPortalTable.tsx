@@ -49,11 +49,11 @@ export default function ResidentPortalTable () {
             entityValue: name
           },
           onOk: () => {
-              deleteResidentPortals({ payload: [id] })
-                .then(clearSelection)
-                .catch((error) => 
-                  console.log(error) // eslint-disable-line no-console
-                )
+            deleteResidentPortals({ payload: [id] })
+              .then(clearSelection)
+              .catch((error) => 
+                console.log(error) // eslint-disable-line no-console
+              )
           }
         })
       }
