@@ -123,6 +123,7 @@ export function MoreSettingsForm (props: {
   const [
     enableDhcp,
     enableOfdmOnly,
+    macAuthentication,
     enableFastRoaming,
     enableAirtimeDecongestion,
     enableJoinRSSIThreshold,
@@ -133,6 +134,7 @@ export function MoreSettingsForm (props: {
   ] = [
     useWatch<boolean>('enableDhcp'),
     useWatch<boolean>('enableOfdmOnly'),
+    useWatch<boolean>(['wlan', 'macAddressAuthentication']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold']),
@@ -175,7 +177,9 @@ export function MoreSettingsForm (props: {
     data?.type !== NetworkTypeEnum.DPSK && isNetworkWPASecured )
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
-    data?.type === NetworkTypeEnum.DPSK
+    data?.type === NetworkTypeEnum.DPSK ||
+    data?.type === NetworkTypeEnum.CAPTIVEPORTAL ||
+    (data?.type === NetworkTypeEnum.OPEN && data?.wlan?.macAddressAuthentication)
 
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
@@ -240,7 +244,7 @@ export function MoreSettingsForm (props: {
               children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
             />
 
-            {showDynamicWlan &&
+            {(showDynamicWlan || macAuthentication) &&
               <UI.FieldLabel width='auto' style={{ marginTop: '20px' }}>
                 <UI.FormItemNoLabel
                   name={['wlan','advancedCustomization','dynamicVlan']}
