@@ -348,7 +348,10 @@ export function SwitchTable (props : SwitchTableProps) {
           return record.isFirstLevel
             ? originNode
             : null
-        }
+        },
+        getCheckboxProps: (record) => ({
+          disabled: !record.isFirstLevel
+        })
       }}
       actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
