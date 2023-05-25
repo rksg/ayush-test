@@ -33,7 +33,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
@@ -49,7 +49,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
@@ -65,7 +65,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
@@ -83,7 +83,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
     await screen.findByText('A8:64:F1:1A:D0:33')
     const radioButtons = screen.getAllByRole('radio')
@@ -101,7 +101,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
     await screen.findByText('Select Client MAC')
     await screen.findByText('A8:64:F1:1A:D0:33')
@@ -128,7 +128,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
     const searchInput = await screen.findByPlaceholderText(/search by mac, username or hostname/i)
     await userEvent.type(searchInput, 'DPSK_User_8709')
@@ -147,7 +147,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))

@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer }                  from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
@@ -62,6 +62,7 @@ export function VenuePropertyTab () {
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
+  const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
 
   const queryUnitList = useTableQuery({
     useQuery: useGetPropertyUnitListQuery,
@@ -85,7 +86,11 @@ export function VenuePropertyTab () {
   const downloadUnit = () => {
     downloadCsv({
       params: { venueId },
-      payload: queryUnitList.payload
+      payload: {
+        ...queryUnitList.payload,
+        pageSize: 100,
+        page: 1
+      }
     }).unwrap().catch((error) => {
       console.log(error) // eslint-disable-line no-console
     })
@@ -277,7 +282,7 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'View Portal' }),
-      visible: (selectedItems => selectedItems.length <= 1),
+      visible: (selectedItems => (selectedItems.length <= 1 && hasResidentPortalAssignment)),
       onClick: ([{ id }], clearSelection) => {
         directToPortal(id)
         clearSelection()
@@ -286,9 +291,6 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
-        const ids = selectedItems.map(i => i.id)
-        const names = selectedItems.map(i => i.name).join(', ')
-
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -298,18 +300,8 @@ export function VenuePropertyTab () {
             numOfEntities: selectedItems.length
           },
           onOk: () => {
-            deleteUnitByIds({ params: { venueId }, payload: ids })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Unit {names} was deleted' }, { names })
-                })
-                clearSelection()
-              })
-              .catch((e) => {
-                console.log(e) // eslint-disable-line no-console
-              })
+            deleteUnitByIds({ params: { venueId }, payload: selectedItems.map(i => i.id) })
+              .then(() => clearSelection())
           }
         })
       }

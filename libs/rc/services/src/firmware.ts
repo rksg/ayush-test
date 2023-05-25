@@ -273,6 +273,7 @@ export const {
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
+  useLazyGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,

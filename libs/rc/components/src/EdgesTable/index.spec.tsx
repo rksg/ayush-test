@@ -76,7 +76,7 @@ describe('Edge Table', () => {
     const smartEdgeLink = await screen.findByRole('link',
       { name: 'Smart Edge 1' }) as HTMLAnchorElement
     expect(smartEdgeLink.href)
-      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/edge-details/overview`)
+      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/details/overview`)
   })
 
   it('venue detail page link should be correct', async () => {

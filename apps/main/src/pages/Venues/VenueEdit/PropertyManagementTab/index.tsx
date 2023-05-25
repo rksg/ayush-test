@@ -5,7 +5,7 @@ import { Col, Form, Row, Select, Switch } from 'antd'
 import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
 import { useIntl }                        from 'react-intl'
 
-import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Subtitle } from '@acx-ui/components'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Subtitle, Tabs } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
 import {
@@ -18,8 +18,14 @@ import {
   usePutRegistrationByIdMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
-import { PropertyConfigs, PropertyConfigStatus } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import {
+  getServiceDetailsLink,
+  PropertyConfigs,
+  PropertyConfigStatus,
+  ServiceOperation,
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 // FIXME: move this component to common folder.
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -88,6 +94,8 @@ export function PropertyManagementTab () {
     }
   })
   const hasUnits = (unitQuery?.totalCount ?? -1) > 0
+  const personaGroupHasBound = formRef?.current?.getFieldValue('personaGroupId') && hasUnits
+  const residentPortalHasBound = !!propertyConfigsQuery?.data?.residentPortalId && hasUnits
 
   const { data: residentPortalList } = useGetResidentPortalListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
@@ -225,7 +233,7 @@ export function PropertyManagementTab () {
                   label={$t({ defaultMessage: 'Persona Group' })}
                   rules={[{ required: true }]}
                 >
-                  {formRef?.current?.getFieldValue('personaGroupId') && hasUnits
+                  {personaGroupHasBound
                     ? <PersonaGroupLink
                       personaGroupId={selectedGroupId}
                       name={groupData?.name}
@@ -238,7 +246,7 @@ export function PropertyManagementTab () {
                 </Form.Item>
                 <Form.Item
                   noStyle
-                  hidden={(!!formRef?.current?.getFieldValue('personaGroupId') && hasUnits)}
+                  hidden={personaGroupHasBound}
                 >
                   <Button
                     type={'link'}
@@ -261,22 +269,35 @@ export function PropertyManagementTab () {
                     children={<Switch />}
                   />
                 </StepsFormLegacy.FieldLabel>
-                <StepsFormLegacy.FieldLabel width={'190px'}>
-                  {$t({ defaultMessage: 'Enable Resident Portal' })}
-                  <Form.Item
-                    name={['unitConfig', 'residentPortalAllowed']}
-                    rules={[{ required: true }]}
-                    valuePropName={'checked'}
-                    children={<Switch />}
-                  />
-                </StepsFormLegacy.FieldLabel>
+                {!residentPortalHasBound &&
+                  <StepsFormLegacy.FieldLabel width={'190px'}>
+                    {$t({ defaultMessage: 'Enable Resident Portal' })}
+                    <Form.Item
+                      name={['unitConfig', 'residentPortalAllowed']}
+                      rules={[{ required: true }]}
+                      valuePropName={'checked'}
+                      children={<Switch />}
+                    />
+                  </StepsFormLegacy.FieldLabel>
+                }
                 {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
                     <Form.Item
                       name='residentPortalId'
                       label={$t({ defaultMessage: 'Resident Portal profile' })}
                       rules={[{ required: true }]}
-                      children={<Select options={residentPortalList?.data
-                        .map(r => ({ value: r.id, label: r.name })) ?? []}/>}
+                      children={
+                        residentPortalHasBound
+                          ? <ResidentPortalLink
+                            id={formRef?.current?.getFieldValue('residentPortalId')}
+                            name={residentPortalList?.data
+                              ?.find(r => r.id === formRef?.current
+                                ?.getFieldValue('residentPortalId'))?.name}
+                          />
+                          : <Select
+                            options={residentPortalList?.data
+                              .map(r => ({ value: r.id, label: r.name })) ?? []}
+                          />
+                      }
                     />
                 }
 
@@ -343,5 +364,18 @@ export function PropertyManagementTab () {
         }}
       />
     </Loader>
+  )
+}
+
+function ResidentPortalLink (props: { id?: string, name?: string }) {
+  const { id, name } = props
+  return (
+    <TenantLink to={getServiceDetailsLink({
+      type: ServiceType.RESIDENT_PORTAL,
+      oper: ServiceOperation.DETAIL,
+      serviceId: id!
+    })}>
+      {name ?? id}
+    </TenantLink>
   )
 }
