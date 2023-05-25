@@ -63,7 +63,7 @@ describe('Venue Edge Dhcp Instance', () => {
     const edgeDetailLink = await screen.findByRole('link',
       { name: 'Smart Edge 1' }) as HTMLAnchorElement
     expect(edgeDetailLink.href)
-      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/edge-details/overview`)
+      .toContain(`/${params.tenantId}/t/devices/edge/0000000001/details/overview`)
     expect(await screen.findByTestId('edge-dhcp-pool-table')).toBeVisible()
     await user.click(await screen.findByRole('radio', { name: /Leases \(/i }))
     expect(await screen.findByTestId('edge-dhcp-lease-table')).toBeVisible()
