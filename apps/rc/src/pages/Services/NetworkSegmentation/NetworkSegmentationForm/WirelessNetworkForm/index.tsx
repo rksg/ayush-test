@@ -7,8 +7,8 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { Loader, StepsForm, useStepFormContext }                          from '@acx-ui/components'
-import { useGetTunnelProfileViewDataListQuery, useVenueNetworkListQuery } from '@acx-ui/rc/services'
+import { Loader, StepsForm, useStepFormContext }                                                                      from '@acx-ui/components'
+import { useGetTunnelProfileViewDataListQuery, useVenueNetworkListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
@@ -37,6 +37,9 @@ export const WirelessNetworkForm = () => {
   const params = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const [defaultTunnelValue, setDefaultTunnelValue] = useState('')
+  const [unusedNetworkOptions, setUnusedNetworkOptions] =
+  useState<{ label: string; value: string; }[]|undefined>(undefined)
+  const [isFilterNetworksLoading, setIsFilterNetworksLoading] = useState(true)
   const venueId = useWatch('venueId', form)
   const tunnelProfileId = useWatch('vxlanTunnelProfileId', form)
   const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
@@ -50,7 +53,8 @@ export const WirelessNetworkForm = () => {
       }
     }
   })
-  const { networkOptions, isLoading: isDpskLoading } = useVenueNetworkListQuery({
+
+  const { networkOptions, networkIds, isLoading: isDpskLoading } = useVenueNetworkListQuery({
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
   }, {
@@ -58,10 +62,39 @@ export const WirelessNetworkForm = () => {
     selectFromResult: ({ data, isLoading }) => {
       return {
         networkOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        networkIds: data?.data.map(item => (item.id)),
         isLoading
       }
     }
   })
+
+  const { nsgViewData, isLoading: isNsgViewDataLoading } =
+  useGetNetworkSegmentationViewDataListQuery({
+    payload: {
+      filters: { networkIds: networkIds }
+    }
+  }, {
+    skip: !!!networkIds || networkIds.length === 0,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        nsgViewData: data,
+        isLoading
+      }
+    }
+  })
+
+  useEffect(()=>{
+    if (nsgViewData) {
+      const usedNetworkIds = nsgViewData?.data
+        .filter(item => item.id !== params.serviceId)
+        .flatMap(item => item.networkIds)
+
+      setUnusedNetworkOptions(
+        networkOptions?.filter(item => !usedNetworkIds.includes(item.value))
+      )
+      setIsFilterNetworksLoading(false)
+    }
+  }, [nsgViewData])
 
   useEffect(() => {
     if(!!!tunnelProfileId) {
@@ -119,7 +152,7 @@ export const WirelessNetworkForm = () => {
                 }
               </UI.Description>
             </Space>
-            <Loader states={[{ isLoading: isDpskLoading, isFetching: false }]}>
+            <Loader states={[{ isLoading: isFilterNetworksLoading, isFetching: false }]}>
               <Form.Item
                 name='networkIds'
                 rules={[
@@ -132,7 +165,7 @@ export const WirelessNetworkForm = () => {
                   <Checkbox.Group onChange={onNetworkChange}>
                     <Space direction='vertical'>
                       {
-                        networkOptions?.map(item => (
+                        unusedNetworkOptions?.map(item => (
                           <Checkbox value={item.value} children={item.label} key={item.value} />
                         ))
                       }
