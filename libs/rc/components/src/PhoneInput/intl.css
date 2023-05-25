@@ -1,0 +1,38 @@
+.iti {
+  width: 100%;
+}
+.iti__flag {
+  background-image: url('img/flags2x.png');
+  background-size: auto 15px;
+}
+.iti--allow-dropdown .iti__flag-container:hover .iti__selected-flag {
+  background-color: transparent;
+}
+.iti__country.iti__highlight {
+  background-color: var(--acx-accents-orange-10);
+}
+.iti__country.iti__active {
+  background-color: var(--acx-accents-orange-20);  
+}
+
+/* ===== Phone Country List Scrollbar CSS ===== */
+/* Firefox */
+.iti__country-list {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(0, 0, 0, 0.5) #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+.iti__country-list::-webkit-scrollbar {
+  width: 16px;
+}
+
+.iti__country-list::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.iti__country-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+}

@@ -20,7 +20,8 @@ import {
   DpskNetworkType,
   checkObjectNotExists,
   PolicyDefaultAccess,
-  DeviceNumberType
+  DeviceNumberType,
+  unlimitedNumberOfDeviceLabel
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -29,7 +30,6 @@ import {
   defaultAccessLabelMapping,
   passphraseFormatDescription
 } from '../contentsMap'
-import { unlimitedNumberOfDeviceLabel } from '../DpskDetail/contentsMap'
 
 import { FieldSpace } from './styledComponents'
 

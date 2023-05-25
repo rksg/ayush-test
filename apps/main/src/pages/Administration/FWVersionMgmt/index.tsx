@@ -14,7 +14,7 @@ import {
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
@@ -32,6 +32,8 @@ import SwitchFirmware from './SwitchFirmware'
 const FWVersionMgmt = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
@@ -125,10 +127,19 @@ const FWVersionMgmt = () => {
     }
   }
 
+  const onTabChange = (activeKey: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${activeKey}`
+    })
+  }
+
   return (
     <Tabs
       defaultActiveKey='apFirmware'
       type='card'
+      onChange={onTabChange}
+      activeKey={params.activeSubTab}
     >
       {
         Object.entries(tabs).map((item) =>
