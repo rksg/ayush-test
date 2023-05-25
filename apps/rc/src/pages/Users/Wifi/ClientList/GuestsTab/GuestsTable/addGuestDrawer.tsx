@@ -548,6 +548,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
+      width={'485px'}
     />
   )
 }

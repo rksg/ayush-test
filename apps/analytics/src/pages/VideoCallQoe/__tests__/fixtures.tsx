@@ -424,6 +424,7 @@ export const callQoeTestDetailsFixtures1 = {
                 apGroup: 'AP-group',
                 apName: 'AP-Group-Issue',
                 apMac: 'F0:3E:90:36:D3:00',
+                apSerial: '1234567890',
                 ssid: 'CIOT',
                 radio: '2.4'
               },
@@ -775,6 +776,7 @@ export const callQoeTestDetailsFixtures2 = {
                 apGroup: 'Unknown',
                 apName: 'Switch_client',
                 apMac: 'C8:08:73:08:10:50',
+                apSerial: '9876543210',
                 ssid: 'Divya_unlimited',
                 radio: '5'
               },
@@ -990,6 +992,7 @@ export const callQoeTestDetailsFixtures2 = {
                 apGroup: 'Unknown',
                 apName: 'r320-11-154',
                 apMac: 'B4:79:C8:12:8C:50',
+                apSerial: '6789012345',
                 ssid: 'CIOT',
                 radio: '5'
               },
