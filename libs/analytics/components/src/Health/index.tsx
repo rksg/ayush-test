@@ -19,7 +19,7 @@ import { SummaryBoxes }              from './SummaryBoxes'
 
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
-  const isNavbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const { filters: widgetFilters } = props
   const params = useParams()
@@ -37,7 +37,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     })
   return (
     <>
-      {!widgetFilters && (isNavbarEnhancement
+      {!widgetFilters && (isNavbarEnhanced
         ? !canUseAnltAdv && <Header
           title={$t({ defaultMessage: 'Health' })}
           breadcrumb={[

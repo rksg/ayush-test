@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { Provider, serviceGuardApiURL }     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
@@ -7,11 +9,6 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import * as fixtures from './__tests__/fixtures'
 
 import { useServiceGuard } from '.'
-
-jest.mock('./ServiceGuardTable', () => ({
-  ...jest.requireActual('./ServiceGuardTable'),
-  ServiceGuardTable: () => <div data-testid='ServiceGuardTable' />
-}))
 
 describe('Service Validation', () => {
   beforeEach(() => {
@@ -26,7 +23,7 @@ describe('Service Validation', () => {
     }
     render(<Component/>,{ wrapper: Provider, route: {} })
     expect(screen.queryByText('Service Validation')).toBeNull()
-    expect(await screen.findByTestId('ServiceGuardTable')).toBeVisible()
+    expect(await screen.findByText('Test Name')).toBeVisible()
     expect(screen.queryByText('Create Test')).toBeNull()
   })
   it('should render title with count correctly', async () => {
@@ -53,7 +50,18 @@ describe('Service Validation', () => {
     }
     render(<Component/>,{ wrapper: Provider, route: {} })
     expect(screen.queryByText('Service Validation')).toBeVisible()
-    expect(await screen.findByTestId('ServiceGuardTable')).toBeVisible()
+    expect(await screen.findByText('Test Name')).toBeVisible()
     expect(await screen.findByText('Create Test')).toBeVisible()
+  })
+  it('should update tab count by context', async () => {
+    const Component = () => {
+      const { title, component } = useServiceGuard()
+      return <>{title}{component}</>
+    }
+    render(<Component/>,{ wrapper: Provider, route: {} })
+    expect(await screen.findByText('Service Validation (4)')).toBeVisible()
+    const input = await screen.findByPlaceholderText('Search Test Name')
+    await userEvent.type(input, 'anything')
+    expect(await screen.findByText('Service Validation (0)')).toBeVisible()
   })
 })

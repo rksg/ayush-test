@@ -1,3 +1,5 @@
+import { createContext, useState } from 'react'
+
 import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, Button }     from '@acx-ui/components'
@@ -7,10 +9,18 @@ import { TenantLink }             from '@acx-ui/react-router-dom'
 import { ServiceGuardTable }            from './ServiceGuardTable'
 import { useAllServiceGuardSpecsQuery } from './services'
 
+interface CountContextType {
+  count: number,
+  setCount: (count: number) => void
+}
+export const CountContext = createContext({} as CountContextType)
+
 export function useServiceGuard () {
   const { $t } = useIntl()
-  const isNavbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const queryResults = useAllServiceGuardSpecsQuery()
+  const [count, setCount] = useState(queryResults.data?.length || 0)
+
   const title = defineMessage({
     defaultMessage: 'Service Validation {count, select, null {} other {({count})}}'
   })
@@ -22,15 +32,17 @@ export function useServiceGuard () {
   ]
 
   const component = <>
-    {!isNavbarEnhancement && <PageHeader
+    {!isNavbarEnhanced && <PageHeader
       title={$t(title, { count: null })}
       extra={extra}
     />}
-    <ServiceGuardTable />
+    <CountContext.Provider value={{ count, setCount }}>
+      <ServiceGuardTable />
+    </CountContext.Provider>
   </>
 
   return {
-    title: $t(title, { count: queryResults.data?.length || 0 }),
+    title: $t(title, { count }),
     headerExtra: extra,
     component
   }

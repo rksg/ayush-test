@@ -25,7 +25,8 @@ import { VideoCallQoeDetails }                          from './pages/VideoCallQ
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
-  const isNavbarEnhancement = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const videoCallQoePage = useVideoCallQoe().component
   const serviceGuardPage = useServiceGuard().component
 
@@ -36,22 +37,21 @@ export default function AnalyticsRoutes () {
     <Route path=':tenantId/t'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
-        element={isNavbarEnhancement ? <IncidentListPage /> : <IncidentListPageLegacy />}
+        element={isNavbarEnhanced ? <IncidentListPage /> : <IncidentListPageLegacy />}
       />
-      <Route path='analytics/incidents/tab/:activeTab'
-        element={isNavbarEnhancement ? <IncidentListPage /> : <IncidentListPageLegacy />}
-      />
+      {!isNavbarEnhanced &&
+        <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPageLegacy />} />}
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetailsPage />} />
       <Route path='analytics/recommendations'
         element={<div>{ $t({ defaultMessage: 'Recommendations' }) } </div>} />
       <Route path='analytics/health'
-        element={isNavbarEnhancement
+        element={isNavbarEnhanced
           ? (!canUseAnltAdv
             ? <HealthPage/>
             : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
           : <HealthPage/>} />
       <Route path='analytics/health/tab/:categoryTab'
-        element={isNavbarEnhancement
+        element={isNavbarEnhanced
           ? (!canUseAnltAdv
             ? <HealthPage/>
             : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
@@ -61,7 +61,7 @@ export default function AnalyticsRoutes () {
       {canUseAnltAdv && <Route>
         <Route path='analytics/serviceValidation/*' >
           <Route index
-            element={isNavbarEnhancement
+            element={isNavbarEnhanced
               ? <NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />
               : serviceGuardPage} />
           <Route path='add' element={<ServiceGuardForm />} />
@@ -82,12 +82,14 @@ export default function AnalyticsRoutes () {
             </Route>
           </Route>
         </Route>
-        <Route path='analytics/videoCallQoe'
-          element={isNavbarEnhancement
-            ? <NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />
-            : videoCallQoePage} />
-        <Route path='analytics/videoCallQoe/:testId' element={<VideoCallQoeDetails/>} />
-        <Route path='analytics/videoCallQoe/add' element={<VideoCallQoeForm />} />
+        {isVideoCallQoeEnabled && <Route path='analytics/videoCallQoe/*' >
+          <Route index
+            element={isNavbarEnhanced
+              ? <NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />
+              : videoCallQoePage} />
+          <Route path=':testId' element={<VideoCallQoeDetails/>} />
+          <Route path='add' element={<VideoCallQoeForm />} />
+        </Route>}
       </Route>}
     </Route>
   )

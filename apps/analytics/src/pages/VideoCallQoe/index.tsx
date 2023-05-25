@@ -1,3 +1,5 @@
+import { createContext, useState } from 'react'
+
 import { Button }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -10,9 +12,17 @@ import { VideoCallQoeTable }         from './VideoCallQoeTable'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
+interface CountContextType {
+  count: number,
+  setCount: (count: number) => void
+}
+export const CountContext = createContext({} as CountContextType)
+
 export function useVideoCallQoe () {
   const { $t } = useIntl()
   const queryResults = useVideoCallQoeTestsQuery(null)
+  const [count, setCount] = useState(queryResults.data?.getAllCallQoeTests.length || 0)
+
   const title = defineMessage({
     defaultMessage: 'Video Call QoE {count, select, null {} other {({count})}}'
   })
@@ -45,11 +55,13 @@ export function useVideoCallQoe () {
         {$t({ defaultMessage: 'Total Test Calls:' })} {noOfTestCalls}
       </Loader>}
       extra={headerExtra}/>}
-    <VideoCallQoeTable />
+    <CountContext.Provider value={{ count, setCount }}>
+      <VideoCallQoeTable />
+    </CountContext.Provider>
   </>
 
   return {
-    title: $t(title, { count: queryResults.data?.getAllCallQoeTests.length || 0 }),
+    title: $t(title, { count }),
     headerExtra,
     component: component
   }

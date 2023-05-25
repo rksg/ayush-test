@@ -33,7 +33,7 @@ export const IncidentTabContent = (props: {
   )
 }
 
-function IncidentListPage () {
+export function IncidentListPage () {
   const { $t } = useIntl()
   return (
     <>
@@ -50,4 +50,3 @@ function IncidentListPage () {
     </>
   )
 }
-export { IncidentListPage }

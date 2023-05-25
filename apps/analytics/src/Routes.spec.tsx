@@ -182,15 +182,6 @@ test('should navigate to analytics/incidentDetails', async () => {
   })
   expect(await screen.findByTestId('incidentDetails')).toBeVisible()
 })
-test('should navigate to analytics/incidents/tab/overview', async () => {
-  render(< Provider><AnalyticsRoutes /></Provider>, {
-    route: {
-      path: '/tenantId/t/analytics/incidents/tab/overview',
-      wrapRoutes: false
-    }
-  })
-  expect(screen.getByTestId('incidentListPage')).toBeVisible()
-})
 test('should navigate to analytics/serviceValidation/tab/overview', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
   mockGraphqlQuery(
@@ -279,7 +270,10 @@ describe('RBAC', () => {
 })
 
 describe('should handle when feature flag NAVBAR_ENHANCEMENT is off', () => {
-  beforeEach(() => jest.resetAllMocks())
+  beforeEach(() => {
+    jest.resetAllMocks()
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
   test('should redirect analytics to analytics/incidents', async () => {
     render(<Provider><AnalyticsRoutes /></Provider>, {
       route: {
@@ -373,6 +367,8 @@ describe('should handle when feature flag NAVBAR_ENHANCEMENT is off', () => {
   })
   test('should navigate to analytics/videoCallQoe', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(false)
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
     render(<Provider><AnalyticsRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/analytics/videoCallQoe',
