@@ -74,6 +74,13 @@ export { usePreference, countryCodes } from './usePreference'
 export type { updatePreferenceProps } from './usePreference'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
+export { StatefulACLRulesTable } from './EdgeFirewallTables/StatefulACLRulesTable'
+export { RuleStatisticDataTable as StatefulACLRuleStatisticDataTable }
+  from './EdgeFirewallTables/StatefulACLRulesTable/RuleStatisticDataTable'
+export { DDoSRulesTable } from './EdgeFirewallTables/DDoSRulesTable'
+export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
+  from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
+
 
 export { TunnelProfileForm } from './TunnelProfileForm'
 export type { TunnelProfileFormType } from './TunnelProfileForm'
