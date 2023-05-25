@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { EmbeddedReport }             from '@acx-ui/reports/components'
+import { PageHeader, Tabs }             from '@acx-ui/components'
+import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
 import {
   ReportType,
   reportTypeDataStudioMapping
@@ -35,19 +35,44 @@ const useTabs = () : NetworkTab[] => {
   const wlanReportTab = {
     key: NetworkTabsEnum.WLAN_REPORT,
     title: $t({ defaultMessage: 'WLAN Report' }),
-    component: <EmbeddedReport embedDashboardName={reportTypeDataStudioMapping[ReportType.WLAN]} />
+    component: <EmbeddedReport
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.WLAN]}
+      hideHeader={false}
+    />,
+    headerExtra: [
+      <ReportHeader
+        type={ReportType.WLAN}
+        showFilter={true}
+      />
+    ]
   }
   const applicationsReportTab = {
     key: NetworkTabsEnum.APPLICATIONS_REPORT,
     title: $t({ defaultMessage: 'Applications Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.APPLICATION]} />
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.APPLICATION]}
+      hideHeader={false}
+    />,
+    headerExtra: [
+      <ReportHeader
+        type={ReportType.APPLICATION}
+        showFilter={true}
+      />
+    ]
   }
   const wirelessReportTab = {
     key: NetworkTabsEnum.WIRELESS_REPORT,
     title: $t({ defaultMessage: 'Wireless Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.WIRELESS]} />
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.WIRELESS]}
+      hideHeader={false}
+    />,
+    headerExtra: [
+      <ReportHeader
+        type={ReportType.WIRELESS}
+        showFilter={true}
+      />
+    ]
   }
   return [
     listTab,

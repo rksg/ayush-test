@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { EmbeddedReport }             from '@acx-ui/reports/components'
+import { PageHeader, Tabs }             from '@acx-ui/components'
+import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
 import {
   ReportType,
   reportTypeDataStudioMapping
@@ -35,13 +35,29 @@ const useTabs = () : WifiTab[] => {
     key: WifiTabsEnum.AP_REPORT,
     title: $t({ defaultMessage: 'AP Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT]} />
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT]}
+      hideHeader={false}
+    />,
+    headerExtra: [
+      <ReportHeader
+        type={ReportType.ACCESS_POINT}
+        showFilter={true}
+      />
+    ]
   }
   const airtimeReportTab = {
     key: WifiTabsEnum.AIRTIME_REPORT,
     title: $t({ defaultMessage: 'Air Time Utilization Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.AIRTIME_UTILIZATION]} />
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.AIRTIME_UTILIZATION]}
+      hideHeader={false}
+    />,
+    headerExtra: [
+      <ReportHeader
+        type={ReportType.AIRTIME_UTILIZATION}
+        showFilter={true}
+      />
+    ]
   }
   return [
     listTab,

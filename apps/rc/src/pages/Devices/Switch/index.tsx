@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { EmbeddedReport }             from '@acx-ui/reports/components'
+import { PageHeader, Tabs }             from '@acx-ui/components'
+import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
 import {
   ReportType,
   reportTypeDataStudioMapping
@@ -33,7 +33,16 @@ const useTabs = () : WifiTab[] => {
   const wiredReportTab = {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
-    component: <EmbeddedReport embedDashboardName={reportTypeDataStudioMapping[ReportType.WIRED]} />
+    component: <EmbeddedReport
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.WIRED]}
+      hideHeader={false}
+    />,
+    headerExtra: [
+      <ReportHeader
+        type={ReportType.WIRED}
+        showFilter={true}
+      />
+    ]
   }
   return [
     listTab,

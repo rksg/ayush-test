@@ -3,12 +3,11 @@ import { useState } from 'react'
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-
 import { PageHeader, RangePicker, Tabs } from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { ClientDualTable }               from '@acx-ui/rc/components'
 import { useNavigate, useTenantLink }    from '@acx-ui/react-router-dom'
-import { EmbeddedReport }                from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportHeader }  from '@acx-ui/reports/components'
 import {
   ReportType,
   reportTypeDataStudioMapping
@@ -64,12 +63,12 @@ const useTabs = () : WirelessTab[] => {
     setEndDate(period.endDate)
   }
   const { $t } = useIntl()
-  const listTab = {
+  const clientsTab = {
     key: WirelessTabsEnum.CLIENTS,
     title: $t({ defaultMessage: 'Clients List' }),
     component: <ClientDualTable />
   }
-  const apReportTab = {
+  const guestTab = {
     key: WirelessTabsEnum.GUESTS,
     title: $t({ defaultMessage: 'Guest Pass Credentials' }),
     component: <GuestsTab dateFilter={dateFilter}/>,
@@ -80,16 +79,24 @@ const useTabs = () : WirelessTab[] => {
       onDateApply={setDateFilter as CallableFunction}
     />]
   }
-  const airtimeReportTab = {
+  const wirelessClientReportTab = {
     key: WirelessTabsEnum.CLIENT_REPORT,
     title: $t({ defaultMessage: 'Wireless Clients Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.CLIENT]} />
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.CLIENT]}
+      hideHeader={false}
+    />,
+    headerExtra: [
+      <ReportHeader
+        type={ReportType.CLIENT}
+        showFilter={true}
+      />
+    ]
   }
   return [
-    listTab,
-    apReportTab,
-    ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [airtimeReportTab] : [])
+    clientsTab,
+    guestTab,
+    ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [wirelessClientReportTab] : [])
   ]
 }
 

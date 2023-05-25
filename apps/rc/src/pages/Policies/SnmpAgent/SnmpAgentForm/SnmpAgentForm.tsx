@@ -23,7 +23,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
-  
+
   const params = useParams()
 
   const { editMode } = props
