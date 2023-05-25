@@ -401,7 +401,6 @@ export function SwitchForm () {
                   initialValue={MEMEBER_TYPE.STANDALONE}
                 >
                   <Radio.Group
-                    defaultValue={MEMEBER_TYPE.STANDALONE}
                     onChange={(e: RadioChangeEvent) => {
                       return setSwitchRole(e.target.value)
                     }}

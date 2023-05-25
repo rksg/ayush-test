@@ -253,7 +253,6 @@ export function SwitchStackSetting
         name={'spanningTreePriority'}
         initialValue={''}
         children={<Select
-          defaultValue={''}
           options={[
             {
               label: $t({ defaultMessage: 'Select Priority...' }),
