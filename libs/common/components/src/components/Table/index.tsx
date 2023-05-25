@@ -176,17 +176,8 @@ function Table <RecordType extends Record<string, any>> ({
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })
-  const {
-    groupable,
-    expandable,
-    columns,
-    isGroupByActive,
-    onExpand
-  }
-  = useGroupBy<RecordType>(
-    baseColumns,
-    allKeys,
-    groupByValue, columnsState.value)
+  const { groupable, expandable, columns, isGroupByActive, onExpand } =
+  useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value, rowKey)
 
   const setting: SettingOptionType | false = type === 'tall' && settingsId ? {
     draggable: true,

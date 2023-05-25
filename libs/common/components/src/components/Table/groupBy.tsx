@@ -4,8 +4,10 @@ import { useMemo, Key } from 'react'
 import { Select }    from 'antd'
 import _             from 'lodash'
 import { IntlShape } from 'react-intl'
+import  { ProTableProps as ProAntTableProps,  } from '@ant-design/pro-table'
 
 import * as UI from './styledComponents'
+import type { ParamsType }        from '@ant-design/pro-provider'
 
 import { TableProps } from '.'
 
@@ -52,8 +54,9 @@ export function useGroupBy<RecordType> (
   columns: TableProps<RecordType>['columns'],
   expandedRowKeys: Key[] | undefined,
   groupByValue: string | undefined,
-  columnsState: TableColumnState
-) {
+  columnsState: TableColumnState,
+  rowKey: ProAntTableProps<RecordType, ParamsType>['rowKey']
+  ) {
   return useMemo(() => {
     const groupable = columns.filter(col => col.groupable)
     const isGroupByActive = typeof groupByValue !== 'undefined'
@@ -62,10 +65,11 @@ export function useGroupBy<RecordType> (
     const actionsList = targetCol?.groupable?.actions ?? []
     let expandedRows = expandedRowKeys
     const onExpand = (expanded: any, record:any) => {
+      const key = typeof rowKey === 'function' ? rowKey(record) : record?.[rowKey as unknown as Key] 
       if(record?.children && expanded)
-      expandedRows?.push(record?.serialNumber)
+      expandedRows?.push(key)
       if(record?.children && !expanded)
-      expandedRows?.splice(expandedRows?.indexOf(record?.serialNumber), 1);
+      expandedRows?.splice(expandedRows?.indexOf(key), 1);
     }
     const renderGroupRow = (record: RecordType) => (
       <UI.GroupRow>
@@ -93,10 +97,6 @@ export function useGroupBy<RecordType> (
             if ('children' in record && !('isFirstLevel' in record)) {
               return columnIndex === 0 ? renderGroupRow(record) : null
             } 
-            // if('children' in record && ('isFirstLevel' in record))
-            // {
-            // return typeof dom === 'string' ? dom : null
-            // }
             else {
               if (render) {
                 return render(dom, record, index, highlightFn, action, schema)
