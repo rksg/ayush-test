@@ -341,7 +341,7 @@ export function SwitchTable (props : SwitchTableProps) {
       dataSource={tableData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
+      onFilterChange={handleFilterChange}
       enableApiFilter={true}
       rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
@@ -351,7 +351,10 @@ export function SwitchTable (props : SwitchTableProps) {
           return record.isFirstLevel
             ? originNode
             : null
-        }
+        },
+        getCheckboxProps: (record) => ({
+          disabled: !record.isFirstLevel
+        })
       }}
       actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
