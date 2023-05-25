@@ -21,7 +21,7 @@ export const ConnectionMeteringUrls: { [key in ConnectionMeteringUrlType]: ApiIn
     url: `${ConnectionMeteringBaseUrl}/connectionMeteringProfiles`
   },
   updateConnectionMetering: {
-    method: 'patch',
+    method: 'PATCH',
     url: `${ConnectionMeteringBaseUrl}/connectionMeteringProfiles/:id`
   },
   deleteConnectionMetering: {
