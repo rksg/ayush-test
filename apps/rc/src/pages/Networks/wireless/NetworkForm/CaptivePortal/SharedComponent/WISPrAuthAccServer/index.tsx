@@ -8,23 +8,27 @@ import {
   Input,
   Radio
 } from 'antd'
-import _             from 'lodash'
-import { get }       from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import _                             from 'lodash'
+import { get }                       from 'lodash'
+import { FormattedMessage, useIntl } from 'react-intl'
+import { useParams }                 from 'react-router-dom'
 
 import { Subtitle, Tooltip }               from '@acx-ui/components'
 import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
-
 
 import AAAInstance        from '../../../AAAInstance'
 import AAAPolicyModal     from '../../../AAAInstance/AAAPolicyModal'
 import * as contents      from '../../../contentsMap'
 import NetworkFormContext from '../../../NetworkFormContext'
 
+import { Description }         from './styledComponents'
+import { WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
 
-export function WISPrAuthAccServer () {
+export function WISPrAuthAccServer (props : {
+  onClickAuth: () => void,
+onClickAllAccept: () => void
+}) {
   const { $t } = useIntl()
   const params = useParams()
   const { useWatch } = Form
@@ -35,13 +39,13 @@ export function WISPrAuthAccServer () {
   const [aaaList, setAaaList]= useState(aaaServices)
   const [aaaData, setAaaData]= useState([] as AAATempType[])
   const radiusValue = Form.useWatch('authRadius')
+  const context = useContext(WISPrAuthAccContext)
+
   const [
     enableAccountingService,
     authRadius,
     accountingRadius
   ] = [
-
-    +
     useWatch<boolean>(['enableAccountingService']),
     useWatch('authRadius'),
     useWatch('accountingRadius')
@@ -78,13 +82,18 @@ export function WISPrAuthAccServer () {
       <div>
         <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Connections' })}</Subtitle>
 
-        <Form.Item name={['guestPortal','wisprPage','authType']}>
+        <Form.Item
+          name={['guestPortal','wisprPage','authType']}
+          initialValue={'RADIUS'}
+        >
           <Radio.Group>
             <Space direction='vertical'>
-              <Radio value={'RADIUS'}>Authenticate Connections</Radio>
+              <Radio value={'RADIUS'}
+                onChange={() => {props.onClickAuth()}}>
+                  Authenticate Connections
+              </Radio>
               <Space>
                 <Form.Item label={$t({ defaultMessage: 'Authentication Server' })}>
-
                   <Form.Item
                     name={'authRadiusId'}
                     noStyle
@@ -104,7 +113,7 @@ export function WISPrAuthAccServer () {
                     children={
                       <Select
                         style={{ width: 210 }}
-                        disabled={true}
+                        disabled={context.state.isDisabled.Auth}
                         onChange={(value)=>{
                           // eslint-disable-next-line max-len
                           form.setFieldValue('authRadius' ,aaaData?.filter(d => d.id === value)[0])}}
@@ -130,7 +139,22 @@ export function WISPrAuthAccServer () {
                   </Tooltip>
                 </Form.Item>
               </Space>
-              <Radio value={'ALWAYS_ACCEPT'}>Accept All Connections</Radio>
+              <Radio
+                value={'ALWAYS_ACCEPT'}
+                disabled={context.state.isDisabled.AllAccept}
+                onChange={() => {props.onClickAllAccept()}}>
+                  Accept All Connections
+              </Radio>
+              <Description>
+                <FormattedMessage
+                  values={{ br: () => <br /> }}
+                  defaultMessage={`
+                    Additional external configuration is required for this option to function.
+                    <br></br>
+                    Please refer to the WISPr API documentation for more details
+                  `}
+                />
+              </Description>
             </Space>
           </Radio.Group>
         </Form.Item>

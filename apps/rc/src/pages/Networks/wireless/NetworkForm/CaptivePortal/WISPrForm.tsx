@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState, useReducer, createContext } from 'react'
 
 import {
   Form,
@@ -25,14 +25,14 @@ import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { AuthAccServerSetting }                  from './AuthAccServerSetting'
-import { AuthAccServerSummary }                  from './AuthAccServerSummary'
-import { DhcpCheckbox }                          from './DhcpCheckbox'
-import { RedirectUrlInput }                      from './RedirectUrlInput'
-import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
-import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
-import { WISPrAuthAccServer }                    from './SharedComponent/WISPrAuthAccServer'
-
+import { AuthAccServerSetting }                                                                     from './AuthAccServerSetting'
+import { AuthAccServerSummary }                                                                     from './AuthAccServerSummary'
+import { DhcpCheckbox }                                                                             from './DhcpCheckbox'
+import { RedirectUrlInput }                                                                         from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox }                                                    from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                                                                     from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WISPrAuthAccServer }                                                                       from './SharedComponent/WISPrAuthAccServer'
+import { statesCollection, WISPrAuthAccContext, WISPrAuthAccServerState, WISPrAuthAccServerAction } from './SharedComponent/WISPrAuthAccServer/WISPrAuthAccServerReducer'
 
 const mspUtils = MSPUtils()
 export function WISPrForm () {
@@ -57,6 +57,18 @@ export function WISPrForm () {
   const [regionOption, setRegionOption]=useState<Regions[]>()
   const [isOtherProvider, setIsOtherProvider]=useState(false)
   const [isMspEc, setIsMspEc]=useState(false)
+
+  // eslint-disable-next-line
+  const actionRunner = (currentState: WISPrAuthAccServerState, incomingState: WISPrAuthAccServerState) => {
+    if (incomingState.action === WISPrAuthAccServerAction.AllAcceptChecked) {
+      form.setFieldValue(['authRadiusId'], '')
+      form.setFieldValue(['authRadius'], [])
+      form.setFieldValue(['wlan','bypassCPUsingMacAddressAuthentication'], false)
+    }
+    return incomingState
+  }
+  const [state, dispatch] = useReducer(actionRunner, statesCollection.useBypassCNAAndAuth)
+
   const setProvider = (value: string, regions: Regions[]|undefined) =>{
     form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], false)
     form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], '')
@@ -106,6 +118,10 @@ export function WISPrForm () {
           data.guestPortal.wisprPage.authRadius)
         form.setFieldValue('authRadiusId',
           data.guestPortal.wisprPage.authRadius.id)
+      }
+      if(data.guestPortal?.wisprPage?.authType){
+        form.setFieldValue(['guestPortal','wisprPage','authType'],
+          data.guestPortal?.wisprPage?.authType)
       }
       form.setFieldsValue({ ...data })
       if(data.guestPortal?.redirectUrl){
@@ -366,7 +382,11 @@ export function WISPrForm () {
           valuePropName='checked'
           initialValue={true}
           children={
-            <Checkbox>
+            <Checkbox
+              disabled={state.isDisabled.BypassCNA}
+              onChange={(e)=>{e.target.checked ?
+                dispatch(statesCollection.useBypassCNAAndAuth) :
+                dispatch(statesCollection.useOnlyAuth)}}>
               {$t({ defaultMessage: 'Enable MAC auth bypass' })}
             </Checkbox>
           }
@@ -389,7 +409,12 @@ export function WISPrForm () {
           enableDefaultWalledGarden={false} />
         {!regionOption &&
          isOtherProvider &&
-         <WISPrAuthAccServer/>
+         <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
+           <WISPrAuthAccServer
+             onClickAuth={() => dispatch(statesCollection.useOnlyAuth)}
+             onClickAllAccept={() => dispatch(statesCollection.useAllAccept)}
+           />
+         </WISPrAuthAccContext.Provider>
         //  (enableWISPRAlwaysAccept? null : <AuthAccServerSetting/>)}
         }
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
