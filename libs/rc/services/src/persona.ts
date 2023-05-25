@@ -95,7 +95,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     downloadPersonaGroups: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.exportPersonaGroup, {
-          ...params,
+          ...{ pageSize: '2147483647', page: '0', sort: 'name,asc' },
           timezone: params?.timezone ?? 'UTC',
           dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
         }, {
@@ -248,7 +248,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     downloadPersonas: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.exportPersona, {
-          ...params,
+          ...{ pageSize: '2147483647', page: '0', sort: 'name,asc' },
           timezone: params?.timezone ?? 'UTC',
           dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
         },{
