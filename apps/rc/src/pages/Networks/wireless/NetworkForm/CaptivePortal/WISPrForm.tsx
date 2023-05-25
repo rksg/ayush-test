@@ -378,7 +378,6 @@ export function WISPrForm () {
         </Form.Item>}
         <Form.Item
           name={['wlan','bypassCPUsingMacAddressAuthentication']}
-          noStyle
           valuePropName='checked'
           initialValue={true}
           children={
@@ -387,7 +386,15 @@ export function WISPrForm () {
               onChange={(e)=>{e.target.checked ?
                 dispatch(statesCollection.useBypassCNAAndAuth) :
                 dispatch(statesCollection.useOnlyAuth)}}>
-              {$t({ defaultMessage: 'Enable MAC auth bypass' })}
+              {state.isDisabled.BypassCNA ?
+                <Tooltip placement='bottom'
+                  title={'In order to enable this option you must \
+                  set the authentication service to “Authenticate Connections”'}
+                >
+                  {$t({ defaultMessage: 'Enable MAC auth bypass' })}
+                </Tooltip> :
+                $t({ defaultMessage: 'Enable MAC auth bypass' })
+              }
             </Checkbox>
           }
         />

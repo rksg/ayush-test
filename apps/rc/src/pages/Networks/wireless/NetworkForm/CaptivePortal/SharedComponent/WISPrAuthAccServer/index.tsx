@@ -94,56 +94,66 @@ onClickAllAccept: () => void
               </Radio>
               <Space>
                 <Form.Item label={$t({ defaultMessage: 'Authentication Server' })}>
-                  <Form.Item
-                    name={'authRadiusId'}
-                    noStyle
-                    label={$t({ defaultMessage: 'Authentication Server' })}
-                    rules={[
-                      {
-                        validator: (_, value) => {
-                          const disabled = true
-                          if (disabled || value !== '') {
-                            return Promise.resolve()
+                  <Space>
+                    <Form.Item
+                      name={'authRadiusId'}
+                      noStyle
+                      label={$t({ defaultMessage: 'Authentication Server' })}
+                      rules={[
+                        {
+                          validator: (_, value) => {
+                            if (context.state.isDisabled.Auth || value !== '') {
+                              return Promise.resolve()
+                            }
+                            return Promise.reject()
                           }
-                          return Promise.reject()
                         }
-                      }
-                    ]}
-                    initialValue={''}
-                    children={
-                      <Select
-                        style={{ width: 210 }}
-                        disabled={context.state.isDisabled.Auth}
-                        onChange={(value)=>{
+                      ]}
+                      initialValue={''}
+                      children={
+                        <Select
+                          style={{ width: 210 }}
+                          disabled={context.state.isDisabled.Auth}
+                          onChange={(value)=>{
                           // eslint-disable-next-line max-len
-                          form.setFieldValue('authRadius' ,aaaData?.filter(d => d.id === value)[0])}}
-                        options={[
-                          { label: $t({ defaultMessage: 'Select server' }), value: '' },
-                          ...aaaList
-                        ]}
-                      />}
-                  />
-                  <Tooltip>
-                    <AAAPolicyModal updateInstance={(data)=>{
-                      aaaList.push({
-                        label: data.name, value: data.id })
-                      setAaaList([...aaaList])
-                      aaaData.push({ ...data })
-                      setAaaData([...aaaData])
-                      form.setFieldValue('authRadiusId', data.id)
-                      form.setFieldValue('authRadius', data)
-                    }}
-                    aaaCount={aaaData.length}
-                    type={'AUTHENTICATION'}
+                            form.setFieldValue('authRadius' ,aaaData?.filter(d => d.id === value)[0])}}
+                          options={[
+                            { label: $t({ defaultMessage: 'Select server' }), value: '' },
+                            ...aaaList
+                          ]}
+                        />}
                     />
-                  </Tooltip>
+                    <Tooltip>
+                      <AAAPolicyModal
+                        updateInstance={(data)=>{
+                          aaaList.push({
+                            label: data.name, value: data.id })
+                          setAaaList([...aaaList])
+                          aaaData.push({ ...data })
+                          setAaaData([...aaaData])
+                          form.setFieldValue('authRadiusId', data.id)
+                          form.setFieldValue('authRadius', data)
+                        }}
+                        aaaCount={aaaData.length}
+                        type={'AUTHENTICATION'}
+                        disabled={context.state.isDisabled.Auth}
+                      />
+                    </Tooltip>
+                  </Space>
                 </Form.Item>
               </Space>
               <Radio
                 value={'ALWAYS_ACCEPT'}
                 disabled={context.state.isDisabled.AllAccept}
                 onChange={() => {props.onClickAllAccept()}}>
+                {context.state.isDisabled.AllAccept ? <Tooltip
+                  placement='bottom'
+                  mouseEnterDelay={0}
+                  mouseLeaveDelay={0}
+                  title={'In order to enable this option you have to \
+                uncheck the “Enable MAC auth bypass” option'}>
                   Accept All Connections
+                </Tooltip> : 'Accept All Connections'}
               </Radio>
               <Description>
                 <FormattedMessage
