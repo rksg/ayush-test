@@ -757,7 +757,10 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
     <DndProvider backend={HTML5Backend} >
-      <Table
+      {isOnlyViewMode ? <Table
+        columns={basicColumns}
+        dataSource={layer3RuleList as Layer3Rule[]}
+      /> : <Table
         columns={basicColumns}
         dataSource={layer3RuleList as Layer3Rule[]}
         rowKey='priority'
@@ -769,7 +772,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             row: DraggableRow
           }
         }}
-      />
+      />}
     </DndProvider>
   </Form>
 
