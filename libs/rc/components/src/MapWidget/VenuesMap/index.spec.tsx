@@ -1,6 +1,7 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import { Loader }     from '@googlemaps/js-api-loader'
 
+import { ApVenueStatusEnum }                              from '@acx-ui/rc/utils'
 import { BrowserRouter as Router }                        from '@acx-ui/react-router-dom'
 import { Provider }                                       from '@acx-ui/store'
 import { act, queryByAttribute, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -27,10 +28,30 @@ describe('VenuesMap', () => {
   })
 
   it('should load google maps api using the key from env', async () => {
+    localStorage.setItem('dashboard-gmap-filter', JSON.stringify({
+      [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
+      [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
+      [ApVenueStatusEnum.IN_SETUP_PHASE]: false,
+      [ApVenueStatusEnum.OPERATIONAL]: true
+    }))
+
     render(
       <Router>
         <Provider>
-          <VenuesMap data={[]} cluster />
+          <VenuesMap data={[{
+            venueId: 'e1b23075240342319b8e951636c23a0a',
+            status: ApVenueStatusEnum.IN_SETUP_PHASE,
+            switchClientsCount: 0,
+            apStat: [],
+            switchStat: [],
+            apsCount: 0,
+            switchesCount: 0,
+            edgeStat: [],
+            edgesCount: 0,
+            edgeClientsCount: 0,
+            visible: false
+          }]}
+          cluster />
         </Provider>
       </Router>
     )

@@ -30,16 +30,22 @@ interface VenueFilterControlBoxProps {
 
 export default function VenueFilterControlBox (props: VenueFilterControlBoxProps) {
   const { $t } = useIntl()
-  const [ filter, setFilter ] = useState<FilterState>({
-    [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
-    [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
-    [ApVenueStatusEnum.IN_SETUP_PHASE]: true,
-    [ApVenueStatusEnum.OPERATIONAL]: true
-  })
+  const localStorageKey = 'dashboard-gmap-filter'
+  const savedFilterState = localStorage.getItem(localStorageKey)
+  const defaultFilter: FilterState = savedFilterState
+    ? JSON.parse(savedFilterState)
+    : {
+      [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
+      [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
+      [ApVenueStatusEnum.IN_SETUP_PHASE]: true,
+      [ApVenueStatusEnum.OPERATIONAL]: true
+    }
+  const [ filter, setFilter ] = useState<FilterState>(defaultFilter)
 
   function onChange (e: CheckboxChangeEvent) {
     filter[e.target.name!] = !filter[e.target.name!]
     setFilter(filter)
+    localStorage.setItem(localStorageKey, JSON.stringify(filter))
     props.onChange({ key: e.target.name!, value: filter[e.target.name!] })
   }
 

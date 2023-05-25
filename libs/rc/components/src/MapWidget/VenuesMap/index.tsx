@@ -27,6 +27,7 @@ function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
   const basePath = useTenantLink('/')
   const navigate = useNavigate()
+  const localStorageKey = 'dashboard-gmap-filter'
 
   /* istanbul ignore next */
   const onNavigate = (params: NavigateProps) => {
@@ -58,6 +59,13 @@ function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps
   }
 
   React.useEffect(()=>{
+    const savedFilterState = localStorage.getItem(localStorageKey)
+    if (savedFilterState) {
+      const filterState = JSON.parse(savedFilterState)
+      data.forEach((venue: VenueMarkerOptions) => {
+        venue.visible = filterState[venue.status!]
+      })
+    }
     setVenues(data)
   },[data])
 
