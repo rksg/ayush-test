@@ -98,6 +98,7 @@ export interface MultiLineTimeSeriesChartProps <
     markerLines?: MarkerLine[]
     onMarkAreaClick?: (data: MarkerData) => void
     grid?: GridOption,
+    echartOptions?: EChartsOption
   }
 
 export function useBrush (
@@ -171,6 +172,7 @@ export function MultiLineTimeSeriesChart <
   disableLegend,
   onMarkAreaClick,
   grid: gridProps,
+  echartOptions,
   ...props
 }: MultiLineTimeSeriesChartProps<TChartData, MarkerData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -186,7 +188,7 @@ export function MultiLineTimeSeriesChart <
   useOnMarkAreaClick(eChartsRef, props.markers, onMarkAreaClick)
   useLegendSelectChanged(eChartsRef)
 
-  const option: EChartsOption = {
+  const defaultOption: EChartsOption = {
     animation: false,
     color: props.lineColors || qualitativeColorSet(),
     grid: { ...gridOptions({ disableLegend, rightGridOffset: 5 }), ...gridProps },
@@ -297,7 +299,7 @@ export function MultiLineTimeSeriesChart <
       }
     })
   }
-
+  const option = echartOptions ? { ...defaultOption, ...echartOptions } : defaultOption
   return (
     <UI.Wrapper>
       <ReactECharts

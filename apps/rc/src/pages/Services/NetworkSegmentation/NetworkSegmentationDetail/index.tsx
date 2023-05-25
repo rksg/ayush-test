@@ -243,7 +243,7 @@ const NetworkSegmentationDetail = styled(({ className }) => {
       content: () => {
         if(edgeData) {
           return (
-            <TenantLink to={`/devices/edge/${edgeData.serialNumber}/edge-details/overview`}>
+            <TenantLink to={`/devices/edge/${edgeData.serialNumber}/details/overview`}>
               {edgeData.name}
             </TenantLink>
           )

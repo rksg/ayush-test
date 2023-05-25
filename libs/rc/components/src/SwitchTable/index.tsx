@@ -42,6 +42,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
+import { getIntl }                                           from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
@@ -57,16 +58,15 @@ export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
   if(row){
-    let rowData = { ...row }
+    const { $t } = getIntl()
+    const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    let switchStatusString = row.isFirstLevel || row.isGroup
+      ? getSwitchStatusString(row)
+      : transformSwitchUnitStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig)
     if(row.isGroup && row.deviceStatus?.toLocaleUpperCase() === SwitchStatusEnum.OPERATIONAL) {
       // For groupBy table display
-      rowData.configReady = true
-      rowData.syncedSwitchConfig = true
+      switchStatusString = $t({ defaultMessage: 'Online' })
     }
-    const switchStatus = transformSwitchStatus(rowData.deviceStatus, rowData.configReady, rowData.syncedSwitchConfig, rowData.suspendingDeployTime)
-    const switchStatusString = rowData.isFirstLevel || rowData.isGroup
-      ? getSwitchStatusString(rowData)
-      : transformSwitchUnitStatus(rowData.deviceStatus, rowData.configReady, rowData.syncedSwitchConfig)
     return (
       <span>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
