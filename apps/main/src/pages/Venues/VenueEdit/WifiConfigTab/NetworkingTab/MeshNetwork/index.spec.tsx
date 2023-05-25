@@ -49,12 +49,9 @@ describe('MeshNetwork', () => {
     await userEvent.click(await screen.findByRole('switch')) // unchecked
 
     await userEvent.click(await screen.findByRole('switch'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Enable Mesh' }))
 
     await userEvent.click(await screen.findByRole('switch')) // unchecked
 
-    await userEvent.click(await screen.findByRole('switch'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
   it('should render disabled switch button correctly', async () => {
     mockServer.use(
@@ -77,4 +74,5 @@ describe('MeshNetwork', () => {
     expect(asFragment()).toMatchSnapshot()
     expect(screen.getByTestId('mesh-switch')).toBeDisabled()
   })
+
 })

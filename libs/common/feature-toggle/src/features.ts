@@ -43,6 +43,7 @@ export enum Features {
   RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
+  ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
