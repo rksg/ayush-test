@@ -127,6 +127,7 @@ function Table <RecordType extends Record<string, any>> ({
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
+
   const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
@@ -179,8 +180,13 @@ function Table <RecordType extends Record<string, any>> ({
     groupable,
     expandable,
     columns,
-    isGroupByActive
-  } = useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value)
+    isGroupByActive,
+    onExpand
+  }
+  = useGroupBy<RecordType>(
+    baseColumns,
+    allKeys,
+    groupByValue, columnsState.value)
 
   const setting: SettingOptionType | false = type === 'tall' && settingsId ? {
     draggable: true,
@@ -311,7 +317,6 @@ function Table <RecordType extends Record<string, any>> ({
       }
     }
   }
-
   const columnResize = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) =>
     (type === 'tall')
       ? ({
@@ -327,7 +332,6 @@ function Table <RecordType extends Record<string, any>> ({
         })
       })
       : col
-
   const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
     ...( col.searchable && {
@@ -458,6 +462,7 @@ function Table <RecordType extends Record<string, any>> ({
       showSorterTooltip={false}
       tableAlertOptionRender={false}
       expandable={expandable}
+      onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName
         : (record) => isGroupByActive && 'children' in record && !('isFirstLevel' in record)

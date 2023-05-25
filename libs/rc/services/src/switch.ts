@@ -1151,7 +1151,7 @@ const aggregatedSwitchGroupByListData = (switches: TableResult<SwitchRow>,
             tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
           }
         })
-        // i.children = tmpMember // TODO: stack members in group by table
+        i.children = tmpMember
       }
     })
   })

@@ -54,13 +54,19 @@ export function useGroupBy<RecordType> (
   groupByValue: string | undefined,
   columnsState: TableColumnState
 ) {
-  console.log(expandedRowKeys)
   return useMemo(() => {
     const groupable = columns.filter(col => col.groupable)
     const isGroupByActive = typeof groupByValue !== 'undefined'
     const targetCol = groupable.find(col => col.key === groupByValue)
     const attributes = targetCol?.groupable?.attributes ?? []
     const actionsList = targetCol?.groupable?.actions ?? []
+    let expandedRows = expandedRowKeys
+    const onExpand = (expanded: any, record:any) => {
+      if(record?.children && expanded)
+      expandedRows?.push(record?.serialNumber)
+      if(record?.children && !expanded)
+      expandedRows?.splice(expandedRows?.indexOf(record?.serialNumber), 1);
+    }
     const renderGroupRow = (record: RecordType) => (
       <UI.GroupRow>
         <UI.GroupCell>
@@ -78,13 +84,11 @@ export function useGroupBy<RecordType> (
       : count, 0)
     const addColSpan = (colSpan: number) =>
       (record: RecordType) => 'children' in record && !('isFirstLevel' in record) ? ({ colSpan }) : ({})
-      console.log(columnCount)
     return {
       groupable,
       columns: isGroupByActive
         ? columns.map((column, columnIndex) => {
           const { render, searchable, dataIndex } = column
-          // console.log(column)
           const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
             if ('children' in record && !('isFirstLevel' in record)) {
               return columnIndex === 0 ? renderGroupRow(record) : null
@@ -115,7 +119,8 @@ export function useGroupBy<RecordType> (
         })
         : columns,
       isGroupByActive,
-      expandable: isGroupByActive ? {  showExpandColumn: true } : undefined
+      expandable: isGroupByActive ? { expandedRowKeys : expandedRows, showExpandColumn: true } : undefined,
+      onExpand
     }
   }, [columns, groupByValue, expandedRowKeys, columnsState])
 }
