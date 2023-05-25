@@ -93,7 +93,7 @@ function ApPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
-        { text: $t({ defaultMessage: 'Access Point List' }), link: '/devices/wifi' }
+        { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
       ]}
       extra={filterByAccess([
         enableTimeFilter()

@@ -47,7 +47,7 @@ function PersonaGroupDetailsPageHeader (props: {
           text: $t({ defaultMessage: 'Persona Management' })
         },
         {
-          text: $t({ defaultMessage: 'Persona Group' }),
+          text: $t({ defaultMessage: 'Persona Groups' }),
           link: 'users/persona-management'
         }
       ] : [

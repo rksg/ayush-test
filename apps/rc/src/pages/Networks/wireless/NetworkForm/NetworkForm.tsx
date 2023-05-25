@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useGetNetworkQuery,
@@ -111,6 +112,7 @@ export default function NetworkForm (props:{
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
@@ -396,7 +398,11 @@ export default function NetworkForm (props:{
         title={editMode
           ? intl.$t({ defaultMessage: 'Edit Network' })
           : intl.$t({ defaultMessage: 'Create New Network' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
+          { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
+          { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
+        ] : [
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />}

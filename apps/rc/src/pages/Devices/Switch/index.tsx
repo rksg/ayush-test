@@ -16,7 +16,7 @@ export enum SwitchTabsEnum {
   WIRED_REPORT = 'switch/reports/wired'
 }
 
-interface WifiTab {
+interface SwitchTab {
   key: SwitchTabsEnum,
   url?: string,
   title: string,
@@ -24,7 +24,7 @@ interface WifiTab {
   headerExtra?: JSX.Element[]
 }
 
-const useTabs = () : WifiTab[] => {
+const useTabs = () : SwitchTab[] => {
   const { $t } = useIntl()
   const listTab = {
     key: SwitchTabsEnum.LIST,

@@ -44,6 +44,7 @@ const useTabs = () : WirelessTab[] => {
   const [range, setRange] = useState(DateRange.allTime)
   const [startDate, setStartDate] = useState(moment(undefined).toString())
   const [endDate, setEndDate] = useState(moment(undefined).toString())
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const dateFilter = {
     range,
     setRange,
@@ -96,7 +97,7 @@ const useTabs = () : WirelessTab[] => {
   return [
     clientsTab,
     guestTab,
-    ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [wirelessClientReportTab] : [])
+    ...(isNavbarEnhanced ? [wirelessClientReportTab] : [])
   ]
 }
 
