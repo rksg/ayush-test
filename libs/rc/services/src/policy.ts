@@ -63,7 +63,7 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult
+  NewAPITableResult, transferNewResToTableResult, transferToNewTablePaginationParams
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -1474,7 +1474,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           body: {
-            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
           }
         }
       },
@@ -1620,7 +1621,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           body: {
-            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
           }
         }
       },
@@ -1776,7 +1778,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           body: {
-            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
           }
         }
       },
@@ -1823,19 +1826,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
-    }),
-    getPrioritizedPolicy: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
-        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
-      },
-      providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'DETAIL' }]
     }),
     deletePrioritizedPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -2020,6 +2010,5 @@ export const {
   useUpdateAdaptivePolicySetMutation,
   useAddPrioritizedPolicyMutation,
   useDeletePrioritizedPolicyMutation,
-  useGetPrioritizedPolicyQuery,
   useGetPrioritizedPoliciesQuery
 } = policyApi
