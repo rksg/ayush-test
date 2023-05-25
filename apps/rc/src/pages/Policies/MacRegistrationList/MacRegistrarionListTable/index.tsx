@@ -8,11 +8,12 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal, showToast
+  showToast
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteMacRegListMutation,
   useLazyGetAdaptivePolicySetQuery,
   useLazyNetworkListQuery,
@@ -200,37 +201,27 @@ export default function MacRegistrationListsTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: ([{ name, id, associationIds, networkIds }], clearSelection) => {
-      if ((associationIds && associationIds.length > 0) || (networkIds && networkIds.length > 0)) {
-        showActionModal({
-          type: 'error',
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'This list is in use by one or more Networks and one or more Personas.' })
-        })
-      } else {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'List' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteMacRegList({ params: { policyId: id } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
-                })
-                clearSelection()
-              }).catch((error) => {
-                console.log(error) // eslint-disable-line no-console
-              })
-          }
-        })
-      }
-    }
+    onClick: ([selectedRow], clearSelection) => {
+      doProfileDelete(
+        [selectedRow],
+        $t({ defaultMessage: 'List' }),
+        selectedRow.name,
+        [
+          { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Persona' }) },
+          { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
+        ],
+        async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
+          .unwrap()
+          .then(() => {
+            showToast({
+              type: 'success',
+              content: $t({ defaultMessage: 'List {name} was deleted' }, { name: selectedRow.name })
+            })
+            clearSelection()
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
+      )}
   }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
