@@ -31,6 +31,7 @@ export default function SelectServiceForm () {
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -100,7 +101,10 @@ export default function SelectServiceForm () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ] : [
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />

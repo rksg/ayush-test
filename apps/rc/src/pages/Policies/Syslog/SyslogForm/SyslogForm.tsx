@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -34,11 +35,12 @@ type SyslogFormProps = {
 const SyslogForm = (props: SyslogFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyRoutePath({
-    type: PolicyType.SYSLOG, oper: PolicyOperation.LIST
-  }))
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const { edit } = props
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policyName = ''
   const server = ''
@@ -131,10 +133,17 @@ const SyslogForm = (props: SyslogFormProps) => {
         title={edit
           ? $t({ defaultMessage: 'Edit Syslog Server' })
           : $t({ defaultMessage: 'Add Syslog Server' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Syslog' }),
-            link: getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Syslog' }),
+            link: tablePath
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Syslog' }),
+          link: tablePath
+        }]}
       />
       <StepsForm<SyslogContextType>
         form={form}

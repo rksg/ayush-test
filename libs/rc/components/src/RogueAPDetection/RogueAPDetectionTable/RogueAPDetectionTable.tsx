@@ -73,6 +73,7 @@ export function RogueAPDetectionTable () {
   const tenantBasePath: Path = useTenantLink('')
   const DEFAULT_PROFILE = 'Default profile'
   const [ deleteFn ] = useDelRoguePoliciesMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useEnhancedRoguePoliciesQuery,
@@ -150,10 +151,16 @@ export function RogueAPDetectionTable () {
             defaultMessage: 'Rogue AP Detection'
           })
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}>

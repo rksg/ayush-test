@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useDelSyslogPolicyMutation,
   useSyslogPolicyListQuery,
@@ -21,7 +22,6 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
-
 
 const defaultPayload = {
   fields: [
@@ -45,6 +45,7 @@ export default function SyslogTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelSyslogPolicyMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
@@ -91,10 +92,16 @@ export default function SyslogTable () {
             defaultMessage: 'Syslog Server'
           })
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}>

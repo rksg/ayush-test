@@ -2,7 +2,8 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
+import { Button, PageHeader }     from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   PolicyOperation,
@@ -16,6 +17,7 @@ import AccessControlTabs from './AccessControlTabs'
 
 export default function AccessControlTable () {
   const { $t } = useIntl()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   return (
     <PageHeader
@@ -24,12 +26,16 @@ export default function AccessControlTable () {
           defaultMessage: 'Access Control'
         })
       }
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Network Control' }) },
         {
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
         }
-      ]}
+      ] : [{
+        text: $t({ defaultMessage: 'Policies & Profiles' }),
+        link: getPolicyListRoutePath(true)
+      }]}
       extra={filterByAccess([
         <TenantLink
           to={getPolicyRoutePath({

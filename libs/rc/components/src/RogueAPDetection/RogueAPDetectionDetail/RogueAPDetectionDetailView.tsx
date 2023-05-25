@@ -9,6 +9,7 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   RogueApConstant,
@@ -19,7 +20,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
 import RogueAPDetectionVenueDetail   from './RogueAPDetectionVenueDetail'
@@ -33,12 +33,17 @@ export const RogueAPDetectionDetailView = () => {
   const [policyName, setPolicyName] = useState('' as string)
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
         extra={policyName !== RogueApConstant.DefaultProfile ? filterByAccess([

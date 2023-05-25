@@ -2,6 +2,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader }                                                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
 import { useGetTunnelProfileViewDataListQuery }                                                                                              from '@acx-ui/rc/services'
 import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                                             from '@acx-ui/react-router-dom'
@@ -14,6 +15,11 @@ const TunnelProfileDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getPolicyRoutePath({
+    type: PolicyType.TUNNEL_PROFILE,
+    oper: PolicyOperation.LIST
+  })
 
   const getTunnelProfilePayload = {
     filters: { id: [params.policyId] }
@@ -55,17 +61,21 @@ const TunnelProfileDetail = () => {
     <>
       <PageHeader
         title={tunnelProfileData.name}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Tunnel Profile' }),
+            link: tablePath
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
-            link: getPolicyRoutePath({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.LIST
-            })
+            link: tablePath
           }
         ]}
         extra={

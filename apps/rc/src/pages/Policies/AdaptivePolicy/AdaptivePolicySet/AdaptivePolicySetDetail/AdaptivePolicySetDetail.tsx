@@ -26,7 +26,9 @@ export default function AdaptivePolicySetDetail () {
   const { $t } = useIntl()
   const { policyId, tenantId } = useParams()
   const { Paragraph } = Typography
-
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   // eslint-disable-next-line max-len
@@ -65,12 +67,18 @@ export default function AdaptivePolicySetDetail () {
     <>
       <PageHeader
         title={policySetData?.name || ''}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          { text: $t({ defaultMessage: 'Adaptive Policy Sets' }),
+            link: tablePath }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Adaptive Set Policy' }),
-            // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }) }
+            link: tablePath }
         ]}
         extra={filterByAccess([
           <TenantLink

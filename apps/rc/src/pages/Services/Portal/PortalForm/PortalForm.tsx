@@ -8,6 +8,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
 import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation }               from '@acx-ui/rc/services'
 import { defaultAlternativeLang, defaultComDisplay, getServiceRoutePath, Portal, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                                 from '@acx-ui/react-router-dom'
@@ -73,6 +74,8 @@ export const PortalForm = (props:{
   const { data } = useGetPortalQuery({ params })
   const [savePortal] = useSavePortalMutation()
   const [updatePortal] = useUpdatePortalMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
   const updateFileId = async (file: RcFile) =>{
     let fileId = ''
     await uploadURL({ params, payload: { fileExtension:
@@ -154,7 +157,11 @@ export const PortalForm = (props:{
       {!networkView && <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
           :$t({ defaultMessage: 'Add Portal Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'Guest Portal' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Portal Services' }), link: tablePath }
         ]}
       />}

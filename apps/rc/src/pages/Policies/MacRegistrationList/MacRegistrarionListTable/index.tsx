@@ -41,6 +41,7 @@ export default function MacRegistrationListsTable () {
   const [policySetMap, setPolicySetMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
 
@@ -248,11 +249,14 @@ export default function MacRegistrationListsTable () {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true) }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={filterByAccess([
           <TenantLink

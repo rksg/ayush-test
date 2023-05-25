@@ -102,9 +102,9 @@ export default function DHCPTable () {
           })
         }
         breadcrumb={isNavbarEnhanced ? [
-            { text: $t({ defaultMessage: 'Network Control' }) },
-            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-          ]
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ]
           : [
             { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
           ]

@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useAddClientIsolationMutation,
   useGetClientIsolationQuery,
@@ -39,6 +40,8 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
   const tablePath = getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
   const { editMode = false } = props
 
   const [ addClientIsolation ] = useAddClientIsolationMutation()
@@ -73,8 +76,11 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
           ? $t({ defaultMessage: 'Edit Client Isolation Profile' })
           : $t({ defaultMessage: 'Add Client Isolation Profile' })
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
         ]}
       />
