@@ -12,7 +12,7 @@ const SpaceWrapper = styled(Space)`
   justify-content: flex-end;
 `
 
-export const VenueEdgesTable = () => {
+export const VenueEdge = () => {
   const { $t } = useIntl()
   const params = useParams()
 

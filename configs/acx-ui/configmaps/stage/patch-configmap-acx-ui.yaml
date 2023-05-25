@@ -5,5 +5,5 @@ metadata:
 data:
   google.maps.key: "AIzaSyCpQ4EbLcktRsOYx_UemIY5ZvIMgB6P-mo"
   split.io.key: "mlbj64qb8lgfji5upnedt4lo7h5c4ik65m95"
-  captive.portal.domain.name: "opsalto.ruckuswireless.com"
-  new.api.domain.name: "api.opsalto.ruckuswireless.com"
+  captive.portal.domain.name: "stage.ruckus.cloud"
+  new.api.domain.name: "api.stage.ruckus.cloud"
