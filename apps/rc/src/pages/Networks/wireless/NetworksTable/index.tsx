@@ -15,7 +15,7 @@ export default function useNetworksTable () {
     defaultPayload: defaultNetworkPayload
   })
   const title = defineMessage({
-    defaultMessage: 'AP List'
+    defaultMessage: 'Network List'
   })
 
   const extra = [

@@ -34,7 +34,10 @@ function PersonaPageHeader () {
         <Tabs onChange={onTabChange} activeKey={params.activeTab}>
           <Tabs.TabPane
             key={'persona-group'}
-            tab={$t({ defaultMessage: 'Persona Group' })}
+            tab={isNavbarEnhanced
+              ? $t({ defaultMessage: 'Persona Groups' })
+              : $t({ defaultMessage: 'Persona Group' })
+            }
             children={<PersonaGroupTable />}
           />
           <Tabs.TabPane

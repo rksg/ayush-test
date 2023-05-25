@@ -106,7 +106,7 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Wi-Fi' })}
+      title={$t({ defaultMessage: 'Wireless' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Cients' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

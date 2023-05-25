@@ -103,6 +103,7 @@ export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
   const { data: userProfileData } = useUserProfileContext()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   // support dashboard - his own account
   let isSupport: boolean = false
@@ -120,7 +121,10 @@ export default function Administration () {
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Administration' })}
+      title={isNavbarEnhanced
+        ? $t({ defaultMessage: 'Account Management' })
+        : $t({ defaultMessage: 'Administration' })
+      }
       breadcrumb={[
         { text: $t({ defaultMessage: 'Administration' }) }
       ]}
