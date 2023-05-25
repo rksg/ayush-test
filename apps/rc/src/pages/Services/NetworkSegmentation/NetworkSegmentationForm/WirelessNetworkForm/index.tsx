@@ -54,7 +54,7 @@ export const WirelessNetworkForm = () => {
     }
   })
 
-  const { networkOptions, networkIds, isLoading: isDpskLoading } = useVenueNetworkListQuery({
+  const { networkOptions, networkIds } = useVenueNetworkListQuery({
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
   }, {
@@ -68,7 +68,7 @@ export const WirelessNetworkForm = () => {
     }
   })
 
-  const { nsgViewData, isLoading: isNsgViewDataLoading } =
+  const { nsgViewData } =
   useGetNetworkSegmentationViewDataListQuery({
     payload: {
       filters: { networkIds: networkIds }
