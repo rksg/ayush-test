@@ -38,11 +38,9 @@ async function fillInForm () {
   fireEvent.change(await screen.findByLabelText(/Description/),
     { target: { value: 'test description' } })
   fireEvent.change(await screen.findByTestId(/serialNumber1/), { target: { value: 'FMK4124R20X' } })
+  fireEvent.change(await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
   screen.getByTestId(/serialNumber1/i).focus()
   screen.getByTestId(/serialNumber1/i).blur()
-  fireEvent.change(await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
-  // fireEvent.change(await screen.findByTestId(/serialNumber3/), { target: { value: 'FMK4124R22X' } })
-
 
 }
 
