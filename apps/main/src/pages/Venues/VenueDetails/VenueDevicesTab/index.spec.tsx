@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, Dashboard, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen }   from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Dashboard, EdgeUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }    from '@acx-ui/test-utils'
 
 import { VenueDetails } from '../'
 import { venueSetting } from '../../__tests__/fixtures'
@@ -277,7 +277,7 @@ const meshData = {
 
 describe('VenueWifi', () => {
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation((feature: string) => {
+    jest.mocked(useIsTierAllowed).mockImplementation((feature: string) => {
       return feature === Features.EDGES ? false: true
     })
 
@@ -325,6 +325,7 @@ describe('Venue device tab', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(
       rest.post(
