@@ -26,6 +26,7 @@ import {
   portalList
 } from './__tests__/fixtures'
 import NetworkForm from './NetworkForm'
+import { MoreSettingsForm } from './NetworkMoreSettingsForm'
 
 export const dhcpResponse = {
   name: 'DHCP-Guest',
@@ -171,6 +172,35 @@ describe('NetworkForm', () => {
 
     await userEvent.click(screen.getByText('Finish'))
   })
+
+  it('should test open network with Dynamic VLAN successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    expect(asFragment()).toMatchSnapshot()
+
+    const insertInput = screen.getByLabelText(/Network Name/)
+    fireEvent.change(insertInput, { target: { value: 'open network test' } })
+    fireEvent.blur(insertInput)
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating, { timeout: 7000 })
+
+    userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
+    const useMacAuthentication = screen.getByRole('switch')
+    await userEvent.click(useMacAuthentication)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Show more settings' }))
+
+    expect(screen.getByText(/Dynamic VLAN/i)).toBeVisible()
+  })
+
   it.skip('should create captive portal successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -253,4 +283,26 @@ describe('NetworkForm', () => {
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Finish'))
   }, 20000)
+
+  it('should test WISPr with MAC bypass and dynamic VLAN successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    const insertInput = screen.getByLabelText(/Network Name/)
+    fireEvent.change(insertInput, { target: { value: 'WISPr network test' } })
+    fireEvent.blur(insertInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    await userEvent.click(screen.getByRole('radio', { name: /Captive Portal/ }))
+    await userEvent.click(screen.getByText('Next'))
+
+    await userEvent.click(screen.getByText('3rd Party Captive Portal (WISPr)'))
+    await userEvent.click(screen.getByText('Next'))
+
+    // await userEvent.click((screen.getByRole('option', { name: 'Other provider' })))
+  })
 })

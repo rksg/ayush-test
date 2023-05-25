@@ -250,7 +250,7 @@ export function MoreSettingsForm (props: {
             {(showDynamicWlan || macAuthentication || bypassCpMacAuth) &&
               <UI.FieldLabel width='auto' style={{ marginTop: '20px' }}>
                 <UI.FormItemNoLabel
-                  name={['wlan','advancedCustomization','dynamicVlan']}
+                  name={['wlan','advancedCustomization','enableAaaVlanOverride']}
                   style={{ marginBottom: '15px' , marginRight: '8px' }}
                   valuePropName='checked'
                   initialValue={true}
