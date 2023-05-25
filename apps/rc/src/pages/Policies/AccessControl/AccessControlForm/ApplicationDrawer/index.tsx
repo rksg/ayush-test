@@ -543,14 +543,17 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         { validator: () => ruleValidator() }
       ]}
     />
-    <Table
+    {isOnlyViewMode ? <Table
+      columns={basicColumns}
+      dataSource={applicationsRuleList as ApplicationsRule[]}
+    /> : <Table
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
       rowKey='ruleName'
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
-    />
+    />}
   </Form>
 
   const modelContent = () => {

@@ -501,14 +501,17 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         { validator: () => ruleValidator() }
       ]}
     />
-    <Table
+    {isOnlyViewMode ? <Table
+      columns={basicColumns}
+      dataSource={deviceOSRuleList as DeviceOSRule[]}
+    /> : <Table
       columns={basicColumns}
       dataSource={deviceOSRuleList as DeviceOSRule[]}
       rowKey='ruleName'
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
-    />
+    />}
   </Form>
 
   const modelContent = () => {
