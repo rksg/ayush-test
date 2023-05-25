@@ -64,12 +64,12 @@ export function useGroupBy<RecordType> (
     const attributes = targetCol?.groupable?.attributes ?? []
     const actionsList = targetCol?.groupable?.actions ?? []
     let expandedRows = expandedRowKeys
-    const onExpand = (expanded: any, record:any) => {
+    const onExpand = (expanded: boolean, record: RecordType & Record<"children"| Key, unknown>) => {
       const key = typeof rowKey === 'function' ? rowKey(record) : record?.[rowKey as unknown as Key] 
-      if(record?.children && expanded)
-      expandedRows?.push(key)
-      if(record?.children && !expanded)
-      expandedRows?.splice(expandedRows?.indexOf(key), 1);
+      if('children' in record && expanded)
+      expandedRows?.push(key as Key)
+      if('children' in record && !expanded)
+      expandedRows?.splice(expandedRows?.indexOf(key as Key), 1);
     }
     const renderGroupRow = (record: RecordType) => (
       <UI.GroupRow>
