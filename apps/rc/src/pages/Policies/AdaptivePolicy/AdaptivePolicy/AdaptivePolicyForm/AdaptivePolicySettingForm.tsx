@@ -16,8 +16,8 @@ import {
   AccessCondition,
   AttributeAssignment,
   checkObjectNotExists,
-  CriteriaOption,
-  RadiusAttributeGroup
+  CriteriaOption, defaultSort,
+  RadiusAttributeGroup, sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -84,6 +84,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         key: 'name',
         title: $t({ defaultMessage: 'Condition Type' }),
         dataIndex: 'name',
+        sorter: { compare: sortProp('name', defaultSort) },
         render: function (data, row) {
           return row.templateAttribute?.attributeType === 'DATE_RANGE' ? row.name :
             $t({ defaultMessage: '{name} (Regex)' }, { name: row.name })
@@ -93,6 +94,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
         title: $t({ defaultMessage: 'Condition Value' }),
         key: 'conditionValue',
         dataIndex: 'conditionValue',
+        sorter: { compare: sortProp('evaluationRule.regexStringCriteria', defaultSort) },
         render: function (data, row) {
           if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
             return `${row.evaluationRule?.when},
