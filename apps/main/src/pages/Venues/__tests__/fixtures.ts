@@ -2816,7 +2816,7 @@ export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
   residentPortalId: mockResidentPortalProfileList.content[0].id,
   unitConfig: {
     type: 'unitConfig',
-    guestAllowed: false,
+    guestAllowed: true,
     residentPortalAllowed: true,
     useMaxUnitCount: false,
     maxUnitCount: 1
