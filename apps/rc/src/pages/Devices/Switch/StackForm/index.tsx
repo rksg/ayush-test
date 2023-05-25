@@ -34,6 +34,7 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon, Drag } from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
@@ -120,6 +121,8 @@ export function StackForm () {
   const [rowKey, setRowKey] = useState(3)
 
   const dataFetchedRef = useRef(false)
+
+  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
@@ -599,6 +602,10 @@ export function StackForm () {
 
   const enableAddMember = () => {
     const switchModel = getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if(!enableStackUnitLimitationFlag){
+      return true
+    }
+
     if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
       return tableData.length < 2
     } else {

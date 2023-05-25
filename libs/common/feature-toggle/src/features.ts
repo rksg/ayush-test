@@ -51,5 +51,6 @@ export enum Features {
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
-  SWITCH_BREAKOUT_PORT='switch-breakout-port'
+  SWITCH_BREAKOUT_PORT='switch-breakout-port',
+  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation'
 }

@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 const modelNeedUpgrade = {
   stack: ['ICX7150-C10ZP', 'ICX7150-24F'],
@@ -68,6 +69,7 @@ export function SwitchUpgradeNotification (props: {
   //TODO: Check style with UX WarningTriangleSolid or WarningTriangleOutlined
   const icon = isNeedUpgrade ? <UI.WarningTriangle /> : ''
   const content = upgradeDescription[type][descriptionIndex]
+  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
   return isDisplay ? <UI.UpgradeNotification >
     <UI.Wrapper>
@@ -78,7 +80,7 @@ export function SwitchUpgradeNotification (props: {
         </UI.Header>
       }
       <UI.Content>
-        {Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
+        {enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
           <div>{$t({ defaultMessage: 'For the {model} series, a stack may hold up to' }, { model: switchModel?.split('-')[0] })}
             <UI.MinFwVersion>{$t({ defaultMessage: '{minStackes} switches' }, { minStackes: stackUnitsMinLimitaion })}</UI.MinFwVersion> </div>
         }

@@ -864,6 +864,14 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                               </div>
                             </div>
                           </div>
+                          <button
+                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                            type="button"
+                          >
+                            <span>
+                              Add another member
+                            </span>
+                          </button>
                         </div>
                       </div>
                       <div

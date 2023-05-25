@@ -264,6 +264,7 @@ describe('Switch Stack Form - Edit', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
   })
   it.skip('should submit edit stack form correctly', async () => {
+    // TODO:
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
     })
