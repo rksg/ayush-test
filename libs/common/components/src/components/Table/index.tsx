@@ -127,7 +127,6 @@ function Table <RecordType extends Record<string, any>> ({
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
-
   const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
@@ -308,6 +307,7 @@ function Table <RecordType extends Record<string, any>> ({
       }
     }
   }
+
   const columnResize = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) =>
     (type === 'tall')
       ? ({
@@ -323,6 +323,7 @@ function Table <RecordType extends Record<string, any>> ({
         })
       })
       : col
+
   const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
     ...( col.searchable && {
