@@ -14,12 +14,12 @@ export const currentEdge:EdgeStatus = {
   ports: '62,66',
   tags: [],
   firmwareVersion: '1.1.1.1',
-  cpuTotal: 65 * Math.pow(1000, 2),
-  cpuUsed: 5 * Math.pow(1000, 2),
-  memTotal: 120 * Math.pow(1024, 2),
-  memUsed: 50 * Math.pow(1024, 2),
-  diskTotal: 250 * Math.pow(1024, 3),
-  diskUsed: 162 * Math.pow(1024, 3)
+  cpuCores: 2,
+  cpuUsedPercentage: 65,
+  memoryUsedKb: 120 * Math.pow(1024, 2),
+  memoryTotalKb: 50 * Math.pow(1024, 2),
+  diskUsedKb: 250 * Math.pow(1024, 3),
+  diskTotalKb: 162 * Math.pow(1024, 3)
 }
 
 export const edgePortsSetting:EdgePortStatus[] = [{

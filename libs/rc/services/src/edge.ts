@@ -22,7 +22,12 @@ import {
   onActivityMessageReceived,
   downloadFile,
   SEARCH,
-  SORTER
+  SORTER,
+  EdgeTotalUpDownTime,
+  EdgeTopTraffic,
+  EdgeResourceUtilizationData,
+  EdgeAllPortTrafficData,
+  EdgeTimeSeriesPayload
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi } from '@acx-ui/store'
 
@@ -323,6 +328,40 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           }
         }
       }
+    }),
+    getEdgeUptime: build.query<EdgeTotalUpDownTime, RequestPayload<EdgeTimeSeriesPayload>>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(EdgeUrlsInfo.getEdgeUpDownTime, params),
+          body: payload
+        }
+      }
+    }),
+    getEdgeTopTraffic: build.query<EdgeTopTraffic, RequestPayload<EdgeTimeSeriesPayload>>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(EdgeUrlsInfo.getEdgeTopTraffic, params),
+          body: payload
+        }
+      }
+    }),
+    getEdgeResourceUtilization: build.query<EdgeResourceUtilizationData,
+    RequestPayload<EdgeTimeSeriesPayload>>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(EdgeUrlsInfo.getEdgeResourceUtilization, params),
+          body: payload
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getEdgePortTraffic: build.query<EdgeAllPortTrafficData, RequestPayload<EdgeTimeSeriesPayload>>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(EdgeUrlsInfo.getEdgePortTraffic, params),
+          body: payload
+        }
+      }
     })
   })
 })
@@ -353,5 +392,9 @@ export const {
   useGetLatestEdgeFirmwareQuery,
   useRebootEdgeMutation,
   useFactoryResetEdgeMutation,
-  useDownloadEdgesCSVMutation
+  useDownloadEdgesCSVMutation,
+  useGetEdgeUptimeQuery,
+  useGetEdgeTopTrafficQuery,
+  useGetEdgeResourceUtilizationQuery,
+  useGetEdgePortTrafficQuery
 } = edgeApi

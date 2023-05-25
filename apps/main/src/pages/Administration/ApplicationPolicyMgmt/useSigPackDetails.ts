@@ -15,17 +15,17 @@ export function useSigPackDetails () {
   const { data } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
 
   useEffect(() => {
-    if(data && data.changedApplication?.length) {
+    if(data && data.changedApplications?.length) {
       setUpdateAvailable(true)
-      setAdded(data.changedApplication.filter(item => item.type ===
+      setAdded(data.changedApplications.filter(item => item.type ===
         ApplicationUpdateType.APPLICATION_ADDED))
-      setUpdated(data.changedApplication.filter(item => item.type ===
-        ApplicationUpdateType.APPLICATION_UPDATED))
-      setMerged(data.changedApplication.filter(item => item.type ===
+      setUpdated(data.changedApplications.filter(item => item.type ===
+        ApplicationUpdateType.CATEGORY_UPDATED))
+      setMerged(data.changedApplications.filter(item => item.type ===
         ApplicationUpdateType.APPLICATION_MERGED))
-      setRemoved(data.changedApplication.filter(item => item.type ===
+      setRemoved(data.changedApplications.filter(item => item.type ===
         ApplicationUpdateType.APPLICATION_REMOVED))
-      setRenamed(data.changedApplication.filter(item => item.type ===
+      setRenamed(data.changedApplications.filter(item => item.type ===
         ApplicationUpdateType.APPLICATION_RENAMED))
     } else {
       setUpdateAvailable(false)
