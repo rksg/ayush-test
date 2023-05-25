@@ -4,9 +4,10 @@ import { useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 const modelNeedUpgrade = {
   stack: ['ICX7150-C10ZP', 'ICX7150-24F'],
