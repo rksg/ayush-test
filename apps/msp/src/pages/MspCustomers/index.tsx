@@ -310,7 +310,7 @@ export function MspCustomers () {
       dataIndex: 'integrator',
       key: 'integrator',
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INTEGRATOR)
@@ -321,7 +321,7 @@ export function MspCustomers () {
       render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.integrator ? transformTechPartner(row.integrator) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }
@@ -331,9 +331,8 @@ export function MspCustomers () {
       dataIndex: 'installer',
       key: 'installer',
       onCell: (data: MspEc) => {
-        return (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible ? {
+        return (isPrimeAdmin || isAdmin) ? {
           onClick: () => {
-            setDrawerIntegratorVisible(false)
             setTenantId(data.id)
             setTenantType(AccountType.MSP_INSTALLER)
             setDrawerIntegratorVisible(true)
@@ -343,7 +342,7 @@ export function MspCustomers () {
       render: function (data: React.ReactNode, row: MspEc) {
         const val = row?.installer ? transformTechPartner(row.installer) : '--'
         return (
-          (isPrimeAdmin || isAdmin) && !drawerIntegratorVisible
+          (isPrimeAdmin || isAdmin)
             ? <Link to=''>{val}</Link> : val
         )
       }

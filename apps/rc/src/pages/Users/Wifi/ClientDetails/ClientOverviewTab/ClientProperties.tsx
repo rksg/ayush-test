@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Divider, List, Space } from 'antd'
+import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
 import { Card, Loader, Subtitle, Tooltip, Descriptions } from '@acx-ui/components'
@@ -27,9 +28,9 @@ import {
   Guest,
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
+  EXPIRATION_TIME_FORMAT,
   transformAdvancedDpskExpirationText,
-  ExpirationType,
-  displayDeviceCountLimit
+  ExpirationType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -600,16 +601,8 @@ function GuestDetails ({ guestDetail, clientMac }: {
 function DpskPassphraseDetails (props: { networkId: string, clientMac: string }) {
   const { networkId, clientMac } = props
   const intl = getIntl()
-  const { passphraseClient } = useGetPassphraseClientQuery({
+  const { data: passphraseClient } = useGetPassphraseClientQuery({
     param: {}, payload: { networkId, mac: clientMac }
-  }, {
-    selectFromResult: ({ data }) => {
-      return {
-        passphraseClient: data
-          ? { ...data, clientMac: data.clientMac.filter(mac => mac !== clientMac) }
-          : undefined
-      }
-    }
   })
 
   return <>
@@ -623,19 +616,19 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string })
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'No. of Devices' })}
-        children={passphraseClient && displayDeviceCountLimit(passphraseClient.numberOfDevices)}
+        children={passphraseClient?.numberOfDevices}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Creation Time' })}
         children={passphraseClient &&
-          formatter(DateFormatEnum.DateTimeFormat)(passphraseClient.createdDate)
+          moment(passphraseClient.createDate).format(EXPIRATION_TIME_FORMAT)
         }
       />
       <Descriptions.Item
-        label={intl.$t({ defaultMessage: 'Expiration Time' })}
+        label={intl.$t({ defaultMessage: 'Expireation Time' })}
         children={passphraseClient &&
           transformAdvancedDpskExpirationText(intl, {
-            expirationType: passphraseClient.expirationDate ? ExpirationType.SPECIFIED_DATE : null,
+            expirationType: ExpirationType.SPECIFIED_DATE,
             expirationDate: passphraseClient.expirationDate,
             displayTime: true
           })
@@ -647,7 +640,7 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string })
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Other clients' })}
-        children={passphraseClient && passphraseClient.clientMac.length > 0 &&
+        children={passphraseClient &&
           <List<string>
             dataSource={passphraseClient.clientMac}
             renderItem={item => {

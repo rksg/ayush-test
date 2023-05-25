@@ -22,12 +22,6 @@ import {
 
 import FWVersionMgmt from '.'
 
-const mockedUsedNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
-
 jest.mock('./SwitchFirmware/VenueFirmwareList', () => ({
   ...jest.requireActual('./SwitchFirmware/VenueFirmwareList'),
   VenueFirmwareList: () => <div data-testid='mocked-SwitchFirmware-table'></div>
@@ -38,7 +32,7 @@ jest.mock('./ApFirmware/VenueFirmwareList', () => ({
 }))
 
 describe('Firmware Version Management', () => {
-  let params: { tenantId: string, activeTab: string, activeSubTab: string }
+  let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
       rest.get(
@@ -71,9 +65,7 @@ describe('Firmware Version Management', () => {
       )
     )
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      activeTab: 'fwVersionMgmt',
-      activeSubTab: 'apFirmware'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
 
@@ -84,10 +76,10 @@ describe('Firmware Version Management', () => {
           <FWVersionMgmt />
         </UserProfileContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
     await screen.findByTestId('mocked-ApFirmware-table')
-    userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
+    userEvent.click(screen.getByText('Switch Firmware'))
     await screen.findByTestId('mocked-SwitchFirmware-table')
   })
 

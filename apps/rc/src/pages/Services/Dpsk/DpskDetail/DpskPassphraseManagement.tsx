@@ -27,7 +27,6 @@ import {
   NetworkTypeEnum,
   NewDpskPassphrase,
   transformAdvancedDpskExpirationText,
-  unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -36,6 +35,7 @@ import { getIntl }        from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
+import { unlimitedNumberOfDeviceLabel }                 from './contentsMap'
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
 

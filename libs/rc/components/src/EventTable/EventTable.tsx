@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react'
 
-import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { DownloadOutlined }                  from '@acx-ui/icons'
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
@@ -52,14 +50,9 @@ export const EventTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
-
-  const excludeProduct = [
-    ...(!isEdgeEnabled ? ['EDGE'] : [])
-  ]
 
   const columns: TableProps<Event>['columns'] = [
     {
@@ -94,7 +87,7 @@ export const EventTable = ({
       dataIndex: 'entity_type',
       sorter: true,
       render: (_, row) => valueFrom(typeMapping, row.entity_type),
-      filterable: filtersFrom(omit(eventTypeMap, excludeProduct), filterables, 'entity_type')
+      filterable: filtersFrom(eventTypeMap, filterables, 'entity_type')
     },
     {
       key: 'product',
@@ -102,7 +95,7 @@ export const EventTable = ({
       dataIndex: 'product',
       sorter: true,
       render: (_, row) => valueFrom(productMapping, row.product),
-      filterable: filtersFrom(omit(productMapping, excludeProduct), filterables, 'product')
+      filterable: filtersFrom(productMapping, filterables, 'product')
     },
     {
       key: 'source',

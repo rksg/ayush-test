@@ -1,61 +1,69 @@
-import _                           from 'lodash'
-import { defineMessage, useIntl  } from 'react-intl'
-import { useParams }               from 'react-router-dom'
-import AutoSizer                   from 'react-virtualized-auto-sizer'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { calculateGranularity }                                       from '@acx-ui/analytics/utils'
-import { qualitativeColorSet }                                        from '@acx-ui/components'
-import { DonutChart, HistoricalCard, Loader, NoData, DonutChartData } from '@acx-ui/components'
-import { formatter }                                                  from '@acx-ui/formatter'
-import { useGetEdgeTopTrafficQuery }                                  from '@acx-ui/rc/services'
-import { EdgeTimeSeriesPayload }                                      from '@acx-ui/rc/utils'
-import { useDateFilter }                                              from '@acx-ui/utils'
+import type { DonutChartData }                         from '@acx-ui/components'
+import {
+  cssStr, DonutChart, HistoricalCard, Loader, NoData
+} from '@acx-ui/components'
+import { EdgePortStatus } from '@acx-ui/rc/utils'
 
-export function EdgePortsByTrafficWidget () {
-  const { $t } = useIntl()
-  const filters = useDateFilter()
-  const params = useParams()
+type ReduceReturnType = Record<string, number>
+const getChartData = (ports: EdgePortStatus[]): DonutChartData[] => {
+  // TODOs: generate series mapping data dynamically by the responsed data.
 
-  const { data, isLoading } = useGetEdgeTopTrafficQuery({
-    params: { serialNumber: params.serialNumber },
-    payload: {
-      start: filters?.startDate,
-      end: filters?.endDate,
-      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
-    } as EdgeTimeSeriesPayload
-  })
-  const colors = qualitativeColorSet()
-  const queryResults: DonutChartData[] = []
-  data?.traffic.forEach((traffic, index) => {
-    queryResults.push({
-      name: `Port ${index + 1}`,
-      value: traffic,
-      color: colors[index]
+  //
+  const seriesMapping = [
+    { key: 'Enabled',
+      name: 'Up',
+      color: cssStr('--acx-semantics-green-50') },
+    { key: 'Disabled',
+      name: 'Down',
+      color: cssStr('--acx-accents-orange-30') }
+  ] as Array<{ key: string, name: string, color: string }>
+  const chartData: DonutChartData[] = []
+
+  if (ports && ports.length > 0) {
+    const portsSummary = ports.reduce<ReduceReturnType>((acc, { adminStatus }) => {
+      acc[adminStatus] = (acc[adminStatus] || 0) + 1
+      return acc
+    }, {})
+
+    seriesMapping.forEach(({ key, name, color }) => {
+      if (portsSummary[key]) {
+        chartData.push({
+          name,
+          value: portsSummary[key],
+          color
+        })
+      }
     })
-  })
+  }
+
+  return chartData
+}
+
+export function EdgePortsByTrafficWidget ({ edgePortsSetting, isLoading }:
+   { edgePortsSetting: EdgePortStatus[], isLoading: boolean }) {
+  const { $t } = useIntl()
+
+  // TODO: retrieve by API, use fake data for testing
+  const chartData = getChartData(edgePortsSetting)
 
   return (
-    <Loader states={[{ isLoading }]}>
+    <Loader states={[ { isLoading } ]}>
       <HistoricalCard title={$t({ defaultMessage: 'Top Ports by Traffic' })}>
         <AutoSizer>
-          {(_.isEmpty(queryResults)) ?
-            () =><NoData />:
-            ({ height, width }) =>
+          {({ height, width }) => (
+            chartData && chartData.length > 0
+              ?
               <DonutChart
                 title={$t({ defaultMessage: 'Ports' })}
                 style={{ width, height }}
-                showLabel={true}
-                showTotal={false}
-                showLegend={false}
-                data={queryResults}
-                size={'x-large'}
-                dataFormatter={formatter('bytesFormat')}
-                tooltipFormat={defineMessage({
-                  defaultMessage: `{name}<br></br>
-                    <space><b>{formattedValue}</b> ({formattedPercent})</space>`
-                })}
+                legend={'name-value'}
+                data={chartData}
               />
-          }
+              : <NoData />
+          )}
         </AutoSizer>
       </HistoricalCard>
     </Loader>

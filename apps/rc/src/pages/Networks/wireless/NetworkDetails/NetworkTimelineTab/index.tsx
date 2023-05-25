@@ -22,7 +22,7 @@ const Events = () => {
     settingsId='network-event-table'
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
-    eventTypeMap={omit(eventTypeMapping, ['SWITCH', 'EDGE'])}
+    eventTypeMap={omit(eventTypeMapping, 'SWITCH')}
     columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
   />
 }

@@ -241,7 +241,7 @@ describe('Stateful ACL config drawer', () => {
       description: '',
       rules: [{
         priority: 1,
-        description: 'Cloud mgmt. (Default)',
+        description: 'Cloud mgmt.',
         accessAction: 'INSPECT',
         protocolType: 'ANY',
         sourceAddressType: 'ANY_IP_ADDRESS',
@@ -249,7 +249,7 @@ describe('Stateful ACL config drawer', () => {
         destinationAddress: 'RuckusOne IP'
       },{
         priority: 2,
-        description: 'Cloud mgmt.(https) (Default)',
+        description: 'Cloud mgmt.(https)',
         accessAction: 'INSPECT',
         protocolType: 'TCP',
         sourceAddressType: 'ANY_IP_ADDRESS',
@@ -257,9 +257,9 @@ describe('Stateful ACL config drawer', () => {
         destinationPort: 443
       },{
         priority: 3,
-        description: 'Cloud mgmt.(ntp) (Default)',
+        description: 'Cloud mgmt.(ntp)',
         accessAction: 'INSPECT',
-        protocolType: 'UDP',
+        protocolType: 'ANY',
         sourceAddressType: 'ANY_IP_ADDRESS',
         destinationAddressType: 'ANY_IP_ADDRESS',
         destinationPort: 123

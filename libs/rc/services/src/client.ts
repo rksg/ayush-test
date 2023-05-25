@@ -183,39 +183,19 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-
-        let clientDetails = {
-          url: '',
-          method: 'post',
-          body: arg.payload as unknown
-        }
-        try {
-          clientDetails = {
-            ...createHttpRequest(CommonUrlsInfo.getHistoricalClientList, arg.params),
-            body: arg.payload
-          }
-        } catch(e) {
-          // eslint-disable-next-line no-console
-          console.error(e)
+        const clientDetails = {
+          ...createHttpRequest(CommonUrlsInfo.getHistoricalClientList, arg.params),
+          body: arg.payload
         }
         const baseDetailsQuery = await fetchWithBQ(clientDetails)
         const baseDetails = baseDetailsQuery.data as TableResult<Client>
-        let metaInfo = {
-          url: '',
-          method: 'post',
-          body: arg.payload as unknown
-        }
-        try {
-          metaInfo = {
-            ...createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
-            body: {
-              fields: ['networkId', 'venueName', 'apName'],
-              filters: { id: baseDetails?.data?.map(d => d.id) }
-            }
+
+        const metaInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
+          body: {
+            fields: ['networkId', 'venueName', 'apName'],
+            filters: { id: baseDetails?.data?.map(d => d.id) }
           }
-        } catch(e) {
-          // eslint-disable-next-line no-console
-          console.error(e)
         }
         const metaListQuery = await fetchWithBQ(metaInfo)
         const metaList = metaListQuery?.data as { data: EventMeta[] }

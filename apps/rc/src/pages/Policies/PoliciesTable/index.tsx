@@ -6,6 +6,7 @@ import {
   useDelVLANPoolPolicyMutation,
   useDelRoguePolicyMutation,
   usePolicyListQuery,
+  useDeleteAAAPolicyMutation,
   useDeleteAccessControlProfileMutation,
   useDelL2AclPolicyMutation,
   useDelL3AclPolicyMutation,
@@ -108,7 +109,7 @@ export default function PoliciesTable () {
   const deletePolicyFnMapping = {
     [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
     [PolicyType.CLIENT_ISOLATION]: [],
-    [PolicyType.AAA]: [],
+    [PolicyType.AAA]: useDeleteAAAPolicyMutation(),
     [PolicyType.ACCESS_CONTROL]: useDeleteAccessControlProfileMutation(),
     [PolicyType.MAC_REGISTRATION_LIST]: [],
     [PolicyType.SYSLOG]: [],

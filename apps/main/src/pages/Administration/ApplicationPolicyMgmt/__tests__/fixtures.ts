@@ -5,7 +5,7 @@ export const successResponse = {
 export const sigPackData = {
   currentVersion: '6.2.1.103.1580',
   currentUpdatedDate: '2022-12-16T06:22:23.337+0000',
-  changedApplications: [
+  changedApplication: [
     {
       type: 'APPLICATION_ADDED',
       applicationId: null,
@@ -34,7 +34,7 @@ export const sigPackData = {
       toCategoryName: '12'
     },
     {
-      type: 'CATEGORY_UPDATED',
+      type: 'APPLICATION_UPDATED',
       applicationId: null,
       applicationName: null,
       categoryId: null,

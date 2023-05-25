@@ -84,12 +84,3 @@ export const getAddressTypeString = ($t: IntlShape['$t'], type: AddressType) => 
       return ''
   }
 }
-
-export const getACLDirectionOptions = ($t: IntlShape['$t'])
-  : Array<{ label: string, value: ACLDirection }> => {
-  return Object.keys(ACLDirection)
-    .map(key => ({
-      label: getACLDirectionString($t, key as ACLDirection),
-      value: key as ACLDirection
-    }))
-}

@@ -7,7 +7,7 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 const EdgeDetailsTabs = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
+  const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/edge-details`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'

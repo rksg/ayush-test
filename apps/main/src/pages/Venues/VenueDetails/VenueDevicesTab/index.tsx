@@ -5,9 +5,9 @@ import { Tabs }                                  from '@acx-ui/components'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueEdge }   from './VenueEdge'
-import { VenueSwitch } from './VenueSwitch'
-import { VenueWifi }   from './VenueWifi'
+import { VenueEdgesTable } from './VenueEdgesTable'
+import { VenueSwitch }     from './VenueSwitch'
+import { VenueWifi }       from './VenueWifi'
 
 
 export function VenueDevicesTab () {
@@ -51,7 +51,7 @@ export function VenueDevicesTab () {
           tab={$t({ defaultMessage: 'SmartEdge' })}
           key='edge'
         >
-          <VenueEdge />
+          <VenueEdgesTable />
         </Tabs.TabPane>
       )}
     </Tabs>

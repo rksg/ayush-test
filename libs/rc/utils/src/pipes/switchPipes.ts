@@ -25,8 +25,8 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.MODEL:
       transform = $t({ defaultMessage: 'Model' })
       break
-    case ConfigTypeEnum.OVERWRITE:
-      transform = $t({ defaultMessage: 'Overwrite' })
+    case ConfigTypeEnum.OVERWRITE_CONFIGURATION:
+      transform = $t({ defaultMessage: 'Overwrite Configuration' })
       break
     case ConfigTypeEnum.PORT_CONFIGURATION:
       transform = $t({ defaultMessage: 'Port Configuration' })
@@ -61,15 +61,6 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.TRIGGER_SYNC:
       transform = $t({ defaultMessage: 'Trigger Sync' })
       break
-    case ConfigTypeEnum.DEFAULT_VLAN:
-      transform = $t({ defaultMessage: 'Default Vlan' })
-      break
-    case ConfigTypeEnum.ADMIN_PASSWORD:
-      transform = $t({ defaultMessage: 'Admin Password' })
-      break
-    case ConfigTypeEnum.COLLECT_CONFIG:
-      transform = $t({ defaultMessage: 'Collect Config' })
-      break
     case 'VLAN':
       transform = $t({ defaultMessage: 'VLAN' })
       break
@@ -102,12 +93,6 @@ export function transformConfigStatus (type: ConfigStatusEnum | string) {
       break
     case ConfigStatusEnum.PENDING:
       transform = $t({ defaultMessage: 'Pending' })
-      break
-    case ConfigStatusEnum.IN_PROGRESS:
-      transform = $t({ defaultMessage: 'In Progress' })
-      break
-    case ConfigStatusEnum.SWITCH_NOT_FOUND:
-      transform = $t({ defaultMessage: 'Switch Not Found' })
       break
   }
 

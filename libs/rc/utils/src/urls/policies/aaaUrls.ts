@@ -1,10 +1,10 @@
 import { ApiInfo } from '../../apiService'
 
 export const AaaUrls: { [key: string]: ApiInfo } = {
-  deleteAAAPolicyList: {
+  deleteAAAPolicy: {
     method: 'delete',
-    oldUrl: '/api/tenant/:tenantId/wifi/radius/',
-    url: '/radiusServerProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
+    url: '/radiusServerProfiles/:policyId',
     newApi: true
   },
   addAAAPolicy: {

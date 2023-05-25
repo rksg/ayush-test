@@ -14,7 +14,7 @@ const EdgeDhcpTab = () => {
   const { venueId } = useParams()
 
   const edgeDataPayload = {
-    filters: { venueId: [venueId] }
+    filter: { venueId: [venueId] }
   }
   const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
     { payload: edgeDataPayload },

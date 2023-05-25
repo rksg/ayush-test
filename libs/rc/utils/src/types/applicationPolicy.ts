@@ -3,7 +3,7 @@ export interface ApplicationPolicyMgmt {
   currentUpdatedDate: string,
   latestVersion: string,
   latestReleasedDate: string,
-  changedApplications?: ApplicationInfo[]
+  changedApplication?: ApplicationInfo[]
 }
 export interface ApplicationInfo {
   // eslint-disable-next-line max-len
@@ -34,7 +34,7 @@ export enum ApplicationConfirmType {
 export enum ApplicationUpdateType {
   APPLICATION_ADDED = 'APPLICATION_ADDED',
   APPLICATION_REMOVED = 'APPLICATION_REMOVED',
-  CATEGORY_UPDATED = 'CATEGORY_UPDATED',
+  APPLICATION_UPDATED = 'APPLICATION_UPDATED',
   APPLICATION_RENAMED = 'APPLICATION_RENAMED',
   APPLICATION_MERGED = 'APPLICATION_MERGED'
 }

@@ -5,12 +5,11 @@ import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsForm }                                               from '@acx-ui/components'
-import { useLazyGetEdgeListQuery }                                 from '@acx-ui/rc/services'
-import { EdgeFirewallSetting }                                     from '@acx-ui/rc/utils'
-import { getServiceRoutePath, ServiceOperation, ServiceType }      from '@acx-ui/rc/utils'
-import { ACLDirection, AddressType, StatefulAcl, StatefulAclRule } from '@acx-ui/rc/utils'
-import { useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { StepsForm }                                                                     from '@acx-ui/components'
+import { useLazyGetEdgeListQuery }                                                       from '@acx-ui/rc/services'
+import { EdgeFirewallSetting }                                                           from '@acx-ui/rc/utils'
+import { ACLDirection, getServiceRoutePath, ServiceOperation, ServiceType, StatefulAcl } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                 from '@acx-ui/react-router-dom'
 
 import { defaultStatefulACLs } from './SettingsForm/StatefulACLFormItem'
 
@@ -42,35 +41,8 @@ export const processFirewallACLPayload = (acls: StatefulAcl[]) => {
     // priority cannot in payload
     acl.rules.forEach((rule) => {
       delete rule.priority
-      processAddressValues(rule)
     })
   })
-}
-
-const processAddressValues = (rule: StatefulAclRule) => {
-  switch (rule.sourceAddressType) {
-    case AddressType.ANY_IP_ADDRESS:
-      rule.sourceAddress = ''
-      rule.sourceAddressMask = ''
-      break
-    case AddressType.SUBNET_ADDRESS:
-      break
-    case AddressType.IP_ADDRESS:
-      rule.sourceAddressMask = ''
-      break
-  }
-
-  switch (rule.destinationAddressType) {
-    case AddressType.ANY_IP_ADDRESS:
-      rule.destinationAddress = ''
-      rule.destinationAddressMask = ''
-      break
-    case AddressType.SUBNET_ADDRESS:
-      break
-    case AddressType.IP_ADDRESS:
-      rule.destinationAddressMask = ''
-      break
-  }
 }
 
 interface FirewallFormStep {

@@ -12,7 +12,7 @@ export const InboundDefaultRules = [{
 
 export const OutboundDefaultRules = [{
   priority: 1,
-  description: 'Cloud mgmt. (Default)',
+  description: 'Cloud mgmt.',
   accessAction: AccessAction.INSPECT,
   protocolType: ProtocolType.ANY,
   sourceAddressType: AddressType.ANY_IP_ADDRESS,
@@ -20,7 +20,7 @@ export const OutboundDefaultRules = [{
   destinationAddress: 'RuckusOne IP'
 },{
   priority: 2,
-  description: 'Cloud mgmt.(https) (Default)',
+  description: 'Cloud mgmt.(https)',
   accessAction: AccessAction.INSPECT,
   protocolType: ProtocolType.TCP,
   sourceAddressType: AddressType.ANY_IP_ADDRESS,
@@ -28,9 +28,9 @@ export const OutboundDefaultRules = [{
   destinationPort: 443
 },{
   priority: 3,
-  description: 'Cloud mgmt.(ntp) (Default)',
+  description: 'Cloud mgmt.(ntp)',
   accessAction: AccessAction.INSPECT,
-  protocolType: ProtocolType.UDP,
+  protocolType: ProtocolType.ANY,
   sourceAddressType: AddressType.ANY_IP_ADDRESS,
   destinationAddressType: AddressType.ANY_IP_ADDRESS,
   destinationPort: 123

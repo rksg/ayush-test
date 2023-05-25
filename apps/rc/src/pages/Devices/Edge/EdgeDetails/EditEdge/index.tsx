@@ -131,7 +131,7 @@ const EditEdge = () => {
           }
         ]}
         extra={filterByAccess([
-          <TenantLink to={`/devices/edge/${serialNumber}/details/overview`}>
+          <TenantLink to={`/devices/edge/${serialNumber}/edge-details/overview`}>
             <Button type='primary'>{ $t({ defaultMessage: 'Back to device details' }) }</Button>
           </TenantLink>
         ])}

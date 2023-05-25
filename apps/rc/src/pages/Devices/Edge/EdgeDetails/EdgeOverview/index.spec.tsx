@@ -13,6 +13,10 @@ import { mockEdgeData as currentEdge } from '../../__tests__/fixtures'
 
 import { EdgeOverview } from '.'
 
+jest.mock('./EdgeUpTimeWidget', () => ({
+  EdgeUpTimeWidget: () => <div data-testid={'EdgeUpTimeWidget'} title='EdgeUpTimeWidget' />
+}))
+
 
 describe('Edge Detail Overview Tab', () => {
   let params: { tenantId: string, serialNumber: string } =

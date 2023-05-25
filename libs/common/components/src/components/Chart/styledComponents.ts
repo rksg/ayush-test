@@ -3,18 +3,14 @@ import styled                from 'styled-components/macro'
 
 import { Button } from '../Button'
 
-
-export const TooltipWrapper = styled.div<{
-  maxWidth?: number
-}>`
+export const TooltipWrapper = styled.div`
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
   color: var(--acx-primary-white);
-  ${(props) => {
-    return props.maxWidth ? `max-width: ${props.maxWidth}px;` : 'max-width: 200px;'
-  }}
+  max-width: 200px;
   white-space: normal;
   word-wrap: break-word;
+
   time { font-weight: var(--acx-body-font-weight-bold); }
 
   > ul {

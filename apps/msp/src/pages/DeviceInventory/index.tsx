@@ -196,8 +196,7 @@ export function DeviceInventory () {
   const actions = [
     {
       label: $t({ defaultMessage: 'Export To CSV' }),
-      onClick: () => ExportInventory(),
-      disabled: (list && list.totalCount === 0)
+      onClick: () => ExportInventory()
     }
   ]
 

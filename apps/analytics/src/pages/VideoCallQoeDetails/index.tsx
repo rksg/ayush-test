@@ -118,24 +118,20 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: ['apDetails','apName'],
       key: 'apName',
-      render: (value:unknown,row)=>{
+      render: (value:unknown)=>{
         if(!value)
           return '-'
-        return <TenantLink
-          to={`/devices/wifi/${row.apDetails?.apSerial}/details/overview`}>
-          {value as string}</TenantLink>
+        return <TenantLink to={'/devices/wifi'}>{value as string}</TenantLink>
       }
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
-      render: (value:unknown,row)=>{
+      render: (value:unknown)=>{
         if(!value)
           return '-'
-        return <TenantLink
-          to={`/devices/wifi/${row.apDetails?.apSerial}/details/overview`}>
-          {value as string}</TenantLink>
+        return <TenantLink to={'/devices/wifi'}>{value as string}</TenantLink>
       }
     },
     {
@@ -307,9 +303,9 @@ export function VideoCallQoeDetails (){
     }
   }
   return (
-    <>
-      <Loader states={[queryResults]}>
-        { callQoeDetails && currentMeeting && <PageHeader
+    <Loader states={[queryResults]}>
+      {callQoeDetails && currentMeeting && <>
+        <PageHeader
           title={callQoeDetails.name}
           subTitle={
             `Start Time:
@@ -328,14 +324,12 @@ export function VideoCallQoeDetails (){
             text: $t({ defaultMessage: 'Video Call QoE' }),
             link: '/analytics/videoCallQoe'
           }]}
-        />}
-      </Loader>
-      <Loader states={[queryResults]}>
+        />
         <UI.ReportSectionTitle>
           {$t({ defaultMessage: 'Participant Details' })}
         </UI.ReportSectionTitle>
         {
-          participants && isMissingClientMac(participants as Participants[]) &&
+          isMissingClientMac(participants as Participants[]) &&
           <div style={{ marginTop: '10px' }}>
             <Alert
               message={$t({
@@ -346,13 +340,7 @@ export function VideoCallQoeDetails (){
               showIcon />
           </div>
         }
-        <Table
-          rowKey='id'
-          columns={columnHeaders}
-          dataSource={participants}
-        />
-      </Loader>
-      { isDrawerOpen &&
+        {isDrawerOpen &&
           <Drawer
             width={400}
             visible={isDrawerOpen}
@@ -423,7 +411,13 @@ export function VideoCallQoeDetails (){
               />
             </Loader>
           </Drawer>
-      }
+        }
+        <Table
+          rowKey='id'
+          columns={columnHeaders}
+          dataSource={participants}
+        />
+      </>}
       {callQoeDetails &&
         <UI.ChartsContainer>
           <UI.ReportSectionTitle style={{ padding: '15px 0px' }}>
@@ -639,6 +633,6 @@ export function VideoCallQoeDetails (){
           </GridRow>
         </UI.ChartsContainer>
       }
-    </>
+    </Loader>
   )
 }

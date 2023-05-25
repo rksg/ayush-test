@@ -54,17 +54,6 @@ export default function Dashboardv2 () {
       children: <SwitchWidgets />
     }
   ]
-
-  /**
-   * Sets the selected tab value in local storage.
-   *
-   * @param {string} value - The value of the selected tab.
-   * @return {void} This function does not return anything.
-   */
-  const onTabChange = (value: string): void => {
-    localStorage.setItem('dashboard-tab', value)
-  }
-
   return (
     <>
       <DashboardPageHeader />
@@ -76,8 +65,6 @@ export default function Dashboardv2 () {
       <ContentSwitcher
         tabDetails={tabDetails}
         size='large'
-        defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-        onChange={onTabChange}
         extra={
           <UI.Wrapper>
             <TenantLink to={'/reports'}>

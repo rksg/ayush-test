@@ -43,8 +43,7 @@ export const isIntEnv = () => {
 }
 
 export const isStage = () => {
-  return window.location.hostname.includes('stage.ruckus.cloud')
-  || window.location.hostname.includes('opsalto.ruckuswireless.com')
+  return window.location.hostname.includes('opsalto.ruckuswireless.com')
 }
 
 export const isProdEnv = () => {

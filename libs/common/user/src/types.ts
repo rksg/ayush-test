@@ -100,8 +100,7 @@ export interface CloudVersion {
   versionUpgradeDate: string,
   currentVersion: VersionInfo,
   futureVersion: VersionInfo,
-  scheduleVersionList: string[],
-  messageBanner: string
+  scheduleVersionList: string[]
 }
 
 // not sure if it is really belongs to user

@@ -1,3 +1,4 @@
+/* eslint-disable align-import/align-import */
 import { Typography } from 'antd'
 
 import { Card, GridRow, GridCol } from '@acx-ui/components'
@@ -5,13 +6,12 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
-  displayDeviceCountLimit,
   transformAdvancedDpskExpirationText,
   transformDpskNetwork
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { displayDefaultAccess } from '../utils'
+import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
 
 import DpskInstancesTable from './DpskInstancesTable'
 

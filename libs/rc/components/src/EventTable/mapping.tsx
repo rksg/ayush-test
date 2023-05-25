@@ -12,15 +12,13 @@ export const eventTypeMapping = {
   AP: defineMessage({ defaultMessage: 'AP' }),
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  NETWORK: defineMessage({ defaultMessage: 'Network' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  NETWORK: defineMessage({ defaultMessage: 'Network' })
 }
 
 export const productMapping = {
   GENERAL: defineMessage({ defaultMessage: 'General' }),
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  SWITCH: defineMessage({ defaultMessage: 'Switch' })
 }
 
 export const adminLogTypeMapping = {

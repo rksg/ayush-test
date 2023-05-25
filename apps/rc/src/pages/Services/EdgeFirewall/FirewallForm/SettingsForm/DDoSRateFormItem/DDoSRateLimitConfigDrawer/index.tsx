@@ -11,11 +11,11 @@ import { filterByAccess }                                                       
 import { FirewallFormModel } from '../../..'
 import { DDoSRuleDialog }    from '../DDoSRuleDialog'
 
-interface DDoSRateLimitRulesTableProps {
+interface DDoDRateLimitRulesTableProps {
   data?: DdosRateLimitingRule[]
 }
 
-export const DDoSRateLimitRulesTable = (props: DDoSRateLimitRulesTableProps) => {
+const DDoDRateLimitRulesTable = (props: DDoDRateLimitRulesTableProps) => {
   const { $t } = useIntl()
   const { data } = props
   const form = Form.useFormInstance()
@@ -71,7 +71,7 @@ export const DDoSRateLimitRulesTable = (props: DDoSRateLimitRulesTableProps) => 
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
+      onClick: (rows) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -91,7 +91,6 @@ export const DDoSRateLimitRulesTable = (props: DDoSRateLimitRulesTableProps) => 
               _.remove(currentData, item)
             })
 
-            clearSelection()
             form.setFieldValue('rules', currentData)
           }
         })
@@ -215,7 +214,7 @@ export const DDoSRateLimitConfigDrawer = (props: DDoSRateLimitConfigDrawerProps)
                 valuePropName='data'
                 initialValue={[] as DdosRateLimitingRule[]}
               >
-                <DDoSRateLimitRulesTable />
+                <DDoDRateLimitRulesTable />
               </Form.Item>
             }}
           </Form.Item>

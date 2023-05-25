@@ -65,7 +65,7 @@ export const EdgeDhcpBasicInfo = ({ edgeData, dhcpData }: EdgeDhcpBasicInfoProps
           <Card.Title>
             {$t({ defaultMessage: 'Smart Edge' })}
           </Card.Title>
-          {<TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
+          {<TenantLink to={`/devices/edge/${edgeData?.serialNumber}/edge-details/overview`}>
             {edgeData?.name}
           </TenantLink>}
         </GridCol>

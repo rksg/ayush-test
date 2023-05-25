@@ -39,10 +39,6 @@ export const UserUrlsInfo = {
     oldUrl: '/api/upgrade/tenant/:tenantId/upgrade-version',
     newApi: true
   },
-  getCloudScheduleVersion: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/schedule-version'
-  },
   getAllUserSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/admin-settings/ui'
@@ -129,8 +125,6 @@ export const {
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
   useGetCloudVersionQuery,
-  useGetCloudScheduleVersionQuery,
-  useLazyGetCloudScheduleVersionQuery,
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation,
@@ -165,9 +159,6 @@ export const {
     }),
     getCloudVersion: build.query<CloudVersion, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudVersion, params)
-    }),
-    getCloudScheduleVersion: build.query<CloudVersion, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudScheduleVersion, params)
     }),
     getUserProfile: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getUserProfile, params),

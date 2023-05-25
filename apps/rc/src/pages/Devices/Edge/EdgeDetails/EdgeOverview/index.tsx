@@ -1,21 +1,23 @@
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-
-import { GridCol, GridRow } from '@acx-ui/components'
+import { GridCol, GridRow }   from '@acx-ui/components'
 import {
   EdgeInfoWidget,
   EdgePortsByTrafficWidget,
   EdgeResourceUtilizationWidget,
-  EdgeTrafficByVolumeWidget,
-  EdgeUpTimeWidget
+  EdgeTrafficByVolumeWidget
 } from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery, useGetDnsServersQuery, useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
+import { EdgePortStatus } from '@acx-ui/rc/utils'
+
+import { EdgeUpTimeWidget } from './EdgeUpTimeWidget'
 
 export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const params = useParams()
+
   const edgeStatusPayload = {
     fields: [
       'name',
@@ -29,13 +31,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'deviceStatus',
       'deviceSeverity',
       'venueId',
-      'tags',
-      'cpuCores',
-      'cpuUsedPercentage',
-      'memoryUsedKb',
-      'memoryTotalKb',
-      'diskUsedKb',
-      'diskTotalKb'
+      'tags'
     ],
     filters: { serialNumber: [params.serialNumber] } }
 
@@ -79,19 +75,29 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
           isPortListLoading={isPortListLoading}
         />
       </GridCol>
+
+      {/* TODO: wait for API*/}
       <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
         <EdgeUpTimeWidget />
       </GridCol>
+
+      {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
         <EdgeTrafficByVolumeWidget />
       </GridCol>
+      {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
         <EdgeResourceUtilizationWidget />
       </GridCol>
+      {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgePortsByTrafficWidget />
+        <EdgePortsByTrafficWidget
+          edgePortsSetting={portStatusList as EdgePortStatus[]}
+          isLoading={isPortListLoading}
+        />
       </GridCol>
     </GridRow>
+
   )
 })`
 div.statistic {

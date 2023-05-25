@@ -34,7 +34,7 @@
   "content_scripts": [{
       "matches": [
           "https://*.ruckuswireless.com/*",
-          "https://*.ruckus.cloud/*"
+          "https://*.ruckus.cloud/"
       ],
       "js": [
           "content/source.js"

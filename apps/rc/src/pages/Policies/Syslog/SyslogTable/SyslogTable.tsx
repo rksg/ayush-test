@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
 import {
   useDelSyslogPolicyMutation,
   useSyslogPolicyListQuery,
@@ -130,9 +129,7 @@ function useColumns () {
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 2048
+      sortOrder: 'ASC'
     }
   }, {
     selectFromResult: ({ data }) => ({
@@ -207,11 +204,7 @@ function useColumns () {
       filterable: venueNameMap,
       sorter: true,
       render: function (data, row) {
-        if (!row.venueIds || row.venueIds.length === 0) return 0
-
-        // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
-        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
+        return row.venueIds?.length ?? '--'
       }
     }
   ]

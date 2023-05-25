@@ -1,5 +1,3 @@
-import type { TimeStamp } from '@acx-ui/types'
-
 import { FirmwareCategory }                                         from '..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
@@ -13,12 +11,12 @@ export interface EdgeGeneralSetting {
 }
 
 export interface EdgeResourceUtilization {
-  cpuCores? :number,
-  cpuUsedPercentage? :number,
-  memoryUsedKb? :number,
-  memoryTotalKb? :number,
-  diskUsedKb? :number,
-  diskTotalKb? :number,
+  cpuTotal?: number
+  cpuUsed?: number
+  memTotal?: number
+  memUsed?: number
+  diskTotal?: number
+  diskUsed?: number
 }
 export interface Edge extends EdgeResourceUtilization {
   name: string
@@ -138,50 +136,4 @@ export interface EdgeFirmwareVersion {
 export interface EdgeFirmwareUpdateData {
   venueIds: string[]
   firmwareVersion: string
-}
-
-export type EdgeStatusTimeSeries = {
-  time: string[];
-  isEdgeUp: number[];
-}
-
-export interface EdgeTotalUpDownTime {
-  timeSeries: EdgeStatusTimeSeries
-  totalDowntime: number   // seconds
-  totalUptime: number     // seconds
-}
-
-export interface EdgeTopTraffic {
-  traffic: number[]       // bytes
-}
-
-export type EdgeResourceTimeSeries = {
-    cpu: number[]        // percentage
-    memory: number[]     // percentage
-    disk: number[]       // percentage
-    time: string[]
-    memoryUsedBytes: number[] // bytes
-    diskUsedBytes: number[]   // bytes
-}
-
-export type EdgeResourceUtilizationData = {
-  timeSeries: EdgeResourceTimeSeries
-}
-
-export interface EdgePortTrafficTimeSeries {
-  tx: number[],
-  rx: number[],
-  total: number[]
-}
-export interface EdgeAllPortTrafficData {
-  timeSeries: {
-    ports : EdgePortTrafficTimeSeries[]
-    time: TimeStamp[],
-  },
-  portCount: number
-}
-export interface EdgeTimeSeriesPayload {
-    start : string,
-    end : string,
-    granularity : string
 }

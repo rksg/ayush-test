@@ -86,7 +86,7 @@ export interface DpskPassphraseClient {
   passphrase: string;
   numberOfDevices?: number;
   clientMac: string[];
-  createdDate: string;
+  createDate: string;
   expirationDate: string;
 }
 

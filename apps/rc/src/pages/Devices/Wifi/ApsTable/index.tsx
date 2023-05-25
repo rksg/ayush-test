@@ -160,9 +160,7 @@ export default function ApsTable () {
                   { payload: { requestId: response.requestId } }, true)
                   .unwrap()
                 setImportResult(result)
-              } }).unwrap().catch(() => {
-              setIsImportResultLoading(false)
-            })
+              } }).unwrap()
           } else {
             importAps({ params: { tenantId }, payload: formData })
           }

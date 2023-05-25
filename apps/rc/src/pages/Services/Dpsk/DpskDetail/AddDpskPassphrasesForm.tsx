@@ -23,14 +23,14 @@ import {
   ExpirationMode,
   NewDpskPassphrase,
   phoneRegExp,
-  unlimitedNumberOfDeviceLabel,
   validateVlanId
 } from '@acx-ui/rc/utils'
 
 import { MAX_DEVICES_PER_PASSPHRASE, MAX_PASSPHRASES } from '../constants'
 
-import { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
-import { FieldSpace }             from './styledComponents'
+import { unlimitedNumberOfDeviceLabel } from './contentsMap'
+import { DpskPassphraseEditMode }       from './DpskPassphraseDrawer'
+import { FieldSpace }                   from './styledComponents'
 
 enum DeviceNumberType {
   LIMITED,

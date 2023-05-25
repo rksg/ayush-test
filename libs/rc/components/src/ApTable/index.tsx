@@ -502,9 +502,7 @@ export function ApTable (props: ApTableProps) {
                   { payload: { requestId: res.requestId } }, true)
                   .unwrap()
                 setImportResult(result)
-              } }).unwrap().catch(() => {
-              setIsImportResultLoading(false)
-            })
+              } }).unwrap()
           } else {
             importAps({ params: {}, payload: formData })
           }

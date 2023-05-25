@@ -90,12 +90,13 @@ describe('AAATable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
+  // TODO Should implement this after API is ready
   it('should delete selected row', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
       rest.delete(
-        AaaUrls.deleteAAAPolicyList.url,
+        AaaUrls.deleteAAAPolicy.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
@@ -113,7 +114,7 @@ describe('AAATable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
@@ -137,7 +138,7 @@ describe('AAATable', () => {
 
     const target = mockTableResult.data[1]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
@@ -156,7 +157,7 @@ describe('AAATable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 

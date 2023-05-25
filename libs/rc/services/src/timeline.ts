@@ -32,8 +32,7 @@ const metaFields = [
   'apGroupId',
   'apGroupName',
   'floorPlanName',
-  'recipientName',
-  'edgeName'
+  'recipientName'
 ]
 
 export type EventsExportPayload = {

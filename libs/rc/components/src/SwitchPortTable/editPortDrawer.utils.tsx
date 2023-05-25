@@ -229,10 +229,6 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
   const nonePoeClassModels = [
     'ICX8200-24', 'ICX8200-24F', 'ICX8200-24FX', 'ICX8200-48', 'ICX8200-48F'
   ]
-  const supportPoe5to8Models = [
-    'ICX8200-24ZP', 'ICX8200-C08ZP', 'ICX7550-24ZP', 'ICX7550-48ZP'
-  ]
-
   const poeClassOptions = [
     { label: defineMessage({ defaultMessage: 'Negotiate' }), value: 'UNSET' },
     { label: defineMessage({ defaultMessage: '0 (802.3af 15.4 W)' }), value: 'ZERO' },
@@ -243,7 +239,7 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     { label: defineMessage({ defaultMessage: '5 (802.3bt 45 W)' }), value: 'FIVE' },
     { label: defineMessage({ defaultMessage: '6 (802.3bt 60 W)' }), value: 'SIX' },
     { label: defineMessage({ defaultMessage: '7 (802.3bt 75 W)' }), value: 'SEVEN' },
-    { label: defineMessage({ defaultMessage: '8 (802.3bt 90 W)' }), value: 'EIGHT' }
+    { label: defineMessage({ defaultMessage: '8 (802.3bt 99 W)' }), value: 'EIGHT' }
   ]
 
   let support5to8PoeClass = true
@@ -252,7 +248,9 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     const portNumber = Number(port.portIdentifier.split('/').pop())
     const switchModel = getSwitchModel(port.switchUnitId) || ''
     const supportMorePoeClass820048zp2 = switchModel === 'ICX8200-48ZP2' && portNumber > 32
-    const support = supportPoe5to8Models.includes(switchModel) || supportMorePoeClass820048zp2
+    const is820024zp = switchModel === 'ICX8200-24ZP'
+    const is8200c08zp = switchModel === 'ICX8200-C08ZP'
+    const support = is8200c08zp || is820024zp || supportMorePoeClass820048zp2
     const isNoPoeClass = nonePoeClassModels.includes(switchModel)
     if(!support) {
       support5to8PoeClass = false

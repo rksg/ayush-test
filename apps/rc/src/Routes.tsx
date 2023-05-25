@@ -179,9 +179,9 @@ function DeviceRoutes () {
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
-      <Route path='devices/edge/:serialNumber/details/:activeTab'
+      <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
         element={<EdgeDetails />} />
-      <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
+      <Route path='devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
       <Route path='devices/switch/:action' element={<SwitchForm />} />
