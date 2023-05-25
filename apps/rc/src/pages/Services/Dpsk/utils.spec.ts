@@ -1,6 +1,6 @@
 import { setUpIntl } from '@acx-ui/utils'
 
-import { displayDeviceCountLimit, displayDefaultAccess } from './utils'
+import { displayDefaultAccess } from './utils'
 
 describe('DPSK utils', () => {
   beforeEach(() => {
@@ -8,14 +8,6 @@ describe('DPSK utils', () => {
       locale: 'en-US',
       messages: {}
     })
-  })
-
-  it('display device count limit', () => {
-    const numberResult = displayDeviceCountLimit(1)
-    expect(numberResult).toBe(1)
-
-    const unlimitedResult = displayDeviceCountLimit(undefined)
-    expect(unlimitedResult).toBe('Unlimited')
   })
 
   it('display default access', () => {
