@@ -290,6 +290,9 @@ export function MeshNetwork () {
       }
 
       await updateVenueMesh({ params, payload: meshData })
+
+      setIsSsidEditMode(false)
+      setIsPassphraseEditMode(false)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
