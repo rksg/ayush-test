@@ -54,19 +54,20 @@ export const WirelessNetworkForm = () => {
     }
   })
 
-  const { networkOptions, networkIds } = useVenueNetworkListQuery({
+  const { networkList } = useVenueNetworkListQuery({
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
   }, {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
-        networkOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
-        networkIds: data?.data.map(item => (item.id)),
+        networkList: data,
         isLoading
       }
     }
   })
+  const networkOptions = networkList?.data.map(item => ({ label: item.name, value: item.id }))
+  const networkIds = networkList?.data.map(item => (item.id))
 
   const { nsgViewData } =
   useGetNetworkSegmentationViewDataListQuery({
