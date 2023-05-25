@@ -56,7 +56,7 @@ export function SwitchStackSetting
         title: $t({ defaultMessage: 'DHCP Server is Enabled' }),
         content: $t({ defaultMessage: `
           This switch can no longer act as a DHCP client since DHCP Server is enabled.
-          Configure DHCP serverice state and try again.` })
+          Configure DHCP service state and try again.` })
       })
       return
     }
