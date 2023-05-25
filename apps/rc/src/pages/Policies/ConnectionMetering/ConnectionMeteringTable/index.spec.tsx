@@ -192,7 +192,7 @@ describe('ConnectionMeteringTable', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
 
-    await screen.findByText('Not allowed to delete the profile that is in used')
+    await screen.findByText(/You are unable to delete .*/)
 
     const okButton = screen.getByRole('button', { name: /OK/i })
     fireEvent.click(okButton)

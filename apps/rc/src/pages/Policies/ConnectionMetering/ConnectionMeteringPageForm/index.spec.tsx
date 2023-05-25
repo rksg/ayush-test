@@ -9,7 +9,7 @@ import { ConnectionMetering, ConnectionMeteringUrls, NewTablePageable, NewTableR
 import { Provider }                                                                                       from '@acx-ui/store'
 import { mockServer, render, screen }                                                                     from '@acx-ui/test-utils'
 
-import { ConnectionMeteringPageForm } from './index'
+import ConnectionMeteringPageForm from './index'
 const defaultPageable: NewTablePageable = {
   offset: 0,
   pageNumber: 0,

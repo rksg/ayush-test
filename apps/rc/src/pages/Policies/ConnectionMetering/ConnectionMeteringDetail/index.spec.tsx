@@ -12,7 +12,7 @@ import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 
-import { ConnectionMeteringDetail } from './index'
+import ConnectionMeteringDetail from './index'
 
 
 const mockConnectionMeteringProfile: ConnectionMetering = {
@@ -24,7 +24,8 @@ const mockConnectionMeteringProfile: ConnectionMetering = {
   downloadRate: 0,
   uploadRate: 0,
   billingCycleRepeat: false,
-  billingCycleType: 'CYCLE_WEEKLY' as BillingCycleType
+  billingCycleType: 'CYCLE_WEEKLY' as BillingCycleType,
+  billingCycleDays: 0
 }
 
 describe('ConnectionMeteringInstanceTable', () => {
