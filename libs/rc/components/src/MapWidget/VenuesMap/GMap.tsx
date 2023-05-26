@@ -169,27 +169,25 @@ const GMap: React.FC<MapProps> = ({
       })
 
       const visibleMarkers = markers.filter(marker => marker.getVisible())
-      if (visibleMarkers && visibleMarkers.length > 0) {
-        if(cluster){
-          if (!markerClusterer) {
-            setMarkerClusterer(new MarkerClusterer({
-              map,
-              markers: visibleMarkers,
-              renderer: new VenueClusterRenderer(map, intl, isEdgeEnabled, onNavigate),
-              algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
-              onClusterClick: onClusterClick
-            }))
-          } else {
-            markerClusterer.clearMarkers()
-            markerClusterer.addMarkers(visibleMarkers)
-          }
+      if(cluster && markers.length > 0) {
+        if (!markerClusterer) {
+          setMarkerClusterer(new MarkerClusterer({
+            map,
+            markers: visibleMarkers,
+            renderer: new VenueClusterRenderer(map, intl, isEdgeEnabled, onNavigate),
+            algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
+            onClusterClick: onClusterClick
+          }))
+        } else {
+          markerClusterer.clearMarkers()
+          markerClusterer.addMarkers(visibleMarkers)
         }
-        // Set bounds so all markers are visible
-        const bounds = new google.maps.LatLngBounds()
-        visibleMarkers.map((marker) => bounds.extend(marker.getPosition()!))
-        map.fitBounds(bounds)
-        map.setCenter(bounds.getCenter())
       }
+      // Set bounds so all markers are visible
+      const bounds = new google.maps.LatLngBounds()
+      markers.map((marker) => bounds.extend(marker.getPosition()!))
+      map.fitBounds(bounds)
+      map.setCenter(bounds.getCenter())
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
