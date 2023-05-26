@@ -40,13 +40,13 @@ COPY libs ./libs
 COPY tools/docker/locales ./tools/docker/locales
 
 RUN chmod +x tools/docker/locales/generate.sh
-RUN tools/docker/locales/generate.sh
+RUN tools/docker/locales/generate.sh ra
 ###############################################################
 
 FROM build-base as build
 
-COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --all
+COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra,analytics
 
 ###############################################################
 FROM nginx:1.21.6-alpine
@@ -56,24 +56,25 @@ WORKDIR /usr/share/nginx/html
 # Remove default nginx static assets
 RUN rm -rf ./*
 
-COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
+COPY tools/docker/nginx/conf.d/ra.conf /etc/nginx/conf.d/ra.conf
+COPY tools/docker/nginx/conf.d/gzip.conf /etc/nginx/conf.d/gzip.conf
 COPY tools/docker/nginx/nginx.conf \
-  tools/docker/nginx/start-nginx.sh \
-  tools/docker/nginx/env.json.template \
+  tools/docker/nginx/start-nginx-ra.sh \
+  tools/docker/nginx/env-ra.json.template \
   /etc/nginx/
 
 COPY --from=build /app/dist/apps ./
 
 RUN \
   # Move all other apps into main
-  ls | grep -v main | xargs mv -t main && \
+  ls | grep -v ra | xargs mv -t ra && \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
+  mkdir -p analytics/next && \
   # Move all files into it
-  mv -v main/* tenant/t/. && \
+  cp -a ra/* analytics/next/ && \
   # Remove the main folder
-  rm -rf main
+  rm -rf ra
 
 EXPOSE 8080
 
-CMD ["/bin/sh", "/etc/nginx/start-nginx.sh"]
+CMD ["/bin/sh", "/etc/nginx/start-nginx-ra.sh"]
