@@ -97,7 +97,7 @@ function convertToMeshTopologyDevice (
     serialNumber: apMesh.serialNumber,
     meshRole: apMesh.meshRole,
     hops: apMesh.hops,
-    downlinkCount: apMesh.downlinkCount,
+    downlinkCount: apMesh.downLinkCount,
     downlinkUnplacedCount: apMesh.downlink ? apMesh.downlink.filter(isApUnplaced).length : 0,
     isRootApUnplaced: rootApMesh ? isApUnplaced(rootApMesh) : false,
     rootApName: rootApMesh?.name,
