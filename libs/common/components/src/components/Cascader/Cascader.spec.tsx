@@ -518,6 +518,38 @@ describe('Cascader', () => {
     })
   })
 
+  it('cancels on hide', async () => {
+    const options: CascaderOption[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      }
+    ]
+    const onApplyMock = jest.fn()
+    render(
+      <CustomCascader
+        options={options}
+        onApply={onApplyMock}
+        allowClear={true}
+        entityName={entityName}
+        multiple
+      />
+    )
+
+    const combobox = await screen.findByRole('combobox')
+    await userEvent.click(combobox)
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+    act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
+    await userEvent.click(combobox)
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 2/ }))
+    await userEvent.click(document.body)
+    expect(await screen.findAllByTitle('SSID 1')).toHaveLength(2)
+  })
+
   it('allows use of left arrow when searching', async () => {
     const options: CascaderOption[] = [
       {

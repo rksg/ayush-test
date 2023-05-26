@@ -126,10 +126,9 @@ export function Cascader (props: CascaderProps) {
       keepOpenOnHide.current = false
       return
     }
-    if (!visible && cancelOnHide.current) {
-      cancelOnHide.current = true
-      cancel()
-    }
+    !visible && cancelOnHide.current
+      ? cancel()
+      : cancelOnHide.current = true
     setOpenState(visible)
     onDropdownVisibleChange && onDropdownVisibleChange(visible)
   }
