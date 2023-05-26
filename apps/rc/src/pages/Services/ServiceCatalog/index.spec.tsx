@@ -1,4 +1,4 @@
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   render,
   screen
@@ -30,6 +30,7 @@ describe('ServiceCatalog', () => {
 
   it('should render service catalog with feature flag ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <ServiceCatalog />, {

@@ -82,10 +82,9 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1g4gbr4-0 dbUxgy"
     >
       <span
-        class="ant-checkbox ant-checkbox-checked"
+        class="ant-checkbox"
       >
         <input
-          checked=""
           class="ant-checkbox-input"
           name="1_InSetupPhase"
           type="checkbox"

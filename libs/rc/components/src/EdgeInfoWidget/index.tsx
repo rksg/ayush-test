@@ -143,8 +143,8 @@ export const EdgeInfoWidget = styled(({
           isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.STORAGE}
           title={$t({ defaultMessage: 'Storage Usage' })}
-          value={currentEdge?.diskUsed}
-          totalVal={currentEdge?.diskTotal}
+          value={currentEdge?.diskUsedKb}
+          totalVal={currentEdge?.diskTotalKb}
         />
       </GridCol>
       <GridCol col={{ span: 4 }}>
@@ -152,8 +152,8 @@ export const EdgeInfoWidget = styled(({
           isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.MEMORY}
           title={$t({ defaultMessage: 'Memory Usage' })}
-          value={currentEdge?.memUsed}
-          totalVal={currentEdge?.memTotal}
+          value={currentEdge?.memoryUsedKb}
+          totalVal={currentEdge?.memoryTotalKb}
         />
       </GridCol>
       <GridCol col={{ span: 4 }}>
@@ -161,8 +161,7 @@ export const EdgeInfoWidget = styled(({
           isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.CPU}
           title={$t({ defaultMessage: 'CPU Usage' })}
-          value={currentEdge?.cpuUsed}
-          totalVal={currentEdge?.cpuTotal}
+          value={currentEdge?.cpuUsedPercentage}
         />
       </GridCol>
       <GridCol col={{ span: 4 }} className='moreBtn'>
