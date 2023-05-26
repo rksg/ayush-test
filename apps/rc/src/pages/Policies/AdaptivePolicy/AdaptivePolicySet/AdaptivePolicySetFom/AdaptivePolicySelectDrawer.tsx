@@ -6,14 +6,15 @@ import { useIntl }      from 'react-intl'
 import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                 from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery, useAdaptivePolicySetListQuery,
+  useAdaptivePolicyListByQueryQuery,
+  useAdaptivePolicySetListQuery,
   useLazyGetConditionsInPolicyQuery, useLazyGetPrioritizedPoliciesQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicy,
+  AdaptivePolicy, FILTER,
   getAdaptivePolicyDetailLink,
-  PolicyOperation,
+  PolicyOperation, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -50,7 +51,8 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
     })
 
   const adaptivePolicyListTableQuery = useTableQuery({
-    useQuery: useAdaptivePolicyListQuery,
+    useQuery: useAdaptivePolicyListByQueryQuery,
+    apiParams: { sort: 'name,ASC', excludeContent: 'false' },
     defaultPayload: {}
   })
 
@@ -111,6 +113,8 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
         key: 'name',
         dataIndex: 'name',
         searchable: true,
+        sorter: true,
+        defaultSortOrder: 'ascend',
         render: function (data, row) {
           return (
             <TenantLink
@@ -191,6 +195,12 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
     setSelectedPolicies(newPolicies)
   }
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = { ...adaptivePolicyListTableQuery.payload,
+      filters: { name: customSearch?.searchString ?? '' } }
+    adaptivePolicyListTableQuery.setPayload(payload)
+  }
+
   const content = (
     <Form layout={'vertical'}>
       <Loader states={[
@@ -200,11 +210,13 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
           label={$t({ defaultMessage: 'Select Access Policies' })}
         >
           <Table
+            enableApiFilter
             rowKey='id'
             columns={useColumns()}
             dataSource={adaptivePolicyListTableQuery.data?.data}
             pagination={adaptivePolicyListTableQuery.pagination}
             onChange={adaptivePolicyListTableQuery.handleTableChange}
+            onFilterChange={handleFilterChange}
             actions={[{
               label: $t({ defaultMessage: 'Add Policy' }),
               onClick: () => {

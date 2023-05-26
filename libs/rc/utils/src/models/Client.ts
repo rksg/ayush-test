@@ -4,6 +4,7 @@ export class Client {
   clientMac: string
   ipAddress: string
   username: string
+  userName: string
   hostname: string
   venueId: string
   venueName: string
@@ -49,6 +50,7 @@ export class Client {
     this.clientMac = ''
     this.ipAddress = ''
     this.username = ''
+    this.userName = ''
     this.hostname = ''
     this.venueId = ''
     this.venueName = ''

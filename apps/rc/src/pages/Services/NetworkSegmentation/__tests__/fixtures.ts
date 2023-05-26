@@ -155,8 +155,7 @@ export const mockNsgStatsList = {
       id: '1',
       name: 'nsg1',
       networkIds: [
-        'wlan-1',
-        'wlan2'
+        '2'
       ],
       venueInfos: [
         {
@@ -181,8 +180,7 @@ export const mockNsgStatsList = {
       id: '2',
       name: 'nsg2',
       networkIds: [
-        'wlan-1',
-        'wlan2'
+        '3'
       ],
       venueInfos: [
         {
