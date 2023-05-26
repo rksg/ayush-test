@@ -1,3 +1,4 @@
 module.exports = {
-  name: 'ra'
+  name: 'ra',
+  remotes: ['analytics']
 }

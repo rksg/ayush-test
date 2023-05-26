@@ -6,7 +6,7 @@ import AnalyticsBase from './pages/Analytics'
 
 function AllRoutes () {
   return rootRoutes(
-    <Route path='/analytics/next' element={<AnalyticsBase />}/>
+    <Route path='analytics/next' element={<AnalyticsBase />}/>
   )
 }
 
