@@ -37,7 +37,8 @@ import {
   isStrictOperationalSwitch,
   transformSwitchUnitStatus,
   FILTER,
-  SEARCH
+  SEARCH,
+  GROUPBY
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -323,11 +324,11 @@ export function SwitchTable (props : SwitchTableProps) {
     }
   }]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
     }
-    tableQuery.handleFilterChange(customFilters,customSearch)
+    tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
   return <Loader states={[tableQuery]}>

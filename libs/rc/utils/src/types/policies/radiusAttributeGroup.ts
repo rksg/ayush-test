@@ -56,8 +56,11 @@ export enum DataType {
   INTEGER = 'INTEGER',
   IPADDR = 'IPADDR',
   IPV6ADDR = 'IPV6ADDR',
+  IPV6PREFIX = 'IPV6PREFIX',
   OCTETS = 'OCTETS',
   OTHER = 'OTHER',
   STRING = 'STRING',
+  SIGNED = 'SIGNED',
+  SHORT = 'SHORT',
   TLV = 'TLV'
 }
