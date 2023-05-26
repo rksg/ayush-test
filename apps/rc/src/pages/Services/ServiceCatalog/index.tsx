@@ -2,9 +2,9 @@ import { Typography }             from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { RadioCardCategory }            from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, PageHeader }             from '@acx-ui/components'
+import { RadioCardCategory }                        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -17,12 +17,11 @@ import * as UI from './styledComponents'
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
-  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeDhcpEnabled = useIsTierAllowed(Features.EDGES)
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeFirewallEnabled = useIsTierAllowed(Features.EDGES)
 
   const sets = [
     {

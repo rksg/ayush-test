@@ -7,7 +7,7 @@ import { COUNTRY_CODE, TenantPreferenceSettings, CommonResult } from '@acx-ui/rc
 import { useNavigate, useParams }                               from '@acx-ui/react-router-dom'
 
 export const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
-  return data?.global.mapRegion as string
+  return data?.global?.mapRegion as string
 }
 
 export const countryCodes = COUNTRY_CODE.map(item=> ({
@@ -28,7 +28,7 @@ export const usePreference = () => {
   const { data, ...getReqState } = useGetPreferencesQuery({ params })
   const [ updatePreference, updateReqState] = useUpdatePreferenceMutation()
   const currentMapRegion = getMapRegion(data)
-  const currentDefaultLang = data?.global.defaultLanguage as string
+  const currentDefaultLang = data?.global?.defaultLanguage as string
 
   const innerUpdate = async (props: updatePreferenceProps) => {
     const { newData, onSuccess, onError } = props

@@ -16,8 +16,8 @@ import {
   AccessCondition,
   AttributeAssignment,
   checkObjectNotExists,
-  CriteriaOption,
-  RadiusAttributeGroup
+  CriteriaOption, defaultSort,
+  RadiusAttributeGroup, sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -50,7 +50,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   const form = Form.useFormInstance()
   const { policyId } = useParams()
 
-  const [getPolicySetList] = useLazyAdaptivePolicyListByQueryQuery()
+  const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
 
   const { data: templateList, isLoading } = usePolicyTemplateListQuery({
     payload: {
@@ -83,12 +83,18 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
       {
         key: 'name',
         title: $t({ defaultMessage: 'Condition Type' }),
-        dataIndex: 'name'
+        dataIndex: 'name',
+        sorter: { compare: sortProp('name', defaultSort) },
+        render: function (data, row) {
+          return row.templateAttribute?.attributeType === 'DATE_RANGE' ? row.name :
+            $t({ defaultMessage: '{name} (Regex)' }, { name: row.name })
+        }
       },
       {
         title: $t({ defaultMessage: 'Condition Value' }),
         key: 'conditionValue',
         dataIndex: 'conditionValue',
+        sorter: { compare: sortProp('evaluationRule.regexStringCriteria', defaultSort) },
         render: function (data, row) {
           if(row.evaluationRule.criteriaType === CriteriaOption.DATE_RANGE) {
             return `${row.evaluationRule?.when},
@@ -105,13 +111,13 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
   }
 
   const nameValidator = async (value: string) => {
-    const list = (await getPolicySetList({
+    const list = (await getPolicyList({
       params: {
         excludeContent: 'false'
       },
       payload: {
         fields: [ 'name' ],
-        page: 0, pageSize: 10,
+        page: 1, pageSize: 2000,
         filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
@@ -196,9 +202,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
           <Loader states={[{ isLoading }]}>
             <Form.Item name='templateTypeId'
               label={$t({ defaultMessage: 'Policy Type' })}
-              rules={[
-                { required: true }
-              ]}
+              rules={[{ required: true }]}
               children={
                 <Radio.Group
                   disabled={editMode}
@@ -236,6 +240,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 rowActions={filterByAccess(rowActions)}
                 rowSelection={{ type: 'radio' }}
                 actions={filterByAccess([{
+                  disabled: !templateId,
+                  // eslint-disable-next-line max-len
+                  tooltip: !templateId ? $t({ defaultMessage: 'Please select Policy Type' }) : undefined,
                   label: $t({ defaultMessage: 'Add' }),
                   onClick: () => {
                     setEditConditionMode(false)
