@@ -2,19 +2,22 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps }                                      from '@acx-ui/components'
-import { SimpleListTooltip }                                                                          from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery, useAdaptivePolicySetListQuery,
+  useAdaptivePolicyListByQueryQuery,
+  useAdaptivePolicySetListQuery,
   useDeleteAdaptivePolicyMutation,
-  useLazyGetConditionsInPolicyQuery, useLazyGetPrioritizedPoliciesQuery, usePolicyTemplateListQuery
+  useLazyGetConditionsInPolicyQuery,
+  useLazyGetPrioritizedPoliciesQuery,
+  usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicy,
+  AdaptivePolicy, FILTER,
   getAdaptivePolicyDetailLink,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, useTableQuery
+  PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
@@ -30,7 +33,8 @@ export default function AdaptivePolicyTable () {
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
   const tableQuery = useTableQuery({
-    useQuery: useAdaptivePolicyListQuery,
+    useQuery: useAdaptivePolicyListByQueryQuery,
+    apiParams: { sort: 'name,ASC', excludeContent: 'false' },
     defaultPayload: {}
   })
 
@@ -157,41 +161,47 @@ export default function AdaptivePolicyTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    disabled: (([selectedItem]) => selectedItem ? checkDelete(selectedItem.id) : false),
-    tooltip: (([selectedItem]) =>
-      selectedItem ?
-        checkDelete(selectedItem.id) ?
-        // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'This policy is in use by one or more Adaptive Policy Sets.' }) : undefined : undefined
-    ),
     onClick: ([{ name, id, policyType }], clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'policy' }),
-          entityValue: name
-        },
-        onOk: async () => {
-          deletePolicy({ params: { policyId: id, templateId: templateIdMap.get(policyType) } })
-            .unwrap()
-            .then(() => {
-              showToast({
-                type: 'success',
-                content: $t({ defaultMessage: 'Policy {name} was deleted' }, { name })
+      if (checkDelete(id)) {
+        showActionModal({
+          type: 'error',
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'This policy is in use by one or more Adaptive Policy Sets.' })
+        })
+      } else {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'policy' }),
+            entityValue: name
+          },
+          onOk: async () => {
+            deletePolicy({ params: { policyId: id, templateId: templateIdMap.get(policyType) } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Policy {name} was deleted' }, { name })
+                })
+                clearSelection()
+              }).catch((error) => {
+                console.log(error) // eslint-disable-line no-console
               })
-              clearSelection()
-            }).catch((error) => {
-              console.log(error) // eslint-disable-line no-console
-            })
-        }
-      })
+          }
+        })
+      }
     }
   }]
 
   const checkDelete = (policyId: string) => {
     // eslint-disable-next-line max-len
     return Array.from(policySetPoliciesMap.values()).filter(item => item.find((p:string) => p === policyId)).length !== 0
+  }
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
+    tableQuery.setPayload(payload)
   }
 
   return (
@@ -201,6 +211,7 @@ export default function AdaptivePolicyTable () {
         isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
+        enableApiFilter
         settingsId='adaptive-policy-list-table'
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
@@ -208,6 +219,7 @@ export default function AdaptivePolicyTable () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
+        onFilterChange={handleFilterChange}
         rowSelection={{ type: 'radio' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Policy' }),
