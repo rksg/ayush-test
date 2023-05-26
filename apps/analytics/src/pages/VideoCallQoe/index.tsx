@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import { Button }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
@@ -22,6 +22,7 @@ export function useVideoCallQoe () {
   const { $t } = useIntl()
   const queryResults = useVideoCallQoeTestsQuery(null)
   const [count, setCount] = useState(queryResults.data?.getAllCallQoeTests.length || 0)
+  useEffect(()=> setCount(queryResults.data?.getAllCallQoeTests.length || 0),[queryResults])
 
   const title = defineMessage({
     defaultMessage: 'Video Call QoE {count, select, null {} other {({count})}}'
@@ -63,6 +64,6 @@ export function useVideoCallQoe () {
   return {
     title: $t(title, { count }),
     headerExtra,
-    component: component
+    component
   }
 }

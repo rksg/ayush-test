@@ -21,7 +21,7 @@ describe('Service Validation', () => {
       const { component } = useServiceGuard()
       return component
     }
-    render(<Component/>,{ wrapper: Provider, route: {} })
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(screen.queryByText('Service Validation')).toBeNull()
     expect(await screen.findByText('Test Name')).toBeVisible()
     expect(screen.queryByText('Create Test')).toBeNull()
@@ -31,7 +31,7 @@ describe('Service Validation', () => {
       const { title } = useServiceGuard()
       return <span>{title}</span>
     }
-    render(<Title/>,{ wrapper: Provider, route: {} })
+    render(<Title/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Service Validation (4)')).toBeVisible()
   })
   it('should render extra header correctly', async () => {
@@ -39,7 +39,7 @@ describe('Service Validation', () => {
       const { headerExtra } = useServiceGuard()
       return <span>{headerExtra}</span>
     }
-    render(<Component/>,{ wrapper: Provider, route: {} })
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Create Test')).toBeVisible()
   })
   it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
@@ -48,7 +48,7 @@ describe('Service Validation', () => {
       const { component } = useServiceGuard()
       return component
     }
-    render(<Component/>,{ wrapper: Provider, route: {} })
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(screen.queryByText('Service Validation')).toBeVisible()
     expect(await screen.findByText('Test Name')).toBeVisible()
     expect(await screen.findByText('Create Test')).toBeVisible()
@@ -58,7 +58,7 @@ describe('Service Validation', () => {
       const { title, component } = useServiceGuard()
       return <>{title}{component}</>
     }
-    render(<Component/>,{ wrapper: Provider, route: {} })
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Service Validation (4)')).toBeVisible()
     const input = await screen.findByPlaceholderText('Search Test Name')
     await userEvent.type(input, 'anything')

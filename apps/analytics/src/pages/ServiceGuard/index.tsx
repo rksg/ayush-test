@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -20,6 +20,7 @@ export function useServiceGuard () {
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const queryResults = useAllServiceGuardSpecsQuery()
   const [count, setCount] = useState(queryResults.data?.length || 0)
+  useEffect(()=> setCount(queryResults.data?.length || 0),[queryResults])
 
   const title = defineMessage({
     defaultMessage: 'Service Validation {count, select, null {} other {({count})}}'

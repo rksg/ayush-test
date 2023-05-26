@@ -15,12 +15,10 @@ describe('VideoCallQoeListPage', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(api.util.resetApiState())
+    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
   })
 
   it('should render page correctly', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      data: getAllCallQoeTests
-    })
     const Component = () => {
       const { component } = useVideoCallQoe()
       return component
@@ -29,10 +27,25 @@ describe('VideoCallQoeListPage', () => {
     expect(await screen.findByText('Test Call Name')).toBeVisible()
   })
 
+  it('should render title with count correctly', async () => {
+    const Component = () => {
+      const { title } = useVideoCallQoe()
+      return <span>{title}</span>
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(await screen.findByText('Video Call QoE (3)')).toBeVisible()
+  })
+  it('should render extra header correctly', async () => {
+    const Component = () => {
+      const { headerExtra } = useVideoCallQoe()
+      return <span>{headerExtra}</span>
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(await screen.findByText('Create Test Call')).toBeVisible()
+  })
+
   it('should disable the create test call button', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      data: getAllCallQoeTestsWithNotStarted
-    })
+    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTestsWithNotStarted })
     const Component = () => {
       const { headerExtra } = useVideoCallQoe()
       return <span>{headerExtra}</span>
@@ -43,9 +56,6 @@ describe('VideoCallQoeListPage', () => {
 
   it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      data: getAllCallQoeTests
-    })
     const Component = () => {
       const { component } = useVideoCallQoe()
       return component
@@ -58,14 +68,11 @@ describe('VideoCallQoeListPage', () => {
   })
 
   it('should update tab count by context', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      data: getAllCallQoeTests
-    })
     const Component = () => {
       const { title, component } = useVideoCallQoe()
       return <>{title}{component}</>
     }
-    render(<Component/>,{ wrapper: Provider, route: {} })
+    render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Video Call QoE (3)')).toBeVisible()
     const input = await screen.findByPlaceholderText('Search Test Call Name')
     await userEvent.type(input, 'anything')
