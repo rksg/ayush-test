@@ -189,6 +189,7 @@ describe('Network Filter', () => {
     await screen.findByText('Entire Organization')
     await userEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getByText('venue1'))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'zone', name: 'id3' }
@@ -335,6 +336,7 @@ describe('Network Filter', () => {
     const results = await screen.findAllByRole('menuitemcheckbox')
     await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
     await userEvent.click(results[0])
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'id4' }
@@ -366,6 +368,7 @@ describe('Network Filter', () => {
     const results = await screen.findAllByRole('menuitemcheckbox')
     await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
     await userEvent.click(results[0])
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'id4' }

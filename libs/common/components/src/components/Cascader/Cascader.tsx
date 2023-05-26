@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState, useRef } from 'react'
 
 import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
@@ -44,15 +44,19 @@ const selectedItemsDesc = defineMessage({
 })
 
 export function Cascader (props: CascaderProps) {
-  const { onApply,
+  const {
+    onApply,
     entityName,
     showRadioBand,
     defaultValue,
     defaultRadioBand,
     isRadioBandDisabled = false,
     radioBandDisabledReason,
-    ...cascaderProps } = props
+    onDropdownVisibleChange,
+    ...cascaderProps
+  } = props
   const { $t } = useIntl()
+
   const initialValues = defaultValue || []
   const initialRadioBands = isRadioBandDisabled ? [] : defaultRadioBand || []
   const [
@@ -67,11 +71,6 @@ export function Cascader (props: CascaderProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue])
 
-  const [open, setOpenState] = useState(props.open ?? false)
-  const setOpen = (val: boolean) => {
-    setOpenState(val)
-    props.onDropdownVisibleChange && props.onDropdownVisibleChange(val)
-  }
   const [currentRadioBands, setCurrentRadioBands] = useState<CheckboxValueType[]>(initialRadioBands)
   const [savedRadioBands, setSavedRadioBands] = useState<CheckboxValueType[]>(initialRadioBands)
   useEffect(() => {
@@ -93,83 +92,97 @@ export function Cascader (props: CascaderProps) {
 
   const onClear = () => {
     props.onClear && props.onClear()
-    setCurrentValues(initialValues)
-    setSavedValues(initialValues)
     setOpen(false)
+    setCurrentValues([])
+    setSavedValues([])
+    setCurrentRadioBands([])
+    setSavedRadioBands([])
+    showRadioBand ? onApply([], []) : onApply([])
   }
+
+  const cancel = () => {
+    setCurrentValues(savedValues)
+    setCurrentRadioBands(savedRadioBands)
+  }
+  const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    event.preventDefault()
+    setOpen(false)
+    cancel()
+  }
+  const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    event.preventDefault()
+    cancelOnHide.current = false
+    setOpen(false)
+    setSavedValues(currentValues)
+    setSavedRadioBands(currentRadioBands)
+    showRadioBand ? onApply(currentValues, currentRadioBands) : onApply(currentValues)
+  }
+
+  const [open, setOpenState] = useState(props.open ?? false)
+  const keepOpenOnHide = useRef(false)
+  const cancelOnHide = useRef(true)
+  const setOpen = (visible: boolean) => {
+    if (!visible && keepOpenOnHide.current) {
+      keepOpenOnHide.current = false
+      return
+    }
+    if (!visible && cancelOnHide.current) {
+      cancelOnHide.current = true
+      cancel()
+    }
+    setOpenState(visible)
+    onDropdownVisibleChange && onDropdownVisibleChange(visible)
+  }
+
   const handleKeyDown: CascaderProps['onInputKeyDown'] = (e) => {
     if (e.key.startsWith('Arrow')) {
       e.stopPropagation()
     }
   }
 
+  const withFooter = (menus: JSX.Element) => <>
+    {menus}
+    {showRadioBand && (
+      <UI.RadioBandsWrapper>
+        <UI.RadioBandLabel style={{ marginRight: '10px' }}>
+          {$t({ defaultMessage: 'Radio' })}:
+        </UI.RadioBandLabel>
+        <UI.CheckboxGroup
+          disabled={isRadioBandDisabled}
+          options={[{
+            label: '6 GHz',
+            value: '6'
+          },
+          {
+            label: '5 GHz',
+            value: '5'
+          },
+          {
+            label: '2.4 GHz',
+            value: '2.4'
+          }
+          ]}
+          defaultValue={initialRadioBands}
+          value={currentRadioBands}
+          onChange={onRadioBandChange}/>
+        {isRadioBandDisabled && radioBandDisabledReason &&
+         (<Tooltip title={radioBandDisabledReason}>
+           <UI.InfoIcon/>
+         </Tooltip>)}
+      </UI.RadioBandsWrapper>)}
+    <UI.ButtonDiv>
+      <Button size='small' onClick={onCancel}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+      <Button size='small' type='secondary' onClick={onApplyProps}>
+        {$t({ defaultMessage: 'Apply' })}
+      </Button>
+    </UI.ButtonDiv>
+  </>
+
   const multiple = props.multiple || showRadioBand
 
   if (multiple) {
-    const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      event.preventDefault()
-      setOpen(false)
-      setCurrentValues(savedValues)
-      setCurrentRadioBands(savedRadioBands)
-    }
-    const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      event.preventDefault()
-      setOpen(false)
-      setSavedValues(currentValues)
-      setSavedRadioBands(currentRadioBands)
-      if(showRadioBand)
-        onApply(currentValues, currentRadioBands)
-      else
-        onApply(currentValues)
-    }
-    const onClearMultiple = () => {
-      onClear()
-      setSavedRadioBands(initialRadioBands)
-      setCurrentValues([])
-      setCurrentRadioBands([])
-      onApply([],[])
-    }
-
-    const withFooter = (menus: JSX.Element) => <>
-      {menus}
-      {showRadioBand && (
-        <UI.RadioBandsWrapper>
-          <UI.RadioBandLabel style={{ marginRight: '10px' }}>
-            {$t({ defaultMessage: 'Radio' })}:
-          </UI.RadioBandLabel>
-          <UI.CheckboxGroup
-            disabled={isRadioBandDisabled}
-            options={[{
-              label: '6 GHz',
-              value: '6'
-            },
-            {
-              label: '5 GHz',
-              value: '5'
-            },
-            {
-              label: '2.4 GHz',
-              value: '2.4'
-            }
-            ]}
-            defaultValue={initialRadioBands}
-            value={currentRadioBands}
-            onChange={onRadioBandChange}/>
-          {isRadioBandDisabled && radioBandDisabledReason &&
-           (<Tooltip title={radioBandDisabledReason}>
-             <UI.InfoIcon/>
-           </Tooltip>)}
-        </UI.RadioBandsWrapper>)}
-      <UI.ButtonDiv>
-        <Button size='small' onClick={onCancel}>
-          {$t({ defaultMessage: 'Cancel' })}
-        </Button>
-        <Button size='small' type='secondary' onClick={onApplyProps}>
-          {$t({ defaultMessage: 'Apply' })}
-        </Button>
-      </UI.ButtonDiv>
-    </>
-
     const currentLabels = cascaderProps.options?.reduce(
       (acc: ReactNode[], option: CascaderOption) => {
         if ((currentValues as string[]).flat().includes(option.value as string))
@@ -191,19 +204,18 @@ export function Cascader (props: CascaderProps) {
 
     return <BaseCascader
       {...cascaderProps}
-      showArrow
-      value={currentValues}
-      multiple
       onChange={setCurrentValues}
       dropdownRender={withFooter}
-      expandTrigger='click'
-      maxTagCount='responsive'
       onDropdownVisibleChange={setOpen}
       open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
-      onClear={cascaderProps.allowClear ? onClearMultiple : undefined}
-      removeIcon={open ? undefined : null}
+      onClear={cascaderProps.allowClear ? onClear : undefined}
+      onInputKeyDown={handleKeyDown}
+      multiple
+      value={currentValues}
+      showArrow
       placeholder={placeholder}
+      maxTagCount='responsive'
       maxTagPlaceholder={omitted =>
         <div title={currentLabels?.join(', ')}>
           {$t(selectedItemsDesc,{
@@ -213,24 +225,26 @@ export function Cascader (props: CascaderProps) {
           })}
         </div>
       }
-      onInputKeyDown={handleKeyDown}
+      removeIcon={open ? undefined : null}
     />
   } else {
     return <BaseCascader
       {...cascaderProps}
       onChange={(
-        value: SingleValueType | SingleValueType[],
+        values: SingleValueType | SingleValueType[],
         selectedOptions: CascaderOption[] | CascaderOption[][]
       ) => {
-        const selectedNode = selectedOptions?.slice(-1)[0] as CascaderOption
-        if (selectedNode?.ignoreSelection) return
-        if (!value) {
+        if (!values) {
           setCurrentValues([])
-          setSavedValues([])
+          return
         }
-        onApply(value ?? [])
+        const selectedOption = selectedOptions?.slice(-1)[0] as CascaderOption
+        keepOpenOnHide.current = !selectedOption.children
+        setCurrentValues(selectedOption?.ignoreSelection
+          ? values.slice(0, values.length - 1)
+          : values)
       }}
-      expandTrigger='hover'
+      dropdownRender={withFooter}
       onDropdownVisibleChange={setOpen}
       open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}

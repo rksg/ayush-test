@@ -261,16 +261,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -332,7 +332,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -622,16 +622,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -693,7 +693,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -1164,16 +1164,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1235,7 +1235,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -1605,16 +1605,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1676,7 +1676,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -1843,6 +1843,26 @@ exports[`Network Filter with incident severity should not show any severity circ
                     </li>
                   </ul>
                 </div>
+                <div
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                    type="button"
+                  >
+                    <span>
+                      Cancel
+                    </span>
+                  </button>
+                  <button
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                    type="button"
+                  >
+                    <span>
+                      Apply
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1991,6 +2011,26 @@ exports[`Network Filter with incident severity should show only venue severities
                     </li>
                   </ul>
                 </div>
+                <div
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                    type="button"
+                  >
+                    <span>
+                      Cancel
+                    </span>
+                  </button>
+                  <button
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                    type="button"
+                  >
+                    <span>
+                      Apply
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -2138,6 +2178,26 @@ exports[`Network Filter with incident severity should show severity only once on
                       </div>
                     </li>
                   </ul>
+                </div>
+                <div
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                >
+                  <button
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                    type="button"
+                  >
+                    <span>
+                      Cancel
+                    </span>
+                  </button>
+                  <button
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                    type="button"
+                  >
+                    <span>
+                      Apply
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>

@@ -33,9 +33,7 @@ function wrapLabels (
     </UI.LabelContainer>
     return {
       ...option,
-      label: option.ignoreSelection && !multiple
-        ? <UI.NonSelectable children={wrappedLabel} />
-        : wrappedLabel,
+      label: wrappedLabel,
       displayLabel,
       children: children && wrapLabels(children, multiple)
     }

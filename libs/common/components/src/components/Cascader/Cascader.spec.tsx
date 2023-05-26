@@ -46,130 +46,76 @@ describe('Cascader', () => {
         children: [
           {
             value: 'n2.1',
-            label: 'AP 1'
-          },
-          {
-            value: 'n2.2',
-            label: 'AP 2'
+            label: 'Ignored',
+            ignoreSelection: true,
+            children: [
+              {
+                value: 'n2.1.1',
+                label: 'AP 1'
+              },
+              {
+                value: 'n2.1.2',
+                label: 'AP 2'
+              }
+            ]
           }
         ]
       },
       {
         value: 'n3',
-        label: 'SSID 3'
-      },
-      {
-        value: 'n4',
-        label: 'SSID 4',
-        extraLabel: <div data-testid='extra-label'>Extra SSID 4 label</div>
-      },
-      {
-        value: 'n5',
-        label: 'n5',
-        ignoreSelection: true,
-        children: [
-          {
-            value: 'n5.1',
-            label: 'AP 3'
-          }
-        ]
+        label: 'SSID 3',
+        extraLabel: <div data-testid='extra-label'>Extra SSID 3 label</div>
       }
     ]
 
     const onApplyMock = jest.fn()
-    render(<CustomCascader
+    const onVisibleChange = jest.fn()
+    const { rerender } = render(<CustomCascader
       options={options}
       onApply={onApplyMock}
       multiple={false}
+      onDropdownVisibleChange={onVisibleChange}
       entityName={entityName}
     />)
 
     await userEvent.click(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('menuitemcheckbox')
     expect(allOptions).toHaveLength(options.length)
-
-    expect(await screen.findByTestId('extra-label')).toHaveTextContent('Extra SSID 4 label')
+    expect(onVisibleChange).toHaveBeenLastCalledWith(true)
+    expect(await screen.findByTestId('extra-label')).toHaveTextContent('Extra SSID 3 label')
 
     await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+    act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
     expect(onApplyMock).toBeCalledTimes(1)
-    expect(onApplyMock).toHaveBeenCalledWith(['n1'])
+    expect(onApplyMock).toHaveBeenNthCalledWith(1, ['n1'])
     expect(await screen.findAllByText('SSID 1')).toHaveLength(3)
-
-    await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.hover(screen.getByRole('menuitemcheckbox', { name: /SSID 2/ }))
-    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /AP 2/ }))
-    expect(onApplyMock).toBeCalledTimes(2)
-    expect(await screen.findAllByText('SSID 2 / AP 2')).toHaveLength(2)
-
-
-    await userEvent.click(await screen.findByRole('combobox'))
-    const nonSelectable = screen.getByRole('menuitemcheckbox', { name: /n5/ })
-    // test stopPropagationon NonSelectable
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.click(nonSelectable.children[0].children[0])
-    await userEvent.click(nonSelectable)
-    expect(onApplyMock).toBeCalledTimes(2)
-  })
-
-  it('renders single select, triggers onApply, with visibleChange', async () => {
-    const options: CascaderOption[] = [
-      {
-        value: 'n1',
-        label: 'SSID 1'
-      },
-      {
-        value: 'n2',
-        label: 'SSID 2'
-      },
-      {
-        value: 'n3',
-        label: 'SSID 3'
-      },
-      {
-        value: 'n4',
-        label: 'SSID 4'
-      },
-      {
-        value: 'n5',
-        label: 'n5',
-        ignoreSelection: true
-      }
-    ]
-
-    const onApplyMock = jest.fn()
-    const onVisibleChange = jest.fn()
-    render(
-      <CustomCascader
-        options={options}
-        onApply={onApplyMock}
-        onDropdownVisibleChange={onVisibleChange}
-        multiple={false}
-        entityName={entityName}
-      />)
-
-    await userEvent.click(await screen.findByRole('combobox'))
-    const allOptions = screen.getAllByRole('menuitemcheckbox')
-    expect(allOptions).toHaveLength(options.length)
-    expect(onVisibleChange).toBeCalledWith(true)
-
-    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
-    expect(onApplyMock).toBeCalledTimes(1)
-    expect(onApplyMock).toHaveBeenCalledWith(['n1'])
     expect(onVisibleChange).toHaveBeenLastCalledWith(false)
 
     await userEvent.click(await screen.findByRole('combobox'))
     await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 2/ }))
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /Ignored/ }))
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /AP 2/ }))
+    act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
     expect(onApplyMock).toBeCalledTimes(2)
-    expect(onVisibleChange).toBeCalledWith(true)
+    expect(onApplyMock).toHaveBeenNthCalledWith(2, ['n2', 'n2.1', 'n2.1.2'])
+    expect(await screen.findAllByText('SSID 2 / Ignored / AP 2')).toHaveLength(2)
 
     await userEvent.click(await screen.findByRole('combobox'))
-    const nonSelectable = screen.getByRole('menuitemcheckbox', { name: /n5/ })
-    // test stopPropagationon NonSelectable
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.click(nonSelectable.children[0].children[0])
-    await userEvent.click(nonSelectable)
-    expect(onApplyMock).toBeCalledTimes(2)
-    expect(onVisibleChange).toHaveBeenLastCalledWith(false)
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 2/ }))
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /Ignored/ }))
+    act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
+    expect(onApplyMock).toBeCalledTimes(3)
+    expect(onApplyMock).toHaveBeenNthCalledWith(3, ['n2'])
+    rerender(<CustomCascader
+      options={options}
+      onApply={onApplyMock}
+      multiple={false}
+      onDropdownVisibleChange={onVisibleChange}
+      entityName={entityName}
+      value={['n2']}
+      defaultValue={['n2']}
+    />)
+    expect(await screen.findAllByText('SSID 2')).toHaveLength(3)
   })
 
   it('renders simple list, triggers onApply with multi-select', async () => {
@@ -360,20 +306,21 @@ describe('Cascader', () => {
     expect(allOptions).toHaveLength(options.length)
 
     await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+    act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
     expect(onApplyMock).toBeCalledTimes(1)
-    expect(onApplyMock).toHaveBeenCalledWith(['n1'])
+    expect(onApplyMock).toHaveBeenNthCalledWith(1, ['n1'])
 
     await userEvent.click(await screen.findByRole('combobox'))
     const clearIcon = await screen.findByLabelText('close-circle')
     expect(clearIcon).not.toBeNull()
     await userEvent.click(clearIcon)
     expect(onClearMock).toBeCalledTimes(1)
-    expect(onClearMock).toBeCalledWith()
+    expect(onClearMock).toHaveBeenCalledWith()
     expect(onApplyMock).toBeCalledTimes(2)
     expect(onApplyMock).toHaveBeenNthCalledWith(2, [])
   })
 
-  it('multi select handles onClear correctly', async () => {
+  describe('multi select handles onClear correctly', () => {
     const options: CascaderOption[] = [
       {
         value: 'n1',
@@ -392,46 +339,73 @@ describe('Cascader', () => {
         label: 'SSID 4'
       }
     ]
-
     const onApplyMock = jest.fn()
     const onClearMock = jest.fn()
-    render(
-      <CustomCascader
-        defaultValue={[['n1']]}
-        options={options}
-        onApply={onApplyMock}
-        multiple={true}
-        allowClear={true}
-        onClear={onClearMock}
-        entityName={entityName}
-      />
-    )
 
-    await userEvent.click(await screen.findByRole('combobox'))
-    const allOptions1 = screen.getAllByRole('menuitemcheckbox')
-    expect(allOptions1).toHaveLength(options.length)
+    beforeEach(() => {
+      jest.resetAllMocks()
+    })
 
-    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(onApplyMock).toBeCalledTimes(1)
-    expect(onApplyMock).toHaveBeenCalledWith([])
+    it('with no radio bands', async () => {
+      render(
+        <CustomCascader
+          defaultValue={[['n1']]}
+          options={options}
+          onApply={onApplyMock}
+          multiple={true}
+          allowClear={true}
+          onClear={onClearMock}
+          entityName={entityName}
+        />
+      )
 
+      await userEvent.click(await screen.findByRole('combobox'))
+      const allOptions1 = screen.getAllByRole('menuitemcheckbox')
+      expect(allOptions1).toHaveLength(options.length)
 
-    await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 2/ }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(onApplyMock).toBeCalledTimes(2)
-    expect(onApplyMock).toHaveBeenNthCalledWith(2, [['n2']])
+      await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(onApplyMock).toBeCalledTimes(1)
+      expect(onApplyMock).toHaveBeenNthCalledWith(1, [])
 
-    await userEvent.click(await screen.findByRole('combobox'))
-    const clearIcon = await screen.findByLabelText('close-circle')
-    expect(clearIcon).not.toBeNull()
+      await userEvent.click(await screen.findByRole('combobox'))
+      await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 2/ }))
+      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(onApplyMock).toBeCalledTimes(2)
+      expect(onApplyMock).toHaveBeenNthCalledWith(2, [['n2']])
 
-    await userEvent.click(clearIcon)
-    expect(onClearMock).toBeCalledTimes(1)
-    expect(onClearMock).toBeCalledWith()
-    expect(onApplyMock).toBeCalledTimes(3)
-    expect(onApplyMock).toHaveBeenNthCalledWith(3, [],[])
+      await userEvent.click(await screen.findByRole('combobox'))
+      const clearIcon = await screen.findByLabelText('close-circle')
+      expect(clearIcon).not.toBeNull()
+
+      await userEvent.click(clearIcon)
+      expect(onClearMock).toBeCalledTimes(1)
+      expect(onClearMock).toHaveBeenCalledWith()
+      expect(onApplyMock).toBeCalledTimes(3)
+      expect(onApplyMock).toHaveBeenNthCalledWith(3, [])
+    })
+
+    it('with radio bands', async () => {
+      render(
+        <CustomCascader
+          defaultValue={[['n1']]}
+          options={options}
+          onApply={onApplyMock}
+          multiple={true}
+          allowClear={true}
+          onClear={onClearMock}
+          entityName={entityName}
+          showRadioBand
+        />
+      )
+
+      const clearIcon = await screen.findByLabelText('close-circle')
+      await userEvent.click(clearIcon)
+      expect(onClearMock).toBeCalledTimes(1)
+      expect(onClearMock).toHaveBeenCalledWith()
+      expect(onApplyMock).toBeCalledTimes(1)
+      expect(onApplyMock).toHaveBeenNthCalledWith(1, [], [])
+    })
   })
 
   describe('search', () => {
@@ -474,9 +448,13 @@ describe('Cascader', () => {
         ignoreSelection: true
       }
     ]
+    const onApplyMock = jest.fn()
+
+    beforeEach(() => {
+      jest.resetAllMocks()
+    })
 
     it('can search single', async () => {
-      const onApplyMock = jest.fn()
       render(<CustomCascader
         options={options}
         onApply={onApplyMock}
@@ -484,29 +462,30 @@ describe('Cascader', () => {
       />)
 
       const combobox = await screen.findByRole('combobox')
-
       await userEvent.type(combobox, 'Match search')
       const allOptions = screen.getAllByRole('menuitemcheckbox')
       expect(allOptions).toHaveLength(3)
 
       await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /Match search 1/ }))
+      act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
       expect(onApplyMock).toBeCalledTimes(1)
       expect(onApplyMock).toHaveBeenNthCalledWith(1, ['n1'])
 
       await userEvent.type(combobox, 'Match search')
       await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /Match search 3.1/ }))
+      act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
       expect(onApplyMock).toBeCalledTimes(2)
       expect(onApplyMock).toHaveBeenNthCalledWith(2, ['n3', 'n3.1'])
 
       await userEvent.type(combobox, 'Match search')
-      await userEvent.hover(screen.getByRole('menuitemcheckbox', { name: /Match search 4/ }))
+      await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /Match search 4/ }))
       await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /Something else 4.2/ }))
+      act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
       expect(onApplyMock).toBeCalledTimes(3)
       expect(onApplyMock).toHaveBeenNthCalledWith(3, ['n4', 'n4.2'])
     })
 
     it('can search multiple', async () => {
-      const onApplyMock = jest.fn()
       render(<CustomCascader
         options={options}
         onApply={onApplyMock}
@@ -515,7 +494,6 @@ describe('Cascader', () => {
       />)
 
       const combobox = await screen.findByRole('combobox')
-
       await userEvent.type(combobox, 'Match search')
       const allOptions = screen.getAllByRole('menuitemcheckbox')
       expect(allOptions).toHaveLength(3)
@@ -619,7 +597,8 @@ describe('Cascader', () => {
     />)
 
     await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.hover(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+    act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
     expect(loadDataMock).toHaveBeenCalledWith(options)
   })
 })

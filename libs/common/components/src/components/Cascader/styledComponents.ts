@@ -98,24 +98,6 @@ export const Cascader = styled(AntCascader)<BaseCascaderProps>`
     margin-bottom: 0px;
   }
 `
-export const NonSelectable = styled.div.attrs({
-  onClick: (e: React.MouseEvent<HTMLElement>) => e.stopPropagation()
-})`
-  cursor: default;
-  &::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  * {
-    cursor: default;
-  }
-`
 export const ButtonDiv = styled.div`
   margin-top: 4px;
   margin-bottom: -4px;

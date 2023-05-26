@@ -219,16 +219,16 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
               </ul>
             </div>
             <div
-              class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+              class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
             >
               <span
-                class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                 style="margin-right: 10px;"
               >
                 Radio:
               </span>
               <div
-                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
               >
                 <label
                   class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -290,7 +290,7 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
               </div>
             </div>
             <div
-              class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+              class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
             >
               <button
                 class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -588,16 +588,16 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
               </ul>
             </div>
             <div
-              class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+              class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
             >
               <span
-                class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                 style="margin-right: 10px;"
               >
                 Radio:
               </span>
               <div
-                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
               >
                 <label
                   class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-group-item"
@@ -661,12 +661,12 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                 </label>
               </div>
               <svg
-                class="styledComponents__InfoIcon-sc-1a2oz4t-9 jwqaXE"
+                class="styledComponents__InfoIcon-sc-1a2oz4t-8 fudJRN"
                 data-testid="InformationOutlined"
               />
             </div>
             <div
-              class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+              class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
             >
               <button
                 class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"

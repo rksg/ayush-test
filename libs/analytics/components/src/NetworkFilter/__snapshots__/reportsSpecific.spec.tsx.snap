@@ -301,16 +301,16 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -372,7 +372,7 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
@@ -702,16 +702,16 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-6 hxqLmD"
+                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-7 gVprdz"
+                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-8 fHmZgN"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -773,7 +773,7 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-4 gvjxbq"
+                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
                     class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
