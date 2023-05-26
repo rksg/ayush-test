@@ -29,9 +29,10 @@ export interface EnvironmentConfig {
 
 const config: { value?: EnvironmentConfig } = {}
 
-export async function initialize () {
+export async function initialize (options?: { isRa?: boolean }) {
   const baseUrl = trimEnd(document.baseURI, '/')
-  const envConfigUrl = `${baseUrl}/env.json`
+  const { isRa } = options ?? {}
+  const envConfigUrl = (isRa) ? `${baseUrl}/env-ra.json` : `${baseUrl}/env.json`
   config.value = await fetch(envConfigUrl).then(res => res.json())
 }
 
