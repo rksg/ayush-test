@@ -116,7 +116,7 @@ export async function pendoInitalization (): Promise<void> {
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  const lang = String(request.data?.global.defaultLanguage)
+  const lang = String(request.data?.global?.defaultLanguage)
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
