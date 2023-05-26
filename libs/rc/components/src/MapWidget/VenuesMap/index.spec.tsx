@@ -6,6 +6,8 @@ import { BrowserRouter as Router }                        from '@acx-ui/react-ro
 import { Provider }                                       from '@acx-ui/store'
 import { act, queryByAttribute, render, screen, waitFor } from '@acx-ui/test-utils'
 
+import { DASHBOARD_GMAP_FILTER_KEY } from './helper'
+
 import VenuesMap from '.'
 
 jest.mock('@acx-ui/config', () => ({
@@ -28,7 +30,7 @@ describe('VenuesMap', () => {
   })
 
   it('should load google maps api using the key from env', async () => {
-    localStorage.setItem('dashboard-gmap-filter', JSON.stringify({
+    localStorage.setItem(DASHBOARD_GMAP_FILTER_KEY, JSON.stringify({
       [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
       [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
       [ApVenueStatusEnum.IN_SETUP_PHASE]: false,

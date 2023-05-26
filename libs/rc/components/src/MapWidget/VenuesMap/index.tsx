@@ -6,8 +6,9 @@ import { get }                        from '@acx-ui/config'
 import { VenueMarkerOptions }         from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import GMap                  from './GMap'
-import { FilterStateChange } from './VenueFilterControlBox'
+import GMap                          from './GMap'
+import { DASHBOARD_GMAP_FILTER_KEY } from './helper'
+import { FilterStateChange }         from './VenueFilterControlBox'
 
 export interface GoogleMapProps {
   data: VenueMarkerOptions[]
@@ -27,7 +28,6 @@ function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
   const basePath = useTenantLink('/')
   const navigate = useNavigate()
-  const localStorageKey = 'dashboard-gmap-filter'
 
   /* istanbul ignore next */
   const onNavigate = (params: NavigateProps) => {
@@ -59,7 +59,7 @@ function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps
   }
 
   React.useEffect(()=>{
-    const savedFilterState = localStorage.getItem(localStorageKey)
+    const savedFilterState = localStorage.getItem(DASHBOARD_GMAP_FILTER_KEY)
     if (savedFilterState) {
       const filterState = JSON.parse(savedFilterState)
       data.forEach((venue: VenueMarkerOptions) => {
