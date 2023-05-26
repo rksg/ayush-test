@@ -185,7 +185,9 @@ const GMap: React.FC<MapProps> = ({
       }
       // Set bounds so all markers are visible
       const bounds = new google.maps.LatLngBounds()
-      markers.map((marker) => bounds.extend(marker.getPosition()!))
+      visibleMarkers.length > 0
+        ? visibleMarkers.map((marker) => bounds.extend(marker.getPosition()!))
+        : markers.map((marker) => bounds.extend(marker.getPosition()!))
       map.fitBounds(bounds)
       map.setCenter(bounds.getCenter())
     }
