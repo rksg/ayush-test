@@ -860,6 +860,9 @@
   "1xvLbG": {
     "defaultMessage": "WLAN"
   },
+  "1yS18m": {
+    "defaultMessage": "DDoS"
+  },
   "1yXMf2": {
     "defaultMessage": "4. Use the Zoom desktop or mobile application (not web browser version)"
   },
@@ -2894,9 +2897,6 @@
   "AdM0fK": {
     "defaultMessage": "Mask Discovery"
   },
-  "AeCgAI": {
-    "defaultMessage": "Unit {names} was deleted"
-  },
   "AetNAD": {
     "defaultMessage": "Browse"
   },
@@ -2953,6 +2953,9 @@
   },
   "Ar4vtA": {
     "defaultMessage": "Add Persona Group"
+  },
+  "ArUk+O": {
+    "defaultMessage": "Denied Packet"
   },
   "ArhATs": {
     "defaultMessage": "Client Experience"
@@ -4454,6 +4457,9 @@
   "Hpv4PA": {
     "defaultMessage": "Excellent"
   },
+  "HqDBH2": {
+    "defaultMessage": "Please select Policy Type"
+  },
   "HqDq9z": {
     "defaultMessage": "Help Text"
   },
@@ -4829,9 +4835,6 @@
   },
   "JHk/NO": {
     "defaultMessage": "Some browser's security extensions/plugins might block this feature. Please disable those extensions/plugins and try again."
-  },
-  "JI7IJE": {
-    "defaultMessage": "SmartEdge Status"
   },
   "JIPniO": {
     "defaultMessage": "Linked to Root AP \"{rootApName}\" {isRootApUnplaced, select, true {(unplaced)} other {}} {hops, plural, =0 {} one {({hops} Hop)} other {({hops} Hops)}}"
@@ -5948,6 +5951,9 @@
   "NyusYn": {
     "defaultMessage": "Factory default"
   },
+  "O+w68O": {
+    "defaultMessage": "Edge Status"
+  },
   "O0CDOi": {
     "defaultMessage": "MAC Address ( {count}/{count_limit} )"
   },
@@ -6184,6 +6190,9 @@
   "OtVKk/": {
     "defaultMessage": "No error"
   },
+  "OuCSDn": {
+    "defaultMessage": "Disk"
+  },
   "OuPiSR": {
     "defaultMessage": "ARP Inspection:"
   },
@@ -6211,6 +6220,9 @@
   },
   "P0c/ms": {
     "defaultMessage": "One of the values you entered conflicts with existing authentication and accounting server configurations in another network."
+  },
+  "P0ste6": {
+    "defaultMessage": "{status} (IN: {inCount} {inCount, plural, one {rule} other {rules}}, OUT: {outCount} {outCount, plural, one {rule} other {rules}})"
   },
   "P0vpSy": {
     "defaultMessage": "Port Type"
@@ -6328,6 +6340,9 @@
   },
   "PgM1mM": {
     "defaultMessage": "DHCP Settings"
+  },
+  "Pha+88": {
+    "defaultMessage": "Expiration Time"
   },
   "PiIN3F": {
     "defaultMessage": "Cannot locate this rogue AP since the detecting APs are not placed in any floor plans."
@@ -7034,6 +7049,9 @@
   "T2dNwy": {
     "defaultMessage": "MAC Registration"
   },
+  "T39hTl": {
+    "defaultMessage": "EdgeStatus"
+  },
   "T3UF92": {
     "defaultMessage": "Authentication Server"
   },
@@ -7204,6 +7222,9 @@
   },
   "TfpT1u": {
     "defaultMessage": "Backup File"
+  },
+  "Tfv1P0": {
+    "defaultMessage": "{status} ({rulesCount} {rulesCount, plural, one {rule} other {rules}})"
   },
   "Tgyxau": {
     "defaultMessage": "Application Category"
@@ -7989,9 +8010,6 @@
   },
   "XBk/Qf": {
     "defaultMessage": "Resident Portal profile"
-  },
-  "XC2277": {
-    "defaultMessage": "Total Uptime:"
   },
   "XCvHUK": {
     "defaultMessage": "Authentication Port"
@@ -8815,6 +8833,9 @@
   "ajmHoX": {
     "defaultMessage": "NNTP-Server"
   },
+  "akB+qv": {
+    "defaultMessage": "Policy Set Name"
+  },
   "alT0Lo": {
     "defaultMessage": "One Time Password (OTP)"
   },
@@ -8982,6 +9003,9 @@
   },
   "bZrNnv": {
     "defaultMessage": "dBm"
+  },
+  "bagPwo": {
+    "defaultMessage": "Testing! Hellow from Ruckus Analytics!"
   },
   "bbWTmR": {
     "defaultMessage": "Classification rules"
@@ -10539,6 +10563,9 @@
   "i647fD": {
     "defaultMessage": "Select Profile"
   },
+  "i7T4Zm": {
+    "defaultMessage": "Hits"
+  },
   "iBBcur": {
     "defaultMessage": "Disassociated because the information in the Supported Channels element is unacceptable"
   },
@@ -10935,9 +10962,6 @@
   },
   "jyRZTB": {
     "defaultMessage": "Length is limited to 1-32 characters."
-  },
-  "k+2zBz": {
-    "defaultMessage": "This list is in use by one or more Networks and one or more Personas."
   },
   "k+BdkG": {
     "defaultMessage": "dBi"
@@ -11385,6 +11409,9 @@
   "lb5sKC": {
     "defaultMessage": "Search by VLAN ID or name"
   },
+  "lbGSzh": {
+    "defaultMessage": "Total Downtime"
+  },
   "lbjlTc": {
     "defaultMessage": "Static Route"
   },
@@ -11454,9 +11481,6 @@
   },
   "loWsfn": {
     "defaultMessage": "Could not find AP {apId}"
-  },
-  "lqxCzR": {
-    "defaultMessage": "Expireation Time"
   },
   "lrHc+J": {
     "defaultMessage": "Add Access Point"
@@ -12003,6 +12027,9 @@
   },
   "oAzpTF": {
     "defaultMessage": "<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>"
+  },
+  "oBNTHg": {
+    "defaultMessage": "This group is still in use by another service."
   },
   "oBqS+O": {
     "defaultMessage": "Select a registered user. Registered user is a user which has a Ruckus Support Account"
@@ -12961,9 +12988,6 @@
   "sMnDSO": {
     "defaultMessage": "Wi-Fi APs"
   },
-  "sPq/xd": {
-    "defaultMessage": "Total Downtime:"
-  },
   "sRTzEd": {
     "defaultMessage": "name"
   },
@@ -13849,6 +13873,9 @@
   "wSp1C8": {
     "defaultMessage": "NotifySuccess ({count} / {percent}%)"
   },
+  "wV3cp1": {
+    "defaultMessage": "Bytes"
+  },
   "wW0MIl": {
     "defaultMessage": "Add Guest Portal Service"
   },
@@ -14140,6 +14167,9 @@
   "xhw/tf": {
     "defaultMessage": "Edit Unit"
   },
+  "xi3TU8": {
+    "defaultMessage": "{name} (Regex)"
+  },
   "xiLyrR": {
     "defaultMessage": "Select Client MAC"
   },
@@ -14211,6 +14241,9 @@
   },
   "xxQxLE": {
     "defaultMessage": "Email Address"
+  },
+  "xyZWEA": {
+    "defaultMessage": "Pass Packet"
   },
   "xzWp9X": {
     "defaultMessage": "Switches"

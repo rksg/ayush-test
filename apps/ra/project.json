@@ -16,7 +16,7 @@
         "tsConfig": "apps/ra/tsconfig.app.json",
         "assets": [
           "apps/ra/src/favicon.ico",
-          "apps/ra/src/env.json",
+          "apps/ra/src/env-ra.json",
           "apps/ra/src/assets",
           "apps/ra/src/locales",
           "apps/ra/src/robots.txt"

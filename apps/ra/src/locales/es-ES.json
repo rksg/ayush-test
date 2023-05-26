@@ -2636,9 +2636,6 @@
   "AdM0fK": {
     "defaultMessage": "Descubrimiento de máscara"
   },
-  "AeCgAI": {
-    "defaultMessage": "Se eliminó la unidad {names}"
-  },
   "AetNAD": {
     "defaultMessage": "Explorar"
   },
@@ -4421,9 +4418,6 @@
   },
   "JGu6zs": {
     "defaultMessage": "Rol"
-  },
-  "JI7IJE": {
-    "defaultMessage": "Estado de SmartEdge"
   },
   "JIsmG6": {
     "defaultMessage": "Informe del punto de acceso"
@@ -7329,9 +7323,6 @@
   },
   "XBk/Qf": {
     "defaultMessage": "Perfil del portal residente"
-  },
-  "XC2277": {
-    "defaultMessage": "Tiempo total de actividad:"
   },
   "XCvHUK": {
     "defaultMessage": "Puerto de autenticación"
@@ -10427,6 +10418,9 @@
   "lb5sKC": {
     "defaultMessage": "Búsqueda por id. o nombre de VLAN"
   },
+  "lbGSzh": {
+    "defaultMessage": "Tiempo total de inactividad"
+  },
   "lbjlTc": {
     "defaultMessage": "Ruta estática"
   },
@@ -10493,9 +10487,6 @@
   },
   "loWsfn": {
     "defaultMessage": "No se pudo encontrar el AP {apId}"
-  },
-  "lqxCzR": {
-    "defaultMessage": "Fecha de expiración"
   },
   "lrHc+J": {
     "defaultMessage": "Añadir punto de acceso"
@@ -11857,9 +11848,6 @@
   },
   "sMnDSO": {
     "defaultMessage": "AP de Wi-Fi"
-  },
-  "sPq/xd": {
-    "defaultMessage": "Tiempo total de inactividad:"
   },
   "sRTzEd": {
     "defaultMessage": "nombre"
@@ -13548,6 +13536,9 @@
   "1qdM94": {
     "defaultMessage": "Edit ACL Rule"
   },
+  "1yS18m": {
+    "defaultMessage": "DDoS"
+  },
   "1yXMf2": {
     "defaultMessage": "4. Use the Zoom desktop or mobile application (not web browser version)"
   },
@@ -13740,6 +13731,9 @@
   "ApvPlA": {
     "defaultMessage": "Server-Name"
   },
+  "ArUk+O": {
+    "defaultMessage": "Denied Packet"
+  },
   "AxJKYT": {
     "defaultMessage": "Summary Table"
   },
@@ -13856,6 +13850,9 @@
   },
   "HpqB9i": {
     "defaultMessage": "Unable to delete test call. Try again later"
+  },
+  "HqDBH2": {
+    "defaultMessage": "Please select Policy Type"
   },
   "HqDq9z": {
     "defaultMessage": "Help Text"
@@ -13983,6 +13980,9 @@
   "NvbcLC": {
     "defaultMessage": "Participant 1"
   },
+  "O+w68O": {
+    "defaultMessage": "Edge Status"
+  },
   "O0prbM": {
     "defaultMessage": "NTP Reflection"
   },
@@ -14001,8 +14001,14 @@
   "OqoHpV": {
     "defaultMessage": "Please select group"
   },
+  "OuCSDn": {
+    "defaultMessage": "Disk"
+  },
   "OyxhaQ": {
     "defaultMessage": "Please enter Trusted Ports"
+  },
+  "P0ste6": {
+    "defaultMessage": "{status} (IN: {inCount} {inCount, plural, one {rule} other {rules}}, OUT: {outCount} {outCount, plural, one {rule} other {rules}})"
   },
   "PBDK2u": {
     "defaultMessage": "A value of 100 kbps for ICMP Attack means ICMP traffic beyond 100kbps will be dropped."
@@ -14012,6 +14018,9 @@
   },
   "PNem12": {
     "defaultMessage": "Created Time"
+  },
+  "Pha+88": {
+    "defaultMessage": "Expiration Time"
   },
   "QCs2bB": {
     "defaultMessage": "Leave Time"
@@ -14049,6 +14058,9 @@
   "SlOFCw": {
     "defaultMessage": "SNR Threshold"
   },
+  "T39hTl": {
+    "defaultMessage": "EdgeStatus"
+  },
   "T4GOiX": {
     "defaultMessage": "End Date"
   },
@@ -14072,6 +14084,9 @@
   },
   "TfpT1u": {
     "defaultMessage": "Backup File"
+  },
+  "Tfv1P0": {
+    "defaultMessage": "{status} ({rulesCount} {rulesCount, plural, one {rule} other {rules}})"
   },
   "Tr8rj3": {
     "defaultMessage": "Pre Requisites"
@@ -14218,6 +14233,9 @@
   "acrOoz": {
     "defaultMessage": "Continue"
   },
+  "akB+qv": {
+    "defaultMessage": "Policy Set Name"
+  },
   "amwKe8": {
     "defaultMessage": "Resident Portals"
   },
@@ -14229,6 +14247,9 @@
   },
   "bEwpgY": {
     "defaultMessage": "Please take note that participation in this Zoom test call is entirely voluntary, and by doing so, you are agreeing to share information with Zoom Video Communications, Inc. Please refer to {link} for more details."
+  },
+  "bagPwo": {
+    "defaultMessage": "Testing! Hellow from Ruckus Analytics!"
   },
   "bhP9BC": {
     "defaultMessage": "Favicon: {imageName}"
@@ -14341,6 +14362,9 @@
   "hvXg6j": {
     "defaultMessage": "Passphrase Copied"
   },
+  "i7T4Zm": {
+    "defaultMessage": "Hits"
+  },
   "iEzgzF": {
     "defaultMessage": "Set Firewall Settings"
   },
@@ -14394,9 +14418,6 @@
   },
   "jppnn8": {
     "defaultMessage": "Create adaptive policies for user and device connectivity on wired or wireless networks"
-  },
-  "k+2zBz": {
-    "defaultMessage": "This list is in use by one or more Networks and one or more Personas."
   },
   "k0Actn": {
     "defaultMessage": "Not allowed as participant not on Wi-Fi"
@@ -14496,6 +14517,9 @@
   },
   "o0yS7Z": {
     "defaultMessage": "Switch Not Found"
+  },
+  "oBNTHg": {
+    "defaultMessage": "This group is still in use by another service."
   },
   "oFKBY4": {
     "defaultMessage": "Enable Email Notification"
@@ -14636,6 +14660,9 @@
   "vt39ht": {
     "defaultMessage": "Sending command: [reboot] to the AP: {ap}"
   },
+  "wV3cp1": {
+    "defaultMessage": "Bytes"
+  },
   "wbl6Tt": {
     "defaultMessage": "Access Policy Type"
   },
@@ -14654,6 +14681,9 @@
   "xatcqQ": {
     "defaultMessage": "Join Time"
   },
+  "xi3TU8": {
+    "defaultMessage": "{name} (Regex)"
+  },
   "xiLyrR": {
     "defaultMessage": "Select Client MAC"
   },
@@ -14668,6 +14698,9 @@
   },
   "xvXUC/": {
     "defaultMessage": "Protocol Type"
+  },
+  "xyZWEA": {
+    "defaultMessage": "Pass Packet"
   },
   "y/bmsG": {
     "defaultMessage": "Allow"
