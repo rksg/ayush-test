@@ -653,11 +653,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params)
+    deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicyList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
@@ -678,7 +679,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
-            'DeleteRadius'
+            'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -699,7 +700,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
-            'DeleteRadius'
+            'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -1924,7 +1925,7 @@ export const {
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
-  useDeleteAAAPolicyMutation,
+  useDeleteAAAPolicyListMutation,
   useGetAAAPolicyListQuery,
   useLazyGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,

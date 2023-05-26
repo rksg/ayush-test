@@ -121,6 +121,7 @@ export const CountdownNode = (props: { n: number }) => (
 
 const proceedByStatus = (tx: Transaction) => {
   if (tx.status === TxStatus.IN_PROGRESS) return false
+  if (tx.useCase && tx.useCase.startsWith('NOUITOAST')) return false
   return true
 }
 

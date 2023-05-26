@@ -31,8 +31,10 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   exportPersonaGroup: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/search?timezone=:timezone&date-format=:dateFormat`,
-    oldUrl: `${PersonaBaseUrl}/search?timezone=:timezone&date-format=:dateFormat`,
+    url: `${NewPersonaBaseUrl}/search${paginationParams}`
+      + '&timezone=:timezone&date-format=:dateFormat',
+    oldUrl: `${PersonaBaseUrl}/search${paginationParams}`
+      + '&timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
   getPersonaGroupById: {
@@ -92,8 +94,10 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   exportPersona: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/all/personas/search?timezone=:timezone&date-format=:dateFormat`,
-    oldUrl: `${PersonaBaseUrl}/all/personas/search?timezone=:timezone&date-format=:dateFormat`,
+    url: `${NewPersonaBaseUrl}/all/personas/search${paginationParams}`
+      + '&timezone=:timezone&date-format=:dateFormat',
+    oldUrl: `${PersonaBaseUrl}/all/personas/search${paginationParams}`
+      + '&timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
   updatePersona: {
