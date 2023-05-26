@@ -10,7 +10,8 @@ import {
   render,
   screen,
   fireEvent,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { staticRoutes } from '../__tests__/fixtures'
@@ -209,10 +210,9 @@ describe('Edit switch form', () => {
   })
 
   it('should render edit switch with disabled ip settings correctly', async () => {
-    switchDetailHeader.ipFullContentParsed = false
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(switchDetailHeader)))
+        (_, res, ctx) => res(ctx.json({ ...switchDetailHeader, ipFullContentParsed: false })))
     )
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/:action' }
@@ -249,11 +249,12 @@ describe('Edit switch form', () => {
     })
 
     const settingsTab = await screen.findByRole('tab', { name: 'Settings' })
-    fireEvent.click(settingsTab)
-    const ipModeRadio = await screen.findByRole('radio', { name: 'DHCP' })
-    fireEvent.click(ipModeRadio)
-    const applyButton = await screen.findByRole('button', { name: /apply/i })
-    fireEvent.click(applyButton)
+    await userEvent.click(settingsTab)
+    const ipModeRadio = screen.getByRole('radio', { name: 'DHCP' })
+    await userEvent.click(ipModeRadio)
+    await waitFor(() => expect(screen.getByLabelText('Subnet Mask')).toBeDisabled())
+    const applyButton = screen.getByRole('button', { name: /apply/i })
+    await userEvent.click(applyButton)
   })
 })
 
