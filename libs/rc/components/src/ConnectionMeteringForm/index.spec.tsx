@@ -159,10 +159,11 @@ describe('ConnectionMeteringForm', () => {
       { name: 'Total Download limit' }
     )
     await userEvent.click(enableDownloadSetting)
-
-    const inputNumbers = await screen.findAllByText('Mbps')
-    expect(inputNumbers.length).toEqual(2)
     await userEvent.click(switches[1]) //enable data consumption setting
+
+    const inputNumbers = await screen.findAllByRole('spinbutton')
+    expect(inputNumbers.length).toEqual(3)
+    await userEvent.type(inputNumbers[2], '1')
 
     const repeatSelect = await screen.findByLabelText('Consumption Cycle')
     await userEvent.click(repeatSelect)
@@ -170,9 +171,12 @@ describe('ConnectionMeteringForm', () => {
 
     const typeSelect = await screen.findByLabelText('Recurring Schedule')
     await userEvent.click(typeSelect)
-    await userEvent.click(await screen.findByText('Custom'))
+    await userEvent.click(await screen.findByText('Weekly'))
 
-    await screen.findByLabelText('Action for overage data')
+    const enforcedSelect = await screen.findByLabelText('Action for overage data')
+    await userEvent.click(enforcedSelect)
+    await userEvent.click(await screen.findByText('Ignore'))
+
     await screen.findByRole('slider')
 
     fireEvent.click(addButton)
@@ -214,9 +218,11 @@ describe('ConnectionMeteringForm', () => {
       )
       await userEvent.click(enableDownloadSetting)
 
-      const inputNumbers = await screen.findAllByText('Mbps')
-      expect(inputNumbers.length).toEqual(2)
+
       await userEvent.click(switches[1]) //enable data consumption setting
+      const inputNumbers = await screen.findAllByRole('spinbutton')
+      expect(inputNumbers.length).toEqual(3)
+      await userEvent.type(inputNumbers[2], '1')
 
       const repeatSelect = await screen.findByLabelText('Consumption Cycle')
       await userEvent.click(repeatSelect)
@@ -224,9 +230,12 @@ describe('ConnectionMeteringForm', () => {
 
       const typeSelect = await screen.findByLabelText('Recurring Schedule')
       await userEvent.click(typeSelect)
-      await userEvent.click(await screen.findByText('Custom'))
+      await userEvent.click(await screen.findByText('Monthly'))
 
-      await screen.findByLabelText('Action for overage data')
+      const enforcedSelect = await screen.findByLabelText('Action for overage data')
+      await userEvent.click(enforcedSelect)
+      await userEvent.click(await screen.findByText('Discard'))
+
       await screen.findByRole('slider')
 
       fireEvent.click(addButton)
@@ -250,7 +259,6 @@ describe('ConnectionMeteringForm', () => {
     await screen.findAllByText('Settings')
     const applyButton = await screen.findByRole('button', { name: 'Apply' })
     const nameField = await screen.findByLabelText('Profile Name')
-    await userEvent.clear(nameField)
     await userEvent.type(nameField, 'new profile name')
 
     const switches = await screen.findAllByRole('switch')
@@ -278,9 +286,7 @@ describe('ConnectionMeteringForm', () => {
     await screen.findAllByText('Settings')
     const cancelButton = await screen.findByRole('button', { name: 'Cancel' })
     const nameField = await screen.findByLabelText('Profile Name')
-    await userEvent.clear(nameField)
     await userEvent.type(nameField, 'new profile name')
-
     fireEvent.click(cancelButton)
     await waitFor(() => expect(updateConnectionMeteringApi).toHaveBeenCalledTimes(0))
   })

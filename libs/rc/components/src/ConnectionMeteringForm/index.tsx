@@ -33,24 +33,6 @@ function transformFormToData (form:ConnectingMeteringFormField | undefined):
   let data = {
     ...form
   }
-  if (!form?.rateLimitEnabled) {
-    data.uploadRate = 0
-    data.downloadRate = 0
-  }
-
-  if (!form?.consumptionControlEnabled) {
-    data.dataCapacity = 0
-    data.billingCycleRepeat = false
-    data.billingCycleType = 'CYCLE_UNSPECIFIED'
-    data.billingCycleDays = null
-    data.dataCapacityEnforced = false
-    data.dataCapacityThreshold = 0
-  } else if (!form.billingCycleRepeat) {
-    data.billingCycleType = 'CYCLE_UNSPECIFIED'
-    data.billingCycleDays = null
-  } else if (form.billingCycleType !== 'CYCLE_NUM_DAYS') {
-    data.billingCycleDays = null
-  }
   return data
 }
 
@@ -147,13 +129,14 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     if (!data || isLoading) return
     if (mode === ConnectionMeteringFormMode.EDIT) {
       const connectionMetering = data as ConnectionMetering
-      const rateLimiteEnabled = ((connectionMetering.downloadRate > 0)
+      const rateLimitEnabled:boolean = ((connectionMetering.downloadRate > 0)
       || (connectionMetering.uploadRate > 0))
-      const consumptionControlEnabled = (connectionMetering.dataCapacity > 0 )
+      const consumptionControlEnabled:boolean = (connectionMetering.dataCapacity > 0 )
+      form.current?.resetFields()
       form.current?.setFieldsValue({
-        rateLimitEnabled: rateLimiteEnabled,
+        ...connectionMetering,
         consumptionControlEnabled: consumptionControlEnabled,
-        ...connectionMetering
+        rateLimitEnabled: rateLimitEnabled
       })
       originData.current = connectionMetering
     }

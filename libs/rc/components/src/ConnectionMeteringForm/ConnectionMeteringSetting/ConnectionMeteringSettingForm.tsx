@@ -3,7 +3,7 @@ import { useIntl }     from 'react-intl'
 
 import { GridCol, GridRow }                         from '@acx-ui/components'
 import { useLazySearchConnectionMeteringListQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists }                     from '@acx-ui/rc/utils'
+import {  checkObjectNotExists }                    from '@acx-ui/rc/utils'
 
 import { DataConsumptionSettingForm } from './DataConsumptionSettingForm'
 import { DataRateSettingForm }        from './DataRateSettingForm'

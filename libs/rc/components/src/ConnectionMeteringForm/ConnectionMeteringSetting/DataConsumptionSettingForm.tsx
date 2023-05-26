@@ -6,16 +6,15 @@ import { useIntl }                                      from 'react-intl'
 import { StepsForm } from '@acx-ui/components'
 
 
+
 enum ConsumptionUnit {
   MB,
   GB
 }
 
 interface DataConsumptionSettingProps {
-  unit: ConsumptionUnit
   capacity?: number
-  onUnitChange: (u:ConsumptionUnit)=>void
-  onCapacityChange: (v:number|undefined)=>void
+  onChange: (v:number|undefined)=>void
 }
 
 function DataConsumptionSetting (props: DataConsumptionSettingProps) {
@@ -27,10 +26,21 @@ function DataConsumptionSetting (props: DataConsumptionSettingProps) {
     value: ConsumptionUnit.GB
   }]
 
-  const [unit, setUnit] = useState(props.unit)
-  const [capacity, setCapacity] = useState(props.capacity)
-  useEffect(()=>{props.onUnitChange(unit)}, [unit])
-  useEffect(()=>{props.onCapacityChange(capacity)}, [capacity])
+  const [unit, setUnit] = useState(ConsumptionUnit.MB)
+  const [capacity, setCapacity] = useState(props.capacity ? props.capacity : undefined)
+
+  useEffect(()=>{
+    if (capacity === undefined) {
+      props.onChange(undefined)
+    } else {
+      if (unit === ConsumptionUnit.MB) {
+        props.onChange(capacity)
+      } else {
+        props.onChange(capacity * 1000)
+      }
+    }
+  }, [unit, capacity])
+
   return(<div>
     <div style={{ float: 'left' }}>
       <InputNumber min={1} value={capacity} onChange={(v:number)=>setCapacity(v)}/>
@@ -49,16 +59,9 @@ function DataConsumptionSetting (props: DataConsumptionSettingProps) {
 export function DataConsumptionSettingForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const [enabled, setEnabled] = useState(form.getFieldValue('consumptionControlEnabled') ?? false)
-  const [unit, setUnit] = useState(ConsumptionUnit.MB)
-  const [dataCapacity, setDataCapacity] = useState(form.getFieldValue('dataCapacity'))
-  const [repeat, setRepeat] = useState(form.getFieldValue('billingCycleRepeat') ?? false)
-  const [
-    cycleType,
-    setCycleType
-  ] = useState(form.getFieldValue('billingCycleType') ?? 'CYCLE_UNSPECIFIED')
-
-  const [cycleDay, setCycleDay] = useState(form.getFieldValue('billingCycleDays'))
+  const enabled = Form.useWatch('consumptionControlEnabled', form)
+  const repeat = Form.useWatch('billingCycleRepeat',form)
+  const cycleType = Form.useWatch('billingCycleType', form)
 
   const repeatOptions = [{
     label: $t({ defaultMessage: 'One cycle' }),
@@ -90,36 +93,15 @@ export function DataConsumptionSettingForm () {
     value: true
   }]
 
-  useEffect(()=> {
-    if (dataCapacity === undefined) {
-      form.setFieldValue('dataCapacity', 0)
-    } else {
-      if (unit === ConsumptionUnit.MB) {
-        form.setFieldValue('dataCapacity', dataCapacity)
-      } else {
-        form.setFieldValue('dataCapacity', dataCapacity * 1000)
-      }
-    }
-  }, [unit, dataCapacity])
-
-  useEffect(()=>{
-    if (!repeat || cycleType !== 'CYCLE_NUM_DAYS') {
-      form?.setFieldValue('billingCycleDays', null)
-    } else {
-      form?.setFieldValue('billingCycleDays', cycleDay)
-    }
-  }, [cycleDay, cycleType, repeat])
-
   return(
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Data Consumption Settings' })}</StepsForm.Title>
       <StepsForm.FieldLabel width='200px'>
         {$t({ defaultMessage: 'Enable Data Consumption control' })}
         <Form.Item
-          name='consumptionSettingEnabled'
+          name='consumptionControlEnabled'
           valuePropName='checked'
-          initialValue={enabled}
-          children={<Switch onChange={(v)=>setEnabled(v)}/>}
+          children={<Switch/>}
         />
       </StepsForm.FieldLabel>
       {enabled &&
@@ -128,12 +110,22 @@ export function DataConsumptionSettingForm () {
                 name='dataCapacity'
                 required={true}
                 label={$t({ defaultMessage: 'Max Data Comsumption' })}
+                validateTrigger={['onBlur']}
+                rules={
+                  [
+                    { required: true },
+                    { validator: (_, value) => {
+                      if (!value) {
+                        return Promise.reject()
+                      }
+                      return Promise.resolve()
+                    } }
+                  ]
+                }
               >
                 <DataConsumptionSetting
-                  unit={unit}
-                  capacity={dataCapacity}
-                  onUnitChange={(u)=>setUnit(u)}
-                  onCapacityChange={(v)=>{setDataCapacity(v)}}
+                  capacity={form.getFieldValue('dataCapacity')}
+                  onChange={(v)=> form.setFieldValue('dataCapacity', v)}
                 />
               </Form.Item>
 
@@ -141,48 +133,64 @@ export function DataConsumptionSettingForm () {
                 name={'billingCycleRepeat'}
                 label={$t({ defaultMessage: 'Consumption Cycle' })}
                 required={true}
+                rules={
+                  [
+                    { required: true }
+                  ]
+                }
               >
                 <Select
                   placeholder={$t({ defaultMessage: 'Select...' })}
                   options={repeatOptions}
-                  value={repeat}
-                  onChange={(v)=>setRepeat(v)}
                 />
               </Form.Item>
 
-              <Form.Item>
+              <div>
                 {repeat &&
                 <Form.Item
                   style={{ float: 'left' }}
                   name={'billingCycleType'}
-                  label={$t({ defaultMessage: 'Recurring Schedule' })}>
+                  label={$t({ defaultMessage: 'Recurring Schedule' })}
+                >
                   <Select
                     placeholder={$t({ defaultMessage: 'Select...' })}
-                    value={cycleType}
-                    onChange={(v)=>setCycleType(v)}
                     options={cycleTypeOptions}/>
                 </Form.Item>}
                 {repeat && cycleType === 'CYCLE_NUM_DAYS' &&
                 <Form.Item
                   style={{ float: 'left', marginLeft: '5px' }}
                   name={'billingCycleDays'}
-                  label={' '}>
+                  required={true}
+                  label={' '}
+                  rules={
+                    [
+                      { required: true },
+                      { min: 1 }
+                    ]
+                  }
+                >
                   <InputNumber
                     min={1}
-                    value={cycleDay}
-                    onChange={(v)=> setCycleDay(v)}
+                    onChange={(v)=> form.setFieldValue('billingCycleDays', v)}
+                    value={form.getFieldValue('billingCycleDays')}
                   />
                   <span style={{ marginLeft: '5px' }}>{$t({ defaultMessage: 'Days' })}</span>
-                </Form.Item>}
-              </Form.Item>
+                </Form.Item>
+                }
+              </div>
 
               <Form.Item
                 name='dataCapacityEnforced'
                 required={true}
                 label={$t({ defaultMessage: 'Action for overage data' })}
+                initialValue={form.getFieldValue('dataCapacityEnforced')}
+                rules={
+                  [
+                    { required: true }
+                  ]
+                }
                 children={
                   <Select placeholder={'Select...'}
-                    value={form.getFieldValue('dataCapacityEnforced')}
                     options={dataCapacityEnforcedOptions}
                   />}/>
               <Form.Item/>

@@ -6,6 +6,7 @@ import { useIntl }                               from 'react-intl'
 import { StepsForm } from '@acx-ui/components'
 
 
+
 interface RateInputProps{
   enabled: boolean
   value?: number
@@ -25,13 +26,12 @@ function RateInput (props:RateInputProps) {
 
 interface RateSettingProps {
   label: string
-  checked: boolean
   rate?: number
   onChange: (value:number|undefined)=>void
 }
 function RateSetting (props:RateSettingProps) {
-  const [checked, setChecked] = useState(props.checked)
-  const [rate, setRate] = useState(props.rate)
+  const [checked, setChecked] = useState((props.rate ?? 0) > 0)
+  const [rate, setRate] = useState(props.rate ? props.rate : undefined)
   useEffect(()=>{
     props.onChange(rate)
   }, [rate])
@@ -63,13 +63,7 @@ function RateSetting (props:RateSettingProps) {
 export function DataRateSettingForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-
-  const [
-    rateLimitEnabled,
-    setRateLimitEnable
-  ] = useState(form.getFieldValue('rateLimitEnabled') ?? false)
-  const [uploadRateLimit, setUploadRateLimit] = useState(form.getFieldValue('uploadRate'))
-  const [downloadRateLimit, setDownloadRateLimit] = useState(form.getFieldValue('downloadRate'))
+  const rateLimitEnabled = Form.useWatch('rateLimitEnabled', form)
 
   return(<>
     <StepsForm.Title>{$t({ defaultMessage: 'Data Rate Settings' })}</StepsForm.Title>
@@ -78,8 +72,7 @@ export function DataRateSettingForm () {
       <Form.Item
         name='rateLimitEnabled'
         valuePropName='checked'
-        initialValue={rateLimitEnabled}
-        children={<Switch onChange={()=>setRateLimitEnable(!rateLimitEnabled)} />}
+        children={<Switch/>}
       />
     </StepsForm.FieldLabel>
     {rateLimitEnabled &&
@@ -87,16 +80,14 @@ export function DataRateSettingForm () {
               <Form.Item name='uploadRate'>
                 <RateSetting
                   label={$t({ defaultMessage: 'Total Upload limit' })}
-                  checked={(uploadRateLimit ?? 0 ) > 0}
-                  onChange={(v)=>setUploadRateLimit(v)}
-                  rate={uploadRateLimit}></RateSetting>
+                  onChange={(v)=>form.setFieldValue('uploadRate', v)}
+                  rate={form.getFieldValue('uploadRate')}></RateSetting>
               </Form.Item>
               <Form.Item name='downloadRate'>
                 <RateSetting
                   label={$t({ defaultMessage: 'Total Download limit' })}
-                  checked={(downloadRateLimit ?? 0 ) > 0}
-                  onChange={(v)=>setDownloadRateLimit(v)}
-                  rate={downloadRateLimit}></RateSetting>
+                  onChange={(v)=>form.setFieldValue('downloadRate', v)}
+                  rate={form.getFieldValue('downloadRate')}></RateSetting>
               </Form.Item>
             </>
     }
