@@ -1,10 +1,9 @@
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { RulesManagementUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { AccessCondition, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { mockServer, render, screen }               from '@acx-ui/test-utils'
 
 import { assignConditions, attributeList } from './__test__/fixtures'
 import { AccessConditionDrawer }           from './AccessConditionDrawer'
@@ -20,11 +19,6 @@ describe('AccessConditionDrawer', () => {
   })
 
   it('should cancel the drawer successfully', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-
     render(
       <Provider>
         <AccessConditionDrawer
@@ -32,8 +26,8 @@ describe('AccessConditionDrawer', () => {
           setVisible={jest.fn()}
           isEdit={false}
           setAccessConditions={jest.fn()}
-          settingForm={formRef.current}
-        />
+          templateId={200}
+          accessConditions={[] as AccessCondition []}/>
       </Provider>,
       {
         route: { params: {
@@ -48,10 +42,6 @@ describe('AccessConditionDrawer', () => {
   })
 
   it('should render drawer with the giving data', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
 
     render(
       <Provider>
@@ -60,8 +50,9 @@ describe('AccessConditionDrawer', () => {
           setVisible={jest.fn()}
           isEdit={true}
           setAccessConditions={jest.fn()}
+          templateId={200}
           editCondition={assignConditions.content[0]}
-          settingForm={formRef.current}/>
+          accessConditions={[] as AccessCondition []}/>
       </Provider>,
       {
         route: { params: {
