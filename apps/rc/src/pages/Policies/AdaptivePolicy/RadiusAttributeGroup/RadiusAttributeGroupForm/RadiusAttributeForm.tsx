@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { Key, useEffect, useState } from 'react'
 
-import { Form, FormInstance, Input, Select, Space, TreeSelect } from 'antd'
-import {  useIntl }                                             from 'react-intl'
+import { Form, FormInstance, Input, Select, TreeSelect } from 'antd'
+import {  useIntl }                                      from 'react-intl'
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { useLazyRadiusAttributeListWithQueryQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
@@ -17,6 +17,8 @@ import {
 import { validationMessages } from '@acx-ui/utils'
 
 import { AttributeOperationLabelMapping } from '../../../contentsMap'
+
+import { FieldSpace } from './styledComponents'
 
 interface RadiusAttributeFormProps {
   form: FormInstance,
@@ -38,6 +40,8 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const dataType = Form.useWatch('dataType', form)
 
   const [treeSelectValue, setTreeSelectValue] = useState<string | undefined>(undefined)
+
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
 
   useEffect(()=>{
     if(radiusAttributeVendorListQuery.data) {
@@ -92,26 +96,30 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }
 
   const getAttributeDataType = (attributeName: string) => {
-    let dataType
+    return getAttribute(attributeName)?.dataType
+  }
+
+  const getAttribute = (attributeName: string) : treeNode | undefined => {
+    let findAttribute
     attributeTreeData.forEach(node => {
       if(node.children) {
         const attribute = node.children.find(node => node.value === attributeName)
         if(attribute) {
-          dataType = attribute.dataType
+          findAttribute = attribute
         }
       }
     })
-    return dataType
+    return findAttribute
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const attributeValueValidator = async (value: any) => {
     let result = true
-    if(dataType === DataType.INTEGER || dataType === DataType.BYTE) {
+    if(dataType === DataType.INTEGER || dataType === DataType.BYTE || dataType === DataType.SHORT) {
       result = !isNaN(value)
-    } else if(dataType === DataType.IPADDR){
+    } else if(dataType === DataType.IPADDR || dataType === DataType.COMBO_IP){
       return cliIpAddressRegExp(value)
-    } else if(dataType === DataType.IPV6ADDR){
+    } else if(dataType === DataType.IPV6ADDR || dataType === DataType.IPV6PREFIX){
       return ipv6RegExp(value)
     }
     return result ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
@@ -127,25 +135,60 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
         >
           <Form.Item>
             <TreeSelect
+              showArrow={false}
               showSearch
               value={treeSelectValue}
               placeholder={$t({ defaultMessage: 'Select attribute type' })}
               treeData={attributeTreeData}
               loadData={onLoadData}
+              onSearch={(value) => {
+                if(!getAttribute(value)) {
+                  setTreeSelectValue(undefined)
+                  form.setFieldsValue({ attributeName: undefined })
+                }
+
+                // expand the node if children match the search string
+                if(value.length > 1) {
+                  const matchedExpandedKeys = [] as string []
+                  attributeTreeData.forEach(node => {
+                    if(node.children && node.children.length > 0) {
+                      const nodeKey = node.value
+                      // eslint-disable-next-line max-len
+                      if(node.children.find(attr => attr.value.includes(value)) && expandedKeys.indexOf(nodeKey) === -1)
+                        matchedExpandedKeys.push(nodeKey)
+                    }
+                  })
+                  setExpandedKeys([...expandedKeys, ...matchedExpandedKeys])
+                }
+              }}
               onChange={(value) => {
                 if(!value) return
                 setTreeSelectValue(value)
                 form.setFieldsValue({ attributeName: value, dataType: getAttributeDataType(value) })
               }}
+              treeExpandedKeys={expandedKeys}
+              onTreeExpand={(nodeKeys: Key []) =>{
+                // Loading attribute data if the nodes don't have the children
+                nodeKeys.filter(key => {
+                  const node = attributeTreeData.find(node => node.value === key)
+                  if(!node) return false
+                  return (!node.children || node.children.length === 0)
+                }).forEach(key => onLoadData({ value: key }))
+
+                setExpandedKeys([...nodeKeys])
+              }}
+              onDropdownVisibleChange={(open) => {
+                if(!open) setExpandedKeys([])
+              }}
             />
           </Form.Item>
         </Form.Item>
         <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
-          <Space direction='horizontal'>
+          <FieldSpace>
             <Form.Item name='operator' initialValue={OperatorType.ADD}>
               <Select
                 options={Object.keys(OperatorType).map(option =>
-                // eslint-disable-next-line max-len
+                  // eslint-disable-next-line max-len
                   ({ label: $t(AttributeOperationLabelMapping[option as OperatorType]), value: option }))}>
               </Select>
             </Form.Item>
@@ -154,7 +197,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
                 { required: true },
                 { validator: (_, value) => attributeValueValidator(value) }]}
               children={<Input/>}/>
-          </Space>
+          </FieldSpace>
         </Form.Item>
         <Form.Item name='dataType' hidden children={<Input/>}/>
       </Form>
