@@ -110,7 +110,7 @@ function convertToMeshTopologyDevice (
 }
 
 function isApUnplaced (apMesh: FloorPlanMeshAP): boolean {
-  return _.isUndefined(apMesh.floorplanId)
+  return _.isUndefined(apMesh.floorplanId) || _.isEmpty(apMesh.floorplanId)
 }
 
 function filterByFloorplan (
