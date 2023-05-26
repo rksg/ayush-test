@@ -58,12 +58,14 @@ const DefaultSystemLanguageFormItem = () => {
             showSearch
             optionFilterProp='children'
             disabled={isUpdatingPreference || isLoadingPreference}
-            style={{textTransform: 'capitalize'}}
+            style={{ textTransform: 'capitalize' }}
           >
             {supportedLangs.map(({ label, value }) =>
               (<Select.Option
-                style={{textTransform: 'capitalize'}}
-                value={value} key={value} children={label}/>)
+                style={{ textTransform: 'capitalize' }}
+                value={value}
+                key={value}
+                children={label}/>)
             )}
           </Select>
 
