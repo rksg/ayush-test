@@ -226,7 +226,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
   const downloadPersona = () => {
     downloadCsv({
-      params: { groupId: personaGroupId },
       payload: personaListQuery.payload
     }).unwrap().catch((error) => {
       console.log(error) // eslint-disable-line no-console

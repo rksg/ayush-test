@@ -364,6 +364,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   )
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const [enableGuestUnit]
+    = useState(propertyConfigsQuery.data?.unitConfig?.guestAllowed)
   const [personaGroupId, setPersonaGroupId]
     = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
 
@@ -672,11 +674,13 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               label={$t({ defaultMessage: 'DPSK Passphrase' })}
               children={<Input />}
             />
-            <Form.Item
-              name={['guestPersona', 'dpskPassphrase']}
-              label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
-              children={<Input />}
-            />
+            {enableGuestUnit &&
+              <Form.Item
+                name={['guestPersona', 'dpskPassphrase']}
+                label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
+                children={<Input />}
+              />
+            }
             <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
               <Form.Item
                 noStyle
@@ -692,16 +696,19 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               </Form.Item>
             </Form.Item>
 
-            <StepsFormLegacy.FieldLabel width={'160px'}>
-              {$t({ defaultMessage: 'Separate VLAN for guests' })}
-              <Form.Item
-                style={{ marginBottom: '10px' }}
-                name={'enableGuestVlan'}
-                valuePropName={'checked'}
-                children={<Switch />}
-              />
-            </StepsFormLegacy.FieldLabel>
-            {enableGuestVlan &&
+            {enableGuestUnit &&
+              <StepsFormLegacy.FieldLabel width={'160px'}>
+                {$t({ defaultMessage: 'Separate VLAN for guests' })}
+                <Form.Item
+                  style={{ marginBottom: '10px' }}
+                  name={'enableGuestVlan'}
+                  valuePropName={'checked'}
+                  children={<Switch />}
+                />
+              </StepsFormLegacy.FieldLabel>
+            }
+
+            {enableGuestUnit && enableGuestVlan &&
               <Form.Item
                 name={['guestPersona', 'vlan']}
                 rules={[{

@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,

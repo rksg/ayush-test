@@ -2786,16 +2786,6 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
-export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
-  status: PropertyConfigStatus.ENABLED,
-  personaGroupId: 'persona-group-id-noNSG'
-}
-
-export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
-  status: PropertyConfigStatus.ENABLED,
-  personaGroupId: 'persona-group-id-NSG'
-}
-
 export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
   pageable: defaultPageable,
   sort: defaultPageable.sort,
@@ -2807,6 +2797,32 @@ export const mockResidentPortalProfileList: NewTableResult<ResidentPortal> = {
       name: 'resident-portal-profile-name-1'
     }
   ]
+}
+
+export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'persona-group-id-NSG',
+  residentPortalId: mockResidentPortalProfileList.content[0].id,
+  unitConfig: {
+    type: 'unitConfig',
+    guestAllowed: false,
+    residentPortalAllowed: true,
+    useMaxUnitCount: false,
+    maxUnitCount: 1
+  }
+}
+
+export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'persona-group-id-noNSG',
+  residentPortalId: mockResidentPortalProfileList.content[0].id,
+  unitConfig: {
+    type: 'unitConfig',
+    guestAllowed: true,
+    residentPortalAllowed: true,
+    useMaxUnitCount: false,
+    maxUnitCount: 1
+  }
 }
 
 // export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
