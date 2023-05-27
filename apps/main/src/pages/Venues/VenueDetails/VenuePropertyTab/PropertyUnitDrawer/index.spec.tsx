@@ -138,16 +138,6 @@ describe('Property Unit Drawer', () => {
     await userEvent.type(residentField, 'new resident name test')
 
     await screen.findByLabelText('Connection Metering')
-    const meteringSelect = await screen.findByLabelText('Connection Metering')
-    for (let i = 0; i < mockConnectionMeterings.length; i ++) {
-      await userEvent.click(meteringSelect)
-      await userEvent.click(await screen.findByText(mockConnectionMeterings[i].name))
-      await screen.findByText('Rate limiting')
-      await screen.findByText('Data comsumption')
-      await screen.findByText('Expiration Date of Data Consumption')
-    }
-
-    await screen.findByPlaceholderText('Select date')
 
     const buttons = await screen.findAllByRole('button', { name: 'Add' })
     expect(buttons.length).toEqual(2)
@@ -168,6 +158,9 @@ describe('Property Unit Drawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByLabelText(/unit name/i)
     await screen.findByText('Separate VLAN for guests')
+
+    await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
+    await userEvent.click(await screen.findByText(mockConnectionMeterings[3].name))
 
     const saveBtn = await screen.findByRole('button', { name: /save/i })
     await screen.findByText('Rate limiting')
@@ -193,6 +186,9 @@ describe('Property Unit Drawer', () => {
     await screen.findByText('Rate limiting')
     await screen.findByText('Data comsumption')
     await screen.findByText('Expiration Date of Data Consumption')
+
+    await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
+    await userEvent.click(await screen.findByText(mockConnectionMeterings[1].name))
     const saveBtn = await screen.findByRole('button', { name: /save/i })
     await userEvent.click(saveBtn)
   })
