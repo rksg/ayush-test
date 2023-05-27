@@ -6,12 +6,23 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { Loader, showActionModal,  Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import {
+  Loader,
+  showActionModal,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import {
+  Features,
+  useIsSplitOn
+}                                from '@acx-ui/feature-toggle'
 import {
   WarningTriangleSolid
 } from '@acx-ui/icons'
-import { CsvSize, ImportFileDrawer }      from '@acx-ui/rc/components'
+import { 
+  CsvSize,
+  ImportFileDrawer 
+}      from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
