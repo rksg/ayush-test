@@ -21,7 +21,7 @@ import {
 } from '@acx-ui/icons'
 import { 
   CsvSize,
-  ImportFileDrawer 
+  ImportFileDrawer
 }      from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
