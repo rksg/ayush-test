@@ -27,7 +27,7 @@ export const ServiceInfo = styled((props: BasicInfoProps) => {
       }
     </Card>
   )
-})`${UI.textAlign}`
+})`${UI.textStyle}`
 
 const Content = ({ data, colPerRow = 8, className }: BasicInfoProps) => (
   <GridRow className={className}>
@@ -37,7 +37,7 @@ const Content = ({ data, colPerRow = 8, className }: BasicInfoProps) => (
           <Typography.Text>
             {typeof item.title === 'function' ? item.title() : item.title}
           </Typography.Text>
-          <Typography.Text>
+          <Typography.Text className='text-color'>
             {typeof item.content === 'function' ? item.content() : item.content}
           </Typography.Text>
         </Space>

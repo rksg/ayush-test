@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components'
 
-export const textAlign = css`
-  .text-align-1 {
-    display: inline-block;
-    vertical-align: top;
+export const textStyle = css`
+  .text-color {
+    color: var(--acx-neutrals-60)
+  }
 `
 
 export const InfoMargin = styled.div`

@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import styled      from 'styled-components'
 
 import { Loader, Tooltip }                                                                                                                                                                            from '@acx-ui/components'
 import { useApListQuery, useGetEdgeDhcpServiceQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery, useGetPersonaGroupByIdQuery, useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
@@ -12,9 +13,12 @@ import * as UI from './styledComponents'
 
 interface NetworkSegmentationServiceInfoProps {
   nsgId: string
+  className?: string
 }
 
-export const NetworkSegmentationServiceInfo = (props: NetworkSegmentationServiceInfoProps) => {
+export const NetworkSegmentationServiceInfo = styled((
+  props: NetworkSegmentationServiceInfoProps
+) => {
 
   const { nsgId } = props
   const { $t } = useIntl()
@@ -160,7 +164,7 @@ export const NetworkSegmentationServiceInfo = (props: NetworkSegmentationService
     {
       title: () => (
         <>
-          <span className='text-align-1'>{$t({ defaultMessage: 'Tunnel' })}</span>
+          <span className='text-align'>{$t({ defaultMessage: 'Tunnel' })}</span>
           <Tooltip
             title={tunnelTooltipMsg}
             placement='bottom'
@@ -207,7 +211,7 @@ export const NetworkSegmentationServiceInfo = (props: NetworkSegmentationService
       isDhcpLoading || isTunnelLoading || isPersonaGroupLoading,
       isLoading: false
     }]}>
-      <ServiceInfo data={nsgInfo} />
+      <ServiceInfo className={props.className} data={nsgInfo} />
     </Loader>
   )
-}
+})`${UI.textAlign}`
