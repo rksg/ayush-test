@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-
 import Icon        from '@ant-design/icons'
 import { useIntl } from 'react-intl'
 
 import { Tooltip }           from '@acx-ui/components'
 import { ApVenueStatusEnum } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import { DASHBOARD_GMAP_FILTER_KEY } from './helper'
+import * as UI                       from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -30,16 +30,21 @@ interface VenueFilterControlBoxProps {
 
 export default function VenueFilterControlBox (props: VenueFilterControlBoxProps) {
   const { $t } = useIntl()
-  const [ filter, setFilter ] = useState<FilterState>({
-    [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
-    [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
-    [ApVenueStatusEnum.IN_SETUP_PHASE]: true,
-    [ApVenueStatusEnum.OPERATIONAL]: true
-  })
+  const savedFilterState = localStorage.getItem(DASHBOARD_GMAP_FILTER_KEY)
+  const defaultFilter: FilterState = savedFilterState
+    ? JSON.parse(savedFilterState)
+    : {
+      [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
+      [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
+      [ApVenueStatusEnum.IN_SETUP_PHASE]: true,
+      [ApVenueStatusEnum.OPERATIONAL]: true
+    }
+  const [ filter, setFilter ] = useState<FilterState>(defaultFilter)
 
   function onChange (e: CheckboxChangeEvent) {
     filter[e.target.name!] = !filter[e.target.name!]
     setFilter(filter)
+    localStorage.setItem(DASHBOARD_GMAP_FILTER_KEY, JSON.stringify(filter))
     props.onChange({ key: e.target.name!, value: filter[e.target.name!] })
   }
 

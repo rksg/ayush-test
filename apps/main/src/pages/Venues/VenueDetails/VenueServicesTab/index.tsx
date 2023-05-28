@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Tabs }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { useGetEdgeListQuery }     from '@acx-ui/rc/services'
-import { PolicyType, ServiceType } from '@acx-ui/rc/utils'
+import { Tabs }                       from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useGetEdgeListQuery }        from '@acx-ui/rc/services'
+import { PolicyType, ServiceType }    from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -18,7 +18,7 @@ import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
   const { venueId } = useParams()
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const { $t } = useIntl()
 
   // get edge by venueId, use 'firewallId' in edge data

@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { Tabs }         from '@acx-ui/components'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { Tabs }             from '@acx-ui/components'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }         from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -57,7 +57,7 @@ describe('Venue service tab', () => {
 
   describe('when edge feature flag is off', () => {
     it('should not render edge related tab', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      jest.mocked(useIsTierAllowed).mockReturnValue(false)
 
       render(
         <Provider>
@@ -72,7 +72,7 @@ describe('Venue service tab', () => {
 
   describe('when edge feature flag is on', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
     })
 
     it('should not render firewall tab when there is no edge on venue', async () => {

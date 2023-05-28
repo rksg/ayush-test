@@ -1,10 +1,10 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Table, TableProps }                                       from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListByQueryQuery }             from '@acx-ui/rc/services'
-import { AttributeAssignment, checkObjectNotExists, OperatorType } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
+import { Table, TableProps }                                                              from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListByQueryQuery }                                    from '@acx-ui/rc/services'
+import { AttributeAssignment, checkObjectNotExists, defaultSort, OperatorType, sortProp } from '@acx-ui/rc/utils'
+import { useParams }                                                                      from '@acx-ui/react-router-dom'
 
 import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
@@ -15,12 +15,14 @@ function useColumns () {
     {
       key: 'name',
       title: $t({ defaultMessage: 'RADIUS Attribute' }),
-      dataIndex: 'attributeName'
+      dataIndex: 'attributeName',
+      sorter: { compare: sortProp('attributeName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Attribute Value' }),
       key: 'attributeValue',
       dataIndex: 'attributeValue',
+      sorter: { compare: sortProp('attributeValue', defaultSort) },
       render: function (data, row) {
         // eslint-disable-next-line max-len
         return `${$t(AttributeOperationLabelMapping[row.operator as OperatorType])} '${row.attributeValue}'`
@@ -87,7 +89,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
   return (
     <>
       <Form.Item name='name'
-        label={$t({ defaultMessage: 'Policy Name' })}
+        label={$t({ defaultMessage: 'Group Name' })}
         rules={[
           { required: true },
           { validator: (_, value) => nameValidator(value) }

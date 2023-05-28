@@ -169,8 +169,8 @@ describe('Persona Group Table', () => {
 
     mockServer.use(
       rest.post(
-        // eslint-disable-next-line max-len
-        PersonaUrls.exportPersonaGroup.url.replace('?timezone=:timezone&date-format=:dateFormat', ''),
+        replacePagination(PersonaUrls.exportPersonaGroup.url
+          .replace('&timezone=:timezone&date-format=:dateFormat', '')),
         (req, res, ctx) => {
           const headers = req.headers['headers']
 
