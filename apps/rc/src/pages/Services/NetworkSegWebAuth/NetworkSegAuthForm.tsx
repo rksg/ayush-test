@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import {
   Form,
   Input,
   Space
 } from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Button,
@@ -16,48 +16,20 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
-  useGetWebAuthTemplateQuery,
   useCreateWebAuthTemplateMutation,
+  useGetWebAuthTemplateQuery,
   useUpdateWebAuthTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  getServiceListRoutePath,
   LocationExtended,
-  redirectPreviousPage,
-  WebAuthTemplate
+  WebAuthTemplate,
+  defaultTemplateData,
+  getServiceListRoutePath,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
-
-export const defaultTemplateData = {
-  webAuthCustomTop: {
-    label: defineMessage({ defaultMessage: 'Header' }),
-    defaultMessage:
-      defineMessage({ defaultMessage: 'Welcome to Ruckus Networks Web Authentication Homepage' })
-  },
-  webAuthCustomTitle: {
-    label: defineMessage({ defaultMessage: 'Title' }),
-    defaultMessage:
-      defineMessage({ defaultMessage: 'Enter your Password below and press the button' })
-  },
-  webAuthPasswordLabel: {
-    label: defineMessage({ defaultMessage: 'Password Label' }),
-    defaultMessage: defineMessage({ defaultMessage: 'DPSK Password' })
-  },
-  webAuthCustomLoginButton: {
-    label: defineMessage({ defaultMessage: 'Button' }),
-    defaultMessage: defineMessage({ defaultMessage: 'Login' })
-  },
-  webAuthCustomBottom: {
-    label: defineMessage({ defaultMessage: 'Footer' }),
-    defaultMessage:
-      defineMessage({ defaultMessage: `This network is restricted to authorized users only.
-      Violators may be subjected to legal prosecution.
-      Acitvity on this network is monitored and may be used as evidence in a court of law.
-      \u00A9 {year} CommScope, Inc. All Rights Reserved.` })
-  }
-}
 
 export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: boolean } ) {
   const { $t } = useIntl()

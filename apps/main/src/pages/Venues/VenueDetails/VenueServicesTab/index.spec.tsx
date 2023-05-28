@@ -105,7 +105,7 @@ describe('Venue service tab', () => {
         expect(mockedGetEdgeListFn).toBeCalled()
       })
 
-      expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(6)
+      expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(7)
     })
 
     it('should not render firewall tab when firewall service did not apply on edge', async () => {
@@ -142,7 +142,7 @@ describe('Venue service tab', () => {
         expect(mockedGetEdgeListFn).toBeCalled()
       })
 
-      expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(6)
+      expect((await screen.findAllByTestId(/rc-tabpane-/)).length).toBe(7)
     })
 
     it('should correctly render', async () => {
