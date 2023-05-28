@@ -75,7 +75,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('SkyWifiRadSec'))[0])
     await userEvent.click((await screen.findAllByTitle('SkyWifiRadSec'))[0])
-    await userEvent.click((await screen.findAllByTitle('Other provider'))[0])
+    await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
     const providerNameInput = await screen.findByLabelText(/Provider Name/)
     fireEvent.change(providerNameInput, { target: { value: 'namep1' } })
     fireEvent.blur(providerNameInput)
@@ -116,5 +116,32 @@ describe('CaptiveNetworkForm-WISPr', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable the encryption for users’ MAC and IP addresses/ }))
     // await userEvent.click(await screen.findByText('More details'))
+  })
+
+  it('WISPr always accept test case', async ()=>{
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{ editMode: true, cloneMode: true, data: wisprDataWPA2 }}>
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <WISPrForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
+    await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
+    await screen.findByText('Authentication Connections')
+    await userEvent.click((await screen.findByTestId('bypasscna_checkbox')))
+    expect(await screen.findByTestId('bypasscna_checkbox')).not.toBeDisabled()
+    expect((await screen.findByTestId('always_accept'))).not.toBeDisabled()
+    await userEvent.click((await screen.findByTestId('always_accept')))
+    expect(await screen.findByTestId('bypasscna_checkbox')).toBeDisabled()
+    expect(await screen.findByTestId('radius_server_selection')).toHaveClass('ant-select-disabled')
+    expect(await screen.findByTestId('radius')).not.toBeDisabled()
   })
 })

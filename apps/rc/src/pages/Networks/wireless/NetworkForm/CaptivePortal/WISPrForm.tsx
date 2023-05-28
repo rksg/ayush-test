@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState, useReducer, createContext } from 'react'
+import { useContext, useEffect, useRef, useState, useReducer } from 'react'
 
 import {
   Form,
@@ -382,6 +382,7 @@ export function WISPrForm () {
           initialValue={true}
           children={
             <Checkbox
+              data-testid='bypasscna_checkbox'
               disabled={state.isDisabled.BypassCNA}
               onChange={(e)=>{e.target.checked ?
                 dispatch(statesCollection.useBypassCNAAndAuth) :
@@ -416,13 +417,14 @@ export function WISPrForm () {
           enableDefaultWalledGarden={false} />
         {!regionOption &&
          isOtherProvider &&
-         <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
-           <WISPrAuthAccServer
-             onClickAuth={() => dispatch(statesCollection.useOnlyAuth)}
-             onClickAllAccept={() => dispatch(statesCollection.useAllAccept)}
-           />
-         </WISPrAuthAccContext.Provider>
-        //  (enableWISPRAlwaysAccept? null : <AuthAccServerSetting/>)}
+         (enableWISPRAlwaysAccept ?
+           <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
+             <WISPrAuthAccServer
+               onClickAuth={() => dispatch(statesCollection.useOnlyAuth)}
+               onClickAllAccept={() => dispatch(statesCollection.useAllAccept)}
+             />
+           </WISPrAuthAccContext.Provider>
+           : <AuthAccServerSetting/>)
         }
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}

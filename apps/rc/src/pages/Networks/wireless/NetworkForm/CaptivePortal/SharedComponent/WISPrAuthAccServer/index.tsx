@@ -89,6 +89,7 @@ onClickAllAccept: () => void
           <Radio.Group>
             <Space direction='vertical'>
               <Radio value={'RADIUS'}
+                data-testid='radius'
                 onChange={() => {props.onClickAuth()}}>
                   Authenticate Connections
               </Radio>
@@ -114,6 +115,7 @@ onClickAllAccept: () => void
                         <Select
                           style={{ width: 210 }}
                           disabled={context.state.isDisabled.Auth}
+                          data-testid='radius_server_selection'
                           onChange={(value)=>{
                           // eslint-disable-next-line max-len
                             form.setFieldValue('authRadius' ,aaaData?.filter(d => d.id === value)[0])}}
@@ -143,6 +145,7 @@ onClickAllAccept: () => void
                 </Form.Item>
               </Space>
               <Radio
+                data-testid='always_accept'
                 value={'ALWAYS_ACCEPT'}
                 disabled={context.state.isDisabled.AllAccept}
                 onChange={() => {props.onClickAllAccept()}}>
