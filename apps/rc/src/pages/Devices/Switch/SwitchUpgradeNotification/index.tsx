@@ -1,7 +1,10 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
+
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'
@@ -17,6 +20,8 @@ export enum SWITCH_UPGRADE_NOTIFICATION_TYPE {
 }
 
 export function SwitchUpgradeNotification (props: {
+    switchModel?: string,
+    stackUnitsMinLimitaion?: number,
     isDisplay: boolean,
     isDisplayHeader: boolean,
     type: SWITCH_UPGRADE_NOTIFICATION_TYPE,
@@ -28,7 +33,9 @@ export function SwitchUpgradeNotification (props: {
     isDisplay,
     isDisplayHeader,
     type,
-    validateModel } = props
+    validateModel,
+    stackUnitsMinLimitaion,
+    switchModel } = props
 
   const targetVersion = '09.0.10e'
   const upgradeDescription = {
@@ -63,6 +70,7 @@ export function SwitchUpgradeNotification (props: {
   //TODO: Check style with UX WarningTriangleSolid or WarningTriangleOutlined
   const icon = isNeedUpgrade ? <UI.WarningTriangle /> : ''
   const content = upgradeDescription[type][descriptionIndex]
+  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
   return isDisplay ? <UI.UpgradeNotification >
     <UI.Wrapper>
@@ -72,8 +80,13 @@ export function SwitchUpgradeNotification (props: {
           <UI.ValidateModel>{validateModel[0]}</UI.ValidateModel>
         </UI.Header>
       }
-
       <UI.Content>
+        {enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel) &&
+          <div>{$t({ defaultMessage: 'For the {model} series, a stack may hold up to' }, { model: switchModel?.split('-')[0] })}
+            <UI.MinFwVersion>{$t({ defaultMessage: '{minStackes} switches' }, { minStackes: stackUnitsMinLimitaion })}</UI.MinFwVersion> </div>
+        }
+
+
         {$t({ defaultMessage: 'Minimum firmware version: ' })}
         <UI.MinFwVersion>{content.minFirmwareVersion}</UI.MinFwVersion><br/>
         {content.description}<br/>

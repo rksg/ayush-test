@@ -1,4 +1,4 @@
-import { ApiInfo } from '../../apiService'
+import { ApiInfo } from '@acx-ui/utils'
 
 const attributeGroupsBaseUrl = '/radiusAttributeGroups'
 const attributeBaseUrl = '/radiusAttributes'
@@ -59,21 +59,21 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   createAssignment: {
     method: 'post',
     newApi: true,
-    url: attributeBaseUrl + '/:policyId/assignments'
+    url: attributeGroupsBaseUrl + '/:policyId/assignments'
   },
   getAssignment: {
     method: 'get',
     newApi: true,
-    url: attributeBaseUrl + '/:policyId/assignments/:assignmentId'
+    url: attributeGroupsBaseUrl + '/:policyId/assignments/:assignmentId'
   },
   deleteAssignment: {
     method: 'delete',
     newApi: true,
-    url: attributeBaseUrl + '/:policyId/assignments/:assignmentId'
+    url: attributeGroupsBaseUrl + '/:policyId/assignments/:assignmentId'
   },
   getAssignments: {
     method: 'get',
     newApi: true,
-    url: attributeBaseUrl + '/:policyId/assignments' + paginationParams
+    url: attributeGroupsBaseUrl + '/:policyId/assignments' + paginationParams
   }
 }

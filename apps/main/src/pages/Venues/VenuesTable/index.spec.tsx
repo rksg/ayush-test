@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }   from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
@@ -100,7 +100,7 @@ describe('Venues Table', () => {
   })
 
   it('should have edge column when feature flag on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>
@@ -114,7 +114,7 @@ describe('Venues Table', () => {
   })
 
   it('should not have edge column when feature flag off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
 
     render(
       <Provider>
@@ -128,7 +128,7 @@ describe('Venues Table', () => {
   })
 
   it('should have correct edge device quantity', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>
