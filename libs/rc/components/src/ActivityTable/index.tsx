@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 
+import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { Features, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
@@ -88,7 +90,12 @@ const ActivityTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Activity>()
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
+
+  const excludeProduct = [
+    ...(!isEdgeEnabled ? ['EDGE'] : [])
+  ]
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -132,7 +139,8 @@ const ActivityTable = ({
         return msg
       },
       filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
-        && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
+        && Object.entries(omit(productMapping, excludeProduct))
+          .map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'name',

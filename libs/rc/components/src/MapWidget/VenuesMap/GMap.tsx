@@ -5,7 +5,8 @@ import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
 import { RawIntlProvider, useIntl }               from 'react-intl'
 
-import { VenueMarkerOptions } from '@acx-ui/rc/utils'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { VenueMarkerOptions }         from '@acx-ui/rc/utils'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -45,6 +46,8 @@ const GMap: React.FC<MapProps> = ({
   const [map, setMap] = React.useState<google.maps.Map>()
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
   const [venueInfoWindow, setVenueInfoWindow] = React.useState<google.maps.InfoWindow>()
+  // whether to display edge on marker tooltip
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   React.useEffect(() => {
     if (ref.current) {
@@ -133,6 +136,7 @@ const GMap: React.FC<MapProps> = ({
               <VenueMarkerTooltip
                 venueMarker={venueMarker}
                 onNavigate={onNavigate}
+                isEdgeEnabled={isEdgeEnabled}
               />
             </RawIntlProvider>
           )
@@ -165,28 +169,29 @@ const GMap: React.FC<MapProps> = ({
       })
 
       const visibleMarkers = markers.filter(marker => marker.getVisible())
-      if (visibleMarkers && visibleMarkers.length > 0) {
-        if(cluster){
-          if (!markerClusterer) {
-            setMarkerClusterer(new MarkerClusterer({
-              map,
-              markers: visibleMarkers,
-              renderer: new VenueClusterRenderer(map, intl, onNavigate),
-              algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
-              onClusterClick: onClusterClick
-            }))
-          } else {
-            markerClusterer.clearMarkers()
-            markerClusterer.addMarkers(visibleMarkers)
-          }
+      if(cluster && markers.length > 0) {
+        if (!markerClusterer) {
+          setMarkerClusterer(new MarkerClusterer({
+            map,
+            markers: visibleMarkers,
+            renderer: new VenueClusterRenderer(map, intl, isEdgeEnabled, onNavigate),
+            algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
+            onClusterClick: onClusterClick
+          }))
+        } else {
+          markerClusterer.clearMarkers()
+          markerClusterer.addMarkers(visibleMarkers)
         }
-        // Set bounds so all markers are visible
-        const bounds = new google.maps.LatLngBounds()
-        visibleMarkers.map((marker) => bounds.extend(marker.getPosition()!))
-        map.fitBounds(bounds)
-        map.setCenter(bounds.getCenter())
       }
+      // Set bounds so all markers are visible
+      const bounds = new google.maps.LatLngBounds()
+      visibleMarkers.length > 0
+        ? visibleMarkers.map((marker) => bounds.extend(marker.getPosition()!))
+        : markers.map((marker) => bounds.extend(marker.getPosition()!))
+      map.fitBounds(bounds)
+      map.setCenter(bounds.getCenter())
     }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, cluster, onClusterClick, venues])
 

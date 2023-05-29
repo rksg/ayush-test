@@ -49,7 +49,7 @@ describe('DataStudio', () => {
   it('should get the correct hostname for dev env', async () => {
     const oldEnv = process.env
     process.env = { NODE_ENV: 'development' }
-    expect(getHostName(window.location.origin)).toBe('https://devalto.ruckuswireless.com')
+    expect(getHostName(window.location.origin)).toBe('https://dev.ruckus.cloud')
     process.env = oldEnv
   })
   it('should get the correct hostname for prod and non MSP env', async () => {

@@ -59,12 +59,12 @@ const defaultSorter = {
   sortOrder: 'DESC'
 }
 
-const eventDefaultFilters = {
+export const eventDefaultFilters = {
   entity_type: Object.keys(eventTypeMapping)
 }
 
 export const eventDefaultSearch = {
-  searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+  searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac', 'switchMacAddress']
 }
 
 const adminLogsDefaultFilters = {

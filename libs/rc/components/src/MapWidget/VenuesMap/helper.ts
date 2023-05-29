@@ -14,6 +14,8 @@ import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+export const DASHBOARD_GMAP_FILTER_KEY = 'dashboard-gmap-filter'
+
 const apStatusMap = {
   [ApVenueStatusEnum.REQUIRES_ATTENTION]: defineMessage({
     defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention'
@@ -31,11 +33,11 @@ const apStatusMap = {
     defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
   })
 }
+
 export const getAPStatusDisplayName = (label: ApVenueStatusEnum, showSeverity: boolean = true) => {
   const { $t } = getIntl()
   return $t(apStatusMap[label], { showSeverity })
 }
-
 
 const switchStatusMap = {
   [SwitchStatusEnum.OPERATIONAL]: defineMessage({ defaultMessage: 'Operational' }),
@@ -45,6 +47,7 @@ const switchStatusMap = {
   [SwitchStatusEnum.APPLYING_FIRMWARE]: defineMessage({ defaultMessage: 'In Setup Phase' }),
   default: defineMessage({ defaultMessage: 'In Setup Phase' })
 }
+
 export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
   const { $t } = getIntl()
   return $t(_.get(switchStatusMap, switchStatus, switchStatusMap.default))
@@ -67,11 +70,11 @@ const edgeStatusMap = {
     defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
   })
 }
+
 export const getEdgeStatusDisplayName = (label: EdgeStatusSeverityEnum, showSeverity: boolean = true) => {
   const { $t } = getIntl()
   return $t(edgeStatusMap[label], { showSeverity })
 }
-
 
 export const getVenueInfoMarkerIcon = (status: string) => {
   switch (status) {
@@ -117,6 +120,7 @@ export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[
 
       const { apStat, apsCount } = getApStatusDataByVenue(overviewData, venueId)
       const { switchStat, switchesCount } = getSwitchStatusDataByVenue(overviewData, venueId)
+      const { edgeStat, edgesCount } = getEdgeStatusDataByVenue(overviewData, venueId)
 
       venues.push({
         venueId,
@@ -130,6 +134,9 @@ export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[
         switchStat,
         apsCount,
         switchesCount,
+        edgeStat,
+        edgesCount,
+        edgeClientsCount: getEdgeClientCountByVenue(overviewData, venueId),
         visible: true
       })
     })
@@ -245,6 +252,69 @@ function getSwitchStatusDataByVenue (overviewData: Dashboard, venueId: string): 
     }],
     switchesCount: switchStat && switchStat[venueId] ? switchStat[venueId].totalCount : 0
   }
+}
+
+function getEdgeStatusDataByVenue (overviewData: Dashboard, venueId: string): {
+  edgeStat: ChartData[],
+  edgesCount: number
+} {
+  const edgeStat = (_.get(overviewData, 'edges.edgesStatus') || []).find((el: [string]) => {
+    for (const key in el) {
+      if (key === venueId) {
+        return true
+      }
+    }
+    return false
+  })
+
+  let operational: number = 0
+  let requires_attention: number = 0
+  let in_setup_phase: number = 0
+  let transient_issue: number = 0
+
+  if (edgeStat && edgeStat[venueId] && edgeStat[venueId].edgeStatus) {
+    const statusData = edgeStat[venueId].edgeStatus
+    Object.values(EdgeStatusSeverityEnum)
+      .forEach((key) => {
+        const typedKey = key as EdgeStatusSeverityEnum
+        switch(typedKey) {
+          case EdgeStatusSeverityEnum.IN_SETUP_PHASE:
+          case EdgeStatusSeverityEnum.OFFLINE:
+            in_setup_phase += +(statusData[typedKey] ?? 0)
+            break
+          case EdgeStatusSeverityEnum.OPERATIONAL:
+            operational = +(statusData[typedKey] ?? 0)
+            break
+          case EdgeStatusSeverityEnum.TRANSIENT_ISSUE:
+            transient_issue = +(statusData[typedKey] ?? 0)
+            break
+          case EdgeStatusSeverityEnum.REQUIRES_ATTENTION:
+            requires_attention = +(statusData[typedKey] ?? 0)
+            break
+        }
+      })
+  }
+
+  return {
+    edgeStat: [{
+      category: 'Edges',
+      series: [
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.REQUIRES_ATTENTION),
+          value: requires_attention },
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.TRANSIENT_ISSUE),
+          value: transient_issue },
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE),
+          value: in_setup_phase },
+        { name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.OPERATIONAL),
+          value: operational }
+      ]
+    }],
+    edgesCount: edgeStat && edgeStat[venueId] ? edgeStat[venueId].totalCount : 0
+  }
+}
+
+function getEdgeClientCountByVenue (overviewData: Dashboard, venueId: string): number {
+  return _.get(overviewData, 'summary.edgeClients.summary[' + venueId + ']') || 0
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

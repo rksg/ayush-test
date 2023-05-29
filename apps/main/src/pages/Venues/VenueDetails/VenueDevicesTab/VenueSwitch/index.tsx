@@ -8,8 +8,7 @@ import { SwitchPortTable, SwitchTable }           from '@acx-ui/rc/components'
 import { useGetSwitchModelListQuery }             from '@acx-ui/rc/services'
 import { EmbeddedReport }                         from '@acx-ui/reports/components'
 import {
-  ReportType,
-  reportTypeDataStudioMapping
+  ReportType
 } from '@acx-ui/reports/components'
 
 import { IconRadioGroup } from '../VenueWifi/styledComponents'
@@ -44,7 +43,7 @@ export function VenueSwitch () {
     { showIdx === 0 &&
       <div style={{ paddingTop: 20 }}>
         <EmbeddedReport
-          embedDashboardName={reportTypeDataStudioMapping[ReportType.SWITCH]}
+          reportName={ReportType.SWITCH}
           rlsClause={`"switchGroupLevelOneName" in ('${params?.venueId}')`}
         />
       </div>

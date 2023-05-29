@@ -4,10 +4,10 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { AccessSwitchTable, AccessSwitchTableDataType }   from '@acx-ui/rc/components'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
-import { AccessSwitchTable }                from '../AccessSwitchForm/AccessSwitchTable'
 import { DistributionSwitchTable }          from '../DistributionSwitchForm/DistributionSwitchTable'
 import * as UI                              from '../styledComponents'
 
@@ -18,6 +18,7 @@ export const SummaryForm = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
+  const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
   const nsgName = useWatch('name', form)
   const tags = useWatch('tags', form)
   const venueName = useWatch('venueName', form)
@@ -42,6 +43,14 @@ export const SummaryForm = () => {
       }
     ])
   }, [edgeName, segments, devices, dhcpName, poolName])
+
+  useEffect(() => {
+    setAccessSwitchData(accessSwitchInfos?.map(as => ({
+      ...as,
+      distributionSwitchName: distributionSwitchInfos
+        ?.find(ds => ds.id === as.distributionSwitchId)?.name || ''
+    })))
+  }, [accessSwitchInfos, distributionSwitchInfos])
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
@@ -133,6 +142,6 @@ export const SummaryForm = () => {
     </Subtitle>
     <Form.Item>
       <AccessSwitchTable type='form'
-        dataSource={accessSwitchInfos}/></Form.Item>
+        dataSource={accessSwitchData}/></Form.Item>
   </>)
 }

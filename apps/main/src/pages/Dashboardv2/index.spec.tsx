@@ -46,6 +46,7 @@ describe('Dashboard', () => {
 
   it('switches between tabs', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+    expect(localStorage.getItem('dashboard-tab')).toBe(undefined)
 
     const wifiWidgets = [
       'TrafficByVolume',
@@ -55,6 +56,7 @@ describe('Dashboard', () => {
     wifiWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
     fireEvent.click(screen.getByRole('radio', { name: 'Switch' }))
+    expect(localStorage.getItem('dashboard-tab')).toBe('switch')
 
     const switchWidgets = [
       'SwitchesTrafficByVolume',

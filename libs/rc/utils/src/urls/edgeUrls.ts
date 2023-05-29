@@ -148,5 +148,35 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edgeProfiles/inventories/query/csvFiles',
     oldUrl: '/edgeProfiles/inventories/query/csvFiles',
     newApi: true
+  },
+  getEdgeUpDownTime: {
+    method: 'post',
+    url: '/edges/:serialNumber/uptime',
+    oldUrl: '/edges/:serialNumber/uptime',
+    newApi: true
+  },
+  getEdgeTopTraffic: {
+    method: 'post',
+    url: '/edges/:serialNumber/topTraffic',
+    oldUrl: '/edges/:serialNumber/topTraffic',
+    newApi: true
+  },
+  getEdgeResourceUtilization: {
+    method: 'post',
+    url: '/edges/:serialNumber/resources',
+    oldUrl: '/edges/:serialNumber/resources',
+    newApi: true
+  },
+  getEdgePortTraffic: {
+    method: 'post',
+    url: '/edges/:serialNumber/traffic',
+    oldUrl: '/edges/:serialNumber/traffic',
+    newApi: true
+  },
+  getEdgeServiceList: {
+    method: 'post',
+    url: '/edges/services/query',
+    oldUrl: '/edges/services/query',
+    newApi: true
   }
 }

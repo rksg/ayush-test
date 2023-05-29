@@ -10,8 +10,7 @@ export enum Features {
   POLICIES = 'acx-ui-policies',
   DEVICES = 'acx-ui-devices',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
-  EDGES = 'acx-ui-edges-toggle',
-  EDGE_EARLY_BETA = 'smartedge-early-beta-deploy',
+  EDGES = 'PLCY-EDGE',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
@@ -35,6 +34,7 @@ export enum Features {
   MSG_TEMPLATE = 'msgtemplate-service-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
+  CONNECTION_METERING = 'connection-metering-enabled',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',
   WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
@@ -49,5 +49,8 @@ export enum Features {
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
   STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
-  SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade'
+  SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
+  WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
+  SWITCH_BREAKOUT_PORT='switch-breakout-port',
+  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation'
 }
