@@ -301,6 +301,20 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
             </div>
           </div>
           <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-mesh"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-mesh"
+              role="tab"
+              tabindex="0"
+            >
+              Mesh
+            </div>
+          </div>
+          <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
             style="left: 0px; width: 1280px;"
           />
@@ -1385,6 +1399,15 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-multicast"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-multicast"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-mesh"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-mesh"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"

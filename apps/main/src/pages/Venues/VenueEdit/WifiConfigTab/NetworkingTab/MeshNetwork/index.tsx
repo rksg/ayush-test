@@ -60,8 +60,8 @@ export function MeshNetwork () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
-  const isSupportMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const isSupportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
+  const supportMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+  const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
   const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useUpdateVenueMeshMutation()
@@ -266,7 +266,7 @@ export function MeshNetwork () {
     try {
       let meshData: Mesh = { enabled: meshEnabled }
 
-      if (isSupportMeshEnhancement) {
+      if (supportMeshEnhancement) {
         meshData = { ...meshData,
           ssid: meshSsid,
           passphrase: meshPassphrase,
@@ -335,7 +335,7 @@ export function MeshNetwork () {
         />
       }
     </StepsFormLegacy.FieldLabel>
-    {(isSupportMeshEnhancement && meshEnabled) && <>
+    {(supportMeshEnhancement && meshEnabled) && <>
       <MeshInfoBlock>
         <ul>
           <li>
@@ -434,7 +434,7 @@ export function MeshNetwork () {
           </Radio.Group>
         </Form.Item>
       </StepsFormLegacy.FieldLabel>
-      { isSupportZeroTouchMesh &&
+      { supportZeroTouchMesh &&
         <ZeroTouchMeshDiv labelWidth={'160px'}>
           {$t({ defaultMessage: 'Zero Touch Mesh' })}
           <Form.Item

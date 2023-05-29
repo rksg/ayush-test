@@ -436,3 +436,35 @@ export type ImportErrorRes = {
   txId: string
   fileErrorsCount: number
 }
+
+export enum MeshModeEnum {
+  AUTO ='AUTO',
+  ROOT ='ROOT',
+  MESH ='MESH',
+  DISABLE = 'DISABLE'
+}
+
+export enum UplinkModeEnum {
+  MANUAL = 'MANUAL',
+  SMART = 'SMART'
+}
+
+export type APMeshSettings = {
+  venueMeshEnabled?: boolean, //read-only (get method only)
+  meshMode: MeshModeEnum,
+  uplinkMode?: UplinkModeEnum,
+  uplinkMac?: string[]
+}
+
+export type MeshApNeighbor = {
+  rssi: number,
+  mac: string,
+  apName: string
+}
+
+export type MeshUplinkAp = {
+  name: string,
+  deviceStatus: string,
+  healthStatus: string,
+  neighbors: MeshApNeighbor[]
+}

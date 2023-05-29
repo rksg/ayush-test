@@ -464,5 +464,20 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/networkSettings',
     oldUrl: '/api/venues/aps/:serialNumber/networkSettings',
     newApi: true
+  },
+  getApMeshSettings: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/meshSettings',
+    newApi: true
+  },
+  updateApMeshSettings: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/meshSettings',
+    newApi: true
+  },
+  getMeshUplinkAPs: {
+    method: 'post',
+    url: '/aps/neighbors/query',
+    newApi: true
   }
 }
