@@ -10,8 +10,7 @@ export enum Features {
   POLICIES = 'acx-ui-policies',
   DEVICES = 'acx-ui-devices',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
-  EDGES = 'acx-ui-edges-toggle',
-  EDGE_EARLY_BETA = 'smartedge-early-beta-deploy',
+  EDGES = 'PLCY-EDGE',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
@@ -52,5 +51,6 @@ export enum Features {
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   SWITCH_BREAKOUT_PORT='switch-breakout-port',
-  WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle'
+  WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
+  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation'
 }

@@ -38,5 +38,6 @@ export interface MacRegistration {
   revoked: boolean
   username?: string
   createdDate: string
-  expiration?: ExpirationDateEntity
+  expiration?: ExpirationDateEntity,
+  identityId?: string
 }

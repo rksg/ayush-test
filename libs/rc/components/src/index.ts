@@ -74,6 +74,13 @@ export { usePreference, countryCodes } from './usePreference'
 export type { updatePreferenceProps } from './usePreference'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
+export { StatefulACLRulesTable } from './EdgeFirewallTables/StatefulACLRulesTable'
+export { RuleStatisticDataTable as StatefulACLRuleStatisticDataTable }
+  from './EdgeFirewallTables/StatefulACLRulesTable/RuleStatisticDataTable'
+export { DDoSRulesTable } from './EdgeFirewallTables/DDoSRulesTable'
+export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
+  from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
+
 
 export { TunnelProfileForm } from './TunnelProfileForm'
 export type { TunnelProfileFormType } from './TunnelProfileForm'
@@ -82,6 +89,16 @@ export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
 export { PhoneInput } from './PhoneInput'
+export { ServiceInfo } from './ServiceInfo'
+export { NetworkSegmentationServiceInfo } from './NetworkSegmentationServiceInfo'
+export { NetworkSegmentationDetailTableGroup } from './NetworkSegmentationDetailTableGroup'
+export { AccessSwitchTable } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
+export { ApsTable } from './NetworkSegmentationDetailTableGroup/ApsTable'
+export { AssignedSegmentsTable } from './NetworkSegmentationDetailTableGroup/AssignedSegmentsTable'
+export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwitchesTable'
+export type {
+  AccessSwitchTableDataType
+} from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

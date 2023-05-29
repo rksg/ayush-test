@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer }            from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDeleteMacRegistrationMutation, useGetMacRegListQuery,
   useSearchMacRegistrationsQuery,
   useUpdateMacRegistrationMutation,
@@ -77,28 +78,28 @@ export function MacRegistrationsTab () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: (selectedRows) => selectedRows.length === 1,
-    onClick: ([{ macAddress, id }], clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'MAC Address' }),
-          entityValue: macAddress
-        },
-        onOk: () => {
-          deleteMacRegistration({ params: { policyId, registrationId: id } }).unwrap()
-            .then(() => {
-              showToast({
-                type: 'success',
-                // eslint-disable-next-line max-len
-                content: $t({ defaultMessage: 'MAC Address {macAddress} was deleted' }, { macAddress })
-              })
-              clearSelection()
-            }).catch((error) => {
-              console.log(error) // eslint-disable-line no-console
+    onClick: ([selectedRow], clearSelection) => {
+      doProfileDelete(
+        [selectedRow],
+        $t({ defaultMessage: 'MAC Address' }),
+        selectedRow.macAddress,
+        [
+          { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Persona' }) }
+        ],
+        async () => deleteMacRegistration({ params: { policyId, registrationId: selectedRow.id } })
+          .then(() => {
+            showToast({
+              type: 'success',
+              content: $t(
+                { defaultMessage: 'MAC Address  {macAddress} was deleted' },
+                { macAddress: selectedRow.macAddress }
+              )
             })
-        }
-      })
+            clearSelection()
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
+      )
     }
   },
   {
