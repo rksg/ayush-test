@@ -15,6 +15,7 @@ export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashb
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
+export { useExportCsv as useEdgeExportCsv } from './EdgesTable/useExportCsv'
 export type { EdgesTableQueryProps } from './EdgesTable'
 export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'

@@ -42,3 +42,9 @@ export enum EdgeStatusSeverityEnum {
   REQUIRES_ATTENTION = '3_RequiresAttention',
   TRANSIENT_ISSUE = '4_TransientIssue'
 }
+
+export enum EdgeServiceTypeEnum {
+  DHCP = 'DHCP',
+  FIREWALL = 'Firewall',
+  NETWORK_SEGMENTATION = 'Network Segmentation'
+}
