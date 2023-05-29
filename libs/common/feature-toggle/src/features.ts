@@ -51,5 +51,6 @@ export enum Features {
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   SWITCH_BREAKOUT_PORT='switch-breakout-port',
-  NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle'
+  NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle',
+  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation'
 }

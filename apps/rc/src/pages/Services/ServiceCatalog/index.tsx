@@ -17,11 +17,9 @@ import * as UI from './styledComponents'
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const isEdgeDhcpEnabled = useIsTierAllowed(Features.EDGES)
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const isEdgeFirewallEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const sets = [
     {
@@ -32,13 +30,13 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeDhcpEnabled
+          disabled: !isEdgeEnabled
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !networkSegmentationEnabled
+          disabled: !isEdgeEnabled
         }
       ]
     },
@@ -48,7 +46,7 @@ export default function ServiceCatalog () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeFirewallEnabled
+          disabled: !isEdgeEnabled
         }
       ]
     },
@@ -68,7 +66,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
+          disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,

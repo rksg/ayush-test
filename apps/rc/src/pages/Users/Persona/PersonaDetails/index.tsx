@@ -5,7 +5,7 @@ import { useIntl }                            from 'react-intl'
 import {  useParams }                         from 'react-router-dom'
 
 import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
 import { CopyOutlined }                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
@@ -34,7 +34,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)

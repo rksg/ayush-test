@@ -5,12 +5,12 @@ import { Persona, PersonaUrls, RequestPayload, useTableQuery }     from '@acx-ui
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { mockPersonaList, replacePagination } from '../../__tests__/fixtures'
 
-import { AssignedSegmentsTable } from './AssignedSegmentsTable'
+import { mockedPersonaList, replacePagination } from './__tests__/fixtures'
+import { AssignedSegmentsTable }                from './AssignedSegmentsTable'
 
 
-describe('NSG Detail - AssignedSegments Table Page', () => {
+describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -21,7 +21,7 @@ describe('NSG Detail - AssignedSegments Table Page', () => {
     mockServer.use(
       rest.post(
         replacePagination(PersonaUrls.searchPersonaList.url),
-        (req, res, ctx) => res(ctx.json(mockPersonaList))
+        (req, res, ctx) => res(ctx.json(mockedPersonaList))
       )
     )
   })

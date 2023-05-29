@@ -27,7 +27,7 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
       >
         Minimum firmware version:
         <span
-          class="styledComponents__MinFwVersion-sc-1yoazt9-5 diMmYr"
+          class="styledComponents__MinFwVersion-sc-1yoazt9-5 eEVNHa"
         >
           08.0.92d
         </span>
