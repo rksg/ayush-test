@@ -17,7 +17,8 @@ import {
   networkDeepResponse,
   dhcpResponse,
   externalProviders,
-  wisprDataWPA2
+  wisprDataWPA2,
+  wisprDataForAllAccept
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -123,7 +124,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     render(
       <Provider>
         <NetworkFormContext.Provider
-          value={{ editMode: true, cloneMode: true, data: wisprDataWPA2 }}>
+          value={{ editMode: false, cloneMode: false, data: wisprDataWPA2 }}>
           <StepsFormLegacy>
             <StepsFormLegacy.StepForm>
               <WISPrForm />
@@ -143,5 +144,29 @@ describe('CaptiveNetworkForm-WISPr', () => {
     expect(await screen.findByTestId('bypasscna_checkbox')).toBeDisabled()
     expect(await screen.findByTestId('radius_server_selection')).toHaveClass('ant-select-disabled')
     expect(await screen.findByTestId('radius')).not.toBeDisabled()
+  })
+
+  it('WISPr always accept test case when always accept is selected', async ()=>{
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{ editMode: true, cloneMode: true, data: wisprDataForAllAccept }}>
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <WISPrForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
+    await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
+    await screen.findByText('Authentication Connections')
+    expect((await screen.findByTestId('always_accept'))).toBeChecked()
+    expect(await screen.findByTestId('bypasscna_checkbox')).toBeDisabled()
+    expect((await screen.findByTestId('always_accept'))).not.toBeDisabled()
+    expect(await screen.findByTestId('radius_server_selection')).toHaveClass('ant-select-disabled')
   })
 })

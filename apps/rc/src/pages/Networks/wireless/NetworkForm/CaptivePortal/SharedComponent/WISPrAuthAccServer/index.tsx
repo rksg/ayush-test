@@ -13,9 +13,9 @@ import { get }                       from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Subtitle, Tooltip }               from '@acx-ui/components'
-import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
-import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip }                               from '@acx-ui/components'
+import { useGetAAAPolicyListQuery }                        from '@acx-ui/rc/services'
+import { AaaServerOrderEnum, AAATempType, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
 import AAAInstance        from '../../../AAAInstance'
 import AAAPolicyModal     from '../../../AAAInstance/AAAPolicyModal'
@@ -88,7 +88,7 @@ onClickAllAccept: () => void
         >
           <Radio.Group>
             <Space direction='vertical'>
-              <Radio value={'RADIUS'}
+              <Radio value={AuthRadiusEnum.RADIUS}
                 data-testid='radius'
                 onChange={() => {props.onClickAuth()}}>
                 {$t({ defaultMessage: 'Authenticate Connections' })}
@@ -146,7 +146,7 @@ onClickAllAccept: () => void
               </Space>
               <Radio
                 data-testid='always_accept'
-                value={'ALWAYS_ACCEPT'}
+                value={AuthRadiusEnum.ALWAYS_ACCEPT}
                 disabled={context.state.isDisabled.AllAccept}
                 onChange={() => {props.onClickAllAccept()}}>
                 {context.state.isDisabled.AllAccept ? <Tooltip

@@ -1,12 +1,13 @@
+
 import {
   GuestNetworkTypeEnum,
   SocialIdentitySource,
   TimeUnitEnum,
   NetworkSaveData,
   NetworkTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
-
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -862,6 +863,25 @@ export const wisprDataWPA2 = {
       externalProviderName: 'Select provider',
       authRadius: { secondary: {} },
       accountingRadius: { secondary: {} }
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    passphrase: 'aaaaaaaaaa'
+  }
+}
+export const wisprDataForAllAccept = {
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'Select provider',
+      authRadius: { secondary: {} },
+      accountingRadius: { secondary: {} },
+      authType: AuthRadiusEnum.ALWAYS_ACCEPT
     }
   },
   wlan: {

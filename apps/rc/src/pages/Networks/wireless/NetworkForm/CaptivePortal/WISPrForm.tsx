@@ -18,8 +18,8 @@ import {
   InformationSolid,
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useExternalProvidersQuery, useGetMspEcProfileQuery }                                                                                                                                                                                                                                from '@acx-ui/rc/services'
-import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, MSPUtils } from '@acx-ui/rc/utils'
+import { useExternalProvidersQuery, useGetMspEcProfileQuery }                                                                                                                                                                                                                                                from '@acx-ui/rc/services'
+import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, MSPUtils, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -67,6 +67,7 @@ export function WISPrForm () {
     }
     return incomingState
   }
+
   const [state, dispatch] = useReducer(actionRunner, statesCollection.useBypassCNAAndAuth)
 
   const setProvider = (value: string, regions: Regions[]|undefined) =>{
@@ -151,6 +152,13 @@ export function WISPrForm () {
         if(data.guestPortal?.wisprPage?.accountingRadius.secondary){
           form.setFieldValue('enableSecondaryAcctServer',true)
         }
+      }
+
+      if(data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT) {
+        dispatch(statesCollection.useAllAccept)
+      }
+      if(data?.wlan?.bypassCNA === true) {
+        dispatch(statesCollection.useBypassCNAAndAuth)
       }
     }
   },[providerData.data,data,isMspEc])
