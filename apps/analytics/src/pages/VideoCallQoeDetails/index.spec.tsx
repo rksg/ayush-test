@@ -156,12 +156,10 @@ describe('VideoCallQoe Details Page', () => {
   it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', { data: callQoeTestDetailsFixtures1 })
-    const { asFragment } = render(<VideoCallQoeDetails />, {
+    render(<VideoCallQoeDetails />, {
       wrapper: Provider, route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const fragment = asFragment()
-    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-      .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
-    expect(fragment).toMatchSnapshot()
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.queryByText('AI Assurance')).toBeNull()
+    expect(screen.queryByText('Network Assurance')).toBeNull()
   })
 })

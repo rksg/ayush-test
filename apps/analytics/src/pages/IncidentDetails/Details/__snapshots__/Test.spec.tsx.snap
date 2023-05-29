@@ -16,6 +16,30 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -216,6 +240,30 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
@@ -424,6 +472,30 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -624,6 +696,30 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
@@ -832,6 +928,30 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -1035,6 +1155,30 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
@@ -1258,6 +1402,30 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -1461,6 +1629,30 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
@@ -1672,6 +1864,30 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -1875,6 +2091,30 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
@@ -2086,6 +2326,30 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -2293,6 +2557,30 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -2439,6 +2727,30 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
@@ -2606,6 +2918,30 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/undefined/t/analytics/incidents"
               >
@@ -2752,6 +3088,30 @@ exports[`Test Details should render Ttc correctly 1`] = `
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
