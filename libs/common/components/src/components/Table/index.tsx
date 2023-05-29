@@ -70,16 +70,17 @@ export interface TableProps <RecordType>
     )
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
-    enableApiFilter?: boolean,
-    floatRightFilters?: boolean,
+    enableApiFilter?: boolean
+    floatRightFilters?: boolean
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
       groupBy?: string | undefined
     ) => void
     iconButton?: IconButtonProps,
-    filterableWidth?: number,
+    filterableWidth?: number
     searchableWidth?: number
+    getAllPagesData?: () => RecordType[]
   }
 
 export interface TableHighlightFnArgs {
@@ -130,7 +131,10 @@ function Table <RecordType extends Record<string, any>> ({
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
-  const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
+  const getRowKey = (data: RecordType) => {
+    return typeof rowKey === 'function' ? rowKey(data) : data[rowKey] as unknown as Key
+  }
+  const allKeys = dataSource?.map(row => getRowKey(row))
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
@@ -217,10 +221,7 @@ function Table <RecordType extends Record<string, any>> ({
     if (!props.rowSelection) return
     if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
 
-    const getKey = (data: RecordType) => {
-      return typeof rowKey === 'function' ? rowKey(data) : data[rowKey] as unknown as Key
-    }
-    const key = getKey(record)
+    const key = getRowKey(record)
     const isSelected = selectedRowKeys.includes(key)
 
     let newKeys: Key[] | undefined
@@ -244,7 +245,7 @@ function Table <RecordType extends Record<string, any>> ({
 
       newRows = isSelected
         // remove if selected
-        ? selectedRows.filter(item => getKey(item) !== key)
+        ? selectedRows.filter(item => getRowKey(item) !== key)
         // add into collection if not selected
         : [...selectedRows, record]
 
@@ -279,7 +280,24 @@ function Table <RecordType extends Record<string, any>> ({
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected &&
     (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
+  const selectAllRowSelection = {
+    columnWidth: '45px',
+    selections: [
+      {
+        key: 'SELECTION_ALL_PAGES',
+        text: $t({ defaultMessage: 'Select data of all pages' }),
+        onSelect: () => {
+          const data = props.getAllPagesData && props.getAllPagesData()
+          if(data){
+            setSelectedRowKeys(data.map(row => getRowKey(row)))
+            setSelectedRows(data)
+          }
+        }
+      }
+    ]
+  }
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
+    ...(props.getAllPagesData && selectAllRowSelection),
     ..._.omit(props.rowSelection, 'defaultSelectedRowKeys'),
     selectedRowKeys,
     preserveSelectedRowKeys: true,
@@ -295,7 +313,7 @@ function Table <RecordType extends Record<string, any>> ({
           : ({})
       }
       : {}
-  } : undefined
+  } : props.getAllPagesData ? selectAllRowSelection : undefined
 
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall') {

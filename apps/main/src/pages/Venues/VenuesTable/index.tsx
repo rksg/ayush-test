@@ -272,6 +272,7 @@ export const VenueTable = (
       <Table
         settingsId='venues-table'
         columns={columns}
+        getAllPagesData={tableQuery.getAllPagesData}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -294,7 +295,8 @@ export function VenuesTable () {
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
+    },
+    enableSelectAllPagesData: true
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
