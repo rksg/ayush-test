@@ -559,14 +559,6 @@ describe('Cascader', () => {
       {
         value: 'n2',
         label: 'SSID 2'
-      },
-      {
-        value: 'n3',
-        label: 'SSID 3'
-      },
-      {
-        value: 'n4',
-        label: 'SSID 4'
       }
     ]
     const placeholder = 'test cascader'
@@ -580,11 +572,71 @@ describe('Cascader', () => {
       showSearch
     />)
 
-    expect(screen.getByText(placeholder)).toBeVisible()
-    await userEvent.type(screen.getByRole('combobox'), 'SSID')
-    await waitFor(() => expect(screen.getAllByText('SSID')).toHaveLength(5))
+    const combobox = await screen.findByRole('combobox')
+    await userEvent.type(combobox, 'SSID')
+    expect(await screen.findAllByText('SSID')).toHaveLength(3)
     await userEvent.keyboard('[ArrowLeft][Delete]D[ArrowRight]')
-    await waitFor(() => expect(screen.getAllByText('SSID')).toHaveLength(5))
+    // keyboard events don't trigger onDropdownVisibleChange
+    // simulate menu is kept open after left arrow and that menu item can be clicked
+    await userEvent.click(document.body)
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
+  })
+
+  it('cancels on escape after use of left arrow', async () => {
+    const options: CascaderOption[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1',
+        children: [
+          {
+            value: 'n1.1',
+            label: 'Ignored',
+            ignoreSelection: true,
+            children: [
+              {
+                value: 'n1.1.1',
+                label: 'AP 1'
+              },
+              {
+                value: 'n1.1.2',
+                label: 'AP 2'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      },
+      {
+        value: 'n3',
+        label: 'SSID 3'
+      }
+    ]
+    const onApplyMock = jest.fn()
+    render(
+      <CustomCascader
+        options={options}
+        onApply={onApplyMock}
+        allowClear={true}
+        entityName={entityName}
+        multiple
+      />
+    )
+
+    const combobox = await screen.findByRole('combobox')
+    await userEvent.click(combobox)
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 2/ }))
+    act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
+    expect(await screen.findAllByTitle('SSID 2')).toHaveLength(2)
+    await userEvent.click(combobox)
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 3/ }))
+    await userEvent.type(combobox, 'SSID[ArrowRight][ArrowLeft][Escape]')
+    // keyboard events don't trigger onDropdownVisibleChange
+    // simulate menu closed after Escape is pressed and SSID 3 removed due to cancel
+    await userEvent.click(document.body)
+    expect(await screen.findAllByTitle('SSID 2')).toHaveLength(2)
   })
 
   it('handles labels that are components', async () => {

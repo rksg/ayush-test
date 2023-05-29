@@ -122,6 +122,11 @@ export function Cascader (props: CascaderProps) {
   const keepOpenOnHide = useRef(false)
   const cancelOnHide = useRef(true)
   const setOpen = (visible: boolean) => {
+    keepOpenOnHide.current = false
+    setOpenState(visible)
+    onDropdownVisibleChange && onDropdownVisibleChange(visible)
+  }
+  const handleOnDropdownVisibleChange = (visible: boolean) => {
     if (!visible && keepOpenOnHide.current) {
       keepOpenOnHide.current = false
       return
@@ -129,14 +134,12 @@ export function Cascader (props: CascaderProps) {
     !visible && cancelOnHide.current
       ? cancel()
       : cancelOnHide.current = true
-    setOpenState(visible)
-    onDropdownVisibleChange && onDropdownVisibleChange(visible)
+    setOpen(visible)
   }
 
   const handleKeyDown: CascaderProps['onInputKeyDown'] = (e) => {
-    if (e.key.startsWith('Arrow')) {
-      e.stopPropagation()
-    }
+    if (e.key === 'ArrowLeft') keepOpenOnHide.current = true
+    if (e.key === 'Escape') keepOpenOnHide.current = false
   }
 
   const withFooter = (menus: JSX.Element) => <>
@@ -205,7 +208,7 @@ export function Cascader (props: CascaderProps) {
       {...cascaderProps}
       onChange={setCurrentValues}
       dropdownRender={withFooter}
-      onDropdownVisibleChange={setOpen}
+      onDropdownVisibleChange={handleOnDropdownVisibleChange}
       open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
       onClear={cascaderProps.allowClear ? onClear : undefined}
@@ -238,13 +241,13 @@ export function Cascader (props: CascaderProps) {
           return
         }
         const selectedOption = selectedOptions?.slice(-1)[0] as CascaderOption
-        keepOpenOnHide.current = !selectedOption.children
+        keepOpenOnHide.current = true
         setCurrentValues(selectedOption?.ignoreSelection
           ? values.slice(0, values.length - 1)
           : values)
       }}
       dropdownRender={withFooter}
-      onDropdownVisibleChange={setOpen}
+      onDropdownVisibleChange={handleOnDropdownVisibleChange}
       open={open}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
       onClear={cascaderProps.allowClear ? onClear : undefined}
