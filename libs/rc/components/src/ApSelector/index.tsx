@@ -1,9 +1,7 @@
-import { Form, FormItemProps } from 'antd'
-import { SingleValueType }     from 'rc-cascader/lib/Cascader'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import { Form, FormItemProps, Select } from 'antd'
+import { useIntl }                     from 'react-intl'
+import { useParams }                   from 'react-router-dom'
 
-import { Cascader }       from '@acx-ui/components'
 import { useApListQuery } from '@acx-ui/rc/services'
 import { APExtended }     from '@acx-ui/rc/utils'
 
@@ -24,7 +22,6 @@ const apListQueryDefaultPayload = {
 
 export function ApSelector (props: ApSelectorProps) {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
   const {
     placeholder = $t({ defaultMessage: 'Select AP...' }),
     venueId
@@ -55,15 +52,7 @@ export function ApSelector (props: ApSelectorProps) {
 
   return (
     <Form.Item {...formItemProps}>
-      <Cascader
-        placeholder={placeholder}
-        options={apOptions}
-        onApply={(selectedOptions: SingleValueType | SingleValueType[] | undefined) => {
-          form.setFieldValue(formItemProps.name, selectedOptions![0])
-          form.validateFields()
-        }}
-        allowClear={false}
-      />
+      <Select placeholder={placeholder} options={apOptions} />
     </Form.Item>
   )
 }
