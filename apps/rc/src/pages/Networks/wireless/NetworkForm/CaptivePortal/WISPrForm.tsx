@@ -62,7 +62,7 @@ export function WISPrForm () {
   const actionRunner = (currentState: WISPrAuthAccServerState, incomingState: WISPrAuthAccServerState) => {
     if (incomingState.action === WISPrAuthAccServerAction.AllAcceptChecked) {
       form.setFieldValue(['authRadiusId'], '')
-      form.setFieldValue(['authRadius'], [])
+      form.setFieldValue(['authRadius'], undefined)
       form.setFieldValue(['wlan','bypassCPUsingMacAddressAuthentication'], false)
     }
     return incomingState

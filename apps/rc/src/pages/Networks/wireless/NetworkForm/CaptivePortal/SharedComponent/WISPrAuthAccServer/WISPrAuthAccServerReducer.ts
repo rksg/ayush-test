@@ -51,21 +51,3 @@ interface WISPrAuthAccServerContextStore {
 }
 
 export const WISPrAuthAccContext = createContext({} as WISPrAuthAccServerContextStore)
-
-export const useWISPrAuthAccCustomHook = () => {
-
-  const form = Form.useFormInstance()
-
-  // eslint-disable-next-line
-  const actionRunner = (currentState: WISPrAuthAccServerState, incomingState: WISPrAuthAccServerState) => {
-    if (incomingState.action === WISPrAuthAccServerAction.AllAcceptChecked) {
-      form.setFieldValue(['authRadiusId'], '')
-      form.setFieldValue(['authRadius'], [])
-      form.setFieldValue(['wlan','bypassCPUsingMacAddressAuthentication'], false)
-    }
-    return incomingState
-  }
-
-  return useReducer(actionRunner, statesCollection.useBypassCNAAndAuth)
-}
-
