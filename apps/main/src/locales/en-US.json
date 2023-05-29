@@ -5041,9 +5041,6 @@
   "K9PPzT": {
     "defaultMessage": "<p>Client connections are temporarily suppressed by Transient Client Management behavior configured on the WLAN.</p>"
   },
-  "K9fADp": {
-    "defaultMessage": "{localLanguage}"
-  },
   "KAH6lu": {
     "defaultMessage": "ZD Migration"
   },
@@ -6101,7 +6098,7 @@
   },
   "OQ+b8N": {
     "defaultMessage": "Block a client for <blockingPeriod></blockingPeriod> seconds after <failThreshold></failThreshold> repeat authentication failures within <checkPeriod></checkPeriod> seconds",
-    "description": "Translation strings - Block a client for, seconds after,  repeat authentication failures within, seconds "
+    "description": "Translation strings - \n                Block a client for, \n                seconds after, \n                repeat authentication failures within,\n                seconds\n              "
   },
   "ORGv1Q": {
     "defaultMessage": "Created"
@@ -7839,6 +7836,9 @@
   },
   "WGDxJ8": {
     "defaultMessage": "Standalone switch"
+  },
+  "WH4SDF": {
+    "defaultMessage": "Service Type"
   },
   "WHa0VT": {
     "defaultMessage": "Field must be at least $'{min}' characters",
