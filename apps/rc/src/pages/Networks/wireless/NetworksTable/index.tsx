@@ -19,7 +19,7 @@ export default function useNetworksTable () {
   })
 
   useEffect(() => {
-    setNetworkCount(tableQuery.data?.totalCount!)
+    setNetworkCount(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
   const title = defineMessage({

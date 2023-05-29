@@ -304,7 +304,7 @@ export function VenuesTable () {
     })
   })
 
-  const count = tableQuery?.currentData?.totalCount
+  const count = tableQuery?.currentData?.totalCount || 0
 
   return (
     <>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import React                   from 'react'
 
 import { FetchBaseQueryError }    from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }        from 'antd'
@@ -10,22 +9,25 @@ import {
   Dropdown,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { ApTable, ApsTabContext, CsvSize, ImportFileDrawer, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
+  useApListQuery,
   useImportApMutation,
   useImportApOldMutation,
   useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { CommonResult, ImportErrorRes } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { CommonResult, ImportErrorRes, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                              from '@acx-ui/react-router-dom'
 
 export default function useApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible ] = useState(false)
+  const [ apsCount, setApsCount ] = useState(0)
+
   const { venueFilterOptions } = useVenuesListQuery(
     {
       params: { tenantId },
@@ -58,6 +60,18 @@ export default function useApsTable () {
       })
     }
   )
+
+  const apListTableQuery = usePollingTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: {
+      ...defaultApPayload,
+      groupByFields: groupedFields
+    }
+  })
+
+  useEffect(() => {
+    setApsCount(apListTableQuery.data?.totalCount!)
+  }, [apListTableQuery.data])
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importAps, importApsResult ] = useImportApOldMutation()
@@ -122,8 +136,7 @@ export default function useApsTable () {
   />
 
   const title = defineMessage({
-    defaultMessage: 'AP List'
-  })
+    defaultMessage: 'AP List {count, select, null {} other {({count})}}' })
 
   const extra = [
     <Dropdown overlay={addMenu}>{() =>
@@ -136,16 +149,18 @@ export default function useApsTable () {
       title={$t(title, { count: null })}
       extra={extra}
     />}
-    <ApTable
-      searchable={true}
-      filterables={{
-        venueId: venueFilterOptions,
-        deviceGroupId: apgroupFilterOptions
-      }}
-      rowSelection={{
-        type: 'checkbox'
-      }}
-    />
+    <ApsTabContext.Provider value={{ setApsCount }}>
+      <ApTable
+        searchable={true}
+        filterables={{
+          venueId: venueFilterOptions,
+          deviceGroupId: apgroupFilterOptions
+        }}
+        rowSelection={{
+          type: 'checkbox'
+        }}
+      />
+    </ApsTabContext.Provider>
     <ImportFileDrawer
       type='AP'
       title={$t({ defaultMessage: 'Import from file' })}
@@ -174,7 +189,7 @@ export default function useApsTable () {
   </>
 
   return {
-    title: $t(title),
+    title: $t(title, { count: apsCount || 0 }),
     headerExtra: extra,
     component
   }

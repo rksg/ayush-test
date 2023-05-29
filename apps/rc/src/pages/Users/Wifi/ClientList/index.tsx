@@ -91,11 +91,11 @@ const useTabs = () : WirelessTab[] => {
   const [guestCount, setGuestCount] = useState(0)
 
   useEffect(() => {
-    setClientCount(clientTableQuery.data?.totalCount!)
+    setClientCount(clientTableQuery.data?.totalCount || 0)
   }, [clientTableQuery.data])
 
   useEffect(() => {
-    setGuestCount(guestTableQuery.data?.totalCount!)
+    setGuestCount(guestTableQuery.data?.totalCount || 0)
   }, [guestTableQuery.data])
 
   const { $t } = useIntl()

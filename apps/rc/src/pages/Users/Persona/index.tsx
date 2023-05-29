@@ -41,12 +41,12 @@ function PersonaPageHeader () {
   })
 
   useEffect(() => {
-    setPersonaGroupCount(personaGroupTableQuery.data?.totalCount!)
+    setPersonaGroupCount(personaGroupTableQuery.data?.totalCount || 0)
   }, [personaGroupTableQuery.data])
 
   useEffect(() => {
-    setPersonasCount(personaTableQuery.data?.totalCount!)
-  }, [personaTableQuery])
+    setPersonasCount(personaTableQuery.data?.totalCount || 0)
+  }, [personaTableQuery.data])
 
   const onTabChange = (tab: string) =>
     navigate({

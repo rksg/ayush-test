@@ -4,14 +4,16 @@ import { FetchBaseQueryError }    from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }        from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Dropdown, PageHeader }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { ImportFileDrawer, CsvSize, SwitchTable } from '@acx-ui/rc/components'
+import { Button, Dropdown, PageHeader }                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { ImportFileDrawer, CsvSize, SwitchTable, SwitchTabContext, defaultSwitchPayload } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
   useImportSwitchesMutation,
+  useSwitchListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
+import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 export default function useSwitchesTable () {
@@ -19,10 +21,24 @@ export default function useSwitchesTable () {
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible] = useState(false)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
-
+  const [ switchCount, setSwitchCount ] = useState(0)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
 
   const importTemplateLink = 'assets/templates/switches_import_template.csv'
+
+  const tableQuery = usePollingTableQuery({
+    useQuery: useSwitchListQuery,
+    defaultPayload: {
+      ...defaultSwitchPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchPayload.searchTargetFields
+    }
+  })
+
+  useEffect(() => {
+    setSwitchCount(tableQuery.data?.totalCount!)
+  }, [tableQuery.data])
 
   useEffect(()=>{
     if (importResult.isSuccess) {
@@ -79,8 +95,7 @@ export default function useSwitchesTable () {
   })
 
   const title = defineMessage({
-    defaultMessage: 'Switch List'
-  })
+    defaultMessage: 'Switch List {count, select, null {} other {({count})}}' })
 
   const extra = [
     <Dropdown overlay={addMenu}>{() =>
@@ -112,17 +127,19 @@ export default function useSwitchesTable () {
       }}
       onClose={()=>setImportVisible(false)}
     />
-    <SwitchTable
-      searchable={true}
-      filterableKeys={{
-        venueId: venueFilterOptions,
-        model: getSwitchModelList
-      }}
-    />
+    <SwitchTabContext.Provider value={{ setSwitchCount }}>
+      <SwitchTable
+        searchable={true}
+        filterableKeys={{
+          venueId: venueFilterOptions,
+          model: getSwitchModelList
+        }}
+      />
+    </SwitchTabContext.Provider>
   </>
 
   return {
-    title: $t(title),
+    title: $t(title, { count: switchCount || 0 }),
     headerExtra: extra,
     component
   }
