@@ -160,7 +160,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [enableGuestUnit, setEnableGuestUnit]
-    = useState(propertyConfigsQuery.data?.unitConfig?.guestAllowed)
+    = useState<boolean|undefined>(false)
   const [personaGroupId, setPersonaGroupId]
     = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
 
