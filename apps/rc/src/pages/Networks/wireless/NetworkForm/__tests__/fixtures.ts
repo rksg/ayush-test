@@ -885,7 +885,7 @@ export const wisprDataForAllAccept = {
     }
   },
   wlan: {
-    bypassCPUsingMacAddressAuthentication: true,
+    bypassCPUsingMacAddressAuthentication: false,
     wlanSecurity: WlanSecurityEnum.WPA2Personal,
     passphrase: 'aaaaaaaaaa'
   }
