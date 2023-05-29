@@ -49,6 +49,17 @@ export function SwitchStackSetting
   const [ipAddressInterface, setIpAddressInterface] = useState('1')
 
   const onIpAddressTypeChange = (e: RadioChangeEvent) => {
+    if (e.target.value === IP_ADDRESS_TYPE.DYNAMIC && form.getFieldValue('dhcpServerEnabled')) {
+      form.setFieldValue('ipAddressType', IP_ADDRESS_TYPE.STATIC)
+      showActionModal({
+        type: 'info',
+        title: $t({ defaultMessage: 'DHCP Server is Enabled' }),
+        content: $t({ defaultMessage: `
+          This switch can no longer act as a DHCP client since DHCP Server is enabled.
+          Configure DHCP service state and try again.` })
+      })
+      return
+    }
     setEnableDhcp(e.target.value === IP_ADDRESS_TYPE.DYNAMIC)
   }
 
@@ -68,12 +79,7 @@ export function SwitchStackSetting
     if(form.getFieldValue('ipAddressInterface')){
       setIpAddressInterface(form.getFieldValue('ipAddressInterface'))
     }
-  }, [
-    form.getFieldValue('ipAddressType'),
-    form.getFieldValue('switchType'),
-    form.getFieldValue('ipAddressInterfaceType'),
-    form.getFieldValue('ipAddressInterface')
-  ])
+  }, [])
 
   const onEditJumboMode = (checked: boolean) => {
     showActionModal({
@@ -161,9 +167,9 @@ export function SwitchStackSetting
         }
         name='ipAddress'
         rules={[
-          { required: form.getFieldValue('ipAddressType') === 'static' ? true : false },
+          { required: !enableDhcp },
           { validator: (_, value) =>{
-            if(form.getFieldValue('ipAddressType') === 'static') {
+            if(!enableDhcp) {
               return validateSwitchIpAddress(value)
             } else {
               return Promise.resolve()
@@ -180,9 +186,9 @@ export function SwitchStackSetting
         label={$t({ defaultMessage: 'Subnet Mask' })}
         name='subnetMask'
         rules={[
-          { required: form.getFieldValue('ipAddressType') === 'static' ? true : false },
+          { required: !enableDhcp },
           { validator: (_, value) => {
-            if(form.getFieldValue('ipAddressType') === 'static') {
+            if(!enableDhcp) {
               return validateSwitchSubnetIpAddress(form.getFieldValue('ipAddress'), value)
             } else {
               return Promise.resolve()
@@ -198,9 +204,9 @@ export function SwitchStackSetting
         label={$t({ defaultMessage: 'Default Gateway' })}
         name='defaultGateway'
         rules={[
-          { required: form.getFieldValue('ipAddressType') === 'static' ? true : false },
+          { required: !enableDhcp },
           { validator: (_, value) => {
-            if(form.getFieldValue('ipAddressType') === 'static') {
+            if(!enableDhcp) {
               return validateSwitchGatewayIpAddress(
                 form.getFieldValue('ipAddress'), form.getFieldValue('subnetMask'), value)
             } else {
@@ -247,7 +253,6 @@ export function SwitchStackSetting
         name={'spanningTreePriority'}
         initialValue={''}
         children={<Select
-          defaultValue={''}
           options={[
             {
               label: $t({ defaultMessage: 'Select Priority...' }),

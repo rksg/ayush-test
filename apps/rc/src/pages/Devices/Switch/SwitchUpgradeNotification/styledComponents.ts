@@ -33,6 +33,7 @@ export const Content = styled.div`
 `
 
 export const MinFwVersion = styled.span`
+  padding-left: 3px;
   font-weight: var(--acx-headline-4-font-weight-bold);
 `
 
