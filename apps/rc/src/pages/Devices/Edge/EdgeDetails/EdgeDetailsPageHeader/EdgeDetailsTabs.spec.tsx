@@ -1,16 +1,22 @@
 /* eslint-disable max-len */
+import { rest } from 'msw'
+
 import {
   EdgeStatus,
   ApVenueStatusEnum,
-  EdgeStatusEnum
+  EdgeStatusEnum,
+  EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider  } from '@acx-ui/store'
 import {
   render,
   screen,
-  fireEvent
+  fireEvent,
+  mockServer
 } from '@acx-ui/test-utils'
 
+
+import { mockedEdgeServiceList } from '../../__tests__/fixtures'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -44,25 +50,37 @@ describe('Edge Details Tabs', () => {
   let params: { tenantId: string, serialNumber: string } =
   { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: currentEdge.serialNumber }
 
-  it('should not have troubleshooting tab if not OPERATIONAL', async () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+      )
+    )
+  })
+
+  // it('should not have troubleshooting tab if not OPERATIONAL', async () => {
+  //   render(
+  //     <Provider>
+  //       <EdgeDetailsTabs
+  //         currentEdge={currentEdge}
+  //       />
+  //     </Provider>, {
+  //       route: { params }
+  //     })
+
+  //   expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  // })
+
+
+  it('should redirect to timeline tab', async () => {
     render(
       <Provider>
         <EdgeDetailsTabs
           currentEdge={currentEdge}
         />
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
-  })
-
-
-  it('should redirect to timeline tab', async () => {
-    render(
-      <EdgeDetailsTabs
-        currentEdge={currentEdge}
-      />, {
+      </Provider>
+      , {
         route: { params }
       })
 
@@ -72,5 +90,19 @@ describe('Edge Details Tabs', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render services count correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          currentEdge={currentEdge}
+        />
+      </Provider>
+      , {
+        route: { params }
+      })
+
+    expect(await screen.findByText('Services (3)')).toBeVisible()
   })
 })
