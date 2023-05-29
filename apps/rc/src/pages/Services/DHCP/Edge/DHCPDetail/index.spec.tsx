@@ -50,7 +50,7 @@ describe('EdgeDhcpDetail', () => {
   //   const edgeDetailLink = await screen.findByRole('link',
   //     { name: 'Edge-1' }) as HTMLAnchorElement
   //   expect(edgeDetailLink.href)
-  //     .toContain(`/t/${params.tenantId}/devices/edge/1/edge-details/overview`)
+  //     .toContain(`/t/${params.tenantId}/devices/edge/1/details/overview`)
   // })
 
   // it('venue detail page link should be correct', async () => {

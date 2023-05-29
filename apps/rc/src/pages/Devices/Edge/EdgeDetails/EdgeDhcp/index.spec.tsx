@@ -8,7 +8,7 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 import { mockEdgeDhcpHostStats }                       from '../../__tests__/fixtures'
 
-import EdgeDhcp from '.'
+import { EdgeDhcp } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -59,7 +59,7 @@ describe('Edge DHCP no initial data', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         }
       })
     await user.click(screen.getByRole('switch'))
@@ -105,7 +105,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         }
       })
     const poolsTab = screen.getByRole('tab', { name: 'Pools' })
@@ -120,7 +120,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         }
       })
     const leasesTab = await screen.findByRole('tab', { name: 'Leases ( 2 online )' })
@@ -136,13 +136,13 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         }
       })
     await user.click(await screen.findByRole('tab', { name: 'Leases ( 2 online )' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/dhcp/leases`,
       hash: '',
       search: ''
     })
@@ -157,7 +157,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         }
       })
     const settingIcon = screen.getByTestId('setting-icon')
@@ -178,7 +178,7 @@ describe('Edge DHCP', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
+          path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         }
       })
     const dhcpSwitch = screen.getByRole('switch')

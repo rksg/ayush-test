@@ -5,7 +5,7 @@ import { EdgeUrlsInfo }               from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../__tests__/fixtures'
+import { mockEdgeList, mockedEdgeServiceList } from '../__tests__/fixtures'
 
 import EdgeDetails from '.'
 
@@ -13,7 +13,18 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeStatusLight: () => <div data-testid={'rc-EdgeStatusLight'} title='EdgeStatusLight' />
 }))
-
+jest.mock('./EdgeDhcp', () => ({
+  EdgeDhcp: () => <div data-testid='EdgeDhcp' />
+}))
+jest.mock('./EdgeOverview', () => ({
+  EdgeOverview: () => <div data-testid='EdgeOverview' />
+}))
+jest.mock('./EdgeServices', () => ({
+  EdgeDhcp: () => <div data-testid='EdgeServices' />
+}))
+jest.mock('./EdgeTimeline', () => ({
+  EdgeDhcp: () => <div data-testid='EdgeTimeline' />
+}))
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -35,6 +46,10 @@ describe('EdgeDetails', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
       )
     )
   })
@@ -73,7 +88,7 @@ describe('EdgeDetails', () => {
       route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
-    const tab = await screen.findByText('Services (0)')
+    const tab = await screen.findByText('Services (3)')
     expect(tab.getAttribute('aria-selected')).toBe('true')
   })
 
@@ -113,21 +128,21 @@ describe('EdgeDetails', () => {
       route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab' }
     })
 
-    await user.click(screen.getByRole('tab', { name: 'Services (0)' }))
+    await user.click(screen.getByRole('tab', { name: 'Services (3)' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/services`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/services`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'DHCP' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/dhcp/pools`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/dhcp/pools`,
       hash: '',
       search: ''
     })
     await user.click(screen.getByRole('tab', { name: 'Timeline' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edge-details/timeline`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/details/timeline`,
       hash: '',
       search: ''
     })

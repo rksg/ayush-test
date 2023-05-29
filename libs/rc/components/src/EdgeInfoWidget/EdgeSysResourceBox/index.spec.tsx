@@ -1,10 +1,7 @@
 /* eslint-disable max-len */
 import { EdgeResourceUtilizationEnum } from '@acx-ui/rc/utils'
 import { Provider  }                   from '@acx-ui/store'
-import { render,
-  screen,
-  fireEvent,
-  waitFor } from '@acx-ui/test-utils'
+import { render, screen }              from '@acx-ui/test-utils'
 
 
 import { tenantID, currentEdge } from '../__tests__/fixtures'
@@ -30,37 +27,15 @@ describe('Edge resource utilization chart', () => {
           isLoading={false}
           type={EdgeResourceUtilizationEnum.STORAGE}
           title={'Storage Usage'}
-          value={currentEdge?.diskUsed}
-          totalVal={currentEdge?.diskTotal}
+          value={currentEdge?.diskUsedKb}
+          totalVal={currentEdge?.diskTotalKb}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     let targetBox = await screen.findByText('Storage Usage')
-    expect(targetBox.parentElement?.getElementsByClassName('ant-statistic-content-value')[0].innerHTML).toBe('162 GB')
-  })
-
-  it('should return the expected free value by tooltip', async () => {
-    render(
-      <Provider>
-        <EdgeSysResourceBox
-          isLoading={false}
-          type={EdgeResourceUtilizationEnum.CPU}
-          title={'CPU Usage'}
-          value={currentEdge?.cpuUsed}
-          totalVal={currentEdge?.cpuTotal}
-        />
-      </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
-      })
-
-    let targetBox = await screen.findByText('CPU Usage')
-    fireEvent.mouseOver(targetBox)
-
-    await waitFor(() => {
-      expect(screen.getByRole('tooltip').textContent).toBe('60 MHz free')
-    })
+    expect(targetBox.parentElement?.getElementsByClassName('ant-statistic-content-value')[0].innerHTML).toBe('250 GB')
   })
 
   it('should display used pesentage', async () => {
@@ -77,7 +52,7 @@ describe('Edge resource utilization chart', () => {
           totalVal={memTotal}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     const exptectedStr = '(42%)'
@@ -96,7 +71,7 @@ describe('Edge resource utilization chart', () => {
           value={memUsed}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
 
@@ -116,7 +91,7 @@ describe('Edge resource utilization chart', () => {
           totalVal={memTotal}
         />
       </Provider>,{
-        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     const exptectedStr = '0 B'

@@ -1,7 +1,6 @@
 import { Divider as AntDivider, Form as AntdForm } from 'antd'
 import styled                                      from 'styled-components/macro'
 
-import { Button }                 from '@acx-ui/components'
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
 
 export const TagsOutlineIcon = styled(TagsOutline)`
@@ -69,12 +68,6 @@ export const FormItem = styled(AntdForm.Item)`
         background: var(--acx-accents-blue-50);
       }
     }
-  }
-`
-
-export const LinkButton = styled(Button)`
-  &:disabled:hover {
-    color: rgba(0, 0, 0, 0.25) !important;
   }
 `
 
