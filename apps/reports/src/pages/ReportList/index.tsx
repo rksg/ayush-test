@@ -62,7 +62,10 @@ export function ReportList () {
 
   return (
     <>
-      <PageHeader title={$t({ defaultMessage: 'Reports' })} />
+      <PageHeader
+        title={$t({ defaultMessage: 'Reports' })}
+        breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
+      />
       <GridRow>
         {reports.map(({ title, description, path }) => (
           <GridCol key={path} col={{ span: 6 }}>

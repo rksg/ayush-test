@@ -13,8 +13,7 @@ import { ReportType, reportTypeModeMapping } from '../mapping/reportsMapping'
 
 export function ReportHeader (props: {
   type: ReportType,
-  showFilter?: boolean
-  footer?: React.ReactNode }) {
+  showFilter?: boolean }) {
   const {
     type,
     showFilter=true
@@ -70,7 +69,6 @@ export function ReportHeader (props: {
           selectionType={range}
         />
       ]}
-      footer={props.footer && props.footer}
       footerSpacer={false}
     />
   )

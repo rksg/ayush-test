@@ -43,6 +43,7 @@ export function ReportHeader (props: {
     <PageHeader
       title={name}
       breadcrumb={[
+        { text: 'Business Insights' },
         { text: 'Reports', link: '/reports' }
       ]}
       extra={[

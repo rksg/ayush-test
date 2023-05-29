@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, RangePicker, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { ClientDualTable }               from '@acx-ui/rc/components'
-import { useNavigate, useTenantLink }    from '@acx-ui/react-router-dom'
-import { EmbeddedReport, ReportHeader }  from '@acx-ui/reports/components'
+import { PageHeader, RangePicker, Tabs }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { ClientDualTable, ClientTabContext, defaultClientPayload } from '@acx-ui/rc/components'
+import { useGetClientListQuery, useGetGuestsListQuery }            from '@acx-ui/rc/services'
+import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportHeader }                            from '@acx-ui/reports/components'
 import {
   ReportType,
   reportTypeDataStudioMapping
@@ -15,7 +17,10 @@ import {
 import { filterByAccess }                from '@acx-ui/user'
 import { DateRange, getDateRangeFilter } from '@acx-ui/utils'
 
-import { GuestsTab } from './GuestsTab'
+import { GuestsTab }           from './GuestsTab'
+import { defaultGuestPayload } from './GuestsTab/GuestsDetail'
+import { GuestTabContext }     from './GuestsTab/GuestsTable/context'
+
 
 export enum WirelessTabsEnum {
   CLIENTS = 'clients',
@@ -63,16 +68,50 @@ const useTabs = () : WirelessTab[] => {
     setStartDate(period.startDate)
     setEndDate(period.endDate)
   }
+
+  const clientTableQuery = usePollingTableQuery({
+    useQuery: useGetClientListQuery,
+    defaultPayload: { ...defaultClientPayload },
+    search: {
+      searchTargetFields: defaultClientPayload.searchTargetFields
+    }
+  })
+
+  const guestTableQuery = usePollingTableQuery({
+    useQuery: useGetGuestsListQuery,
+    defaultPayload: {
+      ...defaultGuestPayload
+    },
+    search: {
+      searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
+    }
+  })
+
+  const [clientCount, setClientCount] = useState(0)
+  const [guestCount, setGuestCount] = useState(0)
+
+  useEffect(() => {
+    setClientCount(clientTableQuery.data?.totalCount!)
+  }, [clientTableQuery.data])
+
+  useEffect(() => {
+    setGuestCount(guestTableQuery.data?.totalCount!)
+  }, [guestTableQuery.data])
+
   const { $t } = useIntl()
   const clientsTab = {
     key: WirelessTabsEnum.CLIENTS,
-    title: $t({ defaultMessage: 'Clients List' }),
-    component: <ClientDualTable />
+    title: $t({ defaultMessage: 'Clients List ({clientCount})' }, { clientCount }),
+    component: <ClientTabContext.Provider value={{ setClientCount }}>
+      <ClientDualTable />
+    </ClientTabContext.Provider>
   }
   const guestTab = {
     key: WirelessTabsEnum.GUESTS,
-    title: $t({ defaultMessage: 'Guest Pass Credentials' }),
-    component: <GuestsTab dateFilter={dateFilter}/>,
+    title: $t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount }),
+    component: <GuestTabContext.Provider value={{ setGuestCount }}>
+      <GuestsTab dateFilter={dateFilter}/>
+    </GuestTabContext.Provider>,
     headerExtra: [<RangePicker
       selectionType={range}
       showAllTime={true}

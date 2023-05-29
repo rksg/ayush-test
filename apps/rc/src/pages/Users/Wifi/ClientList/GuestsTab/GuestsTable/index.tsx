@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   FetchBaseQueryError
@@ -54,6 +54,7 @@ import {
   showNoSendConfirm,
   useHandleGuestPassResponse
 } from './addGuestDrawer'
+import { GuestTabContext } from './context'
 
 const defaultGuestNetworkPayload = {
   fields: ['name', 'defaultGuestCountry', 'id'],
@@ -76,6 +77,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     includeExpired: ['true'],
     ...(dateFilter.range === DateRange.allTime ? {} : { dateFilter })
   }
+  const { setGuestCount } = useContext(GuestTabContext)
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
@@ -362,6 +364,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
+  setGuestCount(tableQuery.data?.totalCount!)
   return (
     <Loader states={[
       tableQuery
