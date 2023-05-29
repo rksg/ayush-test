@@ -27,7 +27,7 @@ import { WISPrAuthAccContext } from './WISPrAuthAccServerReducer'
 
 export function WISPrAuthAccServer (props : {
   onClickAuth: () => void,
-onClickAllAccept: () => void
+  onClickAllAccept: () => void
 }) {
   const { $t } = useIntl()
   const params = useParams()
