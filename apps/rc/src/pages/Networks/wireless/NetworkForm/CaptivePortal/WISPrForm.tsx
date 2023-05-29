@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState, useReducer } from 'react'
 
 import {
   Form,
@@ -18,20 +18,21 @@ import {
   InformationSolid,
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useExternalProvidersQuery, useGetMspEcProfileQuery }                                                                                                                                                                                                                                from '@acx-ui/rc/services'
-import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, MSPUtils } from '@acx-ui/rc/utils'
+import { useExternalProvidersQuery, useGetMspEcProfileQuery }                                                                                                                                                                                                                                                from '@acx-ui/rc/services'
+import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, MSPUtils, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { AuthAccServerSetting }                  from './AuthAccServerSetting'
-import { AuthAccServerSummary }                  from './AuthAccServerSummary'
-import { DhcpCheckbox }                          from './DhcpCheckbox'
-import { RedirectUrlInput }                      from './RedirectUrlInput'
-import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
-import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
-
+import { AuthAccServerSetting }                                                                     from './AuthAccServerSetting'
+import { AuthAccServerSummary }                                                                     from './AuthAccServerSummary'
+import { DhcpCheckbox }                                                                             from './DhcpCheckbox'
+import { RedirectUrlInput }                                                                         from './RedirectUrlInput'
+import { BypassCaptiveNetworkAssistantCheckbox }                                                    from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { WalledGardenTextArea }                                                                     from './SharedComponent/WalledGarden/WalledGardenTextArea'
+import { WISPrAuthAccServer }                                                                       from './SharedComponent/WISPrAuthAccServer'
+import { statesCollection, WISPrAuthAccContext, WISPrAuthAccServerState, WISPrAuthAccServerAction } from './SharedComponent/WISPrAuthAccServer/WISPrAuthAccServerReducer'
 
 const mspUtils = MSPUtils()
 export function WISPrForm () {
@@ -41,6 +42,7 @@ export function WISPrForm () {
     cloneMode
   } = useContext(NetworkFormContext)
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
+  const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
@@ -55,6 +57,19 @@ export function WISPrForm () {
   const [regionOption, setRegionOption]=useState<Regions[]>()
   const [isOtherProvider, setIsOtherProvider]=useState(false)
   const [isMspEc, setIsMspEc]=useState(false)
+
+  // eslint-disable-next-line
+  const actionRunner = (currentState: WISPrAuthAccServerState, incomingState: WISPrAuthAccServerState) => {
+    if (incomingState.action === WISPrAuthAccServerAction.AllAcceptChecked) {
+      form.setFieldValue(['authRadiusId'], '')
+      form.setFieldValue(['authRadius'], undefined)
+      form.setFieldValue(['wlan','bypassCPUsingMacAddressAuthentication'], false)
+    }
+    return incomingState
+  }
+
+  const [state, dispatch] = useReducer(actionRunner, statesCollection.useBypassCNAAndAuth)
+
   const setProvider = (value: string, regions: Regions[]|undefined) =>{
     form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], false)
     form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], '')
@@ -70,7 +85,7 @@ export function WISPrForm () {
         form.setFieldValue(['guestPortal','redirectUrl'], regions[0].redirectUrl)
       }
     }else form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], '')
-    if(value==='Other provider'){
+    if(value==='Custom Provider'){
       setIsOtherProvider(true)
       form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], true)
     }else{
@@ -105,6 +120,10 @@ export function WISPrForm () {
         form.setFieldValue('authRadiusId',
           data.guestPortal.wisprPage.authRadius.id)
       }
+      if(data.guestPortal?.wisprPage?.authType){
+        form.setFieldValue(['guestPortal','wisprPage','authType'],
+          data.guestPortal?.wisprPage?.authType)
+      }
       form.setFieldsValue({ ...data })
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
@@ -112,7 +131,7 @@ export function WISPrForm () {
       let pName = data.guestPortal?.wisprPage?.externalProviderName
       if(data.guestPortal?.wisprPage?.customExternalProvider){
         form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
-        pName = 'Other provider'
+        pName = 'Custom Provider'
       }
       if(pName){
         const regions = _.find(externalProviders,{ name: pName })?.regions
@@ -121,8 +140,8 @@ export function WISPrForm () {
       if(data.wlan?.wlanSecurity!== WlanSecurityEnum.None){
         form.setFieldValue('enablePreShared',true)
       }
-      if(!pName?.trim() || pName==='Other provider'){
-        form.setFieldValue(['guestPortal','wisprPage','externalProviderName'],'Other provider')
+      if(!pName?.trim() || pName==='Custom Provider'){
+        form.setFieldValue(['guestPortal','wisprPage','externalProviderName'], 'Custom Provider')
         setIsOtherProvider(true)
       }else setIsOtherProvider(false)
       if(data.guestPortal?.wisprPage?.authRadius?.secondary){
@@ -133,6 +152,13 @@ export function WISPrForm () {
         if(data.guestPortal?.wisprPage?.accountingRadius.secondary){
           form.setFieldValue('enableSecondaryAcctServer',true)
         }
+      }
+
+      if(data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT) {
+        dispatch(statesCollection.useAllAccept)
+      }
+      if(data?.wlan?.bypassCNA === true) {
+        dispatch(statesCollection.useBypassCNAAndAuth)
       }
     }
   },[providerData.data,data,isMspEc])
@@ -199,8 +225,8 @@ export function WISPrForm () {
                 {item.name}
               </Select.Option>
             })}
-            <Select.Option value={'Other provider'}>
-              {$t({ defaultMessage: 'Other provider' })}
+            <Select.Option value={'Custom Provider'}>
+              {$t({ defaultMessage: 'Custom Provider' })}
             </Select.Option>
           </Select>:externalProviders?.[0].name}
         />
@@ -360,12 +386,24 @@ export function WISPrForm () {
         </Form.Item>}
         <Form.Item
           name={['wlan','bypassCPUsingMacAddressAuthentication']}
-          noStyle
           valuePropName='checked'
           initialValue={true}
           children={
-            <Checkbox>
-              {$t({ defaultMessage: 'Enable MAC auth bypass' })}
+            <Checkbox
+              data-testid='bypasscna_checkbox'
+              disabled={state.isDisabled.BypassCNA}
+              onChange={(e)=>{e.target.checked ?
+                dispatch(statesCollection.useBypassCNAAndAuth) :
+                dispatch(statesCollection.useOnlyAuth)}}>
+              {state.isDisabled.BypassCNA ?
+                <Tooltip placement='bottom'
+                  title={'In order to enable this option you must \
+                  set the authentication service to “Authenticate Connections”'}
+                >
+                  {$t({ defaultMessage: 'Enable MAC auth bypass' })}
+                </Tooltip> :
+                $t({ defaultMessage: 'Enable MAC auth bypass' })
+              }
             </Checkbox>
           }
         />
@@ -385,7 +423,17 @@ export function WISPrForm () {
         <WalledGardenTextArea
           guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr}
           enableDefaultWalledGarden={false} />
-        {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}
+        {!regionOption &&
+         isOtherProvider &&
+         (enableWISPRAlwaysAccept ?
+           <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
+             <WISPrAuthAccServer
+               onClickAuth={() => dispatch(statesCollection.useOnlyAuth)}
+               onClickAllAccept={() => dispatch(statesCollection.useAllAccept)}
+             />
+           </WISPrAuthAccContext.Provider>
+           : <AuthAccServerSetting/>)
+        }
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
         {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
