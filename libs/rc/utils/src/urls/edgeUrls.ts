@@ -172,5 +172,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/:serialNumber/traffic',
     oldUrl: '/edges/:serialNumber/traffic',
     newApi: true
+  },
+  getEdgeServiceList: {
+    method: 'post',
+    url: '/edges/services/query',
+    oldUrl: '/edges/services/query',
+    newApi: true
   }
 }

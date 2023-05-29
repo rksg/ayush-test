@@ -14,7 +14,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from '../../__tests__/fixtures'
+import { mockEdgeList, mockedEdgeServiceList } from '../../__tests__/fixtures'
 
 import { EdgeDetailsPageHeader } from '.'
 
@@ -47,6 +47,10 @@ describe('Edge Detail Page Header', () => {
       rest.post(
         EdgeUrlsInfo.factoryReset.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeServiceList.url,
+        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
       )
     )
   })

@@ -30,11 +30,9 @@ const defaultPayload = {
 export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const isEdgeDhcpEnabled = useIsTierAllowed(Features.EDGES)
 
   const services = [
     {
@@ -53,9 +51,9 @@ export default function MyServices () {
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeDhcpEnabled
+        skip: !isEdgeEnabled
       }),
-      disabled: !isEdgeDhcpEnabled
+      disabled: !isEdgeEnabled
     },
     {
       type: ServiceType.NETWORK_SEGMENTATION,
@@ -63,9 +61,9 @@ export default function MyServices () {
       tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !networkSegmentationEnabled
+        skip: !isEdgeEnabled
       }),
-      disabled: !networkSegmentationEnabled
+      disabled: !isEdgeEnabled
     },
     {
       type: ServiceType.EDGE_FIREWALL,
@@ -98,9 +96,9 @@ export default function MyServices () {
       type: ServiceType.WEBAUTH_SWITCH,
       categories: [RadioCardCategory.SWITCH],
       tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
-        skip: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
+        skip: !isEdgeEnabled || !networkSegmentationSwitchEnabled
       }),
-      disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
+      disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled
     },
     {
       type: ServiceType.RESIDENT_PORTAL,
