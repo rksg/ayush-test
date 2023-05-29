@@ -1,11 +1,19 @@
+import { ApVenueStatusEnum }         from '@acx-ui/rc/utils'
 import { Provider }                  from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import VenueFilterControlBox from './VenueFilterControlBox'
+import { DASHBOARD_GMAP_FILTER_KEY } from './helper'
+import VenueFilterControlBox         from './VenueFilterControlBox'
 
 describe('VenueFilterControlBox', () => {
   it('should render correctly', async () => {
     const handleChange = jest.fn()
+    localStorage.setItem(DASHBOARD_GMAP_FILTER_KEY, JSON.stringify({
+      [ApVenueStatusEnum.REQUIRES_ATTENTION]: true,
+      [ApVenueStatusEnum.TRANSIENT_ISSUE]: true,
+      [ApVenueStatusEnum.IN_SETUP_PHASE]: false,
+      [ApVenueStatusEnum.OPERATIONAL]: true
+    }))
     const { asFragment } = render(
       <Provider>
         <VenueFilterControlBox onChange={handleChange}/>
