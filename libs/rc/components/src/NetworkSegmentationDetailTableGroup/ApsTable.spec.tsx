@@ -3,18 +3,18 @@ import { APExtended, CommonUrlsInfo, RequestPayload, useTableQuery }     from '@
 import { Provider }                                                      from '@acx-ui/store'
 import { mockRestApiQuery, render, screen, renderHook, waitFor, within } from '@acx-ui/test-utils'
 
-import { mockApList } from '../../__tests__/fixtures'
 
+import { mockedApList }               from './__tests__/fixtures'
 import { ApsTable, defaultApPayload } from './ApsTable'
 
-describe('NSG Detail - APs Table Page', () => {
+describe('NetworkSegmentationDetailTableGroup - ApsTable', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
     }
-    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', mockApList)
+    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', mockedApList)
   })
 
   it('Should be AP data in the page', async () => {

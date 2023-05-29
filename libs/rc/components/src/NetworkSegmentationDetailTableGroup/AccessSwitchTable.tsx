@@ -4,35 +4,30 @@ import { useIntl } from 'react-intl'
 
 import {
   Table,
-  TableProps, useStepFormContext
+  TableProps
 } from '@acx-ui/components'
-import { SimpleListTooltip }                from '@acx-ui/rc/components'
-import { useWebAuthTemplateListQuery }      from '@acx-ui/rc/services'
-import { AccessSwitch, DistributionSwitch } from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
+import { useWebAuthTemplateListQuery }       from '@acx-ui/rc/services'
+import { AccessSwitch, defaultTemplateData } from '@acx-ui/rc/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
 
-import { NetworkSegmentationGroupFormData } from '..'
-import { defaultTemplateData }              from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
+import { SimpleListTooltip } from '../SimpleListTooltip'
 
-
-interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitch>, 'columns'> {
-  distributionSwitchInfos?: DistributionSwitch[]
+export interface AccessSwitchTableDataType extends AccessSwitch {
+  distributionSwitchName: string
 }
+
+interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitchTableDataType>, 'columns'> {}
 
 export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
-
-  const dsList: DistributionSwitch[] = form ?
-    form.getFieldValue('distributionSwitchInfos') : props.distributionSwitchInfos
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
     payload: { fields: ['name', 'id'] }
   })
 
-  const columns: TableProps<AccessSwitch>['columns'] = React.useMemo(() => {
+  const columns: TableProps<AccessSwitchTableDataType>['columns'] = React.useMemo(() => {
     return [{
       key: 'name',
       title: $t({ defaultMessage: 'Access Switch' }),
@@ -50,10 +45,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: 'distributionSwitchId',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) => {
-        const dsId = row.distributionSwitchId
-        return dsList?.find(ds => ds.id === dsId)?.name || dsId
-      }
+      render: (data, row) => (row.distributionSwitchName)
     }, {
       key: 'uplinkInfo',
       title: $t({ defaultMessage: 'Uplink Port' }),
@@ -86,7 +78,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
         return <SimpleListTooltip displayText={displayText} items={items}/>
       }
     }]
-  }, [$t, dsList, templateListResult])
+  }, [$t, templateListResult])
 
   return (
     <Table
