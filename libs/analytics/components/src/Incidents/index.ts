@@ -1,2 +1,2 @@
-export { IncidentListPage, IncidentTabContent }             from './IncidentListPage'
+export { IncidentListPage, IncidentTabContent }             from './incidentListPage'
 export { IncidentListPageLegacy, IncidentTabContentLegacy } from './incidentListPageLegacy'

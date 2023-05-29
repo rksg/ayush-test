@@ -3,7 +3,7 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { networkHierarchy } from '../__tests__/fixtures'
 
-import { IncidentListPage, IncidentTabContent } from './IncidentListPage'
+import { IncidentListPage, IncidentTabContent } from './incidentListPage2'
 
 jest.mock('../IncidentBySeverity', () => ({
   IncidentBySeverity: () => <div data-testid='IncidentBySeverity' />
