@@ -22,12 +22,12 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 import ManageDhcpDrawer from './ManageDhcpDrawer'
 import * as UI          from './styledComponents'
 
-const EdgeDhcp = () => {
+export const EdgeDhcp = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { activeSubTab, serialNumber } = useParams()
   const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
-  const basePath = useTenantLink(`/devices/edge/${serialNumber}/edge-details/dhcp`)
+  const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
   const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const getDhcpPoolStatsPayload = {
@@ -145,5 +145,3 @@ const EdgeDhcp = () => {
     </>
   )
 }
-
-export default EdgeDhcp

@@ -20,7 +20,7 @@ export const mockFirewall = {
       rules: [
         {
           priority: 1,
-          description: 'Default ACL rule',
+          description: 'Cloud mgmt. (Default)',
           accessAction: 'INSPECT',
           protocolType: 'ANY',
           protocolValue: null,
@@ -35,7 +35,7 @@ export const mockFirewall = {
         },
         {
           priority: 2,
-          description: 'Default ACL rule',
+          description: 'Cloud mgmt.(https) (Default)',
           accessAction: 'INSPECT',
           protocolType: 'TCP',
           protocolValue: null,
@@ -50,9 +50,9 @@ export const mockFirewall = {
         },
         {
           priority: 3,
-          description: 'Default ACL rule',
+          description: 'Cloud mgmt.(ntp) (Default)',
           accessAction: 'INSPECT',
-          protocolType: 'ANY',
+          protocolType: 'UDP',
           protocolValue: null,
           sourceAddressType: 'ANY_IP_ADDRESS',
           sourceAddress: null,
@@ -80,7 +80,7 @@ export const mockFirewall = {
         },
         {
           priority: 5,
-          description: 'Default ACL rule',
+          description: 'Default rule',
           accessAction: 'INSPECT',
           protocolType: 'ANY',
           protocolValue: null,

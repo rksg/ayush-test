@@ -56,6 +56,10 @@ describe('AdaptivePolicySetForm', () => {
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       )
     )
   })
@@ -104,7 +108,7 @@ describe('AdaptivePolicySetForm', () => {
 
     // enter policy name
     await userEvent.type(
-      await screen.findByRole('textbox', { name: 'Policy Name' }), 'testPolicy'
+      await screen.findByRole('textbox', { name: 'Policy Set Name' }), 'testPolicy'
     )
 
     // select policies
@@ -158,7 +162,7 @@ describe('AdaptivePolicySetForm', () => {
       }
     )
     await screen.findByText('Configure ' + editPolicySet.name)
-    await screen.findByRole('textbox', { name: 'Policy Name' })
+    await screen.findByRole('textbox', { name: 'Policy Set Name' })
 
     await userEvent.click(await screen.findByText('Select Policies'))
 
