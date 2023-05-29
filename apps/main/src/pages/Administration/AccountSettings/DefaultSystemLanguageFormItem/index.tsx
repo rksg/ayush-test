@@ -35,9 +35,7 @@ const DefaultSystemLanguageFormItem = () => {
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
-    return $t({ defaultMessage: '{localLanguage}' }, {
-      localLanguage: languageNames.of(val)
-    })
+    return languageNames.of(val)
   }
 
   const supportedLangs = [DEFAULT_SYS_LANG,
