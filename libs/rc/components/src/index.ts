@@ -94,6 +94,16 @@ export {
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
 export { PhoneInput } from './PhoneInput'
+export { ServiceInfo } from './ServiceInfo'
+export { NetworkSegmentationServiceInfo } from './NetworkSegmentationServiceInfo'
+export { NetworkSegmentationDetailTableGroup } from './NetworkSegmentationDetailTableGroup'
+export { AccessSwitchTable } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
+export { ApsTable } from './NetworkSegmentationDetailTableGroup/ApsTable'
+export { AssignedSegmentsTable } from './NetworkSegmentationDetailTableGroup/AssignedSegmentsTable'
+export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwitchesTable'
+export type {
+  AccessSwitchTableDataType
+} from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
