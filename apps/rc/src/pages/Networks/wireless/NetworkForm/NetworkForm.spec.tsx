@@ -303,6 +303,7 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('3rd Party Captive Portal (WISPr)'))
     await userEvent.click(screen.getByText('Next'))
 
+    await screen.findByRole('heading', { level: 3, name: 'Settings' })
     // await userEvent.click((screen.getByRole('option', { name: 'Other provider' })))
   })
 })

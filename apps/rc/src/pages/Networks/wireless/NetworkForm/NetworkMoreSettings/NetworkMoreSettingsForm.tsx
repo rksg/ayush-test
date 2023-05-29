@@ -151,6 +151,7 @@ export function MoreSettingsForm (props: {
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const enableMacAuthDynamicVlan = useIsSplitOn(Features.WIFI_EDA_DYNAMIC_VLAN_TOGGLE)
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -180,9 +181,10 @@ export function MoreSettingsForm (props: {
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK ||
-    (data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+    (enableMacAuthDynamicVlan &&
+    ((data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
      data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
-    (data?.type === NetworkTypeEnum.OPEN && data?.wlan?.macAddressAuthentication)
+    (data?.type === NetworkTypeEnum.OPEN && data?.wlan?.macAddressAuthentication)))
 
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
@@ -247,7 +249,8 @@ export function MoreSettingsForm (props: {
               children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
             />
 
-            {(showDynamicWlan || macAuthentication || bypassCpMacAuth) &&
+            {(showDynamicWlan ||
+             (enableMacAuthDynamicVlan && (macAuthentication || bypassCpMacAuth))) &&
               <UI.FieldLabel width='auto' style={{ marginTop: '20px' }}>
                 <UI.FormItemNoLabel
                   name={['wlan','advancedCustomization','enableAaaVlanOverride']}
