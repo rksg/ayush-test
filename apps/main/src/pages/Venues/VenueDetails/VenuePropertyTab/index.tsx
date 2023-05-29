@@ -1,10 +1,28 @@
 import { useEffect, useState } from 'react'
 
+
+import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
+import styled        from 'styled-components/macro'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }                  from '@acx-ui/rc/components'
+import {
+  Loader,
+  showActionModal,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import {
+  Features,
+  useIsSplitOn
+}                                from '@acx-ui/feature-toggle'
+import {
+  WarningTriangleSolid
+} from '@acx-ui/icons'
+import {
+  CsvSize,
+  ImportFileDrawer
+}      from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
@@ -16,10 +34,12 @@ import {
   useLazyGetSwitchListQuery,
   useUpdatePropertyUnitMutation,
   useImportPropertyUnitsMutation,
-  useLazyDownloadPropertyUnitsQuery
+  useLazyDownloadPropertyUnitsQuery,
+  useLazyGetConnectionMeteringByIdQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
+  ConnectionMetering,
   FILTER,
   Persona,
   PropertyUnit,
@@ -28,9 +48,69 @@ import {
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-
+import {
+  getPolicyDetailsLink, PolicyOperation, PolicyType
+} from '@acx-ui/rc/utils'
+import {
+  TenantLink
+} from '@acx-ui/react-router-dom'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
+
+
+const WarningTriangle = styled(WarningTriangleSolid)
+  .attrs((props: { expired: boolean }) => props)`
+path:nth-child(1) {
+  fill: ${props => props.expired ? 'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+}
+path:nth-child(3) {
+  stroke: ${props => props.expired ?
+    'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+}
+`
+
+function ConnectionMeteringLink (props:{
+  id: string,
+  name: string,
+  expirationEpoch?: number | null }
+) {
+  const { $t } = useIntl()
+  const { id, name, expirationEpoch } = props
+  let expired = false
+  let tooltip = ''
+  let showWarning = false
+  if (expirationEpoch) {
+    const now = new Date().getTime() / 1000
+    if (expirationEpoch <= now) {
+      expired = true
+      showWarning = true
+    } else if ((expirationEpoch - now) / (60 * 60 * 24) < 7) {
+      showWarning = true
+      expired = false
+      const expireDate = moment(new Date(0).setUTCSeconds(expirationEpoch)).format('yyyy/MM/DD')
+      tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
+        , { expireDate })
+    }
+  }
+  return (
+    <div style={{ fontSize: '16px' }}>
+      <div style={{ float: 'left', marginLeft: '5%' }}>
+        <TenantLink to={
+          getPolicyDetailsLink({
+            type: PolicyType.CONNECTION_METERING,
+            oper: PolicyOperation.DETAIL, policyId: id })
+        }>
+          {name ?? id}
+        </TenantLink>
+      </div>
+      {showWarning &&
+        <div style={{ float: 'left', marginLeft: '10%' }} title={tooltip}>
+          <WarningTriangle expired={expired}/>
+        </div>
+      }
+    </div>
+  )
+}
 
 
 export function VenuePropertyTab () {
@@ -40,6 +120,7 @@ export function VenuePropertyTab () {
   const [personaMap, setPersonaMap] = useState(new Map<string, Persona>())
   const [apMap, setApMap] = useState(new Map())
   const [switchMap, setSwitchMap] = useState(new Map())
+  const [connectionMeteringMap, setConnectionMeteringMap] = useState(new Map())
   const [withNsg, setWithNsg] = useState(false)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
@@ -54,6 +135,7 @@ export function VenuePropertyTab () {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
+
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [groupId, setGroupId] =
     useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
@@ -62,6 +144,8 @@ export function VenuePropertyTab () {
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
 
   const queryUnitList = useTableQuery({
@@ -132,7 +216,7 @@ export function VenuePropertyTab () {
   useEffect(() => {
     const apMacs: string[] = []
     const switchMacs: string[] = []
-
+    const connectionMeteringSet: Set<string> = new Set()
     personaMap.forEach(p => {
       if (p?.ethernetPorts && p.ethernetPorts.length > 0) {
         apMacs.push(p.ethernetPorts[0].macAddress)
@@ -141,10 +225,17 @@ export function VenuePropertyTab () {
       if (p?.switches && p?.switches.length > 0) {
         switchMacs.push(p.switches[0].macAddress)
       }
+
+      if (p?.meteringProfileId) {
+        connectionMeteringSet.add(p.meteringProfileId)
+      }
     })
 
     fetchApData(apMacs)
     fetchSwitchData(switchMacs)
+    if (isConnectionMeteringEnabled) {
+      fetchConnectionMeteringData([...connectionMeteringSet])
+    }
   }, [personaMap])
 
   const fetchPersonaData = (ids: string[]) => {
@@ -153,6 +244,17 @@ export function VenuePropertyTab () {
         .then(result => {
           if (result.data) {
             setPersonaMap(map => new Map( map.set(id, result.data as Persona)))
+          }
+        })
+    })
+  }
+
+  const fetchConnectionMeteringData = (ids: string[]) => {
+    ids.forEach(id => {
+      getConnectionMeteringById({ params: { id } })
+        .then(result=>{
+          if (result.data) {
+            setConnectionMeteringMap(map => new Map(map.set(id, result.data as ConnectionMetering)))
           }
         })
     })
@@ -348,6 +450,23 @@ export function VenuePropertyTab () {
         const persona = personaMap.get(row.personaId)
         const switchMac = persona?.switches?.[0]?.macAddress ?? ''
         return (switchMap.get(switchMac) as SwitchViewModel)?.name
+      }
+    },
+    {
+      show: isConnectionMeteringEnabled,
+      key: 'connectionMetering',
+      title: $t({ defaultMessage: 'Connection Metering' }),
+      dataIndex: 'connectionMetering',
+      render: (_, row) => {
+        const persona = personaMap.get(row.personaId)
+        const connectionMeteringId = persona?.meteringProfileId ?? ''
+        // eslint-disable-next-line max-len
+        const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
+        if (persona && connectionMetering) {
+          // eslint-disable-next-line max-len
+          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona.expirationEpoch}/>
+        }
+        return ''
       }
     },
     {
