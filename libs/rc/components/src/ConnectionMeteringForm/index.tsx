@@ -17,7 +17,8 @@ import {
   PolicyType,
   PolicyOperation,
   getPolicyDetailsLink,
-  ConnectionMetering
+  ConnectionMetering,
+  BillingCycleType
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -32,6 +33,35 @@ function transformFormToData (form:ConnectingMeteringFormField | undefined):
   Partial<ConnectionMetering> {
   let data = {
     ...form
+  }
+
+  if (!data.rateLimitEnabled) {
+    data.uploadRate = 0
+    data.downloadRate = 0
+  } else {
+    if (!data.uploadRate) {
+      data.uploadRate = 0
+    }
+    if (!data.downloadRate) {
+      data.downloadRate = 0
+    }
+  }
+
+  if (!data.consumptionControlEnabled) {
+    data.dataCapacity = 0
+    data.billingCycleRepeat = false
+    data.billingCycleType = 'CYCLE_UNSPECIFIED'
+    data.billingCycleDays = null
+    data.dataCapacityEnforced = false
+    data.dataCapacityThreshold = 0
+  } else if (!data.billingCycleRepeat) {
+    data.billingCycleType = 'CYCLE_UNSPECIFIED'
+    data.billingCycleDays = null
+  } else if (!data.billingCycleType) {
+    data.billingCycleType ='CYCLE_UNSPECIFIED'
+    data.billingCycleDays = null
+  } else if (data.billingCycleType !== 'CYCLE_NUM_DAYS' as BillingCycleType) {
+    data.billingCycleDays = null
   }
   return data
 }
