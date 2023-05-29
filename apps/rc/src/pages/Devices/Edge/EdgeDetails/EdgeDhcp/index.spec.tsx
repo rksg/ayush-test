@@ -8,7 +8,7 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 import { mockEdgeDhcpHostStats }                       from '../../__tests__/fixtures'
 
-import EdgeDhcp from '.'
+import { EdgeDhcp } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
