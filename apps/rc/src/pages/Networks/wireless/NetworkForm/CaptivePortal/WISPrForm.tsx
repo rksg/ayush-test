@@ -42,7 +42,7 @@ export function WISPrForm () {
     cloneMode
   } = useContext(NetworkFormContext)
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
-  const enableWISPRAlwaysAccept = true
+  const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
