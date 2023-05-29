@@ -91,7 +91,7 @@ onClickAllAccept: () => void
               <Radio value={'RADIUS'}
                 data-testid='radius'
                 onChange={() => {props.onClickAuth()}}>
-                  Authenticate Connections
+                {$t({ defaultMessage: 'Authenticate Connections' })}
               </Radio>
               <Space>
                 <Form.Item label={$t({ defaultMessage: 'Authentication Server' })}>
@@ -153,10 +153,10 @@ onClickAllAccept: () => void
                   placement='bottom'
                   mouseEnterDelay={0}
                   mouseLeaveDelay={0}
-                  title={'In order to enable this option you have to \
-                uncheck the “Enable MAC auth bypass” option'}>
-                  Accept All Connections
-                </Tooltip> : 'Accept All Connections'}
+                  // eslint-disable-next-line max-len
+                  title={$t({ defaultMessage: 'In order to enable this option you have to uncheck the “Enable MAC auth bypass” option' })}>
+                  {$t({ defaultMessage: 'Accept All Connections' })}
+                </Tooltip> : $t({ defaultMessage: 'Accept All Connections' })}
               </Radio>
               <Description>
                 <FormattedMessage
