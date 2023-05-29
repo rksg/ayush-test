@@ -149,7 +149,7 @@ export default function RadiusAttributeGroupDetail () {
             <Form layout={'vertical'}>
               <Row>
                 <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
+                  <Form.Item label={$t({ defaultMessage: 'Group Name' })}>
                     <Paragraph>{data?.name}</Paragraph>
                   </Form.Item>
                 </Col>
