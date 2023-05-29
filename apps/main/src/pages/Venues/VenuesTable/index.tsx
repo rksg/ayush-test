@@ -51,9 +51,10 @@ function useColumns (
     },
     {
       title: $t({ defaultMessage: 'Address' }),
-      key: 'city',
-      dataIndex: 'city',
+      key: 'country',
+      dataIndex: 'country',
       sorter: true,
+      filterKey: 'city',
       filterable: filterables ? filterables['city'] : false,
       width: 120,
       render: function (data, row) {
