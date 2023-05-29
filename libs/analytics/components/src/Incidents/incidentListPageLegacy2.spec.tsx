@@ -5,7 +5,7 @@ import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { networkHierarchy } from '../__tests__/fixtures'
 
-import { IncidentListPageLegacy as Incidents, IncidentTabContentLegacy } from './incidentListPageLegacy'
+import { IncidentListPageLegacy as Incidents, IncidentTabContentLegacy } from './incidentListPageLegacy2'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
