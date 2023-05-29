@@ -12,6 +12,7 @@ import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-d
 import { Provider }                                 from '@acx-ui/store'
 import { hasAccess }                                from '@acx-ui/user'
 
+import { AIAnalytics, AIAnalyticsTabEnum }              from './pages/AIAnalytics'
 import IncidentDetailsPage                              from './pages/IncidentDetails'
 import { NetworkAssurance, NetworkAssuranceTabEnum }    from './pages/NetworkAssurance'
 import { useServiceGuard }                              from './pages/ServiceGuard'
@@ -37,7 +38,11 @@ export default function AnalyticsRoutes () {
     <Route path=':tenantId/t'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
-        element={isNavbarEnhanced ? <IncidentListPage /> : <IncidentListPageLegacy />}
+        element={isNavbarEnhanced
+          ? (!canUseAnltAdv
+            ? <IncidentListPage />
+            : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)
+          : <IncidentListPageLegacy />}
       />
       {!isNavbarEnhanced &&
         <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPageLegacy />} />}
@@ -56,8 +61,8 @@ export default function AnalyticsRoutes () {
             ? <HealthPage/>
             : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
           : <HealthPage/>} />
-      <Route path='analytics/configChange'
-        element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
+      {isNavbarEnhanced && canUseAnltAdv && <Route path='analytics/configChange'
+        element={<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE} />} />}
       {canUseAnltAdv && <Route>
         <Route path='analytics/serviceValidation/*' >
           <Route index
