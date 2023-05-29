@@ -11,11 +11,6 @@ export enum WISPrAuthAccServerAction {
 
 export interface WISPrAuthAccServerState {
     action: WISPrAuthAccServerAction,
-    currentValue: {
-        BypassCNA: boolean,
-        Auth?: string,
-        AllAccept: boolean
-    },
     isDisabled: {
         BypassCNA: boolean,
         Auth: boolean,
@@ -26,11 +21,6 @@ export interface WISPrAuthAccServerState {
 export const statesCollection = {
   useBypassCNAAndAuth: {
     action: WISPrAuthAccServerAction.BypassCNAAndAuthChecked,
-    currentValue: {
-      BypassCNA: true,
-      Auth: '',
-      AllAccept: false
-    },
     isDisabled: {
       BypassCNA: false,
       Auth: false,
@@ -39,10 +29,6 @@ export const statesCollection = {
   },
   useOnlyAuth: {
     action: WISPrAuthAccServerAction.OnlyAuthChecked,
-    currentValue: {
-      BypassCNA: false,
-      AllAccept: false
-    },
     isDisabled: {
       BypassCNA: false,
       Auth: false,
@@ -51,11 +37,6 @@ export const statesCollection = {
   },
   useAllAccept: {
     action: WISPrAuthAccServerAction.AllAcceptChecked,
-    currentValue: {
-      BypassCNA: false,
-      Auth: '',
-      AllAccept: true
-    },
     isDisabled: {
       BypassCNA: true,
       Auth: true,
