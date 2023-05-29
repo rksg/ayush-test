@@ -113,13 +113,7 @@ export function DataConsumptionSettingForm () {
                 validateTrigger={['onBlur']}
                 rules={
                   [
-                    { required: true },
-                    { validator: (_, value) => {
-                      if (!value) {
-                        return Promise.reject()
-                      }
-                      return Promise.resolve()
-                    } }
+                    { required: true }
                   ]
                 }
               >
