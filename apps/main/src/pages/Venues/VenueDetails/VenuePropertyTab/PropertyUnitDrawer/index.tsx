@@ -159,7 +159,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const enableGuestVlan = useWatch('enableGuestVlan', form)
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
-  const [enableGuestUnit]
+  const [enableGuestUnit, setEnableGuestUnit]
     = useState(propertyConfigsQuery.data?.unitConfig?.guestAllowed)
   const [personaGroupId, setPersonaGroupId]
     = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
@@ -178,6 +178,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
       const groupId = propertyConfigsQuery.data.personaGroupId
       setPersonaGroupId(groupId)
+      setEnableGuestUnit(propertyConfigsQuery.data?.unitConfig?.guestAllowed)
 
       getPersonaGroupById({ params: { groupId } })
         .then(result => setWithNsg(!!result.data?.nsgId))
