@@ -1,12 +1,22 @@
+import { createContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader, Tabs }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { useSearchPersonaGroupListQuery, useSearchPersonaListQuery } from '@acx-ui/rc/services'
+import { useTableQuery }                                             from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                     from '@acx-ui/react-router-dom'
 
 import { PersonaGroupTable } from './PersonaGroupTable'
 import { PersonaTable }      from './PersonaTable'
+
+export const PersonaGroupContext = createContext({} as {
+  setPersonaGroupCount: (data: number) => void
+})
+export const PersonasContext = createContext({} as {
+  setPersonasCount: (data: number) => void
+})
 
 function PersonaPageHeader () {
   const { $t } = useIntl()
@@ -14,6 +24,29 @@ function PersonaPageHeader () {
   const basePath = useTenantLink('/users/persona-management/')
   const navigate = useNavigate()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const [ personaGroupCount, setPersonaGroupCount ] = useState(0)
+  const [ personasCount, setPersonasCount ] = useState(0)
+
+  const personaGroupTableQuery = useTableQuery( {
+    useQuery: useSearchPersonaGroupListQuery,
+    apiParams: { sort: 'name,ASC' },
+    defaultPayload: { keyword: '' }
+  })
+
+  const personaTableQuery = useTableQuery({
+    useQuery: useSearchPersonaListQuery,
+    defaultPayload: {
+      keyword: ''
+    }
+  })
+
+  useEffect(() => {
+    setPersonaGroupCount(personaGroupTableQuery.data?.totalCount!)
+  }, [personaGroupTableQuery.data])
+
+  useEffect(() => {
+    setPersonasCount(personaTableQuery.data?.totalCount!)
+  }, [personaTableQuery])
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -31,24 +64,29 @@ function PersonaPageHeader () {
         link: isNavbarEnhanced ? '' : '/users'
       }]}
       footer={
-        <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-          <Tabs.TabPane
-            key={'persona-group'}
-            tab={isNavbarEnhanced
-              ? $t({ defaultMessage: 'Persona Groups' })
-              : $t({ defaultMessage: 'Persona Group' })
-            }
-            children={<PersonaGroupTable />}
-          />
-          <Tabs.TabPane
-            key={'persona'}
-            tab={isNavbarEnhanced
-              ? $t({ defaultMessage: 'Personas' })
-              : $t({ defaultMessage: 'Persona' })
-            }
-            children={<PersonaTable />}
-          />
-        </Tabs>
+        <PersonaGroupContext.Provider value={{ setPersonaGroupCount }}>
+          <PersonasContext.Provider value={{ setPersonasCount }}>
+            <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+              <Tabs.TabPane
+                key={'persona-group'}
+                tab={isNavbarEnhanced
+                  ? $t({ defaultMessage: 'Persona Groups ({personaGroupCount})' },
+                    { personaGroupCount })
+                  : $t({ defaultMessage: 'Persona Group' })
+                }
+                children={<PersonaGroupTable />}
+              />
+              <Tabs.TabPane
+                key={'persona'}
+                tab={isNavbarEnhanced
+                  ? $t({ defaultMessage: 'Personas ({personasCount})' }, { personasCount })
+                  : $t({ defaultMessage: 'Persona' })
+                }
+                children={<PersonaTable />}
+              />
+            </Tabs>
+          </PersonasContext.Provider>
+        </PersonaGroupContext.Provider>
       }
     />
   )
