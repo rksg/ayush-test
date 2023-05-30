@@ -32,4 +32,16 @@ describe('Dropdown', () => {
     )
     expect(screen.getByTestId('trigger')).toHaveTextContent('')
   })
+
+  it('renders custom overlay', () => {
+    render(
+      <Dropdown
+        overlay={
+          <Dropdown.OverlayContainer>
+            Custom content in here
+          </Dropdown.OverlayContainer>
+        }
+      >{() => <div>Open Overlay</div>}</Dropdown>
+    )
+  })
 })
