@@ -289,6 +289,9 @@
   "/IRNBr": {
     "defaultMessage": "Backup restore is in progress"
   },
+  "/JfTrU": {
+    "defaultMessage": "Select server"
+  },
   "/JlOnM": {
     "defaultMessage": "3G:"
   },
@@ -2017,6 +2020,9 @@
     "defaultMessage": "Can not be a broadcast address",
     "description": "Validation - switch broadcast address"
   },
+  "733SFg": {
+    "defaultMessage": "Enable Data Consumption control"
+  },
   "73nhOH": {
     "defaultMessage": "CLI template"
   },
@@ -2199,6 +2205,9 @@
   },
   "7tSsC/": {
     "defaultMessage": "<p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider modifying the policy configurations:</p> <ol> <li>Confirm the L2 MAC ACL policy.</li> <li>Confirm the Blocked Client List.</li> </ol>"
+  },
+  "7uudSn": {
+    "defaultMessage": "Add Connection Metering"
   },
   "7vTvJh": {
     "defaultMessage": "WiFi4EU is enabled but not configured!"
@@ -2403,6 +2412,9 @@
   },
   "8c5zSU": {
     "defaultMessage": "Default VLAN settings won't be applied if there is the same VLAN ID in switch"
+  },
+  "8cADk1": {
+    "defaultMessage": "Data Rate Settings"
   },
   "8cF6CF": {
     "defaultMessage": "Error: Can not detect passphrase expiration value"
@@ -3012,9 +3024,6 @@
   "B//K0I": {
     "defaultMessage": "CLI Provisioning"
   },
-  "B/XrZJ": {
-    "defaultMessage": "Other provider"
-  },
   "B1glSA": {
     "defaultMessage": "Continue Reading"
   },
@@ -3199,6 +3208,9 @@
   },
   "Bqj0zp": {
     "defaultMessage": "Switches running 08.0.70x or older releases need to go through a 2 step upgrade process."
+  },
+  "Br4bB2": {
+    "defaultMessage": "Rate Limiting"
   },
   "Brplhy": {
     "defaultMessage": "The rule has reached the limit ({maxCount})."
@@ -3631,6 +3643,9 @@
   "DqD1yK": {
     "defaultMessage": "Applications"
   },
+  "DqTQOp": {
+    "defaultMessage": "Once"
+  },
   "DxrJDu": {
     "defaultMessage": "Encryption for Users’ MAC and IP addresses:"
   },
@@ -3819,6 +3834,9 @@
   },
   "EuK7yR": {
     "defaultMessage": "October"
+  },
+  "EuMEYh": {
+    "defaultMessage": "Instances ({size})"
   },
   "EvG8up": {
     "defaultMessage": "1 Month"
@@ -4205,6 +4223,9 @@
   },
   "GcXfck": {
     "defaultMessage": "3rd party administrator found"
+  },
+  "GdukQo": {
+    "defaultMessage": "Authentication Connections"
   },
   "GeH82N": {
     "defaultMessage": "Image Download Using USB"
@@ -4616,6 +4637,9 @@
   "IQrRCX": {
     "defaultMessage": "No data to display"
   },
+  "IRIC7Z": {
+    "defaultMessage": "Connection Metering"
+  },
   "IS/0Ju": {
     "defaultMessage": "Wireless Network"
   },
@@ -4742,6 +4766,9 @@
   },
   "IxX0/A": {
     "defaultMessage": "Disassociated for unspecified, QoS-related reason"
+  },
+  "IyOpR5": {
+    "defaultMessage": "VxLAN PMTU Value"
   },
   "IygFVO": {
     "defaultMessage": "Please select Layer 2 profile"
@@ -5713,9 +5740,6 @@
   "N5Sbxy": {
     "defaultMessage": "Configuration Profiles"
   },
-  "N6bCx+": {
-    "defaultMessage": "This policy has been applied in network"
-  },
   "N7EdjU": {
     "defaultMessage": "Seconds"
   },
@@ -6011,6 +6035,9 @@
   "O7/Tcq": {
     "defaultMessage": "Each route should have unique Network Address + Subnet Mask"
   },
+  "O9/wTE": {
+    "defaultMessage": "Total Download limit"
+  },
   "O95R3Z": {
     "defaultMessage": "Phone"
   },
@@ -6243,6 +6270,9 @@
   "P2PgnZ": {
     "defaultMessage": "Accounting Port"
   },
+  "P4JJ2W": {
+    "defaultMessage": "Traffic Control"
+  },
   "P4UW09": {
     "defaultMessage": "Most impacted WLAN: {ssid}"
   },
@@ -6383,6 +6413,9 @@
   },
   "PsEEfC": {
     "defaultMessage": "The email address belongs to a registered user in this account. Please select him using the \"Registered User\" option"
+  },
+  "PtipaP": {
+    "defaultMessage": "Consumption Cycle"
   },
   "PtkzSB": {
     "defaultMessage": "Backup creation is in progress"
@@ -6659,9 +6692,6 @@
   "RBQU2R": {
     "defaultMessage": "No data to display."
   },
-  "RESuN/": {
-    "defaultMessage": "Detail content Error"
-  },
   "REux5E": {
     "defaultMessage": "Add VLAN Pool"
   },
@@ -6850,6 +6880,9 @@
   "RzY1EZ": {
     "defaultMessage": "Please enter Offset"
   },
+  "Rzc4YD": {
+    "defaultMessage": "Max Data: {dataCapacity}{unit} {cycleType, select, CYCLE_MONTHLY {(Monthly)} CYCLE_WEEKLY {(Weekly)} CYCLE_NUM_DAYS {(Per {cycleDays} days)} other {} }"
+  },
   "RzoePB": {
     "defaultMessage": "Servers & Users"
   },
@@ -6870,6 +6903,9 @@
   },
   "S3XVto": {
     "defaultMessage": "Activity Details"
+  },
+  "S7ExKS": {
+    "defaultMessage": "In order to enable this option you have to uncheck the “Enable MAC auth bypass” option"
   },
   "S86/4L": {
     "defaultMessage": "Edit Classification Rule"
@@ -6996,6 +7032,9 @@
   "Sjo1P4": {
     "defaultMessage": "Custom"
   },
+  "Sl3qYt": {
+    "defaultMessage": "Edit Connection Metering"
+  },
   "Sl7JdH": {
     "defaultMessage": "Multiple AP DHCP"
   },
@@ -7019,6 +7058,9 @@
   },
   "SqY6EK": {
     "defaultMessage": "EAPOL Attempts"
+  },
+  "Sr9Yav": {
+    "defaultMessage": "Data comsumption"
   },
   "Srb91A": {
     "defaultMessage": "Install an authentication app on your mobile device"
@@ -7103,6 +7145,9 @@
   },
   "T7pTaH": {
     "defaultMessage": "Lookback Interface ID"
+  },
+  "T8S06b": {
+    "defaultMessage": "Max Data Comsumption"
   },
   "T8nGWN": {
     "defaultMessage": "Service State"
@@ -7361,6 +7406,9 @@
   "UDFpiZ": {
     "defaultMessage": "Per radio client count at which an AP will stop converting group addressed data traffic to unicast"
   },
+  "UDKmkz": {
+    "defaultMessage": "Add Connection metering profile"
+  },
   "UF3jdf": {
     "defaultMessage": "Add DNS Proxy Rule"
   },
@@ -7495,6 +7543,9 @@
   },
   "UmkImZ": {
     "defaultMessage": "{months} {months, plural, one {month} other {months}}"
+  },
+  "Umnevm": {
+    "defaultMessage": "Action for overage data"
   },
   "Up5U7K": {
     "defaultMessage": "Block"
@@ -7739,6 +7790,9 @@
   },
   "Vu4t30": {
     "defaultMessage": "OPTION_V4_SZTP_REDIRECT"
+  },
+  "VuMX8q": {
+    "defaultMessage": "Accept All Connections"
   },
   "VuTwsh": {
     "defaultMessage": "9 Mbps"
@@ -8061,6 +8115,9 @@
   "XNfKGr": {
     "defaultMessage": "RADIUS Attribute Groups ({count})"
   },
+  "XOYw9i": {
+    "defaultMessage": "Repeat cycles"
+  },
   "XPd4np": {
     "defaultMessage": "Station AP MAC"
   },
@@ -8099,6 +8156,10 @@
   },
   "XXmzTE": {
     "defaultMessage": "This metric measures the percentage of roaming attempts that have completed successfully. A roaming attempt is deemed successful when the Wifi client has its session transferred from one AP to the next. It is possible for a single Wifi client to have multiple roaming attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "XY5jQE": {
+    "defaultMessage": "Name is invalid",
+    "description": "Validation - name for service and policy"
   },
   "XZRi3V": {
     "defaultMessage": "<p>In these multi-issue failures, there are a few general recommendations to check:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> <li>Check for high levels of RF performance interference, which may be causing high error rates.</li> <li>Compare the configuration and operating deployment of the affected WLAN or network scope (AP, AP group, etc) with others to identify any unique settings that may be causing issues.</li> </ol>"
@@ -8317,6 +8378,9 @@
   },
   "Yb2goG": {
     "defaultMessage": "Firewall Server"
+  },
+  "YceVNq": {
+    "defaultMessage": "Total Upload limit"
   },
   "YdQxfw": {
     "defaultMessage": "Contact Support"
@@ -9098,6 +9162,9 @@
   "blWvag": {
     "defaultMessage": "Models"
   },
+  "bmfyzo": {
+    "defaultMessage": "MaxData:"
+  },
   "bmmzd4": {
     "defaultMessage": "Please select logo"
   },
@@ -9625,8 +9692,14 @@
   "dvOgRm": {
     "defaultMessage": "Version 2"
   },
+  "dvwJXS": {
+    "defaultMessage": "Connection Metering {name} was deleted"
+  },
   "dx09pY": {
     "defaultMessage": "FT (11r) Roam Failure"
+  },
+  "e+LJQU": {
+    "defaultMessage": "Notify when data volume reaches:(%)"
   },
   "e//hEp": {
     "defaultMessage": "Since you have purchased MSP licenses, we will now refresh the system and take you to the special MSP dashboard. This dashboard will serve as an entry point to Ruckus Cloud from now on, for all users of this account. Purchase MSP licenses to enable adding customers."
@@ -9646,6 +9719,9 @@
   "e1BV06": {
     "defaultMessage": "\"`\" and \"$(\" are not allowed",
     "description": "Validation - grave accent and dollar sign checks"
+  },
+  "e1Rb9q": {
+    "defaultMessage": "Additional external configuration is required for this option to function. <br></br> Please refer to the WISPr API documentation for more details"
   },
   "e1tK8K": {
     "defaultMessage": "SNMPv3 Agent"
@@ -10402,6 +10478,9 @@
   "hNA6lI": {
     "defaultMessage": "Set address here"
   },
+  "hNTzW5": {
+    "defaultMessage": "UP: {uploadRate, select, 0 {Unlimited} other {{uploadRate}Mbps} }"
+  },
   "hPBTq9": {
     "defaultMessage": "WPAD"
   },
@@ -10410,6 +10489,9 @@
   },
   "hTHEQk": {
     "defaultMessage": "Max. Number of Clients"
+  },
+  "hVYAtX": {
+    "defaultMessage": "Authenticate Connections"
   },
   "hWJebo": {
     "defaultMessage": "radios"
@@ -10491,9 +10573,6 @@
   "hpSf0W": {
     "defaultMessage": "Delete \"{count, plural, one {{entityValue}} other {{count} {formattedEntityName}} }\"?"
   },
-  "hqB66n": {
-    "defaultMessage": "One of the policy has been applied in network."
-  },
   "hr/G8O": {
     "defaultMessage": "DHCP timeout count"
   },
@@ -10557,6 +10636,9 @@
   "hzXHmo": {
     "defaultMessage": "models"
   },
+  "i+jtYC": {
+    "defaultMessage": "Provides data rate and data consumption control"
+  },
   "i+qzhd": {
     "defaultMessage": "This is a stacking port and can not be configured"
   },
@@ -10566,6 +10648,9 @@
   "i/CBRC": {
     "defaultMessage": "Minimal value is {value}",
     "description": "Validation - min value checks"
+  },
+  "i0isur": {
+    "defaultMessage": "Data Consumption Settings"
   },
   "i16dQa": {
     "defaultMessage": "DHCP_DONE"
@@ -10581,6 +10666,9 @@
   },
   "i7T4Zm": {
     "defaultMessage": "Hits"
+  },
+  "iAMjUL": {
+    "defaultMessage": "Rate limiting"
   },
   "iBBcur": {
     "defaultMessage": "Disassociated because the information in the Supported Channels element is unacceptable"
@@ -10652,6 +10740,9 @@
   "iS0vZo": {
     "defaultMessage": "Total Clients"
   },
+  "iSilzS": {
+    "defaultMessage": "Repeating cycles { cycleType, select, CYCLE_MONTHLY {(Monthly)} CYCLE_WEEKLY {(Weekly)} CYCLE_NUM_DAYS {(Per {cycleDays} days)} other {} }"
+  },
   "iU0Fa3": {
     "defaultMessage": "Firmware updating"
   },
@@ -10684,6 +10775,9 @@
   },
   "ijrcfH": {
     "defaultMessage": "Please select a DHCP Pool"
+  },
+  "ikSVnE": {
+    "defaultMessage": "Enable Rate Limiting"
   },
   "ils6sH": {
     "defaultMessage": "For optimal test results, you are asked to"
@@ -11287,6 +11381,9 @@
   "l/e8Fv": {
     "defaultMessage": "AP(s) operating in Low Power Mode: {scope}"
   },
+  "l06gtU": {
+    "defaultMessage": "All devices that belong to this unit will be applied to the selected connection metering policy"
+  },
   "l0Stk4": {
     "defaultMessage": "Deactive DHCP Service"
   },
@@ -11308,6 +11405,9 @@
   },
   "l4NqVU": {
     "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Consider turning on auto channel selection algorithms - Background scan or ChannelFly.</li> <li>If ChannelFly is selected it is mandatory to turn ON background scan.</li> <li>Scan your environments for rogue APs and remove them if possible.</li> </ol>"
+  },
+  "l50mT4": {
+    "defaultMessage": "One cycle"
   },
   "l5MUct": {
     "defaultMessage": "WWW HTTP"
@@ -11720,6 +11820,9 @@
   "mqq9sX": {
     "defaultMessage": "MAC Address Format"
   },
+  "mrjxQS": {
+    "defaultMessage": "DOWN: {downloadRate, select, 0 {Unlimited} other {{downloadRate}Mbps} }"
+  },
   "msBGI+": {
     "defaultMessage": "Select attribute type"
   },
@@ -11936,6 +12039,9 @@
     "defaultMessage": "Must be a network address",
     "description": "Validation - subnet address checks"
   },
+  "nmpevl": {
+    "defaultMessage": "Discard"
+  },
   "nmqTps": {
     "defaultMessage": "Hop Count"
   },
@@ -11962,6 +12068,9 @@
   },
   "nqLyH7": {
     "defaultMessage": "All Customers"
+  },
+  "nrEPlE": {
+    "defaultMessage": "Radius Attribute group (TBD)"
   },
   "nsS2jY": {
     "defaultMessage": "Neighbor AP"
@@ -12370,6 +12479,9 @@
   "pa7dvf": {
     "defaultMessage": "Invalid Key Data in EAPOL-Key Msg 2 of 4"
   },
+  "paBpxN": {
+    "defaultMessage": "Ignore"
+  },
   "pcUnyI": {
     "defaultMessage": "Guest Pass - Connect"
   },
@@ -12594,6 +12706,9 @@
   "qWQB8J": {
     "defaultMessage": "Lease expires in..."
   },
+  "qWb835": {
+    "defaultMessage": "The Consumption data is due to expire on {expireDate}"
+  },
   "qYBnMW": {
     "defaultMessage": "WPA3",
     "description": "WLAN security type - WPA3"
@@ -12787,6 +12902,9 @@
   "rRts53": {
     "defaultMessage": "Apply Ports General"
   },
+  "rUi8KN": {
+    "defaultMessage": "Custom Provider"
+  },
   "rV0gjK": {
     "defaultMessage": "{count} Impacted {count, plural, one {Client} other {Clients}}"
   },
@@ -12823,6 +12941,9 @@
   },
   "reKx6/": {
     "defaultMessage": "Captive Portal URL"
+  },
+  "rffrhe": {
+    "defaultMessage": "Consumption cycle:"
   },
   "rgLUJY": {
     "defaultMessage": "WLAN BSSID"
@@ -13543,6 +13664,9 @@
   "ukFIyf": {
     "defaultMessage": "Your Attention is Required"
   },
+  "ukFhky": {
+    "defaultMessage": "Retry firmware update"
+  },
   "uliJ05": {
     "defaultMessage": "The cellular AP cannot be moved to the venue which doesn’t enable DHCP service",
     "description": "Validation - Cellular AP Dhcp checks"
@@ -13588,6 +13712,9 @@
   },
   "uzH6wz": {
     "defaultMessage": "Authentication radius port cannot be {authForbiddenPort} and Accounting radius port cannot be {acctForbiddenPort}"
+  },
+  "uzpv0F": {
+    "defaultMessage": "Rate limit:"
   },
   "v+3TzS": {
     "defaultMessage": "Jitter"
@@ -13690,6 +13817,9 @@
   },
   "vLbXPl": {
     "defaultMessage": "Configure syslog to an external server for offline reporting"
+  },
+  "vMR+CJ": {
+    "defaultMessage": "Expiration Date of Data Consumption"
   },
   "vONi+O": {
     "defaultMessage": "Country"
@@ -14175,6 +14305,9 @@
   "xfSyOu": {
     "defaultMessage": "Could not enable wifi-calling with no profiles selected"
   },
+  "xhAcGU": {
+    "defaultMessage": "Recurring Schedule"
+  },
   "xhBLiY": {
     "defaultMessage": "Down"
   },
@@ -14500,6 +14633,9 @@
   "yqrFMI": {
     "defaultMessage": "Current AP Firmware"
   },
+  "yr4JsI": {
+    "defaultMessage": "Data Consumption"
+  },
   "ysmIeD": {
     "defaultMessage": "Recommended Action"
   },
@@ -14707,6 +14843,10 @@
   },
   "zifKlV": {
     "defaultMessage": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}."
+  },
+  "zm37dx": {
+    "defaultMessage": "Special character is invalid",
+    "description": "Validation - name for service and policy"
   },
   "zmEuGu": {
     "defaultMessage": "Current Firmware"
