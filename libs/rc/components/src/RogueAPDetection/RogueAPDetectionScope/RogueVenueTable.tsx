@@ -13,7 +13,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import RogueAPDetectionContext from '../RogueAPDetectionContext'
+import { VENUE_IN_PROFILE_MAX_COUNT } from '../contentsMap'
+import RogueAPDetectionContext        from '../RogueAPDetectionContext'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
@@ -185,7 +186,7 @@ export const RogueVenueTable = () => {
   const rowActions: TableProps<VenueRoguePolicyType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
-      if (state.venues.length + selectRows.length >= 64) {
+      if (state.venues.length + selectRows.length >= VENUE_IN_PROFILE_MAX_COUNT) {
         showToast({
           type: 'info',
           duration: 10,

@@ -1,13 +1,12 @@
 import React from 'react'
 
-import { Row, Typography } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
+import { useParams }  from 'react-router-dom'
 
-// import { StackedBarChart }                  from '@acx-ui/components'
-import { Card, GridCol, GridRow }        from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
-import { QosPriorityEnum }               from '@acx-ui/rc/utils'
+import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { useGetWifiCallingServiceQuery }  from '@acx-ui/rc/services'
+import { QosPriorityEnum }                from '@acx-ui/rc/utils'
 
 import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 
@@ -16,28 +15,11 @@ const WifiCallingDetailContent = () => {
   const { Paragraph } = Typography
   const { $t } = useIntl()
 
-  const { data } = useGetWifiCallingServiceQuery({ params: params })
+  const { data, isLoading } = useGetWifiCallingServiceQuery({ params: params })
 
-  if (data) {
-    return <Card>
-      <GridRow>
-        {/*TODO: Temporarily hidden this component until Health api is ready*/}
-        {/*<GridCol col={{ span: 4 }}>*/}
-        {/*  <Typography.Title level='3'>*/}
-        {/*    {$t({ defaultMessage: 'Service Health' })}*/}
-        {/*  </Typography.Title>*/}
-        {/*  <StackedBarChart*/}
-        {/*    style={{ height: 20, width: 100 }}*/}
-        {/*    data={[{*/}
-        {/*      category: 'emptyStatus',*/}
-        {/*      series: data.serviceHealth*/}
-        {/*    }]}*/}
-        {/*    showTooltip={false}*/}
-        {/*    showLabels={false}*/}
-        {/*    showTotal={false}*/}
-        {/*    barColors={['#63a103', '#e1e600', '#910012']}*/}
-        {/*  />*/}
-        {/*</GridCol>*/}
+  return <Loader states={[{ isLoading }]}>
+    <Card>
+      {data && <GridRow>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Description' })}
@@ -77,15 +59,9 @@ const WifiCallingDetailContent = () => {
             })}
           </>
         </GridCol>
-      </GridRow>
+      </GridRow>}
     </Card>
-  } else {
-    return <Card>
-      <Row gutter={24} justify='space-evenly'>
-        <div data-testid='target'>Detail Error</div>
-      </Row>
-    </Card>
-  }
+  </Loader>
 }
 
 export default WifiCallingDetailContent
