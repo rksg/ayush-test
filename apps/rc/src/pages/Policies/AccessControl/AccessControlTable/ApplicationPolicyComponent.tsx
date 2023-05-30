@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -16,8 +17,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { AddModeProps }  from '../AccessControlForm/AccessControlForm'
-import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
+import { AddModeProps }                         from '../AccessControlForm/AccessControlForm'
+import ApplicationDrawer                        from '../AccessControlForm/ApplicationDrawer'
+import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../constants'
 
 const defaultPayload = {
   fields: [
@@ -104,6 +106,7 @@ const ApplicationPolicyComponent = () => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Application Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
@@ -146,9 +149,11 @@ const ApplicationPolicyComponent = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <ApplicationDrawer
-      onlyAddMode={addModeStatus}
-    />
+    <Form>
+      <ApplicationDrawer
+        onlyAddMode={addModeStatus}
+      />
+    </Form>
     <Table<ApplicationPolicy>
       settingsId='policies-access-control-application-policy-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}

@@ -20,3 +20,9 @@ export const rogueRuleLabelMapping: Record<RogueRuleType, MessageDescriptor> = {
   [RogueRuleType.CUSTOM_SSID_RULE]: defineMessage({ defaultMessage: 'SSID' }),
   [RogueRuleType.SSID_SPOOFING_RULE]: defineMessage({ defaultMessage: 'SSID Spoofing' })
 }
+
+export const PROFILE_MAX_COUNT = 64
+
+export const RULE_MAX_COUNT = 32
+
+export const VENUE_IN_PROFILE_MAX_COUNT = 64

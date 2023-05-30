@@ -73,7 +73,7 @@ function DataConsumptionLable (props: {
 
   if (!billingCycleRepeat) return <span>{$t({ defaultMessage: 'Once' })}</span>
   return <span>{ $t({ defaultMessage: `Repeating cycles {
-    cycleType, select, 
+    cycleType, select,
     CYCLE_MONTHLY {(Monthly)}
     CYCLE_WEEKLY {(Weekly)}
     CYCLE_NUM_DAYS {(Per {cycleDays} days)}
@@ -364,8 +364,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   )
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
-  const [enableGuestUnit]
-    = useState(propertyConfigsQuery.data?.unitConfig?.guestAllowed)
+  const [enableGuestUnit, setEnableGuestUnit]
+    = useState<boolean|undefined>(false)
   const [personaGroupId, setPersonaGroupId]
     = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
 
@@ -389,6 +389,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     if (!propertyConfigsQuery.isLoading && propertyConfigsQuery.data) {
       const groupId = propertyConfigsQuery.data.personaGroupId
       setPersonaGroupId(groupId)
+      setEnableGuestUnit(propertyConfigsQuery.data?.unitConfig?.guestAllowed)
+
       getPersonaGroupById({ params: { groupId } })
         .then(result => setWithNsg(!!result.data?.nsgId))
     }
