@@ -25,10 +25,12 @@ const defaultPayload = {
     'id',
     'name',
     'description',
-    'macAddress',
+    'macAddressCount',
     'networkIds'
   ],
-  page: 1
+  page: 1,
+  sortField: 'macAddressCount',
+  sortOrder: 'DESC'
 }
 
 const Layer2Component = () => {
@@ -202,9 +204,9 @@ function useColumns (
       sorter: true
     },
     {
-      key: 'macAddress',
+      key: 'macAddressCount',
       title: $t({ defaultMessage: 'MAC Addresses' }),
-      dataIndex: 'macAddress',
+      dataIndex: 'macAddressCount',
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend']

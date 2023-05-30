@@ -261,7 +261,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         let catId = avcSelectOptions.findIndex(option =>
           option.catId === avcApp.avcAppAndCatId.catId
         )
-        if (avcSelectOptions[catId]) {
+        if (avcSelectOptions[catId] && !avcSelectOptions[catId].appNames.includes(avcApp.appName)) {
           avcSelectOptions[catId].appNames.push(avcApp.appName)
         }
       })

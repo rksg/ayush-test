@@ -158,6 +158,14 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     setSourceValue(e.target.value)
   }
 
+  const sortOptions = (a: string, b: string) => {
+    const compareA = a.split('_')[1].toUpperCase()
+    const compareB = b.split('_')[1].toUpperCase()
+    if (compareA > compareB) return 1
+    if (compareA < compareB) return -1
+    return 0
+  }
+
   const selectApplication = (category: string) => {
     if (category === 'All') {
       let optionsList = [] as string[]
@@ -177,7 +185,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           drawerForm.setFieldValue('applicationNameSystemDefined', evt)
         }}
       >
-        {optionsList.map(option => {
+        {optionsList.sort(sortOptions).map(option => {
           return <Select.Option key={option} value={option}>
             {option.split('_')[1]}
           </Select.Option>
