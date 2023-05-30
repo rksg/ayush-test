@@ -63,7 +63,7 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult
+  NewAPITableResult, transferNewResToTableResult, transferToNewTablePaginationParams
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -642,11 +642,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params)
+    deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicyList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
@@ -667,7 +668,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
-            'DeleteRadius'
+            'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -688,7 +689,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
-            'DeleteRadius'
+            'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -1474,7 +1475,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           body: {
-            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
           }
         }
       },
@@ -1619,12 +1621,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
         return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
-      }
+      },
+      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     }),
     getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
       query: ({ params }) => {
@@ -1677,10 +1683,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.createPolicy, params)
+        const req = createHttpRequest(
+          RulesManagementUrlsInfo.createPolicy,
+          params,
+          { 'Content-Type': 'application/ruckus.one.v1-synchronous+json' })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
@@ -1769,12 +1778,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
         return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
-      }
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
     }),
     getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
       query: ({ params }) => {
@@ -1814,19 +1827,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
-    }),
-    getPrioritizedPolicy: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
-        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
-      },
-      providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'DETAIL' }]
     }),
     deletePrioritizedPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -1913,7 +1913,7 @@ export const {
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
-  useDeleteAAAPolicyMutation,
+  useDeleteAAAPolicyListMutation,
   useGetAAAPolicyListQuery,
   useLazyGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,
@@ -1980,6 +1980,7 @@ export const {
   useLazyRadiusAttributeGroupListByQueryQuery,
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetRadiusAttributeGroupQuery,
+  useLazyGetAssignmentsQuery,
   // policy
   useAdaptivePolicyListQuery,
   useLazyAdaptivePolicyListQuery,
@@ -2001,6 +2002,7 @@ export const {
   // policy set
   useAdaptivePolicySetListQuery,
   useLazyAdaptivePolicySetListQuery,
+  useAdaptivePolicySetLisByQueryQuery,
   useLazyAdaptivePolicySetLisByQueryQuery,
   useDeleteAdaptivePolicySetMutation,
   useLazyGetPrioritizedPoliciesQuery,
@@ -2009,6 +2011,5 @@ export const {
   useUpdateAdaptivePolicySetMutation,
   useAddPrioritizedPolicyMutation,
   useDeletePrioritizedPolicyMutation,
-  useGetPrioritizedPolicyQuery,
   useGetPrioritizedPoliciesQuery
 } = policyApi

@@ -95,7 +95,7 @@ describe('RadiusAttributeGroupForm', () => {
         }
       }
     )
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Policy Name' }), 'testGroup')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Group Name' }), 'testGroup')
 
     await userEvent.click(screen.getByText('Add'))
     await screen.findByText('Attribute Type')
@@ -165,7 +165,7 @@ describe('RadiusAttributeGroupForm', () => {
     fireEvent.click(within(row1).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/i }))
 
-    const nameInput = await screen.findAllByRole('textbox', { name: 'Policy Name' })
+    const nameInput = await screen.findAllByRole('textbox', { name: 'Group Name' })
     expect(nameInput[0]).toHaveValue(attributeGroup.name)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
