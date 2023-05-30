@@ -101,7 +101,8 @@ export async function pendoInitalization (): Promise<void> {
         dogfood: user.dogfood,
         region: user.region,
         username: user.username,
-        delegated: user.tenantId !== user.varTenantId
+        delegated: user.tenantId !== user.varTenantId,
+        email: user.email
       },
       account: {
         id: user.tenantId,

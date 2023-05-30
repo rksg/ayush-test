@@ -5,7 +5,7 @@ import { useIntl }                            from 'react-intl'
 import {  useParams }                         from 'react-router-dom'
 
 import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
 import { CopyOutlined }                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
@@ -13,13 +13,15 @@ import {
   useLazyGetMacRegListQuery,
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery,
-  useLazyGetPropertyUnitByIdQuery
+  useLazyGetPropertyUnitByIdQuery,
+  useLazyGetConnectionMeteringByIdQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
+import { filterByAccess }                   from '@acx-ui/user'
+import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
+  ConnectionMeteringLink,
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
@@ -34,9 +36,10 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
+  const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [nsgData, setNsgData] = useState({} as { id?: string, name?: string } | undefined)
@@ -54,6 +57,8 @@ function PersonaDetails () {
     params: { groupId: personaGroupId, id: personaId }
   })
   const deviceCount = personaDetailsQuery.data?.devices?.length ?? 0
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -64,6 +69,14 @@ function PersonaDetails () {
         if (!result.data) return
         setPersonaGroupData(result.data)
       })
+    if (isConnectionMeteringEnabled && personaDetailsQuery.data?.meteringProfileId) {
+      getConnectionMeteringById({ params: { id: personaDetailsQuery.data.meteringProfileId } })
+        .then(result => {
+          if (result.data) {
+            setConnectionMetering(result.data)
+          }
+        })
+    }
   }, [personaDetailsQuery.data])
 
   useEffect(() => {
@@ -231,6 +244,22 @@ function PersonaDetails () {
                 <Col span={12}>{item.value ?? noDataDisplay}</Col>
               </Row>
             )}
+            {
+              isConnectionMeteringEnabled &&
+              <Row key={'Connection Metering'}>
+                <Col span={7}>
+                  <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                    {$t({ defaultMessage: 'Connection Metering' })}:
+                  </Typography.Paragraph>
+                </Col>
+                <Col span={12}>{connectionMetering ?
+                  <ConnectionMeteringLink
+                    id={connectionMetering.id}
+                    name={connectionMetering.name}/> :
+                  noDataDisplay}
+                </Col>
+              </Row>
+            }
           </Col>
         </Row>
 

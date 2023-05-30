@@ -24,6 +24,7 @@ import {
   baseTimelineApi as timelineApi,
   baseVenueApi as venueApi,
   baseTunnelProfileApi as tunnelProfileApi,
+  baseConnectionMeteringApi as connectionMeteringApi,
   dataApi,
   dataApiSearch,
   serviceGuardApi,
@@ -64,6 +65,7 @@ export const store = configureStore({
     [nsgApi.reducerPath]: nsgApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
+    [connectionMeteringApi.reducerPath]: connectionMeteringApi.reducer,
     [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
     [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
     [sigPackApi.reducerPath]: sigPackApi.reducer
@@ -101,6 +103,7 @@ export const store = configureStore({
       nsgApi.middleware,
       tunnelProfileApi.middleware,
       msgTemplateApi.middleware,
+      connectionMeteringApi.middleware,
       videoCallQoeApi.middleware,
       edgeFirewallApi.middleware,
       sigPackApi.middleware
