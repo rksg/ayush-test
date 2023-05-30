@@ -14,8 +14,8 @@ import ResidentPortalSettingsForm       from './ResidentPortalSettingsForm'
 describe('ResidentPortal', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        '/residentPortals',
+      rest.post(
+        '/residentPortals/query',
         (req, res, ctx) => res(ctx.json({ ...mockedResidentPortalList }))
       )
     )
