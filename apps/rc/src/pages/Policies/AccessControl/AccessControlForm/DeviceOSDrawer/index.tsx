@@ -23,8 +23,9 @@ import { AccessStatus, CommonResult, defaultSort, DeviceRule, sortProp } from '@
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                from '@acx-ui/user'
 
-import { showUnsavedConfirmModal }     from '../AccessControlComponent'
-import { AddModeProps, editModeProps } from '../AccessControlForm'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../../constants'
+import { showUnsavedConfirmModal }         from '../AccessControlComponent'
+import { AddModeProps, editModeProps }     from '../AccessControlForm'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
@@ -110,11 +111,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [localEditMode, setLocalEdiMode] = useState(
     { id: '', isEdit: false } as editModeProps
   )
+  const form = Form.useFormInstance()
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
   const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[])
   const [deviceOSRule, setDeviceOSRule] = useState({} as DeviceOSRule)
   const [queryPolicyId, setQueryPolicyId] = useState('')
+  const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
   const [skipFetch, setSkipFetch] = useState(true)
   const [contentForm] = Form.useForm()
@@ -135,19 +138,15 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [ updateDevicePolicy ] = useUpdateDevicePolicyMutation()
 
   const { deviceSelectOptions, deviceList } = useDevicePolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        deviceSelectOptions: data?.data?.map(
+        deviceSelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        deviceList: data?.data?.map(item => item.name)
+          }) : [],
+        deviceList: data? data.map(item => item.name) : []
       }
     }
   })
@@ -205,6 +204,22 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       setVisible(onlyAddMode.visible)
     }
   }, [onlyAddMode])
+
+  // use policyName to find corresponding id before API return profile id
+  useEffect(() => {
+    if (requestId && queryPolicyName) {
+      deviceSelectOptions.map(option => {
+        if (option.props.children === queryPolicyName) {
+          if (!onlyAddMode.enable) {
+            form.setFieldValue('devicePolicyId', option.key)
+          }
+          setQueryPolicyId(option.key as string)
+          setQueryPolicyName('')
+          setRequestId('')
+        }
+      })
+    }
+  }, [deviceSelectOptions, requestId, policyName])
 
   const basicColumns: TableProps<DeviceOSRule>['columns'] = [
     {
@@ -391,12 +406,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           params: params,
           payload: convertToPayload()
         }).unwrap()
-        // let responseData = deviceRes.response as {
-        //   [key: string]: string
-        // }
-        // form.setFieldValue([...inputName, 'l3AclPolicyId'], responseData.id)
-        // setQueryPolicyId(responseData.id)
         setRequestId(deviceRes.requestId)
+        setQueryPolicyName(policyName)
       } else {
         await updateDevicePolicy({
           params: { ...params, devicePolicyId: queryPolicyId },
@@ -490,14 +501,17 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         { validator: () => ruleValidator() }
       ]}
     />
-    <Table
+    {isOnlyViewMode ? <Table
+      columns={basicColumns}
+      dataSource={deviceOSRuleList as DeviceOSRule[]}
+    /> : <Table
       columns={basicColumns}
       dataSource={deviceOSRuleList as DeviceOSRule[]}
       rowKey='ruleName'
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
-    />
+    />}
   </Form>
 
   const modelContent = () => {
@@ -554,6 +568,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={deviceList.length >= PROFILE_MAX_COUNT_DEVICE_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')

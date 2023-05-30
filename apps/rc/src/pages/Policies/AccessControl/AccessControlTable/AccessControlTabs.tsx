@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                      from '@acx-ui/components'
-import { usePolicyListQuery }        from '@acx-ui/rc/services'
-import { PolicyType, useTableQuery } from '@acx-ui/rc/utils'
+import { Tabs }                                        from '@acx-ui/components'
+import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
+import { useTableQuery }                               from '@acx-ui/rc/utils'
 
 import AccessControlSet           from './AccessControlSet'
 import ApplicationPolicyComponent from './ApplicationPolicyComponent'
@@ -15,15 +15,9 @@ import Layer3Component            from './Layer3Component'
 
 const defaultPayload = {
   searchString: '',
-  filters: {
-    type: [PolicyType.ACCESS_CONTROL]
-  },
   fields: [
     'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
+    'name'
   ]
 }
 
@@ -38,7 +32,7 @@ function AccessControlTabs () {
   }
 
   const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
+    useQuery: useGetEnhancedAccessControlProfileListQuery,
     defaultPayload
   })
 
