@@ -180,7 +180,10 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         }
       })
       return <Select
+        showSearch
         style={{ width: '100%' }}
+        optionFilterProp='children'
+        filterOption={(input, option) => (option?.value?.toString() ?? '').includes(input)}
         onChange={(evt) => {
           drawerForm.setFieldValue('applicationNameSystemDefined', evt)
         }}
