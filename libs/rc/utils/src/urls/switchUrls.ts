@@ -353,6 +353,12 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/sync',
     newApi: true
   },
+  retryFirmwareUpdate: {
+    method: 'post',
+    url: '/switches/:switchId/firmwareUpgrade',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/upgrade',
+    newApi: true
+  },
   getJwtToken: {
     method: 'get',
     url: '/switches/:serialNumber/jwtToken',
