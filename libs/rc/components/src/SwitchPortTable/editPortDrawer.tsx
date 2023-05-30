@@ -908,7 +908,7 @@ export function EditPortDrawer ({
                     {getPortEditStatus(portEditStatus)}
                   </Space>
                   <Space size={0} split={<UI.Divider />}>
-                    <UI.LinkButton type='link'
+                    <Button type='link'
                       key='edit'
                       size='small'
                       data-testid='edit-vlans'
@@ -916,19 +916,19 @@ export function EditPortDrawer ({
                     >{portEditStatus && (portEditStatus !== 'port')
                         ? $t({ defaultMessage: 'Customize' })
                         : $t({ defaultMessage: 'Edit' })
-                      }</UI.LinkButton>
+                      }</Button>
                     {((!useVenueSettings || !portEditStatus || portEditStatus === 'port')
                       && !hasBreakoutPort) &&
                       <Tooltip title={getFieldTooltip('useVenuesettings')} >
                         <Space>
-                          <UI.LinkButton type='link'
+                          <Button type='link'
                             key='use-venue-settings'
                             size='small'
                             disabled={getFieldDisabled('useVenuesettings')}
                             onClick={onApplyVenueSettings}
                           >
                             {$t({ defaultMessage: 'Use Venue settings' })}
-                          </UI.LinkButton>
+                          </Button>
                         </Space>
                       </Tooltip>
                     }
@@ -1169,7 +1169,7 @@ export function EditPortDrawer ({
             initialValue={false}
             children={isMultipleEdit && !lldpQosCheckbox && hasMultipleValue.includes('lldpQos')
               ? <MultipleText />
-              : <UI.LinkButton type='link'
+              : <Button type='link'
                 key='create-lldp'
                 size='small'
                 disabled={isMultipleEdit && !lldpQosCheckbox}
@@ -1178,7 +1178,7 @@ export function EditPortDrawer ({
                 }}
               >
                 {$t({ defaultMessage: 'Create' })}
-              </UI.LinkButton>
+              </Button>
             }
           />,
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
@@ -1221,14 +1221,14 @@ export function EditPortDrawer ({
             {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
             <Tooltip title={getFieldTooltip('ingressAcl')}>
               <Space style={{ marginLeft: '8px', marginBottom: isMultipleEdit ? '10px' : '' }}>
-                <UI.LinkButton type='link'
+                <Button type='link'
                   key='add-ingress-acl'
                   size='small'
                   disabled={(isMultipleEdit && !ingressAclCheckbox) || !hasSwitchProfile || ipsg}
                   onClick={() => { setDrawerAclVisible(true) }}
                 >
                   {$t({ defaultMessage: 'Add ACL' })}
-                </UI.LinkButton>
+                </Button>
               </Space>
             </Tooltip>}
           </>,
@@ -1254,13 +1254,13 @@ export function EditPortDrawer ({
             {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
             <Tooltip title={getFieldTooltip('egressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
-                <UI.LinkButton type='link'
+                <Button type='link'
                   key='add-egress-acl'
                   size='small'
                   disabled={(isMultipleEdit && !egressAclCheckbox) || !hasSwitchProfile}
                   onClick={() => { setDrawerAclVisible(true) }}
                 >{$t({ defaultMessage: 'Add ACL' })}
-                </UI.LinkButton>
+                </Button>
               </Space>
             </Tooltip>}
           </>,

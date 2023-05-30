@@ -23,10 +23,10 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { SearchOutlined }            from '@acx-ui/icons'
-import { GoogleMapWithPreference }   from '@acx-ui/rc/components'
+import { useIsSplitOn, useIsTierAllowed, Features } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { SearchOutlined }                           from '@acx-ui/icons'
+import { GoogleMapWithPreference }                  from '@acx-ui/rc/components'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -157,8 +157,8 @@ const defaultAddress: Address = {
 export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const edgeEnabled = useIsSplitOn(Features.EDGES)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
+  const edgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')

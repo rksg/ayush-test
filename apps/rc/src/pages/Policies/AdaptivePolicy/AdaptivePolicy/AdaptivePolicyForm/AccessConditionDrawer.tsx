@@ -71,6 +71,8 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         ...toEvaluationRuleForm(editCondition.evaluationRule)
       }
       form.setFieldsValue(editData)
+    } else {
+      form.resetFields()
     }
   }, [editCondition, visible])
 
@@ -85,7 +87,10 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       id: data.conditionId,
       name: data.name,
       templateAttributeId: data.templateAttributeId,
-      evaluationRule: toEvaluationRuleData({ ...data })
+      evaluationRule: toEvaluationRuleData({ ...data }),
+      templateAttribute: {
+        attributeType: data.attributeType
+      }
     } as AccessCondition
     setAccessConditions(condition)
     onClose()
@@ -155,11 +160,14 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
           rules={[
             { required: true },
             { validator: (_, value) => conditionsValidator(value) }
-          ]}
-        >
+          ]}>
           <Select
             disabled={isEdit}
-            options={attributes.map(p => ({ label: p.name, value: p.id }))}
+            options={attributes.map(p => {
+              const label = p.attributeType === 'DATE_RANGE' ? p.name :
+                $t({ defaultMessage: '{name} (Regex)' }, { name: p.name })
+              return ({ label, value: p.id })
+            })}
             onChange={(value) => {
               const attr = attributes.find((attribute) => attribute.id === value)
               if(attr) {

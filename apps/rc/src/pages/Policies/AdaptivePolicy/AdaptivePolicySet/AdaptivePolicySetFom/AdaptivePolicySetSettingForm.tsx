@@ -33,7 +33,7 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
       },
       payload: {
         fields: [ 'name' ],
-        page: 0, pageSize: 10,
+        page: 1, pageSize: 2000,
         filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
@@ -45,7 +45,7 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <Form.Item name='name'
-          label={$t({ defaultMessage: 'Policy Name' })}
+          label={$t({ defaultMessage: 'Policy Set Name' })}
           rules={[
             { required: true },
             { validator: (_, value) => nameValidator(value) }

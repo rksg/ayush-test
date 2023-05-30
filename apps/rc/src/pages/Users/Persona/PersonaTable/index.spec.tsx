@@ -143,7 +143,8 @@ describe('Persona Table', () => {
 
     mockServer.use(
       rest.post(
-        PersonaUrls.exportPersona.url.replace('?timezone=:timezone&date-format=:dateFormat', ''),
+        replacePagination(PersonaUrls.exportPersona.url
+          .replace('&timezone=:timezone&date-format=:dateFormat', '')),
         (req, res, ctx) => {
           const headers = req['headers']
 
@@ -163,7 +164,12 @@ describe('Persona Table', () => {
 
     render(
       <Provider><PersonaTable /></Provider>,
-      { route: { params, path: '/:tenantId/t/users/persona-management/persona-group' } }
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
+      }
     )
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
