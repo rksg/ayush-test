@@ -28,6 +28,13 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
+export const mockUnBlockedPersona: Persona = {
+  id: 'persona-id-1',
+  name: 'persona-name-1',
+  groupId: 'group-id-1',
+  revoked: false
+}
+
 export const mockPersona: Persona = {
   id: 'persona-id-1',
   name: 'persona-name-1',
