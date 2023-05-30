@@ -54,5 +54,6 @@ export enum Features {
   SWITCH_BREAKOUT_PORT='switch-breakout-port',
   NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
-  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation'
+  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation',
+  CONFIG_CHANGE = 'acx-ui-config-change-toggle'
 }

@@ -28,6 +28,7 @@ export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
+  const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
   const videoCallQoePage = useVideoCallQoe().component
   const serviceGuardPage = useServiceGuard().component
 
@@ -61,8 +62,9 @@ export default function AnalyticsRoutes () {
             ? <HealthPage/>
             : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
           : <HealthPage/>} />
-      {isNavbarEnhanced && canUseAnltAdv && <Route path='analytics/configChange'
-        element={<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE} />} />}
+      {isNavbarEnhanced && canUseAnltAdv && isConfigChangeEnabled &&
+        <Route path='analytics/configChange'
+          element={<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE} />} />}
       {canUseAnltAdv && <Route>
         <Route path='analytics/serviceValidation/*' >
           <Route index

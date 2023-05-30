@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -32,6 +33,7 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
   })
   it('should render config change', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('AI Assurance')).toBeVisible()
@@ -39,7 +41,18 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByTestId('ConfigChange')).toBeVisible()
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
   })
+  it('should hide config change when feature flag CONFIG_CHANGE is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Config Change')).toBeNull()
+
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Config Change')).toBeNull()
+  })
   it('should handle tab click', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     userEvent.click(await screen.findByText('Config Change'))

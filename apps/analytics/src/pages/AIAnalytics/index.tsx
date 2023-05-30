@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { IncidentTabContent, useHeaderExtra } from '@acx-ui/analytics/components'
 import { PageHeader, Tabs }                   from '@acx-ui/components'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
 import { filterByAccess }                     from '@acx-ui/user'
 
@@ -33,7 +34,10 @@ const useTabs = () : Tab[] => {
     component: <ConfigChange/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: false })
   }
-  return [ incidentsTab, configChangeTab ]
+  return [
+    incidentsTab,
+    ...(useIsSplitOn(Features.CONFIG_CHANGE) ? [configChangeTab] : [])
+  ]
 }
 
 export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {

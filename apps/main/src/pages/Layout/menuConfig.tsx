@@ -31,6 +31,8 @@ export function useMenuConfig () {
   const { $t } = useIntl()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
+  const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
@@ -63,7 +65,7 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(isAnltAdvTier ? [{
+            ...(isNavbarEnhanced && isAnltAdvTier && showConfigChange ? [{
               uri: '/analytics/configChange',
               label: $t({ defaultMessage: 'Config Change' })
             }] : [])
