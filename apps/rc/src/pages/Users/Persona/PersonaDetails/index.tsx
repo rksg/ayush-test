@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Input, Row, Space, Tag, Typography } from 'antd'
-import { useIntl }                                 from 'react-intl'
-import { useParams }                               from 'react-router-dom'
+import { Col, Row, Space, Tag, Typography } from 'antd'
+import { useIntl }                          from 'react-intl'
+import {  useParams }                       from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { CopyOutlined }                                                  from '@acx-ui/icons'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { CopyOutlined }                                                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
@@ -149,7 +149,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
         <>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={personaDetailsQuery.data?.dpskPassphrase}
