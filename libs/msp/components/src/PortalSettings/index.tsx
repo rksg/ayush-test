@@ -495,8 +495,7 @@ export function PortalSettings () {
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 }//,
-            // { validator: (rule, value) => nameValidator(value) }
+            { max: 32 }
           ]}
           validateFirst
           hasFeedback
@@ -519,23 +518,7 @@ export function PortalSettings () {
 
   const AuthServerSetting = () => {
     const form = Form.useFormInstance()
-    // const { useWatch } = Form
-    // const [enableSecondaryServer, type ] =
-    // [useWatch('enableSecondaryServer'), useWatch('type')]
     const ACCT_FORBIDDEN_PORT = 1812
-    // const AUTH_FORBIDDEN_PORT = 1813
-    // const validateRadiusPort = async (value: number)=>{
-    //   if((value === ACCT_FORBIDDEN_PORT && type === 'ACCOUNTING')||
-    //   (value === AUTH_FORBIDDEN_PORT && type === 'AUTHENTICATION')){
-    //     return Promise.reject(
-    //       intl.$t({ defaultMessage: 'Authentication radius port '+
-    //       'cannot be {authForbiddenPort} and Accounting radius '+
-    //       'port cannot be {acctForbiddenPort} ' },
-    //       { acctForbiddenPort: ACCT_FORBIDDEN_PORT, authForbiddenPort: AUTH_FORBIDDEN_PORT }))
-    //   }
-    //   return Promise.resolve()
-    // }
-
     return <>
       <Divider></Divider>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -652,23 +635,7 @@ export function PortalSettings () {
 
   const AccServerSetting = () => {
     const form = Form.useFormInstance()
-    // const { useWatch } = Form
-    // const [enableAccSecondaryServer, type ] =
-    // [useWatch('enableAccSecondaryServer'), useWatch('type')]
-    // const ACCT_FORBIDDEN_PORT = 1812
     const AUTH_FORBIDDEN_PORT = 1813
-    // const validateRadiusPort = async (value: number)=>{
-    //   if((value === ACCT_FORBIDDEN_PORT && type === 'ACCOUNTING')||
-    //   (value === AUTH_FORBIDDEN_PORT && type === 'AUTHENTICATION')){
-    //     return Promise.reject(
-    //       intl.$t({ defaultMessage: 'Authentication radius port '+
-    //       'cannot be {authForbiddenPort} and Accounting radius '+
-    //       'port cannot be {acctForbiddenPort} ' },
-    //       { acctForbiddenPort: ACCT_FORBIDDEN_PORT, authForbiddenPort: AUTH_FORBIDDEN_PORT }))
-    //   }
-    //   return Promise.resolve()
-    // }
-
     return <>
       <Divider></Divider>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
