@@ -25,7 +25,7 @@ export interface EnvironmentConfig {
   HOW_TO_VIDEOS: string
   NEW_API_DOMAIN_NAME: string
   STATIC_ASSETS: string
-  RUCKUS_ONE_API: string
+  API_DOCUMENTATION_URL: string
 }
 
 const config: { value?: EnvironmentConfig } = {}

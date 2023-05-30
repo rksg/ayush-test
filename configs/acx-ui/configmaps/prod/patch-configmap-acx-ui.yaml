@@ -10,4 +10,4 @@ data:
   manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"
   fetchbot.js.url: "https://storage.googleapis.com/tdi-static/chat/tdi-prd-latest.min.js"
   new.api.domain.name: "api.ruckus.cloud"
-  ruckus.one.api: "https://docs.ruckus.cloud/api/"
+  api.documentation.url: "https://docs.ruckus.cloud/api/"

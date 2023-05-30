@@ -52,6 +52,6 @@ data:
         key: static.assets
         name: STATIC_ASSETS
       - configmap: configmap-acx-ui
-        key: ruckus.one.api
-        name: RUCKUS_ONE_API
+        key: api.documentation.url
+        name: API_DOCUMENTATION_URL
 

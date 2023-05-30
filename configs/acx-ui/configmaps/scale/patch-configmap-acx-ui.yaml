@@ -7,5 +7,5 @@ data:
   split.io.key: "dt1vi86ncfjjh04k8e4gp8auf6v41iutk4su"
   captive.portal.domain.name: "scale.ruckus.cloud"
   new.api.domain.name: "api.scale.ruckus.cloud"
-  ruckus.one.api: "https://docs.scale.ruckus.cloud/api/"
+  api.documentation.url: "https://docs.scale.ruckus.cloud/api/"
 

@@ -165,7 +165,7 @@ export function WISPrAuthAccServer (props : {
                     link: <a
                       className='link'
                       target='_blank'
-                      href={get('RUCKUS_ONE_API')}
+                      href={get('API_DOCUMENTATION_URL')}
                       rel='noreferrer'>
                       {$t({ defaultMessage: 'WISPr API documentation' })}
                     </a>

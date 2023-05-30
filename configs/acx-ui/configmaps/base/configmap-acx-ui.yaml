@@ -18,4 +18,4 @@ data:
   how.to.videos: "https://www.youtube.com/playlist?list=PLySwoo7u9-KLJteXD3vhjK20eDQDp7NoP"
   new.api.domain.name: "api.dev.ruckus.cloud"
   static.assets: "https://storage.googleapis.com/ruckus-web-1"
-  ruckus.one.api: "https://docs.dev.ruckus.cloud/api/"
+  api.documentation.url: "https://docs.dev.ruckus.cloud/api/"
