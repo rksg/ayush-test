@@ -18,7 +18,7 @@ import { RolesEnum }   from '@acx-ui/types'
 import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
 
-export function useMenuConfig (tenantType: string) {
+export function useMenuConfig (tenantType: string, hasLicense: boolean) {
   const { $t } = useIntl()
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
@@ -74,6 +74,7 @@ export function useMenuConfig (tenantType: string) {
       label: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: ConfigurationOutlined,
+      disabled: !hasLicense,
       activeIcon: ConfigurationSolid
     }])
   ]
