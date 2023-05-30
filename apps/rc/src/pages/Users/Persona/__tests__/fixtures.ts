@@ -33,6 +33,7 @@ export const mockPersona: Persona = {
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
   identityId: 'unit-id-1',
+  revoked: false,
   devices: [
     {
       macAddress: '11:11:11:11:11:11',
@@ -77,18 +78,21 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
     {
       id: 'persona-id-1',
       name: 'persona-name-1',
-      groupId: 'persona-group-id-1'
+      groupId: 'persona-group-id-1',
+      revoked: false
     },
     {
       id: 'persona-id-2',
       name: 'persona-name-2',
-      groupId: 'persona-group-id-1'
+      groupId: 'persona-group-id-1',
+      revoked: false
     },
     {
       id: 'persona-id-3',
       name: 'persona-name-3',
       groupId: 'persona-group-id-1',
-      identityId: 'persona-identity-id-1'
+      identityId: 'persona-identity-id-1',
+      revoked: false
     }
   ]
 }

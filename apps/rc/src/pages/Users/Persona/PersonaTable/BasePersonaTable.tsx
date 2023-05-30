@@ -21,6 +21,7 @@ import { filterByAccess }                                       from '@acx-ui/us
 
 import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
 import { PersonaDrawer }                                          from '../PersonaDrawer'
+import { PersonaBlockedIcon }                                     from '../styledComponents'
 
 
 
@@ -51,6 +52,15 @@ function useColumns (
       ,
       sorter: true,
       ...props.name
+    },
+    {
+      key: 'revoked',
+      dataIndex: 'revoked',
+      title: $t({ defaultMessage: 'Blocked' }),
+      align: 'center',
+      sorter: true,
+      render: (_, row) => row.revoked && <PersonaBlockedIcon />,
+      ...props.revoked
     },
     {
       key: 'email',

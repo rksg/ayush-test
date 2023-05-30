@@ -34,6 +34,7 @@ const mockPersona: Persona = {
   groupId: 'persona-group-id-1',
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
+  revoked: false,
   ethernetPorts: [{
     portIndex: 1,
     personaId: 'persona-id-1',
