@@ -163,7 +163,9 @@ export const defaultNetworkPayload = {
     'vlanPool',
     'captiveType',
     'id'
-  ]
+  ],
+  page: 1,
+  pageSize: 2048
 }
 
 const rowSelection = () => {

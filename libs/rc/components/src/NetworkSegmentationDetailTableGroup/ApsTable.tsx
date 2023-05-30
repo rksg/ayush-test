@@ -10,7 +10,7 @@ import {
 
 export const defaultApPayload = {
   fields: [
-    'name', 'model', 'apMac', 'apStatusData.lanPortStatus'
+    'name', 'model', 'apMac', 'apStatusData.lanPortStatus', 'apStatusData.vxlanStatus.vxlanMtu'
   ]
 }
 
@@ -51,6 +51,11 @@ export const ApsTable = (props: ApTableProps) => {
       render: (node, row) => {
         return row?.apStatusData?.lanPortStatus?.length
       }
+    },
+    {
+      title: $t({ defaultMessage: 'VxLAN PMTU Value' }),
+      key: 'vxlanMtu',
+      dataIndex: 'apStatusData.vxlanStatus.vxlanMtu'
     }
   ]
 

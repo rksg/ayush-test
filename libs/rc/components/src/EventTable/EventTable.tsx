@@ -4,7 +4,7 @@ import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { DownloadOutlined }                  from '@acx-ui/icons'
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
@@ -52,7 +52,7 @@ export const EventTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
 
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])

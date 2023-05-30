@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode'
+
 import { isDelegationMode } from './apiService'
 import { getTenantId }      from './getTenantId'
 
@@ -97,7 +99,8 @@ export function getJwtTokenPayload () {
   if (cache.has(jwt)) return cache.get(jwt)!
 
   try {
-    const token = JSON.parse(window.atob(jwt.split('.')[1])) as JwtToken
+    const token = jwtDecode(jwt) as JwtToken
+
     cache.clear()
     cache.set(jwt, token)
     return token

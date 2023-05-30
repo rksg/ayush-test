@@ -3,12 +3,13 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   Persona,
-  RequestPayload,
   TableQuery
 } from '@acx-ui/rc/utils'
 
 export interface PersonaTableProps extends Omit<TableProps<Persona>, 'columns'>{
-  tableQuery?: TableQuery<Persona, RequestPayload<unknown>, unknown>
+  tableQuery?: TableQuery<Persona,
+    { keyword: string, groupId: string },
+    unknown>
 }
 
 export const AssignedSegmentsTable = (props: PersonaTableProps) => {

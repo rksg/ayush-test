@@ -33,6 +33,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import { MessageMapping }   from '../../Administration/AccountSettings/MessageMapping'
 import { VenueEditContext } from '../VenueEdit'
@@ -193,6 +194,9 @@ export function VenuesForm () {
   const [venuesList] = useLazyVenuesListQuery()
   const [sameCountry, setSameCountry] = useState(true)
   const nameValidator = async (value: string) => {
+    if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
+      return Promise.reject(intl.$t(validationMessages.name))
+    }
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
