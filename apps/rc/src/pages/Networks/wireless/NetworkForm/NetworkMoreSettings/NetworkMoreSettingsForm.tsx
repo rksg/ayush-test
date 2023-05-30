@@ -136,7 +136,7 @@ export function MoreSettingsForm (props: {
     useWatch<boolean>('enableDhcp'),
     useWatch<boolean>('enableOfdmOnly'),
     useWatch<boolean>(['wlan', 'macAddressAuthentication']),
-    useWatch<boolean>(['wlan','bypassCPUsingMacAddressAuthentication']),
+    useWatch<boolean>(['wlan', 'bypassCPUsingMacAddressAuthentication']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold']),
