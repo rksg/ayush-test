@@ -9,11 +9,11 @@ import {
   Radio
 } from 'antd'
 import _                             from 'lodash'
-import { get }                       from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
 import { Subtitle, Tooltip }                               from '@acx-ui/components'
+import { get }                                             from '@acx-ui/config'
 import { useGetAAAPolicyListQuery }                        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
@@ -160,11 +160,20 @@ export function WISPrAuthAccServer (props : {
               </Radio>
               <Description>
                 <FormattedMessage
-                  values={{ br: () => <br /> }}
+                  values={{
+                    br: () => <br />,
+                    link: <a
+                      className='link'
+                      target='_blank'
+                      href={get('RUCKUS_ONE_API')}
+                      rel='noreferrer'>
+                      {$t({ defaultMessage: 'WISPr API documentation' })}
+                    </a>
+                  }}
                   defaultMessage={`
                     Additional external configuration is required for this option to function.
                     <br></br>
-                    Please refer to the WISPr API documentation for more details
+                    Please refer to the {link} for more details
                   `}
                 />
               </Description>
@@ -178,9 +187,9 @@ export function WISPrAuthAccServer (props : {
             <Form.Item
               label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
               children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: get(radiusValue,
+                ipAddress: _.get(radiusValue,
                   `${AaaServerOrderEnum.PRIMARY}.ip`),
-                port: get(radiusValue,
+                port: _.get(radiusValue,
                   `${AaaServerOrderEnum.PRIMARY}.port`)
               })} />
             <Form.Item
@@ -188,7 +197,7 @@ export function WISPrAuthAccServer (props : {
               children={<Input.Password
                 readOnly
                 bordered={false}
-                value={get(radiusValue,
+                value={_.get(radiusValue,
                   `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
               />}
             /></>}
@@ -196,9 +205,9 @@ export function WISPrAuthAccServer (props : {
             <Form.Item
               label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
               children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
-                ipAddress: get(radiusValue,
+                ipAddress: _.get(radiusValue,
                   `${AaaServerOrderEnum.SECONDARY}.ip`),
-                port: get(radiusValue,
+                port: _.get(radiusValue,
                   `${AaaServerOrderEnum.SECONDARY}.port`)
               })} />
             <Form.Item
@@ -206,7 +215,7 @@ export function WISPrAuthAccServer (props : {
               children={<Input.Password
                 readOnly
                 bordered={false}
-                value={get(radiusValue,
+                value={_.get(radiusValue,
                   `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
               />}
             />
