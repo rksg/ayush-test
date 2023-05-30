@@ -25,14 +25,27 @@ export interface EnvironmentConfig {
   HOW_TO_VIDEOS: string
   NEW_API_DOMAIN_NAME: string
   STATIC_ASSETS: string
+  MLISA_DATA_API_URL: string
+  MlISA_SMARTZONE_MGR_URL: string
+  MLISA_LOGOUT_URL: string
+  MLISA_RBAC_URL: string
+  MLISA_REGION: string
+  MLISA_VERSION: string
+  MLISA_DOCUMENTATION_URL: string
+  MLISA_NOTIFICATION_URL: string
+  MLISA_UI_USER_TRACKING: string
+  MLISA_SERVICE_GUARD_URL: string
+  MLISA_VIDEO_CALL_QOE_URL: string
+  MLISA_OCCUPANCY_URL: string
+  ASK_MLISA_URL: string
+  MLISA_SUPERSET_URL: string
 }
 
 const config: { value?: EnvironmentConfig } = {}
 
-export async function initialize (options?: { isRa?: boolean }) {
+export async function initialize () {
   const baseUrl = trimEnd(document.baseURI, '/')
-  const { isRa } = options ?? {}
-  const envConfigUrl = (isRa) ? `${baseUrl}/env-ra.json` : `${baseUrl}/env.json`
+  const envConfigUrl = `${baseUrl}/env.json`
   config.value = await fetch(envConfigUrl).then(res => res.json())
 }
 
