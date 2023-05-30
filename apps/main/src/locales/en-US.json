@@ -3003,9 +3003,6 @@
   "AxDOiG": {
     "defaultMessage": "Months"
   },
-  "AxJKYT": {
-    "defaultMessage": "Summary Table"
-  },
   "AxMhQr": {
     "defaultMessage": "High"
   },
@@ -3095,6 +3092,9 @@
   },
   "BMa+lq": {
     "defaultMessage": "Paste the text here..."
+  },
+  "BN5yXZ": {
+    "defaultMessage": "Valid"
   },
   "BNHFY1": {
     "defaultMessage": "Only letters and numbers can be used"
@@ -12890,9 +12890,6 @@
   "rPBWRi": {
     "defaultMessage": "MAC Address:"
   },
-  "rPiY6S": {
-    "defaultMessage": "Validation Table"
-  },
   "rQE+Y2": {
     "defaultMessage": "Please enter a number between 1 and 300"
   },
@@ -12968,6 +12965,9 @@
   },
   "rk1Bvz": {
     "defaultMessage": "IotDevice"
+  },
+  "rkQPia": {
+    "defaultMessage": "Migrartion Summary"
   },
   "rljVzi": {
     "defaultMessage": "Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists"
@@ -13555,6 +13555,9 @@
   },
   "u8yrV2": {
     "defaultMessage": "Top {limit}"
+  },
+  "u93pr8": {
+    "defaultMessage": "summary"
   },
   "u9b1zq": {
     "defaultMessage": "Self Sign In - Connect"
@@ -14635,6 +14638,9 @@
   },
   "yr4JsI": {
     "defaultMessage": "Data Consumption"
+  },
+  "yrJcH+": {
+    "defaultMessage": "ZD Migration Summary"
   },
   "ysmIeD": {
     "defaultMessage": "Recommended Action"
