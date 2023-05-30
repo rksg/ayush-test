@@ -61,7 +61,8 @@ export interface TenantPreferenceSettingValue {
 }
 
 export interface TenantPreferenceSettings {
-  global: TenantPreferenceSettingValue;
+  global?: TenantPreferenceSettingValue;
+  edgeBeta?: TenantPreferenceSettingValue;
 }
 
 export interface Administrator {

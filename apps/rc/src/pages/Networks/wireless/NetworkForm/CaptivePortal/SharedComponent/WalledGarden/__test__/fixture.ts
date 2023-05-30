@@ -17,7 +17,7 @@ export const MockNetworkSetting : NetworkSaveData = {
     userSessionTimeout: 1440,
     userSessionGracePeriod: 60,
     walledGardens: [
-      'devalto.ruckuswireless.com'
+      'dev.ruckus.cloud'
     ]
   },
   tenantId: '4c39ee6b1107452c83a03c2358a4388c',

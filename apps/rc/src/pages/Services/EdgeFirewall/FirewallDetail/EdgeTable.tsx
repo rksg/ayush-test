@@ -54,7 +54,7 @@ export const EdgeTable = (props: EdgeTableProps) => {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          <TenantLink to={`/devices/edge/${row.serialNumber}/edge-details/overview`}>
+          <TenantLink to={`/devices/edge/${row.serialNumber}/details/overview`}>
             {data}
           </TenantLink>
         )

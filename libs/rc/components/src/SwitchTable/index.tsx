@@ -35,10 +35,14 @@ import {
   RequestPayload,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
-  transformSwitchUnitStatus
+  transformSwitchUnitStatus,
+  FILTER,
+  SEARCH,
+  GROUPBY
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
+import { getIntl }                                           from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
@@ -54,16 +58,15 @@ export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
   if(row){
-    let rowData = { ...row }
+    const { $t } = getIntl()
+    const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    let switchStatusString = row.isFirstLevel || row.isGroup
+      ? getSwitchStatusString(row)
+      : transformSwitchUnitStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig)
     if(row.isGroup && row.deviceStatus?.toLocaleUpperCase() === SwitchStatusEnum.OPERATIONAL) {
       // For groupBy table display
-      rowData.configReady = true
-      rowData.syncedSwitchConfig = true
+      switchStatusString = $t({ defaultMessage: 'Online' })
     }
-    const switchStatus = transformSwitchStatus(rowData.deviceStatus, rowData.configReady, rowData.syncedSwitchConfig, rowData.suspendingDeployTime)
-    const switchStatusString = rowData.isFirstLevel || rowData.isGroup
-      ? getSwitchStatusString(rowData)
-      : transformSwitchUnitStatus(rowData.deviceStatus, rowData.configReady, rowData.syncedSwitchConfig)
     return (
       <span>
         <Badge color={handleStatusColor(switchStatus.deviceStatus)}
@@ -315,14 +318,28 @@ export function SwitchTable (props : SwitchTableProps) {
       navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
   }, {
+    label: $t({ defaultMessage: 'Retry firmware update' }),
+    visible: (rows) => {
+      const isFirmwareUpdateFailed = rows[0]?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      return isActionVisible(rows, { selectOne: true }) && isFirmwareUpdateFailed
+    },
+    onClick: async (rows, clearSelection) => {
+      const switchId = rows[0].id ? rows[0].id : rows[0].serialNumber
+      switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, clearSelection)
+    }
+  }, {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: async (rows, clearSelection) => {
       switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }
   }]
 
-  // TODO: add search string and filter to retrieve data
-  // const retrieveData () => {}
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
+    if (customFilters.deviceStatus?.includes('ONLINE')) {
+      customFilters.syncedSwitchConfig = [true]
+    }
+    tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
+  }
 
   return <Loader states={[tableQuery]}>
     <Table<SwitchRow>
@@ -332,7 +349,7 @@ export function SwitchTable (props : SwitchTableProps) {
       dataSource={tableData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
+      onFilterChange={handleFilterChange}
       enableApiFilter={true}
       rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
@@ -342,7 +359,10 @@ export function SwitchTable (props : SwitchTableProps) {
           return record.isFirstLevel
             ? originNode
             : null
-        }
+        },
+        getCheckboxProps: (record) => ({
+          disabled: !record.isFirstLevel
+        })
       }}
       actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),

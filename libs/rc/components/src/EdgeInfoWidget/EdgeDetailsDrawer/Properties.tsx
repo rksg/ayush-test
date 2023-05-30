@@ -1,6 +1,7 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
+import { formatter }                  from '@acx-ui/formatter'
 import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 import { TenantLink }                 from '@acx-ui/react-router-dom'
 
@@ -78,19 +79,19 @@ export const Properties = (props: PropertiesProps) => {
       <Form.Item
         label={$t({ defaultMessage: 'CPU' })}
         children={
-          currentEdge?.cpuUsed || '--'
+          (currentEdge?.cpuCores ? `${currentEdge?.cpuCores} vCPUs` : '--' )
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Memory' })}
         children={
-          currentEdge?.memUsed || '--'
+          (currentEdge?.memoryTotalKb ? formatter('bytesFormat')(currentEdge?.memoryTotalKb) : '--')
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Storage' })}
         children={
-          currentEdge?.diskUsed || '--'
+          (currentEdge?.diskTotalKb ? formatter('bytesFormat')(currentEdge?.diskTotalKb) : '--')
         }
       />
 

@@ -63,7 +63,7 @@ import {
   AccessCondition,
   PrioritizedPolicy,
   Assignment,
-  NewAPITableResult, transferNewResToTableResult
+  NewAPITableResult, transferNewResToTableResult, transferToNewTablePaginationParams
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -109,7 +109,8 @@ const ApplicationUseCases = [
 const AccessControlUseCases = [
   'AddAccessControlProfile',
   'UpdateAccessControlProfile',
-  'DeleteAccessControlProfile'
+  'DeleteAccessControlProfile',
+  'DeleteBulkAccessControlProfiles'
 ]
 
 export const policyApi = basePolicyApi.injectEndpoints({
@@ -235,7 +236,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
     deleteAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    deleteAccessControlProfiles: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfiles, params)
         return {
           ...req,
           body: payload
@@ -245,7 +257,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params)
         return {
           ...req
         }
@@ -323,7 +335,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params)
         return {
           ...req,
           body: payload
@@ -333,7 +345,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAppPolicy: build.query<appPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params)
         return {
           ...req
         }
@@ -370,15 +382,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    devicePolicyList: build.query<DevicePolicy[], RequestPayload>({
+      query: ({ params }) => {
         const devicePolicyListReq = createHttpRequest(
           AccessControlUrls.getDevicePolicyList,
           params
         )
         return {
-          ...devicePolicyListReq,
-          body: payload
+          ...devicePolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -642,11 +653,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params)
+    deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicyList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
@@ -667,7 +679,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
-            'DeleteRadius'
+            'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -688,7 +700,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
-            'DeleteRadius'
+            'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -733,15 +745,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const l2AclPolicyListReq = createHttpRequest(
           AccessControlUrls.getL2AclPolicyList,
           params
         )
         return {
-          ...l2AclPolicyListReq,
-          body: payload
+          ...l2AclPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -758,15 +769,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    l3AclPolicyList: build.query<L3AclPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const l3AclPolicyListReq = createHttpRequest(
           AccessControlUrls.getL3AclPolicyList,
           params
         )
         return {
-          ...l3AclPolicyListReq,
-          body: payload
+          ...l3AclPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -783,15 +793,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    appPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    appPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const appPolicyListReq = createHttpRequest(
           AccessControlUrls.getAppPolicyList,
           params
         )
         return {
-          ...appPolicyListReq,
-          body: payload
+          ...appPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -1261,7 +1270,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
             'UpdateSyslogServerProfile',
-            'DeleteSyslogServerProfile'
+            'DeleteSyslogServerProfile',
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -1292,7 +1302,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
             'UpdateSyslogServerProfile',
-            'DeleteSyslogServerProfile'
+            'DeleteSyslogServerProfile',
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -1474,7 +1485,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           body: {
-            ...(payload as TableChangePayload), page: (payload as TableChangePayload).page - 1
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
           }
         }
       },
@@ -1619,12 +1631,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
         return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
-      }
+      },
+      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     }),
     getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
       query: ({ params }) => {
@@ -1677,10 +1693,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.createPolicy, params)
+        const req = createHttpRequest(
+          RulesManagementUrlsInfo.createPolicy,
+          params,
+          { 'Content-Type': 'application/ruckus.one.v1-synchronous+json' })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
@@ -1769,12 +1788,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
         return {
           ...req,
-          body: payload
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
       },
       transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
         return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
-      }
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
     }),
     getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
       query: ({ params }) => {
@@ -1814,19 +1837,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
-    }),
-    getPrioritizedPolicy: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: NewAPITableResult<AdaptivePolicySet>) {
-        return transferNewResToTableResult<AdaptivePolicySet>(result, { pageStartZero: true })
-      },
-      providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'DETAIL' }]
     }),
     deletePrioritizedPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -1890,6 +1900,7 @@ export const {
   useAddAccessControlProfileMutation,
   useUpdateAccessControlProfileMutation,
   useDeleteAccessControlProfileMutation,
+  useDeleteAccessControlProfilesMutation,
   useGetAccessControlProfileQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
@@ -1913,7 +1924,7 @@ export const {
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
-  useDeleteAAAPolicyMutation,
+  useDeleteAAAPolicyListMutation,
   useGetAAAPolicyListQuery,
   useLazyGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,
@@ -1980,6 +1991,7 @@ export const {
   useLazyRadiusAttributeGroupListByQueryQuery,
   useLazyGetAdaptivePolicySetQuery,
   useLazyGetRadiusAttributeGroupQuery,
+  useLazyGetAssignmentsQuery,
   // policy
   useAdaptivePolicyListQuery,
   useLazyAdaptivePolicyListQuery,
@@ -2001,6 +2013,7 @@ export const {
   // policy set
   useAdaptivePolicySetListQuery,
   useLazyAdaptivePolicySetListQuery,
+  useAdaptivePolicySetLisByQueryQuery,
   useLazyAdaptivePolicySetLisByQueryQuery,
   useDeleteAdaptivePolicySetMutation,
   useLazyGetPrioritizedPoliciesQuery,
@@ -2009,6 +2022,5 @@ export const {
   useUpdateAdaptivePolicySetMutation,
   useAddPrioritizedPolicyMutation,
   useDeletePrioritizedPolicyMutation,
-  useGetPrioritizedPolicyQuery,
   useGetPrioritizedPoliciesQuery
 } = policyApi

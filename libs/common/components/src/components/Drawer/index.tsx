@@ -37,46 +37,40 @@ const Header = (props: DrawerHeaderProps) => {
 }
 
 let currentDrawer: {
-  ref: RefObject<HTMLDivElement | null>,
+  ref: RefObject<boolean>,
   onClose: CallableFunction
 }
 
 export function useCloseOutsideClick (
-  ref: RefObject<HTMLDivElement | null>,
   onClose: CallableFunction,
   footer: ReactNode | undefined,
   visible: boolean
 ) {
   const wasVisible = useRef<boolean>(false)
   useEffect(() => {
-    if (!footer && visible && !wasVisible.current && currentDrawer?.ref !== ref) {
+    if (!footer && visible && !wasVisible.current && currentDrawer?.ref !== wasVisible) {
       currentDrawer?.onClose?.()
-      currentDrawer = { ref, onClose }
+      currentDrawer = { ref: wasVisible, onClose }
     }
     wasVisible.current = visible
-  }, [onClose, ref, footer, wasVisible, visible])
+  }, [onClose, footer, wasVisible, visible])
 }
 
 export const Drawer = (props: DrawerProps) => {
   const { title, icon, subTitle, onBackClick, ...rest } = props
   const headerProps = { title, icon, subTitle, onBackClick }
-  const ref = useRef<HTMLDivElement | null>(null)
   const onClose = (event: ReactMouseEvent | KeyboardEvent) => props.onClose?.(event)
-  useCloseOutsideClick(ref, onClose, props.footer, Boolean(props.visible))
-  return (
-    <div ref={ref}>
-      <UI.Drawer
-        {...rest}
-        title={<Header {...headerProps}/>}
-        placement='right'
-        mask={false}
-        maskStyle={{ background: 'none' }}
-        maskClosable={false}
-        width={props.width || '336px'}
-        closeIcon={<CloseSymbol />}
-      />
-    </div>
-  )
+  useCloseOutsideClick(onClose, props.footer, Boolean(props.visible))
+  return <UI.Drawer
+    {...rest}
+    title={<Header {...headerProps}/>}
+    placement='right'
+    mask={false}
+    maskStyle={{ background: 'none' }}
+    maskClosable={false}
+    width={props.width || '336px'}
+    closeIcon={<CloseSymbol />}
+  />
 }
 
 interface FormFooterProps {

@@ -151,7 +151,6 @@ exports[`ApPhoto should upload photo correctly 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </DocumentFragment>
 `;

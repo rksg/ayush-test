@@ -46,7 +46,7 @@ describe('RadiusAttributeGroupFormDrawer', () => {
     )
 
     // set group name
-    const input = await screen.findByRole('textbox', { name: 'Policy Name' })
+    const input = await screen.findByRole('textbox', { name: 'Group Name' })
     await userEvent.type(input, 'testGroup')
 
     let addBtns = screen.getAllByText('Add')

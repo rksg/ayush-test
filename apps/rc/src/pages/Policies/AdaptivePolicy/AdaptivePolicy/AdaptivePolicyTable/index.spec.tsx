@@ -41,24 +41,28 @@ describe('AdaptivePolicyTable', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RulesManagementUrlsInfo.getPolicies.url,
+        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getConditionsInPolicy.url,
+        RulesManagementUrlsInfo.getConditionsInPolicy.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(assignConditions))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url,
+        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url,
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url,
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       )
     )
   })

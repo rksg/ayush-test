@@ -1,6 +1,6 @@
 import { render } from '@acx-ui/test-utils'
 
-import { ResetButton } from './styledComponents'
+import { ResetButton, TooltipWrapper } from './styledComponents'
 
 describe('Chart styledComponents', () => {
   describe('ResetButton', () => {
@@ -15,6 +15,19 @@ describe('Chart styledComponents', () => {
         $disableLegend={true}
       />)
       expect(asFragmentNoLegend().firstChild).toHaveStyle('top: 6px')
+    })
+  })
+
+  describe('TooltipWrapper', () => {
+    it('renders with different max width', () => {
+      const { asFragment: asFragmentLegend } = render(<TooltipWrapper
+        maxWidth={300}
+      />)
+      expect(asFragmentLegend().firstChild).toHaveStyle('max-width: 300px')
+    })
+    it('renders with default max width', () => {
+      const { asFragment: asFragmentLegend } = render(<TooltipWrapper/>)
+      expect(asFragmentLegend().firstChild).toHaveStyle('max-width: 200px')
     })
   })
 })

@@ -18,7 +18,7 @@ function save_options() {
 function restore_options() {
   // Use default value color = 'red' and likesColor = true.
   chrome.storage.sync.get({
-    env: 'devalto.ruckuswireless.com'
+    env: 'dev.ruckus.cloud'
   }, function(items) {
     document.getElementById('environment').value = items.env;
   });
