@@ -88,7 +88,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
     sorter: {
       sortField: 'portIdentifierFormatted',
       sortOrder: 'ASC'
-    }
+    },
+    enableSelectAllPagesData: true
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
@@ -280,11 +281,17 @@ export function SwitchPortTable ({ isVenueLevel }: {
     }
   }]
 
+  const getAllPagesData = () => {
+    const data = transformData(tableQuery.getAllPagesData())
+    return data?.filter(port => !port.inactiveRow) || []
+  }
+
   return <Loader states={[tableQuery]}>
     <Table
       settingsId='switch-port-table'
       columns={getColumns()}
       dataSource={transformData(tableQuery.data?.data)}
+      getAllPagesData={getAllPagesData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
