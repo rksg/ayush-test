@@ -5,7 +5,7 @@ import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                     from '@acx-ui/feature-toggle'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -63,7 +63,7 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
@@ -198,6 +198,7 @@ function PersonaGroupDetails () {
             </Subtitle>
 
             <BasePersonaTable
+              personaGroupId={personaGroupId}
               colProps={{
                 name: { searchable: true },
                 groupId: { show: false, filterable: false },

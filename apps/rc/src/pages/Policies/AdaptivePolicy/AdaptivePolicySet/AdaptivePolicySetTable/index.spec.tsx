@@ -62,6 +62,10 @@ describe('AdaptivePolicySetTable', () => {
       rest.get(
         DpskUrls.getDpskList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(dpskList))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(policySetList))
       )
     )
   })

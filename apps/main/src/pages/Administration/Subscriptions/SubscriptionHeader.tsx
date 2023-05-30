@@ -23,7 +23,7 @@ import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
 enum SubscriptionTierType {
   Platinum = 'Professional',
-  Gold = 'Enterprise'
+  Gold = 'Essentials'
 }
 
 const subscriptionUtilizationTransformer = (

@@ -10,8 +10,7 @@ import { ClientDualTable, SwitchClientsTable }   from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EmbeddedReport }                        from '@acx-ui/reports/components'
 import {
-  ReportType,
-  reportTypeDataStudioMapping
+  ReportType
 } from '@acx-ui/reports/components'
 
 import { IconRadioGroup } from '../VenueDevicesTab/VenueWifi/styledComponents'
@@ -46,7 +45,7 @@ export function VenueClientsTab () {
         { showIdx === 0 && (
           <div style={{ paddingTop: 15 }}>
             <EmbeddedReport
-              embedDashboardName={reportTypeDataStudioMapping[ReportType.CLIENT]}
+              reportName={ReportType.CLIENT}
               rlsClause={`"zoneName" in ('${venueId}')`}
             />
           </div>) }

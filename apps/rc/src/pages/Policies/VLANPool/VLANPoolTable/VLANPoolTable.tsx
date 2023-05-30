@@ -132,7 +132,9 @@ function useColumns () {
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
-      sortOrder: 'ASC'
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
     }
   }, {
     selectFromResult: ({ data }) => ({

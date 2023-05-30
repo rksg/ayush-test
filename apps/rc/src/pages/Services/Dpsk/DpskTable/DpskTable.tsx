@@ -7,8 +7,9 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
-import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
+import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -21,12 +22,13 @@ import {
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
   getServiceListRoutePath,
-  PassphraseFormatEnum
+  PassphraseFormatEnum,
+  displayDeviceCountLimit
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
-import { displayDefaultAccess, displayDeviceCountLimit } from '../utils'
+import { displayDefaultAccess } from '../utils'
 
 const defaultPayload = {
   filters: {}
@@ -41,7 +43,6 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
@@ -82,6 +83,70 @@ export default function DpskTable () {
       }
     }
   ]
+
+  return (
+    <>
+      <PageHeader
+        title={
+          intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
+        }
+        breadcrumb={isNavbarEnhanced ? [
+          { text: intl.$t({ defaultMessage: 'Network Control' }) },
+          {
+            text: intl.$t({ defaultMessage: 'My Services' }),
+            link: getServiceListRoutePath(true)
+          }
+        ] : [{
+          text: intl.$t({ defaultMessage: 'My Services' }),
+          link: getServiceListRoutePath(true)
+        }]
+        }
+        extra={filterByAccess([
+          // eslint-disable-next-line max-len
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
+            <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
+          </TenantLink>
+        ])}
+      />
+      <Loader states={[tableQuery]}>
+        <Table<DpskSaveData>
+          settingsId='dpsk-table'
+          columns={useColumns()}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
+        />
+      </Loader>
+    </>
+  )
+}
+
+function useColumns () {
+  const intl = useIntl()
+  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const params = useParams()
+
+  const { networkNameMap } = useNetworkListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      networkNameMap: data?.data
+        ? data.data.map(network => ({ key: network.id, value: network.name }))
+        : []
+    })
+  })
 
   const passphraseFormatOptions = Object.keys(PassphraseFormatEnum).map((key =>
     ({ key, value: transformDpskNetwork(intl, DpskNetworkType.FORMAT, key) })
@@ -152,8 +217,11 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkIds',
       align: 'center',
-      render: function (data) {
-        return data ? (data as Array<string>).length : 0
+      render: function (data, row) {
+        if (!row.networkIds || row.networkIds.length === 0) return 0
+        // eslint-disable-next-line max-len
+        const tooltipItems = networkNameMap.filter(v => row.networkIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
       }
     },
     {
@@ -178,44 +246,5 @@ export default function DpskTable () {
     }
   ]
 
-  return (
-    <>
-      <PageHeader
-        title={
-          intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
-        }
-        breadcrumb={isNavbarEnhanced ? [
-          { text: intl.$t({ defaultMessage: 'Network Control' }) },
-          {
-            text: intl.$t({ defaultMessage: 'My Services' }),
-            link: getServiceListRoutePath(true)
-          }
-        ] : [{
-          text: intl.$t({ defaultMessage: 'My Services' }),
-          link: getServiceListRoutePath(true)
-        }]
-        }
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
-            <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
-          </TenantLink>
-        ])}
-      />
-      <Loader states={[tableQuery]}>
-        <Table<DpskSaveData>
-          settingsId='dpsk-table'
-          columns={columns}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-        />
-      </Loader>
-    </>
-  )
+  return columns
 }

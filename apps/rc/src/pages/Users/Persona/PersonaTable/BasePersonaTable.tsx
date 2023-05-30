@@ -1,8 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
@@ -146,13 +145,13 @@ type PersonaTableColProps = {
   [key in keyof Persona]?: PersonaTableCol
 }
 export interface PersonaTableProps {
+  personaGroupId?: string,
   colProps: PersonaTableColProps
 }
 
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
-  const { colProps } = props
-  const { personaGroupId } = useParams()
+  const { personaGroupId, colProps } = props
   const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
@@ -166,7 +165,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const [downloadCsv] = useLazyDownloadPersonasQuery()
   const [uploadCsv, uploadCsvResult] = useImportPersonasMutation()
   const [deletePersonas, { isLoading: isDeletePersonasUpdating }] = useDeletePersonasMutation()
-  const personaGroupQuery = useGetPersonaGroupByIdQuery({ params: { groupId: personaGroupId } })
+  const personaGroupQuery = useGetPersonaGroupByIdQuery(
+    { params: { groupId: personaGroupId } },
+    { skip: !personaGroupId }
+  )
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const { setPersonasCount } = useContext(PersonasContext)
 
@@ -226,7 +228,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
   const downloadPersona = () => {
     downloadCsv({
-      params: { groupId: personaGroupId },
       payload: personaListQuery.payload
     }).unwrap().catch((error) => {
       console.log(error) // eslint-disable-line no-console
@@ -368,7 +369,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         type='Persona'
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
-        maxEntries={512}
+        maxEntries={30}
         templateLink='assets/templates/persona_import_template.csv'
         importRequest={importPersonas}
         onClose={() => setUploadCsvDrawerVisible(false)}

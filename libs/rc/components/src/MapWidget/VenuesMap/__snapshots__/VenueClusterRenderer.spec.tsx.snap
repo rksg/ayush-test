@@ -70,6 +70,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -98,6 +99,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #1",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -167,6 +193,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -195,6 +222,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #3",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -264,6 +316,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -292,6 +345,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #5",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -361,6 +439,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -389,6 +468,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #7",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -458,6 +562,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -486,6 +591,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #9",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -555,6 +685,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -583,6 +714,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #11",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -652,6 +808,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -680,6 +837,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #13",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -749,6 +931,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -777,6 +960,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #15",
                 "status": "4_TransientIssue",
                 "switchClientsCount": 10,
@@ -846,6 +1054,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -874,6 +1083,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #2",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -943,6 +1177,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -971,6 +1206,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #4",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -1040,6 +1300,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1068,6 +1329,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #6",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -1137,6 +1423,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1165,6 +1452,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #8",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -1234,6 +1546,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1262,6 +1575,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #10",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -1331,6 +1669,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1359,6 +1698,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #12",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -1428,6 +1792,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1456,6 +1821,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #14",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -1595,6 +1985,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1623,6 +2014,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #1",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -1692,6 +2108,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1720,6 +2137,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #3",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -1789,6 +2231,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1817,6 +2260,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #5",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -1886,6 +2354,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -1914,6 +2383,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #7",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -1983,6 +2477,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2011,6 +2506,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #9",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2080,6 +2600,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2108,6 +2629,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #11",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2177,6 +2723,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2205,6 +2752,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #13",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2274,6 +2846,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2302,6 +2875,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #15",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2371,6 +2969,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2399,6 +2998,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #17",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2468,6 +3092,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2496,6 +3121,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #19",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2565,6 +3215,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2593,6 +3244,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #21",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2662,6 +3338,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2690,6 +3367,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #23",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2759,6 +3461,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2787,6 +3490,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #25",
                 "status": "3_RequiresAttention",
                 "switchClientsCount": 10,
@@ -2856,6 +3584,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2884,6 +3613,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #2",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -2953,6 +3707,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -2981,6 +3736,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #4",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3050,6 +3830,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3078,6 +3859,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #6",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3147,6 +3953,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3175,6 +3982,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #8",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3244,6 +4076,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3272,6 +4105,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #10",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3341,6 +4199,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3369,6 +4228,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #12",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3438,6 +4322,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3466,6 +4351,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #14",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3535,6 +4445,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3563,6 +4474,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #16",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3632,6 +4568,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3660,6 +4597,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #18",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3729,6 +4691,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3757,6 +4720,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #20",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3826,6 +4814,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3854,6 +4843,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #22",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -3923,6 +4937,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
             needPadding={false}
             venueMarker={
               Object {
@@ -3951,6 +4966,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #24",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -4048,7 +5088,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
 </styledComponents__VenueClusterTooltip>
 `;
 
-exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip without pagination 1`] = `
+exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip when edge disabled 1`] = `
 <styledComponents__VenueClusterTooltip>
   <List
     bordered={true}
@@ -4061,9 +5101,9 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
-                  "baseHash": 2071569251,
+                  "baseHash": 1655588326,
                   "baseStyle": undefined,
-                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
                   "isStatic": false,
                   "rules": Array [
                     "
@@ -4078,7 +5118,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "foldedComponentIds": Array [],
                 "render": [Function],
                 "shouldForwardProp": undefined,
-                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
                 "target": Object {
                   "$$typeof": Symbol(react.forward_ref),
                   "render": [Function],
@@ -4090,6 +5130,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
             needPadding={false}
             venueMarker={
               Object {
@@ -4118,8 +5159,33 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #1",
-                "status": "2_Operational",
+                "status": "4_TransientIssue",
                 "switchClientsCount": 10,
                 "switchStat": Array [
                   Object {
@@ -4158,6 +5224,867 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 "$$typeof": Symbol(react.forward_ref),
                 "attrs": Array [],
                 "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #3",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#3",
+              }
+            }
+          />,
+          "title": "Venue #3",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #5",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#5",
+              }
+            }
+          />,
+          "title": "Venue #5",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #7",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#7",
+              }
+            }
+          />,
+          "title": "Venue #7",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #9",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#9",
+              }
+            }
+          />,
+          "title": "Venue #9",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #11",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#11",
+              }
+            }
+          />,
+          "title": "Venue #11",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #13",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#13",
+              }
+            }
+          />,
+          "title": "Venue #13",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 1655588326,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerOrangeIcon-sc-1g4gbr4-9",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #15",
+                "status": "4_TransientIssue",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#15",
+              }
+            }
+          />,
+          "title": "Venue #15",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
                   "baseHash": 2071569251,
                   "baseStyle": undefined,
                   "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
@@ -4187,6 +6114,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
             needPadding={false}
             venueMarker={
               Object {
@@ -4215,6 +6143,31 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #2",
                 "status": "2_Operational",
                 "switchClientsCount": 10,
@@ -4284,6 +6237,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
             }
           />,
           "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
             needPadding={false}
             venueMarker={
               Object {
@@ -4312,6 +6266,1085 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
                 ],
                 "apsCount": 50,
                 "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #4",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#4",
+              }
+            }
+          />,
+          "title": "Venue #4",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #6",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#6",
+              }
+            }
+          />,
+          "title": "Venue #6",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #8",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#8",
+              }
+            }
+          />,
+          "title": "Venue #8",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #10",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#10",
+              }
+            }
+          />,
+          "title": "Venue #10",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #12",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#12",
+              }
+            }
+          />,
+          "title": "Venue #12",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={false}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #14",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#14",
+              }
+            }
+          />,
+          "title": "Venue #14",
+        },
+      ]
+    }
+    header={
+      <div
+        className="venueInfoHeader"
+      >
+        <span>
+          15
+           Venues
+        </span>
+        <span
+          onClick={[Function]}
+          style={
+            Object {
+              "cursor": "pointer",
+              "float": "right",
+            }
+          }
+        >
+          <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": -1086389032,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                  "isStatic": false,
+                  "rules": Array [
+                    "font-size:large;margin-top:2px;",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__CloseIcon-sc-1g4gbr4-11",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />
+        </span>
+      </div>
+    }
+    itemLayout="vertical"
+    pagination={
+      Object {
+        "pageSize": 5,
+        "simple": false,
+        "size": "small",
+      }
+    }
+    renderItem={[Function]}
+  />
+</styledComponents__VenueClusterTooltip>
+`;
+
+exports[`VenueClusterRenderer should match with snapshot for venue cluster tooltip without pagination 1`] = `
+<styledComponents__VenueClusterTooltip>
+  <List
+    bordered={true}
+    dataSource={
+      Array [
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #1",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#1",
+              }
+            }
+          />,
+          "title": "Venue #1",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
+                "name": "Venue #2",
+                "status": "2_Operational",
+                "switchClientsCount": 10,
+                "switchStat": Array [
+                  Object {
+                    "category": "Switches",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "switchesCount": 2,
+                "venueId": "venueId#2",
+              }
+            }
+          />,
+          "title": "Venue #2",
+        },
+        Object {
+          "icon": <AntdIcon
+            component={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "attrs": Array [],
+                "componentStyle": e {
+                  "baseHash": 2071569251,
+                  "baseStyle": undefined,
+                  "componentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                  "isStatic": false,
+                  "rules": Array [
+                    "
+  height: 20px;
+  width: 32px;
+  vertical-align: text-bottom;
+  fill: var(--acx-neutrals-50);
+",
+                  ],
+                  "staticRulesId": "",
+                },
+                "foldedComponentIds": Array [],
+                "render": [Function],
+                "shouldForwardProp": undefined,
+                "styledComponentId": "styledComponents__VenueInfoMarkerGreenIcon-sc-1g4gbr4-7",
+                "target": Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "render": [Function],
+                },
+                "toString": [Function],
+                "warnTooManyClasses": [Function],
+                "withComponent": [Function],
+              }
+            }
+          />,
+          "popoverContent": <VenueMarkerTooltip
+            isEdgeEnabled={true}
+            needPadding={false}
+            venueMarker={
+              Object {
+                "apStat": Array [
+                  Object {
+                    "category": "APs",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 1,
+                      },
+                    ],
+                  },
+                ],
+                "apsCount": 50,
+                "clientsCount": 20,
+                "edgeClientsCount": 0,
+                "edgeStat": Array [
+                  Object {
+                    "category": "Edges",
+                    "series": Array [
+                      Object {
+                        "name": "1 Requires Attention",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "2 Transient Issue",
+                        "value": 0,
+                      },
+                      Object {
+                        "name": "3 In Setup Phase",
+                        "value": 2,
+                      },
+                      Object {
+                        "name": "4 Operational",
+                        "value": 3,
+                      },
+                    ],
+                  },
+                ],
+                "edgesCount": 5,
                 "name": "Venue #3",
                 "status": "2_Operational",
                 "switchClientsCount": 10,

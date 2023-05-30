@@ -4,18 +4,18 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import {
-  useSearchPersonaGroupListQuery,
-  useLazyGetMacRegListQuery,
   useDeletePersonaGroupMutation,
-  useLazyGetDpskQuery,
-  useLazyVenuesListQuery,
   useGetDpskListQuery,
-  useMacRegListsQuery,
   useGetNetworkSegmentationGroupListQuery,
   useLazyDownloadPersonaGroupsQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery
+  useLazyGetDpskQuery,
+  useLazyGetMacRegListQuery,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyVenuesListQuery,
+  useMacRegListsQuery,
+  useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess }                              from '@acx-ui/user'
@@ -37,7 +37,7 @@ function useColumns (
   nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
 
   const { data: dpskPool } = useGetDpskListQuery({})
   const { data: macList } = useMacRegListsQuery({

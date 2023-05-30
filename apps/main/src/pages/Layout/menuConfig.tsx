@@ -32,8 +32,7 @@ export function useMenuConfig () {
   const showSV = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
 
-  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)

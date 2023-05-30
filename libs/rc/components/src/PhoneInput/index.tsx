@@ -2,13 +2,12 @@ import { useEffect, useRef } from 'react'
 
 import { Form, Input, InputRef } from 'antd'
 import 'intl-tel-input/build/css/intlTelInput.css'
+import './intl.css'
 import 'intl-tel-input/build/js/utils'
 import intlTelInput              from 'intl-tel-input'
 
-import { FlagContainer } from './styledComponents'
-
 interface PhoneInputProps {
-  name: string
+  name: string | string[]
   callback?: (value: string) => void
   onTop: boolean
 }
@@ -20,15 +19,13 @@ export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
   useEffect(() => {
     if (inputRef.current?.input) {
       const iti = intlTelInput(inputRef.current.input, {
+        nationalMode: false,
         hiddenInput: 'full_phone',
         autoPlaceholder: 'aggressive',
         placeholderNumberType: 'MOBILE',
         preferredCountries: ['us'],
         utilsScript: 'intl-tel-input/js/utils',
-        dropdownContainer: onTop ? document.body : undefined,
-        customPlaceholder: function (selectedCountryPlaceholder, selectedCountryData) {
-          return `+${selectedCountryData.dialCode} ${selectedCountryPlaceholder}`
-        }
+        dropdownContainer: onTop ? document.body : undefined
       })
 
       const handleChange = () => {
@@ -45,11 +42,9 @@ export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
   }, [])
 
   return (
-    <FlagContainer>
-      <Form.Item name={name}>
-        <Input ref={inputRef} style={{ width: '100%' }} />
-      </Form.Item>
-    </FlagContainer>
+    <Form.Item name={name}>
+      <Input ref={inputRef} style={{ width: '100%' }} />
+    </Form.Item>
   )
 }
 

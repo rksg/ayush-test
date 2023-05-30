@@ -62,7 +62,8 @@ export default function AdaptivePolicyDetail () {
       return (
         <Col span={6} key={condition.id}>
           <Form.Item
-            label={condition.templateAttribute?.name ?? ''}>
+            //eslint-disable-next-line max-len
+            label={condition.templateAttribute?.attributeType === 'DATE_RANGE' ? condition.templateAttribute?.name : $t({ defaultMessage: '{name} (Regex)' }, { name: condition.templateAttribute?.name })}>
             <Paragraph>{criteria}</Paragraph>
           </Form.Item>
         </Col>

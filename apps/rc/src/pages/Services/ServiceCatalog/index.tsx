@@ -2,9 +2,9 @@ import { Typography }             from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { RadioCardCategory }            from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, PageHeader }             from '@acx-ui/components'
+import { RadioCardCategory }                        from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -17,13 +17,10 @@ import * as UI from './styledComponents'
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
-  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const sets = [
     {
@@ -34,13 +31,13 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeDhcpEnabled
+          disabled: !isEdgeEnabled
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !networkSegmentationEnabled
+          disabled: !isEdgeEnabled
         }
       ]
     },
@@ -50,7 +47,7 @@ export default function ServiceCatalog () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeFirewallEnabled
+          disabled: !isEdgeEnabled
         }
       ]
     },
@@ -70,7 +67,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !networkSegmentationEnabled || !networkSegmentationSwitchEnabled
+          disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,

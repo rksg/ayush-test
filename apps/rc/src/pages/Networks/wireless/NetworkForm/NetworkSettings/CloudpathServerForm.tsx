@@ -3,7 +3,8 @@ import { useContext, useEffect } from 'react'
 import {
   Form,
   Switch,
-  Space
+  Space,
+  Typography
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -60,7 +61,12 @@ export function CloudpathServerForm () {
         {(data?.type===NetworkTypeEnum.AAA
         || data?.type===NetworkTypeEnum.DPSK
         || data?.type===NetworkTypeEnum.OPEN)&&
-        <Form.Item>
+        <Form.Item
+          style={
+            {
+              marginBottom: 0
+            }
+          }>
           <Form.Item
             noStyle
             name='enableAuthProxy'
@@ -72,9 +78,20 @@ export function CloudpathServerForm () {
             title='Proxy Service'
             onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
           />
-          <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
-          { data?.type===NetworkTypeEnum.DPSK ? DPSKProxyServiceTooltip : proxyServiceTooltip}
+          <span className={
+            (!enableDPSKProxyService)
+              ? 'ant-switch-disabled'
+              : ''
+          }>
+            { $t({ defaultMessage: 'Proxy Service' }) }
+          </span>
+          { data?.type===NetworkTypeEnum.DPSK ? DPSKProxyServiceTooltip : proxyServiceTooltip }
         </Form.Item>}
+        { !enableDPSKProxyService
+          && <Typography.Text disabled className='ant-form-item-extra'>
+            { $t({ defaultMessage:
+              'DPSK Network with Non-Proxy mode is not supported at this moment!' })}
+          </Typography.Text> }
       </div>
       <div>
         <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>

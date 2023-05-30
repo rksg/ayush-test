@@ -2,7 +2,7 @@ import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                    from '@acx-ui/feature-toggle'
 import { useGetApSnmpViewModelQuery }                                                  from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -27,7 +27,7 @@ export default function SelectPolicyForm () {
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({

@@ -1,12 +1,13 @@
+
 import {
   GuestNetworkTypeEnum,
   SocialIdentitySource,
   TimeUnitEnum,
   NetworkSaveData,
   NetworkTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
-
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -870,6 +871,25 @@ export const wisprDataWPA2 = {
     passphrase: 'aaaaaaaaaa'
   }
 }
+export const wisprDataForAllAccept = {
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'Select provider',
+      authRadius: { secondary: {} },
+      accountingRadius: { secondary: {} },
+      authType: AuthRadiusEnum.ALWAYS_ACCEPT
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false,
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    passphrase: 'aaaaaaaaaa'
+  }
+}
 export const selfsignData = {
   guestPortal: {
     redirectUrl: 'dbaidu.com',
@@ -1448,7 +1468,7 @@ export const mockMacRegistrationPoolList = {
         {
           rel: 'self',
           // eslint-disable-next-line max-len
-          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/c982acee-526a-4b06-8e37-0c96abe6d5f3'
+          href: 'https://dev.ruckus.cloud/macRegistrationPools/c982acee-526a-4b06-8e37-0c96abe6d5f3'
         }
       ]
     },
@@ -1466,7 +1486,7 @@ export const mockMacRegistrationPoolList = {
         {
           rel: 'self',
           // eslint-disable-next-line max-len
-          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/ca8e5769-c4ab-42f4-a271-3937405f7d68'
+          href: 'https://dev.ruckus.cloud/macRegistrationPools/ca8e5769-c4ab-42f4-a271-3937405f7d68'
         }
       ]
     },
@@ -1484,7 +1504,7 @@ export const mockMacRegistrationPoolList = {
         {
           rel: 'self',
           // eslint-disable-next-line max-len
-          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/c448947f-4354-47d8-bb6b-cc2c754d3312'
+          href: 'https://dev.ruckus.cloud/macRegistrationPools/c448947f-4354-47d8-bb6b-cc2c754d3312'
         }
       ]
     },
@@ -1502,7 +1522,7 @@ export const mockMacRegistrationPoolList = {
         {
           rel: 'self',
           // eslint-disable-next-line max-len
-          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/d5152d86-3a1b-45ef-9e70-8563e9ce4293'
+          href: 'https://dev.ruckus.cloud/macRegistrationPools/d5152d86-3a1b-45ef-9e70-8563e9ce4293'
         }
       ]
     },
@@ -1520,7 +1540,7 @@ export const mockMacRegistrationPoolList = {
         {
           rel: 'self',
           // eslint-disable-next-line max-len
-          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/9a20a8af-7bbc-4983-9cbb-9349a69f967c'
+          href: 'https://dev.ruckus.cloud/macRegistrationPools/9a20a8af-7bbc-4983-9cbb-9349a69f967c'
         }
       ]
     }

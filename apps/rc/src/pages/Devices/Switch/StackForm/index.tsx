@@ -34,7 +34,7 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon, Drag } from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
@@ -123,10 +123,11 @@ export function StackForm () {
 
   const dataFetchedRef = useRef(false)
 
+  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
+
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
-    { key: '2', id: '', model: '', disabled: false },
-    { key: '3', id: '', model: '', disabled: false }
+    { key: '2', id: '', model: '', disabled: false }
   ]
   const [tableData, setTableData] = useState(isStackSwitches ? [] : defaultArray)
 
@@ -600,6 +601,24 @@ export function StackForm () {
     return <SortableItem index={index} {...restProps} />
   }
 
+  const enableAddMember = () => {
+    const switchModel = getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if(!enableStackUnitLimitationFlag){
+      return true
+    }
+
+    if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
+      return tableData.length < 2
+    } else {
+      return tableData.length < 4
+    }
+  }
+
+  const getStackUnitsMinLimitaion = () => {
+    const switchModel = getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    return switchModel?.includes('ICX7150') ? 2 : 4
+  }
+
   return (
     <>
       <PageHeader
@@ -758,7 +777,7 @@ export function StackForm () {
                         }
                       }}
                     />
-                    {tableData.length < 12 && (
+                    {tableData.length < 12 && enableAddMember() && (
                       <Button
                         onClick={handleAddRow}
                         type='link'
@@ -772,6 +791,9 @@ export function StackForm () {
                   </TableContainer>
 
                   <SwitchUpgradeNotification
+                    switchModel={
+                      getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))}
+                    stackUnitsMinLimitaion={getStackUnitsMinLimitaion()}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
                     type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}

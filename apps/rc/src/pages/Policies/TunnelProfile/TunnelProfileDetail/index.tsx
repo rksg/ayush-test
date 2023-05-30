@@ -1,10 +1,11 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader }                                                                                from '@acx-ui/components'
+import { Button, Card, Loader, PageHeader }                                                                                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
+import { ServiceInfo }                                                                                                                       from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery }                                                                                              from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                                             from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                                                                    from '@acx-ui/user'
 
@@ -34,7 +35,7 @@ const TunnelProfileDetail = () => {
     }
   )
 
-  const infoFields = [
+  const tunnelInfo = [
     // {
     //   title: $t({ defaultMessage: 'Tags' }),
     //   content: () => (tunnelProfileData.tags)
@@ -98,24 +99,7 @@ const TunnelProfileDetail = () => {
         }
       ]}>
         <Space direction='vertical' size={30}>
-          <Card type='solid-bg'>
-            <UI.InfoMargin>
-              <GridRow>
-                {infoFields.map(item =>
-                  (<GridCol col={{ span: 3 }} key={item.title}>
-                    <Space direction='vertical' size={10}>
-                      <Typography.Text>
-                        {item.title}
-                      </Typography.Text>
-                      <Typography.Text>
-                        {item.content()}
-                      </Typography.Text>
-                    </Space>
-                  </GridCol>)
-                )}
-              </GridRow>
-            </UI.InfoMargin>
-          </Card>
+          <ServiceInfo data={tunnelInfo} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>

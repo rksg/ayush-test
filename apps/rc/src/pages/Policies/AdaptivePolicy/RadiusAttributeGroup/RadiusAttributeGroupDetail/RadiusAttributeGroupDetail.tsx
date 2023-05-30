@@ -13,11 +13,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  AttributeAssignment, getAdaptivePolicyDetailLink,
+  AttributeAssignment, defaultSort, getAdaptivePolicyDetailLink,
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType, sortProp
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -34,7 +34,7 @@ export default function RadiusAttributeGroupDetail () {
   const { data: policyListData, isLoading: getPolicyListDataLoading } =
     useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'false' }, payload: {
       fields: [ 'name' ],
-      page: 0, pageSize: 2000,
+      page: 1, pageSize: 2000,
       filters: { onMatchResponse: policyId }
     } })
 
@@ -89,6 +89,7 @@ export default function RadiusAttributeGroupDetail () {
         key: 'name',
         title: $t({ defaultMessage: 'Access Policy Name' }),
         dataIndex: 'name',
+        sorter: { compare: sortProp('name', defaultSort) },
         render: function (data, row) {
           return (
             <TenantLink

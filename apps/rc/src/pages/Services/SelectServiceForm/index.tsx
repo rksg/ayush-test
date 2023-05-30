@@ -8,7 +8,7 @@ import {
   RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getServiceListRoutePath,
@@ -26,12 +26,9 @@ export default function SelectServiceForm () {
   const navigate = useNavigate()
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
-  const isEdgeFirewallEnabled = useIsSplitOn(Features.EDGES)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -53,13 +50,13 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeDhcpEnabled
+          disabled: !isEdgeEnabled
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !networkSegmentationEnabled
+          disabled: !isEdgeEnabled
         }
       ]
     },
@@ -68,7 +65,7 @@ export default function SelectServiceForm () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeFirewallEnabled
+          disabled: !isEdgeEnabled
         }
       ]
     },
@@ -86,7 +83,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !networkSegmentationEnabled
+          disabled: !isEdgeEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,

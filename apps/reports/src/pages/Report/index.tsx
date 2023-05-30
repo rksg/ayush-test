@@ -1,11 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { EmbeddedReport } from '@acx-ui/reports/components'
 import {
+  EmbeddedReport,
   ReportType,
   reportTypeLabelMapping,
-  reportTypeDataStudioMapping,
-  reportTypeModeMapping } from '@acx-ui/reports/components'
+  reportModeMapping,
+  bandDisabledReports
+} from '@acx-ui/reports/components'
 
 import { ReportHeader } from '../ReportHeader'
 
@@ -16,23 +17,21 @@ export function Report (props: {
 }) {
   const { type, withHeader, showFilter } = props
   const { $t } = useIntl()
-  const isRadioBandDisabled = [
-    ReportType.APPLICATION,
-    ReportType.ACCESS_POINT,
-    ReportType.AIRTIME_UTILIZATION
-  ].includes(type)
+  const isRadioBandDisabled = bandDisabledReports.includes(type)
   let radioBandDisabledReason = isRadioBandDisabled ?
     $t({ defaultMessage: 'Radio Band is not available for this report.' }) : ''
 
   return (
     <>
       { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])}
-        mode={reportTypeModeMapping[type]}
+        mode={reportModeMapping[type]}
         isRadioBandDisabled={isRadioBandDisabled}
         radioBandDisabledReason={radioBandDisabledReason}
         showFilter={showFilter}
       /> }
-      <EmbeddedReport embedDashboardName={reportTypeDataStudioMapping[type]} hideHeader={false} />
+      <EmbeddedReport
+        reportName={type}
+        hideHeader={false} />
     </>
   )
 }
