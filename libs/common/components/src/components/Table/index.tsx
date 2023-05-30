@@ -285,7 +285,7 @@ function Table <RecordType extends Record<string, any>> ({
     selections: [
       {
         key: 'SELECTION_ALL_PAGES',
-        text: $t({ defaultMessage: 'Select data of all pages' }),
+        text: $t({ defaultMessage: 'Select data from all pages' }),
         onSelect: () => {
           const data = props.getAllPagesData && props.getAllPagesData()
           if(data){
