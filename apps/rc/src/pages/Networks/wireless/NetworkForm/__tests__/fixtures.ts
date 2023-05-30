@@ -890,6 +890,25 @@ export const wisprDataForAllAccept = {
     passphrase: 'aaaaaaaaaa'
   }
 }
+export const wisprDataForOnlyAuth = {
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'Select provider',
+      authRadius: { secondary: {} },
+      accountingRadius: { secondary: {} },
+      authType: AuthRadiusEnum.RADIUS
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false,
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    passphrase: 'aaaaaaaaaa'
+  }
+}
 export const selfsignData = {
   guestPortal: {
     redirectUrl: 'dbaidu.com',
