@@ -350,8 +350,9 @@ export function BasePersonaTable (props: PersonaTableProps) {
         { isLoading: false, isFetching: isDeletePersonasUpdating }
       ]}
     >
-      <Table
+      <Table<Persona>
         enableApiFilter
+        settingsId='base-persona-table'
         columns={columns}
         dataSource={personaListQuery.data?.data}
         pagination={personaListQuery.pagination}
