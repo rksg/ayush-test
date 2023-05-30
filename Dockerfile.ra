@@ -46,6 +46,10 @@ RUN tools/docker/locales/generate.sh ra
 FROM build-base as build
 
 COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
+
+# dump git info
+RUN export NX_GIT_SHA=${CIRCLE_SHA1:0:7}
+RUN export NX_GIT_DATE=$(date -R)
 RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra,analytics
 
 ###############################################################
