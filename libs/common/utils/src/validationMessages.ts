@@ -386,6 +386,14 @@ export const validationMessages = {
   tagInvalid: defineMessage({
     defaultMessage: 'Tag is invalid',
     description: 'Validation - tags'
+  }),
+  servicePolicyNameInvalid: defineMessage({
+    defaultMessage: 'Name is invalid',
+    description: 'Validation - name for service and policy'
+  }),
+  specialCharacterNameInvalid: defineMessage({
+    defaultMessage: 'Special character is invalid',
+    description: 'Validation - name for service and policy'
   })
 }
 
