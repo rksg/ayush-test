@@ -27,7 +27,8 @@ import {
   EdgeTopTraffic,
   EdgeResourceUtilizationData,
   EdgeAllPortTrafficData,
-  EdgeTimeSeriesPayload
+  EdgeTimeSeriesPayload,
+  EdgeService
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi } from '@acx-ui/store'
 
@@ -362,6 +363,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEdgeServiceList: build.query<TableResult<EdgeService>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeServiceList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }]
     })
   })
 })
@@ -396,5 +407,6 @@ export const {
   useGetEdgeUptimeQuery,
   useGetEdgeTopTrafficQuery,
   useGetEdgeResourceUtilizationQuery,
-  useGetEdgePortTrafficQuery
+  useGetEdgePortTrafficQuery,
+  useGetEdgeServiceListQuery
 } = edgeApi

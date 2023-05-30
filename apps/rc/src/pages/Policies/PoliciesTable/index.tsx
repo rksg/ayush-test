@@ -121,7 +121,8 @@ export default function PoliciesTable () {
     [PolicyType.ADAPTIVE_POLICY]: [],
     [PolicyType.ADAPTIVE_POLICY_SET]: [],
     [PolicyType.RADIUS_ATTRIBUTE_GROUP]: [],
-    [PolicyType.TUNNEL_PROFILE]: []
+    [PolicyType.TUNNEL_PROFILE]: [],
+    [PolicyType.CONNECTION_METERING]: []
   }
 
   const tableQuery = useTableQuery({
