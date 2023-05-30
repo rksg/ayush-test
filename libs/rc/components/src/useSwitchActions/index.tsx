@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { showActionModal } from '@acx-ui/components'
+import { showActionModal }         from '@acx-ui/components'
 import {
   useDeleteSwitchesMutation,
   useRebootSwitchMutation,
-  useSyncDataMutation
+  useSyncDataMutation,
+  useRetryFirmwareUpdateMutation
 } from '@acx-ui/rc/services'
 import {
   DeviceRequestAction,
@@ -20,6 +21,7 @@ export function useSwitchActions () {
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
   const [ rebootSwitch ] = useRebootSwitchMutation()
   const [ syncData ] = useSyncDataMutation()
+  const [ retryFirmwareUpdate ] = useRetryFirmwareUpdateMutation()
 
   function shouldHideConfirmation (selectedRows: SwitchRow[]) {
     const noVerificationStatus = [SwitchStatusEnum.NEVER_CONTACTED_CLOUD, SwitchStatusEnum.DISCONNECTED]
@@ -110,11 +112,25 @@ export function useSwitchActions () {
     }
   }
 
+  const doRetryFirmwareUpdate= async (switchId: string, tenantId?: string, callBack?: ()=>void ) => {
+    try {
+      await retryFirmwareUpdate({
+        params: { tenantId, switchId },
+        payload: {}
+      }).unwrap()
+      setTimeout(() => {
+        callBack?.()
+      }, 1000)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   return {
     showDeleteSwitches,
     showDeleteSwitch,
     showRebootSwitch,
-    doSyncData
+    doSyncData,
+    doRetryFirmwareUpdate
   }
 }
