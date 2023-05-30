@@ -1,5 +1,5 @@
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
+import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -58,6 +58,9 @@ import RadiusAttributeGroupForm
 import ClientIsolationDetail      from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationForm        from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import ClientIsolationTable       from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
+import ConnectionMeteringDetail   from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
+import ConnectionMeteringPageForm from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
+import ConnectionMeteringTable    from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import MacRegistrationListDetails from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MacRegistrationListForm    from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
@@ -434,6 +437,7 @@ function ServiceRoutes () {
 
 function PolicyRoutes () {
   const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isAttributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
   // eslint-disable-next-line max-len
   const isAdaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT) && isAttributeGroupEnabled
@@ -594,8 +598,7 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
-        element={<AddTunnelProfile />}
-      />
+        element={<AddTunnelProfile />} />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })}
         element={<TunnelProfileTable />}
@@ -608,6 +611,28 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT })}
         element={<EditTunnelProfile />}
       />
+      {isConnectionMeteringEnabled && <>
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })}
+          element={<ConnectionMeteringTable />}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
+          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
+          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
+          element={<ConnectionMeteringDetail/>}
+        />
+      </>}
       {isAdaptivePolicyEnabled && <>
         <Route
           // eslint-disable-next-line max-len

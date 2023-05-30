@@ -259,6 +259,18 @@ jest.mock('./pages/Services/EdgeFirewall/EditFirewall', () => () => {
   return <div data-testid='EditEdgeFirewall' />
 })
 
+jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringTable', () => () => {
+  return <div data-testid='ConnectionMeteringTable' />
+})
+
+jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringDetail', () => () => {
+  return <div data-testid='ConnectionMeteringDetail' />
+})
+
+jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () => () => {
+  return <div data-testid='ConnectionMeteringPageForm' />
+})
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -1045,4 +1057,52 @@ describe('RcRoutes: Timeline', () => {
     })
     expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy Sets' })).toBeVisible()
   })
+})
+
+test('should navigate to Connection Metering table', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST }),
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringTable')).toBeVisible()
+})
+
+test('should navigate to Connection Metering Detail', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
+  path = path.replace(':policyId', 'policyId')
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + path,
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringDetail')).toBeVisible()
+})
+
+test('should navigate to Connection Metering Page create form', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE }),
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
+})
+
+test('should navigate to Connection Metering Page edit form', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })
+  path = path.replace(':policyId', 'policyId')
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + path,
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
 })

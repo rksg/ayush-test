@@ -34,6 +34,7 @@ export enum Features {
   MSG_TEMPLATE = 'msgtemplate-service-enabled',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
+  CONNECTION_METERING = 'connection-metering-enabled',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',
   WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
@@ -51,5 +52,6 @@ export enum Features {
   SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   SWITCH_BREAKOUT_PORT='switch-breakout-port',
+  WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation'
 }

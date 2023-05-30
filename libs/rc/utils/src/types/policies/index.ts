@@ -9,6 +9,7 @@ export * from './apSnmp'
 export * from './radiusAttributeGroup'
 export * from './tunnelProfile'
 export * from './rulesManagement'
+export * from './connectionMetering'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
@@ -29,7 +30,8 @@ export enum PolicyType {
   ADAPTIVE_POLICY = 'Adaptive Policy',
   RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
-  TUNNEL_PROFILE = 'Tunnel Profile'
+  TUNNEL_PROFILE = 'Tunnel Profile',
+  CONNECTION_METERING = 'Connection Metering'
 }
 
 export enum PolicyTechnology {
