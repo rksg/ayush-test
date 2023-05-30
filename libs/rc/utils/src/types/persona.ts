@@ -31,7 +31,9 @@ export interface Persona {
   identityId?: string,
   createdAt?: string,
   updatedAt?: string,
-  switches?: PersonaSwitch[]
+  switches?: PersonaSwitch[],
+  meteringProfileId?: string | null,
+  expirationEpoch?: number | null
 }
 
 export interface PersonaSwitch {
