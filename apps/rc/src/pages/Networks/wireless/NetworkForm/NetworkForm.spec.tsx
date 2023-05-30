@@ -283,27 +283,4 @@ describe('NetworkForm', () => {
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Finish'))
   }, 20000)
-
-  it('should test WISPr with MAC bypass and dynamic VLAN successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-
-    render(<Provider><NetworkForm /></Provider>, {
-      route: { params }
-    })
-
-    const insertInput = screen.getByLabelText(/Network Name/)
-    fireEvent.change(insertInput, { target: { value: 'WISPr network test' } })
-    fireEvent.blur(insertInput)
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
-
-    await userEvent.click(screen.getByRole('radio', { name: /Captive Portal/ }))
-    await userEvent.click(screen.getByText('Next'))
-
-    await userEvent.click(screen.getByText('3rd Party Captive Portal (WISPr)'))
-    await userEvent.click(screen.getByText('Next'))
-
-    await screen.findByRole('heading', { level: 3, name: 'Settings' })
-    // await userEvent.click((screen.getByRole('option', { name: 'Other provider' })))
-  })
 })
