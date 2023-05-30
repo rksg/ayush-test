@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -19,8 +20,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { AddModeProps } from '../AccessControlForm/AccessControlForm'
-import DeviceOSDrawer   from '../AccessControlForm/DeviceOSDrawer'
+import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
+import DeviceOSDrawer                      from '../AccessControlForm/DeviceOSDrawer'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
 
 
 
@@ -108,6 +110,7 @@ const DevicePolicyComponent = () => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Device & OS Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
@@ -150,9 +153,11 @@ const DevicePolicyComponent = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <DeviceOSDrawer
-      onlyAddMode={addModeStatus}
-    />
+    <Form>
+      <DeviceOSDrawer
+        onlyAddMode={addModeStatus}
+      />
+    </Form>
     <Table<DevicePolicy>
       settingsId='policies-access-control-device-policy-table'
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}

@@ -11,8 +11,8 @@ import { useRoguePolicyQuery }                                     from '@acx-ui
 import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-import { rogueRuleLabelMapping } from '../contentsMap'
-import RogueAPDetectionContext   from '../RogueAPDetectionContext'
+import { rogueRuleLabelMapping, RULE_MAX_COUNT } from '../contentsMap'
+import RogueAPDetectionContext                   from '../RogueAPDetectionContext'
 
 import { RogueAPDetectionDrawer } from './RogueAPDetectionDrawer'
 
@@ -86,7 +86,7 @@ const RuleTable = (props: RuleTableProps) => {
   }, [data])
 
   const handleAddAction = () => {
-    if (state.rules.length === 32) {
+    if (state.rules.length === RULE_MAX_COUNT) {
       showActionModal({
         type: 'error',
         content: $t({

@@ -938,3 +938,19 @@ export function ipv6RegExp (value: string) {
   return Promise.resolve()
 }
 
+export function servicePolicyNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // regex from service and policy backend
+  const re = new RegExp('(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$')
+
+  // make sure there is no special character in value
+  if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
+    return Promise.reject($t(validationMessages.specialCharacterNameInvalid))
+  }
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.servicePolicyNameInvalid))
+  }
+  return Promise.resolve()
+}
+
