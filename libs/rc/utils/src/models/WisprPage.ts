@@ -1,4 +1,5 @@
-import { Radius } from './Radius'
+import { AuthRadiusEnum } from './AuthRadiusEnum'
+import { Radius }         from './Radius'
 
 export class WisprPage {
   captivePortalUrl: string
@@ -19,6 +20,8 @@ export class WisprPage {
 
   encryptMacIpEnabled?: boolean
 
+  authType?: AuthRadiusEnum
+
   constructor () {
     this.captivePortalUrl = ''
 
@@ -27,5 +30,7 @@ export class WisprPage {
     this.authRadius = new Radius()
 
     this.accountingRadius = new Radius()
+
+    this.authType = AuthRadiusEnum.RADIUS
   }
 }
