@@ -22,7 +22,7 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 import ManageDhcpDrawer from './ManageDhcpDrawer'
 import * as UI          from './styledComponents'
 
-const EdgeDhcp = () => {
+export const EdgeDhcp = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { activeSubTab, serialNumber } = useParams()
@@ -145,5 +145,3 @@ const EdgeDhcp = () => {
     </>
   )
 }
-
-export default EdgeDhcp
