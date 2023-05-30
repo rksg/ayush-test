@@ -38,8 +38,8 @@ function ApMeshConnectionContent ({ data }: { data: ApMeshLink }) {
   const getDeviceText = (entity: ApMeshLink, flow: 'up' | 'down') => {
     let fromDevice, toDevice
     if (entity.fromRole === entity.toRole && entity.toRole === APMeshRole.MAP) {
-      fromDevice = $t({ defaultMessage: 'AP-{name}' }, { serialNumber: entity.fromName })
-      toDevice = $t({ defaultMessage: 'AP-{name}' }, { serialNumber: entity.toName })
+      fromDevice = $t({ defaultMessage: 'AP-{name}' }, { name: entity.fromName })
+      toDevice = $t({ defaultMessage: 'AP-{name}' }, { name: entity.toName })
     } else {
       fromDevice = $t(apMeshRoleLabelMap[entity.fromRole])
       toDevice = $t(apMeshRoleLabelMap[entity.toRole])
