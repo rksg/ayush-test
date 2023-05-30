@@ -70,23 +70,14 @@ export const enhancedLayer2PolicyListResponse = {
   ]
 }
 
-export const layer2PolicyListResponse = {
-  data: [
-    {
-      id: '36ec4826b5da48cc8118eda83aa4080f',
-      name: 'layer2policy1',
-      macAddressesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 1,
-  totalPages: 1,
-  page: 1
-}
+export const layer2PolicyListResponse = [
+  {
+    id: '36ec4826b5da48cc8118eda83aa4080f',
+    name: 'layer2policy1',
+    macAddressesCount: 1,
+    networksCount: 0
+  }
+]
 
 export const layer2Response = {
   name: 'layer2policy1',
@@ -121,23 +112,14 @@ export const enhancedLayer3PolicyListResponse = {
   ]
 }
 
-export const layer3PolicyListResponse = {
-  data: [
-    {
-      id: '233d3182a1aa49ee9f50aeb039347021',
-      name: 'layer3policy1',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 1,
-  totalPages: 1,
-  page: 1
-}
+export const layer3PolicyListResponse = [
+  {
+    id: '233d3182a1aa49ee9f50aeb039347021',
+    name: 'layer3policy1',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
 
 export const layer3Response = {
   name: 'layer3policy1',
@@ -224,20 +206,11 @@ export const enhancedDevicePolicyListResponse = {
   ]
 }
 
-export const devicePolicyListResponse = {
-  data: [
-    {
-      id: '84eb837c59e84761a1c836591d4be331',
-      name: 'device-1',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 1,
-  totalPages: 1,
-  page: 1
-}
+export const devicePolicyListResponse = [
+  {
+    id: '84eb837c59e84761a1c836591d4be331',
+    name: 'device-1',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]

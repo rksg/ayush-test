@@ -8,12 +8,12 @@ export const SigPackUrlsInfo: { [key: string]: ApiInfo } = {
   },
   exportAllSigPack: {
     method: 'get',
-    url: '/applicationLibrary',
+    url: '/applicationLibrary/csvFile',
     newApi: true
   },
   exportSigPack: {
     method: 'get',
-    url: '/applicationLibrary?type=:type',
+    url: '/applicationLibrary/csvFile?type=:type',
     newApi: true
   },
   updateSigPack: {
