@@ -129,20 +129,14 @@ describe('MigrationForm', () => {
     await userEvent.upload(document.querySelector('input[type=file]')!, bigFile)
 
     const bakFile = new File([''], 'zd_ipv4_db_050923_17_14.bak', { type: 'application/x-trash' })
-    Object.defineProperty(bigFile, 'size', { value: 1024 * 1024 + 1, configurable: true })
+    Object.defineProperty(bakFile, 'size', { value: 1024 * 1024 + 1, configurable: true })
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, bakFile)
 
-    // screen.debug()
-    // const validateButton = await screen.findByRole('button', { name: /^Validate&/ })
-    // expect(validateButton).toHaveClass('ant-btn-primary')
-    // expect(validateButton).toBeTruthy()
-    // expect(await screen.findByText('Validate')).toBeVisible()
-
-    // await userEvent.click(await screen.findByRole('button', { name: 'Validate' }))
-    // await userEvent.click(await screen.findByText('Validate'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Validate' }))
 
     // expect(await screen.findByText('Validation Table')).toBeVisible()
+    await screen.findByRole('heading', { name: 'Validation State: Qualified', level: 4 })
 
     // await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
 
