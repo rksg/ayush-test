@@ -1,6 +1,6 @@
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+import { within } from '@testing-library/react'
+import userEvent  from '@testing-library/user-event'
+import { rest }   from 'msw'
 
 import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
@@ -233,6 +233,6 @@ describe('Persona Details', () => {
       .findByRole('button', { name: /Block/i })
     await userEvent.click(confirmButton)
 
-    await waitFor(() => expect(blockedFn).toBeCalledWith({ revoked: true }))
+    expect(blockedFn).toBeCalledWith({ revoked: true })
   })
 })
