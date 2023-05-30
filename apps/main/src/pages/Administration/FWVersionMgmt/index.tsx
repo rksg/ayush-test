@@ -40,8 +40,11 @@ const FWVersionMgmt = () => {
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
   const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
-  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
+    skip: !isEdgeEnabled
+  })
   const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
+    skip: !isEdgeEnabled,
     selectFromResult: ({ data }) => ({
       latestEdgeReleaseVersion: data?.[0]
     })
