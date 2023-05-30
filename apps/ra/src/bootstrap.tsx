@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { Root }          from 'react-dom/client'
-import { addMiddleware } from 'redux-dynamic-middlewares'
+import { Root } from 'react-dom/client'
 
 import {
   ConfigProvider,
@@ -17,8 +16,7 @@ import {
   LocaleProvider
 } from '@acx-ui/utils'
 
-import AllRoutes           from './AllRoutes'
-import { errorMiddleware } from './errorMiddleware'
+import AllRoutes from './AllRoutes'
 
 import '@acx-ui/theme'
 
@@ -52,7 +50,6 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
-  addMiddleware(errorMiddleware)
 
   root.render(
     <React.StrictMode>
