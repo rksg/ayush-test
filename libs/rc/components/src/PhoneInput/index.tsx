@@ -2,10 +2,9 @@ import { useEffect, useRef } from 'react'
 
 import { Form, Input, InputRef } from 'antd'
 import 'intl-tel-input/build/css/intlTelInput.css'
+import './intl.css'
 import 'intl-tel-input/build/js/utils'
 import intlTelInput              from 'intl-tel-input'
-
-import { FlagContainer } from './styledComponents'
 
 interface PhoneInputProps {
   name: string | string[]
@@ -43,11 +42,9 @@ export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
   }, [])
 
   return (
-    <FlagContainer>
-      <Form.Item name={name}>
-        <Input ref={inputRef} style={{ width: '100%' }} />
-      </Form.Item>
-    </FlagContainer>
+    <Form.Item name={name}>
+      <Input ref={inputRef} style={{ width: '100%' }} />
+    </Form.Item>
   )
 }
 

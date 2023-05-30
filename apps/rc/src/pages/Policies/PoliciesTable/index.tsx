@@ -6,7 +6,6 @@ import {
   useDelVLANPoolPolicyMutation,
   useDelRoguePolicyMutation,
   usePolicyListQuery,
-  useDeleteAAAPolicyMutation,
   useDeleteAccessControlProfileMutation,
   useDelL2AclPolicyMutation,
   useDelL3AclPolicyMutation,
@@ -109,7 +108,7 @@ export default function PoliciesTable () {
   const deletePolicyFnMapping = {
     [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
     [PolicyType.CLIENT_ISOLATION]: [],
-    [PolicyType.AAA]: useDeleteAAAPolicyMutation(),
+    [PolicyType.AAA]: [],
     [PolicyType.ACCESS_CONTROL]: useDeleteAccessControlProfileMutation(),
     [PolicyType.MAC_REGISTRATION_LIST]: [],
     [PolicyType.SYSLOG]: [],
@@ -122,7 +121,8 @@ export default function PoliciesTable () {
     [PolicyType.ADAPTIVE_POLICY]: [],
     [PolicyType.ADAPTIVE_POLICY_SET]: [],
     [PolicyType.RADIUS_ATTRIBUTE_GROUP]: [],
-    [PolicyType.TUNNEL_PROFILE]: []
+    [PolicyType.TUNNEL_PROFILE]: [],
+    [PolicyType.CONNECTION_METERING]: []
   }
 
   const tableQuery = useTableQuery({

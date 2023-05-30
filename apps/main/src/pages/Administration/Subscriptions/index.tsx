@@ -9,7 +9,7 @@ import {
   showToast
 } from '@acx-ui/components'
 import { get }                             from '@acx-ui/config'
-import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, Features }      from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
 import { SpaceWrapper }                    from '@acx-ui/rc/components'
 import {
@@ -71,7 +71,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi

@@ -14,6 +14,8 @@ import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+export const DASHBOARD_GMAP_FILTER_KEY = 'dashboard-gmap-filter'
+
 const apStatusMap = {
   [ApVenueStatusEnum.REQUIRES_ATTENTION]: defineMessage({
     defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention'
@@ -31,11 +33,11 @@ const apStatusMap = {
     defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
   })
 }
+
 export const getAPStatusDisplayName = (label: ApVenueStatusEnum, showSeverity: boolean = true) => {
   const { $t } = getIntl()
   return $t(apStatusMap[label], { showSeverity })
 }
-
 
 const switchStatusMap = {
   [SwitchStatusEnum.OPERATIONAL]: defineMessage({ defaultMessage: 'Operational' }),
@@ -45,6 +47,7 @@ const switchStatusMap = {
   [SwitchStatusEnum.APPLYING_FIRMWARE]: defineMessage({ defaultMessage: 'In Setup Phase' }),
   default: defineMessage({ defaultMessage: 'In Setup Phase' })
 }
+
 export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
   const { $t } = getIntl()
   return $t(_.get(switchStatusMap, switchStatus, switchStatusMap.default))
@@ -67,11 +70,11 @@ const edgeStatusMap = {
     defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
   })
 }
+
 export const getEdgeStatusDisplayName = (label: EdgeStatusSeverityEnum, showSeverity: boolean = true) => {
   const { $t } = getIntl()
   return $t(edgeStatusMap[label], { showSeverity })
 }
-
 
 export const getVenueInfoMarkerIcon = (status: string) => {
   switch (status) {
