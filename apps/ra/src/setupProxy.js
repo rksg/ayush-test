@@ -6,7 +6,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
  * Configure proxy to devalto for local development
  * See https://create-react-app.dev/docs/proxying-api-requests-in-development/
  */
-const CLOUD_URL = 'https://dev.ruckus.cloud'
+const CLOUD_URL = 'https://staging.mlisa.io'
 const LOCAL_MLISA_URL = 'https://local.mlisa.io'
 const STATIC_ASSETS = 'https://storage.googleapis.com/ruckus-web-1'
 module.exports = async function setupProxy (app) {
@@ -17,7 +17,7 @@ module.exports = async function setupProxy (app) {
   })
   if (await localDataApi === 'up') {
     app.use(createProxyMiddleware(
-      '/api/a4rc',
+      '/analytics',
       {
         target: LOCAL_MLISA_URL,
         changeOrigin: true,
@@ -59,40 +59,6 @@ module.exports = async function setupProxy (app) {
       }
     }
   ))
-  app.use(createProxyMiddleware(
-    '/api',
-    { target: CLOUD_URL, changeOrigin: true,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/g/',
-    { target: CLOUD_URL, changeOrigin: true,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/mfa',
-    { target: CLOUD_URL, changeOrigin: true,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/**',
-    {
-      target: CLOUD_URL.replace('//', '//api.'),
-      changeOrigin: true,
-      secure: false,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
+
   return app
 }
