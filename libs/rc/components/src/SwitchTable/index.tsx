@@ -185,9 +185,7 @@ export function SwitchTable (props : SwitchTableProps) {
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (data, row) => {
-        return <SwitchStatus row={row}/>
-      }
+      render: (data, row) => <SwitchStatus row={row}/>
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
