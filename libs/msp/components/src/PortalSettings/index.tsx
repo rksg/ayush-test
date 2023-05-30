@@ -13,8 +13,8 @@ import {
   Tooltip,
   Card
 } from 'antd'
-import { Button, Upload } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Button, Upload, InputNumber, Switch } from 'antd'
+import { useIntl }                             from 'react-intl'
 
 import {
   PageHeader,
@@ -22,7 +22,8 @@ import {
   showToast,
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  Subtitle
+  Subtitle,
+  Fieldset
 } from '@acx-ui/components'
 import { PhoneInput }         from '@acx-ui/rc/components'
 import {
@@ -39,7 +40,9 @@ import {
   MspPortal,
   Providers,
   UploadUrlResponse,
-  MspLogoFile
+  MspLogoFile,
+  networkWifiIpRegExp,
+  networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -83,7 +86,11 @@ export function PortalSettings () {
   const [alarmLogoUrl, setAlarmLogoUrl] = useState('')
   const [getUploadURL] = useGetUploadURLMutation()
 
-  const [preferredProvider, setPreferredProvider] = useState<string>()
+  const [preferredProvider, setPreferredProvider] = useState<string>('')
+  const [isOtherProvider, setOtherProvider] = useState(false)
+  const [accountServerEnabled, setAccountServer] = useState(false)
+  const [enableSecondaryServer, setSecondaryServer] = useState(false)
+  const [enableAcctSecondaryServer, setAcctSecondaryServer] = useState(false)
   const [changeNeeded, setChangeNeeded] = useState(true)
 
   const [showContactSupport, setContactSupport] = useState(false)
@@ -154,7 +161,19 @@ export function PortalSettings () {
         setAlarmLogoUrl(defaultAlarmLogo)
       }
       if (mspLabel.preferredWisprProvider && mspLabel.preferredWisprProvider.providerName) {
-        setPreferredProvider(mspLabel.preferredWisprProvider.providerName)
+        if (mspLabel.preferredWisprProvider.customExternalProvider) {
+          setPreferredProvider('Other provider')
+          setOtherProvider(true)
+          mspLabel.preferredWisprProvider.auth?.secondary
+            ? setSecondaryServer(true) : setSecondaryServer(false)
+          if (mspLabel.preferredWisprProvider.acct) {
+            setAccountServer(true)
+            mspLabel.preferredWisprProvider.acct?.secondary
+              ? setAcctSecondaryServer(true) : setAcctSecondaryServer(false)
+          }
+        } else {
+          setPreferredProvider(mspLabel.preferredWisprProvider.providerName)
+        }
       }
     }
     if (baseUrl?.base_url) {
@@ -353,12 +372,22 @@ export function PortalSettings () {
       portal.my_open_case_behavior = 'hide'
     }
     if (preferredProvider) {
-      portal.preferredWisprProvider =
-      {
-        providerName: preferredProvider,
-        apiKey: '',
-        apiSecret: '',
-        customExternalProvider: false
+      if (isOtherProvider) {
+        portal.preferredWisprProvider = {
+          providerName: values.preferredWisprProvider?.providerName as string,
+          apiKey: '',
+          apiSecret: '',
+          customExternalProvider: true,
+          auth: values.preferredWisprProvider?.auth,
+          acct: values.preferredWisprProvider?.acct
+        }
+      } else {
+        portal.preferredWisprProvider = {
+          providerName: preferredProvider,
+          apiKey: '',
+          apiSecret: '',
+          customExternalProvider: false
+        }
       }
     }
     return portal
@@ -411,10 +440,14 @@ export function PortalSettings () {
                     `
         }),
         okText: intl.$t({ defaultMessage: 'Continue' }),
-        onOk: () => setPreferredProvider(value),
+        onOk: () => {
+          (value === 'Other provider') ? setOtherProvider(true) : setOtherProvider(false)
+          setPreferredProvider(value)
+        },
         onCancel: () => formRef.current?.setFieldValue('external_provider', preferredProvider)
       })
     } else {
+      (value === 'Other provider') ? setOtherProvider(true) : setOtherProvider(false)
       setPreferredProvider(value)
     }
   }
@@ -430,17 +463,322 @@ export function PortalSettings () {
         children={
           <Select
             onChange={value => handleChange(value)}
-            placeholder={intl.$t({ defaultMessage: 'Select preferred provider' })}
           >
+            <Select.Option value={''}>
+              {intl.$t({ defaultMessage: 'Select provider' })}
+            </Select.Option>
             {externalProviders?.map(item=>{
               return <Select.Option key={item.name} value={item.name}>
                 {item.name}
               </Select.Option>
             })}
+            <Select.Option value={'Other provider'}>
+              {intl.$t({ defaultMessage: 'Other provider' })}
+            </Select.Option>
           </Select>
         }
       />
     )
+  }
+
+  const accountServerOnChange = (checked: boolean) => {
+    setAccountServer(checked)
+  }
+
+  const AuthAccServerSetting = () => {
+    return <>
+      <Divider></Divider>
+      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+        <Form.Item
+          name={['preferredWisprProvider', 'providerName']}
+          label={intl.$t({ defaultMessage: 'Profile Name' })}
+          rules={[
+            { required: true },
+            { min: 2 },
+            { max: 32 }//,
+            // { validator: (rule, value) => nameValidator(value) }
+          ]}
+          validateFirst
+          hasFeedback
+          initialValue={mspLabel?.preferredWisprProvider?.providerName || ''}
+          children={<Input/>}
+          validateTrigger={'onBlur'}
+        />
+      </Space>
+      <AuthServerSetting/>
+
+      <Subtitle level={4} style={{ marginTop: '15px' }}>
+        { intl.$t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
+      <Switch style={{ marginTop: '-5px' }}
+        defaultChecked={accountServerEnabled}
+        onChange={accountServerOnChange}
+      />
+      {accountServerEnabled && <AccServerSetting/>}
+    </>
+  }
+
+  const AuthServerSetting = () => {
+    const form = Form.useFormInstance()
+    // const { useWatch } = Form
+    // const [enableSecondaryServer, type ] =
+    // [useWatch('enableSecondaryServer'), useWatch('type')]
+    const ACCT_FORBIDDEN_PORT = 1812
+    // const AUTH_FORBIDDEN_PORT = 1813
+    // const validateRadiusPort = async (value: number)=>{
+    //   if((value === ACCT_FORBIDDEN_PORT && type === 'ACCOUNTING')||
+    //   (value === AUTH_FORBIDDEN_PORT && type === 'AUTHENTICATION')){
+    //     return Promise.reject(
+    //       intl.$t({ defaultMessage: 'Authentication radius port '+
+    //       'cannot be {authForbiddenPort} and Accounting radius '+
+    //       'port cannot be {acctForbiddenPort} ' },
+    //       { acctForbiddenPort: ACCT_FORBIDDEN_PORT, authForbiddenPort: AUTH_FORBIDDEN_PORT }))
+    //   }
+    //   return Promise.resolve()
+    // }
+
+    return <>
+      <Divider></Divider>
+      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
+
+        <Fieldset label={intl.$t({ defaultMessage: 'Primary Server' })}
+          checked={true}
+          switchStyle={{ display: 'none' }}
+        >
+          <div>
+            <Form.Item
+              name={['preferredWisprProvider', 'auth', 'primary', 'ip']}
+              style={{ display: 'inline-block', width: 'calc(57%)' , paddingRight: '20px' }}
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) }
+              ]}
+              label={intl.$t({ defaultMessage: 'IP Address' })}
+              initialValue={mspLabel?.preferredWisprProvider?.auth?.primary?.ip || ''}
+              children={<Input/>}
+            />
+            <Form.Item
+              name={['preferredWisprProvider', 'auth', 'primary', 'port']}
+              style={{ display: 'inline-block', width: 'calc(43%)' }}
+              label={intl.$t({ defaultMessage: 'Port' })}
+              rules={[
+                { required: true },
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }//,
+                // { validator: (_, value) => validateRadiusPort(value) }
+              ]}
+              initialValue={mspLabel?.preferredWisprProvider?.auth?.primary?.port
+                || ACCT_FORBIDDEN_PORT}
+              children={<InputNumber min={1} max={65535} />}
+            />
+          </div>
+          <Form.Item
+            name={['preferredWisprProvider', 'auth', 'primary', 'sharedSecret']}
+            label={intl.$t({ defaultMessage: 'Shared Secret' })}
+            initialValue={mspLabel?.preferredWisprProvider?.auth?.primary?.sharedSecret || ''}
+            rules={[
+              { required: true },
+              { validator: (_, value) => networkWifiSecretRegExp(value) }
+            ]}
+            children={<Input.Password />}
+          />
+        </Fieldset>
+        <Button
+          type='link'
+          onClick={() => {
+            setSecondaryServer(!enableSecondaryServer)
+          }}
+        >
+          {enableSecondaryServer ? intl.$t({ defaultMessage: 'Remove Secondary Server' }):
+            intl.$t({ defaultMessage: 'Add Secondary Server' })}
+        </Button>
+        {enableSecondaryServer &&
+        <Fieldset label={intl.$t({ defaultMessage: 'Secondary Server' })}
+          checked={true}
+          switchStyle={{ display: 'none' }}
+        >
+          <div>
+            <Form.Item
+              name={['preferredWisprProvider', 'auth', 'secondary', 'ip']}
+              style={{ display: 'inline-block', width: 'calc(57%)' , paddingRight: '20px' }}
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) },
+                { validator: (_, value) => {
+                  const primaryIP = form.getFieldValue(['auth', 'primary', 'ip'])
+                  const primaryPort = form.getFieldValue(['auth', 'primary', 'port'])
+                  const secPort = form.getFieldValue(['auth', 'secondary', 'port'])
+                  if(value === primaryIP && primaryPort === secPort){
+                    return Promise.reject(
+                      intl.$t({ defaultMessage:
+                        'IP address and Port combinations must be unique' }))
+                  }
+                  return Promise.resolve()
+                } }
+              ]}
+              label={intl.$t({ defaultMessage: 'IP Address' })}
+              initialValue={mspLabel?.preferredWisprProvider?.auth?.secondary?.ip || ''}
+              children={<Input/>}
+            />
+            <Form.Item
+              name={['preferredWisprProvider', 'auth', 'secondary', 'port']}
+              style={{ display: 'inline-block', width: 'calc(43%)' }}
+              label={intl.$t({ defaultMessage: 'Port' })}
+              rules={[
+                { required: true },
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }//,
+                // { validator: (_, value) => validateRadiusPort(value) }
+              ]}
+              initialValue={mspLabel?.preferredWisprProvider?.auth?.secondary?.port
+                || ACCT_FORBIDDEN_PORT}
+              children={<InputNumber min={1} max={65535} />}
+            />
+          </div>
+          <Form.Item
+            name={['preferredWisprProvider', 'auth', 'secondary', 'sharedSecret']}
+            label={intl.$t({ defaultMessage: 'Shared Secret' })}
+            initialValue={mspLabel?.preferredWisprProvider?.auth?.secondary?.sharedSecret || ''}
+            rules={[
+              { required: true },
+              { validator: (_, value) => networkWifiSecretRegExp(value) }
+            ]}
+            children={<Input.Password />}
+          /></Fieldset>}
+      </Space>
+    </>
+  }
+
+  const AccServerSetting = () => {
+    const form = Form.useFormInstance()
+    // const { useWatch } = Form
+    // const [enableAccSecondaryServer, type ] =
+    // [useWatch('enableAccSecondaryServer'), useWatch('type')]
+    // const ACCT_FORBIDDEN_PORT = 1812
+    const AUTH_FORBIDDEN_PORT = 1813
+    // const validateRadiusPort = async (value: number)=>{
+    //   if((value === ACCT_FORBIDDEN_PORT && type === 'ACCOUNTING')||
+    //   (value === AUTH_FORBIDDEN_PORT && type === 'AUTHENTICATION')){
+    //     return Promise.reject(
+    //       intl.$t({ defaultMessage: 'Authentication radius port '+
+    //       'cannot be {authForbiddenPort} and Accounting radius '+
+    //       'port cannot be {acctForbiddenPort} ' },
+    //       { acctForbiddenPort: ACCT_FORBIDDEN_PORT, authForbiddenPort: AUTH_FORBIDDEN_PORT }))
+    //   }
+    //   return Promise.resolve()
+    // }
+
+    return <>
+      <Divider></Divider>
+      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+
+        <Fieldset label={intl.$t({ defaultMessage: 'Primary Server' })}
+          checked={true}
+          switchStyle={{ display: 'none' }}
+        >
+          <div>
+            <Form.Item
+              name={['preferredWisprProvider', 'acct', 'primary', 'ip']}
+              style={{ display: 'inline-block', width: 'calc(57%)' , paddingRight: '20px' }}
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) }
+              ]}
+              label={intl.$t({ defaultMessage: 'IP Address' })}
+              initialValue={mspLabel?.preferredWisprProvider?.acct?.primary?.ip || ''}
+              children={<Input/>}
+            />
+            <Form.Item
+              name={['preferredWisprProvider', 'acct', 'primary', 'port']}
+              style={{ display: 'inline-block', width: 'calc(43%)' }}
+              label={intl.$t({ defaultMessage: 'Port' })}
+              rules={[
+                { required: true },
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }//,
+                // { validator: (_, value) => validateRadiusPort(value) }
+              ]}
+              initialValue={mspLabel?.preferredWisprProvider?.acct?.primary?.port
+                || AUTH_FORBIDDEN_PORT}
+              children={<InputNumber min={1} max={65535} />}
+            />
+          </div>
+          <Form.Item
+            name={['preferredWisprProvider', 'acct', 'primary', 'sharedSecret']}
+            label={intl.$t({ defaultMessage: 'Shared Secret' })}
+            initialValue={mspLabel?.preferredWisprProvider?.acct?.primary?.sharedSecret || ''}
+            rules={[
+              { required: true },
+              { validator: (_, value) => networkWifiSecretRegExp(value) }
+            ]}
+            children={<Input.Password />}
+          />
+        </Fieldset>
+        <Button
+          type='link'
+          onClick={() => {
+            setAcctSecondaryServer(!enableAcctSecondaryServer)
+          }}
+        >
+          {enableAcctSecondaryServer ? intl.$t({ defaultMessage: 'Remove Secondary Server' }):
+            intl.$t({ defaultMessage: 'Add Secondary Server' })}
+        </Button>
+        {enableAcctSecondaryServer &&
+        <Fieldset label={intl.$t({ defaultMessage: 'Secondary Server' })}
+          checked={true}
+          switchStyle={{ display: 'none' }}
+        >
+          <div>
+            <Form.Item
+              name={['preferredWisprProvider', 'acct', 'secondary', 'ip']}
+              style={{ display: 'inline-block', width: 'calc(57%)' , paddingRight: '20px' }}
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) },
+                { validator: (_, value) => {
+                  const primaryIP = form.getFieldValue(['acct', 'primary', 'ip'])
+                  const primaryPort = form.getFieldValue(['acct', 'primary', 'port'])
+                  const secPort = form.getFieldValue(['acct', 'secondary', 'port'])
+                  if(value === primaryIP && primaryPort === secPort){
+                    return Promise.reject(
+                      intl.$t({ defaultMessage:
+                        'IP address and Port combinations must be unique' }))
+                  }
+                  return Promise.resolve()
+                } }
+              ]}
+              label={intl.$t({ defaultMessage: 'IP Address' })}
+              initialValue={mspLabel?.preferredWisprProvider?.acct?.secondary?.ip || ''}
+              children={<Input/>}
+            />
+            <Form.Item
+              name={['preferredWisprProvider', 'acct', 'secondary', 'port']}
+              style={{ display: 'inline-block', width: 'calc(43%)' }}
+              label={intl.$t({ defaultMessage: 'Port' })}
+              rules={[
+                { required: true },
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }//,
+                // { validator: (_, value) => validateRadiusPort(value) }
+              ]}
+              initialValue={mspLabel?.preferredWisprProvider?.acct?.secondary?.port
+                || AUTH_FORBIDDEN_PORT}
+              children={<InputNumber min={1} max={65535} />}
+            />
+          </div>
+          <Form.Item
+            name={['preferredWisprProvider', 'acct', 'secondary', 'sharedSecret']}
+            label={intl.$t({ defaultMessage: 'Shared Secret' })}
+            initialValue={mspLabel?.preferredWisprProvider?.acct?.secondary?.sharedSecret || ''}
+            rules={[
+              { required: true },
+              { validator: (_, value) => networkWifiSecretRegExp(value) }
+            ]}
+            children={<Input.Password />}
+          /></Fieldset>}
+      </Space>
+    </>
   }
 
   return (
@@ -715,6 +1053,7 @@ export function PortalSettings () {
             </div>
             <label>
               {intl.$t({ defaultMessage: 'a 3rd party portal (WISPr) network.' })}</label>
+            {isOtherProvider && <AuthAccServerSetting />}
 
           </StepsFormLegacy.StepForm>
 
