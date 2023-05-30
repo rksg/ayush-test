@@ -36,7 +36,7 @@ const useTabs = () : NetworkTab[] => {
     key: NetworkTabsEnum.WLAN_REPORT,
     title: $t({ defaultMessage: 'WLAN Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.WLAN]}
+      reportName={reportTypeDataStudioMapping[ReportType.WLAN] as ReportType}
       hideHeader={false}
     />,
     headerExtra: [
@@ -50,7 +50,7 @@ const useTabs = () : NetworkTab[] => {
     key: NetworkTabsEnum.APPLICATIONS_REPORT,
     title: $t({ defaultMessage: 'Applications Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.APPLICATION]}
+      reportName={reportTypeDataStudioMapping[ReportType.APPLICATION] as ReportType}
       hideHeader={false}
     />,
     headerExtra: [
@@ -64,7 +64,7 @@ const useTabs = () : NetworkTab[] => {
     key: NetworkTabsEnum.WIRELESS_REPORT,
     title: $t({ defaultMessage: 'Wireless Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.WIRELESS]}
+      reportName={reportTypeDataStudioMapping[ReportType.WIRELESS] as ReportType}
       hideHeader={false}
     />,
     headerExtra: [

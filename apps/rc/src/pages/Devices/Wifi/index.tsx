@@ -35,7 +35,7 @@ const useTabs = () : WifiTab[] => {
     key: WifiTabsEnum.AP_REPORT,
     title: $t({ defaultMessage: 'AP Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT]}
+      reportName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT] as ReportType}
       hideHeader={false}
     />,
     headerExtra: [
@@ -49,7 +49,7 @@ const useTabs = () : WifiTab[] => {
     key: WifiTabsEnum.AIRTIME_REPORT,
     title: $t({ defaultMessage: 'Air Time Utilization Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.AIRTIME_UTILIZATION]}
+      reportName={reportTypeDataStudioMapping[ReportType.AIRTIME_UTILIZATION] as ReportType}
       hideHeader={false}
     />,
     headerExtra: [

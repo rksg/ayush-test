@@ -28,7 +28,7 @@ export default function AAATable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteAAAPolicyMutation()
+  const [ deleteFn ] = useDeleteAAAPolicyListMutation()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,

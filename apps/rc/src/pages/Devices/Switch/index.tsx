@@ -34,7 +34,7 @@ const useTabs = () : SwitchTab[] => {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.WIRED]}
+      reportName={reportTypeDataStudioMapping[ReportType.WIRED] as ReportType}
       hideHeader={false}
     />,
     headerExtra: [

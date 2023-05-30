@@ -9,7 +9,7 @@ import { RangePicker, PageHeader } from '@acx-ui/components'
 import { useReportsFilter }        from '@acx-ui/reports/utils'
 import { useDateFilter }           from '@acx-ui/utils'
 
-import { ReportType, reportTypeModeMapping } from '../mapping/reportsMapping'
+import { ReportType, reportModeMapping } from '../mapping/reportsMapping'
 
 export function ReportHeader (props: {
   type: ReportType,
@@ -20,7 +20,7 @@ export function ReportHeader (props: {
   } = props
   const { $t } = useIntl()
 
-  const mode = reportTypeModeMapping[type] || 'both'
+  const mode = reportModeMapping[type] || 'both'
   const isRadioBandDisabled = [
     ReportType.APPLICATION,
     ReportType.ACCESS_POINT,

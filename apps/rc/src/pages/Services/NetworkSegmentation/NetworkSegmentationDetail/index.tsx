@@ -2,8 +2,8 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { Button, Card, PageHeader }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { NetworkSegmentationDetailTableGroup, NetworkSegmentationServiceInfo } from '@acx-ui/rc/components'
 import {
   useGetNetworkSegmentationViewDataListQuery

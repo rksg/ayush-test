@@ -123,7 +123,7 @@ const useTabs = () : WirelessTab[] => {
     key: WirelessTabsEnum.CLIENT_REPORT,
     title: $t({ defaultMessage: 'Wireless Clients Report' }),
     component: <EmbeddedReport
-      embedDashboardName={reportTypeDataStudioMapping[ReportType.CLIENT]}
+      reportName={reportTypeDataStudioMapping[ReportType.CLIENT] as ReportType}
       hideHeader={false}
     />,
     headerExtra: [
