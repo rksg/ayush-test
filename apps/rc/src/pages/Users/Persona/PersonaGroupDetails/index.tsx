@@ -186,6 +186,7 @@ function PersonaGroupDetails () {
             </Subtitle>
 
             <BasePersonaTable
+              personaGroupId={personaGroupId}
               colProps={{
                 name: { searchable: true },
                 groupId: { show: false, filterable: false },
