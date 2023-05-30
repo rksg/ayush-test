@@ -4,7 +4,6 @@ import { useMemo, Key } from 'react'
 import { Select }    from 'antd'
 import _             from 'lodash'
 import { IntlShape } from 'react-intl'
-import  { ProTableProps as ProAntTableProps,  } from '@ant-design/pro-table'
 
 import * as UI from './styledComponents'
 import type { ParamsType }        from '@ant-design/pro-provider'
@@ -55,7 +54,7 @@ export function useGroupBy<RecordType> (
   expandedRowKeys: Key[] | undefined,
   groupByValue: string | undefined,
   columnsState: TableColumnState,
-  rowKey: ProAntTableProps<RecordType, ParamsType>['rowKey']
+  rowKey: TableProps<RecordType>['rowKey']
   ) {
   return useMemo(() => {
     const groupable = columns.filter(col => col.groupable)
