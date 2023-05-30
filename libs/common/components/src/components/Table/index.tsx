@@ -215,8 +215,12 @@ function Table <RecordType extends Record<string, any>> ({
     }) ?? []
   }, [props.dataSource, rowKey])
   const onRowClick = (record: RecordType) => {
-    if (!props.rowSelection) return
-    if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
+    if (
+      !props.rowSelection ||
+      rowSelection?.getCheckboxProps?.(record)?.disabled ||
+      record.isStackMember
+    )
+      return
 
     const key = typeof rowKey === 'function' ? rowKey(record) : record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)

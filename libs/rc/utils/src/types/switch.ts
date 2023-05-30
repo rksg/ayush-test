@@ -285,6 +285,7 @@ export interface StackMember {
   needAck?: boolean
   newSerialNumber?: string
   children?: SwitchRow
+  isStackMember?: boolean
 }
 
 export interface StackMemberList {
