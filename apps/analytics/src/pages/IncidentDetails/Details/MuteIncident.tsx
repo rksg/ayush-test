@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useMuteIncidentsMutation }  from '@acx-ui/analytics/components'
-import { calculateSeverity }         from '@acx-ui/analytics/utils'
-import { Incident }                  from '@acx-ui/analytics/utils'
-import { Dropdown, Card, showToast } from '@acx-ui/components'
-import { ConfigurationOutlined }     from '@acx-ui/icons'
-import { TenantLink }                from '@acx-ui/react-router-dom'
+import { useMuteIncidentsMutation }          from '@acx-ui/analytics/components'
+import { calculateSeverity }                 from '@acx-ui/analytics/utils'
+import { Incident }                          from '@acx-ui/analytics/utils'
+import { Dropdown, Card, showToast, Button } from '@acx-ui/components'
+import { ConfigurationOutlined }             from '@acx-ui/icons'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -52,7 +52,7 @@ function MuteIncident ({ incident } : { incident: Incident }) {
       </UI.MuteIncidentContainer>
     </Card>}
   >
-    {() => <UI.IconContainer><ConfigurationOutlined /></UI.IconContainer>}
+    {() => <Button icon={<ConfigurationOutlined />} />}
   </Dropdown>
 }
 export default MuteIncident

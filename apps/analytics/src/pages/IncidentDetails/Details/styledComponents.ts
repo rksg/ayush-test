@@ -27,13 +27,3 @@ export const MuteIncidentContainer = styled.div`
     margin: 10px 0 0 0 !important;
   }
 `
-export const IconContainer = styled(LayoutUI.Icon)`
-  svg path {
-    stroke: var(--acx-primary-black);
-    vertical-align: middle;
-  }
-  border: 1px solid var(--acx-primary-black);
-  border-radius: 3px;
-  padding: 3px;
-  display: flex;
-`
