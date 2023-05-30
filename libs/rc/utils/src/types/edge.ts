@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory }                                         from '..'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
+import { FirmwareCategory }                                                              from '..'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
 export interface EdgeGeneralSetting {
   description: string
@@ -184,4 +184,14 @@ export interface EdgeTimeSeriesPayload {
     start : string,
     end : string,
     granularity : string
+}
+
+export interface EdgeService {
+  edgeId: string
+  serviceName: string
+  serviceId: string
+  serviceType: EdgeServiceTypeEnum
+  status: string
+  currentVersion: string
+  targetVersion: string
 }

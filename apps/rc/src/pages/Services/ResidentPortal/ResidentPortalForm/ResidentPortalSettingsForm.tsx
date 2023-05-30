@@ -5,7 +5,7 @@ import {
 import TextArea from 'antd/lib/input/TextArea'
 
 import { GridCol, GridRow, StepsFormLegacy, Subtitle } from '@acx-ui/components'
-import { useLazyGetResidentPortalListQuery }           from '@acx-ui/rc/services'
+import { useLazyGetQueriableResidentPortalsQuery }     from '@acx-ui/rc/services'
 import { checkObjectNotExists }                        from '@acx-ui/rc/utils'
 import { getIntl }                                     from '@acx-ui/utils'
 
@@ -22,11 +22,12 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
   const form = Form.useFormInstance()
   const id = Form.useWatch<string>('id', form)
 
-  const [ residentPortalList ] = useLazyGetResidentPortalListQuery()
+  const [ residentPortalList ] = useLazyGetQueriableResidentPortalsQuery()
 
   const nameValidator = async (value: string) => {
     const list = (await residentPortalList({
-      payload: { pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
+      payload:
+          { page: 1, pageSize: 100, sortField: 'name', sortOrder: 'ASC', filters: { name: value } }
     }).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))

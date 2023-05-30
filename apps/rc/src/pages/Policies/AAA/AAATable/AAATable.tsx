@@ -4,7 +4,7 @@ import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/component
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useDeleteAAAPolicyMutation,
+  useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
@@ -29,7 +29,7 @@ export default function AAATable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteAAAPolicyMutation()
+  const [ deleteFn ] = useDeleteAAAPolicyListMutation()
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
@@ -41,23 +41,27 @@ export default function AAATable () {
     }
   })
 
-  const doDelete = (selectedRow: AAAViewModalType, callback: () => void) => {
+  const doDelete = (selectedRows: AAAViewModalType[], callback: () => void) => {
     doProfileDelete(
-      [selectedRow],
+      selectedRows,
       $t({ defaultMessage: 'Policy' }),
-      selectedRow.name,
+      selectedRows[0].name,
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
-      async () => deleteFn({ params: { tenantId, policyId: selectedRow.id } }).then(callback)
+      async () => deleteFn({
+        params: { tenantId },
+        payload: selectedRows.map(row => row.id)
+      }).then(callback)
     )
   }
 
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
+      onClick: (selectedRows, clearSelection) => doDelete(selectedRows, clearSelection)
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows: AAAViewModalType[]) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -104,7 +108,7 @@ export default function AAATable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={{ type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -122,7 +126,9 @@ function useColumns () {
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
-      sortOrder: 'ASC'
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
     }
   }, {
     selectFromResult: ({ data }) => ({

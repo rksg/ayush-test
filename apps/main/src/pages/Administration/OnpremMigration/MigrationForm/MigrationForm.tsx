@@ -13,6 +13,7 @@ import {
   useAddZdMigrationMutation
 } from '@acx-ui/rc/services'
 import {
+  MigrationActionTypes,
   MigrationContextType,
   TaskContextType
 } from '@acx-ui/rc/utils'
@@ -38,19 +39,25 @@ const MigrationForm = () => {
   const file = new Blob()
   const venueName = ''
   const description = ''
-  const address = ''
-  const [isFinish, setIsFinish] = useState(false)
+  const address = defaultAddress
+  const errorMsg = ''
+  const [isMigrate, setIsMigrate] = useState(false)
   const [isMigrating, setIsMigrating] = useState(false)
 
   const [ validateZdAps, validateZdApsResp ] = useUploadZdConfigMutation()
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<TaskContextType>({} as TaskContextType)
+  // eslint-disable-next-line max-len
+  // const [ validateError, setValidateError ] = useState<ErrorType>({} as ErrorType)
   const [ migrateZdAps ] = useAddZdMigrationMutation()
 
   useEffect(()=>{
     if (validateZdApsResp.data) {
       setValidateZdApsResult(validateZdApsResp.data)
     }
+    // if (validateZdApsResp.data.error) {
+    //   setValidateError(validateZdApsResp.data.error?.data)
+    // }
   },[validateZdApsResp])
 
   const formRef = useRef<StepsFormLegacyInstance<MigrationContextType>>()
@@ -58,29 +65,36 @@ const MigrationForm = () => {
     file,
     venueName,
     description,
-    address
+    address,
+    errorMsg
   })
+
+  const nextButtonLabel = (file: File, errorMsg: string) => {
+    if (file.size === 0 || errorMsg.length > 0) return undefined
+    return isMigrate ? $t({ defaultMessage: 'Migrate' }) : $t({ defaultMessage: 'Validate' })
+  }
+
 
   return (
     <MigrationContext.Provider value={{ state, dispatch }}>
       <PageHeader
         title={$t({ defaultMessage: 'Migrate ZD Configuration' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Administration' }), link: '/administration' }
+          { text: $t({ defaultMessage: 'ZD Migration' }), link: '/administration/onpremMigration' }
         ]}
       />
       <StepsFormLegacy<MigrationContextType>
         formRef={formRef}
         editMode={edit}
         buttonLabel={{
-          next: isFinish ? $t({ defaultMessage: 'Migrate' }) : $t({ defaultMessage: 'Validate' }),
+          next: nextButtonLabel(state.file as File, state.errorMsg as string),
           submit: undefined,
           pre: isMigrating ? undefined : $t({ defaultMessage: 'Back' }),
           cancel: isMigrating ? $t({ defaultMessage: 'Done' }) : $t({ defaultMessage: 'Cancel' })
         }}
         onCurrentChange={(current) => {
           if (current === 0) {
-            setIsFinish(false)
+            setIsMigrate(false)
           }
         }}
         onCancel={() => navigate(linkToMigration)}
@@ -89,11 +103,17 @@ const MigrationForm = () => {
           name='backupFile'
           title={$t({ defaultMessage: 'Backup File Selection' })}
           onFinish={async () => {
-            setIsFinish(true)
+            setIsMigrate(true)
             const file = state.file as File
             const formData = new FormData()
             formData.append('backupFile', file, file.name)
             validateZdAps({ params: {}, payload: formData })
+            dispatch({
+              type: MigrationActionTypes.ERRORMSG,
+              payload: {
+                errorMsg: 'Waiting for validationResult!'
+              }
+            })
             return true
           }}
         >
@@ -119,8 +139,8 @@ const MigrationForm = () => {
             const requestJson = {
               venueName: (state.venueName && state.venueName.length > 0) ? state.venueName : null,
               description: state.description,
-              // address: state.address
-              address: defaultAddress
+              address: state.address
+              // address: defaultAddress
             }
             // eslint-disable-next-line max-len
             migrateZdAps({ params: { ...params, id: validateZdApsResult.taskId }, payload: requestJson })

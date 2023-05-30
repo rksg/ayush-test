@@ -12,6 +12,7 @@ export default function AAAPolicyModal (props:{
   type?: string,
   updateInstance: (value:AAAPolicyType) => void,
   aaaCount: number
+  disabled?: boolean
 }) {
   const { updateInstance, aaaCount, type }=props
   const { $t } = useIntl()
@@ -30,7 +31,7 @@ export default function AAAPolicyModal (props:{
     <>
       <Button type='link'
         onClick={()=>setVisible(true)}
-        disabled={aaaCount>=AAA_LIMIT_NUMBER}>
+        disabled={aaaCount>=AAA_LIMIT_NUMBER || props.disabled}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
       <Modal

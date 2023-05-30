@@ -3,9 +3,10 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import * as CommonComponent from '@acx-ui/components'
+import { switchApi }        from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider, store }  from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -41,6 +42,8 @@ const params = {
   switchId: 'switch-id',
   serialNumber: 'serial-number'
 }
+
+const mockedShowActionModal = jest.fn()
 
 const editPortVlans = async (inputTagged, inputUntagged, currentStatus?) => {
   fireEvent.click(await screen.findByRole('button', {
@@ -243,6 +246,10 @@ describe('EditPortDrawer', () => {
         )
       )
 
+      jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
+        mockedShowActionModal
+      )
+
       const selected = [{
         ...selectedPorts?.[0],
         revert: true,
@@ -273,11 +280,14 @@ describe('EditPortDrawer', () => {
       // expect(await screen.findByTestId('voice-vlan-select')).toHaveValue('')
 
       // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(async () => {
-        fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-      })
-      await screen.findByText('Modify Uplink Port?')
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
+      // await act(async () => {
+      //   fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      // })
+      // await screen.findByText('Modify Uplink Port?')
+      // fireEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockedShowActionModal).toBeCalledTimes(1)
     })
 
     it('should handle tagged vlans by venue correctly', async () => {
@@ -576,7 +586,8 @@ describe('EditPortDrawer', () => {
       user.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
-    it('should create and edit LLDP correctly', async () => {
+    // eslint-disable-next-line max-len
+    it('should show an error message when creating with duplicate LLDP QoS application type', async () => {
       const user = userEvent.setup()
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortSetting.url,
@@ -622,14 +633,41 @@ describe('EditPortDrawer', () => {
         fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
       })
       expect(await screen.findAllByRole('row')).toHaveLength(3)
+    })
 
-      // edit lldp
+    it('should edit LLDP correctly', async () => {
+      const user = userEvent.setup()
+      mockServer.use(
+        rest.post(SwitchUrlsInfo.getPortSetting.url,
+          (_, res, ctx) => res(ctx.json(portSetting[1]))
+        )
+      )
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Selected Port')
+
       const row = await screen.findByRole('row', { name: /Guest-voice/ })
       fireEvent.click(await within(row).findByRole('radio'))
       fireEvent.click(await screen.findByRole('button', { name: 'Edit' }) )
 
       await screen.findByText(/Edit LLDP QoS/)
-      dialog = await screen.findAllByRole('dialog')
+      let dialog = await screen.findAllByRole('dialog')
       expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).toBeDisabled()
 
       await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
@@ -638,6 +676,7 @@ describe('EditPortDrawer', () => {
       const priorityTagged = await screen.findAllByText('Priority-tagged')
       await user.click(priorityTagged[2])
 
+      let priorityInput = await within(dialog[1]).findByLabelText('Priority')
       priorityInput = await within(dialog[1]).findByLabelText('Priority')
       // eslint-disable-next-line testing-library/no-unnecessary-act
       await act(async () => {

@@ -48,13 +48,12 @@ export default function ResidentPortalTable () {
             entityName: intl.$t({ defaultMessage: 'Resident Portal' }),
             entityValue: name
           },
-          onOk: async () => {
-            try {
-              await deleteResidentPortals({ payload: [id] }).unwrap()
-              clearSelection()
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            }
+          onOk: () => {
+            deleteResidentPortals({ payload: [id] })
+              .then(clearSelection)
+              .catch((error) =>
+                console.log(error) // eslint-disable-line no-console
+              )
           }
         })
       }

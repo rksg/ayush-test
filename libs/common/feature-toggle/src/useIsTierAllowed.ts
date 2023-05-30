@@ -44,7 +44,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   return {
     featureList: userFFConfig[featureKey],
-    betaList: userFFConfig['betaList']
+    betaList: jwtPayload?.isBetaFlag ? userFFConfig['betaList'] : []
   }
 }
 
