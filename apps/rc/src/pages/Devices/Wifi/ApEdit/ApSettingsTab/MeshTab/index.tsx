@@ -100,7 +100,7 @@ export function ApMesh () {
           venueMeshEnabled=false,
           meshMode,
           uplinkMode=UplinkModeEnum.SMART,
-          uplinkMac
+          uplinkMacAddresses
         } = meshData
 
         setVenueMeshEnabled(venueMeshEnabled)
@@ -108,7 +108,7 @@ export function ApMesh () {
         setUplinkMode(uplinkMode)
         setInitData(meshData)
         setFormInitializing(false)
-        setUplinkMac(uplinkMac)
+        setUplinkMac(uplinkMacAddresses)
       }
 
       setData()
@@ -132,7 +132,7 @@ export function ApMesh () {
           (meshMode === MeshModeEnum.AUTO || meshMode === MeshModeEnum.MESH)) {
         payload = {
           ...values,
-          uplinkMac: uplinkMac
+          uplinkMacAddresses: uplinkMac
         }
       }
 

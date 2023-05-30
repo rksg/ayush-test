@@ -453,7 +453,7 @@ export type APMeshSettings = {
   venueMeshEnabled?: boolean, //read-only (get method only)
   meshMode: MeshModeEnum,
   uplinkMode?: UplinkModeEnum,
-  uplinkMac?: string[]
+  uplinkMacAddresses?: string[]
 }
 
 export type MeshApNeighbor = {
