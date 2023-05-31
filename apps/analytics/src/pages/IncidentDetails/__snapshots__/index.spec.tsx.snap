@@ -93,13 +93,14 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               <div
                 class="ant-space-item"
               >
-                <span
-                  class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                <button
+                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                  type="button"
                 >
                   <svg
                     data-testid="ConfigurationOutlined"
                   />
-                </span>
+                </button>
               </div>
             </div>
           </span>

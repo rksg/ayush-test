@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   Provider,
   videoCallQoeApi as api,
@@ -30,15 +31,35 @@ describe('VideoCallQoeForm', () => {
   beforeEach(() => {
     mockedNavigate.mockReset()
     store.dispatch(api.util.resetApiState())
+    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
+  })
+
+  it('should render breadcrumb', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<VideoCallQoeForm />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('Network Assurance')).toBeVisible()
+    expect(await screen.findByText('Video Call QoE')).toBeVisible()
+  })
+
+  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<VideoCallQoeForm />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+    expect(screen.queryByText('AI Assurance')).toBeNull()
+    expect(screen.queryByText('Network Assurance')).toBeNull()
+    expect(await screen.findByText('Video Call QoE')).toBeVisible()
   })
 
   it('works correctly for create flow', async () => {
     render(<VideoCallQoeForm />, {
       wrapper: Provider,
       route: { params: { tenantId: 't-id' } }
-    })
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
-      data: getAllCallQoeTests
     })
 
     expect(await screen.findByRole('heading', { name: /create test call/i })).toBeVisible()

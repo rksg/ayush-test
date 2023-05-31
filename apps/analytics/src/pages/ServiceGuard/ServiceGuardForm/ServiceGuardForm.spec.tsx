@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { networkApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import {
@@ -84,13 +85,34 @@ describe('ServiceGuardForm', () => {
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(api.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'RecentNetworkHierarchy', { data: mockNetworkHierarchy })
-  })
-
-  it('works correctly for create flow', async () => {
     mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
     mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
+  })
 
+  it('should render breadcrumb', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<ServiceGuardForm />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('Network Assurance')).toBeVisible()
+    expect(await screen.findByText('Service Validation')).toBeVisible()
+  })
+
+  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<ServiceGuardForm />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+    expect(screen.queryByText('AI Assurance')).toBeNull()
+    expect(screen.queryByText('Network Assurance')).toBeNull()
+    expect(await screen.findByText('Service Validation')).toBeVisible()
+  })
+
+  it('works correctly for create flow', async () => {
     render(<ServiceGuardForm />, {
       wrapper: Provider,
       route: { params: { tenantId: 't-id' } }
@@ -143,10 +165,7 @@ describe('ServiceGuardForm', () => {
   })
 
   it('works correctly for edit flow', async () => {
-    mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
-    mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
-    mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
 
     render(<ServiceGuardForm />, {
       wrapper: EditWrapper,
@@ -177,10 +196,7 @@ describe('ServiceGuardForm', () => {
   })
 
   it('show error in toast', async () => {
-    mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
-    mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
-    mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
 
     render(<ServiceGuardForm />, {
       wrapper: EditWrapper,
