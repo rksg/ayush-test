@@ -5,6 +5,7 @@ import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import Administration   from './pages/Administration'
 import MigrationForm    from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
+import MigrationSummary from './pages/Administration/OnpremMigration/MigrationTable/summary'
 import AnalyticsBase    from './pages/Analytics'
 import Dashboard        from './pages/Dashboard'
 import Dashboardv2      from './pages/Dashboardv2'
@@ -117,7 +118,7 @@ function AdministrationRoutes () {
       <Route path=':activeTab' element={<Administration />} />
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
-
+      <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>
   )
 }

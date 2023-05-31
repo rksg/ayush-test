@@ -103,7 +103,7 @@ describe('WifiCallingTable', () => {
 
     mockServer.use(
       rest.delete(
-        WifiCallingUrls.deleteWifiCalling.url,
+        WifiCallingUrls.deleteWifiCallingList.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
@@ -121,11 +121,9 @@ describe('WifiCallingTable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-
-    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
@@ -146,7 +144,7 @@ describe('WifiCallingTable', () => {
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 

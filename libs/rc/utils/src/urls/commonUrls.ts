@@ -107,36 +107,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group',
     newApi: true
   },
-  getL2AclPolicyList: {
-    method: 'post',
-    url: '/l2AclPolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/query',
-    newApi: true
-  },
-  getL3AclPolicyList: {
-    method: 'post',
-    url: '/l3AclPolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/query',
-    newApi: true
-  },
-  getDevicePolicyList: {
-    method: 'post',
-    url: '/devicePolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/device-policy/query',
-    newApi: true
-  },
-  getApplicationPolicyList: {
-    method: 'post',
-    url: '/applicationPolicies/query',
-    oldUrl: '/api/tenant/:tenantId/wifi/application-policy/query',
-    newApi: true
-  },
-  getAccessControlProfileList: {
-    method: 'get',
-    url: '/accessControlProfiles',
-    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile',
-    newApi: true
-  },
   getWifiCallingProfileList: {
     method: 'get',
     url: '/wifiCallingProfiles',

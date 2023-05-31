@@ -18,7 +18,8 @@ import {
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
-  useAccessControlProfileListQuery, useAddAccessControlProfileMutation
+  useAccessControlProfileListQuery,
+  useAddAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
   AccessControlFormFields,
@@ -43,11 +44,6 @@ import * as UI from './styledComponents'
 
 const { useWatch } = Form
 const { Option } = Select
-
-const listPayload = {
-  fields: ['name', 'id'], sortField: 'name',
-  sortOrder: 'ASC', page: 1, pageSize: 10000
-}
 
 export function AccessControlForm () {
   const { $t } = useIntl()
@@ -233,13 +229,12 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   })
 
   const { selectedLayer2 } = useL2AclPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedLayer2: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'l2AclPolicy'
         )
@@ -248,13 +243,12 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   })
 
   const { selectedLayer3 } = useL3AclPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedLayer3: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'l3AclPolicy'
         )
@@ -263,13 +257,12 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   })
 
   const { selectedDevicePolicy } = useDevicePolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedDevicePolicy: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'devicePolicy'
         )
@@ -278,13 +271,12 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   })
 
   const { selectedApplicationPolicy } = useApplicationPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       return {
         selectedApplicationPolicy: getAccessControlProfile(
-          data?.data,
+          data,
           state.selectedAccessControlProfile,
           'applicationPolicy'
         )

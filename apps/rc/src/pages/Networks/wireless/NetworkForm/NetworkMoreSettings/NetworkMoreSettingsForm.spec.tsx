@@ -6,14 +6,14 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                                                         from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, BasicServiceSetPriorityEnum, OpenWlanAdvancedCustomization, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                             from '@acx-ui/store'
-import { mockServer, within, render, screen, cleanup, fireEvent }                                                                                               from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                                                            from '@acx-ui/feature-toggle'
+import { AccessControlUrls, CommonUrlsInfo, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, BasicServiceSetPriorityEnum, OpenWlanAdvancedCustomization, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                from '@acx-ui/store'
+import { mockServer, within, render, screen, cleanup, fireEvent }                                                                                                                  from '@acx-ui/test-utils'
 
-import { externalProviders, policyListResponse }      from '../__tests__/fixtures'
-import NetworkFormContext, { NetworkFormContextType } from '../NetworkFormContext'
-import { hasAccountingRadius, hasAuthRadius }         from '../utils'
+import { devicePolicyListResponse, externalProviders, policyListResponse } from '../__tests__/fixtures'
+import NetworkFormContext, { NetworkFormContextType }                      from '../NetworkFormContext'
+import { hasAccountingRadius, hasAuthRadius }                              from '../utils'
 
 import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
@@ -32,35 +32,21 @@ const mockWlanData = {
 
 describe('NetworkMoreSettingsForm', () => {
   beforeEach(() => {
-    const devicePolicyResponse = [{
-      data: [{
-        id: 'e3ea3749907f4feb95e9b46fe69aae0b',
-        name: 'p1',
-        rulesCount: 1,
-        networksCount: 0
-      }],
-      fields: [
-        'name',
-        'id'],
-      totalCount: 1,
-      totalPages: 1,
-      page: 1
-    }]
 
     mockServer.use(
-      rest.post(CommonUrlsInfo.getDevicePolicyList.url,
-        (req, res, ctx) => res(ctx.json(devicePolicyResponse))),
-      rest.post(CommonUrlsInfo.getL2AclPolicyList.url,
+      rest.get(AccessControlUrls.getDevicePolicyList.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.get(AccessControlUrls.getL2AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
-      rest.post(CommonUrlsInfo.getL3AclPolicyList.url,
+      rest.get(AccessControlUrls.getL3AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
-      rest.post(CommonUrlsInfo.getApplicationPolicyList.url,
+      rest.get(AccessControlUrls.getAppPolicyList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(CommonUrlsInfo.getVlanPoolList.url,
         (_, res, ctx) => res(ctx.json([]))),
-      rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json(externalProviders)))
