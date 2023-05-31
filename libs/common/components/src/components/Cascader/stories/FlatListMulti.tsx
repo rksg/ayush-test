@@ -1,8 +1,8 @@
-import { Select, Option } from '..'
+import { Cascader, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
-const options: Option[] = [
+const options: CascaderOption[] = [
   {
     value: 'n1',
     label: 'Venue 1'
@@ -31,7 +31,7 @@ const options: Option[] = [
 
 export function FlatListMulti () {
   return <div style={{ width: 300 }}>
-    <Select
+    <Cascader
       multiple
       defaultValue={[['n3'], ['n6']]}
       placeholder='Entire Organization'

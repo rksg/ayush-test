@@ -21,10 +21,10 @@ describe('APsSelection', () => {
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
 
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'Venue 1' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'APs' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'AP 1' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'AP 2' }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /Venue 1/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /APs/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /AP 1/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /AP 2/ }))
 
     await click(screen.getByRole('button', { name: 'Submit' }))
 
@@ -37,10 +37,10 @@ describe('APsSelection', () => {
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
 
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'Venue 2' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'APs' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'AP 3' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'AP 4' }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /Venue 2/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /APs/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /AP 3/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /AP 4/ }))
 
     await click(screen.getByRole('button', { name: 'Submit' }))
 
@@ -57,13 +57,13 @@ describe('APsSelection', () => {
 
     const combobox = await screen.findByRole('combobox')
 
-    await type(combobox, '2')
+    await type(combobox, 'AP 4')
     await click(await screen.findByRole('menuitemcheckbox', { name: /AP 4/ }))
 
-    await type(combobox, '2')
+    await type(combobox, 'AP 3')
     await click(await screen.findByRole('menuitemcheckbox', { name: /AP 3/ }))
 
-    await type(combobox, '2')
+    await type(combobox, 'AP 2')
     await click(await screen.findByRole('menuitemcheckbox', { name: /AP 2/ }))
 
     await click(screen.getByRole('button', { name: 'Submit' }))
@@ -86,11 +86,11 @@ describe('APsSelection', () => {
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
 
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'Venue 1' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'APs' }))
-    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 1' })).toBeNull()
-    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 2' })).toBeNull()
-    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 3' })).toBeValid()
+    await click(await screen.findByRole('menuitemcheckbox', { name: /Venue 1/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /APs/ }))
+    expect(screen.queryByRole('menuitemcheckbox', { name: /AP 1/ })).toBeNull()
+    expect(screen.queryByRole('menuitemcheckbox', { name: /AP 2/ })).toBeNull()
+    expect(screen.queryByRole('menuitemcheckbox', { name: /AP 3/ })).toBeValid()
   })
 
   it('should hide unsupport APs when ClientType.VirtualWirelessClient', async () => {
@@ -101,11 +101,11 @@ describe('APsSelection', () => {
 
     expect(await screen.findByRole('menu')).toBeInTheDocument()
 
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'Venue 1' }))
-    await click(await screen.findByRole('menuitemcheckbox', { name: 'APs' }))
-    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 1' })).toBeValid()
-    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 2' })).toBeNull()
-    expect(screen.queryByRole('menuitemcheckbox', { name: 'AP 3' })).toBeValid()
+    await click(await screen.findByRole('menuitemcheckbox', { name: /Venue 1/ }))
+    await click(await screen.findByRole('menuitemcheckbox', { name: /APs/ }))
+    expect(screen.queryByRole('menuitemcheckbox', { name: /AP 1/ })).toBeValid()
+    expect(screen.queryByRole('menuitemcheckbox', { name: /AP 2/ })).toBeNull()
+    expect(screen.queryByRole('menuitemcheckbox', { name: /AP 3/ })).toBeValid()
   })
 })
 
