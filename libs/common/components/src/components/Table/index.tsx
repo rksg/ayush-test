@@ -313,7 +313,7 @@ function Table <RecordType extends Record<string, any>> ({
           : ({})
       }
       : {}
-  } : props.getAllPagesData ? selectAllRowSelection : undefined
+  } : undefined
 
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall') {
