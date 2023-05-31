@@ -65,61 +65,46 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       let networkData = null as NetworkSaveData | null
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
 
-      const payload = {
-        searchString: clientDetails.clientMac,
-        searchTargetFields: [
-          'devicesMac'
-        ],
-        fields: [
-          'creationDate',
-          'name',
-          'mobilePhoneNumber',
-          'emailAddress',
-          'guestType',
-          'ssid',
-          'expiryDate',
-          'guestStatus',
-          'id',
-          'networkId',
-          'maxNumberOfClients',
-          'devicesMac',
-          'guestStatus',
-          'socialLogin',
-          'clients',
-          'notes'
-        ],
-        filters: {
-          includeExpired: [
-            true
-          ]
-        }
-      }
-
       const getGuestData = async () => {
-        const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
-          .unwrap())?.data || []
+        const list = (await getGuestsList({
+          params: { tenantId },
+          payload: getGuestsPayload(clientDetails) }, true).unwrap()
+        )?.data || []
+
         if (list.length > 0) {
-          setGuestDetail(list.filter(item => (item.networkId === clientDetails.networkId
-            &&item.name===clientDetails.username))[0])
+          const name = clientDetails?.userName || clientDetails?.username
+          setGuestDetail(list.filter(item => (
+            item.networkId === clientDetails.networkId
+            && item.name === name
+          ))[0])
         }
       }
 
       const getMetaData = async () => {
         try {
-          if (serialNumber && !clientDetails.hasOwnProperty('isApExists')) {
-            apData = await getAp({
-              params: { tenantId, serialNumber }
-            }, true).unwrap()
-          }
-          if (!clientDetails.hasOwnProperty('isVenueExists')) {
-            venueData = await getVenue({
-              params: { tenantId, venueId: clientDetails?.venueId }
-            }, true).unwrap()
-          }
-          networkData = await getNetwork({
-            params: { tenantId, networkId: clientDetails?.networkId }
-          }, true).unwrap()
-          setData(apData, venueData, networkData)
+          const shouldGetAp = serialNumber && !clientDetails.hasOwnProperty('isApExists')
+          const shouldGetVenue = !clientDetails.hasOwnProperty('isVenueExists')
+
+          await Promise.all([
+            ...( shouldGetAp
+              ? [getAp({ params: { tenantId, serialNumber } }, true)] : [[]]
+            ),
+            ...( shouldGetVenue
+              ? [getVenue({ params: { tenantId, venueId: clientDetails?.venueId } }, true)] : [[]]
+            ),
+            getNetwork({ params: { tenantId, networkId: clientDetails?.networkId } }, true)
+          ]).then(([ ap, venue, network ]) => {
+            /* eslint-disable @typescript-eslint/no-explicit-any */
+            setData(
+              ((ap as any)?.data ?? null) as unknown as ApDeep,
+              ((venue as any)?.data ?? null) as unknown as VenueExtended,
+              ((network as any)?.data ?? null) as unknown as NetworkSaveData
+            )
+            /* eslint-enable @typescript-eslint/no-explicit-any */
+          }).catch((error) => {
+            console.log(error) // eslint-disable-line no-console
+          })
+
         } catch {
           setData(apData, venueData, networkData)
         }
@@ -149,6 +134,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       }
 
       getMetaData()
+
     } else {
       setClient({} as ClientExtended)
     }
@@ -242,7 +228,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Username' })}
-        children={client?.username || client?.userId || '--'}
+        children={client?.userName || client?.username || client?.userId || '--'}
       />
       {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
@@ -515,7 +501,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
         }
         children={
           client?.enableLinkToAp
-            ? <TenantLink to={`devices/aps/${client.serialNumber}/details/overview`}>
+            ? <TenantLink to={`devices/wifi/${client.serialNumber}/details/overview`}>
               {client?.apName || '--'}
             </TenantLink>
             : client?.apName || '--'
@@ -589,7 +575,9 @@ function GuestDetails ({ guestDetail, clientMac }: {
           client =>
             <TenantLink
               // eslint-disable-next-line max-len
-              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}>
+              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}
+              key={client.clientMac}
+            >
               {client.clientMac}
             </TenantLink>) || '--'}
       />
@@ -660,4 +648,36 @@ function DpskPassphraseDetails (props: { networkId: string, clientMac: string })
       />
     </Descriptions>
   </>
+}
+
+function getGuestsPayload ({ clientMac }: Client) {
+  return {
+    searchString: clientMac,
+    searchTargetFields: [
+      'devicesMac'
+    ],
+    fields: [
+      'creationDate',
+      'name',
+      'mobilePhoneNumber',
+      'emailAddress',
+      'guestType',
+      'ssid',
+      'expiryDate',
+      'guestStatus',
+      'id',
+      'networkId',
+      'maxNumberOfClients',
+      'devicesMac',
+      'guestStatus',
+      'socialLogin',
+      'clients',
+      'notes'
+    ],
+    filters: {
+      includeExpired: [
+        true
+      ]
+    }
+  }
 }

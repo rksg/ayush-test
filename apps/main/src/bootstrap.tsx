@@ -101,7 +101,8 @@ export async function pendoInitalization (): Promise<void> {
         dogfood: user.dogfood,
         region: user.region,
         username: user.username,
-        delegated: user.tenantId !== user.varTenantId
+        delegated: user.tenantId !== user.varTenantId,
+        email: user.email
       },
       account: {
         id: user.tenantId,
@@ -116,7 +117,7 @@ export async function pendoInitalization (): Promise<void> {
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  const lang = String(request.data?.global.defaultLanguage)
+  const lang = String(request.data?.global?.defaultLanguage)
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}

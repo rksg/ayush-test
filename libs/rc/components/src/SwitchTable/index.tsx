@@ -37,7 +37,8 @@ import {
   isStrictOperationalSwitch,
   transformSwitchUnitStatus,
   FILTER,
-  SEARCH
+  SEARCH,
+  GROUPBY
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -317,17 +318,27 @@ export function SwitchTable (props : SwitchTableProps) {
       navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
   }, {
+    label: $t({ defaultMessage: 'Retry firmware update' }),
+    visible: (rows) => {
+      const isFirmwareUpdateFailed = rows[0]?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+      return isActionVisible(rows, { selectOne: true }) && isFirmwareUpdateFailed
+    },
+    onClick: async (rows, clearSelection) => {
+      const switchId = rows[0].id ? rows[0].id : rows[0].serialNumber
+      switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, clearSelection)
+    }
+  }, {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: async (rows, clearSelection) => {
       switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }
   }]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
     }
-    tableQuery.handleFilterChange(customFilters,customSearch)
+    tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
   return <Loader states={[tableQuery]}>

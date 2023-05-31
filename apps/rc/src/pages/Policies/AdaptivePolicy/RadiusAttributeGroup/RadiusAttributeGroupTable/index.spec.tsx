@@ -12,7 +12,7 @@ import { Path }                                                   from '@acx-ui/
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { groupList, adaptivePolicyList, groupListByPost } from './__tests__/fixtures'
+import { groupList, adaptivePolicyList, groupListByPost, assignments } from './__tests__/fixtures'
 
 import RadiusAttributeGroupTable from './index'
 
@@ -40,16 +40,24 @@ describe('RadiusAttributeGroupTable', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.post(
-        RulesManagementUrlsInfo.getPoliciesByQuery.url,
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.post(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupListByPost))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(adaptivePolicyList))
+      ),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAssignments.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -93,6 +101,34 @@ describe('RadiusAttributeGroupTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+  })
+
+  it.skip('should not allow to delete selected row', async () => {
+    const deleteFn = jest.fn()
+    mockServer.use(
+      rest.delete(
+        RadiusAttributeGroupUrlsInfo.deleteAttributeGroup.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }),
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAssignments.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(assignments))
+      )
+    )
+
+    render(<Provider><RadiusAttributeGroupTable /></Provider>, {
+      route: { params, path: tablePath }
+    })
+
+    const row = await screen.findByRole('row', { name: /group1 2 1/i })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('This group is in use by one or more Adaptive Policies.')).toBeVisible()
   })
 
   it('should edit selected row', async () => {

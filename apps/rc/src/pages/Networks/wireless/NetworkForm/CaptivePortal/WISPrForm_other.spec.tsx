@@ -82,7 +82,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('SkyWifiRadSecTest'))[0])
     await userEvent.click((await screen.findAllByTitle('SkyWifiRadSecTest'))[0])
-    await userEvent.click((await screen.findAllByTitle('Other provider'))[0])
+    await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
     const providerNameInput = await screen.findByLabelText(/Provider Name/)
     fireEvent.change(providerNameInput, { target: { value: 'namep1' } })
     fireEvent.blur(providerNameInput)

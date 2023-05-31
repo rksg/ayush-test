@@ -15,6 +15,7 @@ export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashb
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
+export { useExportCsv as useEdgeExportCsv } from './EdgesTable/useExportCsv'
 export type { EdgesTableQueryProps } from './EdgesTable'
 export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
@@ -86,9 +87,24 @@ export { TunnelProfileForm } from './TunnelProfileForm'
 export type { TunnelProfileFormType } from './TunnelProfileForm'
 export { EdgeDhcpPoolTable } from './EdgeDhcpPoolTable'
 export { EdgeDhcpLeaseTable } from './EdgeDhcpLeaseTable'
+export type { ConnectionMeteringFormProps } from './ConnectionMeteringForm'
+export {
+  ConnectionMeteringForm,
+  ConnectionMeteringFormMode
+} from './ConnectionMeteringForm'
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
 export { PhoneInput } from './PhoneInput'
+export { ServiceInfo } from './ServiceInfo'
+export { NetworkSegmentationServiceInfo } from './NetworkSegmentationServiceInfo'
+export { NetworkSegmentationDetailTableGroup } from './NetworkSegmentationDetailTableGroup'
+export { AccessSwitchTable } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
+export { ApsTable } from './NetworkSegmentationDetailTableGroup/ApsTable'
+export { AssignedSegmentsTable } from './NetworkSegmentationDetailTableGroup/AssignedSegmentsTable'
+export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwitchesTable'
+export type {
+  AccessSwitchTableDataType
+} from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

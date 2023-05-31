@@ -106,3 +106,13 @@ export function PropertyUnitLink (props: { venueId?: string, unitId?: string, na
       : <></>
   )
 }
+
+export function ConnectionMeteringLink (props:{ id?: string, name?: string }) {
+  const { id, name } = props
+  return (
+    <TenantLink to={getPolicyDetailsLink({ type: PolicyType.CONNECTION_METERING,
+      oper: PolicyOperation.DETAIL, policyId: id ?? '' })}>
+      {name ?? id}
+    </TenantLink>
+  )
+}
