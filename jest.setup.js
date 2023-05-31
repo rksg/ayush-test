@@ -54,10 +54,8 @@ beforeAll(() => {
 beforeEach(async () => {
   mockDOMSize(1280, 800)
   const env = require('./apps/main/src/env.json')
-  const envRa = require('./apps/ra/src/env.json')
   mockServer.use(
     rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))),
-    rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(envRa))),
     rest.get('/mfa/tenant/:tenantId', (_req, res, ctx) =>
       res(
         ctx.json({
