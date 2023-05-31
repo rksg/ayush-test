@@ -9,7 +9,7 @@ exports[`Topology scale data should render 1`] = `
       style="width: 100%; height: calc(100% - 80px);"
     >
       <svg
-        class="sc-dmRaPn bmEjPg"
+        class="sc-dmRaPn dpmoWz"
         data-testid="topologyGraph"
         height="100%"
         width="100%"
@@ -11168,7 +11168,7 @@ exports[`Topology should render correctly 1`] = `
         </div>
       </div>
       <svg
-        class="sc-dmRaPn bmEjPg"
+        class="sc-dmRaPn dpmoWz"
         data-testid="topologyGraph"
         height="100%"
         width="100%"
@@ -12829,7 +12829,7 @@ exports[`Topology should render topology on AP overview 1`] = `
       style="width: 100%; height: calc(100% - 80px);"
     >
       <svg
-        class="sc-dmRaPn bmEjPg"
+        class="sc-dmRaPn dpmoWz"
         data-testid="topologyGraph"
         height="100%"
         width="100%"
