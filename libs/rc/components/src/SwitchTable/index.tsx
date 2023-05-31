@@ -345,7 +345,7 @@ export function SwitchTable (props : SwitchTableProps) {
       enableApiFilter={true}
       rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={searchable ? {
+      rowSelection={searchable !== false ? {
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record.isFirstLevel
