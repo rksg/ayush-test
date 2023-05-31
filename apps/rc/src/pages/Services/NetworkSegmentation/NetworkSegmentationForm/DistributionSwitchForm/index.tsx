@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import { StepsForm, TableProps, useStepFormContext } from '@acx-ui/components'
 import { useGetAvailableSwitchesQuery }              from '@acx-ui/rc/services'
@@ -110,6 +111,7 @@ export function DistributionSwitchForm () {
       }]}
       dataSource={dsList}
       rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.id] : [] }} />
+    <Form.Item name='distributionSwitchInfos' children={<Input type='hidden'/>} />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}

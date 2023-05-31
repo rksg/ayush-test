@@ -2,7 +2,10 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, DdosAttackType, EdgeFirewallSetting, EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import {
+  ACLDirection, AccessAction, AddressType,
+  CommonUrlsInfo, DdosAttackType, EdgeFirewallSetting,
+  EdgeFirewallUrls, EdgeUrlsInfo, ProtocolType } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -213,6 +216,54 @@ describe('Edit edge firewall service', () => {
       rateLimiting: 12
     }]
 
+    mockFirewall2.statefulAcls.push(
+      {
+        name: 'Inbound ACL',
+        direction: ACLDirection.INBOUND,
+        description: '',
+        rules: [{
+          priority: 1,
+          accessAction: AccessAction.ALLOW,
+          protocolType: ProtocolType.ICMP,
+          protocolValue: 0,
+          sourceAddressType: AddressType.SUBNET_ADDRESS,
+          sourceAddress: '3.3.3.3',
+          sourceAddressMask: '255.255.0.0',
+          sourcePort: '',
+          destinationAddressType: AddressType.IP_ADDRESS,
+          destinationAddress: '12.12.12.11',
+          destinationAddressMask: '',
+          destinationPort: ''
+        },{
+          priority: 2,
+          accessAction: AccessAction.ALLOW,
+          protocolType: ProtocolType.ESP,
+          protocolValue: 0,
+          sourceAddressType: AddressType.SUBNET_ADDRESS,
+          sourceAddress: '5.5.1.1',
+          sourceAddressMask: '255.255.255.0',
+          sourcePort: '',
+          destinationAddressType: AddressType.IP_ADDRESS,
+          destinationAddress: '8.8.8.8',
+          destinationAddressMask: '',
+          destinationPort: ''
+        },{
+          priority: 3,
+          accessAction: AccessAction.BLOCK,
+          protocolType: ProtocolType.ANY,
+          protocolValue: 0,
+          sourceAddressType: AddressType.ANY_IP_ADDRESS,
+          sourceAddress: '',
+          sourceAddressMask: '',
+          sourcePort: '',
+          destinationAddressType: AddressType.ANY_IP_ADDRESS,
+          destinationAddress: '',
+          destinationAddressMask: '',
+          destinationPort: ''
+        }]
+      }
+    )
+
     const mockedGetFn2 = jest.fn()
     mockServer.use(
       rest.get(
@@ -248,41 +299,64 @@ describe('Edit edge firewall service', () => {
     })
     expect(body.getByRole('switch', { name: 'acl' })).toBeChecked()
 
-    // edit acl rule
-    const inboundRow = await body.findByRole('row', { name: /Inbound ACL/i })
-    await click(within(inboundRow).getByRole('radio'))
+    // edit outbound acl
+    const outboundRow = await body.findByRole('row', { name: /Outbound ACL/i })
+    await click(within(outboundRow).getByRole('radio'))
     await click(body.getByRole('button', { name: 'Edit' }))
-    const drawer = await screen.findByRole('dialog')
+    let drawer = await screen.findByRole('dialog')
     expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
 
-    // add acl rule
+    // add new acl rule
     const addRuleBtn = within(drawer).getByRole('button', { name: 'Add Rule' })
     await click(addRuleBtn)
     const dialogs = screen.queryAllByRole('dialog')
-    const dialog = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
+    const dialog1 = dialogs.filter(elem => elem.classList.contains('ant-modal'))[0]
 
-    expect(within(dialog).queryByText(/Inspect/)).toBeNull()
-    await click(await within(dialog).findByText(/Allow/))
+    await click(await within(dialog1).findByText(/Allow/))
     await selectOptions(
-      await within(dialog).findByRole('combobox', { name: 'Protocol Type' }),
+      await within(dialog1).findByRole('combobox', { name: 'Protocol Type' }),
       'Custom')
-    await type(within(dialog).getByRole('spinbutton', { name: 'Protocol Value' }), '20')
-    const src = await screen.findByRole('group', { name: 'Source' })
+    await type(within(dialog1).getByRole('spinbutton', { name: 'Protocol Value' }), '20')
+    let src = await screen.findByRole('group', { name: 'Source' })
     await click(await within(src).findByRole('radio', { name: 'IP Address' }))
     await type(within(src).getByPlaceholderText('IP Address'), '1.2.3.4')
     let destination = await screen.findByRole('group', { name: 'Destination' })
     await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
-    await type(within(destination).getByRole('textbox', { name: 'Port' }), '3100')
-    await click(within(dialog).getByRole('button', { name: 'Add' }))
-    const customRow = await within(drawer).findByRole('row', { name: /Custom/ })
+    await type(within(destination).getByRole('textbox', { name: 'Port' }), '120')
+    await click(within(dialog1).getByRole('button', { name: 'Add' }))
+    await click(within(drawer).getByRole('button', { name: 'Add' }))
 
-    // edit added rule
-    await click(await within(customRow).findByRole('checkbox'))
+    // edit inbound acl
+    const inboundRow = await body.findByRole('row', { name: /Inbound ACL/i })
+    await click(within(inboundRow).getByRole('radio'))
+    await click(body.getByRole('button', { name: 'Edit' }))
+    drawer = await screen.findByRole('dialog')
+    expect(await screen.findByText('Stateful ACL Settings')).toBeVisible()
+
+    // edit existing rule
+    const icmpRow = await within(drawer).findByRole('row', { name: /ICMP/ })
+    await click(await within(icmpRow).findByRole('checkbox'))
     await click(await within(drawer).findByRole('button', { name: 'Edit' }))
+
+    const dialog2 = screen.queryAllByRole('dialog')
+      .filter(elem => elem.classList.contains('ant-modal'))[0]
+
+    src = await screen.findByRole('group', { name: 'Source' })
+    await click(await within(src).findByRole('radio', { name: 'Any IP Address' }))
     destination = await screen.findByRole('group', { name: 'Destination' })
-    await click(await within(destination).findByRole('radio', { name: 'IP Address' }))
-    await type(within(destination).getByPlaceholderText('IP Address'), '10.2.3.4')
-    await click(within(dialog).getByRole('button', { name: 'Add' }))
+    await click(await within(destination).findByRole('radio', { name: 'Subnet Address' }))
+    await type(within(destination).getByPlaceholderText('Mask'), '255.255.255.0')
+    await click(within(dialog2).getByRole('button', { name: 'Add' }))
+
+    const espRow = await within(drawer).findByRole('row', { name: /ESP/ })
+    await click(await within(espRow).findByRole('checkbox'))
+    await click(await within(drawer).findByRole('button', { name: 'Clear selection' }))
+    await click(await within(espRow).findByRole('checkbox'))
+    await click(await within(drawer).findByRole('button', { name: 'Edit' }))
+
+    await click(await within(src).findByRole('radio', { name: 'IP Address' }))
+    await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
+    await click(within(dialog2).getByRole('button', { name: 'Add' }))
     await click(within(drawer).getByRole('button', { name: 'Add' }))
 
     // Navigate to Step 2
@@ -315,15 +389,31 @@ describe('Edit edge firewall service', () => {
         statefulAcls: [{
           name: 'Inbound ACL',
           direction: 'INBOUND',
+          description: '',
           rules: [{
             accessAction: 'ALLOW',
-            protocolType: 'CUSTOM',
-            protocolValue: 20,
+            protocolType: 'ICMP',
+            protocolValue: 0,
+            sourceAddressType: 'ANY_IP_ADDRESS',
+            sourceAddress: '',
+            sourceAddressMask: '',
+            sourcePort: '',
+            destinationAddressType: 'SUBNET_ADDRESS',
+            destinationAddress: '12.12.12.11',
+            destinationAddressMask: '255.255.255.0',
+            destinationPort: ''
+          },{
+            accessAction: 'ALLOW',
+            protocolType: 'ESP',
+            protocolValue: 0,
             sourceAddressType: 'IP_ADDRESS',
-            sourceAddress: '1.2.3.4',
-            destinationAddressType: 'IP_ADDRESS',
-            destinationAddress: '10.2.3.4',
-            destinationPort: '3100'
+            sourceAddress: '5.5.1.1',
+            sourceAddressMask: '',
+            sourcePort: '',
+            destinationAddressType: 'ANY_IP_ADDRESS',
+            destinationAddress: '',
+            destinationAddressMask: '',
+            destinationPort: ''
           }]
         }, {
           name: 'Outbound ACL',
@@ -342,10 +432,22 @@ describe('Edit edge firewall service', () => {
             destinationAddress: '',
             destinationAddressMask: '',
             destinationPort: ''
+          },{
+            accessAction: 'ALLOW',
+            protocolType: 'CUSTOM',
+            protocolValue: 20,
+            sourceAddressType: 'IP_ADDRESS',
+            sourceAddress: '1.2.3.4',
+            sourceAddressMask: '',
+            destinationAddressType: 'ANY_IP_ADDRESS',
+            destinationAddress: '',
+            destinationAddressMask: '',
+            destinationPort: '120'
           }]
         }]
       })
     })
     cleanup()
-  }, 30000)
+  }, 40000)
+
 })

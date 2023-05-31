@@ -59,7 +59,7 @@ const defaultSorter = {
   sortOrder: 'DESC'
 }
 
-const eventDefaultFilters = {
+export const eventDefaultFilters = {
   entity_type: Object.keys(eventTypeMapping)
 }
 

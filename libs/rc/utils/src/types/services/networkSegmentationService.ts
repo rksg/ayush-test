@@ -26,11 +26,13 @@ export interface NetworkSegmentationGroupViewData {
 
 export interface VenueInfo {
   venueId: string
+  venueName: string
   personaGroupId: string
 }
 
 export interface EdgeInfo {
   edgeId: string
+  edgeName: string
   segments: number
   devices: number
   dhcpInfoId: string

@@ -106,7 +106,7 @@ describe('AdaptivePolicyForm', () => {
     await screen.findByText('Add Access Condition')
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Condition Type' }))
-    await userEvent.click(await screen.findByText('NAS Identifier'))
+    await userEvent.click(await screen.findByText('NAS Identifier (Regex)'))
     const inputs = await screen.findAllByRole('textbox')
     expect(inputs).toHaveLength(5)
     await userEvent.type(inputs[4], 'testValue')

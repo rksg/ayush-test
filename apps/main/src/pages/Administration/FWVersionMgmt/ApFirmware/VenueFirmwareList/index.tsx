@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
@@ -66,7 +66,7 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const intl = useIntl()
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {

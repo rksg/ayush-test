@@ -102,6 +102,47 @@ describe('usePreference', () => {
     })
   })
 
+  it('should be able to update when global not exist in first level', async () => {
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({
+          edgeBeta: {
+            'enabled': 'true',
+            'Start Date': '2023-05-25 UTC'
+          }
+        }))
+      )
+    )
+
+    const { result } = renderHook(
+      () => usePreference(),
+      { wrapper: getWrapper(), route: { params } }
+    )
+
+    await waitFor(async () => {
+      expect(result.current.getReqState.isLoading).toBe(false)
+    })
+
+    await act(async () => {
+      result.current.updatePartial({
+        newData: {
+          global: { other: { field: 'test' } }
+        }
+      })
+    })
+
+    await waitFor(() => {
+      expect(mockedUpdateReqFn).toBeCalledWith({
+        edgeBeta: {
+          'enabled': 'true',
+          'Start Date': '2023-05-25 UTC'
+        },
+        global: { other: { field: 'test' } }
+      })
+    })
+  })
+
   it('should popup confirm dialog', async () => {
     const { result, rerender } = renderHook(
       () => usePreference(),
