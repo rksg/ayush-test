@@ -62,8 +62,7 @@ RUN rm -rf ./*
 
 COPY tools/docker/nginx/conf.d/ra.conf /etc/nginx/conf.d/default.conf
 COPY tools/docker/nginx/conf.d/gzip.conf /etc/nginx/conf.d/gzip.conf
-COPY tools/docker/nginx/env-ra.json.template /etc/nginx/env-ra.json.template
-RUN mv /etc/nginx/env-ra.json.template /etc/nginx/env.json.template
+COPY tools/docker/nginx/env-ra.json.template /etc/nginx/env.json.template
 COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/start-nginx.sh \
   /etc/nginx/
