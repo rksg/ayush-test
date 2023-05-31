@@ -4,11 +4,8 @@ import { PageHeader, Tabs }             from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
-import {
-  ReportType,
-  reportTypeDataStudioMapping
-} from '@acx-ui/reports/components'
-import { filterByAccess } from '@acx-ui/user'
+import { ReportType }                   from '@acx-ui/reports/components'
+import { filterByAccess }               from '@acx-ui/user'
 
 import useApsTable from './ApsTable'
 
@@ -37,7 +34,7 @@ const useTabs = () : WifiTab[] => {
     key: WifiTabsEnum.AP_REPORT,
     title: $t({ defaultMessage: 'AP Report' }),
     component: <EmbeddedReport
-      reportName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT] as ReportType}
+      reportName={ReportType.ACCESS_POINT}
       hideHeader={false}
     />,
     headerExtra: [
@@ -51,7 +48,7 @@ const useTabs = () : WifiTab[] => {
     key: WifiTabsEnum.AIRTIME_REPORT,
     title: $t({ defaultMessage: 'Air Time Utilization Report' }),
     component: <EmbeddedReport
-      reportName={reportTypeDataStudioMapping[ReportType.AIRTIME_UTILIZATION] as ReportType}
+      reportName={ReportType.AIRTIME_UTILIZATION}
       hideHeader={false}
     />,
     headerExtra: [

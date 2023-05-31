@@ -4,11 +4,8 @@ import { PageHeader, Tabs }             from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
-import {
-  ReportType,
-  reportTypeDataStudioMapping
-} from '@acx-ui/reports/components'
-import { filterByAccess } from '@acx-ui/user'
+import { ReportType }                   from '@acx-ui/reports/components'
+import { filterByAccess }               from '@acx-ui/user'
 
 import useNetworksTable from './NetworksTable'
 
@@ -38,7 +35,7 @@ const useTabs = () : NetworkTab[] => {
     key: NetworkTabsEnum.WLAN_REPORT,
     title: $t({ defaultMessage: 'WLAN Report' }),
     component: <EmbeddedReport
-      reportName={reportTypeDataStudioMapping[ReportType.WLAN] as ReportType}
+      reportName={ReportType.WLAN}
       hideHeader={false}
     />,
     headerExtra: [
@@ -52,7 +49,7 @@ const useTabs = () : NetworkTab[] => {
     key: NetworkTabsEnum.APPLICATIONS_REPORT,
     title: $t({ defaultMessage: 'Applications Report' }),
     component: <EmbeddedReport
-      reportName={reportTypeDataStudioMapping[ReportType.APPLICATION] as ReportType}
+      reportName={ReportType.APPLICATION}
       hideHeader={false}
     />,
     headerExtra: [
@@ -66,7 +63,7 @@ const useTabs = () : NetworkTab[] => {
     key: NetworkTabsEnum.WIRELESS_REPORT,
     title: $t({ defaultMessage: 'Wireless Report' }),
     component: <EmbeddedReport
-      reportName={reportTypeDataStudioMapping[ReportType.WIRELESS] as ReportType}
+      reportName={ReportType.WIRELESS}
       hideHeader={false}
     />,
     headerExtra: [

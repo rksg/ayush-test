@@ -4,11 +4,8 @@ import { PageHeader, Tabs }             from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
-import {
-  ReportType,
-  reportTypeDataStudioMapping
-} from '@acx-ui/reports/components'
-import { filterByAccess } from '@acx-ui/user'
+import { ReportType }                   from '@acx-ui/reports/components'
+import { filterByAccess }               from '@acx-ui/user'
 
 import useSwitchesTable from './SwitchesTable'
 
@@ -36,7 +33,7 @@ const useTabs = () : SwitchTab[] => {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
     component: <EmbeddedReport
-      reportName={reportTypeDataStudioMapping[ReportType.WIRED] as ReportType}
+      reportName={ReportType.WIRED}
       hideHeader={false}
     />,
     headerExtra: [

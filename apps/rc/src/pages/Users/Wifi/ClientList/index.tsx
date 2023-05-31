@@ -10,12 +10,9 @@ import { useGetClientListQuery, useGetGuestsListQuery }            from '@acx-ui
 import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportHeader }                            from '@acx-ui/reports/components'
-import {
-  ReportType,
-  reportTypeDataStudioMapping
-} from '@acx-ui/reports/components'
-import { filterByAccess }                from '@acx-ui/user'
-import { DateRange, getDateRangeFilter } from '@acx-ui/utils'
+import { ReportType }                                              from '@acx-ui/reports/components'
+import { filterByAccess }                                          from '@acx-ui/user'
+import { DateRange, getDateRangeFilter }                           from '@acx-ui/utils'
 
 import { GuestsTab }           from './GuestsTab'
 import { defaultGuestPayload } from './GuestsTab/GuestsDetail'
@@ -129,7 +126,7 @@ const useTabs = () : WirelessTab[] => {
     key: WirelessTabsEnum.CLIENT_REPORT,
     title: $t({ defaultMessage: 'Wireless Clients Report' }),
     component: <EmbeddedReport
-      reportName={reportTypeDataStudioMapping[ReportType.CLIENT] as ReportType}
+      reportName={ReportType.CLIENT}
       hideHeader={false}
     />,
     headerExtra: [
