@@ -153,13 +153,20 @@ export function WISPrForm () {
           form.setFieldValue('enableSecondaryAcctServer',true)
         }
       }
+      if ([
+        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
+        (!data?.wlan?.bypassCNA)
+      ].every(Boolean)) {dispatch(statesCollection.useAllAccept)}
 
-      if(data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT) {
-        dispatch(statesCollection.useAllAccept)
-      }
-      if(data?.wlan?.bypassCNA === true) {
-        dispatch(statesCollection.useBypassCNAAndAuth)
-      }
+      if ([
+        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
+        (data?.wlan?.bypassCNA)
+      ].every(Boolean)) {dispatch(statesCollection.useBypassCNAAndAuth)}
+
+      if ([
+        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
+        (!data?.wlan?.bypassCNA)
+      ].every(Boolean)) {dispatch(statesCollection.useOnlyAuth)}
     }
   },[providerData.data,data,isMspEc])
   useEffect(()=>{
