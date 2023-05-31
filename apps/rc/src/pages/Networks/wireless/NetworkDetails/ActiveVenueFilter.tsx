@@ -1,6 +1,6 @@
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Select, Loader }     from '@acx-ui/components'
+import { Cascader, Loader }   from '@acx-ui/components'
 import { useVenuesListQuery } from '@acx-ui/rc/services'
 import { useParams }          from '@acx-ui/react-router-dom'
 
@@ -28,7 +28,7 @@ export function ActiveVenueFilter ({
   const activeVenues = networkQuery.data?.venues?.map(({ venueId }) => venueId)
   const values = selectedVenues.map(venue => [venue])
   return <Loader states={[networkQuery, venuesQuery]} style={{ minWidth: '159px' }}>
-    <Select
+    <Cascader
       entityName={{
         singular: defineMessage({ defaultMessage: 'venue' }),
         plural: defineMessage({ defaultMessage: 'venues' })
