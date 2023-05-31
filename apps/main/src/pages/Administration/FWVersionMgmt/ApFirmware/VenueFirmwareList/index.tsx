@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
