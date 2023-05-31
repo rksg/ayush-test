@@ -69,7 +69,10 @@ export const mockedApList = {
       serialNumber: '125488555569',
       venueId: 'mock_venue_1',
       model: 'R510',
-      apStatusData: { lanPortStatus: [{ port: '0' }, { port: '1' }, { port: '2' }] }
+      apStatusData: {
+        lanPortStatus: [{ port: '0' }, { port: '1' }, { port: '2' }],
+        vxlanStatus: { vxlanMtu: 666 }
+      }
     },
     {
       name: 'mock-ap2',

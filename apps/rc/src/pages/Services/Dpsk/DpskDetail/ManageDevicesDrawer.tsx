@@ -16,7 +16,7 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  generalMacAddressRegExp
+  MacRegistrationFilterRegExp
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -246,7 +246,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
                     defaultMessage: 'MAC address {macAddress} is already exists'
                   }, { macAddress: value }))
                 }
-                return generalMacAddressRegExp(value)
+                return MacRegistrationFilterRegExp(value)
               } }
             ]}
             labelCol={{ span: 24 }}
