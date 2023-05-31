@@ -247,7 +247,7 @@ export interface APMesh {
   rxFrames?: string,
   type?: number,
   upMac?: string,
-  downLinkCount?: number,
+  downlinkCount?: number,
 }
 export interface FloorPlanMeshAP extends APMesh {
   floorplanId?: string;

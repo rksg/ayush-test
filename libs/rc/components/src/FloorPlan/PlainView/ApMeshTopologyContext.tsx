@@ -97,7 +97,7 @@ function convertToMeshTopologyDevice (
     serialNumber: apMesh.serialNumber,
     meshRole: apMesh.meshRole,
     hops: apMesh.hops,
-    downlinkCount: apMesh.downLinkCount,
+    downlinkCount: apMesh.downlinkCount,
     downlinkUnplacedCount: apMesh.downlink ? apMesh.downlink.filter(isApUnplaced).length : 0,
     isRootApUnplaced: rootApMesh ? isApUnplaced(rootApMesh) : false,
     rootApName: rootApMesh?.name,
@@ -110,7 +110,7 @@ function convertToMeshTopologyDevice (
 }
 
 function isApUnplaced (apMesh: FloorPlanMeshAP): boolean {
-  return _.isUndefined(apMesh.floorplanId) || _.isEmpty(apMesh.floorplanId)
+  return _.isEmpty(apMesh.floorplanId)
 }
 
 function filterByFloorplan (
