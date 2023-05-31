@@ -16,10 +16,34 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              Wi-Fi
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              Wi-Fi Networks
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/tenant-id/t/networks"
               >
-                Networks
+                Network List
               </a>
             </span>
             <span
@@ -2273,10 +2297,34 @@ exports[`NetworkForm should create open network successfully 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              Wi-Fi
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              Wi-Fi Networks
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/tenant-id/t/networks"
               >
-                Networks
+                Network List
               </a>
             </span>
             <span

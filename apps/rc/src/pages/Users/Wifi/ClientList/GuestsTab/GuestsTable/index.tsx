@@ -363,7 +363,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
-  setGuestCount(tableQuery.data?.totalCount || 0)
+  setGuestCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader states={[
       tableQuery

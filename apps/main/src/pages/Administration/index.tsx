@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs, PageHeader }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { useGetAdminListQuery, useGetNotificationRecipientsQuery } from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink }                   from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                   from '@acx-ui/user'
+import { Tabs, PageHeader }                                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { useGetAdminListQuery, useGetDelegationsQuery, useGetNotificationRecipientsQuery } from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                           from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -18,6 +18,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const { $t } = useIntl()
   const { activeTab } = useParams()
   const { tenantId, venueId, serialNumber } = useParams()
+  const params = useParams()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
@@ -43,8 +44,9 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   }, {
     pollingInterval: 30_000
   })
+  const thirdPartyAdminList = useGetDelegationsQuery({ params })
 
-  const adminCount = adminList?.data?.length! || 0
+  const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
 
   return (

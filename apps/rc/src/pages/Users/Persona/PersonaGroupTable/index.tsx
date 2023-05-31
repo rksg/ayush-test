@@ -300,7 +300,7 @@ export function PersonaGroupTable () {
     tableQuery.setPayload(payload)
   }
 
-  setPersonaGroupCount(tableQuery.data?.totalCount || 0)
+  setPersonaGroupCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[
