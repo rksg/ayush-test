@@ -217,8 +217,7 @@ function Table <RecordType extends Record<string, any>> ({
   const onRowClick = (record: RecordType) => {
     if (
       !props.rowSelection ||
-      rowSelection?.getCheckboxProps?.(record)?.disabled ||
-      record.isStackMember
+      rowSelection?.getCheckboxProps?.(record)?.disabled
     )
       return
 
@@ -279,9 +278,13 @@ function Table <RecordType extends Record<string, any>> ({
     },
     ...isGroupByActive
       ? {
-        getCheckboxProps: record => 'children' in record && !('isFirstLevel' in record)
-          ? ({ disabled: true, style: { display: 'none' } })
-          : ({})
+        getCheckboxProps: record => {
+          return 'children' in record && !('isFirstLevel' in record)
+            ? ({ disabled: true, style: { display: 'none' } })
+            : props.rowSelection?.getCheckboxProps
+              ? props.rowSelection?.getCheckboxProps(record)
+              :({})
+        }
       }
       : {}
   } : undefined

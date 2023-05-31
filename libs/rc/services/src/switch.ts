@@ -1150,7 +1150,6 @@ const aggregatedSwitchGroupByListData = (switches: TableResult<SwitchRow>,
           if (member.serialNumber === i.serialNumber) {
             tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
           }
-          tmpMember[index].isStackMember = true // to identify stack member row to avoid row selection
         })
         i.children = tmpMember
       }
