@@ -1,15 +1,19 @@
+import { Address } from './venue'
+
 export interface MigrationContextType {
   file?: Blob,
   venueName: string,
   description: string,
-  address?: string
+  address?: Address,
+  errorMsg?: string
 }
 
 export enum MigrationActionTypes {
   UPLOADFILE = 'UPLOADFILE',
   VENUENAME = 'VENUENAME',
   DESCRIPTION = 'DESCRIPTION',
-  ADDRESS = 'ADDRESS'
+  ADDRESS = 'ADDRESS',
+  ERRORMSG = 'ERRORMSG'
 }
 
 export type MigrationActionPayload = {
@@ -30,7 +34,12 @@ export type MigrationActionPayload = {
 } | {
   type: MigrationActionTypes.ADDRESS,
   payload: {
-    address: string
+    address: Address
+  }
+} | {
+  type: MigrationActionTypes.ERRORMSG,
+  payload: {
+    errorMsg: string
   }
 }
 
@@ -51,6 +60,18 @@ export interface ValidationState {
   failure?: string;
 }
 
+export interface ErrorType {
+  details: string[];
+  errorMessage: string;
+  requestId: string;
+  status: number;
+}
+
+export interface ValidationErrorType {
+  data: ErrorType;
+  status: number;
+}
+
 export interface MigrationResultType {
   serial: string,
   apName?: string,
@@ -69,6 +90,7 @@ export interface TaskContextType {
   fileName: string,
   venueName?: string,
   description?: string,
+  error?: ValidationErrorType
   apImportResults: MigrationResultType[]
 }
 

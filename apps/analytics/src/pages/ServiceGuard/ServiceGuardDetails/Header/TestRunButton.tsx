@@ -48,12 +48,9 @@ const TestRunTable = (
     }
   ]
 
-  return <UI.Menu
-    items={[{
-      key: 'table',
-      label: <Table type={'form'} columns={columns} dataSource={data} rowKey='id' />
-    }]}
-  />
+  return <UI.OverlayContainer>
+    <Table type={'form'} columns={columns} dataSource={data} rowKey='id' />
+  </UI.OverlayContainer>
 }
 
 export const TestRunButton = () => {
