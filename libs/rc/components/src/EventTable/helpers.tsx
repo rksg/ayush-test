@@ -11,7 +11,7 @@ import * as UI         from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
-const entityTypes = ['ap', 'client', 'network', 'switch', 'venue', 'transaction'] as const
+const entityTypes = ['ap', 'client', 'network', 'switch', 'venue', 'transaction', 'edge'] as const
 const configurationUpdate = 'Configuration Update' as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
@@ -44,6 +44,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     transaction: {
       path: 'devices/switch/:switchMac/:serialNumber/details/configuration/history',
       params: ['switchMac', 'serialNumber']
+    },
+    edge: {
+      path: 'devices/edge/:serialNumber/details/overview',
+      params: ['serialNumber']
     }
   }
 
@@ -96,7 +100,8 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
     SWITCH: 'switchName',
     ADMINACTIVITY: 'adminName',
     ADMIN: 'adminName',
-    NOTIFICATION: 'adminName'
+    NOTIFICATION: 'adminName',
+    EDGE: 'edgeName'
   }
   const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
   return <EntityLink {...{ entityKey, data, highlightFn }} />

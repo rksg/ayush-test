@@ -45,7 +45,7 @@ describe('AccessControlTable', () => {
   })
 
   it('should render Layer2Component in AccessControlTable', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(layer2PolicyListResponse)
@@ -84,7 +84,7 @@ describe('AccessControlTable', () => {
   })
 
   it('should delete selected row from Layer2Component in AccessControlTable', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL2AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(layer2PolicyListResponse)

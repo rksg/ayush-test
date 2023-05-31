@@ -14,28 +14,35 @@ import { getIntl } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+export const DASHBOARD_GMAP_FILTER_KEY = 'dashboard-gmap-filter'
+
 const apStatusMap = {
   [ApVenueStatusEnum.REQUIRES_ATTENTION]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention'
+    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention',
+    description: 'Translation string - Requires Attention'
   }),
   [ApVenueStatusEnum.TRANSIENT_ISSUE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue'
+    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue',
+    description: 'Translation string - Transient Issue'
   }),
   [ApVenueStatusEnum.IN_SETUP_PHASE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase'
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase',
+    description: 'Translation string - In Setup Phase'
   }),
   [ApVenueStatusEnum.OPERATIONAL]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational'
+    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational',
+    description: 'Translation string - Operational'
   }),
   [ApVenueStatusEnum.OFFLINE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline',
+    description: 'Translation string - Offline'
   })
 }
+
 export const getAPStatusDisplayName = (label: ApVenueStatusEnum, showSeverity: boolean = true) => {
   const { $t } = getIntl()
   return $t(apStatusMap[label], { showSeverity })
 }
-
 
 const switchStatusMap = {
   [SwitchStatusEnum.OPERATIONAL]: defineMessage({ defaultMessage: 'Operational' }),
@@ -45,6 +52,7 @@ const switchStatusMap = {
   [SwitchStatusEnum.APPLYING_FIRMWARE]: defineMessage({ defaultMessage: 'In Setup Phase' }),
   default: defineMessage({ defaultMessage: 'In Setup Phase' })
 }
+
 export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
   const { $t } = getIntl()
   return $t(_.get(switchStatusMap, switchStatus, switchStatusMap.default))
@@ -52,26 +60,31 @@ export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
 
 const edgeStatusMap = {
   [EdgeStatusSeverityEnum.REQUIRES_ATTENTION]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention'
+    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention',
+    description: 'Translation string - Requires Attention'
   }),
   [EdgeStatusSeverityEnum.TRANSIENT_ISSUE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue'
+    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue',
+    description: 'Translation string - Transient Issue'
   }),
   [EdgeStatusSeverityEnum.IN_SETUP_PHASE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase'
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase',
+    description: 'Translation string - In Setup Phase'
   }),
   [EdgeStatusSeverityEnum.OPERATIONAL]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational'
+    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational',
+    description: 'Translation string - Operational'
   }),
   [EdgeStatusSeverityEnum.OFFLINE]: defineMessage({
-    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline',
+    description: 'Translation string - Offline'
   })
 }
+
 export const getEdgeStatusDisplayName = (label: EdgeStatusSeverityEnum, showSeverity: boolean = true) => {
   const { $t } = getIntl()
   return $t(edgeStatusMap[label], { showSeverity })
 }
-
 
 export const getVenueInfoMarkerIcon = (status: string) => {
   switch (status) {

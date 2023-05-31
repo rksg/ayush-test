@@ -51,8 +51,8 @@ describe('ApMeshConnectionTooltip', () => {
     )
 
     const tooltipElement = await screen.findByRole('tooltip')
-    const fromId = 'AP-' + mockedConnectionMeshToMesh.from
-    const toId = 'AP-' + mockedConnectionMeshToMesh.to
+    const fromId = 'AP-' + mockedConnectionMeshToMesh.fromName
+    const toId = 'AP-' + mockedConnectionMeshToMesh.toName
     const expectedFromToIds = `${fromId} to ${toId}:`
     expect(await within(tooltipElement).findByText(expectedFromToIds)).toBeInTheDocument()
   })

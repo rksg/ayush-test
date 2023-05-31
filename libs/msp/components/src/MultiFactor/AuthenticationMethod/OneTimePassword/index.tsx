@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
 import { Form, Input, Radio, Space, Typography } from 'antd'
-import { PhoneNumberUtil }                       from 'google-libphonenumber'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
 import { cssNumber, Drawer } from '@acx-ui/components'
+import { PhoneInput }        from '@acx-ui/rc/components'
 import {
   phoneRegExp,
   emailRegExp
@@ -37,8 +37,6 @@ export const OneTimePassword = styled((props: OneTimePasswordProps) => {
   const [form] = Form.useForm()
 
   const [mfaRegisterAdmin] = useMfaRegisterAdminMutation()
-
-  const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
 
   const onClose = () => {
     setVisible(false)
@@ -134,9 +132,10 @@ export const OneTimePassword = styled((props: OneTimePasswordProps) => {
                             ]}
                             initialValue={''}
                           >
-                            <Input
-                            // eslint-disable-next-line max-len
-                              placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
+                            <PhoneInput
+                              name={'mobilePhoneNumber'}
+                              callback={(value) => form.setFieldValue('mobilePhoneNumber', value)}
+                              onTop={false}
                             />
                           </Form.Item>):''
                       }}

@@ -121,7 +121,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       fixed: 'left',
       render: (data, row) => {
         return (
-          <TenantLink to={`/devices/edge/${row.serialNumber}/edge-details/overview`}>
+          <TenantLink to={`/devices/edge/${row.serialNumber}/details/overview`}>
             {data}
           </TenantLink>
         )

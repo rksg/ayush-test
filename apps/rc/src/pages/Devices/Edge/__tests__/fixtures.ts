@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortStatus } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortStatus, EdgeServiceTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockVenueData = {
   fields: ['name', 'id'],
@@ -416,6 +416,41 @@ export const mockEdgeDhcpHostStats = {
       hostStatus: 'OFFLINE',
       hostExpireDate: '2023-04-07 10:39:36',
       edgeId: '96B341ADD6C16C11ED8B8B000C296600F2'
+    }
+  ]
+}
+
+export const mockedEdgeServiceList = {
+  fields: null,
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F2',
+      serviceName: 'DHCP-1',
+      serviceId: 'dhcp-1',
+      serviceType: EdgeServiceTypeEnum.DHCP,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: ''
+    },
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F3',
+      serviceName: 'NSG-1',
+      serviceId: 'nsg-1',
+      serviceType: EdgeServiceTypeEnum.NETWORK_SEGMENTATION,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: ''
+    },
+    {
+      edgeId: '96B341ADD6C16C11ED8B8B000C296600F4',
+      serviceName: 'FIREWALL-1',
+      serviceId: 'firewall-1',
+      serviceType: EdgeServiceTypeEnum.FIREWALL,
+      status: 'Up',
+      currentVersion: '1.1.1',
+      targetVersion: '2.2.1'
     }
   ]
 }

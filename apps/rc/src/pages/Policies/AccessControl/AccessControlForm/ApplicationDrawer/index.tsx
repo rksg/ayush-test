@@ -31,8 +31,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { showUnsavedConfirmModal }     from '../AccessControlComponent'
-import { AddModeProps, editModeProps } from '../AccessControlForm'
+import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../../constants'
+import { showUnsavedConfirmModal }              from '../AccessControlComponent'
+import { AddModeProps, editModeProps }          from '../AccessControlForm'
 
 import {
   genRuleObject,
@@ -187,19 +188,15 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [ updateAppPolicy ] = useUpdateAppPolicyMutation()
 
   const { appSelectOptions, appList } = useAppPolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        appSelectOptions: data?.data?.map(
+        appSelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        appList: data?.data?.map(item => item.name)
+          }) : [],
+        appList: data ? data.map(item => item.name) : []
       }
     }
   })
@@ -264,7 +261,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         let catId = avcSelectOptions.findIndex(option =>
           option.catId === avcApp.avcAppAndCatId.catId
         )
-        if (avcSelectOptions[catId]) {
+        if (avcSelectOptions[catId] && !avcSelectOptions[catId].appNames.includes(avcApp.appName)) {
           avcSelectOptions[catId].appNames.push(avcApp.appName)
         }
       })
@@ -546,14 +543,17 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         { validator: () => ruleValidator() }
       ]}
     />
-    <Table
+    {isOnlyViewMode ? <Table
+      columns={basicColumns}
+      dataSource={applicationsRuleList as ApplicationsRule[]}
+    /> : <Table
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
       rowKey='ruleName'
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
-    />
+    />}
   </Form>
 
   const modelContent = () => {
@@ -610,6 +610,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')
@@ -626,7 +627,6 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
-        mask={true}
         zIndex={10}
         onClose={() => !isViewMode()
           ? showUnsavedConfirmModal(handleApplicationsDrawerClose)

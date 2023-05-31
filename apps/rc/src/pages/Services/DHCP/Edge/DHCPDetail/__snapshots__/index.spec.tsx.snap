@@ -152,10 +152,10 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
               class="ant-card-body"
             >
               <div
-                class="styledComponents__InfoMargin-sc-1c05b5t-0 gXOSNt"
+                class="sc-olbas jQkydB"
               >
                 <div
-                  class="ant-row Grid__GridRow-sc-5irhjd-2"
+                  class="ant-row Grid__GridRow-sc-5irhjd-2 sc-hiMGwR jIQpLv"
                   style="margin: -10px -10px -10px -10px;"
                 >
                   <div
@@ -182,7 +182,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                           class="ant-space-item"
                         >
                           <span
-                            class="ant-typography"
+                            class="ant-typography text-color"
                           >
                             <span
                               class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
@@ -225,7 +225,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                           class="ant-space-item"
                         >
                           <span
-                            class="ant-typography"
+                            class="ant-typography text-color"
                           >
                             ON
                           </span>
@@ -257,7 +257,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                           class="ant-space-item"
                         >
                           <span
-                            class="ant-typography"
+                            class="ant-typography text-color"
                           >
                             3
                           </span>
@@ -289,7 +289,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                           class="ant-space-item"
                         >
                           <span
-                            class="ant-typography"
+                            class="ant-typography text-color"
                           >
                             24 hours
                           </span>

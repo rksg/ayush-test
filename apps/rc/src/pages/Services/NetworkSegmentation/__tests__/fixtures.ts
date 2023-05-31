@@ -155,13 +155,13 @@ export const mockNsgStatsList = {
       id: '1',
       name: 'nsg1',
       networkIds: [
-        'wlan-1',
-        'wlan2'
+        '2'
       ],
       venueInfos: [
         {
           id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
           venueId: 'mock_venue_1',
+          venueName: 'Mock Venue 1',
           personaGroupId: 'per-444'
         }
       ],
@@ -169,6 +169,7 @@ export const mockNsgStatsList = {
         {
           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
           edgeId: '0000000001',
+          edgeName: 'Smart Edge 1',
           segments: 10,
           devices: 10,
           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
@@ -181,8 +182,7 @@ export const mockNsgStatsList = {
       id: '2',
       name: 'nsg2',
       networkIds: [
-        'wlan-1',
-        'wlan2'
+        '3'
       ],
       venueInfos: [
         {

@@ -37,7 +37,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { layer3ProtocolLabelMapping } from '../../contentsMap'
+import { layer3ProtocolLabelMapping }      from '../../contentsMap'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
 import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
@@ -202,19 +203,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [ updateL3AclPolicy ] = useUpdateL3AclPolicyMutation()
 
   const { layer3SelectOptions, layer3List } = useL3AclPolicyListQuery({
-    params: { ...params, requestId: requestId },
-    payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
       return {
-        layer3SelectOptions: data?.data?.map(
+        layer3SelectOptions: data ? data.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? [],
-        layer3List: data?.data?.map(item => item.name)
+          }) : [],
+        layer3List: data ? data.map(item => item.name) : []
       }
     }
   })
@@ -656,9 +653,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         })
       }}
     >
-      {Object.keys(Layer3ProtocolType).map((type) => {
+      {Object.keys(Layer3ProtocolType).map((type, index) => {
         return (
-          <Option value={type}>
+          <Option value={type} key={index}>
             {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
           </Option>
         )
@@ -760,7 +757,10 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
     <DndProvider backend={HTML5Backend} >
-      <Table
+      {isOnlyViewMode ? <Table
+        columns={basicColumns}
+        dataSource={layer3RuleList as Layer3Rule[]}
+      /> : <Table
         columns={basicColumns}
         dataSource={layer3RuleList as Layer3Rule[]}
         rowKey='priority'
@@ -772,7 +772,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             row: DraggableRow
           }
         }}
-      />
+      />}
     </DndProvider>
   </Form>
 
@@ -1021,6 +1021,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       </AclGridCol>
       <AclGridCol>
         <Button type='link'
+          disabled={layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
           onClick={() => {
             setVisible(true)
             setQueryPolicyId('')
@@ -1037,7 +1038,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
-        mask={true}
         zIndex={10}
         onClose={() => !isViewMode()
           ? showUnsavedConfirmModal(handleLayer3DrawerClose)

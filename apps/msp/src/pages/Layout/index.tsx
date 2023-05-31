@@ -16,9 +16,10 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import { CloudMessageBanner } from '@acx-ui/rc/components'
+import { CloudMessageBanner }  from '@acx-ui/rc/components'
 import {
-  useGetTenantDetailQuery
+  useGetTenantDetailQuery,
+  useMspEntitlementListQuery
 } from '@acx-ui/rc/services'
 import { Outlet, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                     from '@acx-ui/types'
@@ -29,8 +30,8 @@ import { useMenuConfig } from './menuConfig'
 function Layout () {
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
+  const [hasLicense, setHasLicense] = useState(false)
   const [supportStatus,setSupportStatus] = useState('')
-  const [isShown, setIsShown] = useState<boolean | null>(null)
   const basePath = useTenantLink('/users/guestsManager')
   const navigate = useNavigate()
   const params = useParams()
@@ -40,6 +41,7 @@ function Layout () {
   const companyName = userProfile?.companyName
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
 
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -58,12 +60,15 @@ function Layout () {
         setTenantType(data.tenantType)
       }
     }
-  }, [data, userProfile])
+    if (mspEntitlement?.length && mspEntitlement?.length > 0) {
+      setHasLicense(true)
+    }
+  }, [data, userProfile, mspEntitlement])
 
   return (
     <LayoutComponent
       logo={<Logo />}
-      menuConfig={useMenuConfig(tenantType)}
+      menuConfig={useMenuConfig(tenantType, hasLicense)}
       content={
         <>
           <CloudMessageBanner />
@@ -80,11 +85,11 @@ function Layout () {
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
         {!isGuestManager &&
           <>
-            <AlarmsButton isShown={isShown} setIsShown={setIsShown}/>
-            <ActivityButton isShown={isShown !== null ? !isShown : false} setIsShown={setIsShown}/>
+            <AlarmsButton/>
+            <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus} setIsShown={setIsShown}/>
+        <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />

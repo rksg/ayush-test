@@ -74,6 +74,7 @@ export const api = videoCallQoeApi.injectEndpoints({
                     apGroup
                     apName
                     apMac
+                    apSerial
                     ssid
                     radio
                   }

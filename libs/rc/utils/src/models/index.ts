@@ -62,6 +62,7 @@ export * from './NasIdTypeEnum'
 export * from './CalledStationIdTypeEnum'
 export * from './RadiusOptions'
 export * from './VenueRadiusOptions'
-
+export * from './AuthRadiusEnum'
 export * from './EdgeFirewallEnum'
 export * from './EdgeDhcpEnum'
+export * from './BasicServiceSetPriorityEnum'

@@ -27,12 +27,11 @@ import {
   AccessSwitchSaveData,
   validateVlanName,
   UplinkInfo,
-  WebAuthTemplate
+  WebAuthTemplate,
+  defaultTemplateData
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
-
-import { defaultTemplateData } from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
 
 import * as UI from './styledComponents'
 
@@ -234,7 +233,6 @@ export function AccessSwitchDrawer (props: {
         { name: editRecords.map(as => as.name).join(', ') }
       )}
       visible={open}
-      mask={true}
       onClose={onClose}
       destroyOnClose={true}
       width={480}

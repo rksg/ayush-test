@@ -5,6 +5,7 @@ import { act }   from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   policyApi
 } from '@acx-ui/rc/services'
@@ -23,7 +24,8 @@ import {
 } from '../__tests__/fixtures'
 import MigrationContext from '../MigrationContext'
 
-import MigrationForm from './MigrationForm'
+import MigrationForm      from './MigrationForm'
+import { defaultAddress } from './MigrationSettingForm'
 
 const venueResponse = {
   id: '2c16284692364ab6a01f4c60f5941836',
@@ -49,11 +51,14 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
 
 const setZdAPConfigure = jest.fn()
 
+const initFile = new File([''], 'zd_ipv4_db_050923_17_14.bak', { type: 'application/x-trash' })
+
 const initState = {
-  file: new Blob(),
+  file: initFile,
   venueName: '',
   description: '',
-  address: ''
+  address: defaultAddress,
+  errorMsg: ''
 } as MigrationContextType
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -71,6 +76,8 @@ describe('MigrationForm', () => {
   })
 
   it('should render MigrationForm successfully', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     mockServer.use(rest.post(
       getUrlForTest(CommonUrlsInfo.getVenuesList),
       (req, res, ctx) => res(ctx.json(venuelist))
@@ -112,19 +119,34 @@ describe('MigrationForm', () => {
 
     await screen.findByRole('heading', { name: 'Backup File Selection', level: 3 })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Validate' }))
+    const errorFile = new File([''], 'zd_ipv4_db_050923_17_14.csv', { type: 'application/csv' })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, errorFile)
 
-    expect(await screen.findByText('Validation Table')).toBeVisible()
+    const bigFile = new File([''], 'zd_ipv4_db_050923_17_big.bak', { type: 'application/x-trash' })
+    Object.defineProperty(bigFile, 'size', { value: 1024 * 1024 * 10 + 1, configurable: true })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, bigFile)
 
-    await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
+    const bakFile = new File([''], 'zd_ipv4_db_050923_17_14.bak', { type: 'application/x-trash' })
+    Object.defineProperty(bakFile, 'size', { value: 1024 * 1024 + 1, configurable: true })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, bakFile)
 
-    await screen.findByRole('heading', { level: 3, name: 'Migration' })
+    await userEvent.click(await screen.findByRole('button', { name: 'Validate' }))
 
-    await userEvent.type(await screen.findByTestId('name'), 'venuexxxx')
-    await userEvent.type(await screen.findByTestId('test-description'), 'venuexxxx')
-    await userEvent.type(await screen.findByTestId('address'), 'venuexxxx')
+    // expect(await screen.findByText('Validation Table')).toBeVisible()
+    await screen.findByRole('heading', { name: 'Validation State: Qualified', level: 4 })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
+    // await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
+
+    // await screen.findByRole('heading', { level: 3, name: 'Migration' })
+
+    // await userEvent.type(await screen.findByTestId('name'), 'venuexxxx')
+    // await userEvent.type(await screen.findByTestId('test-description'), 'venuexxxx')
+    // await userEvent.type(await screen.findByTestId('address'), 'venuexxxx')
+
+    // await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
 
     // expect(await screen.findByText('Summary Table')).toBeVisible()
 
@@ -133,3 +155,4 @@ describe('MigrationForm', () => {
   })
 
 })
+

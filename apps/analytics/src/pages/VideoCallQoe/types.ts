@@ -73,6 +73,7 @@ export interface Participants{
     apGroup: string | null
     apName: string | null
     apMac: string | null
+    apSerial: string | null
     ssid: string | null
     radio: string | null
   } | null
