@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }             from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
 import {
@@ -26,6 +27,7 @@ interface SwitchTab {
 
 const useTabs = () : SwitchTab[] => {
   const { $t } = useIntl()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const listTab = {
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
@@ -46,13 +48,14 @@ const useTabs = () : SwitchTab[] => {
   }
   return [
     listTab,
-    wiredReportTab
+    ...(isNavbarEnhanced ? [wiredReportTab] : [])
   ]
 }
 
 export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const basePath = useTenantLink('/devices/')
   const onTabChange = (tab: string) =>
     navigate({
@@ -63,8 +66,14 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Switches' })}
-      breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
+      title={isNavbarEnhanced
+        ? $t({ defaultMessage: 'Switches' })
+        : $t({ defaultMessage: 'Switch' })
+      }
+      breadcrumb={isNavbarEnhanced
+        ? [{ text: $t({ defaultMessage: 'Wired' }) }]
+        : []
+      }
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}

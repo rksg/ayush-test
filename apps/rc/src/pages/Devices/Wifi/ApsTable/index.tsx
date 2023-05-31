@@ -6,8 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Button,
-  Dropdown,
-  PageHeader
+  Dropdown
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import { ApTable, ApsTabContext, CsvSize, ImportFileDrawer, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
@@ -145,10 +144,6 @@ export default function useApsTable () {
   ]
 
   const component = <>
-    {!isNavbarEnhanced && <PageHeader
-      title={$t(title, { count: null })}
-      extra={extra}
-    />}
     <ApsTabContext.Provider value={{ setApsCount }}>
       <ApTable
         searchable={true}

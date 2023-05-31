@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }             from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }   from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportHeader } from '@acx-ui/reports/components'
 import {
@@ -27,6 +28,7 @@ interface WifiTab {
 
 const useTabs = () : WifiTab[] => {
   const { $t } = useIntl()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const listTab = {
     key: WifiTabsEnum.LIST,
     ...useApsTable()
@@ -61,8 +63,8 @@ const useTabs = () : WifiTab[] => {
   }
   return [
     listTab,
-    apReportTab,
-    airtimeReportTab
+    ...(isNavbarEnhanced ? [apReportTab] : []),
+    ...(isNavbarEnhanced ? [airtimeReportTab] : [])
   ]
 }
 
@@ -70,6 +72,7 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -79,8 +82,10 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Access Points' })}
-      breadcrumb={[{ text: $t({ defaultMessage: 'Wi-Fi' }) }]}
+      title={isNavbarEnhanced
+        ? $t({ defaultMessage: 'Access Points' })
+        : $t({ defaultMessage: 'Wi-Fi' })}
+      breadcrumb={isNavbarEnhanced ? [{ text: $t({ defaultMessage: 'Wi-Fi' }) }] : []}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}

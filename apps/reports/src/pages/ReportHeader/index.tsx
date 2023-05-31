@@ -2,6 +2,7 @@ import moment from 'moment-timezone'
 
 import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
 import { RangePicker, PageHeader }   from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { useDateFilter }             from '@acx-ui/utils'
 
 export function ReportHeader (props: {
@@ -21,14 +22,18 @@ export function ReportHeader (props: {
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   return (
     <PageHeader
       title={name}
-      breadcrumb={[
-        { text: 'Business Insights' },
-        { text: 'Reports', link: '/reports' }
-      ]}
+      breadcrumb={isNavbarEnhanced
+        ? [
+          { text: 'Business Insights' },
+          { text: 'Reports', link: '/reports' }
+        ] : [
+          { text: 'Reports', link: '/reports' }
+        ]}
       extra={[
         showFilter && <NetworkFilter
           key='reports-network-filter'

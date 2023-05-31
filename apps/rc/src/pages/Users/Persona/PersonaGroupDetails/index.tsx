@@ -196,7 +196,6 @@ function PersonaGroupDetails () {
               {/* eslint-disable-next-line max-len */}
               {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
-
             <BasePersonaTable
               personaGroupId={personaGroupId}
               colProps={{

@@ -74,7 +74,11 @@ function PersonaPageHeader () {
                     { personaGroupCount })
                   : $t({ defaultMessage: 'Persona Group' })
                 }
-                children={<PersonaGroupTable />}
+                children={
+                  <PersonaGroupContext.Provider value={{ setPersonaGroupCount }}>
+                    <PersonaGroupTable />
+                  </PersonaGroupContext.Provider>
+                }
               />
               <Tabs.TabPane
                 key={'persona'}
@@ -82,7 +86,11 @@ function PersonaPageHeader () {
                   ? $t({ defaultMessage: 'Personas ({personasCount})' }, { personasCount })
                   : $t({ defaultMessage: 'Persona' })
                 }
-                children={<PersonaTable />}
+                children={
+                  <PersonasContext.Provider value={{ setPersonasCount }}>
+                    <PersonaTable />
+                  </PersonasContext.Provider>
+                }
               />
             </Tabs>
           </PersonasContext.Provider>

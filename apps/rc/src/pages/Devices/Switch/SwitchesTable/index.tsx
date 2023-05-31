@@ -4,8 +4,7 @@ import { FetchBaseQueryError }    from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }        from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Dropdown, PageHeader }                                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { Button, Dropdown }                                                               from '@acx-ui/components'
 import { ImportFileDrawer, CsvSize, SwitchTable, SwitchTabContext, defaultSwitchPayload } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
@@ -20,7 +19,6 @@ export default function useSwitchesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible] = useState(false)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const [ switchCount, setSwitchCount ] = useState(0)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
 
@@ -104,10 +102,6 @@ export default function useSwitchesTable () {
   ]
 
   const component = <>
-    {!isNavbarEnhanced && <PageHeader
-      title={$t(title, { count: null })}
-      extra={extra}
-    />}
     <ImportFileDrawer type='Switch'
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['5MB']}

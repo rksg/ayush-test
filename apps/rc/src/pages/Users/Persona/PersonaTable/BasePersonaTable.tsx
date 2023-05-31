@@ -335,7 +335,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     personaListQuery.setPayload(payload)
   }
 
-  setPersonasCount(personaListQuery.data?.totalCount || 0)
+  setPersonasCount?.(personaListQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[

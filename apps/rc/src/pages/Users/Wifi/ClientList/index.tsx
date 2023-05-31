@@ -101,14 +101,20 @@ const useTabs = () : WirelessTab[] => {
   const { $t } = useIntl()
   const clientsTab = {
     key: WirelessTabsEnum.CLIENTS,
-    title: $t({ defaultMessage: 'Clients List ({clientCount})' }, { clientCount }),
+    title: isNavbarEnhanced
+      ? $t({ defaultMessage: 'Clients List ({clientCount})' }, { clientCount })
+      : $t({ defaultMessage: 'Clients ({clientCount})' }, { clientCount })
+    ,
     component: <ClientTabContext.Provider value={{ setClientCount }}>
       <ClientDualTable />
     </ClientTabContext.Provider>
   }
   const guestTab = {
     key: WirelessTabsEnum.GUESTS,
-    title: $t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount }),
+    title: isNavbarEnhanced
+      ? $t({ defaultMessage: 'Guest Pass Credentials ({guestCount})' }, { guestCount })
+      : $t({ defaultMessage: 'Guest Pass Credentials' })
+    ,
     component: <GuestTabContext.Provider value={{ setGuestCount }}>
       <GuestsTab dateFilter={dateFilter}/>
     </GuestTabContext.Provider>,
@@ -143,6 +149,7 @@ const useTabs = () : WirelessTab[] => {
 export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const basePath = useTenantLink('/users/wifi/')
   const onTabChange = (tab: string) =>
     navigate({
@@ -153,8 +160,14 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader
-      title={$t({ defaultMessage: 'Wireless' })}
-      breadcrumb={[{ text: $t({ defaultMessage: 'Cients' }) }]}
+      title={isNavbarEnhanced
+        ? $t({ defaultMessage: 'Wireless' })
+        : $t({ defaultMessage: 'Wi-Fi' })
+      }
+      breadcrumb={isNavbarEnhanced
+        ? [{ text: $t({ defaultMessage: 'Cients' }) }]
+        : []
+      }
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
