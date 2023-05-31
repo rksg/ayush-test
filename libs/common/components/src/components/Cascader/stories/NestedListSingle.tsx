@@ -1,8 +1,8 @@
-import { Select, Option } from '..'
+import { Cascader, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
-const options: Option[] = [
+const options: CascaderOption[] = [
   {
     value: 'v1',
     label: 'Venue 1',
@@ -10,6 +10,7 @@ const options: Option[] = [
       {
         value: 'v1-a',
         label: 'APs',
+        ignoreSelection: true,
         children: [
           {
             value: 'v1-a-ap3',
@@ -24,6 +25,7 @@ const options: Option[] = [
       {
         value: 'v1-s',
         label: 'Switches',
+        ignoreSelection: true,
         children: [
           {
             value: 'v1-s-s1',
@@ -44,6 +46,7 @@ const options: Option[] = [
       {
         value: 'v2-a',
         label: 'APs',
+        ignoreSelection: true,
         children: [
           {
             value: 'v2-a-ap5',
@@ -57,7 +60,7 @@ const options: Option[] = [
 
 export function NestedListSingle () {
   return <div style={{ width: 200 }}>
-    <Select
+    <Cascader
       placeholder='Entire Organization'
       defaultValue={['v1', 'v1-s', 'v1-s-s2']}
       options={options}

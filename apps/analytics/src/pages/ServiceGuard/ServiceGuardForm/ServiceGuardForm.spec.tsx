@@ -146,7 +146,7 @@ describe('ServiceGuardForm', () => {
     expect(await body.findByTestId('QuestionMarkCircleOutlined')).toBeVisible()
 
     // Step 2
-    await type(await screen.findByRole('combobox'), '2')
+    await type(await screen.findByRole('combobox'), 'AP 4')
     await click(await screen.findByRole('menuitemcheckbox', { name: /AP 4/ }))
 
     // Navigate to Step 3
