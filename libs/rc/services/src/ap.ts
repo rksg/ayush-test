@@ -629,7 +629,7 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateApMeshSettings'
+            'UpdateApMeshOptions'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'MESH_SETTINGS' }]))
