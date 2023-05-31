@@ -1,13 +1,11 @@
 import React from 'react'
 
-import { DefaultOptionType } from 'antd/es/cascader'
-
-import { RadioBand, Select, Option } from '..'
+import { RadioBand, Cascader, CascaderOption } from '..'
 
 import { onApply } from './utils'
 
 
-const createNode: () => DefaultOptionType = () => {
+const createNode: () => CascaderOption = () => {
   const isChild = Math.random() > 0.6
   return {
     label: `Node ${(Math.random() * 1e18).toString(36).slice(0, 3).toUpperCase()}`,
@@ -19,7 +17,7 @@ const createNode: () => DefaultOptionType = () => {
 }
 
 const mockData = () => {
-  const children: DefaultOptionType[] = []
+  const children: CascaderOption[] = []
   for (let i = 0; i < Math.random() * 1000; i++) {
     children.push(createNode())
   }
@@ -33,14 +31,14 @@ export function LazyNested ({ multiple=false,
   isRadioBandDisabled=false }:
   { multiple?:boolean,showRadioBand?:boolean,
      defaultRadioBand?:RadioBand[], isRadioBandDisabled?:boolean }) {
-  const [options, setOptions] = React.useState<DefaultOptionType[]>([])
+  const [options, setOptions] = React.useState<CascaderOption[]>([])
   const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
     setOptions(mockData)
   }, [])
 
-  const loadData = (selectedOptions: DefaultOptionType[]) => {
+  const loadData = (selectedOptions: CascaderOption[]) => {
     const targetOption = selectedOptions[selectedOptions.length - 1]
     targetOption['loading'] = true
     setLoading(true)
@@ -55,14 +53,15 @@ export function LazyNested ({ multiple=false,
   }
 
   return <div style={{ width: 200 }}>
-    <Select
+    <Cascader
       multiple={multiple}
+      checkable
       showRadioBand={showRadioBand}
       defaultRadioBand={defaultRadioBand}
       isRadioBandDisabled={isRadioBandDisabled}
       radioBandDisabledReason={'Disabled for storybook.'}
       placeholder='Entire Organization'
-      options={options as Option[]}
+      options={options}
       onApply={onApply}
       loadData={loadData}
       loading={loading}
