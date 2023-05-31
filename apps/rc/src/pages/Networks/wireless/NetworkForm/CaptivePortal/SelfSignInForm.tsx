@@ -278,7 +278,7 @@ export function SelfSignInForm () {
             initialValue={[]}
             rules={[
               { required: allowedDomainsCheckbox },
-              { validator: (_, value) => domainsNameRegExp(value, allowedDomainsCheckbox) }]
+              { validator: (_, value) => domainsNameRegExp(Array.isArray(value)? value : value.split(','), allowedDomainsCheckbox) }]
             }
             children={
               <Input
