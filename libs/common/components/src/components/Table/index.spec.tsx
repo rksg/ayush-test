@@ -785,19 +785,47 @@ describe('Table component', () => {
       expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
     })
 
-    it('shoult call onDisplayRowChange when enableApiFilter = false', async () => {
+    it('should call onDisplayRowChange with filtered data (enableApiFilter=false)', async () => {
       const onDisplayRowChange = jest.fn()
       render(<Table
         columns={filteredColumns}
         dataSource={filteredData}
-        enableApiFilter={false}
         floatRightFilters={true}
+        enableApiFilter={false}
         onDisplayRowChange={onDisplayRowChange}
       />)
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       fireEvent.change(input, { target: { value: 'John Doe' } })
-      expect(onDisplayRowChange).toBeCalled()
+      expect(onDisplayRowChange)
+        .toHaveBeenNthCalledWith(2, [{ ...filteredData![0], children: undefined }])
+    })
+
+    it('should call onDisplayRowChange with empty array (datasource undefined)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        floatRightFilters={true}
+        enableApiFilter={false}
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      await screen.findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      expect(onDisplayRowChange).toHaveBeenCalledWith([])
+    })
+
+    it('should call onDisplayRowChange with unfiltered data (enableApiFilter=true)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        floatRightFilters={true}
+        enableApiFilter
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      expect(onDisplayRowChange).toHaveBeenNthCalledWith(2, filteredData)
     })
   })
 
