@@ -55,8 +55,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    addNetwork: build.mutation<Network, RequestPayload>({
-    //addNetwork: build.mutation<CommonResult, RequestPayload>({
+    addNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params, RKS_NEW_UI)
         return {
@@ -66,8 +65,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
-    updateNetwork: build.mutation<Network, RequestPayload>({
-    //updateNetwork: build.mutation<CommonResult, RequestPayload>({
+    updateNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params, RKS_NEW_UI)
         return {
