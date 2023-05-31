@@ -45,7 +45,9 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
   }), [device])
 
   const getApMeshRoleAbbr = () => {
-    return device.meshRole ? `(${apMeshRoleAbbrMap[device.meshRole]})` : ''
+    return device.meshRole && device.meshRole !== APMeshRole.DISABLED
+      ? `(${apMeshRoleAbbrMap[device.meshRole]})`
+      : ''
   }
 
   useEffect(() => {
