@@ -8,7 +8,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteNetworkSegmentationGroupMutation, useGetEdgeListQuery, useGetNetworkSegmentationViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { useDeleteNetworkSegmentationGroupMutation, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceListRoutePath,
@@ -18,8 +18,8 @@ import {
   ServiceType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                 from '@acx-ui/user'
+import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -31,23 +31,10 @@ const getNetworkSegmentationPayload = {
     'edgeInfos'
   ]
 }
-const venueOptionsDefaultPayload = {
-  fields: ['name', 'id'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
-const edgeOptionsDefaultPayload = {
-  fields: ['name', 'serialNumber'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
 
 const NetworkSegmentationTable = () => {
 
   const { $t } = useIntl()
-  const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
@@ -59,25 +46,6 @@ const NetworkSegmentationTable = () => {
       sortOrder: 'ASC'
     }
   })
-  const { venueOptions } = useVenuesListQuery(
-    { params, payload: venueOptionsDefaultPayload }, {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          venueOptions: data?.data.map(item => ({ key: item.id, value: item.name })),
-          isLoading
-        }
-      }
-    })
-  const { edgeOptions } = useGetEdgeListQuery(
-    { params, payload: edgeOptionsDefaultPayload },
-    {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          edgeOptions: data?.data.map(item => ({ key: item.serialNumber, value: item.name })),
-          isLoading
-        }
-      }
-    })
   const [
     deleteNetworkSegmentationGroup,
     { isLoading: isNetworkSegmentationGroupDeleting }
@@ -110,10 +78,10 @@ const NetworkSegmentationTable = () => {
       dataIndex: 'venueInfos',
       sorter: true,
       render: (data, row) => {
-        const venueId = row.venueInfos[0]?.venueId
+        const venueInfo = row.venueInfos[0]
         return (
-          <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
-            {venueOptions && venueOptions.find(item => item.key === venueId)?.value}
+          <TenantLink to={`/venues/${venueInfo?.venueId}/venue-details/overview`}>
+            {venueInfo?.venueName}
           </TenantLink>
         )
       }
@@ -124,10 +92,10 @@ const NetworkSegmentationTable = () => {
       dataIndex: 'edgeInfos',
       sorter: true,
       render: (data, row) => {
-        const edgeId = row.edgeInfos[0]?.edgeId
+        const edgeInfo = row.edgeInfos[0]
         return (
-          <TenantLink to={`/devices/edge/${edgeId}/details/overview`}>
-            {edgeOptions && edgeOptions.find(item => item.key === edgeId)?.value}
+          <TenantLink to={`/devices/edge/${edgeInfo?.edgeId}/details/overview`}>
+            {edgeInfo?.edgeName}
           </TenantLink>
         )
       }

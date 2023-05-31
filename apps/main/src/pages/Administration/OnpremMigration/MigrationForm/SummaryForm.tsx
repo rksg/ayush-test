@@ -33,7 +33,7 @@ const SummaryForm = (props: SummaryFormProps) => {
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
   // eslint-disable-next-line max-len
-  const [ getMigrationResult, { data: migrateResult, isLoading, isFetching }] = useLazyGetMigrationResultQuery()
+  const [ getMigrationResult, { data: migrateResult }] = useLazyGetMigrationResultQuery()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,6 +48,10 @@ const SummaryForm = (props: SummaryFormProps) => {
       setValidateZdApsResult(migrateResult?.apImportResults)
     }
   },[migrateResult])
+
+  const callbackfn = (item: MigrationResultType) => {
+    return item.state === 'Completed'
+  }
 
   const columns: TableProps<MigrationResultType>['columns'] = [
     {
@@ -95,17 +99,27 @@ const SummaryForm = (props: SummaryFormProps) => {
 
   return (
     <Loader states={[
-      { isLoading: isLoading,
-        isFetching: isFetching
+      { isLoading: false,
+        isFetching: !migrateResult?.state
       }
     ]}>
       <Row>
         <Col span={12}>
-          <Subtitle level={3}>
-            {$t({ defaultMessage: 'Summary Table' })}
-          </Subtitle>
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Summary State' })}: {migrateResult?.state ?? '--'}
+          </Subtitle>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={3}>
+          <Subtitle level={5}>
+            {$t({ defaultMessage: 'Total' })}: {migrateResult?.apImportResults?.length ?? '--'}
+          </Subtitle>
+        </Col>
+        <Col span={3}>
+          <Subtitle level={5}>
+            {$t({ defaultMessage: 'Completed' })}: {
+              migrateResult?.apImportResults?.filter(callbackfn).length ?? '--'}
           </Subtitle>
         </Col>
       </Row>

@@ -45,7 +45,7 @@ describe('AccessControlTable', () => {
   })
 
   it('should render Layer3Component in AccessControlTable', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(layer3PolicyListResponse)
@@ -84,7 +84,7 @@ describe('AccessControlTable', () => {
   })
 
   it('should delete selected row from Layer3Component in AccessControlTable', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(layer3PolicyListResponse)

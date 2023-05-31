@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Form,
@@ -12,14 +12,13 @@ import {
   TableProps,
   useStepFormContext
 } from '@acx-ui/components'
-import { AccessSwitch } from '@acx-ui/rc/utils'
+import { AccessSwitchTable, AccessSwitchTableDataType } from '@acx-ui/rc/components'
+import { AccessSwitch }                                 from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
 
 import { AccessSwitchDrawer } from './AccessSwitchDrawer'
-import { AccessSwitchTable }  from './AccessSwitchTable'
-
 
 export function AccessSwitchForm () {
   const { $t } = useIntl()
@@ -27,9 +26,19 @@ export function AccessSwitchForm () {
 
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<AccessSwitch[]>([])
+  const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
 
+  const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
   const accessSwitchInfos = useWatch('accessSwitchInfos', form)
   const venueId = useWatch('venueId', form)
+
+  useEffect(() => {
+    setAccessSwitchData(accessSwitchInfos?.map(as => ({
+      ...as,
+      distributionSwitchName: distributionSwitchInfos
+        ?.find(ds => ds.id === as.distributionSwitchId)?.name || ''
+    })))
+  }, [accessSwitchInfos, distributionSwitchInfos])
 
   const onClose = () => {
     setOpen(false)
@@ -68,7 +77,7 @@ export function AccessSwitchForm () {
     </Typography.Paragraph>
     <AccessSwitchTable rowActions={rowActions}
       rowSelection={{ type: 'checkbox', selectedRowKeys: selected.map(as=>as.id) }}
-      dataSource={accessSwitchInfos} />
+      dataSource={accessSwitchData} />
     <Form.Item name='accessSwitchInfos'
       rules={[{
         validator: (_, asList) => {

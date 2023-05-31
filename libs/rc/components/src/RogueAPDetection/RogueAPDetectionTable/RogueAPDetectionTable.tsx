@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelRoguePoliciesMutation,
@@ -25,9 +25,10 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../../SimpleListTooltip'
+import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   return {
     fields: [
@@ -51,7 +52,9 @@ const useDefaultVenuePayload = (): RequestPayload => {
     searchTargetFields: ['name', 'description'],
     filters: {},
     sortField: 'name',
-    sortOrder: 'ASC'
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 2048
   }
 }
 
@@ -110,18 +113,7 @@ export function RogueAPDetectionTable () {
         selectedItems.length > 0 && !selectedItems.map(item => item.name).includes(DEFAULT_PROFILE)
       ),
       onClick: (rows, clearSelection) => {
-        if (rows.some(row => Number(row.venueIds.length) > 0)) {
-          showActionModal({
-            type: 'error',
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'One of the policy has been applied in network.'
-            })
-          })
-          clearSelection()
-        } else {
-          doDelete(rows, clearSelection)
-        }
+        doDelete(rows, clearSelection)
       }
     },
     {
@@ -157,7 +149,7 @@ export function RogueAPDetectionTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}>
-            <Button type='primary'>
+            <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
             </Button>
           </TenantLink>

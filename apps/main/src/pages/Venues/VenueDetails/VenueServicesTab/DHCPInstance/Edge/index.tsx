@@ -2,11 +2,10 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader }                              from '@acx-ui/components'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable }                                                        from '@acx-ui/rc/components'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, ServiceInfo }                                           from '@acx-ui/rc/components'
 import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
-import { EdgeDhcpHostStatus }                                                                           from '@acx-ui/rc/utils'
-
-import { EdgeDhcpBasicInfo } from './BasicInfo'
+import { EdgeDhcpHostStatus, ServiceOperation, ServiceType, getServiceDetailsLink }                     from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                   from '@acx-ui/react-router-dom'
 
 const EdgeDhcpTab = () => {
 
@@ -79,6 +78,51 @@ const EdgeDhcpTab = () => {
     }
   ]
 
+  const dhcpInfo = [
+    {
+      title: $t({ defaultMessage: 'Service Name' }),
+      content: (
+        dhcpData &&
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_DHCP,
+              oper: ServiceOperation.DETAIL,
+              serviceId: dhcpData?.id!
+            })}>
+            {dhcpData?.serviceName}
+          </TenantLink>
+      )
+    },
+    {
+      title: $t({ defaultMessage: 'Service Health' }),
+      content: ''
+    },
+    {
+      title: $t({ defaultMessage: 'DHCP Relay' }),
+      content: (
+        dhcpData?.dhcpRelay === 'true' ?
+          $t({ defaultMessage: 'ON' }) :
+          $t({ defaultMessage: 'OFF' })
+      )
+    },
+    {
+      title: $t({ defaultMessage: 'DHCP Pools' }),
+      content: dhcpData?.dhcpPoolNum
+    },
+    {
+      title: $t({ defaultMessage: 'Lease Time' }),
+      content: dhcpData?.leaseTime
+    },
+    {
+      title: $t({ defaultMessage: 'Smart Edge' }),
+      content: (
+        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/edge-details/overview`}>
+          {edgeData?.name}
+        </TenantLink>
+      )
+    }
+  ]
+
   return (
     <Loader states={[{
       isFetching: isDhcpLoading || isEdgeLoading || isDhcpStatsLoading,
@@ -86,10 +130,7 @@ const EdgeDhcpTab = () => {
     }]}>
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <EdgeDhcpBasicInfo
-            edgeData={edgeData}
-            dhcpData={dhcpData}
-          />
+          <ServiceInfo data={dhcpInfo} />
         </GridCol>
         <ContentSwitcher tabDetails={tabDetails} size='large' />
       </GridRow>
