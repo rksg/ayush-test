@@ -1,3 +1,4 @@
+import { useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
 import { dataApi, dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
@@ -25,6 +26,7 @@ jest.mock('./SummaryBoxes', () => ({
 
 describe('HealthPage', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(dataApi.util.resetApiState())
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', { data: header.queryResult })
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
@@ -36,9 +38,21 @@ describe('HealthPage', () => {
   })
   const params = { activeTab: 'overview', tenantId: 'tenant-id' }
   it('should render page header and grid layout', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><HealthPage /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    expect(screen.queryByText('Health')).toBeNull()
+    expect(await screen.findByTestId('Summary Boxes')).toBeVisible()
+    expect(await screen.findByText('Summary TimeSeries')).toBeVisible()
+    expect(await screen.findByText('Overview')).toBeVisible()
+    expect(await screen.findByText('Customized SLA Threshold')).toBeVisible()
+    expect(await screen.findByText('Kpi Section')).toBeVisible()
+  })
+  it('should render header when tier is ANLT-ADV', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    render(<Provider><HealthPage /></Provider>, { route: { params } })
     expect(await screen.findByText('Health')).toBeVisible()
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('Network Assurance')).toBeVisible()
     expect(await screen.findByTestId('Summary Boxes')).toBeVisible()
     expect(await screen.findByText('Summary TimeSeries')).toBeVisible()
     expect(await screen.findByText('Overview')).toBeVisible()
@@ -66,5 +80,16 @@ describe('HealthPage', () => {
       hash: '',
       search: ''
     })
+  })
+  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><HealthPage /></Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    expect(await screen.findByText('Health')).toBeVisible()
+    expect(await screen.findByTestId('Summary Boxes')).toBeVisible()
+    expect(await screen.findByText('Summary TimeSeries')).toBeVisible()
+    expect(await screen.findByText('Overview')).toBeVisible()
+    expect(await screen.findByText('Customized SLA Threshold')).toBeVisible()
+    expect(await screen.findByText('Kpi Section')).toBeVisible()
   })
 })

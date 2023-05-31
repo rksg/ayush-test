@@ -5,7 +5,7 @@ import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { networkHierarchy } from '../__tests__/fixtures'
 
-import { IncidentListPage as Incidents, IncidentTabContent } from '.'
+import { IncidentListPageLegacy as Incidents, IncidentTabContentLegacy } from './incidentListPageLegacy'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -105,7 +105,7 @@ describe('Incidents Page', () => {
       }
       render(
         <Provider>
-          <IncidentTabContent disableGraphs />
+          <IncidentTabContentLegacy disableGraphs />
         </Provider>,
         { route: { params } }
       )

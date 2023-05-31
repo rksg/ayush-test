@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import { Form }                   from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
@@ -11,6 +11,7 @@ import { TenantLink, useTenantLink }                                    from '@a
 import { useUserProfileContext }                                        from '@acx-ui/user'
 import { noDataDisplay }                                                from '@acx-ui/utils'
 
+import { CountContext }  from '..'
 import * as contents     from '../contents'
 import { TestName }      from '../ServiceGuardForm/FormItems'
 import {
@@ -44,6 +45,7 @@ export function ServiceGuardTable () {
   const { $t } = useIntl()
   const queryResults = useAllServiceGuardSpecsQuery()
   const navigate = useNavigate()
+  const { setCount } = useContext(CountContext)
   const serviceGuardPath = useTenantLink('/analytics/serviceValidation/')
   const { data: userProfile } = useUserProfileContext()
   const { deleteTest, response: deleteResponse } = useDeleteServiceGuardTestMutation()
@@ -242,6 +244,7 @@ export function ServiceGuardTable () {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
+        onDisplayRowChange={(dataSource) => setCount?.(dataSource.length)}
       />
       {cloneModal}
     </Loader>
