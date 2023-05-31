@@ -66,7 +66,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
 
   const fieldDataKey = (context === 'network')
     ? ['wlan','advancedCustomization', 'radiusOptions']
-    : ['radiusOptions']
+    : []
 
   const nasIdTypeFieldName = [...fieldDataKey, 'nasIdType']
   const nasIdDelimiterFieldName = [...fieldDataKey, 'nasIdDelimiter']
@@ -129,6 +129,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
           { validator: (_, value) => userDefinedNasIdValidator(value) }
         ]}
         children={<Input onChange={handleChanged}
+          style={{ width: '412px' }}
           placeholder={$t({ defaultMessage: 'Maximun is 64 characters' })}/>}
       />
       }
