@@ -273,7 +273,8 @@ export interface LanPort {
 	vlanMembers: string,
 	enabled?: boolean,
 	portId?: string,
-	type?: 'ACCESS' | 'GENERAL' | 'TRUNK'
+	type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
+  vni: number
 }
 
 export interface ApModel {
