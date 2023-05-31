@@ -39,6 +39,7 @@ export interface EnvironmentConfig {
   MLISA_OCCUPANCY_URL: string
   ASK_MLISA_URL: string
   MLISA_SUPERSET_URL: string
+  API_DOCUMENTATION_URL: string
 }
 
 const config: { value?: EnvironmentConfig } = {}
