@@ -110,6 +110,7 @@ export const Wrapper = styled.div`
           font-family: var(--acx-accent-brand-font);
           font-size: var(--acx-headline-4-font-size);
           font-weight: var(--acx-headline-4-font-weight);
+          color: var(--acx-primary-white);
           margin: 0;
           flex-shrink: 0;
           &:active { background: unset; }
@@ -217,6 +218,7 @@ export const Wrapper = styled.div`
                 color: var(--acx-neutrals-20);
                 opacity: 0.6;
                 padding: 8px 16px 4px;
+                white-space: nowrap;
               }
             }
           }

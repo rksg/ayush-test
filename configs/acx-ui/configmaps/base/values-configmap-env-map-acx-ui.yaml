@@ -51,4 +51,7 @@ data:
       - configmap: configmap-acx-ui
         key: static.assets
         name: STATIC_ASSETS
+      - configmap: configmap-acx-ui
+        key: api.documentation.url
+        name: API_DOCUMENTATION_URL
 
