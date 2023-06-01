@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form, Input }                   from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
@@ -8,7 +8,7 @@ import { useParams }                     from 'react-router-dom'
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
 import {
   useDeleteDpskPassphraseDevicesMutation,
-  useGetDpskPassphraseDevicesQuery,
+  useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
   useUpdateDpskPassphraseDevicesMutation
 } from '@acx-ui/rc/services'
 import {
@@ -16,7 +16,7 @@ import {
   FILTER,
   SEARCH,
   NewDpskPassphrase,
-  MacRegistrationFilterRegExp
+  MacRegistrationFilterRegExp, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -48,6 +48,35 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       passphraseId: passphraseInfo.id
     }
   })
+
+  const { data } = useGetDpskQuery({ params: params })
+
+  useEffect(() => {
+    if (data?.networkIds?.length) {
+      tableQuery.setPayload({
+        fields: ['name', 'id'],
+        filters: {
+          id: data.networkIds
+        }
+      })
+    }
+  }, [data])
+
+  const tableQuery = useTableQuery({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      fields: ['name', 'id'],
+      filters: { id: data?.networkIds }
+    }
+  })
+
+  const getNetworkId = (networkName: string) => {
+    if (tableQuery.data && tableQuery.data.data) {
+      const networkIdx = tableQuery.data.data.findIndex(network => network.name === networkName)
+      return tableQuery.data.data[networkIdx].id
+    }
+    return ''
+  }
 
   const [updateDevicesData] = useUpdateDpskPassphraseDevicesMutation()
   const [deleteDevicesData] = useDeleteDpskPassphraseDevicesMutation()
@@ -81,7 +110,8 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       sorter: true,
       render: (data, row) => {
         return row.lastConnectedNetwork ? <TenantLink
-          to={`networks/wireless/${row.lastConnectedNetwork}/network-details/overview`}>
+          // eslint-disable-next-line max-len
+          to={`networks/wireless/${getNetworkId(row.lastConnectedNetwork)}/network-details/overview`}>
           {row.lastConnectedNetwork}
         </TenantLink> : ''
       }
