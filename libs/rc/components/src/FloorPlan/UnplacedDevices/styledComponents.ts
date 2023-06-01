@@ -2,13 +2,25 @@ import { List }    from 'antd'
 import { XYCoord } from 'react-dnd'
 import styled      from 'styled-components'
 
-export const DeviceList = styled(List)`
-    box-shadow: 0px 4px 8px var(--acx-neutrals-40);
-    background: var(--acx-primary-white);
+import { Dropdown } from '@acx-ui/components'
 
+export const OverlayContainer = styled(Dropdown.OverlayContainer)`
+    border: 1px solid var(--acx-neutrals-30);
+    box-shadow: 0px 6px 16px rgba(51, 51, 51, 0.15);
+`
+
+export const DeviceList = styled(List)`
+    .ant-list-header {
+        padding-top: 4px;
+        border-bottom: unset;
+    }
+    .ant-list-footer {
+        padding-bottom: 4px;
+    }
     .ant-list-items {
         max-height: 180px;
         overflow: scroll;
+        margin: 0 -16px;
     }
 `
 

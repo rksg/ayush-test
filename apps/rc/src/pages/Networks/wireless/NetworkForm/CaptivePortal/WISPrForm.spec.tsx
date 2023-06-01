@@ -18,7 +18,8 @@ import {
   dhcpResponse,
   externalProviders,
   wisprDataWPA2,
-  wisprDataForAllAccept
+  wisprDataForAllAccept,
+  wisprDataForOnlyAuth
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -168,5 +169,52 @@ describe('CaptiveNetworkForm-WISPr', () => {
     expect(await screen.findByTestId('bypasscna_checkbox')).toBeDisabled()
     expect((await screen.findByTestId('always_accept'))).not.toBeDisabled()
     expect(await screen.findByTestId('radius_server_selection')).toHaveClass('ant-select-disabled')
+  })
+  it('WISPr always accept test case when only Auth is selected', async ()=>{
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{ editMode: true, cloneMode: true, data: wisprDataForOnlyAuth }}>
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <WISPrForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
+    await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
+    await screen.findByText('Authentication Connections')
+    expect((await screen.findByTestId('always_accept'))).not.toBeChecked()
+    expect((await screen.findByTestId('radius'))).toBeChecked()
+    expect((await screen.findByTestId('bypasscna_checkbox'))).not.toBeChecked()
+    expect(await screen.findByTestId('bypasscna_checkbox')).not.toBeDisabled()
+    expect((await screen.findByTestId('always_accept'))).not.toBeDisabled()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByTestId('radius_server_selection')).not.toHaveClass('ant-select-disabled')
+  })
+  it('WISPr always accept test case when feature toggle is off', async ()=>{
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{ editMode: true, cloneMode: true, data: wisprDataForOnlyAuth }}>
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <WISPrForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
+    await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
+    expect(screen.queryByTestId('radius')).not.toBeInTheDocument()
+    expect(await screen.findByTestId('bypasscna_checkbox')).toBeInTheDocument()
+    expect(screen.queryByTestId('always_accept')).not.toBeInTheDocument()
   })
 })

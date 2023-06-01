@@ -14,6 +14,8 @@ import { useNetworkFilterQuery, Child } from '../NetworkFilter/services'
 import { useNetworkNodeInfoQuery } from './services'
 import { Divider }                 from './styledComponents'
 
+import { SubTitle } from '.'
+
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
 const labelMap = {
@@ -29,22 +31,12 @@ const labelMap = {
   switchCount: defineMessage({ defaultMessage: 'Switches:' })
 }
 
-export type SubTitle = {
-  key: string
-  value: (number | string)[]
-}
-
-export type HeaderData = {
-  name?: string
-  subTitle: SubTitle[]
-}
-
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & {
   shouldQuerySwitch: boolean,
   withIncidents?: boolean
 }
 
-export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
+const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement => {
   const { $t } = useIntl()
   const subs = [{ key: 'type', value: [nodeTypes(type)] }, ...subTitles]
   return <span>
@@ -67,7 +59,7 @@ function getVenueName (name: string, data: Child[] | undefined): string {
   return venue?.name || name
 }
 
-export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
+export const HeaderLegacy = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
   const { filters, getNetworkFilter } = useAnalyticsFilter()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const results = useNetworkNodeInfoQuery(filters)
