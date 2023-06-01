@@ -94,19 +94,8 @@ exports[`ApPhoto should upload photo correctly 1`] = `
             </div>
           </div>
           <div
-            class="styledComponents__PhotoDiv-sc-43e4ge-1 dAKIJA"
-          />
-          <div
-            class="styledComponents__PhotoDiv-sc-43e4ge-1 dAKIJA"
+            class="styledComponents__PhotoDiv-sc-43e4ge-1 bmKLoS"
           >
-            <div
-              class="styledComponents__DotsDiv-sc-43e4ge-8 gxhvFM"
-            >
-              <div
-                class="dot "
-                data-testid="dot2"
-              />
-            </div>
             <div
               style="display: none;"
             >
