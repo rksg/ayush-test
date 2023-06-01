@@ -46,7 +46,7 @@ const useTabs = () : WifiTab[] => {
   }
   const airtimeReportTab = {
     key: WifiTabsEnum.AIRTIME_REPORT,
-    title: $t({ defaultMessage: 'Air Time Utilization Report' }),
+    title: $t({ defaultMessage: 'Airtime Utilization Report' }),
     component: <EmbeddedReport
       reportName={ReportType.AIRTIME_UTILIZATION}
       hideHeader={false}
