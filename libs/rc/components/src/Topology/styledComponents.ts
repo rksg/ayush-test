@@ -17,10 +17,7 @@ export const Graph = styled('svg')`
     cursor: pointer;
 
     .label {
-      pointer-events: none,
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      pointer-events: none
     }
   }
 
