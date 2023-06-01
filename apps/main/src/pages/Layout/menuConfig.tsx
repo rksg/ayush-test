@@ -31,7 +31,6 @@ export function useMenuConfig () {
   const { $t } = useIntl()
   const showSV = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
-
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
@@ -132,12 +131,12 @@ export function useMenuConfig () {
           children: [
             {
               uri: '/users/persona-management/persona-group',
-              label: $t({ defaultMessage: 'Persona Group' })
+              label: $t({ defaultMessage: 'Persona Groups' })
             },
             {
               uri: '/users/persona-management/persona',
               isActiveCheck: new RegExp('^/users/persona-management/persona($|/)'),
-              label: $t({ defaultMessage: 'Persona' })
+              label: $t({ defaultMessage: 'Personas List' })
             }
           ]
         }] : [])
@@ -153,11 +152,11 @@ export function useMenuConfig () {
           children: [
             {
               uri: '/devices/wifi',
-              label: $t({ defaultMessage: 'Access Point List' })
+              label: $t({ defaultMessage: 'Access Points List' })
             },
             {
               uri: isNavbarEnhanced ? '/devices/wifi/reports/aps' : '/reports/aps',
-              label: $t({ defaultMessage: 'Access Point Report' }),
+              label: $t({ defaultMessage: 'Access Points Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
