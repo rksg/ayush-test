@@ -786,7 +786,7 @@ describe('Table component', () => {
         dataSource={filteredData}
         enableApiFilter={true}
         floatRightFilters={true}
-        rowSelection={{type:'checkbox'}}
+        rowSelection={{ type: 'checkbox' }}
         rowActions={[{ label: 'Delete', onClick: onAction }]}
       />)
       const input = await screen

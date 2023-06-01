@@ -518,15 +518,15 @@ function Table <RecordType extends Record<string, any>> ({
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
               const rows = enableApiFilter
-              ? selectedRows
-              : selectedRows.map(row => {
-                const tmp = {...row}
-                if(tmp.hasOwnProperty('children') && !tmp.children) {
+                ? selectedRows
+                : selectedRows.map(row => {
+                  const tmp = { ...row }
+                  if(tmp.hasOwnProperty('children') && !tmp.children) {
                   // remove children from getFilteredData
-                  delete tmp.children 
-                }
-                return tmp
-              })
+                    delete tmp.children
+                  }
+                  return tmp
+                })
 
               const visible = typeof option.visible === 'function'
                 ? option.visible(rows)
