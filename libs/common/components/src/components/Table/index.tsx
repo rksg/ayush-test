@@ -80,6 +80,7 @@ export interface TableProps <RecordType>
     iconButton?: IconButtonProps,
     filterableWidth?: number
     searchableWidth?: number
+    onDisplayRowChange?: (displayRows: RecordType[]) => void
     getAllPagesData?: () => RecordType[]
   }
 
@@ -120,7 +121,8 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId, ...props
+  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
+  onDisplayRowChange, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth } = props
   const rowKey = (props.rowKey ?? 'key')
@@ -155,6 +157,13 @@ function Table <RecordType extends Record<string, any>> ({
   useEffect(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, [filterValues, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    onDisplayRowChange?.((enableApiFilter
+      ? dataSource?.slice()
+      : getFilteredData<RecordType>(
+        dataSource, filterValues, activeFilters, searchables, searchValue)) ?? [])
+  }, [dataSource, onDisplayRowChange, searchValue, filterValues])
 
   const baseColumns = useMemo(() => {
     const settingsColumn = {

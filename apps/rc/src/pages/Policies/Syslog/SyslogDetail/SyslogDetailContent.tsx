@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 
-import { Row, Typography } from 'antd'
-import { useIntl }         from 'react-intl'
-import { useParams }       from 'react-router-dom'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
+import { useParams }  from 'react-router-dom'
 
-import { Card, GridCol, GridRow }  from '@acx-ui/components'
-import { useGetSyslogPolicyQuery } from '@acx-ui/rc/services'
+import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { useGetSyslogPolicyQuery }        from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum
@@ -19,7 +19,7 @@ const SyslogDetailContent = () => {
   const { Paragraph } = Typography
   const { $t } = useIntl()
 
-  const { data } = useGetSyslogPolicyQuery({
+  const { data, isLoading } = useGetSyslogPolicyQuery({
     params: useParams()
   })
 
@@ -33,9 +33,9 @@ const SyslogDetailContent = () => {
     }
   }, [data])
 
-  if (data) {
-    return <Card>
-      <GridRow>
+  return <Loader states={[{ isLoading }]}>
+    <Card>
+      {data && <GridRow>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Primary Server' })}
@@ -70,15 +70,9 @@ const SyslogDetailContent = () => {
             {data.flowLevel ? $t(flowLevelLabelMapping[data.flowLevel as FlowLevelEnum]) : ''}
           </Paragraph>
         </GridCol>
-      </GridRow>
+      </GridRow>}
     </Card>
-  } else {
-    return <Card>
-      <Row gutter={24} justify='space-evenly' style={{ width: '100%' }}>
-        <div data-testid='target'>{$t({ defaultMessage: 'Detail content Error' })}</div>
-      </Row>
-    </Card>
-  }
+  </Loader>
 }
 
 export default SyslogDetailContent
