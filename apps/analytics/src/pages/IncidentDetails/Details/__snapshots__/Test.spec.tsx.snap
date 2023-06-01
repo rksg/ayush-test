@@ -97,13 +97,14 @@ exports[`Test Details should render ApinfraPoeLow correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -325,13 +326,14 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -553,13 +555,14 @@ exports[`Test Details should render ApservContinuousReboots correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -781,13 +784,14 @@ exports[`Test Details should render ApservDowntimeHigh correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -1009,13 +1013,14 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -1240,13 +1245,14 @@ exports[`Test Details should render CovClientrssiLow correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -1483,13 +1489,14 @@ exports[`Test Details should render FailureTemplate correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -1714,13 +1721,14 @@ exports[`Test Details should render FailureTemplate correctly 2`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -1945,13 +1953,14 @@ exports[`Test Details should render FailureTemplate correctly 3`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -2176,13 +2185,14 @@ exports[`Test Details should render FailureTemplate correctly 4`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -2407,13 +2417,14 @@ exports[`Test Details should render FailureTemplate correctly 5`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -2638,13 +2649,14 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -2812,13 +2824,14 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -2999,13 +3012,14 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>
@@ -3173,13 +3187,14 @@ exports[`Test Details should render Ttc correctly 1`] = `
             <div
               class="ant-space-item"
             >
-              <span
-                class="styledComponents__Icon-sc-iwostn-9 styledComponents__IconContainer-sc-cwxgii-2 ekcjfg fNyEaU ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                type="button"
               >
                 <svg
                   data-testid="ConfigurationOutlined"
                 />
-              </span>
+              </button>
             </div>
           </div>
         </span>

@@ -1,10 +1,8 @@
-import { Menu as AntMenu } from 'antd'
-import styled              from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
-export const Menu = styled(AntMenu)`
-  .ant-dropdown-menu-item:hover{
-    background-color: transparent;
-  }
+import { Dropdown } from '@acx-ui/components'
+
+export const OverlayContainer = styled(Dropdown.OverlayContainer)`
   height: 220px;
   overflow-y: scroll;
   table {

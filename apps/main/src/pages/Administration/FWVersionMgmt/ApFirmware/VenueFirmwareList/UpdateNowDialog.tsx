@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                  from 'antd/lib/form/Form'
-import { useIntl }                                                  from 'react-intl'
+import { defineMessage, useIntl }                                   from 'react-intl'
 
 import {
   Modal
@@ -19,10 +19,15 @@ import {
 
 import * as UI from './styledComponents'
 
-enum VersionsSelectMode {
+export enum VersionsSelectMode {
   Radio,
   Dropdown
 }
+
+// eslint-disable-next-line max-len
+export const firmwareNote1 = defineMessage({ defaultMessage: 'Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.' })
+// eslint-disable-next-line max-len
+export const firmwareNote2 = defineMessage({ defaultMessage: 'You will be notified once the update process has finished.' })
 
 export interface UpdateApNowDialogProps {
   visible: boolean,
@@ -190,21 +195,26 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
           }
           { eol ?
             <UI.Section>
-              <UI.TitleLegacy>Legacy Device</UI.TitleLegacy>
+              <UI.TitleLegacy>{$t({ defaultMessage: 'Legacy Device' })}</UI.TitleLegacy>
               <Radio
                 defaultChecked
                 style={{ margin: 12 }}>
                 {latestEolVersion}
               </Radio>
-              <UI.ItemModel>AP Models: {eolModels?.join(', ')}</UI.ItemModel>
+              <UI.ItemModel>
+                {$t({
+                  defaultMessage: 'AP Models: {apModels}'
+                }, {
+                  apModels: eolModels?.join(', ')
+                })}
+              </UI.ItemModel>
             </UI.Section>
             : null
           }
           <UI.Section>
             <UI.Ul>
-              { // eslint-disable-next-line max-len
-                <UI.Li>Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.</UI.Li>}
-              <UI.Li>You will be notified once the update process has finished.</UI.Li>
+              <UI.Li>{$t(firmwareNote1)}</UI.Li>
+              <UI.Li>{$t(firmwareNote2)}</UI.Li>
             </UI.Ul>
           </UI.Section>
         </Form.Item>
