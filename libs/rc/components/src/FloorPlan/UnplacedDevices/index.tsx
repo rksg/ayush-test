@@ -1,10 +1,10 @@
 import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 
-import { Divider, Dropdown, Input, Menu, Space, Typography } from 'antd'
-import { remove }                                            from 'lodash'
-import { useIntl }                                           from 'react-intl'
+import { Divider, Input, Menu, Space, Typography } from 'antd'
+import { remove }                                  from 'lodash'
+import { useIntl }                                 from 'react-intl'
 
-import { Button }                                                   from '@acx-ui/components'
+import { Button, Dropdown }                                         from '@acx-ui/components'
 import { ArrowExpand, SearchOutlined }                              from '@acx-ui/icons'
 import { NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { getIntl }                                                  from '@acx-ui/utils'
@@ -105,48 +105,48 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
   function closeOverlay () {
     closeDropdown(true)
   }
-  return <UI.DeviceList
-    size='large'
-    header={
-      <div><Input
-        data-testid='text-search'
-        size='middle'
-        style={{ width: '144px', maxHeight: '180px' }}
-        placeholder={$t({ defaultMessage: 'Search...' })}
-        prefix={<SearchOutlined />}
-        onChange={filterByName}
-      />
-      <Divider type='vertical' style={{ margin: '0 4px' }}/>
-      <Dropdown overlay={menuItems}>
-        <Button data-testid='trigger' size='middle' style={{ width: '108px' }}>
-          <Space>
-            <Typography.Paragraph
-              ellipsis={{ rows: 1, expandable: false }}
-              style={{
-                width: '72px',
-                margin: '0'
-              }}> { selectedDeviceType !== 'All'
-                ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)
-                : $t({ defaultMessage: 'All' }) }
-            </Typography.Paragraph>
-            <ArrowExpand />
-          </Space>
-        </Button>
-      </Dropdown>
-      </div>
-    }
-
-    footer={
-      <div style={{
-        display: 'flex',
-        justifyContent: 'end'
-      }}>
-        <Button type='primary' onClick={closeOverlay}>
-          { $t({ defaultMessage: 'Close' } )}</Button></div>
-    }
-    bordered
-    dataSource={filterDevices}
-    renderItem={(item) =>
-      (<UnplacedDevice device={item as NetworkDevice}/> as ReactNode)}
-  />
+  return <UI.OverlayContainer>
+    <UI.DeviceList
+      size='large'
+      header={
+        <div><Input
+          data-testid='text-search'
+          size='middle'
+          style={{ width: '144px', maxHeight: '180px' }}
+          placeholder={$t({ defaultMessage: 'Search...' })}
+          prefix={<SearchOutlined />}
+          onChange={filterByName}
+        />
+        <Divider type='vertical' style={{ margin: '0 4px' }}/>
+        <Dropdown overlay={menuItems}>{() =>
+          <Button data-testid='trigger' size='middle' style={{ width: '108px' }}>
+            <Space>
+              <Typography.Paragraph
+                ellipsis={{ rows: 1, expandable: false }}
+                style={{
+                  width: '72px',
+                  margin: '0'
+                }}> { selectedDeviceType !== 'All'
+                  ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)
+                  : $t({ defaultMessage: 'All' }) }
+              </Typography.Paragraph>
+              <ArrowExpand />
+            </Space>
+          </Button>
+        }</Dropdown>
+        </div>
+      }
+      footer={
+        <div style={{
+          display: 'flex',
+          justifyContent: 'end'
+        }}>
+          <Button type='primary' onClick={closeOverlay}>
+            { $t({ defaultMessage: 'Close' } )}</Button></div>
+      }
+      dataSource={filterDevices}
+      renderItem={(item) =>
+        (<UnplacedDevice device={item as NetworkDevice}/> as ReactNode)}
+    />
+  </UI.OverlayContainer>
 }

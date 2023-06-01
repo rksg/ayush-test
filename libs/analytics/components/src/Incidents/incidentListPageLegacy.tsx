@@ -12,12 +12,12 @@ import {
 import { GridRow, GridCol, Tabs }                from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { Header }             from '../Header'
+import { HeaderLegacy }       from '../Header'
 import { IncidentBySeverity } from '../IncidentBySeverity'
 import { IncidentTable }      from '../IncidentTable'
 import { NetworkHistory }     from '../NetworkHistory'
 
-export const IncidentTabContent = (props: {
+export const IncidentTabContentLegacy = (props: {
   tabSelection?: CategoryTab,
   filters?: AnalyticsFilter,
   disableGraphs?: boolean
@@ -52,7 +52,7 @@ export const IncidentTabContent = (props: {
   )
 }
 
-function IncidentListPage () {
+function IncidentListPageLegacy () {
   const { $t } = useIntl()
   const { activeTab = categoryTabs[0].value } = useParams()
   const navigate = useNavigate()
@@ -65,7 +65,7 @@ function IncidentListPage () {
     })
   return (
     <>
-      <Header
+      <HeaderLegacy
         title={$t({ defaultMessage: 'Incidents' })}
         shouldQuerySwitch
         withIncidents
@@ -77,8 +77,8 @@ function IncidentListPage () {
           </Tabs>
         }
       />
-      <IncidentTabContent tabSelection={activeTab as CategoryTab} />
+      <IncidentTabContentLegacy tabSelection={activeTab as CategoryTab} />
     </>
   )
 }
-export { IncidentListPage }
+export { IncidentListPageLegacy }
