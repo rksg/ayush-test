@@ -32,7 +32,8 @@ export interface AP {
     APRadio?: Array<RadioProperties>,
     cellularInfo?: CelluarInfo,
     APSystem?: APSystem,
-    lanPortStatus?: Array<LanPortStatusProperties>
+    lanPortStatus?: Array<LanPortStatusProperties>,
+    vxlanStatus?: VxlanStatus
   },
   clients?: number,
   deviceGroupId: string,
@@ -324,6 +325,10 @@ export interface RadioProperties {
 export interface LanPortStatusProperties {
   phyLink: string,
   port: string
+}
+
+export interface VxlanStatus {
+  vxlanMtu: number
 }
 
 export enum GpsFieldStatus {

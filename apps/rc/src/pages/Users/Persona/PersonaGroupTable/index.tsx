@@ -307,8 +307,9 @@ export function PersonaGroupTable () {
         { isLoading: false, isFetching: isDeletePersonaGroupUpdating }
       ]}
     >
-      <Table
+      <Table<PersonaGroup>
         enableApiFilter
+        settingsId='persona-group-table'
         columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

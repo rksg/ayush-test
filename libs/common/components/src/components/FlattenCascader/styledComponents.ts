@@ -1,12 +1,5 @@
 import styled, { css } from 'styled-components/macro'
 
-import { ChevronRight } from '@acx-ui/icons'
-
-export const ExpandIcon = styled(ChevronRight)`
-  width: 18px;
-  height: 18px;
-`
-
 export const DropdownPortal = styled.div`
   > div {
     /** Forcefully reset the absolute positioning from the rc-cascader */
@@ -37,6 +30,4 @@ export const cascaderStyles = css`
     // 4px for top padding
     height: calc(32px * 9.5 + 4px);
   }
-
-  .ant-cascader-menu-item-expand-icon { line-height: 1; }
 `

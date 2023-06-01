@@ -28,6 +28,13 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
+export const mockUnBlockedPersona: Persona = {
+  id: 'persona-id-1',
+  name: 'persona-name-1',
+  groupId: 'group-id-1',
+  revoked: false
+}
+
 export const mockPersona: Persona = {
   id: 'persona-id-1',
   name: 'persona-name-1',
@@ -35,6 +42,7 @@ export const mockPersona: Persona = {
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
   identityId: 'unit-id-1',
+  revoked: false,
   devices: [
     {
       macAddress: '11:11:11:11:11:11',
@@ -83,14 +91,16 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       name: 'persona-name-1',
       groupId: 'persona-group-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-2',
       name: 'persona-name-2',
       groupId: 'persona-group-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-3',
@@ -98,7 +108,8 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       groupId: 'persona-group-id-1',
       identityId: 'persona-identity-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     }
   ]
 }
