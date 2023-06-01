@@ -14,9 +14,9 @@ export const RadioDescription = styled.div`
 `
 
 export const NoUplinkAPInfo = styled.div`
-    width: 455px;
-    text-align: center;
-    background-color: #F2F2F2;
-    height: 60px;
-    line-height: 60px;
+  width: 455px;
+  text-align: center;
+  background-color: #F2F2F2;
+  height: 60px;
+  line-height: 60px;
 `
