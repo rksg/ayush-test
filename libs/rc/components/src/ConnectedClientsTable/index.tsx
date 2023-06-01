@@ -137,6 +137,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       sorter: true,
+      filterKey: 'venueId',
       filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
       render: (data, row) => {
         return (
@@ -149,6 +150,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'AP' }),
       dataIndex: 'apName',
       sorter: true,
+      filterKey: 'serialNumber',
       filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
       render: (data, row) => {
         return (
