@@ -28,5 +28,14 @@
     "reports-components": "libs/reports/components",
     "reports-services": "libs/reports/services",
     "reports-utils": "libs/reports/utils"
+  },
+  "architect": {
+    "serve": {
+      "builder": "@nrwl/web:dev-server",
+      "options": {
+        "poll": 2000,
+        "ignored": "node_modules/**"
+      }
+    }
   }
 }
