@@ -79,7 +79,6 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     <Loader style={{ height: 'auto', minHeight: 45 }} states={[templateDataRequest]}>
       <Form.Item {...formItemProps}
         label={scopeLabel}>
-        {/* @ts-ignore */}
         <TemplateSelect
           placeholder={placeholder}
           options={templateOptions}

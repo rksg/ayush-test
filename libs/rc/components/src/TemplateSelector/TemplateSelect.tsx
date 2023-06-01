@@ -6,7 +6,6 @@ import _                            from 'lodash'
 import { useIntl }                  from 'react-intl'
 
 import { Modal }                 from '@acx-ui/components'
-import { Button as ACXButton }   from '@acx-ui/components'
 import { MessageType, Template } from '@acx-ui/rc/utils'
 
 import { templateNames }   from './msgTemplateLocalizedMessages'
@@ -19,7 +18,7 @@ interface OnChangeHandler {
 
 export interface TemplateSelectorProps {
   value?: string,
-  onChange: OnChangeHandler,
+  onChange?: OnChangeHandler,
   templateType: MessageType | undefined,
   templates: Template[] | undefined
   placeholder?: string,
@@ -43,8 +42,7 @@ export function TemplateSelect (props: TemplateSelectorProps) {
   const [previewTemplate, setPreviewTemplate] = useState<Template | undefined>(undefined)
 
   const showModal = () => {
-    let selectedOptionId = value
-    let previewTemplate = templates?.find(t => t.id === selectedOptionId)
+    let previewTemplate = templates?.find(t => t.id === value)
     setPreviewTemplate(previewTemplate)
     setIsModalOpen(true)
   }
@@ -57,9 +55,11 @@ export function TemplateSelect (props: TemplateSelectorProps) {
     if(previewTemplate) {
       if(previewTemplate.userProvidedName) {
         return $t({ defaultMessage: 'Preview: {name}' }, { name: previewTemplate.userProvidedName })
-      } else {
+      } else if(_.get(templateNames, previewTemplate.nameLocalizationKey)) {
         return $t({ defaultMessage: 'Preview: {name}' },
           { name: $t(_.get(templateNames, previewTemplate.nameLocalizationKey)) })
+      } else {
+        return $t({ defaultMessage: 'Template Preview' })
       }
     }
 
@@ -68,7 +68,7 @@ export function TemplateSelect (props: TemplateSelectorProps) {
 
   // RENDER //////////////////////////////////////////////////////
   return (
-    <Row>
+    <Row align={'middle'}>
       <Col flex='auto'>
         <Select
           value={value}
@@ -83,15 +83,8 @@ export function TemplateSelect (props: TemplateSelectorProps) {
         <Modal
           title={getTemplatePreviewTitle()}
           visible={isModalOpen}
-          onCancel={handleCancel}
-          footer={[
-            <ACXButton
-              style={{ width: '83px' }}
-              key='okBtn'
-              type='secondary'
-              onClick={handleCancel}>
-              {$t({ defaultMessage: 'OK' })}
-            </ACXButton>]}>
+          cancelButtonProps={{ style: { display: 'none' } }}
+          onOk={handleCancel}>
           <TemplatePreview
             templateType={templateType}
             template={previewTemplate} />
