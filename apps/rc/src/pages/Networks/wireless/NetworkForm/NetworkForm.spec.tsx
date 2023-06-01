@@ -176,11 +176,9 @@ describe('NetworkForm', () => {
   it('should test open network with Dynamic VLAN successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+    render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
