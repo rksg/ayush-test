@@ -63,3 +63,44 @@ export interface EdgeFirewallViewData {
     }[]
   edgeIds?: string[]
 }
+
+export type EdgeFirewallDDoSStatsParams = Omit<EdgeFirewallDDoSStats, 'attackType'>
+export interface DDoSRuleStatisticModel
+  extends DdosRateLimitingRule, EdgeFirewallDDoSStatsParams {
+}
+
+export interface EdgeFirewallDDoSStatsViewData {
+  ddosStatsList: EdgeFirewallDDoSStats[];
+}
+export interface EdgeFirewallDDoSStats {
+  attackType: DdosAttackType;
+  deniedPackets: number;
+  passedPackets: number;
+}
+
+export interface EdgeFirewallBaseStatsPayload {
+  venueId: string;
+  edgeId: string;
+  start: string;
+  end: string;
+  granularity: string;
+}
+
+export interface EdgeFirewallACLStatsViewData {
+  direction: ACLDirection;
+  permittedSessions: number;
+  aclRuleStatsList: EdgeFirewallACLStats[];
+}
+export interface EdgeFirewallACLStats {
+  priority: number;
+  packets: number;
+  bytes: number;
+}
+
+export interface EdgeFirewallACLStatsPayload extends EdgeFirewallBaseStatsPayload {
+  direction: ACLDirection;
+}
+
+export interface FirewallACLRuleStatisticModel
+  extends Omit<StatefulAclRule, 'priority'>, EdgeFirewallACLStats {
+}

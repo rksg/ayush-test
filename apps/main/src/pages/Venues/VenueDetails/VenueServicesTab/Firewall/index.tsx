@@ -5,10 +5,11 @@ import moment                        from 'moment'
 import { useIntl }                   from 'react-intl'
 import styled                        from 'styled-components/macro'
 
-import { Card, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
-import { useGetEdgeFirewallQuery }                           from '@acx-ui/rc/services'
+import { Card, DateRangeType, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
+import { useGetEdgeFirewallQuery }                                          from '@acx-ui/rc/services'
 import {
   ACLDirection,
+  EdgeStatus,
   getACLDirectionOptions,
   getServiceDetailsLink,
   ServiceOperation,
@@ -22,12 +23,18 @@ import { DDoSRulesTable }        from './DDoSRulesTable'
 import { StatefulACLRulesTable } from './StatefulACLRulesTable'
 import * as UI                   from './styledComponents'
 
-const EdgeFirewall = styled(({ className, serviceId }:
-   { className?: string, serviceId: string }) => {
+interface EdgeFirewallServiceProps {
+  className?: string;
+  edgeData: EdgeStatus;
+}
+
+const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) => {
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  // const period = getDateRangeFilter(DateRange.last7Days)
+  const { startDate, endDate, range, setDateFilter } = useDateFilter()
   const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
   const directionOpts = getACLDirectionOptions($t)
+  const serviceId = edgeData.firewallId
 
   // get firewall by firewallId
   const {
@@ -93,6 +100,11 @@ const EdgeFirewall = styled(({ className, serviceId }:
     setACLDirection(val)
   }
 
+  const filterPeriod:DateRangeType = {
+    startDate: moment(startDate),
+    endDate: moment(endDate)
+  }
+
   return (<Loader states={[
     {
       isFetching: false,
@@ -127,14 +139,27 @@ const EdgeFirewall = styled(({ className, serviceId }:
             {filterByAccess([
               <RangePicker
                 key='date-filter'
-                selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+                // selectedRange={{
+                //   startDate: moment(period.startDate),
+                //   endDate: moment(period.endDate)
+                // }}
+                // selectionType={period.range}
+                selectedRange={filterPeriod}
+                selectionType={range}
                 onDateApply={setDateFilter as CallableFunction}
                 showTimePicker
-                selectionType={range}
               />])
             }
           </UI.ActionsContainer>
-          <DDoSRulesTable firewallData={edgeFirewallData} />
+          <DDoSRulesTable
+            firewallData={edgeFirewallData}
+            dateFilter={{
+              startDate,
+              endDate
+            }}
+            edgeId={edgeData.serialNumber}
+            venueId={edgeData.venueId}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Stateful ACL' })}
@@ -149,8 +174,31 @@ const EdgeFirewall = styled(({ className, serviceId }:
                 (<Select.Option value={value} key={value} children={label} />)
               )}
             </Select>
+            {filterByAccess([
+              <RangePicker
+                key='date-filter'
+                // selectedRange={{
+                //   startDate: moment(period.startDate),
+                //   endDate: moment(period.endDate)
+                // }}
+                // selectionType={period.range}
+                selectedRange={filterPeriod}
+                selectionType={range}
+                onDateApply={setDateFilter as CallableFunction}
+                showTimePicker
+              />])
+            }
           </UI.ActionsContainer>
-          <StatefulACLRulesTable firewallData={edgeFirewallData} direction={aclDirection} />
+          <StatefulACLRulesTable
+            firewallData={edgeFirewallData}
+            direction={aclDirection}
+            dateFilter={{
+              startDate,
+              endDate
+            }}
+            edgeId={edgeData.serialNumber}
+            venueId={edgeData.venueId}
+          />
         </Tabs.TabPane>
       </Tabs>
     </Space>
