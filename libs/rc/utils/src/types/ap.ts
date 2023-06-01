@@ -441,7 +441,7 @@ export enum MeshModeEnum {
   AUTO ='AUTO',
   ROOT ='ROOT',
   MESH ='MESH',
-  DISABLE = 'DISABLE'
+  DISABLED = 'DISABLED'
 }
 
 export enum UplinkModeEnum {

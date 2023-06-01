@@ -28,7 +28,7 @@ const meshModes = [
     display: defineMessage({ defaultMessage: 'Mesh AP' }) ,
     description: defineMessage({ defaultMessage: 'Only runs as Mesh AP' })
   }, {
-    value: MeshModeEnum.DISABLE,
+    value: MeshModeEnum.DISABLED,
     display: defineMessage({ defaultMessage: 'None' }) ,
     description: defineMessage({ defaultMessage: 'Mesh is disabled' })
   }
