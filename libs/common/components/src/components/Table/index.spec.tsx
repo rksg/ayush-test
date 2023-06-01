@@ -780,16 +780,22 @@ describe('Table component', () => {
     })
 
     it('should not do local filter/search when enableApiFilter', async () => {
+      const onAction = jest.fn()
       render(<Table
         columns={filteredColumns}
         dataSource={filteredData}
         enableApiFilter={true}
         floatRightFilters={true}
+        rowSelection={{type:'checkbox'}}
+        rowActions={[{ label: 'Delete', onClick: onAction }]}
       />)
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       fireEvent.change(input, { target: { value: 'John Doe' } })
       expect(await screen.findAllByText('Jordan')).toHaveLength(1)
+      fireEvent.click((await screen.findAllByRole('checkbox'))[1])
+      fireEvent.click((await screen.findAllByRole('button', { name: 'Delete' }))[0])
+      expect(onAction).toBeCalledTimes(1)
     })
 
     it('should not throw in search when column data is undefined', async () => {

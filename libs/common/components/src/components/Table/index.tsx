@@ -508,7 +508,16 @@ function Table <RecordType extends Record<string, any>> ({
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
-              const rows = selectedRows
+              const rows = enableApiFilter
+              ? selectedRows
+              : selectedRows.map(row => {
+                const tmp = {...row}
+                if(tmp.hasOwnProperty('children') && !tmp.children) {
+                  // remove children from getFilteredData
+                  delete tmp.children 
+                }
+                return tmp
+              })
 
               const visible = typeof option.visible === 'function'
                 ? option.visible(rows)
@@ -538,7 +547,7 @@ function Table <RecordType extends Record<string, any>> ({
                 {...buttonProps}
                 disabled={disabled}
                 onClick={() =>
-                  option.onClick(selectedRows, () => { onCleanSelected() })
+                  option.onClick(rows, () => { onCleanSelected() })
                 }
               >
                 {label}

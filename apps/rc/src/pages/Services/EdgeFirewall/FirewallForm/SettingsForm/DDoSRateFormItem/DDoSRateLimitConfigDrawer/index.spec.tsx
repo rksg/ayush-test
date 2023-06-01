@@ -115,9 +115,6 @@ describe('DDos rate limit config drawer', () => {
     await click(screen.getByRole('button', { name: 'Apply' }))
 
     expect(mockedSetFieldValue).toBeCalledWith('ddosRateLimitingRules', [{
-      ddosAttackType: 'ICMP',
-      rateLimiting: 2566
-    },{
       ddosAttackType: 'DNS_RESPONSE',
       rateLimiting: 252
     }])
