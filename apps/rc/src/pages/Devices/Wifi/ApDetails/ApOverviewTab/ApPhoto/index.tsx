@@ -23,7 +23,8 @@ export function ApPhoto () {
   const [tempUrl, setTempUrl] = useState('')
   const [visible, setVisible] = useState(false)
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [activeImage, setActiveImage] = useState<boolean[]>([false])
+  const [activeImage, setActiveImage] = useState<boolean[]>([true, false])
+  const [imageList, setImageList] = useState<string[]>([])
   const params = useApContext()
 
   const apViewModelPayload = {
@@ -59,9 +60,11 @@ export function ApPhoto () {
       if(apPhoto?.data?.imageUrl){
         setActiveImage([true, false])
         setImageUrl(apPhoto?.data.imageUrl)
+        setImageList([apPhoto?.data.imageUrl, defaultImageUrl])
       }else{
         setActiveImage([false, true])
         setImageUrl('')
+        setImageList([defaultImageUrl])
       }
     }
   }, [apPhoto, currentAP, wifiCapabilities])
@@ -171,11 +174,10 @@ export function ApPhoto () {
               preview={{
                 visible,
                 current: imageUrl !== '' ? (activeImage[0] ? 0 : 1) : 0,
-                onVisibleChange: (vis) => setVisible(vis)
+                onVisibleChange: (vis) => { setVisible(vis) }
               }}
             >
-              {imageUrl && <Image src={imageUrl}/> }
-              {defaultImageUrl &&<Image src={defaultImageUrl} /> }
+              {imageList.map((item) => <Image src={item} />)}
             </Image.PreviewGroup>
           </div>
         </PhotoDiv>
