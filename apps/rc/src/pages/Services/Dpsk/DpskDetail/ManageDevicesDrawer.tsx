@@ -98,10 +98,13 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       }
     },
     {
-      key: 'lastConnected',
+      key: 'online',
       title: $t({ defaultMessage: 'Last Seen' }),
-      dataIndex: 'lastConnected',
-      sorter: true
+      dataIndex: 'online',
+      sorter: true,
+      render: (data, row) => {
+        return row.online ? ONLINE : ''
+      }
     },
     {
       key: 'lastConnectedNetwork',
@@ -251,7 +254,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
             onCancel={onClose}
           />
         }
-        width={'500px'}
+        width={'700px'}
       />
       <Modal
         title={$t({ defaultMessage: 'Add Device' })}
