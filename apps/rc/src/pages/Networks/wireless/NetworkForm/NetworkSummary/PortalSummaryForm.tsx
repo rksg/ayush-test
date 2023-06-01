@@ -1,6 +1,7 @@
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
+import { PasswordInput }                                                                     from '@acx-ui/components'
 import { NetworkSaveData, Demo, PortalLanguageEnum, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { getLanguage }          from '../../../../Services/commonUtils'
@@ -102,7 +103,7 @@ export function PortalSummaryForm (props: {
             $t({ defaultMessage: 'WPA2 Passphrase:' }) :
             $t({ defaultMessage: 'Passphrase:' })
           }
-          children={<Input.Password
+          children={<PasswordInput
             readOnly
             bordered={false}
             value={summaryData.wlan?.passphrase}
@@ -118,7 +119,7 @@ export function PortalSummaryForm (props: {
             $t({ defaultMessage: 'SAE Passphrase:' }) :
             $t({ defaultMessage: 'WPA3 SAE Passphrase:' })
           }
-          children={<Input.Password
+          children={<PasswordInput
             readOnly
             bordered={false}
             value={summaryData.wlan?.saePassphrase}
@@ -129,7 +130,7 @@ export function PortalSummaryForm (props: {
        summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WEP && summaryData.wlan?.wepHexKey &&
         <Form.Item
           label={$t({ defaultMessage: 'Hex Key:' })}
-          children={<Input.Password
+          children={<PasswordInput
             readOnly
             bordered={false}
             value={summaryData.wlan?.wepHexKey}

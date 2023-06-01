@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input, Select }       from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, Drawer, Tooltip }                             from '@acx-ui/components'
+import { Button, Drawer, Tooltip, PasswordInput }              from '@acx-ui/components'
 import { useAddAAAServerMutation, useUpdateAAAServerMutation } from '@acx-ui/rc/services'
 import { AAAServerTypeEnum,
   excludeExclamationRegExp,
@@ -152,7 +152,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => notAllDigitsRegExp(value) }
       ]}
-      children={<Input.Password />}
+      children={<PasswordInput />}
     />
   </Form>
 
@@ -195,7 +195,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => notAllDigitsRegExp(value) }
       ]}
-      children={<Input.Password />}
+      children={<PasswordInput />}
     />
     <Form.Item
       label='Purpose'
@@ -249,7 +249,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { validator: (_, value) => excludeSpaceExclamationRegExp(value) },
         { validator: (_, value) => validateUserPassword(value) }
       ]}
-      children={<Input.Password />}
+      children={<PasswordInput />}
     />
     <Form.Item
       label='Privilege'
