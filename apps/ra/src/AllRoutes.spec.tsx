@@ -7,6 +7,6 @@ describe('AllRoutes', () => {
   it('should render correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next' } })
     await waitFor(() =>
-      expect(screen.getByText('Testing! Hellow from Ruckus Analytics!')).toBeVisible())
+      expect(screen.getByText('DATA API:')).toBeVisible())
   })
 })
