@@ -103,10 +103,14 @@ const defaultPagination = {
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
 ): [Key[], React.Dispatch<React.SetStateAction<Key[]>>,
-  RecordType[], React.Dispatch<React.SetStateAction<RecordType[]>>] {
+  RecordType[], React.Dispatch<React.SetStateAction<RecordType[]>>,
+  RecordType[], React.Dispatch<React.SetStateAction<RecordType[]>>
+] {
   const [selectedRowKeys, setSelectedRowKeys]
     = useState<Key[]>(rowSelection?.defaultSelectedRowKeys ?? [])
   const [selectedRows, setSelectedRows]
+    = useState<RecordType[]>([])
+  const [allRows, setAllRows]
     = useState<RecordType[]>([])
 
   useEffect(() => {
@@ -115,7 +119,7 @@ function useSelectedRowKeys <RecordType> (
     }
   }, [rowSelection?.selectedRowKeys])
 
-  return [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows]
+  return [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows, allRows, setAllRows]
 }
 
 // following the same typing from antd
@@ -223,7 +227,7 @@ function Table <RecordType extends Record<string, any>> ({
     children: <SettingsOutlined/>
   } : false
 
-  const [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows] =
+  const [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows, allRows, setAllRows] =
   useSelectedRowKeys(props.rowSelection)
 
   const onRowClick = (record: RecordType) => {
@@ -300,6 +304,7 @@ function Table <RecordType extends Record<string, any>> ({
           if(data){
             setSelectedRowKeys(data.map(row => getRowKey(row)))
             setSelectedRows(data)
+            setAllRows(data)
           }
         }
       }
@@ -312,8 +317,10 @@ function Table <RecordType extends Record<string, any>> ({
     preserveSelectedRowKeys: true,
     onChange: (keys, rows, info) => {
       setSelectedRowKeys(keys)
-      setSelectedRows(rows)
-      props.rowSelection?.onChange?.(keys, rows, info)
+      const newRows = rows.findIndex(item => !item) !== -1
+        ? allRows.filter(item => keys.includes(getRowKey(item))) : rows
+      setSelectedRows(newRows)
+      props.rowSelection?.onChange?.(keys, newRows, info)
     },
     ...isGroupByActive
       ? {
