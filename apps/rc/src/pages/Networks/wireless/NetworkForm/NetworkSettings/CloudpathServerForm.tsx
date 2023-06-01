@@ -50,7 +50,7 @@ export function CloudpathServerForm () {
   />
   const enableAccountingService = useWatch('enableAccountingService')
 
-  const enableDPSKProxyService = useIsSplitOn(Features.WIFI_EDA_NON_PROXY_DPSK_TOGGLE)
+  const disableDPSKProxyService = !useIsSplitOn(Features.WIFI_EDA_NON_PROXY_DPSK_TOGGLE)
   && data?.type===NetworkTypeEnum.DPSK
   return (
     <Space direction='vertical' size='middle'>
@@ -73,13 +73,13 @@ export function CloudpathServerForm () {
             valuePropName='checked'
             initialValue={false}
             children={<Switch disabled={
-              !enableDPSKProxyService
+              disableDPSKProxyService
             }
             title='Proxy Service'
             onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
           />
           <span className={
-            (!enableDPSKProxyService)
+            (disableDPSKProxyService)
               ? 'ant-switch-disabled'
               : ''
           }>
@@ -87,7 +87,7 @@ export function CloudpathServerForm () {
           </span>
           { data?.type===NetworkTypeEnum.DPSK ? DPSKProxyServiceTooltip : proxyServiceTooltip }
         </Form.Item>}
-        { !enableDPSKProxyService
+        { disableDPSKProxyService
           && <Typography.Text disabled className='ant-form-item-extra'>
             { $t({ defaultMessage:
               'DPSK Network with Non-Proxy mode is not supported at this moment!' })}
