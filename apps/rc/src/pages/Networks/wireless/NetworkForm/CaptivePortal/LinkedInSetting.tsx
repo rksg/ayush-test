@@ -3,8 +3,8 @@ import { useState, useEffect, useContext } from 'react'
 import { Form, Input, Tooltip } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Modal } from '@acx-ui/components'
-import { GuestPortal }   from '@acx-ui/rc/utils'
+import { Button, Modal, PasswordInput } from '@acx-ui/components'
+import { GuestPortal }                  from '@acx-ui/rc/utils'
 
 import appPhoto           from '../../../../../assets/images/network-wizard-diagrams/linkedin-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
@@ -83,7 +83,7 @@ export default function LinkedInSetting (props:{
       initialValue=''
       label={$t({ defaultMessage: 'Client Secret' })}
       children={
-        <Input.Password/>
+        <PasswordInput />
       }
     />
     <Form.Item><>

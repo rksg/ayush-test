@@ -21,9 +21,8 @@ import { RadiusOptions }       from './RadiusOptions'
 
 export interface NetworkingSettingContext {
   cellularData: VenueApModelCellular,
-  meshData: { mesh: boolean },
   updateCellular?: ((cellularData: VenueApModelCellular) => void),
-  updateMesh?: ((check: boolean) => void),
+  updateMesh?: (() => void),
   updateDirectedMulticast?: (() => void),
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
@@ -113,7 +112,7 @@ export function NetworkingTab () {
     try {
       await editNetworkingContextData?.updateLanPorts?.()
       await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
-      await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+      await editNetworkingContextData?.updateMesh?.()
       await editNetworkingContextData?.updateDirectedMulticast?.()
       await editNetworkingContextData?.updateRadiusOptions?.()
 
