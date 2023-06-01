@@ -125,7 +125,7 @@ function DashboardPageHeader () {
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'Dashboard' })}
+      title=''
       extra={filterByAccess([
         <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
           <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
