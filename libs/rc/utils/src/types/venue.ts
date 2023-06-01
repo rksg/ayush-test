@@ -814,6 +814,8 @@ export type ApMeshLink = {
   to: string
   fromMac: string
   toMac: string
+  fromName: string
+  toName: string
   fromRole: APMeshRole
   toRole: APMeshRole
   fromSNR: number

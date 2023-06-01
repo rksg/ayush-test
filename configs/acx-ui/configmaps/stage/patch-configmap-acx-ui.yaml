@@ -7,3 +7,4 @@ data:
   split.io.key: "mlbj64qb8lgfji5upnedt4lo7h5c4ik65m95"
   captive.portal.domain.name: "stage.ruckus.cloud"
   new.api.domain.name: "api.stage.ruckus.cloud"
+  api.documentation.url: "https://docs.stage.ruckus.cloud/api/"

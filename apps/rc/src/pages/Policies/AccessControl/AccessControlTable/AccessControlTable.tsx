@@ -2,22 +2,38 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }     from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Button, PageHeader }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   PolicyOperation,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
+
 import AccessControlTabs from './AccessControlTabs'
+
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name'
+  ]
+}
 
 export default function AccessControlTable () {
   const { $t } = useIntl()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetEnhancedAccessControlProfileListQuery,
+    defaultPayload
+  })
 
   return (
     <PageHeader
@@ -42,7 +58,11 @@ export default function AccessControlTable () {
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.CREATE
           })}>
-          <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
+          <Button
+            type='primary'
+            disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_ACCESS_CONTROL}>
+            {$t({ defaultMessage: 'Add Access Control Set' })}
+          </Button>
         </TenantLink>
       ])}
       footer={<AccessControlTabs />}
