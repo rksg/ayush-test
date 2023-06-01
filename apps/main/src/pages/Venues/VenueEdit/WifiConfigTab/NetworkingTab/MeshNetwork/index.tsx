@@ -12,32 +12,13 @@ import {
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation
 } from '@acx-ui/rc/services'
-import { APMeshRole, Mesh }   from '@acx-ui/rc/utils'
-import { validationMessages } from '@acx-ui/utils'
+import { APMeshRole, Mesh, generateAlphanumericString } from '@acx-ui/rc/utils'
+import { validationMessages }                           from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../../index'
 
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
-const generateMeshSsid = (length: number) => {
-  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  let ssid = ''
-  for (let i = 0; i < length; i++) {
-    let randomNumber = Math.floor(Math.random() * chars.length)
-    ssid += chars.substring(randomNumber, randomNumber+1)
-  }
-  return 'Mesh-'+ ssid
-}
-
-const generatePassphrase = (length: number) => {
-  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  let passphrase = ''
-  for (let i = 0; i < length; i++) {
-    let randomNumber = Math.floor(Math.random() * chars.length)
-    passphrase += chars.substring(randomNumber, randomNumber+1)
-  }
-  return passphrase
-}
 
 const MeshInfoIcon = () => {
   const { $t } = useIntl()
@@ -109,10 +90,10 @@ export function MeshNetwork () {
         checkMeshAPs()
       }
 
-      const ssidInitValue = ssid || generateMeshSsid(8)
+      const ssidInitValue = ssid || `Mesh-${generateAlphanumericString(8)}`
       setMeshSsid(ssidInitValue)
 
-      const passphraseInitValue = passphrase || generatePassphrase(63)
+      const passphraseInitValue = passphrase || generateAlphanumericString(63)
       setMeshPassphrase(passphraseInitValue)
 
       setMeshRadioType(radioType || '5-GHz')
@@ -248,7 +229,7 @@ export function MeshNetwork () {
   }
 
   const handleGenPassphrase = () => {
-    const newPassphrase = generatePassphrase(63)
+    const newPassphrase = generateAlphanumericString(63)
     setMeshPassphrase(newPassphrase)
     isUserChanged.current = true
 
