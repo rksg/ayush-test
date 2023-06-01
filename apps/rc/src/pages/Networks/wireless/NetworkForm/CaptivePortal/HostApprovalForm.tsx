@@ -8,7 +8,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip }        from '@acx-ui/components'
 import { CaptivePassphraseExpirationEnum, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum, domainsNameRegExp } from '@acx-ui/rc/utils'
 
@@ -60,12 +60,17 @@ export function HostApprovalForm () {
           </>}
           rules={[
             { required: true },
-            { validator: (_, value) => domainsNameRegExp((Array.isArray(value)? value : value.split(',')), true) }]
+            { validator: (_, value) => domainsNameRegExp(
+              (Array.isArray(value)? value : value.split(',')), true)
+            }]
           }
           validateFirst
           hasFeedback
           children={
-            <Input onChange={(e)=>form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],e.target.value.split(','))}
+            <Input onChange={(e)=>
+              form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],
+                e.target.value.split(','))
+            }
             placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
             />
           }
