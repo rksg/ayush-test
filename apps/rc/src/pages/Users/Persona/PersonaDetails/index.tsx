@@ -348,7 +348,6 @@ function PersonaDetailsPageHeader (props: {
       onOk: () => onRevoke()
     })
   }
->>>>>>> origin/master
 
   const extra = filterByAccess([
     <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
