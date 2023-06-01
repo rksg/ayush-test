@@ -27,10 +27,10 @@ export type NetworkNode = {
 }
 export type NetworkNodePath = NetworkNode[] | []
 
-export type pathFilter = {
+export type PathFilter = {
   networkNodes? : NetworkPath[],
   switchNodes? : NetworkPath[]
 }
-export type ssidFilter = {
+export type SSIDFilter = {
   ssids? : string[]
 }

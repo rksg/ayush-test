@@ -3,8 +3,10 @@ import { useMemo } from 'react'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { RadioBand }    from '@acx-ui/components'
 import {
-  NetworkPath,
   useEncodedParameter
+} from '@acx-ui/utils'
+import type {
+  NetworkPath
 } from '@acx-ui/utils'
 
 const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]

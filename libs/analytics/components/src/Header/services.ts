@@ -1,8 +1,9 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, normalizeNodeType } from '@acx-ui/analytics/utils'
-import { dataApi }                            from '@acx-ui/store'
-import {  NetworkPath, NodeType, pathFilter } from '@acx-ui/utils'
+import { normalizeNodeType }                       from '@acx-ui/analytics/utils'
+import type { AnalyticsFilter }                    from '@acx-ui/analytics/utils'
+import { dataApi }                                 from '@acx-ui/store'
+import type {  NetworkPath, NodeType, PathFilter } from '@acx-ui/utils'
 
 import { HeaderData, SubTitle } from '.'
 
@@ -28,7 +29,7 @@ type QueryVariables = {
   startDate: string
   endDate: string
   mac?: string
-  filter?: pathFilter
+  filter?: PathFilter
 }
 
 const lowPreferenceList = ['0.0.0.0', '0', 'Unknown']
