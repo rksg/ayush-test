@@ -4,19 +4,22 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps }                                      from '@acx-ui/components'
-import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
+import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListByQueryQuery, useAdaptivePolicySetListQuery,
-  useGetRadiusAttributeGroupQuery, useLazyGetPrioritizedPoliciesQuery, usePolicyTemplateListQuery
+  useAdaptivePolicyListByQueryQuery,
+  useAdaptivePolicySetListQuery,
+  useGetRadiusAttributeGroupQuery,
+  useLazyGetPrioritizedPoliciesQuery,
+  usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  AttributeAssignment, defaultSort, getAdaptivePolicyDetailLink,
+  AttributeAssignment, getAdaptivePolicyDetailLink,
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, sortProp
+  PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -28,12 +31,13 @@ export default function RadiusAttributeGroupDetail () {
   const { Paragraph } = Typography
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
 
-  const { data: policyListData, isLoading: getPolicyListDataLoading } =
-    useAdaptivePolicyListByQueryQuery({ params: { policyId, excludeContent: 'false' }, payload: {
-      fields: [ 'name' ],
-      page: 1, pageSize: 2000,
+  const tableQuery = useTableQuery({
+    useQuery: useAdaptivePolicyListByQueryQuery,
+    apiParams: { excludeContent: 'false' },
+    defaultPayload: {
       filters: { onMatchResponse: policyId }
-    } })
+    }
+  })
 
   // eslint-disable-next-line max-len
   const { data: adaptivePolicySetList } = useAdaptivePolicySetListQuery({ payload: { page: '1', pageSize: '2147483647' } })
@@ -86,7 +90,7 @@ export default function RadiusAttributeGroupDetail () {
         key: 'name',
         title: $t({ defaultMessage: 'Access Policy Name' }),
         dataIndex: 'name',
-        sorter: { compare: sortProp('name', defaultSort) },
+        sorter: true,
         render: function (data, row) {
           return (
             <TenantLink
@@ -157,7 +161,7 @@ export default function RadiusAttributeGroupDetail () {
                   <Form.Item
                     label={$t({ defaultMessage: 'Members' })}
                   >
-                    <Paragraph>{policyListData?.totalCount ?? 0}</Paragraph>
+                    <Paragraph>{tableQuery.data?.totalCount ?? 0}</Paragraph>
                   </Form.Item>
                 </Col>
               </Row>
@@ -170,16 +174,16 @@ export default function RadiusAttributeGroupDetail () {
             </Form>
           </Loader>
         </Card>
-        <Loader states={[
-          { isLoading: getPolicyListDataLoading }
-        ]}>
+        <Loader states={[tableQuery]}>
           <Card title={$t({ defaultMessage: 'Instance ({size})' },
-            { size: policyListData?.totalCount })}>
+            { size: tableQuery.data?.totalCount })}>
             <div style={{ width: '100%' }}>
               <Table
                 rowKey='id'
                 columns={useColumns()}
-                dataSource={policyListData?.data}
+                dataSource={tableQuery.data?.data}
+                pagination={tableQuery.pagination}
+                onChange={tableQuery.handleTableChange}
               />
             </div>
           </Card>
