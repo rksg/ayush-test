@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Col, Row, Space, Tag, Typography } from 'antd'
 import { useIntl }                          from 'react-intl'
-import {  useParams }                       from 'react-router-dom'
+import { useParams }                        from 'react-router-dom'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
