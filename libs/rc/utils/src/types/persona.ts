@@ -18,6 +18,7 @@ export interface Persona {
   id: string,
   name: string,
   groupId: string,
+  revoked: boolean,
   deviceCount?: number,
   description?: string,
   tenantId?: string,
