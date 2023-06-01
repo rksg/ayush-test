@@ -1,19 +1,19 @@
 #!/bin/sh
-
-SOURCE_PATH="apps/main/src/locales"
-COMPILED_PATH="apps/main/src/locales/compiled"
+APP=${1:-'main'}
+SOURCE_PATH="apps/$APP/src/locales"
+COMPILED_PATH="apps/$APP/src/locales/compiled"
 
 echo "Locale files generation started..."
 
 echo "Extract messages from source code"
 npx formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' \
   --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' \
-  --out-file apps/main/src/locales/en-US.json \
+  --out-file apps/$APP/src/locales/en-US.json \
   --id-interpolation-pattern '[sha512:contenthash:base64:6]' \
   --additional-function-names '$t'
 
 echo "Compile messages"
-for file in $(find apps/main/src/locales/* -name '*.json' -not -path "$COMPILED_PATH/*")
+for file in $(find apps/$APP/src/locales/* -name '*.json' -not -path "$COMPILED_PATH/*")
 do
   FILE_NAME="$(basename $file)"
   echo "$FILE_NAME: Processing..."
