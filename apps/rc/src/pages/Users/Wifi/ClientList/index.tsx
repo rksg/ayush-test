@@ -162,7 +162,7 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
         : $t({ defaultMessage: 'Wi-Fi' })
       }
       breadcrumb={isNavbarEnhanced
-        ? [{ text: $t({ defaultMessage: 'Cients' }) }]
+        ? [{ text: $t({ defaultMessage: 'Clients' }) }]
         : []
       }
       footer={

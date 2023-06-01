@@ -34,7 +34,7 @@ export default function ClientList () {
         : $t({ defaultMessage: 'Switch' })
       }
       breadcrumb={isNavbarEnhanced ?[
-        { text: $t({ defaultMessage: 'Cients' }) }
+        { text: $t({ defaultMessage: 'Clients' }) }
       ] : []}
     />
     <SwitchClientsTable filterByVenue={true} filterBySwitch={true} />
