@@ -310,8 +310,8 @@ export function SelfSignInForm () {
             </Checkbox>
           </Form.Item>
           <Tooltip title={$t({
-            defaultMessage: 'As required for privacy compliance, ' +
-              'the user will be informed of that is the case'
+            // eslint-disable-next-line max-len
+            defaultMessage: 'If this option is selected, users will be informed their personal information is being collected'
           })}
           placement='bottom'>
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
