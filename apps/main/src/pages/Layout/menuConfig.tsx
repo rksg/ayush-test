@@ -177,7 +177,7 @@ export function useMenuConfig () {
             },
             {
               uri: isNavbarEnhanced ? '/networks/wireless/reports/wlans' : '/reports/wlans',
-              label: $t({ defaultMessage: 'WLANs Report' }),
+              label: $t({ defaultMessage: 'WLAN Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
