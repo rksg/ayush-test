@@ -784,6 +784,49 @@ describe('Table component', () => {
       const tbody = await findTBody()
       expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
     })
+
+    it('should call onDisplayRowChange with filtered data (enableApiFilter=false)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        floatRightFilters={true}
+        enableApiFilter={false}
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      expect(onDisplayRowChange)
+        .toHaveBeenNthCalledWith(2, [{ ...filteredData![0], children: undefined }])
+    })
+
+    it('should call onDisplayRowChange with empty array (datasource undefined)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        floatRightFilters={true}
+        enableApiFilter={false}
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      await screen.findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      expect(onDisplayRowChange).toHaveBeenCalledWith([])
+    })
+
+    it('should call onDisplayRowChange with unfiltered data (enableApiFilter=true)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        floatRightFilters={true}
+        enableApiFilter
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      expect(onDisplayRowChange).toHaveBeenNthCalledWith(2, filteredData)
+    })
   })
 
   describe('show/hide columnSort', () => {
@@ -935,7 +978,7 @@ describe('Table component', () => {
 
   describe('groupBy table', () => {
     it('should render groupBy correctly', async () => {
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -967,7 +1010,7 @@ describe('Table component', () => {
     })
 
     it('should expand and close table row', async () => {
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -979,7 +1022,7 @@ describe('Table component', () => {
     })
 
     it('should trigger edit action', async () => {
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -994,7 +1037,7 @@ describe('Table component', () => {
 
     it('should trigger action on child row', async () => {
       const onAction = jest.fn()
-      render(<GroupTable rowActions={[{ label: 'Delete', onClick: onAction }]} />)
+      render(<GroupTable columns={[]} rowActions={[{ label: 'Delete', onClick: onAction }]} />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -1009,7 +1052,7 @@ describe('Table component', () => {
 
     it('should support groupBy, search and filter', async () => {
       jest.useFakeTimers()
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]

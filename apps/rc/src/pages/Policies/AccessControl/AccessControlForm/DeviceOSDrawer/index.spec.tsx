@@ -12,91 +12,76 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import DeviceOSDrawer from './index'
 
-const queryDevice = {
-  data: [
-    {
-      id: '173f4a0aa7da4711804b065dcec2c6a4',
-      name: 'allowl2',
-      rulesCount: 2,
-      networksCount: 0
-    },
-    {
-      id: 'fdd2bc421cb445daac8937dbb2366f5e',
-      name: 'device1',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: 'ab757e5bdcfc4c70a3a8382d33a6d598',
-      name: 'device2',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '2788474403774ba4959c06c7a1db71ec',
-      name: 'device3',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '84fe7ef4e41144cda3198a2e2ed86988',
-      name: 'device4',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: 'dc29b08b69ce448a94b66e24445232a9',
-      name: 'device5',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '29e467e4102d4e5f9d4c41600b97ece9',
-      name: 'device55',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '9350d7dba781406499f12e707a4161fc',
-      name: 'device6',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '629032e5d3664d38a51d29cb7152024c',
-      name: 'device7',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '361a8e49222a4cbeae2bc6c7f0127dca',
-      name: 'device8',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 10,
-  totalPages: 1,
-  page: 1
-}
+const queryDevice = [
+  {
+    id: '173f4a0aa7da4711804b065dcec2c6a4',
+    name: 'allowl2',
+    rulesCount: 2,
+    networksCount: 0
+  },
+  {
+    id: 'fdd2bc421cb445daac8937dbb2366f5e',
+    name: 'device1',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: 'ab757e5bdcfc4c70a3a8382d33a6d598',
+    name: 'device2',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '2788474403774ba4959c06c7a1db71ec',
+    name: 'device3',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '84fe7ef4e41144cda3198a2e2ed86988',
+    name: 'device4',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: 'dc29b08b69ce448a94b66e24445232a9',
+    name: 'device5',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '29e467e4102d4e5f9d4c41600b97ece9',
+    name: 'device55',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '9350d7dba781406499f12e707a4161fc',
+    name: 'device6',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '629032e5d3664d38a51d29cb7152024c',
+    name: 'device7',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '361a8e49222a4cbeae2bc6c7f0127dca',
+    name: 'device8',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
 
-const queryDeviceUpdate = {
+const queryDeviceUpdate = [
   ...queryDevice,
-  data: [
-    ...queryDevice.data,
-    {
-      id: 'fdd2bc421cb445daac8937dbb2366f5e',
-      name: 'device1-another'
-    }
-  ],
-  totalCount: 11,
-  totalPages: 1,
-  page: 1
-}
+  {
+    id: 'fdd2bc421cb445daac8937dbb2366f5e',
+    name: 'device1-another'
+  }
+]
 
 const deviceDetail = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
@@ -198,17 +183,13 @@ const selectOptionSet = async (device: string, vendor: string) => {
 
 describe('DeviceOSDrawer Component setting I', () => {
   it('Render DeviceOSDrawer component successfully with Smartphone & Ios', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.post(
-      AccessControlUrls.addDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(deviceResponse)
-      )
-    ))
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.addDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(deviceResponse)
+        )
+      ))
 
     render(
       <Provider>
@@ -221,8 +202,6 @@ describe('DeviceOSDrawer Component setting I', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'allowl2' })
 
     await userEvent.click(screen.getByText(/add new/i))
 
@@ -264,17 +243,13 @@ describe('DeviceOSDrawer Component setting I', () => {
   })
 
   it('Render DeviceOSDrawer component successfully with Tablet & AmazonKindle', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.post(
-      AccessControlUrls.addDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(deviceResponse)
-      )
-    ))
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.addDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(deviceResponse)
+        )
+      ))
 
     render(
       <Provider>
@@ -287,8 +262,6 @@ describe('DeviceOSDrawer Component setting I', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'allowl2' })
 
     await userEvent.click(screen.getByText(/add new/i))
 
@@ -315,17 +288,13 @@ describe('DeviceOSDrawer Component setting I', () => {
   })
 
   it('Render DeviceOSDrawer component successfully with Voip & CiscoIpPhone', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.post(
-      AccessControlUrls.addDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(deviceResponse)
-      )
-    ))
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.addDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(deviceResponse)
+        )
+      ))
 
     render(
       <Provider>
@@ -338,8 +307,6 @@ describe('DeviceOSDrawer Component setting I', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'allowl2' })
 
     await userEvent.click(screen.getByText(/add new/i))
 
@@ -368,7 +335,7 @@ describe('DeviceOSDrawer Component setting I', () => {
 
 describe('DeviceOSDrawer Component setting II', () => {
   it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
@@ -417,7 +384,7 @@ describe('DeviceOSDrawer Component setting II', () => {
   })
 
   it('Render DeviceOSDrawer component successfully with Printer & HpPrinter', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
@@ -466,7 +433,7 @@ describe('DeviceOSDrawer Component setting II', () => {
   })
 
   it('Render DeviceOSDrawer component successfully with IotDevice & NextCamera', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
@@ -517,7 +484,7 @@ describe('DeviceOSDrawer Component setting II', () => {
 
 describe('DeviceOSDrawer Component setting III', () => {
   it('Render DeviceOSDrawer component successfully with HomeAvEquipment & SonyPlayer', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
@@ -566,7 +533,7 @@ describe('DeviceOSDrawer Component setting III', () => {
   })
 
   it('Render DeviceOSDrawer component successfully with WdsDevice & TelnetCpe', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
@@ -617,17 +584,13 @@ describe('DeviceOSDrawer Component setting III', () => {
 
 describe('DeviceOSDrawer Component', () => {
   it('Render DeviceOSDrawer component successfully', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.post(
-      AccessControlUrls.addDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(deviceResponse)
-      )
-    ))
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.addDevicePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(deviceResponse)
+        )
+      ))
 
     render(
       <Provider>
@@ -640,8 +603,6 @@ describe('DeviceOSDrawer Component', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'allowl2' })
 
     await userEvent.click(screen.getByText(/add new/i))
 
@@ -693,7 +654,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDeviceUpdate)
@@ -704,7 +665,7 @@ describe('DeviceOSDrawer Component', () => {
   })
 
   it('Render DeviceDrawer component in viewMode successfully', async () => {
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryDevice)
