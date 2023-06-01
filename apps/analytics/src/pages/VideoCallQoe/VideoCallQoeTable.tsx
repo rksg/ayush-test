@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { SortOrder }          from 'antd/lib/table/interface'
 import { startCase, toLower } from 'lodash'
@@ -21,8 +21,11 @@ import * as UI                  from './styledComponents'
 import { TestDetailsDrawer }    from './TestDetailsDrawer'
 import { Meeting, TestDetails } from './types'
 
+import { CountContext } from '.'
+
 export function VideoCallQoeTable () {
   const { $t } = useIntl()
+  const { setCount } = useContext(CountContext)
   const [visible, setVisible] = useState(false)
   const [testDetails, setTestDetails] = useState<TestDetails>({ name: '', link: '' })
   const queryResults = useVideoCallQoeTestsQuery({})
@@ -176,6 +179,7 @@ export function VideoCallQoeTable () {
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
         }}
+        onDisplayRowChange={(dataSource) => setCount?.(dataSource.length)}
       />
       <TestDetailsDrawer visible={visible} setVisible={setVisible} testDetails={testDetails}/>
     </Loader>
