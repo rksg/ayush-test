@@ -87,6 +87,7 @@ export function PortalSettings () {
   const [getUploadURL] = useGetUploadURLMutation()
 
   const [preferredProvider, setPreferredProvider] = useState<string>('')
+  const [customProfileName, setCustomProfileName] = useState<string>('')
   const [isOtherProvider, setOtherProvider] = useState(false)
   const [accountServerEnabled, setAccountServer] = useState(false)
   const [enableSecondaryServer, setSecondaryServer] = useState(false)
@@ -163,6 +164,7 @@ export function PortalSettings () {
       if (mspLabel.preferredWisprProvider && mspLabel.preferredWisprProvider.providerName) {
         if (mspLabel.preferredWisprProvider.customExternalProvider) {
           setPreferredProvider('Other provider')
+          setCustomProfileName(mspLabel.preferredWisprProvider.providerName)
           setOtherProvider(true)
           mspLabel.preferredWisprProvider.auth?.secondary
             ? setSecondaryServer(true) : setSecondaryServer(false)
@@ -443,6 +445,7 @@ export function PortalSettings () {
         onOk: () => {
           (value === 'Other provider') ? setOtherProvider(true) : setOtherProvider(false)
           setPreferredProvider(value)
+          setCustomProfileName('')
         },
         onCancel: () => formRef.current?.setFieldValue('external_provider', preferredProvider)
       })
@@ -499,7 +502,7 @@ export function PortalSettings () {
           ]}
           validateFirst
           hasFeedback
-          initialValue={mspLabel?.preferredWisprProvider?.providerName || ''}
+          initialValue={customProfileName || ''}
           children={<Input/>}
           validateTrigger={'onBlur'}
         />
@@ -548,8 +551,7 @@ export function PortalSettings () {
               rules={[
                 { required: true },
                 { type: 'number', min: 1 },
-                { type: 'number', max: 65535 }//,
-                // { validator: (_, value) => validateRadiusPort(value) }
+                { type: 'number', max: 65535 }
               ]}
               initialValue={mspLabel?.preferredWisprProvider?.auth?.primary?.port
                 || ACCT_FORBIDDEN_PORT}
@@ -611,8 +613,7 @@ export function PortalSettings () {
               rules={[
                 { required: true },
                 { type: 'number', min: 1 },
-                { type: 'number', max: 65535 }//,
-                // { validator: (_, value) => validateRadiusPort(value) }
+                { type: 'number', max: 65535 }
               ]}
               initialValue={mspLabel?.preferredWisprProvider?.auth?.secondary?.port
                 || ACCT_FORBIDDEN_PORT}
@@ -663,8 +664,7 @@ export function PortalSettings () {
               rules={[
                 { required: true },
                 { type: 'number', min: 1 },
-                { type: 'number', max: 65535 }//,
-                // { validator: (_, value) => validateRadiusPort(value) }
+                { type: 'number', max: 65535 }
               ]}
               initialValue={mspLabel?.preferredWisprProvider?.acct?.primary?.port
                 || AUTH_FORBIDDEN_PORT}
@@ -726,8 +726,7 @@ export function PortalSettings () {
               rules={[
                 { required: true },
                 { type: 'number', min: 1 },
-                { type: 'number', max: 65535 }//,
-                // { validator: (_, value) => validateRadiusPort(value) }
+                { type: 'number', max: 65535 }
               ]}
               initialValue={mspLabel?.preferredWisprProvider?.acct?.secondary?.port
                 || AUTH_FORBIDDEN_PORT}
