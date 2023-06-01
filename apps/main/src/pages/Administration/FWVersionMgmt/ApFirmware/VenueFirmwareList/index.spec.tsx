@@ -60,16 +60,14 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenueFirmwareList />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('My-Venue')
-    expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
+    expect(await screen.findByRole('row', { name: /My-Venue/ })).toBeVisible()
   })
 
   it('should update selected row', async () => {
