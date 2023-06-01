@@ -309,5 +309,6 @@ export { ReactComponent as APMeshSignalPoor } from './icons/APMeshSignalPoor.svg
 export { ReactComponent as APMeshRoleEthernet } from './icons/APMeshRoleEthernet.svg'
 export { ReactComponent as APMeshRoleMesh } from './icons/APMeshRoleMesh.svg'
 export { ReactComponent as APMeshRoleRoot } from './icons/APMeshRoleRoot.svg'
+export { ReactComponent as Blocked } from './icons/Blocked.svg'
 
 export * from './styledComponents'
