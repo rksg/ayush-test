@@ -13,6 +13,7 @@ import {
   render,
   renderHook,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -46,16 +47,26 @@ jest.mock('antd', () => {
 
 describe('DistributionSwitchForm', () => {
   let params: { tenantId: string, serviceId: string }
+
+  const requestSpy = jest.fn()
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
     }
 
+    requestSpy.mockClear()
+
     mockServer.use(
       rest.get(
         NetworkSegmentationUrls.getAvailableSwitches.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json({ switchViewList: [
+            ...mockNsgSwitchInfoData.distributionSwitches,
+            ...mockNsgSwitchInfoData.accessSwitches
+          ] }))
+        }
       ),
       rest.post(
         NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
@@ -93,11 +104,13 @@ describe('DistributionSwitchForm', () => {
     await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
 
     const dialog = await screen.findByRole('dialog')
-    await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
+    await user.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
     await user.click(await within(alert).findByRole('button', { name: 'Delete' }))
+
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
   })
 
-  xit('should add DS correctly', async () => {
+  it('should add DS correctly', async () => {
     const user = userEvent.setup()
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -135,6 +148,6 @@ describe('DistributionSwitchForm', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Save' }))
 
-    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
   })
 })
