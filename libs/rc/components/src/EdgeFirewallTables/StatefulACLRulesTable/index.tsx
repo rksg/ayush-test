@@ -20,7 +20,7 @@ interface StatefulACLRulesTableProps
     columns?: TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>['columns']
   }
 
-export const useDefaultColumns = () => {
+export const useDefaultStatefulACLRulesColumns = () => {
   const { $t } = useIntl()
 
   const columns: TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>['columns'] = [
@@ -85,7 +85,7 @@ export const useDefaultColumns = () => {
 
 export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   const { $t } = useIntl()
-  const defaultColumns = useDefaultColumns()
+  const defaultColumns = useDefaultStatefulACLRulesColumns()
   const { dataSource, columns, ...otherProps } = props
 
   return (

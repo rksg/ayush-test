@@ -3,12 +3,12 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps }                                                                         from '@acx-ui/components'
 import { defaultSort, sortProp, DdosRateLimitingRule, DDoSRuleStatisticModel, transformDisplayText } from '@acx-ui/rc/utils'
 
-import { DDoSRulesTable, useDefaultColumns } from '..'
+import { DDoSRulesTable, useDefaultDDoSRulesColumns } from '..'
 
 export const RuleStatisticDataTable = ({ dataSource }:
    { dataSource: DDoSRuleStatisticModel[] }) => {
   const { $t } = useIntl()
-  const defaultColumns = useDefaultColumns()
+  const defaultColumns = useDefaultDDoSRulesColumns()
 
   const statisticColumns: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns'] = [
     {

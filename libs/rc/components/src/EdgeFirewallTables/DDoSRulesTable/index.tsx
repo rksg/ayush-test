@@ -18,7 +18,7 @@ interface DDoSRulesTableProps
     columns?: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns']
   }
 
-export function useDefaultColumns () {
+export function useDefaultDDoSRulesColumns () {
   const { $t } = useIntl()
   const columns: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns'] = [
     {
@@ -43,8 +43,7 @@ export function useDefaultColumns () {
 
 export const DDoSRulesTable = (props: DDoSRulesTableProps) => {
   const { $t } = useIntl()
-
-  const defaultColumns = useDefaultColumns()
+  const defaultColumns = useDefaultDDoSRulesColumns()
   const { dataSource, columns, ...otherProps } = props
 
   return (

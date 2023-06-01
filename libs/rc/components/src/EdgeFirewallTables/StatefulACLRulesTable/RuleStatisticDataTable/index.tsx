@@ -3,12 +3,12 @@ import { useIntl } from 'react-intl'
 import { TableProps }                                                                                  from '@acx-ui/components'
 import { StatefulAclRule, defaultSort, sortProp, FirewallACLRuleStatisticModel, transformDisplayText } from '@acx-ui/rc/utils'
 
-import { StatefulACLRulesTable, useDefaultColumns } from '..'
+import { StatefulACLRulesTable, useDefaultStatefulACLRulesColumns } from '..'
 
 export const RuleStatisticDataTable = ({ dataSource }:
    { dataSource: FirewallACLRuleStatisticModel[] }) => {
   const { $t } = useIntl()
-  const defaultColumns = useDefaultColumns()
+  const defaultColumns = useDefaultStatefulACLRulesColumns()
   const statisticColumns: TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>['columns'] = [
     {
       title: $t({ defaultMessage: 'Hits' }),
