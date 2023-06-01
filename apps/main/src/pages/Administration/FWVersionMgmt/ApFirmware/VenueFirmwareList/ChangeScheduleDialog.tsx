@@ -52,6 +52,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       let firstIndex = availableVersions.findIndex(isRecommanded)
       if (firstIndex > -1) {
         setSelectedVersion(availableVersions[firstIndex].name)
+      } else {
+        setSelectedVersion(availableVersions[0].name)
       }
     }
   }, [availableVersions])
