@@ -170,12 +170,12 @@ export function ApPhoto () {
             <Image.PreviewGroup
               preview={{
                 visible,
-                current: activeImage[0] ? 0 : 1,
+                current: imageUrl !== '' ? (activeImage[0] ? 0 : 1) : 0,
                 onVisibleChange: (vis) => setVisible(vis)
               }}
             >
-              {defaultImageUrl &&<Image src={defaultImageUrl} /> }
               {imageUrl && <Image src={imageUrl}/> }
+              {defaultImageUrl &&<Image src={defaultImageUrl} /> }
             </Image.PreviewGroup>
           </div>
         </PhotoDiv>
