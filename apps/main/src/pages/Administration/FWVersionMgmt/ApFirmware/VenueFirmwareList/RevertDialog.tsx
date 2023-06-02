@@ -102,9 +102,9 @@ export function RevertDialog (props: RevertDialogProps) {
           <UI.Section>
             <UI.Ul>
               { // eslint-disable-next-line max-len
-                <UI.Li>This action will cause network interruption and impact service delivery.</UI.Li>}
+                <UI.Li>{$t({ defaultMessage: 'This action will cause network interruption and impact service delivery.' })}</UI.Li>}
               { // eslint-disable-next-line max-len
-                <UI.Li>Some features may no longer be availabe with previous versions of device firmware.</UI.Li>}
+                <UI.Li>{$t({ defaultMessage: 'Some features may no longer be availabe with previous versions of device firmware.' })}</UI.Li>}
             </UI.Ul>
           </UI.Section>
         </Form.Item>

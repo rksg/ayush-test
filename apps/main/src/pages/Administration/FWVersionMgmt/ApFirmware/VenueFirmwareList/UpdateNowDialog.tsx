@@ -180,7 +180,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                       <Radio value={VersionsSelectMode.Dropdown}>
                         <Select
                           style={{ width: '420px', fontSize: '12px' }}
-                          placeholder='Select other version...'
+                          placeholder={$t({ defaultMessage: 'Select other version...' })}
                           onChange={handleChange}
                           options={otherOptions}
                         />

@@ -193,11 +193,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             </Radio.Group>
           </div>
         </Form.Item>
-        <UI.TitleDate>When do you want the update to run?</UI.TitleDate>
+        <UI.TitleDate>{$t({ defaultMessage: 'When do you want the update to run?' })}</UI.TitleDate>
         { // eslint-disable-next-line max-len
-          <UI.Title2Date>Selected time will apply to each venue according to own time-zone</UI.Title2Date>}
+          <UI.Title2Date>{$t({ defaultMessage: 'Selected time will apply to each venue according to own time-zone' })}</UI.Title2Date>}
         <UI.DateContainer>
-          <label>Update date:</label>
+          <label>{$t({ defaultMessage: 'Update date:' })}</label>
           <DatePicker
             showToday={false}
             disabledDate={disabledDate}
@@ -206,7 +206,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
         </UI.DateContainer>
         { selectedDate ?
           <UI.DateContainer>
-            <label>Update time:</label>
+            <label>{$t({ defaultMessage: 'Update time:' })}</label>
             <Radio.Group
               style={{ margin: 12 }}
               // eslint-disable-next-line max-len
