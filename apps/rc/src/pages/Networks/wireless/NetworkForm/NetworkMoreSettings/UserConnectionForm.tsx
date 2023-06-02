@@ -32,6 +32,11 @@ const lockoutMapping: { [key:string]:number }={
   hours: 1092,
   minutes: 65535
 }
+const minutesMapping: { [key:string]:number }={
+  hours: 60,
+  days: 1440,
+  minutes: 1
+}
 const oneDay = 1440
 const oneHour = 60
 export function UserConnectionForm () {
@@ -57,22 +62,20 @@ export function UserConnectionForm () {
 
   useEffect(() => {
     if ((editMode || cloneMode)&&data) {
-      setMaxGracePeriod(data.guestPortal?.userSessionTimeout || maxGracePeriod)
       form.setFieldValue(['guestPortal','userSessionGracePeriod'],
         data.guestPortal?.userSessionGracePeriod)
       if(data.guestPortal?.lockoutPeriodEnabled){
         setUseDefaultSetting(false)
-        if(_.get(data, 'userSessionTimeoutUnit')){
-          form.setFieldValue('userSessionTimeoutUnit', _.get(data, 'userSessionTimeoutUnit'))
-          if(data.guestPortal.userSessionTimeout && data.guestPortal.userSessionTimeout>=oneHour
-              && data.guestPortal.userSessionTimeout%oneHour===0){
-            form.setFieldValue(['guestPortal','userSessionTimeout'],
-              data.guestPortal.userSessionTimeout/oneHour)
-          }else {
-            form.setFieldValue(['guestPortal','userSessionTimeout'],
-              data.guestPortal.userSessionTimeout)
-          }
+        const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
+        if(userSessionTimeoutUnit && data.guestPortal.userSessionTimeout){
+          form.setFieldValue('userSessionTimeoutUnit', userSessionTimeoutUnit)
+          form.setFieldValue(['guestPortal','userSessionTimeout'],
+            data.guestPortal.userSessionTimeout)
+          setMaxGracePeriod(
+            (data.guestPortal.userSessionTimeout*minutesMapping[userSessionTimeoutUnit])
+            || maxGracePeriod)
         }else{
+          setMaxGracePeriod(data.guestPortal?.userSessionTimeout || maxGracePeriod)
           if(data.guestPortal.userSessionTimeout && data.guestPortal.userSessionTimeout>=oneHour
               && data.guestPortal.userSessionTimeout%oneHour===0){
             form.setFieldValue(['guestPortal','userSessionTimeout'],
@@ -112,22 +115,16 @@ export function UserConnectionForm () {
           }
         }
       }else{
-        if(_.get(data, 'userSessionTimeoutUnit')){
-          form.setFieldValue('userSessionTimeoutUnit', _.get(data, 'userSessionTimeoutUnit'))
-          if(data.guestPortal?.userSessionTimeout && data.guestPortal.userSessionTimeout>=oneDay
-              && data.guestPortal?.userSessionTimeout%oneDay===0){
-            form.setFieldValue(['guestPortal','userSessionTimeout'],
-              data.guestPortal.userSessionTimeout/oneDay)
-          }else if(data.guestPortal?.userSessionTimeout &&
-              data.guestPortal.userSessionTimeout>=oneHour
-              && data.guestPortal.userSessionTimeout%oneHour===0){
-            form.setFieldValue(['guestPortal','userSessionTimeout'],
-              data.guestPortal.userSessionTimeout/oneHour)
-          }else {
-            form.setFieldValue(['guestPortal','userSessionTimeout'],
-              data.guestPortal?.userSessionTimeout)
-          }
+        const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
+        if(userSessionTimeoutUnit && data.guestPortal?.userSessionTimeout){
+          form.setFieldValue('userSessionTimeoutUnit', userSessionTimeoutUnit)
+          form.setFieldValue(['guestPortal','userSessionTimeout'],
+            data.guestPortal.userSessionTimeout)
+          setMaxGracePeriod(
+            (data.guestPortal.userSessionTimeout*minutesMapping[userSessionTimeoutUnit])
+            || maxGracePeriod)
         }else{
+          setMaxGracePeriod(data.guestPortal?.userSessionTimeout || maxGracePeriod)
           if(data.guestPortal?.userSessionTimeout && data.guestPortal.userSessionTimeout>=oneDay
               && data.guestPortal?.userSessionTimeout%oneDay===0){
             form.setFieldValue(['guestPortal','userSessionTimeout'],
