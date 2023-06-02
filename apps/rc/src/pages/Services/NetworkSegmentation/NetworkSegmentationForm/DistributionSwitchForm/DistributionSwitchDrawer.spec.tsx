@@ -1,13 +1,19 @@
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { NetworkSegmentationUrls }                     from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { StepsForm }               from '@acx-ui/components'
+import { NetworkSegmentationUrls } from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
+import {
+  mockServer, render, renderHook,
+  screen, waitFor, within
+} from '@acx-ui/test-utils'
 
 import { mockNsgData, mockNsgSwitchInfoData } from '../../__tests__/fixtures'
 
 import { DistributionSwitchDrawer } from './DistributionSwitchDrawer'
+
 
 
 describe('DistributionSwitchDrawer', () => {
@@ -16,24 +22,15 @@ describe('DistributionSwitchDrawer', () => {
     serviceId: 'testServiceId'
   }
   const path = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
-  beforeEach(async () => {
-    mockServer.use(
-      rest.get(
-        NetworkSegmentationUrls.getAccessSwitchesByDS.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.accessSwitches }))
-      )
-    )
-  })
 
   it('Should render successfully', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <DistributionSwitchDrawer open={true}
-          availableSwitches={mockNsgSwitchInfoData.distributionSwitches}
-          selectedSwitches={[]}
-          edgeId={mockNsgData.edgeInfos[0].edgeId}
-          venueId={mockNsgData.venueInfos[0].venueId} />
+        <StepsForm>
+          <DistributionSwitchDrawer open={true}
+            availableSwitches={mockNsgSwitchInfoData.distributionSwitches} />
+        </StepsForm>
       </Provider>, {
         route: { params, path }
       })
@@ -58,14 +55,27 @@ describe('DistributionSwitchDrawer', () => {
         }
       )
     )
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+    formRef.current.setFieldsValue({
+      venueId: mockNsgData.venueInfos[0].venueId,
+      edgeId: mockNsgData.edgeInfos[0].edgeId,
+      distributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
+      originalDistributionSwitchInfos: mockNsgSwitchInfoData.distributionSwitches,
+      accessSwitchInfos: mockNsgSwitchInfoData.accessSwitches,
+      originalAccessSwitchInfos: mockNsgSwitchInfoData.accessSwitches
+    })
+
     render(
       <Provider>
-        <DistributionSwitchDrawer open={true}
-          editRecord={mockNsgSwitchInfoData.distributionSwitches[0]}
-          availableSwitches={[]}
-          selectedSwitches={mockNsgSwitchInfoData.distributionSwitches}
-          edgeId={mockNsgData.edgeInfos[0].edgeId}
-          venueId={mockNsgData.venueInfos[0].venueId} />
+        <StepsForm form={formRef.current}>
+          <DistributionSwitchDrawer open={true}
+            editRecord={mockNsgSwitchInfoData.distributionSwitches[0]}
+            availableSwitches={mockNsgSwitchInfoData.accessSwitches} />
+        </StepsForm>
       </Provider>, {
         route: { params, path }
       })
