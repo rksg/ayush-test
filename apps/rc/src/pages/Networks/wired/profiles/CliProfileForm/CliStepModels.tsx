@@ -5,7 +5,7 @@ import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
 import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
 import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'

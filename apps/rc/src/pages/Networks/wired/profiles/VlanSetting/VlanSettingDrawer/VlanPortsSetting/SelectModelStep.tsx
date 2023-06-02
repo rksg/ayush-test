@@ -62,7 +62,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   useEffect(() => {
     if(ICX_MODELS_MODULES){
       const modules = switchSupportIcx8200FF ? Object.keys(ICX_MODELS_MODULES)
-                      : Object.keys(ICX_MODELS_MODULES).filter(key=> key !== 'ICX8200')
+        : Object.keys(ICX_MODELS_MODULES).filter(key=> key !== 'ICX8200')
       const familiesData = modules.map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
