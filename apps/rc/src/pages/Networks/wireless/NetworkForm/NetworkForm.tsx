@@ -145,10 +145,11 @@ export default function NetworkForm (props:{
     if(data && saveState.name === ''){
       form?.resetFields()
       form?.setFieldsValue(data)
+      let name = data.name
       if (cloneMode) {
-        form.setFieldsValue({ name: data.name + ' - copy' })
+        name = data.name + ' - copy'
       }
-      updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
+      updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
         enableAccountingService: (data.accountingRadius||
           data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
@@ -359,7 +360,7 @@ export default function NetworkForm (props:{
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
-        if (_.isUndefined(networkVenue.id)) {
+        if (_.isUndefined(networkVenue.id) || _.isNull(networkVenue.id)) {
           networkVenue.networkId = networkId
           added.push(networkVenue)
         } else {

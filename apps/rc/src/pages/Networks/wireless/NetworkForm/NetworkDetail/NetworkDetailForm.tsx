@@ -55,10 +55,13 @@ export function NetworkDetailForm () {
     if(data){
       form.setFieldsValue(data)
     }
-    if ((editMode) && data?.wlan?.ssid) {
+    if (editMode && data?.wlan?.ssid) {
       if (!differentSSID) {
         setDifferentSSID(data?.wlan?.ssid !== data?.name)
       }
+    }
+    if (cloneMode && data?.wlan?.ssid) {
+      form.setFieldValue(['wlan', 'ssid'], data?.name)
     }
   }, [data, editMode])
 
