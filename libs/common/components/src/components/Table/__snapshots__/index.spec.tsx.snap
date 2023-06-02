@@ -1985,50 +1985,6 @@ exports[`Table component should render select data from all pages option 1`] = `
                               style="position: sticky; right: 0px;"
                             />
                           </tr>
-                          <tr
-                            class="ant-table-row ant-table-row-level-0"
-                            data-row-key="3"
-                          >
-                            <td
-                              class="ant-table-cell ant-table-selection-column"
-                            >
-                              <label
-                                class="ant-checkbox-wrapper"
-                              >
-                                <span
-                                  class="ant-checkbox"
-                                >
-                                  <input
-                                    class="ant-checkbox-input"
-                                    type="checkbox"
-                                    value=""
-                                  />
-                                  <span
-                                    class="ant-checkbox-inner"
-                                  />
-                                </span>
-                              </label>
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              Will Smith
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              45
-                            </td>
-                            <td
-                              class="ant-table-cell"
-                            >
-                              address
-                            </td>
-                            <td
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              style="position: sticky; right: 0px;"
-                            />
-                          </tr>
                         </tbody>
                       </table>
                     </div>

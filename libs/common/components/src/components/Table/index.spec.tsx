@@ -158,25 +158,29 @@ describe('Table component', () => {
   })
 
   it('should render select data from all pages option', async () => {
+    const currentPageData = [
+      ...testData
+    ]
+    currentPageData.splice(2,1)
     const getAllPagesData = () => {
       return testData
     }
     const { asFragment } = render(<Table
       columns={testColumns}
-      dataSource={testData}
+      dataSource={currentPageData}
       getAllPagesData={getAllPagesData}
       rowSelection={{ type: 'checkbox' }}
+      pagination={{ defaultPageSize: 2 }}
     />)
     expect(asFragment()).toMatchSnapshot()
 
-    const icon = await screen.findByRole('img')
+    const icon = await screen.findByRole('img', { name: 'down' })
     await userEvent.hover(icon)
     const selectAllOption = await screen.findByText('Select data from all pages')
     await userEvent.click(selectAllOption)
-    const tbody = await findTBody()
-    const body = within(tbody)
-    const after = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
-    expect(after.filter(el => el.checked)).toHaveLength(3)
+    expect(await screen.findByText('3 selected')).toBeVisible()
+    fireEvent.click((await screen.findAllByRole('checkbox'))[1])
+    expect(await screen.findByText('2 selected')).toBeVisible()
   })
 
   it('should render multi select table and render action buttons correctly', async () => {
