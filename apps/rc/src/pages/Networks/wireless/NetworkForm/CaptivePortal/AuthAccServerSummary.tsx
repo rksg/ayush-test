@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { Form, Input } from 'antd'
-import { get }         from 'lodash'
-import { useIntl }     from 'react-intl'
+import { Form }    from 'antd'
+import { get }     from 'lodash'
+import { useIntl } from 'react-intl'
 
+import { PasswordInput } from '@acx-ui/components'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
@@ -96,7 +97,7 @@ function AaaServerData ({ order, data, serverType }: {
       })} />
     {secret&&<Form.Item
       label={$t({ defaultMessage: 'Shared Secret' })}
-      children={<Input.Password
+      children={<PasswordInput
         readOnly
         bordered={false}
         value={secret}

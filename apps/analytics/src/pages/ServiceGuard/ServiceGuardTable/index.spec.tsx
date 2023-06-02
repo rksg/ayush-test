@@ -15,7 +15,7 @@ import {
 import * as fixtures            from '../__tests__/fixtures'
 import { ServiceGuardTableRow } from '../services'
 
-import { ServiceGuardTable, lastResultSort } from './ServiceGuardTable'
+import { ServiceGuardTable, lastResultSort } from '.'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({

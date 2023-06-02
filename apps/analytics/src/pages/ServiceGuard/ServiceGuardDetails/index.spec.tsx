@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -29,6 +30,7 @@ jest.mock('./Overview', () => ({
 }))
 
 describe('Service Validation', () => {
+  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   it('should render page correctly', async () => {
     render(
       <Provider>
@@ -36,6 +38,8 @@ describe('Service Validation', () => {
       </Provider>,
       { route: { params } }
     )
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('Network Assurance')).toBeVisible()
     expect(await screen.findByText('Service Validation')).toBeVisible()
     expect(await screen.findByTestId('ServiceGuardDetails-Title')).toBeVisible()
     expect(await screen.findByTestId('ServiceGuardDetails-SubTitle')).toBeVisible()
@@ -58,5 +62,21 @@ describe('Service Validation', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <ServiceGuardDetails />
+      </Provider>,
+      { route: { params } }
+    )
+    expect(await screen.findByText('Service Validation')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-Title')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-SubTitle')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-ReRunButton')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-TestRunButton')).toBeVisible()
+    expect(await screen.findByTestId('ServiceGuardDetails-Overview')).toBeVisible()
   })
 })

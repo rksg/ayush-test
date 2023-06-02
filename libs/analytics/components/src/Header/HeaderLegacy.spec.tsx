@@ -7,7 +7,7 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { header1, header4 } from './__tests__/fixtures'
 import { api }              from './services'
 
-import { Header } from './index'
+import { HeaderLegacy } from '.'
 
 jest.mock('../NetworkFilter', () => ({
   NetworkFilter: () => <div>network filter</div>
@@ -26,14 +26,14 @@ jest.mock('@acx-ui/analytics/utils', () => ({
       })
   })
 }))
-describe('Analytics header', () => {
+describe('Analytics legacy header', () => {
   beforeEach(() => store.dispatch(api.util.resetApiState()))
   it('should render loader', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header1.queryResult
     })
     render(<BrowserRouter><Provider>
-      <Header title={''} shouldQuerySwitch/>
+      <HeaderLegacy title={''} shouldQuerySwitch/>
     </Provider></BrowserRouter>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toHaveLength(2)
   })
@@ -71,7 +71,7 @@ describe('Analytics header', () => {
       }
     })
     render(<BrowserRouter><Provider>
-      <Header title={'Title'} shouldQuerySwitch/>
+      <HeaderLegacy title={'Title'} shouldQuerySwitch/>
     </Provider></BrowserRouter>)
     expect(await screen.findByText('Venue 1')).toBeVisible()
   })
@@ -80,7 +80,7 @@ describe('Analytics header', () => {
       data: header4.queryResult
     })
     render(<BrowserRouter><Provider>
-      <Header title={'Title'} shouldQuerySwitch/>
+      <HeaderLegacy title={'Title'} shouldQuerySwitch/>
     </Provider></BrowserRouter>)
     expect(await screen.findByTitle('Venue')).toHaveTextContent('Type:')
     expect(await screen.findByText('Clients: 100')).toBeVisible()
