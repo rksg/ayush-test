@@ -72,24 +72,24 @@ path:nth-child(3) {
 function ConnectionMeteringLink (props:{
   id: string,
   name: string,
-  expirationEpoch?: number | null }
+  expirationDate?: string | null }
 ) {
   const { $t } = useIntl()
-  const { id, name, expirationEpoch } = props
+  const { id, name, expirationDate } = props
   let expired = false
   let tooltip = ''
   let showWarning = false
-  if (expirationEpoch) {
-    const now = new Date().getTime() / 1000
-    if (expirationEpoch <= now) {
+  if (expirationDate) {
+    const now = moment.now()
+    const expirationTime = moment(expirationDate)
+    if (expirationTime.diff(now) < 0) {
       expired = true
       showWarning = true
-    } else if ((expirationEpoch - now) / (60 * 60 * 24) < 7) {
+    } else if ((expirationTime.diff(now)) / (60 * 60 * 24 * 1000) < 7) {
       showWarning = true
       expired = false
-      const expireDate = moment(new Date(0).setUTCSeconds(expirationEpoch)).format('yyyy/MM/DD')
       tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
-        , { expireDate })
+        , { expireDate: expirationTime.format('YYYY/MM/DD') })
     }
   }
   return (
@@ -464,7 +464,7 @@ export function VenuePropertyTab () {
         const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
         if (persona && connectionMetering) {
           // eslint-disable-next-line max-len
-          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona.expirationEpoch}/>
+          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationDate={persona.expirationDate}/>
         }
         return ''
       }
