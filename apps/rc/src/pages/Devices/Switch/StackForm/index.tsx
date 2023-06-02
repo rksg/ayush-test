@@ -56,7 +56,8 @@ import {
   isOperationalSwitch,
   SwitchViewModel,
   redirectPreviousPage,
-  LocationExtended
+  LocationExtended,
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -123,6 +124,8 @@ export function StackForm () {
   const dataFetchedRef = useRef(false)
 
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
+
+  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
@@ -392,7 +395,8 @@ export function StackForm () {
   }
 
   const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
+      : new RegExp(SWITCH_SERIAL_PATTERN)
     if (serialNumber && !re.test(serialNumber)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
