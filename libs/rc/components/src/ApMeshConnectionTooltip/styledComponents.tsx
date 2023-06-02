@@ -18,6 +18,7 @@ export const ItemLabel = styled.div`
   line-height: 16px;
   font-weight: 400;
   color: var(--acx-primary-white);
+  min-width: 80px;
 `
 
 export const ItemValue = styled.div<{ color?: string }>`

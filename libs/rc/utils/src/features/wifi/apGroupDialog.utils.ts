@@ -21,13 +21,15 @@ export const vlanContents = {
     defaultMessage: `VLAN-{id} {isCustom, selectordinal,
       one {(Custom)}
       other {(Default)}
-    }`
+    }`,
+    description: 'Translation not needed'
   }),
   vlanPool: defineMessage({
     defaultMessage: `VLAN Pool: {poolName} {isCustom, selectordinal,
       one {(Custom)}
       other {(Default)}
-    }`
+    }`,
+    description: 'Translation string - VLAN Pool'
   })
 }
 

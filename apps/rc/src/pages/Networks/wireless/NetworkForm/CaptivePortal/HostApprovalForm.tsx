@@ -3,13 +3,14 @@ import { useState, useContext, useEffect } from 'react'
 
 import {
   Checkbox,
-  Form
+  Form,
+  Input
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip }        from '@acx-ui/components'
 import { CaptivePassphraseExpirationEnum, NetworkSaveData,
-  GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+  GuestNetworkTypeEnum, NetworkTypeEnum, domainsNameRegExp } from '@acx-ui/rc/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
@@ -17,7 +18,6 @@ import NetworkFormContext            from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 import { DhcpCheckbox }                          from './DhcpCheckbox'
-import { DomainsInput }                          from './DomainsInput'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
@@ -50,7 +50,31 @@ export function HostApprovalForm () {
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Host Settings' })}</StepsFormLegacy.Title>
-        <DomainsInput required={true}/>
+        <Form.Item
+          name={['guestPortal','hostGuestConfig', 'hostDomains']}
+          label={<>
+            {$t({ defaultMessage: 'Host Domains' })}
+            <Tooltip.Question title={$t({ defaultMessage:
+            'Only hosts from these domains will be allowed to approve guest requests' })}
+            placement='bottom' />
+          </>}
+          rules={[
+            { required: true },
+            { validator: (_, value) => domainsNameRegExp(
+              (Array.isArray(value)? value : value.split(',')), true)
+            }]
+          }
+          validateFirst
+          hasFeedback
+          children={
+            <Input onChange={(e)=>
+              form.setFieldValue(['guestPortal','hostGuestConfig', 'hostDomains'],
+                e.target.value.split(','))
+            }
+            placeholder={$t({ defaultMessage: 'Enter domain(s) separated by comma' })}
+            />
+          }
+        />
         <Form.Item
           name={['guestPortal','hostGuestConfig', 'hostDurationChoices']}
           initialValue={['1','4','24']}
