@@ -26,6 +26,16 @@ export const generateHexKey = (keyLength: number):string => {
   return hexKey
 }
 
+export const generateAlphanumericString = (length: number) => {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let generatedString = ''
+  for (let i = 0; i < length; i++) {
+    let randomNumber = Math.floor(Math.random() * chars.length)
+    generatedString += chars.substring(randomNumber, randomNumber+1)
+  }
+  return generatedString
+}
+
 export const checkVenuesNotInSetup = (networkAdvertisedVenues: Venue[]) => {
   const venuesNotInSetup = networkAdvertisedVenues?.filter(v => {
     return v.status !== ApVenueStatusEnum.IN_SETUP_PHASE

@@ -34,11 +34,11 @@ describe('Recovery Network Passphrase', () => {
       })
 
     await screen.findByTitle('Recovery Network Passphrase')
-    const toggleVisible = await screen.findByRole('img', { name: 'eye' })
+    const toggleVisible = await screen.findByTestId('EyeOpenSolid')
     fireEvent.click(toggleVisible)
 
     expect(await screen.findByDisplayValue('3577 5764 1724 9799')).toBeDefined()
-    expect(await screen.findByRole('img', { name: 'eye-invisible' })).toBeDefined()
+    expect(await screen.findByTestId('EyeSlashSolid')).toBeDefined()
   })
 
   it('should display not allowed message', async () => {
@@ -65,7 +65,7 @@ describe('Recovery Network Passphrase', () => {
       })
 
     await screen.findByTitle('Recovery Network Passphrase')
-    await screen.findByRole('img', { name: 'eye' })
+    await screen.findByTestId('EyeOpenSolid')
     const changeBtn = await screen.findByText('Change')
     fireEvent.click(changeBtn)
     expect(await screen.findByRole('dialog')).toBeVisible()
@@ -86,7 +86,7 @@ describe('when use it not permmited role', () => {
       })
 
     await screen.findByTitle('Recovery Network Passphrase')
-    await screen.findByRole('img', { name: 'eye' })
+    await screen.findByTestId('EyeOpenSolid')
     expect(screen.queryByText('Change')).toBeNull()
   })
 })

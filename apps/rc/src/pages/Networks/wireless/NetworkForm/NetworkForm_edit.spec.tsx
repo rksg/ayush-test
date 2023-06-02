@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { AccessControlUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -34,7 +34,7 @@ async function fillInBeforeSettings (networkName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
-  await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+  await userEvent.click(screen.getByRole('button', { name: 'Settings' }))
 }
 
 const networkResponse = {
@@ -183,16 +183,16 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venueListResponse))
       ),
-      rest.post(CommonUrlsInfo.getL2AclPolicyList.url, (_, res, ctx) =>
+      rest.get(AccessControlUrls.getL2AclPolicyList.url, (_, res, ctx) =>
         res(ctx.json(policyListResponse))
       ),
-      rest.post(CommonUrlsInfo.getL3AclPolicyList.url, (_, res, ctx) =>
+      rest.get(AccessControlUrls.getL3AclPolicyList.url, (_, res, ctx) =>
         res(ctx.json(policyListResponse))
       ),
-      rest.post(CommonUrlsInfo.getDevicePolicyList.url, (_, res, ctx) =>
+      rest.get(AccessControlUrls.getDevicePolicyList.url, (_, res, ctx) =>
         res(ctx.json(policyListResponse))
       ),
-      rest.post(CommonUrlsInfo.getApplicationPolicyList.url, (_, res, ctx) =>
+      rest.get(AccessControlUrls.getAppPolicyList.url, (_, res, ctx) =>
         res(ctx.json(policyListResponse))
       ),
       rest.post(CommonUrlsInfo.venueNetworkApGroup.url, (req, res, ctx) =>
@@ -204,7 +204,7 @@ describe('NetworkForm', () => {
       rest.get(CommonUrlsInfo.getVlanPoolList.url, (_, res, ctx) =>
         res(ctx.json(vlanList))
       ),
-      rest.get(CommonUrlsInfo.getAccessControlProfileList.url, (_, res, ctx) =>
+      rest.get(AccessControlUrls.getAccessControlProfileList.url, (_, res, ctx) =>
         res(ctx.json([]))
       ),
       rest.get(CommonUrlsInfo.getExternalProviders.url,

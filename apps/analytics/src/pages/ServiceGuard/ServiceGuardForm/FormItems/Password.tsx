@@ -1,10 +1,11 @@
-import { Form, FormInstance, Input } from 'antd'
-import { NamePath }                  from 'antd/es/form/interface'
-import { defineMessage, useIntl }    from 'react-intl'
+import { Form, FormInstance }     from 'antd'
+import { NamePath }               from 'antd/es/form/interface'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   StepsForm,
-  useStepFormContext
+  useStepFormContext,
+  PasswordInput
 } from '@acx-ui/components'
 
 import { authMethodsByCode }                         from '../../authMethods'
@@ -70,7 +71,7 @@ export function Password () {
 
   const children = field.preConfigured
     ? <StepsForm.FieldSummary convert={() => String(placeholder)} />
-    : <Input.Password {...{ placeholder, disabled }} />
+    : <PasswordInput {...{ placeholder, disabled }} />
 
   return <Form.Item
     name={fieldName}
