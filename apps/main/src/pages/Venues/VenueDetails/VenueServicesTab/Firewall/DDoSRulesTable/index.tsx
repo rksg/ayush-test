@@ -8,7 +8,6 @@ import {
   DdosAttackType,
   DdosRateLimitingRule,
   DDoSRuleStatisticModel,
-  EdgeFirewallDDoSStats,
   EdgeFirewallSetting,
   expandDDoSAttackTypeAllRule
 } from '@acx-ui/rc/utils'
@@ -21,24 +20,11 @@ interface DDoSRulesTableProps {
   venueId: string;
 }
 
-const testStatsData = [
-  {
-    attackType: 'ICMP',
-    deniedPackets: 12,
-    passedPackets: 20
-  },
-  {
-    attackType: 'TCP_SYN',
-    deniedPackets: 9,
-    passedPackets: 21
-  }
-] as EdgeFirewallDDoSStats[]
-
 export const DDoSRulesTable = (props: DDoSRulesTableProps) => {
   const { firewallData, dateFilter, edgeId, venueId } = props
   const ddosRules = firewallData?.ddosRateLimitingRules
 
-  const { data: stats = testStatsData, isLoading }
+  const { data: stats, isLoading }
     = useGetEdgeFirewallDDoSStatsQuery({ payload: {
       edgeId,
       venueId,

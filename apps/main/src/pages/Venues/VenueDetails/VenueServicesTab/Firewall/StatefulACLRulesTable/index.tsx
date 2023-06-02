@@ -18,29 +18,12 @@ interface StatefulACLRulesTableProps {
   venueId: string;
 }
 
-const testStatsData = {
-  direction: ACLDirection.OUTBOUND,
-  permittedSessions: 100,
-  aclRuleStatsList: [
-    {
-      priority: 1,
-      packets: 12,
-      bytes: 72
-    },
-    {
-      priority: 2,
-      packets: 9,
-      bytes: 168
-    }
-  ]
-}
-
 export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   const { firewallData, direction, dateFilter, edgeId, venueId } = props
   const acls = firewallData?.statefulAcls
   const aclRules = _.find(acls, { direction })?.rules
 
-  const { data: stats = testStatsData, isLoading }
+  const { data: stats, isLoading }
     = useGetEdgeFirewallACLStatsQuery({ payload: {
       edgeId,
       venueId,
@@ -50,7 +33,7 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       direction
     } })
 
-  const statsData = stats.direction === direction ? stats.aclRuleStatsList : []
+  const statsData = stats?.direction === direction ? stats.aclRuleStatsList : []
 
   // query statistic data and aggregate with rules.
   const aggregated: FirewallACLRuleStatisticModel[] = aclRules?.map((rule) => {
@@ -62,10 +45,6 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
     <Loader states={[{ isLoading }]}>
       <StatefulACLRuleStatisticDataTable
         dataSource={aggregated}
-        // pagination={{
-        //   pageSize: 5,
-        //   defaultPageSize: 5
-        // }}
       />
     </Loader>
   )
