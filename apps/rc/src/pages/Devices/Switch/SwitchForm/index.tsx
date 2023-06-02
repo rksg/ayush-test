@@ -15,6 +15,7 @@ import {
   Tabs,
   Alert
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetSwitchQuery,
   useVenuesListQuery,
@@ -36,7 +37,8 @@ import {
   SwitchStatusEnum,
   isOperationalSwitch,
   redirectPreviousPage,
-  LocationExtended
+  LocationExtended,
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -104,6 +106,7 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
+  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
   const switchListPayload = {
     searchString: '',
@@ -279,7 +282,8 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
+      : new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
