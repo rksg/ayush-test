@@ -1,28 +1,29 @@
+import { useState } from 'react'
+
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps }  from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { DownloadOutlined }           from '@acx-ui/icons'
-import { useEdgeExportCsv }           from '@acx-ui/rc/components'
-import { useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                  from '@acx-ui/icons'
+import { useEdgeExportCsv }                  from '@acx-ui/rc/components'
+import { useGetEdgeServiceListQuery }        from '@acx-ui/rc/services'
 import {
   EdgeService,
-  EdgeServiceTypeEnum,
   RequestPayload,
-  ServiceOperation,
-  ServiceType,
   TableQuery,
-  getServiceDetailsLink,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { ServiceDetailDrawer } from './ServiceDetailDrawer'
 
 export const EdgeServices = () => {
 
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+  const [currentData, setCurrentData] = useState({} as EdgeService)
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeServiceListQuery,
     defaultPayload: {
@@ -37,6 +38,11 @@ export const EdgeServices = () => {
     tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
   )
 
+  const showServiceDetailsDrawer = (data: EdgeService) => {
+    setCurrentData(data)
+    setDrawerVisible(true)
+  }
+
   const columns: TableProps<EdgeService>['columns'] = [
     {
       title: $t({ defaultMessage: 'Service Name' }),
@@ -46,9 +52,12 @@ export const EdgeServices = () => {
       defaultSortOrder: 'ascend',
       render: (data, row) => {
         return (
-          <TenantLink to={getServiceDetailUrl(row.serviceType, row.serviceId)}>
+          <Button
+            type='link'
+            onClick={() => showServiceDetailsDrawer(row)}
+          >
             {data}
-          </TenantLink>
+          </Button>
         )
       }
     },
@@ -110,31 +119,11 @@ export const EdgeServices = () => {
             undefined
         }
       />
+      <ServiceDetailDrawer
+        visible={drawerVisible}
+        setVisible={setDrawerVisible}
+        serviceData={currentData}
+      />
     </Loader>
   )
-}
-
-const getServiceDetailUrl = (serviceType: EdgeServiceTypeEnum, servieId: string) => {
-  switch(serviceType) {
-    case EdgeServiceTypeEnum.DHCP:
-      return getServiceDetailsLink({
-        type: ServiceType.EDGE_DHCP,
-        oper: ServiceOperation.DETAIL,
-        serviceId: servieId
-      })
-    case EdgeServiceTypeEnum.FIREWALL:
-      return getServiceDetailsLink({
-        type: ServiceType.EDGE_FIREWALL,
-        oper: ServiceOperation.DETAIL,
-        serviceId: servieId
-      })
-    case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
-      return getServiceDetailsLink({
-        type: ServiceType.NETWORK_SEGMENTATION,
-        oper: ServiceOperation.DETAIL,
-        serviceId: servieId
-      })
-    default:
-      return ''
-  }
 }
