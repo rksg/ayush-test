@@ -5,6 +5,7 @@ import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, 
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
 import { Card, Tooltip }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
 
@@ -56,9 +57,13 @@ export function SelectModelStep (props: { editMode: boolean }) {
       untaggedPorts: []
     })
 
+  const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+
   useEffect(() => {
     if(ICX_MODELS_MODULES){
-      const familiesData = Object.keys(ICX_MODELS_MODULES).map(key => {
+      const modules = switchSupportIcx8200FF ? Object.keys(ICX_MODELS_MODULES)
+        : Object.keys(ICX_MODELS_MODULES).filter(key=> key !== 'ICX8200')
+      const familiesData = modules.map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
       setFamilies(familiesData)
