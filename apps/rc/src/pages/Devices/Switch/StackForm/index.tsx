@@ -133,6 +133,14 @@ export function StackForm () {
   ]
   const [tableData, setTableData] = useState(isStackSwitches ? [] : defaultArray)
 
+  const getSwitchModelWithRodan = function (serial: string) {
+    if (isSupportIcx8200) {
+      return getSwitchModel(serial)
+    } else {
+      return getSwitchModel(serial)?.includes('8200') ? undefined : getSwitchModel(serial)
+    }
+  }
+
   useEffect(() => {
     if (!isVenuesListLoading) {
       setVenueOption(
@@ -202,7 +210,7 @@ export function StackForm () {
             return {
               ...item,
               key,
-              model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
+              model: `${item.model === undefined ? getSwitchModelWithRodan(item.id) : item.model}
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
@@ -270,7 +278,7 @@ export function StackForm () {
       `serialNumber${row.key}`
     )
     dataRows[index].id = serialNumber
-    dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
+    dataRows[index].model = serialNumber && getSwitchModelWithRodan(serialNumber)
     setTableData(dataRows)
 
     const modelList = dataRows
@@ -369,7 +377,7 @@ export function StackForm () {
   const handleSaveStackSwitches = async (values: SwitchViewModel) => {
     try {
       const activeSwitch = formRef.current?.getFieldValue(`serialNumber${activeRow}`)
-      const activeSwitchModel = getSwitchModel(activeSwitch ?? '')
+      const activeSwitchModel = getSwitchModelWithRodan(activeSwitch ?? '')
       const isIcx7650 = activeSwitchModel?.includes('ICX7650')
       const payload = {
         name: values.name || '',
@@ -401,7 +409,7 @@ export function StackForm () {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
 
-    const model = getSwitchModel(serialNumber) || ''
+    const model = getSwitchModelWithRodan(serialNumber) || ''
 
     return modelNotSupportStack.indexOf(model) > -1
       ? Promise.reject(
@@ -605,8 +613,9 @@ export function StackForm () {
   }
 
   const enableAddMember = () => {
-    const switchModel = getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
-    if(!enableStackUnitLimitationFlag){
+    const switchModel =
+      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if (!enableStackUnitLimitationFlag) {
       return true
     }
 
@@ -618,7 +627,8 @@ export function StackForm () {
   }
 
   const getStackUnitsMinLimitaion = () => {
-    const switchModel = getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    const switchModel =
+      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
     return switchModel?.includes('ICX7150') ? 2 : 4
   }
 
@@ -791,7 +801,8 @@ export function StackForm () {
 
                   <SwitchUpgradeNotification
                     switchModel={
-                      getSwitchModel(formRef.current?.getFieldValue(`serialNumber${activeRow}`))}
+                      // eslint-disable-next-line max-len
+                      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))}
                     stackUnitsMinLimitaion={getStackUnitsMinLimitaion()}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
