@@ -229,12 +229,12 @@ export const mockFirewall2 = {
 export const mockFirewallDDoSStats = {
   ddosStatsList: [
     {
-      attackType: 'ICMP',
+      ddosAttackType: 'ICMP',
       deniedPackets: 12,
       passedPackets: 20
     },
     {
-      attackType: 'TCP_SYN',
+      ddosAttackType: 'TCP_SYN',
       deniedPackets: 9,
       passedPackets: 21
     }

@@ -68,14 +68,13 @@ export interface EdgeFirewallDDoSStatsViewData {
   ddosStatsList: EdgeFirewallDDoSStats[];
 }
 export interface EdgeFirewallDDoSStats {
-  attackType: DdosAttackType;
+  ddosAttackType: DdosAttackType;
   deniedPackets: number;
   passedPackets: number;
 }
 
-export type EdgeFirewallDDoSStatsParams = Omit<EdgeFirewallDDoSStats, 'attackType'>
 export interface DDoSRuleStatisticModel
-  extends DdosRateLimitingRule, EdgeFirewallDDoSStatsParams {
+  extends DdosRateLimitingRule, EdgeFirewallDDoSStats {
 }
 
 export interface EdgeFirewallBaseStatsPayload {

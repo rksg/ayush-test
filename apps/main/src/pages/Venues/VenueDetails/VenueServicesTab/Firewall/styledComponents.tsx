@@ -17,7 +17,5 @@ export const ActionsContainer = styled.div`
   top: 0;
   right: 0;
   display: flex;
-  & div:not(:first-child) {
-    margin-left: var(--acx-modal-footer-small-button-space);
-  }
+  gap: var(--acx-modal-footer-small-button-space);
 `

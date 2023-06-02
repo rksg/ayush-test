@@ -40,8 +40,8 @@ export const DDoSRulesTable = (props: DDoSRulesTableProps) => {
       ? expandDDoSAttackTypeAllRule(rule)
       : rule
   }).map((rule) => {
-    const target = _.filter(stats, { attackType: rule.ddosAttackType })[0]
-    return _.merge({ ...rule }, _.omit(target, ['attackType']))
+    const target = _.filter(stats, { ddosAttackType: rule.ddosAttackType })[0]
+    return _.merge({ ...rule }, target)
   }) || [] as DDoSRuleStatisticModel[]
 
   return (
