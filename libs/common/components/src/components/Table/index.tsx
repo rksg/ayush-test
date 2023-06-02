@@ -299,8 +299,11 @@ function Table <RecordType extends Record<string, any>> ({
         key: 'SELECTION_ALL_PAGES',
         text: $t({ defaultMessage: 'Select data from all pages' }),
         onSelect: () => {
-          const data = props.getAllPagesData && props.getAllPagesData()
+          let data = props.getAllPagesData && props.getAllPagesData()
           if(data){
+            if(isGroupByActive) {
+              data = data?.flatMap(item => item.children)
+            }
             setSelectedRowKeys(data.map(row => getRowKey(row)))
             setSelectedRows(data)
             setAllRows(data)

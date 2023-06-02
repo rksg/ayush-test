@@ -165,14 +165,13 @@ describe('Table component', () => {
     const getAllPagesData = () => {
       return testData
     }
-    const { asFragment } = render(<Table
+    render(<Table
       columns={testColumns}
       dataSource={currentPageData}
       getAllPagesData={getAllPagesData}
       rowSelection={{ type: 'checkbox' }}
       pagination={{ defaultPageSize: 2 }}
     />)
-    expect(asFragment()).toMatchSnapshot()
 
     const icon = await screen.findByRole('img', { name: 'down' })
     await userEvent.hover(icon)
@@ -1020,6 +1019,22 @@ describe('Table component', () => {
       fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
       const clearBtn = await screen.findByRole('button', { name: 'Clear Filters' })
       fireEvent.click(clearBtn)
+    })
+
+    it('should render select data from all pages option correctly', async () => {
+      render(<GroupTable columns={[]} />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      const icon = await screen.findByRole('img', { name: 'down' })
+      await userEvent.hover(icon)
+      const selectAllOption = await screen.findByText('Select data from all pages')
+      await userEvent.click(selectAllOption)
+      expect(await screen.findByText('3 selected')).toBeVisible()
     })
 
     it('should render groupBy disabled rows correctly', async () => {
