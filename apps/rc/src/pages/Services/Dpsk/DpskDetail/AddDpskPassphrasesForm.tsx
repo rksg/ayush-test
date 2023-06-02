@@ -12,7 +12,7 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Tooltip }                                    from '@acx-ui/components'
+import { Tooltip, PasswordInput }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector, PhoneInput }         from '@acx-ui/rc/components'
 import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
@@ -210,7 +210,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             { min: 8 },
             { max: 63 }
           ]}
-          children={<Input.Password />}
+          children={<PasswordInput />}
         />
       }
       <Form.Item

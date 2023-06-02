@@ -2,9 +2,10 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps }                                         from '@acx-ui/components'
+import { Button, Card, Loader, PageHeader, Table, TableProps }                                                           from '@acx-ui/components'
+import { ServiceInfo }                                                                                                   from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery }                                                                                          from '@acx-ui/rc/services'
-import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { DhcpStats, ServiceOperation, ServiceType, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                         from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                                                from '@acx-ui/user'
 
@@ -20,7 +21,6 @@ const EdgeDHCPDetail = () => {
     fields: [
       'serviceName',
       'dhcpRelay',
-      'dhcpPoolNum',
       'dhcpPoolNum',
       'leaseTime'
     ],
@@ -100,6 +100,30 @@ const EdgeDHCPDetail = () => {
   //   }
   // ]
 
+  const dhcpInfo = [
+    {
+      title: $t({ defaultMessage: 'Service Health' }),
+      content: <EdgeDhcpServiceStatusLight
+        data={dhcpStats?.data && dhcpStats?.data[0]?.health}
+      />
+    },
+    {
+      title: $t({ defaultMessage: 'DHCP Relay' }),
+      content: dhcpStats?.data &&
+        (dhcpStats?.data[0]?.dhcpRelay === 'true' ?
+          $t({ defaultMessage: 'ON' }) :
+          $t({ defaultMessage: 'OFF' }))
+    },
+    {
+      title: $t({ defaultMessage: 'DHCP Pools' }),
+      content: dhcpStats?.data && dhcpStats?.data[0]?.dhcpPoolNum
+    },
+    {
+      title: $t({ defaultMessage: 'Lease Time' }),
+      content: dhcpStats?.data && (dhcpStats?.data[0]?.leaseTime)
+    }
+  ]
+
   return (
     <>
       <PageHeader
@@ -129,58 +153,7 @@ const EdgeDHCPDetail = () => {
         { isFetching: isLoading, isLoading: false }
       ]}>
         <Space direction='vertical' size={30}>
-          <Card type='solid-bg'>
-            <UI.InfoMargin>
-              <GridRow>
-                <GridCol col={{ span: 3 }}>
-                  <Space direction='vertical' size={10}>
-                    <Typography.Text>
-                      {$t({ defaultMessage: 'Service Health' })}
-                    </Typography.Text>
-                    <Typography.Text>
-                      <EdgeDhcpServiceStatusLight
-                        data={dhcpStats?.data && dhcpStats?.data[0]?.health}
-                      />
-                    </Typography.Text>
-                  </Space>
-                </GridCol>
-                <GridCol col={{ span: 3 }}>
-                  <Space direction='vertical' size={10}>
-                    <Typography.Text>
-                      {$t({ defaultMessage: 'DHCP Relay' })}
-                    </Typography.Text>
-                    <Typography.Text>
-                      {
-                        dhcpStats?.data &&
-                        (dhcpStats?.data[0]?.dhcpRelay === 'true' ?
-                          $t({ defaultMessage: 'ON' }) :
-                          $t({ defaultMessage: 'OFF' }))}
-                    </Typography.Text>
-                  </Space>
-                </GridCol>
-                <GridCol col={{ span: 3 }}>
-                  <Space direction='vertical' size={10}>
-                    <Typography.Text>
-                      {$t({ defaultMessage: 'DHCP Pools' })}
-                    </Typography.Text>
-                    <Typography.Text>
-                      {dhcpStats?.data && dhcpStats?.data[0]?.dhcpPoolNum}
-                    </Typography.Text>
-                  </Space>
-                </GridCol>
-                <GridCol col={{ span: 3 }}>
-                  <Space direction='vertical' size={10}>
-                    <Typography.Text>
-                      {$t({ defaultMessage: 'Lease Time' })}
-                    </Typography.Text>
-                    <Typography.Text>
-                      {dhcpStats?.data && (dhcpStats?.data[0]?.leaseTime)}
-                    </Typography.Text>
-                  </Space>
-                </GridCol>
-              </GridRow>
-            </UI.InfoMargin>
-          </Card>
+          <ServiceInfo data={dhcpInfo} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>

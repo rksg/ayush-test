@@ -79,7 +79,8 @@ export interface TableProps <RecordType>
     ) => void
     iconButton?: IconButtonProps,
     filterableWidth?: number,
-    searchableWidth?: number
+    searchableWidth?: number,
+    onDisplayRowChange?: (displayRows: RecordType[]) => void
   }
 
 export interface TableHighlightFnArgs {
@@ -116,7 +117,8 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId, ...props
+  type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
+  onDisplayRowChange, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth } = props
   const rowKey = (props.rowKey ?? 'key')
@@ -149,6 +151,13 @@ function Table <RecordType extends Record<string, any>> ({
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, [filterValues, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    onDisplayRowChange?.((enableApiFilter
+      ? dataSource?.slice()
+      : getFilteredData<RecordType>(
+        dataSource, filterValues, activeFilters, searchables, searchValue)) ?? [])
+  }, [dataSource, onDisplayRowChange, searchValue, filterValues])
+
   const baseColumns = useMemo(() => {
     const settingsColumn = {
       key: settingsKey,
@@ -175,12 +184,8 @@ function Table <RecordType extends Record<string, any>> ({
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })
-  const {
-    groupable,
-    expandable,
-    columns,
-    isGroupByActive
-  } = useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value)
+  const { groupable, expandable, columns, isGroupByActive, onExpand } =
+  useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value, rowKey)
 
   const setting: SettingOptionType | false = type === 'tall' && settingsId ? {
     draggable: true,
@@ -219,8 +224,11 @@ function Table <RecordType extends Record<string, any>> ({
     }) ?? []
   }, [props.dataSource, rowKey])
   const onRowClick = (record: RecordType) => {
-    if (!props.rowSelection) return
-    if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
+    if (
+      !props.rowSelection ||
+      rowSelection?.getCheckboxProps?.(record)?.disabled
+    )
+      return
 
     const key = typeof rowKey === 'function' ? rowKey(record) : record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
@@ -279,9 +287,13 @@ function Table <RecordType extends Record<string, any>> ({
     },
     ...isGroupByActive
       ? {
-        getCheckboxProps: record => 'children' in record
-          ? ({ disabled: true, style: { display: 'none' } })
-          : ({})
+        getCheckboxProps: record => {
+          return 'children' in record && !('isFirstLevel' in record)
+            ? ({ disabled: true, style: { display: 'none' } })
+            : props.rowSelection?.getCheckboxProps
+              ? props.rowSelection?.getCheckboxProps(record)
+              :({})
+        }
       }
       : {}
   } : undefined
@@ -358,7 +370,6 @@ function Table <RecordType extends Record<string, any>> ({
       children: column.children?.map(child => _.flow([columnRender, columnResize])(child))
     })
   }))
-
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
@@ -459,9 +470,10 @@ function Table <RecordType extends Record<string, any>> ({
       showSorterTooltip={false}
       tableAlertOptionRender={false}
       expandable={expandable}
+      onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName
-        : (record) => isGroupByActive && 'children' in record
+        : (record) => isGroupByActive && 'children' in record && !('isFirstLevel' in record)
           ? 'parent-row-data'
           : ''
       }

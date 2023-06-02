@@ -10,7 +10,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -31,7 +31,7 @@ function useColumns (
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -54,6 +54,7 @@ function useColumns (
       key: 'country',
       dataIndex: 'country',
       sorter: true,
+      filterKey: 'city',
       filterable: filterables ? filterables['city'] : false,
       width: 120,
       render: function (data, row) {
@@ -187,7 +188,7 @@ function useColumns (
 }
 
 export const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   return {
     fields: [

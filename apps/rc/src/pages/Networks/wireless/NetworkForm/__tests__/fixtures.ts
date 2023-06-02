@@ -1,12 +1,13 @@
+
 import {
   GuestNetworkTypeEnum,
   SocialIdentitySource,
   TimeUnitEnum,
   NetworkSaveData,
   NetworkTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
-
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -698,41 +699,23 @@ export const applicationPolicyListResponse = {
   page: 1
 }
 
-export const layer2PolicyListResponse = {
-  data: [
-    {
-      id: 'dee8918e1c40474a9f779b39ee672c5b',
-      name: 'layer2policy1',
-      macAddressesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 1,
-  totalPages: 1,
-  page: 1
-}
+export const layer2PolicyListResponse = [
+  {
+    id: 'dee8918e1c40474a9f779b39ee672c5b',
+    name: 'layer2policy1',
+    macAddressesCount: 1,
+    networksCount: 0
+  }
+]
 
-export const layer3PolicyListResponse = {
-  data: [
-    {
-      id: '4dee545ff0e04100b13774aa0ba6fc57',
-      name: 'layer3policy1',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'name',
-    'id'
-  ],
-  totalCount: 1,
-  totalPages: 1,
-  page: 1
-}
+export const layer3PolicyListResponse = [
+  {
+    id: '4dee545ff0e04100b13774aa0ba6fc57',
+    name: 'layer3policy1',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
 
 export const accessControlListResponse = [
   {
@@ -866,6 +849,44 @@ export const wisprDataWPA2 = {
   },
   wlan: {
     bypassCPUsingMacAddressAuthentication: true,
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    passphrase: 'aaaaaaaaaa'
+  }
+}
+export const wisprDataForAllAccept = {
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'Select provider',
+      authRadius: { secondary: {} },
+      accountingRadius: { secondary: {} },
+      authType: AuthRadiusEnum.ALWAYS_ACCEPT
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false,
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    passphrase: 'aaaaaaaaaa'
+  }
+}
+export const wisprDataForOnlyAuth = {
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'Select provider',
+      authRadius: { secondary: {} },
+      accountingRadius: { secondary: {} },
+      authType: AuthRadiusEnum.RADIUS
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false,
     wlanSecurity: WlanSecurityEnum.WPA2Personal,
     passphrase: 'aaaaaaaaaa'
   }

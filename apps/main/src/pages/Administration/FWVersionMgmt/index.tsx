@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
+import { Tabs, Tooltip }                            from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                         from '@acx-ui/icons'
 import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
@@ -34,14 +34,17 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
   const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
-  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({})
+  const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
+    skip: !isEdgeEnabled
+  })
   const { latestEdgeReleaseVersion } = useGetLatestEdgeFirmwareQuery({}, {
+    skip: !isEdgeEnabled,
     selectFromResult: ({ data }) => ({
       latestEdgeReleaseVersion: data?.[0]
     })

@@ -7,7 +7,9 @@ import {
   Persona,
   PersonaGroup,
   PropertyConfigs,
-  PropertyConfigStatus
+  PropertyConfigStatus,
+  ConnectionMetering,
+  BillingCycleType
 } from '@acx-ui/rc/utils'
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -26,6 +28,13 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
+export const mockUnBlockedPersona: Persona = {
+  id: 'persona-id-1',
+  name: 'persona-name-1',
+  groupId: 'group-id-1',
+  revoked: false
+}
+
 export const mockPersona: Persona = {
   id: 'persona-id-1',
   name: 'persona-name-1',
@@ -33,6 +42,7 @@ export const mockPersona: Persona = {
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
   identityId: 'unit-id-1',
+  revoked: false,
   devices: [
     {
       macAddress: '11:11:11:11:11:11',
@@ -54,7 +64,9 @@ export const mockPersona: Persona = {
       personaId: 'persona-id-1',
       name: 'port-name-1'
     }
-  ]
+  ],
+  meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  expirationEpoch: 1684000000
 }
 
 export const mockPersonaGroup: PersonaGroup = {
@@ -77,18 +89,27 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
     {
       id: 'persona-id-1',
       name: 'persona-name-1',
-      groupId: 'persona-group-id-1'
+      groupId: 'persona-group-id-1',
+      meteringProfileId: null,
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-2',
       name: 'persona-name-2',
-      groupId: 'persona-group-id-1'
+      groupId: 'persona-group-id-1',
+      meteringProfileId: null,
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-3',
       name: 'persona-name-3',
       groupId: 'persona-group-id-1',
-      identityId: 'persona-identity-id-1'
+      identityId: 'persona-identity-id-1',
+      meteringProfileId: null,
+      expirationEpoch: null,
+      revoked: false
     }
   ]
 }
@@ -219,4 +240,85 @@ export const mockDpskList = {
 export const mockEnabledPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   personaGroupId: 'persona-group-id-1'
+}
+
+export const mockConnectionMetering: ConnectionMetering = {
+  id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  name: 'profile1',
+  uploadRate: 12,
+  downloadRate: 5,
+  dataCapacity: 100,
+  dataCapacityEnforced: true,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: false,
+  billingCycleType: 'CYCLE_UNSPECIFIED' as BillingCycleType,
+  billingCycleDays: null,
+  venueCount: 1,
+  unitCount: 2
+}
+
+
+export const mockConnectionMeterings = [{
+  id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  name: 'profile1',
+  uploadRate: 12,
+  downloadRate: 5,
+  dataCapacity: 100,
+  dataCapacityEnforced: true,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: false,
+  billingCycleType: 'CYCLE_UNSPECIFIED' as BillingCycleType,
+  billingCycleDays: null,
+  venueCount: 1,
+  unitCount: 2
+}, {
+  id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+  name: 'profile2',
+  uploadRate: 0,
+  downloadRate: 10,
+  dataCapacity: 100,
+  dataCapacityEnforced: false,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: true,
+  billingCycleType: 'CYCLE_MONTHLY' as BillingCycleType,
+  billingCycleDays: null,
+  venueCount: 0,
+  unitCount: 0
+},
+{
+  id: 'afce7414-1c78-4312-ad5b-ae03f28dbc6c',
+  name: 'profile3',
+  uploadRate: 0,
+  downloadRate: 10,
+  dataCapacity: 100,
+  dataCapacityEnforced: true,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: true,
+  billingCycleType: 'CYCLE_WEEKLY' as BillingCycleType,
+  billingCycleDays: null,
+  venueCount: 0,
+  unitCount: 0
+},
+{
+  id: 'bfde7414-1c78-4312-ad5b-ae03f18dbc68',
+  name: 'profile4',
+  uploadRate: 10,
+  downloadRate: 10,
+  dataCapacity: 100,
+  dataCapacityEnforced: false,
+  dataCapacityThreshold: 10,
+  billingCycleRepeat: true,
+  billingCycleType: 'CYCLE_NUMS_DAY' as BillingCycleType,
+  billingCycleDays: 7,
+  venueCount: 1,
+  unitCount: 1
+}
+]
+
+export const mockConnectionMeteringTable : NewTableResult<ConnectionMetering> = {
+  content: mockConnectionMeterings,
+  pageable: defaultPageable,
+  totalPages: 1,
+  totalElements: 4,
+  sort: defaultPageable.sort
 }
