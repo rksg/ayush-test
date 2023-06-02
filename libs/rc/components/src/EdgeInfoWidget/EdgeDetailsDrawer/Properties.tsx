@@ -1,9 +1,9 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { formatter }                  from '@acx-ui/formatter'
-import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
-import { TenantLink }                 from '@acx-ui/react-router-dom'
+import { formatter }                                        from '@acx-ui/formatter'
+import { EdgeStatus, EdgeStatusEnum, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                       from '@acx-ui/react-router-dom'
 
 interface PropertiesProps {
   currentEdge: EdgeStatus | undefined,
@@ -46,7 +46,7 @@ export const Properties = (props: PropertiesProps) => {
       <Form.Item
         label={$t({ defaultMessage: 'IP Address' })}
         children={
-          currentEdge?.ip || '--'
+          transformDisplayText(currentEdge?.ip)
         }
       />
 
@@ -61,19 +61,19 @@ export const Properties = (props: PropertiesProps) => {
       <Form.Item
         label={$t({ defaultMessage: 'Type' })}
         children={
-          currentEdge?.type || '--'
+          transformDisplayText(currentEdge?.type)
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'FW Version' })}
         children={
-          currentEdge?.firmwareVersion || '--'
+          transformDisplayText(currentEdge?.firmwareVersion)
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'S/N' })}
         children={
-          currentEdge?.serialNumber || '--'
+          transformDisplayText(currentEdge?.serialNumber)
         }
       />
       <Form.Item
@@ -85,13 +85,17 @@ export const Properties = (props: PropertiesProps) => {
       <Form.Item
         label={$t({ defaultMessage: 'Memory' })}
         children={
-          (currentEdge?.memoryTotalKb ? formatter('bytesFormat')(currentEdge?.memoryTotalKb) : '--')
+          (currentEdge?.memoryTotalKb
+            ? formatter('kBytesFormat')(currentEdge?.memoryTotalKb)
+            : '--')
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Storage' })}
         children={
-          (currentEdge?.diskTotalKb ? formatter('bytesFormat')(currentEdge?.diskTotalKb) : '--')
+          (currentEdge?.diskTotalKb
+            ? formatter('kBytesFormat')(currentEdge?.diskTotalKb)
+            : '--')
         }
       />
 

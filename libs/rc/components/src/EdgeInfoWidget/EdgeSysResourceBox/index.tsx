@@ -1,6 +1,7 @@
-import { Statistic as AntStatistic } from 'antd'
-import { useIntl }                   from 'react-intl'
-import styled                        from 'styled-components/macro'
+import { Statistic as AntStatistic, Typography } from 'antd'
+import { valueType }                             from 'antd/lib/statistic/utils'
+import { useIntl }                               from 'react-intl'
+import styled                                    from 'styled-components/macro'
 
 import { Tooltip, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { formatter }                         from '@acx-ui/formatter'
@@ -35,9 +36,16 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
     value = 0,
     totalVal = 0
   } = props
-  const statisticTitle = title.split(' ').map(item => {
-    return item+'\r\n'
-  })
+
+  const statisticFormatter = (val: valueType) => {
+    const valueWithUnit = (val as string).split(' ')
+    const valueData = valueWithUnit[0]
+    const valueUnit = valueWithUnit[1]
+    return (<>
+      <Typography.Text className='value'>{valueData}</Typography.Text>
+      <Typography.Text className='unit'>{valueUnit}</Typography.Text>
+    </>)
+  }
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -45,25 +53,26 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
         <GridCol col={{ span: 24 }} >
           {(type === EdgeResourceUtilizationEnum.CPU) ?
             <AntStatistic
-              title={statisticTitle}
+              title={title}
               valueStyle={(value > 90 ? { color: '#cf1322' } : {})}
-              value={`${value}%`}
+              value={`${value} %`}
+              formatter={statisticFormatter}
             />
             :
             <Tooltip
               title={
-              // eslint-disable-next-line max-len
-                $t({ defaultMessage: '{freeValue} free' }, { freeValue: formatter('bytesFormat')(totalVal - value) })
+                $t({ defaultMessage: '{freeValue} free' },
+                  { freeValue: formatter('kBytesFormat')(totalVal - value) })
               }>
               <AntStatistic
-                title={statisticTitle}
-                value={formatter('bytesFormat')(value)}
-                suffix={
-                // eslint-disable-next-line max-len
-                  $t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage: calculatePercentage(value, totalVal) })
-                }
-                // eslint-disable-next-line max-len
-                valueStyle={(calculatePercentage(value, totalVal) > 90 ? { color: '#cf1322' } : {})}
+                title={title}
+                value={formatter('kBytesFormat')(value)}
+                suffix={`(${calculatePercentage(value, totalVal)}%)`}
+                formatter={statisticFormatter}
+                valueStyle={(calculatePercentage(value, totalVal) > 90
+                  ? { color: '#cf1322' }
+                  : {}
+                )}
               />
             </Tooltip>
           }

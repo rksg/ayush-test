@@ -16,10 +16,10 @@ export const currentEdge:EdgeStatus = {
   firmwareVersion: '1.1.1.1',
   cpuCores: 2,
   cpuUsedPercentage: 65,
-  memoryUsedKb: 120 * Math.pow(1024, 2),
-  memoryTotalKb: 50 * Math.pow(1024, 2),
-  diskUsedKb: 250 * Math.pow(1024, 3),
-  diskTotalKb: 162 * Math.pow(1024, 3)
+  memoryUsedKb: 120 * Math.pow(1024, 1),
+  memoryTotalKb: 50 * Math.pow(1024, 1),
+  diskUsedKb: 250 * Math.pow(1024, 2),
+  diskTotalKb: 162 * Math.pow(1024, 2)
 }
 
 export const edgePortsSetting:EdgePortStatus[] = [{
