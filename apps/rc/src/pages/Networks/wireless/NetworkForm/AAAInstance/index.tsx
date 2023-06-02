@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Input, Space } from 'antd'
-import { get }                        from 'lodash'
-import { useIntl }                    from 'react-intl'
-import { useParams }                  from 'react-router-dom'
+import { Form, Select, Space } from 'antd'
+import { get }                 from 'lodash'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
-import { Tooltip }                         from '@acx-ui/components'
+import { Tooltip, PasswordInput }          from '@acx-ui/components'
 import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
 
@@ -87,7 +87,7 @@ const AAAInstance = (props:{
             })} />
           <Form.Item
             label={$t({ defaultMessage: 'Shared Secret' })}
-            children={<Input.Password
+            children={<PasswordInput
               readOnly
               bordered={false}
               value={get(radiusValue,
@@ -105,7 +105,7 @@ const AAAInstance = (props:{
             })} />
           <Form.Item
             label={$t({ defaultMessage: 'Shared Secret' })}
-            children={<Input.Password
+            children={<PasswordInput
               readOnly
               bordered={false}
               value={get(radiusValue,

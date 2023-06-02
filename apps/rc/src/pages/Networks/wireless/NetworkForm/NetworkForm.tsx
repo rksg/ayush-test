@@ -13,9 +13,9 @@ import {
   useAddNetworkMutation,
   useGetNetworkQuery,
   useUpdateNetworkMutation,
-  useLazyValidateRadiusQuery
-  //useAddNetworkVenuesMutation,
-  //useDeleteNetworkVenuesMutation
+  useLazyValidateRadiusQuery,
+  useAddNetworkVenuesMutation,
+  useDeleteNetworkVenuesMutation
 } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -28,9 +28,9 @@ import {
   Demo,
   GuestPortal,
   redirectPreviousPage,
-  LocationExtended
-  //NetworkVenue,
-  //Network
+  LocationExtended,
+  NetworkVenue,
+  Network
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -114,8 +114,8 @@ export default function NetworkForm (props:{
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
-  //const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  //const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [addNetworkVenues] = useAddNetworkVenuesMutation()
+  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
   const form = Form.useFormInstance()
 
@@ -348,7 +348,6 @@ export default function NetworkForm (props:{
     return true
   }
 
-  /*
   const handleNetworkVenues = async (
     networkId : string,
     newNetworkVenues? : NetworkVenue[],
@@ -383,21 +382,18 @@ export default function NetworkForm (props:{
       await deleteNetworkVenues({ payload: removed }).unwrap()
     }
   }
-  */
 
 
   const handleAddNetwork = async () => {
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
-      await addNetwork({ params, payload }).unwrap()
-      /*
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
         const network: Network = result.response
         await handleNetworkVenues(network.id, payload.venues)
       }
-      */
+
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -462,11 +458,10 @@ export default function NetworkForm (props:{
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetwork({ params, payload }).unwrap()
-      /*
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
-      */
+
       modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
