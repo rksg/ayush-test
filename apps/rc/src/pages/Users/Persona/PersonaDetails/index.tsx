@@ -315,7 +315,7 @@ function PersonaDetailsPageHeader (props: {
       true {Unblock}
       other {Block}
       } this Persona: {name}`,
-      description: 'Translation strings - Unblock, Block, this Persona'
+      description: 'Translation strings - this Persona'
     }, {
       revokedStatus,
       name: title
@@ -344,7 +344,7 @@ function PersonaDetailsPageHeader (props: {
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
         other {Block}}`,
-        description: 'Translation strings - Unblock, Block'
+        description: 'No translation'
       }, { revokedStatus }),
       okType: 'primary',
       cancelText: $t({ defaultMessage: 'Cancel' }),
@@ -358,7 +358,7 @@ function PersonaDetailsPageHeader (props: {
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
         other {Block Persona}}`,
-        description: 'Translation strings - Unblock, Block Persona'
+        description: 'No translation'
       }, { revokedStatus })}
     </Button>,
     <Button type={'primary'} onClick={onClick}>
