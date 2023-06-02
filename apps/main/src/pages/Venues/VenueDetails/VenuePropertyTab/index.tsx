@@ -85,7 +85,7 @@ function ConnectionMeteringLink (props:{
     if (expirationTime.diff(now) < 0) {
       expired = true
       showWarning = true
-    } else if ((expirationTime.diff(now)) / (60 * 60 * 24 * 1000) < 7) {
+    } else if (expirationTime.diff(now, 'days') < 7) {
       showWarning = true
       expired = false
       tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
