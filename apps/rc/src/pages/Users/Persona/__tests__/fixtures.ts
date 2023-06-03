@@ -1,3 +1,5 @@
+import moment from 'moment-timezone'
+
 import {
   DpskSaveData,
   MacRegistrationPool,
@@ -66,7 +68,7 @@ export const mockPersona: Persona = {
     }
   ],
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
-  expirationEpoch: 1684000000
+  expirationDate: moment().add('day', -8).toISOString()
 }
 
 export const mockPersonaGroup: PersonaGroup = {
