@@ -38,6 +38,7 @@ export interface ChangeScheduleDialogProps {
 
 export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   // eslint-disable-next-line max-len
   const { visible, onSubmit, onCancel, data, availableVersions } = props
@@ -89,7 +90,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
   const otherOptions = otherVersions.map((version) => {
     return {
-      label: getVersionLabel(version),
+      label: getVersionLabel(intl, version),
       value: version.name,
       title: '',
       style: { fontSize: 12 }
@@ -174,7 +175,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
               value={selectMode}>
               <Space direction={'vertical'}>
                 <Radio value={VersionsSelectMode.Radio}>
-                  {getVersionLabel(versionOptions[0])}
+                  {getVersionLabel(intl, versionOptions[0])}
                 </Radio>
                 { otherVersions.length > 0 ?
                   <UI.SelectDiv>

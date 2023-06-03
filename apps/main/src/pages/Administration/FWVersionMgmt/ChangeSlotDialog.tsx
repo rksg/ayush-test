@@ -109,7 +109,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
 
   return (
     <Modal
-      title='Change preferred update slot'
+      title={$t({ defaultMessage: 'Change preferred update slot' })}
       visible={visible}
       width={440}
       okText={$t({ defaultMessage: 'Save' })}
