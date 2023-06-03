@@ -15,6 +15,7 @@ import {
 import { useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
+import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
@@ -44,6 +45,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
+  const isIdmDecoupling = true//useIsSplitOn(Features.IDM_DECOUPLING)
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
@@ -92,6 +94,14 @@ const AccountSettings = (props : AccountSettingsProps) => {
             />
           </>
         )}
+
+        { isPrimeAdminUser && isIdmDecoupling && (
+          <>
+            <Divider />
+            <AuthServerFormItem />
+          </>
+        )}
+
       </Form>
     </Loader>
   )
