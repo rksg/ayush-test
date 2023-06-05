@@ -210,7 +210,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         drawerForm.setFieldValue('applicationNameSystemDefined', evt)
       }}
     >
-      {['All', ...renderOptions.sort()].map((avcApp: string) => {
+      {[$t({ defaultMessage: 'All' }), ...renderOptions.sort()].map((avcApp: string) => {
         return <Select.Option key={`${category}_${avcApp}`} value={`${category}_${avcApp}`}>
           {avcApp}
         </Select.Option>
