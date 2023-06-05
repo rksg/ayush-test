@@ -480,9 +480,10 @@ export function EditPortDrawer ({
   }
 
   const transformData = (data: PortSettingModel) => {
+    const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
-      if (overrideFields?.includes('portVlans')) {
+      if (overrideFields?.includes('portVlans') && !(hasBreakoutPortAndVenueSettings)) {
         overrideFields.push('taggedVlans', 'untaggedVlan')
       }
       return !isMultipleEdit
@@ -498,7 +499,7 @@ export function EditPortDrawer ({
     const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
-      isMultipleEdit && !portVlansCheckbox && 'revert',
+      isMultipleEdit && (!portVlansCheckbox || hasBreakoutPortAndVenueSettings) && 'revert',
       checkVlanIgnore(
         'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
