@@ -105,8 +105,9 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       disable: true,
       render: (data) => {
-        return <Tooltip title={data}>
-          {data || '--'}
+        const mac = data?.toString().toLowerCase() || undefined
+        return <Tooltip title={mac}>
+          {mac || '--'}
         </Tooltip>
       }
     },
