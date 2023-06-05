@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { Image, Space, Typography } from 'antd'
-import { useIntl }                  from 'react-intl'
-import { useParams }                from 'react-router-dom'
+import { Image, Space } from 'antd'
+import { useIntl }      from 'react-intl'
+import { useParams }    from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { ServiceInfo }                                        from '@acx-ui/rc/components'
 import { useGetResidentPortalQuery }                          from '@acx-ui/rc/services'
 import {
+  ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
-  ServiceOperation,
-  getServiceRoutePath,
-  getServiceListRoutePath
+  getServiceListRoutePath,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -89,6 +90,63 @@ export default function ResidentPortalDetail () {
     fetchLogo()
   }, [residentPortalData, params])
 
+  const residentPortalInfo = [
+    {
+      title: $t({ defaultMessage: 'Title' }),
+      content: residentPortalData?.uiConfiguration?.text.title
+    },
+    {
+      title: $t({ defaultMessage: 'Subtitle' }),
+      content: residentPortalData?.uiConfiguration?.text.subTitle
+    },
+    {
+      title: $t({ defaultMessage: 'Login Text' }),
+      content: residentPortalData?.uiConfiguration?.text.loginText
+    },
+    {
+      title: $t({ defaultMessage: 'Announcements' }),
+      content: residentPortalData?.uiConfiguration?.text.announcements
+    },
+    {
+      title: $t({ defaultMessage: 'Help Text' }),
+      content: residentPortalData?.uiConfiguration?.text.helpText
+    },
+    {
+      title: $t({ defaultMessage: 'Color Scheme' }),
+      content: <Space>
+        <ColorBoxIcon style={{ color: mainColor }} />
+        <ColorBoxIcon style={{ color: accentColor }} />
+        <ColorBoxIcon style={{ color: separatorColor }} />
+        <ColorBoxIcon style={{ color: textColor }} />
+      </Space>
+    },
+    {
+      title: $t({ defaultMessage: 'Logo' }),
+      content: (logoImage) ?
+        <Image
+          style={{ maxHeight: maxLogoSize, maxWidth: maxLogoSize }}
+          alt={residentPortalData?.uiConfiguration?.files?.logoFileName ?
+            $t({ defaultMessage: 'Logo: {imageName}' },
+              { imageName: residentPortalData?.uiConfiguration?.files?.logoFileName })
+            : $t({ defaultMessage: 'Resident Portal Logo' })}
+          src={`${logoImage}`} />
+        : $t({ defaultMessage: 'No Custom Image Set' })
+    },
+    {
+      title: $t({ defaultMessage: 'Favicon' }),
+      content: favIconImage ?
+        <Image
+          style={{ maxHeight: 100, maxWidth: 100 }}
+          alt={residentPortalData?.uiConfiguration?.files?.favIconFileName ?
+            $t({ defaultMessage: 'Favicon: {imageName}' },
+              { imageName:
+            residentPortalData?.uiConfiguration?.files?.favIconFileName })
+            : $t({ defaultMessage: 'Resident Portal Favicon' })}
+          src={favIconImage}/>
+        : $t({ defaultMessage: 'No Custom Image Set' })
+    }
+  ]
+
   return (
     <>
       <PageHeader
@@ -118,103 +176,7 @@ export default function ResidentPortalDetail () {
       ]}>
         <GridRow>
           <GridCol col={{ span: 24 }}>
-            <Card>
-              <GridRow>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Title' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    {residentPortalData?.uiConfiguration?.text.title}
-                  </Typography.Paragraph>
-                </GridCol>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Subtitle' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    {residentPortalData?.uiConfiguration?.text.subTitle}
-                  </Typography.Paragraph>
-                </GridCol>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Login Text' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    {residentPortalData?.uiConfiguration?.text.loginText}
-                  </Typography.Paragraph>
-                </GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Announcements' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    {residentPortalData?.uiConfiguration?.text.announcements}
-                  </Typography.Paragraph>
-                </GridCol>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Help Text' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    {residentPortalData?.uiConfiguration?.text.helpText}
-                  </Typography.Paragraph>
-                </GridCol>
-              </GridRow>
-              <GridRow>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Color Scheme' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    <Space>
-                      <ColorBoxIcon style={{ color: mainColor }} />
-                      <ColorBoxIcon style={{ color: accentColor }} />
-                      <ColorBoxIcon style={{ color: separatorColor }} />
-                      <ColorBoxIcon style={{ color: textColor }} />
-                    </Space>
-                  </Typography.Paragraph>
-                </GridCol>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Logo' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    {(logoImage) ?
-                      <Image
-                        style={{ maxHeight: maxLogoSize, maxWidth: maxLogoSize }}
-                        alt={residentPortalData?.uiConfiguration?.files?.logoFileName ?
-                          $t({ defaultMessage: 'Logo: {imageName}' },
-                            { imageName: residentPortalData?.uiConfiguration?.files?.logoFileName })
-                          : $t({ defaultMessage: 'Resident Portal Logo' })}
-                        src={`${logoImage}`} />
-                      : $t({ defaultMessage: 'No Custom Image Set' })}
-
-                  </Typography.Paragraph>
-                </GridCol>
-                <GridCol col={{ span: 6 }}>
-                  <Card.Title>
-                    {$t({ defaultMessage: 'Favicon' })}
-                  </Card.Title>
-                  <Typography.Paragraph>
-                    {(favIconImage) ?
-                      <Image
-                        style={{ maxHeight: 100, maxWidth: 100 }}
-                        alt={residentPortalData?.uiConfiguration?.files?.favIconFileName ?
-                          $t({ defaultMessage: 'Favicon: {imageName}' },
-                            { imageName:
-                            residentPortalData?.uiConfiguration?.files?.favIconFileName })
-                          : $t({ defaultMessage: 'Resident Portal Favicon' })}
-                        src={favIconImage}/>
-                      : $t({ defaultMessage: 'No Custom Image Set' })
-                    }
-
-                  </Typography.Paragraph>
-                </GridCol>
-              </GridRow>
-            </Card>
+            <ServiceInfo data={residentPortalInfo} colPerRow={4} />
           </GridCol>
           <GridCol col={{ span: 24 }}>
             <Card>

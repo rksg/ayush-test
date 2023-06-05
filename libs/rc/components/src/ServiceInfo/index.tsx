@@ -7,8 +7,10 @@ import * as UI from './styledComponents'
 
 interface BasicInfoProps {
   data: {
-    title: string | Function | JSX.Element,
+    title: string | Function | JSX.Element
     content: undefined | number | string | Function | JSX.Element
+    visible?: boolean
+    colSpan?: number
   }[]
   colPerRow?: number
   disabledMargin?: boolean
@@ -31,17 +33,23 @@ export const ServiceInfo = styled((props: BasicInfoProps) => {
 
 const Content = ({ data, colPerRow = 8, className }: BasicInfoProps) => (
   <GridRow className={className}>
-    {data.map((item, index) =>
-      (<GridCol col={{ span: 24/colPerRow }} key={index}>
-        <Space direction='vertical' size={10}>
-          <Typography.Text>
-            {typeof item.title === 'function' ? item.title() : item.title}
-          </Typography.Text>
-          <Typography.Text className='text-color'>
-            {typeof item.content === 'function' ? item.content() : item.content}
-          </Typography.Text>
-        </Space>
-      </GridCol>)
-    )}
+    {
+      data.map((item, index) => {
+        const { visible = true } = item
+        return (
+          visible &&
+            <GridCol col={{ span: item?.colSpan || 24/colPerRow }} key={index}>
+              <Space direction='vertical' size={10}>
+                <Typography.Text>
+                  {typeof item.title === 'function' ? item.title() : item.title}
+                </Typography.Text>
+                <Typography.Text className='text-color text-wrap'>
+                  {typeof item.content === 'function' ? item.content() : item.content}
+                </Typography.Text>
+              </Space>
+            </GridCol>
+        )
+      })
+    }
   </GridRow>
 )
