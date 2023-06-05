@@ -3,6 +3,7 @@ import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, us
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
 import ReactECharts                                from 'echarts-for-react'
 import { renderToString }                          from 'react-dom/server'
+import { useIntl }                                 from 'react-intl'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
@@ -14,19 +15,19 @@ import {
   xAxisOptions,
   dateAxisFormatter
 } from '../Chart/helper'
-import { TooltipWrapper } from '../Chart/styledComponents'
+import { TooltipWrapper, ResetButton } from '../Chart/styledComponents'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
 
-export interface ConfigChange {
-  id: number;
-  timestamp: string;
-  type: string;
-  name: string;
-  key: string;
-  oldValues: unknown;
-  newValues: unknown;
+export type ConfigChange = {
+  id?: number
+  timestamp: string
+  type: string
+  name: string
+  key: string
+  oldValues: unknown[]
+  newValues: unknown[]
 }
 
 export interface ConfigChangeChartProps
@@ -197,17 +198,29 @@ export function ConfigChangeChart ({
   const eChartsRef = useRef<ReactECharts>(null)
 
   const [selected, setSelected] = useState<number|undefined>(selectedData)
-  const [brushPositions, setBrushPositions] = useState(() => {
+
+  const getBoundary = (
+    chartBoundary: ConfigChangeChartProps['chartBoundary']
+  ) => ({ min: chartBoundary[0], max: chartBoundary[1] })
+  const getBrushPositions = (
+    chartBoundary: ConfigChangeChartProps['chartBoundary'],
+    brushWidth: ConfigChangeChartProps['brushWidth']
+  ) => {
     const brushes = [
-      [ chartBoundary[0], chartBoundary[0] + brushWidth ],
-      [ chartBoundary[1] - brushWidth, chartBoundary[1] ]
+      [ chartBoundary[0], chartBoundary[0] + brushWidth! ],
+      [ chartBoundary[1] - brushWidth!, chartBoundary[1] ]
     ]
     return { actual: brushes, show: brushes }
-  })
-  const [boundary, setBoundary] = useState({
-    min: chartBoundary[0],
-    max: chartBoundary[1]
-  })
+  }
+
+  const [brushPositions, setBrushPositions] = useState(getBrushPositions(chartBoundary, brushWidth))
+  const [boundary, setBoundary] = useState(getBoundary(chartBoundary))
+
+  useEffect(()=>{
+    setBoundary(getBoundary(chartBoundary))
+    setBrushPositions(getBrushPositions(chartBoundary, brushWidth))
+  }, [chartBoundary, brushWidth])
+
   const [selectedLegend, setSelectedLegend] =
     useState(mapping.map(({ label }) => label).reduce((selected, label) => {
       selected[label as string] = true
@@ -484,22 +497,30 @@ export function ConfigChangeChart ({
   }
 
   return (
-    <ReactECharts
-      {...{
-        ...props,
-        style: {
-          ...props.style,
-          WebkitUserSelect: 'none',
-          width: (props.style?.width as number) + legendWidth,
-          height: (mapping.length + placeholderRows) * rowHeight + xAxisHeight // +1 for x-axis
-        }
-      }}
-      ref={eChartsRef}
-      option={option}
-      onEvents={{
-        datazoom: useDatazoom(chartBoundary, setBoundary),
-        legendselectchanged: useLegendSelectChanged(setSelectedLegend)
-      }}
-    />
+    <>
+      <ReactECharts
+        {...{
+          ...props,
+          style: {
+            ...props.style,
+            WebkitUserSelect: 'none',
+            width: (props.style?.width as number) + legendWidth,
+            height: (mapping.length + placeholderRows) * rowHeight + xAxisHeight // +1 for x-axis
+          }
+        }}
+        ref={eChartsRef}
+        option={option}
+        onEvents={{
+          datazoom: useDatazoom(chartBoundary, setBoundary),
+          legendselectchanged: useLegendSelectChanged(setSelectedLegend)
+        }}
+      />
+      { <ResetButton
+        size='small'
+        onClick={() => {}} // TODO: reset zoom
+        children={useIntl().$t({ defaultMessage: 'Reset Zoom' })}
+        $disableLegend={false}
+      />}
+    </>
   )
 }
