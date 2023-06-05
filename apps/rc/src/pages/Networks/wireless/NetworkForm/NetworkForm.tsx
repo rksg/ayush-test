@@ -365,7 +365,6 @@ export default function NetworkForm (props:{
                   settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
                 }
                 updateSaveData(settingSaveData)
-                return true
               }else {
                 if(!(editMode||cloneMode)){
                   const settingCaptiveData = {
@@ -379,8 +378,8 @@ export default function NetworkForm (props:{
                   }
                   updateSaveData(settingCaptiveSaveData)
                 }
-                return true
               }
+              return true
             }}
           >
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
