@@ -638,10 +638,13 @@ export function EditPortDrawer ({
     const setButtonStatus = () => {
       const isPoeBudgetInvalid = form?.getFieldError('poeBudget').length > 0
       const isVlansInvalid
-        = (!isMultipleEdit || !!portVlansCheckbox) && (!untaggedVlan && !taggedVlans)
+      = (!untaggedVlan && !taggedVlans)
+      const isMultipleVlansInvalid = (isMultipleEdit && form.getFieldValue('portVlansCheckbox')) &&
+      (!form?.isFieldTouched('taggedVlans') && !form?.isFieldTouched('untaggedVlan'))
       const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
 
-      setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
+      setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields
+        || isMultipleVlansInvalid)
     }
 
     const updateVlanOptions = () => {
