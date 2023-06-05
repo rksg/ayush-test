@@ -100,8 +100,8 @@ export interface PropertyUnit {
     }
   },
   trafficControl?: {
-    qosProfileId: string,
-    qosExpiryTime: string
+    meteringProfileId: string,
+    profileExpiry: string
   }
 }
 
