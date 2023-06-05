@@ -70,7 +70,7 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
     uiConfiguration: {
       type: 'uiConfiguration',
       access: {
-        tenantSetDpsk: data.tenantSetDpsk,
+        tenantSetDpsk: data.tenantSetDpsk
       },
       text: {
         type: 'text',
@@ -87,9 +87,9 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
         textColor: data.colorText
       },
       files: {
-        logoFileName: data.fileLogo?.file && !data.fileLogo.isRemoved ? 
+        logoFileName: data.fileLogo?.file && !data.fileLogo.isRemoved ?
           data.fileLogo.file.name : (data.fileLogo.isRemoved ? '' : undefined),
-        favIconFileName: data.fileFavicon?.file && !data.fileLogo.isRemoved ? 
+        favIconFileName: data.fileFavicon?.file && !data.fileLogo.isRemoved ?
           data.fileFavicon.file.name : (data.fileFavicon.isRemoved ? '' : undefined)
       }
     }

@@ -85,8 +85,8 @@ describe('ResidentPortal parser', () => {
       colorAccent: '',
       colorSeparator: '',
       colorText: '',
-      fileLogo: {file: undefined},
-      fileFavicon: {file: undefined}
+      fileLogo: { file: undefined },
+      fileFavicon: { file: undefined }
     }
 
     const saveData: ResidentPortal =

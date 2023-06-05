@@ -167,7 +167,8 @@ export default function ResidentPortalDetail () {
                     {$t({ defaultMessage: 'Allow Residents to Set DPSK' })}
                   </Card.Title>
                   <Typography.Paragraph>
-                    {residentPortalData?.uiConfiguration?.access?.tenantSetDpsk ? $t({defaultMessage: 'ENABLED'}) : $t({defaultMessage: 'DISABLED'})}
+                    {residentPortalData?.uiConfiguration?.access?.tenantSetDpsk ?
+                      $t({ defaultMessage: 'ENABLED' }) : $t({ defaultMessage: 'DISABLED' })}
                   </Typography.Paragraph>
                 </GridCol>
               </GridRow>
