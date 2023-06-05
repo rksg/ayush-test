@@ -3,21 +3,14 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-
 import { NetworkFilter }           from '@acx-ui/analytics/components'
-import { RangePicker, PageHeader } from '@acx-ui/components'
+import { RangePicker }       from '@acx-ui/components'
 import { useReportsFilter }        from '@acx-ui/reports/utils'
 import { useDateFilter }           from '@acx-ui/utils'
 
 import { ReportType, reportModeMapping } from '../mapping/reportsMapping'
 
-export function ReportHeader (props: {
-  type: ReportType,
-  showFilter?: boolean }) {
-  const {
-    type,
-    showFilter=true
-  } = props
+export function ReportHeader (type: ReportType) {
   const { $t } = useIntl()
 
   const mode = reportModeMapping[type] || 'both'
@@ -47,29 +40,23 @@ export function ReportHeader (props: {
     setIsLoaded(true)
   },[])
 
-  return (
-    <PageHeader
-      title
-      extra={[
-        showFilter && <NetworkFilter
-          key='reports-network-filter'
-          shouldQuerySwitch={shouldQuerySwitch}
-          showRadioBand={showRadioBand}
-          multiple={true}
-          filterMode={mode}
-          filterFor={'reports'}
-          isRadioBandDisabled={isRadioBandDisabled}
-          radioBandDisabledReason={radioBandDisabledReason}
-        />,
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
-      ]}
-      footerSpacer={false}
+  return <>
+    <NetworkFilter
+      key='reports-network-filter'
+      shouldQuerySwitch={shouldQuerySwitch}
+      showRadioBand={showRadioBand}
+      multiple={true}
+      filterMode={mode}
+      filterFor={'reports'}
+      isRadioBandDisabled={isRadioBandDisabled}
+      radioBandDisabledReason={radioBandDisabledReason}
     />
-  )
+    <RangePicker
+      key='range-picker'
+      selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+      onDateApply={setDateFilter as CallableFunction}
+      showTimePicker
+      selectionType={range}
+    />
+  </>
 }

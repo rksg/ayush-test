@@ -19,7 +19,12 @@ interface SwitchTab {
   url?: string,
   title: string,
   component: JSX.Element,
-  headerExtra?: JSX.Element[]
+  headerExtra?: JSX.Element | JSX.Element[]
+}
+
+function isElementArray (data: JSX.Element | JSX.Element[]
+  ): data is JSX.Element[] {
+  return Array.isArray(data)
 }
 
 const useTabs = () : SwitchTab[] => {
@@ -36,12 +41,7 @@ const useTabs = () : SwitchTab[] => {
       reportName={ReportType.WIRED}
       hideHeader={false}
     />,
-    headerExtra: [
-      <ReportHeader
-        type={ReportType.WIRED}
-        showFilter={true}
-      />
-    ]
+    headerExtra: ReportHeader(ReportType.WIRED)
   }
   return [
     listTab,
@@ -60,7 +60,7 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
   const tabs = useTabs()
-  const TabComp = tabs.find(({ key }) => key === tab)?.component
+  const { component, headerExtra} = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
       title={isNavbarEnhanced
@@ -76,8 +76,8 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={filterByAccess(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}
     />
-    {TabComp}
+    {component}
   </>
 }

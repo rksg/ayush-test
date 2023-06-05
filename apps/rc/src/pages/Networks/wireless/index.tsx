@@ -21,7 +21,12 @@ interface NetworkTab {
   url?: string,
   title: string,
   component: JSX.Element,
-  headerExtra?: JSX.Element[]
+  headerExtra?: JSX.Element | JSX.Element[]
+}
+
+function isElementArray (data: JSX.Element | JSX.Element[]
+  ): data is JSX.Element[] {
+  return Array.isArray(data)
 }
 
 const useTabs = () : NetworkTab[] => {
@@ -38,12 +43,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.WLAN}
       hideHeader={false}
     />,
-    headerExtra: [
-      <ReportHeader
-        type={ReportType.WLAN}
-        showFilter={true}
-      />
-    ]
+    headerExtra: ReportHeader(ReportType.WLAN)
   }
   const applicationsReportTab = {
     key: NetworkTabsEnum.APPLICATIONS_REPORT,
@@ -52,12 +52,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.APPLICATION}
       hideHeader={false}
     />,
-    headerExtra: [
-      <ReportHeader
-        type={ReportType.APPLICATION}
-        showFilter={true}
-      />
-    ]
+    headerExtra: ReportHeader(ReportType.APPLICATION)
   }
   const wirelessReportTab = {
     key: NetworkTabsEnum.WIRELESS_REPORT,
@@ -66,12 +61,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.WIRELESS}
       hideHeader={false}
     />,
-    headerExtra: [
-      <ReportHeader
-        type={ReportType.WIRELESS}
-        showFilter={true}
-      />
-    ]
+    headerExtra: ReportHeader(ReportType.WIRELESS)
   }
   return [
     listTab,
@@ -92,7 +82,7 @@ export function NetworksList ({ tab }: { tab: NetworkTabsEnum }) {
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
   const tabs = useTabs()
-  const TabComp = tabs.find(({ key }) => key === tab)?.component
+  const { component, headerExtra} = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
       title={isNavbarEnhanced
@@ -108,8 +98,8 @@ export function NetworksList ({ tab }: { tab: NetworkTabsEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={filterByAccess(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}
     />
-    {TabComp}
+    {component}
   </>
 }

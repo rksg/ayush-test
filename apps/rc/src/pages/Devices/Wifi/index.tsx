@@ -20,7 +20,12 @@ interface WifiTab {
   url?: string,
   title: string,
   component: JSX.Element,
-  headerExtra?: JSX.Element[]
+  headerExtra?: JSX.Element | JSX.Element[]
+}
+
+function isElementArray (data: JSX.Element | JSX.Element[]
+  ): data is JSX.Element[] {
+  return Array.isArray(data)
 }
 
 const useTabs = () : WifiTab[] => {
@@ -37,12 +42,7 @@ const useTabs = () : WifiTab[] => {
       reportName={ReportType.ACCESS_POINT}
       hideHeader={false}
     />,
-    headerExtra: [
-      <ReportHeader
-        type={ReportType.ACCESS_POINT}
-        showFilter={true}
-      />
-    ]
+    headerExtra: ReportHeader(ReportType.ACCESS_POINT)
   }
   const airtimeReportTab = {
     key: WifiTabsEnum.AIRTIME_REPORT,
@@ -51,12 +51,7 @@ const useTabs = () : WifiTab[] => {
       reportName={ReportType.AIRTIME_UTILIZATION}
       hideHeader={false}
     />,
-    headerExtra: [
-      <ReportHeader
-        type={ReportType.AIRTIME_UTILIZATION}
-        showFilter={true}
-      />
-    ]
+    headerExtra: ReportHeader(ReportType.AIRTIME_UTILIZATION)
   }
   return [
     listTab,
@@ -76,7 +71,7 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
   const tabs = useTabs()
-  const TabComp = tabs.find(({ key }) => key === tab)?.component
+  const { component, headerExtra} = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
       title={isNavbarEnhanced
@@ -88,8 +83,8 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={filterByAccess(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}
     />
-    {TabComp}
+    {component}
   </>
 }

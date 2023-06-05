@@ -53,7 +53,7 @@ export function ClientsTable (props: {
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   useEffect(() => {
-    setSwitchCount(tableQuery.data?.totalCount || 0)
+    setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
   function getCols (intl: ReturnType<typeof useIntl>) {

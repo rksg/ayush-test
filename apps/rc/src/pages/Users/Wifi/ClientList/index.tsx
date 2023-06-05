@@ -30,7 +30,12 @@ interface WirelessTab {
   url?: string,
   title: string,
   component: JSX.Element,
-  headerExtra?: JSX.Element[]
+  headerExtra?: JSX.Element | JSX.Element[]
+}
+
+function isElementArray (data: JSX.Element | JSX.Element[]
+  ): data is JSX.Element[] {
+  return Array.isArray(data)
 }
 
 export interface GuestDateFilter {
@@ -129,12 +134,7 @@ const useTabs = () : WirelessTab[] => {
       reportName={ReportType.CLIENT}
       hideHeader={false}
     />,
-    headerExtra: [
-      <ReportHeader
-        type={ReportType.CLIENT}
-        showFilter={true}
-      />
-    ]
+    headerExtra: ReportHeader(ReportType.CLIENT)
   }
   return [
     clientsTab,
@@ -154,7 +154,7 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
   const tabs = useTabs()
-  const TabComp = tabs.find(({ key }) => key === tab)?.component
+  const { component, headerExtra} = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
       title={isNavbarEnhanced
@@ -170,8 +170,8 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={filterByAccess(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}
     />
-    {TabComp}
+    {component}
   </>
 }
