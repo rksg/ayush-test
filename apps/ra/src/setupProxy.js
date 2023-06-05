@@ -44,10 +44,11 @@ module.exports = async function setupProxy (app) {
     }
   ))
   app.use(createProxyMiddleware(
-    '/api/websocket/socket.io',
+    '/analytics',
     {
-      target: CLOUD_URL, changeOrigin: true, ws: true,
-      onProxyReqWs: function (request) {
+      target: CLOUD_URL,
+      changeOrigin: true,
+      onProxyReq: function (request) {
         request.setHeader('origin', CLOUD_URL)
       }
     }

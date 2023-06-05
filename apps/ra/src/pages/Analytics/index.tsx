@@ -2,14 +2,17 @@ import { useIntl } from 'react-intl'
 
 import { Loader } from '@acx-ui/components'
 import { get }    from '@acx-ui/config'
+import { useUserProfileContext } from '@acx-ui/analytics/utils'
 
 import * as UI from './styledComponents'
 
 function Analytics () {
   const { $t } = useIntl()
-  return <Loader>
+  
+  const { data } = useUserProfileContext()
+  return <Loader states={[{ isLoading: !data }]}>
     <UI.DummyWrapper>
-      {$t({ defaultMessage: 'DATA API: {env}' }, { env: get('MLISA_DATA_API_URL') })}
+      {$t({ defaultMessage: 'user profile loaded: {env}' }, { env: data?.firstName })}
     </UI.DummyWrapper>
   </Loader>
 }

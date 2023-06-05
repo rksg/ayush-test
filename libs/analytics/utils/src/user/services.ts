@@ -17,7 +17,10 @@ const userApi = createApi({
 export const { useGetUserProfileQuery } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getUserProfile: build.query<UserProfile, RequestPayload>({
-      query: ({ params }) => createHttpRequest({  method: 'get', url: '/userProfiles' }, params),
+      query: () => createHttpRequest({ 
+        method: 'get',
+        url: '/analytics/api/rsa-mlisa-rbac/users/profile'
+      }),
       transformResponse (userProfile: UserProfile) {
         return userProfile
       }
