@@ -34,8 +34,8 @@ describe('Edge resource utilization chart', () => {
           isLoading={false}
           type={EdgeResourceUtilizationEnum.STORAGE}
           title={'Storage Usage'}
-          value={currentEdge?.diskUsedKb}
-          totalVal={currentEdge?.diskTotalKb}
+          value={currentEdge?.diskUsed}
+          totalVal={currentEdge?.diskTotal}
         />
       </Provider>,{
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
@@ -108,7 +108,7 @@ describe('Edge resource utilization chart', () => {
       if (ele.className === 'value') {
         expectedStr = '0'
       } else {
-        expectedStr = 'KB'
+        expectedStr = 'B'
       }
 
       expect(ele.textContent).toBe(expectedStr)

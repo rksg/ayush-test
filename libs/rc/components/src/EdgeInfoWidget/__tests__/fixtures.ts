@@ -19,7 +19,11 @@ export const currentEdge:EdgeStatus = {
   memoryUsedKb: 120 * Math.pow(1024, 1),
   memoryTotalKb: 50 * Math.pow(1024, 1),
   diskUsedKb: 250 * Math.pow(1024, 2),
-  diskTotalKb: 162 * Math.pow(1024, 2)
+  diskTotalKb: 162 * Math.pow(1024, 2),
+  memoryUsed: 120 * Math.pow(1024, 2),
+  memoryTotal: 50 * Math.pow(1024, 2),
+  diskUsed: 250 * Math.pow(1024, 3),
+  diskTotal: 162 * Math.pow(1024, 3)
 }
 
 export const edgePortsSetting:EdgePortStatus[] = [{
