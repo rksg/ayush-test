@@ -37,7 +37,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
         },
       })
     ],
-    devtool: 'eval',
   }
 ) {
   const doModuleFederation = await withModuleFederation({
