@@ -79,15 +79,23 @@ interface WrapperProps {
 export const Wrapper = styled.div<WrapperProps>`
   height: auto;
   width: 375px;
-  padding: ${props => props.needPadding ? '10px 15px' : undefined};  
+  padding: ${props => props.needPadding ? '10px 15px' : undefined};
 `
 export const CellWrapper = styled(Space)`
   justify-content: left;
   width: 100%;
   height: 22px;
 `
+export const ChartWrapper = styled(CellWrapper)`
+  position: relative;
+  top: 2px;
+`
+export const CountWrapper = styled(CellWrapper)`
+  display: inline;
+`
 export const TextWrapper = styled(CellWrapper)`
-  color: var(--acx-neutrals-60)
+  color: var(--acx-neutrals-60);
+  display: inline;
 `
 export const InfoWindowHeader = styled.div`
   height: 35px;

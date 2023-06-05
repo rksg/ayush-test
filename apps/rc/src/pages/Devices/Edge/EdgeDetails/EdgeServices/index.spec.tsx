@@ -1,15 +1,17 @@
 /* eslint-disable max-len */
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }    from '@acx-ui/store'
+import { EdgeDhcpUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                  from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer
+  mockServer,
+  within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData as currentEdge, mockedEdgeServiceList } from '../../__tests__/fixtures'
+import { mockEdgeData as currentEdge, mockDhcpStatsData, mockedEdgeServiceList } from '../../__tests__/fixtures'
 
 import { EdgeServices } from '.'
 
@@ -23,6 +25,10 @@ describe('Edge Detail Services Tab', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
         (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -37,5 +43,20 @@ describe('Edge Detail Services Tab', () => {
 
     expect(await screen.findByRole('row', { name: /DHCP-1/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /NSG-1/i })).toBeVisible()
+  })
+
+  it('should render service detail drawer when click service name', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeServices />
+      </Provider>, {
+        route: { params }
+      })
+
+    const row = await screen.findByRole('row', { name: /DHCP-1/i })
+    const dhcpName = within(row).getByRole('button', { name: 'DHCP-1' })
+    await user.click(dhcpName)
+    expect(await screen.findByRole('dialog')).toBeVisible()
   })
 })

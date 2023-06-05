@@ -43,7 +43,9 @@ import {
   APExtendedGrouped,
   downloadFile,
   SEARCH,
-  SORTER
+  SORTER,
+  APMeshSettings,
+  MeshUplinkAp
 } from '@acx-ui/rc/utils'
 import { baseApApi } from '@acx-ui/store'
 
@@ -616,6 +618,47 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }]
     }),
+    getApMeshSettings: build.query<APMeshSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApMeshSettings, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'MESH_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApMeshOptions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'MESH_SETTINGS' }]))
+          })
+        })
+      }
+    }),
+    updateApMeshSettings: build.mutation<APMeshSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApMeshSettings, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'MESH_SETTINGS' }]
+    }),
+    getMeshUplinkAps: build.query<MeshUplinkAp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getMeshUplinkAPs, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<MeshUplinkAp>) {
+        return result?.data[0]
+      }
+    }),
     downloadApsCSV: build.mutation<Blob, ApsExportPayload>({
       query: (payload) => {
         const req = createHttpRequest(CommonUrlsInfo.downloadApsCSV,
@@ -697,6 +740,10 @@ export const {
   useDeleteApGroupsMutation,
   useUpdateApGroupMutation,
   useGetApGroupQuery,
+  useGetApMeshSettingsQuery,
+  useUpdateApMeshSettingsMutation,
+  useGetMeshUplinkApsQuery,
+  useLazyGetMeshUplinkApsQuery,
   useDownloadApsCSVMutation
 } = apApi
 

@@ -104,9 +104,9 @@ export function getReleaseFirmware<T extends FirmwareVersionType> (firmwareVersi
   return firmwareVersions.filter(categoryIsReleaseFunc)
 }
 
-const transform = firmwareTypeTrans()
-
-export const getVersionLabel = (version: FirmwareVersion | EdgeFirmwareVersion): string => {
+// eslint-disable-next-line max-len
+export const getVersionLabel = (intl: IntlShape, version: FirmwareVersion | EdgeFirmwareVersion): string => {
+  const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(version?.category)
   const versionOnboardDate = transformToUserDate(version)
@@ -114,7 +114,8 @@ export const getVersionLabel = (version: FirmwareVersion | EdgeFirmwareVersion):
   return `${versionName} (${versionType}) ${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
 }
 
-export const getSwitchVersionLabel = (version: FirmwareVersion): string => {
+export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
+  const transform = firmwareTypeTrans(intl.$t)
   const versionName = parseSwitchVersion(version?.name)
   const versionType = transform(version?.category)
 
@@ -192,7 +193,9 @@ export const isNextScheduleTooltipDisabled = (venue: FirmwareVenue) => {
   return schedule
 }
 
-export const getNextScheduleTplTooltip = (venue: FirmwareVenue): string | undefined => {
+// eslint-disable-next-line max-len
+export const getNextScheduleTplTooltip = (intl: IntlShape, venue: FirmwareVenue): string | undefined => {
+  const transform = firmwareTypeTrans(intl.$t)
   const schedule = getApSchedule(venue)
   // eslint-disable-next-line max-len
   return schedule && schedule.versionInfo.version + ' (' + transform(schedule.versionInfo.category as FirmwareCategory) + ')'

@@ -55,7 +55,10 @@ export const ApsTable = (props: ApTableProps) => {
     {
       title: $t({ defaultMessage: 'VxLAN PMTU Value' }),
       key: 'vxlanMtu',
-      dataIndex: 'apStatusData.vxlanStatus.vxlanMtu'
+      dataIndex: 'apStatusData.vxlanStatus.vxlanMtu',
+      render: (node, row) => {
+        return row?.apStatusData?.vxlanStatus?.vxlanMtu
+      }
     }
   ]
 
