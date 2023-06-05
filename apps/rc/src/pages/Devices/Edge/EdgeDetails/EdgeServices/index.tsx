@@ -18,7 +18,6 @@ import {
 import { ServiceDetailDrawer } from './ServiceDetailDrawer'
 
 export const EdgeServices = () => {
-
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)

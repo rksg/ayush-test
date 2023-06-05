@@ -5,7 +5,8 @@ import { Drawer }                                                               
 import { EdgeService, EdgeServiceTypeEnum, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                             from '@acx-ui/react-router-dom'
 
-import { DhcpDetails } from './DhcpDetails'
+import { DhcpDetails }     from './DhcpDetails'
+import { FirewallDetails } from './FirewallDetails'
 
 interface ServiceDetailDrawerProps {
   visible: boolean
@@ -13,8 +14,13 @@ interface ServiceDetailDrawerProps {
   serviceData: EdgeService
 }
 
-export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
+const drawerWidthMap = {
+  [EdgeServiceTypeEnum.DHCP]: 500,
+  [EdgeServiceTypeEnum.FIREWALL]: '60%',
+  [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: 500
+}
 
+export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
   const { visible, setVisible, serviceData } = props
   const { $t } = useIntl()
 
@@ -54,7 +60,7 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
       onClose={onClose}
       children={drawerContent}
       destroyOnClose={true}
-      width={475}
+      width={drawerWidthMap[serviceData.serviceType] ?? 475}
     />
   )
 }
@@ -89,7 +95,7 @@ const getContentByType = (serviceData: EdgeService) => {
     case EdgeServiceTypeEnum.DHCP:
       return <DhcpDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.FIREWALL:
-      return <>Firewall Details</>
+      return <FirewallDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
       return <>Nsg Details</>
     default:

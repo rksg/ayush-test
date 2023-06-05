@@ -1,14 +1,18 @@
-import _ from 'lodash'
+import { Space } from 'antd'
+import _         from 'lodash'
 
-import { calculateGranularity }              from '@acx-ui/analytics/utils'
-import { Loader }                            from '@acx-ui/components'
-import { StatefulACLRuleStatisticDataTable } from '@acx-ui/rc/components'
-import { useGetEdgeFirewallACLStatsQuery }   from '@acx-ui/rc/services'
+import { calculateGranularity }            from '@acx-ui/analytics/utils'
+import { Loader }                          from '@acx-ui/components'
+import { useGetEdgeFirewallACLStatsQuery } from '@acx-ui/rc/services'
 import {
   ACLDirection,
   EdgeFirewallSetting,
   FirewallACLRuleStatisticModel } from '@acx-ui/rc/utils'
 import { DateRangeFilter } from '@acx-ui/utils'
+
+import { RuleStatisticDataTable as ACLRuleStatisticDataTable } from '../../StatefulACLRulesTable/RuleStatisticDataTable'
+
+import { ACLOtherInfoTable } from './ACLOtherInfoTable'
 
 interface StatefulACLRulesTableProps {
   firewallData: EdgeFirewallSetting | undefined;
@@ -16,10 +20,18 @@ interface StatefulACLRulesTableProps {
   dateFilter: Omit<DateRangeFilter, 'range'>;
   edgeId: string;
   venueId: string;
+  displayOtherInfo?: boolean
 }
 
 export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
-  const { firewallData, direction, dateFilter, edgeId, venueId } = props
+  const {
+    firewallData,
+    direction,
+    dateFilter,
+    edgeId,
+    venueId,
+    displayOtherInfo = false
+  } = props
   const acls = firewallData?.statefulAcls
   const aclRules = _.find(acls, { direction })?.rules
 
@@ -43,9 +55,15 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
 
   return (
     <Loader states={[{ isLoading }]}>
-      <StatefulACLRuleStatisticDataTable
-        dataSource={aggregated}
-      />
+      <Space size='large' direction='vertical'>
+        {displayOtherInfo &&
+        <ACLOtherInfoTable stats={stats} />
+        }
+
+        <ACLRuleStatisticDataTable
+          dataSource={aggregated}
+        />
+      </Space>
     </Loader>
   )
 }
