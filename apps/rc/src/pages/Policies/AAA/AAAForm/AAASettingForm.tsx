@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
-import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy }                        from '@acx-ui/components'
+import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput }         from '@acx-ui/components'
 import { useLazyGetAAAPolicyListQuery }                                               from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, networkWifiIpRegExp, networkWifiSecretRegExp
@@ -136,7 +136,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                 { required: true },
                 { validator: (_, value) => networkWifiSecretRegExp(value) }
               ]}
-              children={<Input.Password />}
+              children={<PasswordInput />}
             />
           </Fieldset>
           <Form.Item noStyle name='enableSecondaryServer'>
@@ -199,7 +199,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                 { required: true },
                 { validator: (_, value) => networkWifiSecretRegExp(value) }
               ]}
-              children={<Input.Password />}
+              children={<PasswordInput />}
             /></Fieldset>}
         </Space>
       </GridCol>

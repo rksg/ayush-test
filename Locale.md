@@ -57,8 +57,8 @@ This doc is for I18n management for local development
 # Extract latest i18n strings
 git checkout origin/master         # Switch to the branch you wish to do the extraction
 nvm use 14                         # switch to Node.js v14
-./tools/docker/locales/generate.sh # extract and compile JSONs
-./tools/docker/locales/genCount.sh # get Unique Strings, Word Count and Unique Word Count
+./tools/docker/locales/generate.sh <main,ra> # extract and compile JSONs based on app (defaults to main)
+./tools/docker/locales/genCount.sh <main, ra># get Unique Strings, Word Count and Unique Word Count based on app (defaults to main)
 ```
 
 Sample result
@@ -73,7 +73,7 @@ Unique Word Count:  5,367
 Run command below when there are new/updated contents added to the code base
 
 ```bash
-./tools/docker/locales/generate.sh
+./tools/docker/locales/generate.sh <main,ra>
 ```
 
 ### Extraction

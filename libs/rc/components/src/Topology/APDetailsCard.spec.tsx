@@ -94,7 +94,8 @@ const apDetail = {
   meshRole: 'DISABLED',
   deviceGroupId: '00dd4e142110489b9c21bcb1a2a5e93e',
   deviceGroupName: '',
-  deviceModelType: 'Indoor'
+  deviceModelType: 'Indoor',
+  downLinkCount: 2
 }
 
 const apDetailWithNullTraffic = {
@@ -165,7 +166,8 @@ const apDetailWithNullTraffic = {
   meshRole: 'DISABLED',
   deviceGroupId: '00dd4e142110489b9c21bcb1a2a5e93e',
   deviceGroupName: '',
-  deviceModelType: 'Indoor'
+  deviceModelType: 'Indoor',
+  downLinkCount: 2
 }
 
 const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }

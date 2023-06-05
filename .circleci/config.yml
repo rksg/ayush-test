@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Build
-          command: docker build --tag ${GCR_HOSTNAME}/${GCR_PROJECT_ID}/acx-ui:${CIRCLE_SHA1:0:7} -f ./Dockerfile.ra .
+          command: docker build --build-arg CIRCLE_SHA1=$CIRCLE_SHA1 --tag ${GCR_HOSTNAME}/${GCR_PROJECT_ID}/acx-ui:${CIRCLE_SHA1:0:7} -f ./Dockerfile.ra .
       - run:
           name: Push
           command: |
