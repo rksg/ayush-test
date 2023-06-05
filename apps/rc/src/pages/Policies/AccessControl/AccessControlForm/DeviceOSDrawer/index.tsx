@@ -501,7 +501,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         { validator: () => ruleValidator() }
       ]}
     />
-    {isOnlyViewMode ? <Table
+    {isOnlyViewMode && !editMode.isEdit ? <Table
       columns={basicColumns}
       dataSource={deviceOSRuleList as DeviceOSRule[]}
     /> : <Table

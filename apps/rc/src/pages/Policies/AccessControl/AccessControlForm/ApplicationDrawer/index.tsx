@@ -543,7 +543,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         { validator: () => ruleValidator() }
       ]}
     />
-    {isOnlyViewMode ? <Table
+    {isOnlyViewMode && !editMode.isEdit ? <Table
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
     /> : <Table
