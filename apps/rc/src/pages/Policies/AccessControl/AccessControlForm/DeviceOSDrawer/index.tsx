@@ -24,7 +24,6 @@ import { useParams }                                                     from '@
 import { filterByAccess }                                                from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../../constants'
-import { showUnsavedConfirmModal }         from '../AccessControlComponent'
 import { AddModeProps, editModeProps }     from '../AccessControlForm'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
@@ -587,9 +586,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
         zIndex={10}
-        onClose={() => !isViewMode()
-          ? showUnsavedConfirmModal(handleDeviceOSDrawerClose)
-          : handleDeviceOSDrawerClose()
+        onClose={() => handleDeviceOSDrawerClose()
         }
         children={content}
         footer={
