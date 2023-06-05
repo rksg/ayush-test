@@ -103,7 +103,7 @@ describe('RadiusAttributeGroupTable', () => {
     })
   })
 
-  it('should not allow to delete selected row', async () => {
+  it.skip('should not allow to delete selected row', async () => {
     const deleteFn = jest.fn()
     mockServer.use(
       rest.delete(

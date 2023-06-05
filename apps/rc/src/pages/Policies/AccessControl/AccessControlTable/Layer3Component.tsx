@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -19,8 +20,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { AddModeProps } from '../AccessControlForm/AccessControlForm'
-import Layer3Drawer     from '../AccessControlForm/Layer3Drawer'
+import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
+import Layer3Drawer                        from '../AccessControlForm/Layer3Drawer'
+import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
 
 const defaultPayload = {
@@ -40,6 +42,8 @@ const Layer3Component = () => {
   const [addModeStatus, setAddModeStatus] = useState(
     { enable: true, visible: false } as AddModeProps
   )
+
+  const form = Form.useFormInstance()
 
   const [ delL3AclPolicy ] = useDelL3AclPolicyMutation()
 
@@ -107,6 +111,7 @@ const Layer3Component = () => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
+    disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
     onClick: () => {
       setAddModeStatus({ enable: true, visible: true })
     }
@@ -149,22 +154,24 @@ const Layer3Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <Layer3Drawer
-      onlyAddMode={addModeStatus}
-    />
-    <Table<L3AclPolicy>
-      settingsId='policies-access-control-layer3-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
-    />
+    <Form form={form}>
+      <Layer3Drawer
+        onlyAddMode={addModeStatus}
+      />
+      <Table<L3AclPolicy>
+        settingsId='policies-access-control-layer3-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={{ type: 'radio' }}
+      />
+    </Form>
   </Loader>
 }
 

@@ -324,6 +324,32 @@ exports[`LanPortSettings should render correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="ant-form-item ant-form-item-hidden"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              <input
+                class="ant-input"
+                id="lan_0_vni"
+                type="text"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </form>
 </DocumentFragment>
 `;

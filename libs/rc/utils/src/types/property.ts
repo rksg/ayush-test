@@ -100,8 +100,8 @@ export interface PropertyUnit {
     }
   },
   trafficControl?: {
-    qosProfileId: string
-    qosExpiryTime: number
+    meteringProfileId: string,
+    profileExpiry: string
   }
 }
 
@@ -110,7 +110,7 @@ export interface UnitPersonaConfig {
   dpskPassphrase?: string,
   ethernetPorts?: PersonaEthernetPort[], // FIXME: not integrate with Persona
   meteringProfileId?: string | null,
-  expirationEpoch?: number | null
+  expirationDate?: string | null
 }
 
 export interface PropertyUnitFormFields extends PropertyUnit {

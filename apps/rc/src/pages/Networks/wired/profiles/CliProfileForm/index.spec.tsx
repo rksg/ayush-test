@@ -133,7 +133,7 @@ describe('Cli Profile Form - Add', () => {
       await screen.findByLabelText(/Profile Name/), { target: { value: 'test cli' } }
     )
     await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
-    await screen.findByText('42 Models selected')
+    await screen.findByText('26 Models selected')
     await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
     await screen.findByText('0 Models selected')
   })
@@ -156,9 +156,9 @@ describe('Cli Profile Form - Add', () => {
     )
     const options = await screen.findAllByRole('checkbox')
 
-    expect(options).toHaveLength(47) // family model group 5 + model 42
+    expect(options).toHaveLength(30) // family model group 4 + model 26
     await userEvent.click(await screen.findByRole('button', { name: 'Select All' }))
-    await screen.findByText('42 Models selected')
+    await screen.findByText('26 Models selected')
     await userEvent.click(options[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Deselect All' }))
     await screen.findByText('11 Models selected')

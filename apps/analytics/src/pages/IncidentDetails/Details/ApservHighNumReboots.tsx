@@ -3,6 +3,7 @@ import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
+import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
 
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
@@ -63,6 +64,10 @@ export const ApservHighNumReboots = (incident: Incident) => {
         title={$t({ defaultMessage: 'Incident Details' })}
         titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
+          ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
+            { text: $t({ defaultMessage: 'AI Assurance' }) },
+            { text: $t({ defaultMessage: 'AI Analytics' }) }
+          ]:[]),
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
