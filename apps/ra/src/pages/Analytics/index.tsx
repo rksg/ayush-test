@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader } from '@acx-ui/components'
+import { createHttpRequest } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
