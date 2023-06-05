@@ -12,7 +12,8 @@ export function useSigPackDetails () {
   const [ renamed, setRenamed ] = useState([] as ApplicationInfo[])
   const [ confirmationType, setConfirmationType ] = useState(ApplicationConfirmType.NEW_APP_ONLY)
   const [ rulesCount, setRulesCount ] = useState(0)
-  const { data } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
+  const { data, isFetching, isLoading } =
+    useGetSigPackQuery({ params: { changesIncluded: 'true' } })
 
   useEffect(() => {
     if(data && data.changedApplications?.length) {
@@ -64,6 +65,8 @@ export function useSigPackDetails () {
     renamed,
     updateAvailable,
     confirmationType,
-    rulesCount
+    rulesCount,
+    isFetching,
+    isLoading
   }
 }

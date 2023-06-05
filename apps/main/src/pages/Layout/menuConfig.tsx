@@ -291,7 +291,7 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
-          label: 'Account Management',
+          label: $t({ defaultMessage: 'Account Management' }),
           children: [
             {
               uri: '/administration/accountSettings',

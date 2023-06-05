@@ -1,3 +1,5 @@
+import { IntlShape } from 'react-intl'
+
 export interface UpgradePreferences {
   days?: Array<string>,
   times?: Array<string>,
@@ -177,18 +179,18 @@ export interface PreDownload {
   preDownload: boolean
 }
 
-export const firmwareTypeTrans = () => {
+export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
   const firmwareCategories = [
     {
-      type: 'Release',
-      subType: 'Recommended',
+      type: $t({ defaultMessage: 'Release' }),
+      subType: $t({ defaultMessage: 'Recommended' }),
       value: FirmwareCategory.RECOMMENDED
     }, {
-      type: 'Release',
-      subType: 'Critical',
+      type: $t({ defaultMessage: 'Release' }),
+      subType: $t({ defaultMessage: 'Critical' }),
       value: FirmwareCategory.CRITICAL
     }, {
-      type: 'Beta',
+      type: $t({ defaultMessage: 'Beta' }),
       value: FirmwareCategory.BETA
     }
   ]

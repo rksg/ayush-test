@@ -384,8 +384,18 @@ export const Wrapper = styled.div<StyledTable>`
         .ant-table-column-sort {
           background-color: var(--acx-neutrals-20) !important;
         }
-      }
+        .ant-table-cell-with-append{
+          .ant-table-row-expand-icon-expanded{
+            display: none;
+          }
+        }
 
+      }
+      .ant-table-cell-with-append{
+        .indent-level-2{
+          padding-left: 10px !important;
+        }
+      }
       &-cell-fix-left {
         border-bottom: 1px solid var(--acx-neutrals-30) !important;
       }

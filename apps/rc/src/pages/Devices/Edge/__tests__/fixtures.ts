@@ -454,3 +454,59 @@ export const mockedEdgeServiceList = {
     }
   ]
 }
+
+export const mockDhcpStatsData = {
+  fields: [
+    'tenantId','id','serviceName','serviceType','dhcpRelay','dhcpPoolNum',
+    'edgeNum','venueNum','leaseTime', 'updateAvailable', 'serviceVersion',
+    'tags'
+  ],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+      id: '1',
+      serviceName: 'TestDHCP-1',
+      serviceType: 'DHCP',
+      dhcpRelay: 'true',
+      dhcpPoolNum: 3,
+      edgeNum: 3,
+      venueNum: 3,
+      leaseTime: '24 hours',
+      health: 'Good',
+      updateAvailable: 'NO',
+      serviceVersion: '0.0.1',
+      tags: ['Tag1']
+    },
+    {
+      tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+      id: '2',
+      serviceName: 'TestDHCP-2',
+      serviceType: 'DHCP',
+      dhcpRelay: 'false',
+      dhcpPoolNum: 3,
+      edgeNum: 3,
+      venueNum: 3,
+      leaseTime: '24 hours',
+      health: 'Good',
+      updateAvailable: 'NO',
+      serviceVersion: '0.0.1',
+      tags: ['Tag1']
+    },{
+      tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+      id: '3',
+      serviceName: 'TestDHCP-3',
+      serviceType: 'DHCP',
+      dhcpRelay: 'false',
+      dhcpPoolNum: 3,
+      edgeNum: 3,
+      venueNum: 3,
+      leaseTime: '24 hours',
+      health: 'Good',
+      updateAvailable: 'NO',
+      serviceVersion: '0.0.1',
+      tags: ['Tag1']
+    }
+  ]
+}
