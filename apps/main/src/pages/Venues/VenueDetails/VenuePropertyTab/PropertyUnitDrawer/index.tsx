@@ -548,8 +548,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     const trafficControl = isConnectionMeteringEnabled && meteringProfileId && expirationDate ?
       {
-        qosProfileId: meteringProfileId,
-        qosExpiryTime: expirationDate.startOf('day').toISOString()
+        meteringProfileId: meteringProfileId,
+        profileExpiry: expirationDate.startOf('day').toISOString()
       } : undefined
 
     return {
