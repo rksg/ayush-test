@@ -1,30 +1,51 @@
 import _ from 'lodash'
 
-import { StatefulACLRulesTable as DefaultStatefulACLRulesTable } from '@acx-ui/rc/components'
+import { calculateGranularity }              from '@acx-ui/analytics/utils'
+import { Loader }                            from '@acx-ui/components'
+import { StatefulACLRuleStatisticDataTable } from '@acx-ui/rc/components'
+import { useGetEdgeFirewallACLStatsQuery }   from '@acx-ui/rc/services'
 import {
   ACLDirection,
-  EdgeFirewallSetting } from '@acx-ui/rc/utils'
+  EdgeFirewallSetting,
+  FirewallACLRuleStatisticModel } from '@acx-ui/rc/utils'
+import { DateRangeFilter } from '@acx-ui/utils'
 
 interface StatefulACLRulesTableProps {
   firewallData: EdgeFirewallSetting | undefined;
   direction: ACLDirection;
+  dateFilter: Omit<DateRangeFilter, 'range'>;
+  edgeId: string;
+  venueId: string;
 }
 
 export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
-  const { firewallData, direction } = props
+  const { firewallData, direction, dateFilter, edgeId, venueId } = props
   const acls = firewallData?.statefulAcls
-
-  // TODO: query statistic data and aggregate with rules.
-
   const aclRules = _.find(acls, { direction })?.rules
 
+  const { data: stats, isLoading }
+    = useGetEdgeFirewallACLStatsQuery({ payload: {
+      edgeId,
+      venueId,
+      start: dateFilter?.startDate,
+      end: dateFilter?.endDate,
+      granularity: calculateGranularity(dateFilter?.startDate, dateFilter?.endDate, 'PT15M'),
+      direction
+    } })
+
+  const statsData = stats?.direction === direction ? stats.aclRuleStatsList : []
+
+  // query statistic data and aggregate with rules.
+  const aggregated: FirewallACLRuleStatisticModel[] = aclRules?.map((rule) => {
+    const target = _.filter(statsData, { priority: rule.priority })[0]
+    return _.merge({ ...rule }, target)
+  }) as FirewallACLRuleStatisticModel[]
+
   return (
-    <DefaultStatefulACLRulesTable
-      dataSource={aclRules}
-      pagination={{
-        pageSize: 5,
-        defaultPageSize: 5
-      }}
-    />
+    <Loader states={[{ isLoading }]}>
+      <StatefulACLRuleStatisticDataTable
+        dataSource={aggregated}
+      />
+    </Loader>
   )
 }

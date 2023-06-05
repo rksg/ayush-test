@@ -4,12 +4,12 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps } from '@acx-ui/components'
 import {
   DdosRateLimitingRule,
+  DDoSRuleStatisticModel,
   defaultSort,
   getDDoSAttackTypeString,
   sortProp
 } from '@acx-ui/rc/utils'
 
-import { DDoSRuleStatisticModel } from './RuleStatisticDataTable'
 
 interface DDoSRulesTableProps
   extends Omit<TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>,
@@ -18,9 +18,9 @@ interface DDoSRulesTableProps
     columns?: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns']
   }
 
-export const useDefaultColumns = () => {
+export function useDefaultDDoSRulesColumns () {
   const { $t } = useIntl()
-  const columns: TableProps<DdosRateLimitingRule>['columns'] = [
+  const columns: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns'] = [
     {
       title: $t({ defaultMessage: 'DDoS Attack Type' }),
       key: 'ddosAttackType',
@@ -43,8 +43,7 @@ export const useDefaultColumns = () => {
 
 export const DDoSRulesTable = (props: DDoSRulesTableProps) => {
   const { $t } = useIntl()
-
-  const defaultColumns = useDefaultColumns()
+  const defaultColumns = useDefaultDDoSRulesColumns()
   const { dataSource, columns, ...otherProps } = props
 
   return (
