@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, Slider } from 'antd'
-import { defineMessage, MessageDescriptor, useIntl }                                    from 'react-intl'
+import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, Slider, Tooltip } from 'antd'
+import { defineMessage, MessageDescriptor, useIntl }                                             from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                              from '@acx-ui/icons'
 import {
   ApplicationAclType,
   ApplicationRuleType, AvcCategory, generalIpAddressRegExp,
@@ -237,6 +238,13 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       <GridCol col={{ span: 24 }}>
         <Radio value={ApplicationAclType.RATE_LIMIT}>
           {$t(AppAclLabelMapping[ApplicationAclType.RATE_LIMIT])}
+          {/* eslint-disable-next-line max-len */}
+          <Tooltip title={$t({ defaultMessage: 'If you set rate limit on network level, it will override any rate limit set on policy level.' })}
+            placement='bottom'>
+            <QuestionMarkCircleOutlined
+              style={{ marginLeft: 3, marginBottom: -7, width: '20px' }}
+            />
+          </Tooltip>
         </Radio>
       </GridCol>
       <GridCol col={{ span: 24 }}>
@@ -267,7 +275,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         </Radio>
       </GridCol>
       <GridCol col={{ span: 24 }}>
-        {sourceValue === ApplicationAclType.QOS ? <QosContent drawerForm={drawerForm}/> : <div></div>}
+        {sourceValue === ApplicationAclType.QOS
+          ? <QosContent drawerForm={drawerForm}/>
+          : <div></div>}
       </GridCol>
     </GridRow>
 
