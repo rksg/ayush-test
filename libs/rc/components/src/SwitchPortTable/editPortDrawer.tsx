@@ -414,6 +414,7 @@ export function EditPortDrawer ({
         return vlansOptions?.length <= 1 ? $t(EditPortMessages.VOICE_VLAN_DISABLE) : ''
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'egressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
+      case 'portSpeed': return hasBreakoutPort ? $t(EditPortMessages.PORT_SPEED_TOOLTIP) : ''
       default: return ''
     }
   }
@@ -435,7 +436,8 @@ export function EditPortDrawer ({
         || !poeEnable
         || (poeClass !== 'ZERO' && poeClass !== 'UNSET')
       case 'useVenuesettings': return disabledUseVenueSetting || switchDetail?.vlanCustomize
-      case 'portSpeed': return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed
+      case 'portSpeed':
+        return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'voiceVlan': return (isMultipleEdit && !voiceVlanCheckbox) || vlansOptions?.length <= 1
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
       default:
@@ -452,7 +454,7 @@ export function EditPortDrawer ({
       case 'poeBudget':
         return disablePoeCapability || !poeEnable
       case 'voiceVlan': return vlansOptions?.length === 1
-      case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed
+      case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed || hasBreakoutPort
       default: return false
     }
   }
@@ -1047,18 +1049,23 @@ export function EditPortDrawer ({
         { getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
-            name='portSpeed'
             label={$t({ defaultMessage: 'Port Speed' })}
-            initialValue='NONE'
             children={isMultipleEdit && !portSpeedCheckbox && hasMultipleValue.includes('portSpeed')
               ? <MultipleText />
-              : <Select
-                options={portSpeedOptions.map((p: string) => ({
-                  label: PORT_SPEED[p as keyof typeof PORT_SPEED], value: p
-                }))}
-                disabled={getFieldDisabled('portSpeed')}
-                className={getToggleClassName('portSpeed', isMultipleEdit, hasMultipleValue)}
-              />}
+              : <Tooltip title={getFieldTooltip('portSpeed')}>
+                <Form.Item
+                  name='portSpeed'
+                  initialValue='NONE'>
+                  <Select
+                    options={portSpeedOptions.map((p: string) => ({
+                      label: PORT_SPEED[p as keyof typeof PORT_SPEED], value: p
+                    }))}
+                    disabled={getFieldDisabled('portSpeed')}
+                    className={getToggleClassName('portSpeed', isMultipleEdit, hasMultipleValue)}
+                  ></Select>
+                </Form.Item>
+              </Tooltip>
+            }
           />,
           'portSpeed', $t({ defaultMessage: 'Port Speed' })
         )}
