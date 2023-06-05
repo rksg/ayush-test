@@ -45,7 +45,7 @@ describe('RadiusServerTab', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const eyeButton = screen.getByRole('img', { name: 'eye-invisible' })
+    const eyeButton = await screen.findByTestId('EyeOpenSolid')
     expect(eyeButton).toBeTruthy()
 
     expect(await screen.findByText(config.ipAddress[0])).toBeVisible()
