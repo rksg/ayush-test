@@ -62,11 +62,11 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
             <Tooltip
               title={
                 $t({ defaultMessage: '{freeValue} free' },
-                  { freeValue: formatter('kBytesFormat')(totalVal - value) })
+                  { freeValue: formatter('bytesFormat')(totalVal - value) })
               }>
               <AntStatistic
                 title={title}
-                value={formatter('kBytesFormat')(value)}
+                value={formatter('bytesFormat')(value)}
                 suffix={`(${calculatePercentage(value, totalVal)}%)`}
                 formatter={statisticFormatter}
                 valueStyle={(calculatePercentage(value, totalVal) > 90

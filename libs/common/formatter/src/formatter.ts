@@ -192,7 +192,6 @@ export const formats = {
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',
   milliWattsFormat: (number:number) => numberFormat(1000, watts, number),
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
-  kBytesFormat: (number:number) => numberFormat(1024, bytes.slice(1), number),
   networkSpeedFormat: (number: number) => numberFormat(1000, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,
   hertzFormat: (number: number) => hertzFormat(number),

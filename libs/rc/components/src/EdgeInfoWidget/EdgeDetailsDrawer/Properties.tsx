@@ -85,16 +85,16 @@ export const Properties = (props: PropertiesProps) => {
       <Form.Item
         label={$t({ defaultMessage: 'Memory' })}
         children={
-          (currentEdge?.memoryTotalKb
-            ? formatter('kBytesFormat')(currentEdge?.memoryTotalKb)
+          (currentEdge?.memoryTotal
+            ? formatter('bytesFormat')(currentEdge?.memoryTotal)
             : '--')
         }
       />
       <Form.Item
         label={$t({ defaultMessage: 'Storage' })}
         children={
-          (currentEdge?.diskTotalKb
-            ? formatter('kBytesFormat')(currentEdge?.diskTotalKb)
+          (currentEdge?.diskTotal
+            ? formatter('bytesFormat')(currentEdge?.diskTotal)
             : '--')
         }
       />
