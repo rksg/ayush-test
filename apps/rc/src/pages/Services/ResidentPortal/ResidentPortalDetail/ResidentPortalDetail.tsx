@@ -162,6 +162,14 @@ export default function ResidentPortalDetail () {
                     {residentPortalData?.uiConfiguration?.text.helpText}
                   </Typography.Paragraph>
                 </GridCol>
+                <GridCol col={{ span: 6 }}>
+                  <Card.Title>
+                    {$t({ defaultMessage: 'Allow Residents to Set DPSK' })}
+                  </Card.Title>
+                  <Typography.Paragraph>
+                    {residentPortalData?.uiConfiguration?.access?.tenantSetDpsk ? $t({defaultMessage: 'ENABLED'}) : $t({defaultMessage: 'DISABLED'})}
+                  </Typography.Paragraph>
+                </GridCol>
               </GridRow>
               <GridRow>
                 <GridCol col={{ span: 6 }}>
