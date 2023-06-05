@@ -311,7 +311,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/administration/fwVersionMgmt',
-              label: $t({ defaultMessage: 'Firmware Version Management' })
+              label: $t({ defaultMessage: 'Version Management' })
             },
             ...(isCloudMoteEnabled ? [{
               uri: '/administration/onpremMigration',

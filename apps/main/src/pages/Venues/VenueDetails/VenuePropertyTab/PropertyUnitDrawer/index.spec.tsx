@@ -44,7 +44,7 @@ const mockPersona: Persona = {
     macAddress: 'ap-mac-address'
   }],
   meteringProfileId: mockConnectionMeterings[0].id,
-  expirationEpoch: moment.now() / 1000
+  expirationDate: moment().toISOString()
 }
 
 

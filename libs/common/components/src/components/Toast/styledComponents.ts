@@ -5,6 +5,10 @@ export const Toast = styled.div`
   align-items: baseline;
   font-size: var(--acx-body-3-font-size);
   font-weight: var(--acx-body-font-weight);
+  max-width: 450px;
+  label{
+    word-break: break-all;
+  }
 `
 
 export const Content = styled.div`
