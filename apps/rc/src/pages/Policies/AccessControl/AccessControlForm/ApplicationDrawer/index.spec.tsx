@@ -190,7 +190,7 @@ const systemDefinedSection = async () => {
 
   await userEvent.selectOptions(
     screen.getAllByRole('combobox')[1],
-    screen.getByRole('option', { name: 'All' })
+    screen.getAllByRole('option', { name: 'All' })[0]
   )
 
   await screen.findByRole('option', { name: 'BBC' })
