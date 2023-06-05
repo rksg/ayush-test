@@ -18,12 +18,14 @@ jest.mock('./pages/ServiceGuard/ServiceGuardDetails',() => ({
 }))
 
 jest.mock('./pages/ServiceGuard', () => ({
+  ServiceGuard: () => <div data-testid='ServiceGuardPage' />,
   useServiceGuard: () => ({
     component: <div data-testid='ServiceGuardPage' />
   })
 }))
 
 jest.mock('./pages/VideoCallQoe', () => ({
+  VideoCallQoe: () => <div data-testid='VideoCallQoePage' />,
   useVideoCallQoe: () => ({
     component: <div data-testid='VideoCallQoePage' />
   })

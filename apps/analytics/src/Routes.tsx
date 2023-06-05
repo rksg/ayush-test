@@ -15,11 +15,11 @@ import { hasAccess }                                from '@acx-ui/user'
 import { AIAnalytics, AIAnalyticsTabEnum }              from './pages/AIAnalytics'
 import IncidentDetailsPage                              from './pages/IncidentDetails'
 import { NetworkAssurance, NetworkAssuranceTabEnum }    from './pages/NetworkAssurance'
-import { useServiceGuard }                              from './pages/ServiceGuard'
+import { ServiceGuard }                                 from './pages/ServiceGuard'
 import ServiceGuardDetails                              from './pages/ServiceGuard/ServiceGuardDetails'
 import ServiceGuardForm                                 from './pages/ServiceGuard/ServiceGuardForm'
 import { ServiceGuardSpecGuard, ServiceGuardTestGuard } from './pages/ServiceGuard/ServiceGuardGuard'
-import { useVideoCallQoe }                              from './pages/VideoCallQoe'
+import { VideoCallQoe }                                 from './pages/VideoCallQoe'
 import { VideoCallQoeForm }                             from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
 import { VideoCallQoeDetails }                          from './pages/VideoCallQoeDetails'
 
@@ -29,8 +29,6 @@ export default function AnalyticsRoutes () {
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
-  const videoCallQoePage = useVideoCallQoe().component
-  const serviceGuardPage = useServiceGuard().component
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (!hasAccess()) return <React.Fragment />
@@ -70,7 +68,7 @@ export default function AnalyticsRoutes () {
           <Route index
             element={isNavbarEnhanced
               ? <NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />
-              : serviceGuardPage} />
+              : <ServiceGuard/>} />
           <Route path='add' element={<ServiceGuardForm />} />
           <Route path=':specId'>
             <Route
@@ -93,7 +91,7 @@ export default function AnalyticsRoutes () {
           <Route index
             element={isNavbarEnhanced
               ? <NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />
-              : videoCallQoePage} />
+              : <VideoCallQoe/>} />
           <Route path=':testId' element={<VideoCallQoeDetails/>} />
           <Route path='add' element={<VideoCallQoeForm />} />
         </Route>}
