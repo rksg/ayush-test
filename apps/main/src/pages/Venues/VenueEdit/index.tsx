@@ -149,7 +149,9 @@ function processWifiTab (
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       editNetworkingContextData?.updateLanPorts?.()
-      editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+      editNetworkingContextData?.updateMesh?.()
+      editNetworkingContextData?.updateDirectedMulticast?.()
+      editNetworkingContextData?.updateRadiusOptions?.()
       break
     case 'radio':
       if (editRadioContextData.apModels) {

@@ -50,7 +50,6 @@ function Layout () {
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const isBackToRC = (PverName.ACX === getJwtTokenPayload().pver ||
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
-  const [isShown, setIsShown] = useState<boolean | null>(null)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const basePath = useTenantLink('/users/guestsManager')
@@ -112,11 +111,11 @@ function Layout () {
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
         {!isGuestManager &&
           <>
-            <AlarmsButton isShown={isShown} setIsShown={setIsShown}/>
-            <ActivityButton isShown={isShown === null ? false : !isShown} setIsShown={setIsShown}/>
+            <AlarmsButton/>
+            <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus} setIsShown={setIsShown}/>
+        <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />

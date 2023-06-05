@@ -211,9 +211,9 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
   return <div data-testid='MacRegistrationListsTable' />
 })
 
-jest.mock('./pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm', () => () => {
-  return <div data-testid='RogueAPDetectionForm' />
-})
+// jest.mock('./../../../libs/rc/components/src/RogueAPDetectionForm/RogueAPDetectionForm', () => () => {
+//   return <div data-testid='RogueAPDetectionForm' />
+// })
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
   return <div data-testid='RadiusAttributeGroupForm' />
@@ -257,6 +257,18 @@ jest.mock('./pages/Services/EdgeFirewall/AddFirewall', () => () => {
 
 jest.mock('./pages/Services/EdgeFirewall/EditFirewall', () => () => {
   return <div data-testid='EditEdgeFirewall' />
+})
+
+jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringTable', () => () => {
+  return <div data-testid='ConnectionMeteringTable' />
+})
+
+jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringDetail', () => () => {
+  return <div data-testid='ConnectionMeteringDetail' />
+})
+
+jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () => () => {
+  return <div data-testid='ConnectionMeteringPageForm' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -605,7 +617,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
+    expect(screen.getByText('Add Rogue AP Detection Policy')).toBeVisible()
   })
 
   test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
@@ -617,7 +629,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
+    expect(screen.getByText('Edit Rogue AP Detection Policy')).toBeVisible()
   })
 
   test('should navigate to detail SYSLOG page', async () => {
@@ -1045,4 +1057,52 @@ describe('RcRoutes: Timeline', () => {
     })
     expect(await screen.findByRole('heading', { level: 1, name: 'Adaptive Policy Sets' })).toBeVisible()
   })
+})
+
+test('should navigate to Connection Metering table', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST }),
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringTable')).toBeVisible()
+})
+
+test('should navigate to Connection Metering Detail', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
+  path = path.replace(':policyId', 'policyId')
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + path,
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringDetail')).toBeVisible()
+})
+
+test('should navigate to Connection Metering Page create form', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE }),
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
+})
+
+test('should navigate to Connection Metering Page edit form', async () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })
+  path = path.replace(':policyId', 'policyId')
+  render(<Provider><RcRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/' + path,
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
 })

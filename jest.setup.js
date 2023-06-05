@@ -49,10 +49,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 beforeAll(() => {
   mockServer.listen()
-  setUpIntl({
-    locale: 'en-US',
-    messages: {}
-  })
+  setUpIntl({ locale: 'en-US', messages: {} })
 })
 beforeEach(async () => {
   mockDOMSize(1280, 800)
@@ -79,7 +76,7 @@ beforeEach(async () => {
         {
           name: 'US',
           description: 'United States of America',
-          link: 'https://devalto.ruckuswireless.com',
+          link: 'https://dev.ruckus.cloud',
           current: true
         }
       ],

@@ -1,17 +1,11 @@
-import { Form, Radio, Select, Space, Typography } from 'antd'
-import { useForm, useWatch }                      from 'antd/lib/form/Form'
-import { useIntl }                                from 'react-intl'
+import { Form, Radio, Space, Typography } from 'antd'
+import { useForm, useWatch }              from 'antd/lib/form/Form'
+import { useIntl }                        from 'react-intl'
 
-import {
-  Modal
-} from '@acx-ui/components'
-import {
-  EdgeFirmwareVersion
-} from '@acx-ui/rc/utils'
+import { Modal }               from '@acx-ui/components'
+import { EdgeFirmwareVersion } from '@acx-ui/rc/utils'
 
-import {
-  getVersionLabel
-} from '../../FirmwareUtils'
+import { getVersionLabel } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
@@ -29,6 +23,7 @@ export interface UpdateApNowDialogProps {
 
 export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   const selectMode = useWatch('selectMode', form)
   const selectedVersion = useWatch('selectedVersion', form)
@@ -36,7 +31,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const { visible, onSubmit, onCancel, availableVersions } = props
 
   let versionOptions: EdgeFirmwareVersion[] = []
-  let otherVersions: EdgeFirmwareVersion[] = []
+  // let otherVersions: EdgeFirmwareVersion[] = []
 
   const isRecommanded = (e: EdgeFirmwareVersion) => {
     return e.category === 'RECOMMENDED'
@@ -50,14 +45,14 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   } else {
     versionOptions = [...copyAvailableVersions]
   }
-  otherVersions = copyAvailableVersions.slice(1)
+  // otherVersions = copyAvailableVersions.slice(1)
 
-  const otherOptions = otherVersions.map((version) => {
-    return {
-      label: getVersionLabel(version),
-      value: version.name
-    }
-  })
+  // const otherOptions = otherVersions.map((version) => {
+  //   return {
+  //     label: getVersionLabel(version),
+  //     value: version.name
+  //   }
+  // })
 
   const triggerSubmit = () => {
     form.validateFields()
@@ -111,20 +106,20 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
               >
                 <Space direction={'vertical'}>
                   <Radio value={VersionsSelectMode.Radio}>
-                    {getVersionLabel(versionOptions[0])}
+                    {getVersionLabel(intl, versionOptions[0])}
                   </Radio>
                   {
-                    otherVersions.length > 0 ?
-                      <Radio value={VersionsSelectMode.Dropdown}>
-                        <Form.Item name='selectedVersion'>
-                          <Select
-                            style={{ width: '100%', fontSize: '12px' }}
-                            placeholder='Select other version...'
-                            options={otherOptions}
-                          />
-                        </Form.Item>
-                      </Radio>
-                      : null
+                    // otherVersions.length > 0 ?
+                    //   <Radio value={VersionsSelectMode.Dropdown}>
+                    //     <Form.Item name='selectedVersion'>
+                    //       <Select
+                    //         style={{ width: '100%', fontSize: '12px' }}
+                    //         placeholder='Select other version...'
+                    //         options={otherOptions}
+                    //       />
+                    //     </Form.Item>
+                    //   </Radio>
+                    //   : null
                   }
                 </Space>
               </Radio.Group>

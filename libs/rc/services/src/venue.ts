@@ -56,13 +56,11 @@ import {
   PropertyConfigs,
   PropertyUrlsInfo,
   PropertyUnit,
-  ResidentPortal,
   NewTableResult,
   transferToTableResult,
   downloadFile,
   RequestFormData,
-  createNewTableHttpRequest,
-  TableChangePayload,
+  VenueRadiusOptions,
   ApMeshTopologyData,
   FloorPlanMeshAP
 } from '@acx-ui/rc/utils'
@@ -185,6 +183,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      providesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateMeshOptions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'WIFI_SETTINGS' }]))
+          })
+        })
       }
     }),
     updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
@@ -194,7 +203,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }]
     }),
     updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -1115,98 +1125,34 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    getResidentPortalList: build.query<TableResult<ResidentPortal>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: PropertyUrlsInfo.getResidentPortalList,
-          params,
-          payload: payload as TableChangePayload
+    getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueRadiusOptions, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRadiusOptions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'RADIUS_OPTIONS' }]))
+          })
         })
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: NewTableResult<ResidentPortal>) {
-        return transferToTableResult<ResidentPortal>(result)
-      },
-      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+      }
     }),
-    getQueriableResidentPortals: build.query<TableResult<ResidentPortal>, RequestPayload>({
+    updateVenueRadiusOptions: build.mutation<VenueRadiusOptions, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalsQuery, params,
-          { Accept: '*/*' })
-
-        return {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueRadiusOptions, params)
+        return{
           ...req,
           body: payload
         }
       },
-      transformResponse (result: NewTableResult<ResidentPortal>) {
-        return transferToTableResult<ResidentPortal>(result)
-      },
-      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
-    }),
-    addResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.addResidentPortal, params,
-          { 'Content-Type': undefined, 'Accept': '*/*' })
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
-    }),
-    getResidentPortal: build.query<ResidentPortal, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(
-          PropertyUrlsInfo.getResidentPortal,
-          params,
-          { Accept: 'application/hal+json' })
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'ResidentPortal', id: 'ID' }]
-    }),
-    updateResidentPortal: build.mutation<ResidentPortal, RequestFormData>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.patchResidentPortal, params,
-          { 'Content-Type': undefined, 'Accept': '*/*' })
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
-    }),
-    deleteResidentPortalLogo: build.mutation<ResidentPortal, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalLogo, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
-    }),
-    deleteResidentPortalFavicon: build.mutation<ResidentPortal, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortalFavicon, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'ResidentPortal', id: 'ID' }]
-    }),
-    deleteResidentPortals: build.mutation<ResidentPortal, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.deleteResidentPortals, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
     })
   })
 })
@@ -1307,16 +1253,8 @@ export const {
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
 
-  useGetResidentPortalListQuery,
-  useGetQueriableResidentPortalsQuery,
-  useLazyGetResidentPortalListQuery,
-  useAddResidentPortalMutation,
-  useGetResidentPortalQuery,
-  useUpdateResidentPortalMutation,
-  useDeleteResidentPortalsMutation,
-  useDeleteResidentPortalLogoMutation,
-  useDeleteResidentPortalFaviconMutation,
-
   useImportPropertyUnitsMutation,
-  useLazyDownloadPropertyUnitsQuery
+  useLazyDownloadPropertyUnitsQuery,
+  useGetVenueRadiusOptionsQuery,
+  useUpdateVenueRadiusOptionsMutation
 } = venueApi

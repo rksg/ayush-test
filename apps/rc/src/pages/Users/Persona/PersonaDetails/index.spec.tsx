@@ -2,24 +2,27 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
   PersonaUrls,
   MacRegListUrlsInfo,
   PersonaBaseUrl,
-  ClientUrlsInfo
+  ClientUrlsInfo,
+  ConnectionMeteringUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
 import {
+  mockConnectionMeterings,
   mockDpskPool,
   mockMacRegistration,
   mockMacRegistrationList,
   mockPersona,
   mockPersonaGroup,
   mockPersonaGroupList,
+  mockUnBlockedPersona,
   replacePagination
 } from '../__tests__/fixtures'
 
@@ -85,6 +88,10 @@ describe('Persona Details', () => {
           venueName: 'UI-TEST-VENUE',
           apName: 'UI team ONLY'
         }] }))
+      ),
+      rest.get(
+        ConnectionMeteringUrls.getConnectionMeteringDetail.url,
+        (req, res, ctx) => res(ctx.json(mockConnectionMeterings[0]))
       )
     )
     params = {
@@ -112,6 +119,7 @@ describe('Persona Details', () => {
     await screen.findByRole('heading', { level: 1, name: mockPersona.name })
     await screen.findByRole('heading', { level: 4, name: /Devices/i })
     await screen.findByRole('link', { name: mockPersonaGroup.name })
+    await screen.findByRole('link', { name: mockConnectionMeterings[0].name })
   })
 
   it('should add devices', async () => {
@@ -192,5 +200,39 @@ describe('Persona Details', () => {
     const confirmDialog = await screen.findByRole('dialog')
     const confirmBtn = await within(confirmDialog).findByRole('button', { name: /Delete/i })
     await userEvent.click(confirmBtn)
+  })
+
+  it('should blocked the persona', async () => {
+    const blockedFn = jest.fn()
+    mockServer.use(
+      rest.get(
+        PersonaUrls.getPersonaById.url,
+        (req, res, ctx) => res(ctx.json(mockUnBlockedPersona))
+      ),
+      rest.patch(
+        PersonaUrls.updatePersona.url,
+        (req, res, ctx) => {
+          blockedFn(req.body)
+          return res(ctx.json({}))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <PersonaDetails />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+      }
+    )
+
+    const blockedButton = await screen.findByRole('button', { name: /Block/i })
+    await userEvent.click(blockedButton)
+
+    const confirmButton = await within(await screen.findByRole('dialog'))
+      .findByRole('button', { name: /Block/i })
+    await userEvent.click(confirmButton)
+
+    expect(blockedFn).toBeCalledWith({ revoked: true })
   })
 })

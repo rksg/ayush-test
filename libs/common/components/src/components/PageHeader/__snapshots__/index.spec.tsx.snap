@@ -3,7 +3,7 @@
 exports[`PageHeader should render basic page header 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -33,7 +33,7 @@ exports[`PageHeader should render basic page header 1`] = `
 exports[`PageHeader should render page header with tabs 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -190,7 +190,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
 exports[`PageHeader should render page header with title, breadcrumb & subtitle 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -199,6 +199,18 @@ exports[`PageHeader should render page header with title, breadcrumb & subtitle 
         class="ant-breadcrumb"
       >
         <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              Root
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
           <li>
             <span
               class="ant-breadcrumb-link"
@@ -265,7 +277,7 @@ exports[`PageHeader should render page header with title, breadcrumb & subtitle 
 exports[`PageHeader should render page header with titleExtra 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -298,7 +310,7 @@ exports[`PageHeader should render page header with titleExtra 1`] = `
 exports[`PageHeader should render page header without bottom padding 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
   >
     <div
       class="ant-page-header ant-page-header-ghost"

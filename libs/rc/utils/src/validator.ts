@@ -505,7 +505,7 @@ export function emailRegExp (value: string) {
 
 export function phoneRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp (/^[+][1-9]{1,3}\s?([0-9s-]|[- ]){10,16}$/)
+  const re = new RegExp (/^\+[1-9]\d{1,14}$/)
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))
@@ -934,6 +934,22 @@ export function ipv6RegExp (value: string) {
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function servicePolicyNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // regex from service and policy backend
+  const re = new RegExp('(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$')
+
+  // make sure there is no special character in value
+  if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
+    return Promise.reject($t(validationMessages.specialCharacterNameInvalid))
+  }
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.servicePolicyNameInvalid))
   }
   return Promise.resolve()
 }

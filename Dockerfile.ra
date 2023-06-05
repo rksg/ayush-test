@@ -1,0 +1,85 @@
+FROM node:16.10.0-alpine as build-base
+
+# add deps for building node-gpy
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+# install node deps
+COPY package.json package-lock.json ./
+COPY patches ./patches
+RUN npm ci
+
+COPY .eslintignore \
+  .eslintrc.json \
+  babel.config.json \
+  jest.config.ts \
+  jest.preset.ts \
+  jest.setup.js \
+  modulefederation.config.base.js \
+  nx.json \
+  webpack.config.base.js \
+  tsconfig.base.json \
+  workspace.json \
+  ./
+COPY .storybook ./.storybook
+COPY apps ./apps
+COPY libs ./libs
+COPY tools/tests ./tools/tests
+
+###############################################################
+FROM node:14.21.1-alpine as build-locales
+
+WORKDIR /app
+
+COPY package.json ./
+RUN npm install react-intl lodash
+
+COPY apps ./apps
+COPY libs ./libs
+COPY tools/docker/locales ./tools/docker/locales
+
+RUN chmod +x tools/docker/locales/generate.sh
+RUN tools/docker/locales/generate.sh ra
+###############################################################
+
+FROM build-base as build
+
+ARG CIRCLE_SHA1
+
+COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
+
+RUN echo NX_GIT_SHA=$CIRCLE_SHA1 >> .env
+RUN echo NX_GIT_DATE=$(date -R) >> .env
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra,analytics
+
+###############################################################
+FROM nginx:1.21.6-alpine
+
+WORKDIR /usr/share/nginx/html
+
+# Remove default nginx static assets
+RUN rm -rf ./*
+
+COPY tools/docker/nginx/ra.conf /etc/nginx/conf.d/default.conf
+COPY tools/docker/nginx/conf.d/gzip.conf /etc/nginx/conf.d/gzip.conf
+COPY tools/docker/nginx/env-ra.json.template /etc/nginx/env.json.template
+COPY tools/docker/nginx/nginx.conf \
+  tools/docker/nginx/start-nginx.sh \
+  /etc/nginx/
+
+COPY --from=build /app/dist/apps ./
+
+RUN \
+  # Move all other apps into main
+  ls | grep -v ra | xargs mv -t ra && \
+  # Create structure to match deployment need
+  mkdir -p analytics/next && \
+  # Move all files into it
+  cp -a ra/* analytics/next/ && \
+  # Remove the main folder
+  rm -rf ra
+
+EXPOSE 8080
+
+CMD ["/bin/sh", "/etc/nginx/start-nginx.sh"]

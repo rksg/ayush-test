@@ -3,7 +3,8 @@ import { useContext, useEffect } from 'react'
 import {
   Form,
   Switch,
-  Space
+  Space,
+  Typography
 } from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -49,7 +50,7 @@ export function CloudpathServerForm () {
   />
   const enableAccountingService = useWatch('enableAccountingService')
 
-  const enableDPSKProxyService = useIsSplitOn(Features.WIFI_EDA_NON_PROXY_DPSK_TOGGLE)
+  const disableDPSKProxyService = !useIsSplitOn(Features.WIFI_EDA_NON_PROXY_DPSK_TOGGLE)
   && data?.type===NetworkTypeEnum.DPSK
   return (
     <Space direction='vertical' size='middle'>
@@ -60,21 +61,37 @@ export function CloudpathServerForm () {
         {(data?.type===NetworkTypeEnum.AAA
         || data?.type===NetworkTypeEnum.DPSK
         || data?.type===NetworkTypeEnum.OPEN)&&
-        <Form.Item>
+        <Form.Item
+          style={
+            {
+              marginBottom: 0
+            }
+          }>
           <Form.Item
             noStyle
             name='enableAuthProxy'
             valuePropName='checked'
             initialValue={false}
             children={<Switch disabled={
-              !enableDPSKProxyService
+              disableDPSKProxyService
             }
             title='Proxy Service'
             onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
           />
-          <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
-          { data?.type===NetworkTypeEnum.DPSK ? DPSKProxyServiceTooltip : proxyServiceTooltip}
+          <span className={
+            (disableDPSKProxyService)
+              ? 'ant-switch-disabled'
+              : ''
+          }>
+            { $t({ defaultMessage: 'Proxy Service' }) }
+          </span>
+          { data?.type===NetworkTypeEnum.DPSK ? DPSKProxyServiceTooltip : proxyServiceTooltip }
         </Form.Item>}
+        { disableDPSKProxyService
+          && <Typography.Text disabled className='ant-form-item-extra'>
+            { $t({ defaultMessage:
+              'DPSK Network with Non-Proxy mode is not supported at this moment!' })}
+          </Typography.Text> }
       </div>
       <div>
         <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>

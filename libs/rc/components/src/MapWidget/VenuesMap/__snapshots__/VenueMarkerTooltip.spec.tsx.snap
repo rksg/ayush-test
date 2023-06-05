@@ -3,19 +3,19 @@
 exports[`Venue Marker Tooltip should not render any data 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1g4gbr4-12 dbrLEo"
+    class="styledComponents__Wrapper-sc-1g4gbr4-12 bxdeoK"
   >
     <div
-      class="styledComponents__InfoWindowHeader-sc-1g4gbr4-15 bJpHCF"
+      class="styledComponents__InfoWindowHeader-sc-1g4gbr4-17 dRzZLP"
     >
       <a
-        class="styledComponents__Title-sc-1g4gbr4-16 bBzCxc"
+        class="styledComponents__Title-sc-1g4gbr4-18 bzlzcO"
       >
         Aparna-Venue
       </a>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 kSiaCZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 ciLXZE"
     >
       <div
         class="ant-pro-table"
@@ -71,6 +71,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 Clients
                               </th>
@@ -125,7 +126,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -136,14 +137,15 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No AP Clients
+                                    No AP clients
                                   </div>
                                 </div>
                               </td>
@@ -161,7 +163,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -172,14 +174,52 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No Switch Clients
+                                    No Switch clients
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="3"
+                            >
+                              <td
+                                class="ant-table-cell"
+                              >
+                                SmartEdge
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdges
+                                  </div>
+                                </div>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdge clients
                                   </div>
                                 </div>
                               </td>
@@ -203,19 +243,19 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
 exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1g4gbr4-12 cqtQnT"
+    class="styledComponents__Wrapper-sc-1g4gbr4-12 eXyIlD"
   >
     <div
-      class="styledComponents__InfoWindowHeader-sc-1g4gbr4-15 bJpHCF"
+      class="styledComponents__InfoWindowHeader-sc-1g4gbr4-17 dRzZLP"
     >
       <a
-        class="styledComponents__Title-sc-1g4gbr4-16 bBzCxc"
+        class="styledComponents__Title-sc-1g4gbr4-18 bzlzcO"
       >
         Aparna-Venue
       </a>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 kSiaCZ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 ciLXZE"
     >
       <div
         class="ant-pro-table"
@@ -271,6 +311,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 Clients
                               </th>
@@ -325,7 +366,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -336,14 +377,15 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No AP Clients
+                                    No AP clients
                                   </div>
                                 </div>
                               </td>
@@ -361,7 +403,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                                 class="ant-table-cell"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
@@ -372,14 +414,52 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <div
-                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-14 grnANl lkcoTd"
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
                                 >
                                   <div
                                     class="ant-space-item"
                                   >
-                                    No Switch Clients
+                                    No Switch clients
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="3"
+                            >
+                              <td
+                                class="ant-table-cell"
+                              >
+                                SmartEdge
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdges
+                                  </div>
+                                </div>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                                style="text-align: center;"
+                              >
+                                <div
+                                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__CellWrapper-sc-1g4gbr4-13 styledComponents__TextWrapper-sc-1g4gbr4-16 grnANl fimPoK"
+                                >
+                                  <div
+                                    class="ant-space-item"
+                                  >
+                                    No SmartEdge clients
                                   </div>
                                 </div>
                               </td>

@@ -109,7 +109,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
   const content = <>
     <Row>
       <Col span={14}>
-        <span style={{ marginTop: '10px', display: 'inline-flex' }}>
+        <span style={{ display: 'inline-flex' }}>
           {$t({ defaultMessage: 'Drag to reposition' })}
         </span>
       </Col>
@@ -220,7 +220,6 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
       footer={<FooterDiv>{footer}</FooterDiv>}
       children={content}
       width={'400px'}
-      maskClosable={true}
       closable={true}
     />
   )

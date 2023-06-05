@@ -1,4 +1,4 @@
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SWITCH_TYPE } from '@acx-ui/rc/utils'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SWITCH_TYPE, SwitchPortStatus } from '@acx-ui/rc/utils'
 
 export const stackMemberStandalone = [
   {
@@ -478,3 +478,107 @@ export const switchDetailSwitchOffline = {
   syncedSwitchConfig: false,
   stackMembers: []
 }
+
+export const breakoutPorts = [
+  {
+    vlanIds: '1',
+    isInWarningState: false,
+    tx: 0,
+    portIdentifier: '1/2/1:1',
+    rx: 0,
+    unTaggedVlan: '1',
+    neighborName: '',
+    portnumber: '1:1',
+    switchUnitId: 'FLX3333R011',
+    portSpeed: 'link down or no traffic',
+    adminStatus: 'Up',
+    poeEnabled: false,
+    name: '100GigabitEthernet1/2/1:1',
+    poeUsed: 0,
+    poeTotal: 0,
+    poeType: '',
+    usedInFormingStack: true,
+    usedInUplink: true,
+    status: 'Down'
+  },
+  {
+    vlanIds: '1',
+    isInWarningState: false,
+    tx: 0,
+    portIdentifier: '1/2/1:2',
+    rx: 0,
+    unTaggedVlan: '1',
+    neighborName: '',
+    portnumber: '1:2',
+    switchUnitId: 'FLX3333R011',
+    portSpeed: 'link down or no traffic',
+    adminStatus: 'Up',
+    poeEnabled: false,
+    name: '100GigabitEthernet1/2/1:2',
+    poeUsed: 0,
+    poeTotal: 0,
+    poeType: '',
+    usedInFormingStack: false,
+    status: 'Down'
+  },
+  {
+    vlanIds: '1',
+    isInWarningState: false,
+    tx: 0,
+    portIdentifier: '1/2/1:3',
+    rx: 0,
+    unTaggedVlan: '1',
+    neighborName: '',
+    portnumber: '1:3',
+    switchUnitId: 'FLX3333R011',
+    portSpeed: 'link down or no traffic',
+    adminStatus: 'Up',
+    poeEnabled: false,
+    name: '100GigabitEthernet1/2/1:3',
+    poeUsed: 0,
+    poeTotal: 0,
+    poeType: '',
+    usedInFormingStack: false,
+    status: 'Down'
+  },
+  {
+    vlanIds: '1',
+    isInWarningState: false,
+    tx: 0,
+    portIdentifier: '1/2/1:4',
+    rx: 0,
+    unTaggedVlan: '1',
+    neighborName: '',
+    portnumber: '1:4',
+    switchUnitId: 'FLX3333R011',
+    portSpeed: 'link down or no traffic',
+    adminStatus: 'Up',
+    poeEnabled: true,
+    name: '100GigabitEthernet1/2/1:4',
+    poeUsed: 30,
+    poeTotal: 3000,
+    poeType: '',
+    usedInFormingStack: false,
+    status: 'Down'
+  },
+  {
+    vlanIds: '1',
+    isInWarningState: false,
+    tx: 0,
+    portIdentifier: '1/2/2',
+    rx: 0,
+    unTaggedVlan: '1',
+    neighborName: '',
+    portnumber: '8',
+    switchUnitId: 'FLX3333R011',
+    portSpeed: 'link down or no traffic',
+    adminStatus: 'Up',
+    poeEnabled: false,
+    name: '100GigabitEthernet1/2/8',
+    poeUsed: 0,
+    poeTotal: 0,
+    poeType: '',
+    usedInFormingStack: false,
+    status: 'Down'
+  }
+] as SwitchPortStatus[]

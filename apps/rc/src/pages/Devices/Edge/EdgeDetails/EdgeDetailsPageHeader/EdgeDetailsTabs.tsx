@@ -2,12 +2,14 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
+import { useGetEdgeServiceListQuery }            from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 const EdgeDetailsTabs = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/edge-details`)
+  const { serialNumber } = params
+  const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'
@@ -16,6 +18,16 @@ const EdgeDetailsTabs = () => {
       pathname: `${basePath.pathname}/${tab}`
     })
   }
+  const { servicesCount = 0 } = useGetEdgeServiceListQuery({
+    payload: {
+      fields: ['id'],
+      filters: { edgeId: [serialNumber] }
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      servicesCount: data?.totalCount
+    })
+  })
 
   // const { currentEdge } = props
   // const currentEdgeOperational = (currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL)
@@ -27,7 +39,7 @@ const EdgeDetailsTabs = () => {
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />} */}
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: 0 })} // TODO: API support
+        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
         key='services'
       />
       <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />

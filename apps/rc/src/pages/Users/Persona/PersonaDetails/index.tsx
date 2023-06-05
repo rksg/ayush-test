@@ -1,32 +1,36 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Input, Row, Space, Typography } from 'antd'
-import { useIntl }                            from 'react-intl'
-import {  useParams }                         from 'react-router-dom'
+import { Col, Row, Space, Tag, Typography } from 'antd'
+import { useIntl }                          from 'react-intl'
+import { useParams }                        from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { CopyOutlined }                                 from '@acx-ui/icons'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { CopyOutlined }                                                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
   useLazyGetMacRegListQuery,
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery,
-  useLazyGetPropertyUnitByIdQuery
+  useLazyGetPropertyUnitByIdQuery,
+  useLazyGetConnectionMeteringByIdQuery,
+  useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
-import { PersonaGroup }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
+import { filterByAccess }                   from '@acx-ui/user'
+import { noDataDisplay }                    from '@acx-ui/utils'
 
 import {
+  ConnectionMeteringLink,
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupLink,
   PropertyUnitLink
 } from '../LinkHelper'
-import { PersonaDrawer } from '../PersonaDrawer'
+import { PersonaDrawer }                       from '../PersonaDrawer'
+import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
@@ -34,9 +38,10 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
+  const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [nsgData, setNsgData] = useState({} as { id?: string, name?: string } | undefined)
@@ -45,6 +50,7 @@ function PersonaDetails () {
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
   // TODO: isLoading state?
+  const [updatePersona] = useUpdatePersonaMutation()
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
@@ -54,6 +60,8 @@ function PersonaDetails () {
     params: { groupId: personaGroupId, id: personaId }
   })
   const deviceCount = personaDetailsQuery.data?.devices?.length ?? 0
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -64,6 +72,14 @@ function PersonaDetails () {
         if (!result.data) return
         setPersonaGroupData(result.data)
       })
+    if (isConnectionMeteringEnabled && personaDetailsQuery.data?.meteringProfileId) {
+      getConnectionMeteringById({ params: { id: personaDetailsQuery.data.meteringProfileId } })
+        .then(result => {
+          if (result.data) {
+            setConnectionMetering(result.data)
+          }
+        })
+    }
   }, [personaDetailsQuery.data])
 
   useEffect(() => {
@@ -105,6 +121,13 @@ function PersonaDetails () {
     }
   }, [personaGroupData])
 
+  const revokePersona = async () => {
+    return await updatePersona({
+      params: { groupId: personaGroupId, id: personaId },
+      payload: { revoked: !personaDetailsQuery.data?.revoked }
+    })
+  }
+
   const details = [
     { label: $t({ defaultMessage: 'Email' }), value: personaDetailsQuery.data?.email },
     { label: $t({ defaultMessage: 'Description' }), value: personaDetailsQuery.data?.description },
@@ -126,7 +149,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
         <>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={personaDetailsQuery.data?.dpskPassphrase}
@@ -192,6 +215,11 @@ function PersonaDetails () {
     >
       <PersonaDetailsPageHeader
         title={personaDetailsQuery.data?.name ?? personaId}
+        revoked={{
+          status: personaDetailsQuery.data?.revoked ?? false,
+          allowed: !personaDetailsQuery.data?.identityId,
+          onRevoke: revokePersona
+        }}
         onClick={() => setEditDrawerVisible(true)}
       />
       <Space direction={'vertical'} size={24}>
@@ -231,6 +259,22 @@ function PersonaDetails () {
                 <Col span={12}>{item.value ?? noDataDisplay}</Col>
               </Row>
             )}
+            {
+              isConnectionMeteringEnabled &&
+              <Row key={'Connection Metering'}>
+                <Col span={7}>
+                  <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                    {$t({ defaultMessage: 'Connection Metering' })}:
+                  </Typography.Paragraph>
+                </Col>
+                <Col span={12}>{connectionMetering ?
+                  <ConnectionMeteringLink
+                    id={connectionMetering.id}
+                    name={connectionMetering.name}/> :
+                  noDataDisplay}
+                </Col>
+              </Row>
+            }
           </Col>
         </Row>
 
@@ -255,12 +299,68 @@ function PersonaDetails () {
 
 function PersonaDetailsPageHeader (props: {
   title?: string,
+  revoked: {
+    allowed: boolean,
+    status?: boolean
+    onRevoke: () => void
+  }
   onClick: () => void
 }) {
   const { $t } = useIntl()
-  const { title, onClick } = props
+  const { title, revoked: { allowed, status: revokedStatus, onRevoke }, onClick } = props
+
+  const getRevokedTitle = () => {
+    return $t({
+      defaultMessage: `{revokedStatus, select,
+      true {Unblock}
+      other {Block}
+      } this Persona: {name}`,
+      description: 'Translation strings - Unblock, Block, this Persona'
+    }, {
+      revokedStatus,
+      name: title
+    })
+  }
+
+  const getRevokedContent = () => {
+    return $t({
+      defaultMessage: `{revokedStatus, select,
+      true {Are you sure you want to unblock this persona?}
+      other {The user will be blocked. Are you sure want to block this persona?}
+      }`,
+      // eslint-disable-next-line max-len
+      description: 'Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona'
+    }, {
+      revokedStatus
+    })
+  }
+
+  const showRevokedModal = () => {
+    showActionModal({
+      type: 'confirm',
+      title: getRevokedTitle(),
+      content: getRevokedContent(),
+      okText: $t({
+        defaultMessage: `{revokedStatus, select,
+        true {Unblock}
+        other {Block}}`,
+        description: 'Translation strings - Unblock, Block'
+      }, { revokedStatus }),
+      okType: 'primary',
+      cancelText: $t({ defaultMessage: 'Cancel' }),
+      onOk: () => onRevoke()
+    })
+  }
 
   const extra = filterByAccess([
+    <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
+      {$t({
+        defaultMessage: `{revokedStatus, select,
+        true {Unblock}
+        other {Block Persona}}`,
+        description: 'Translation strings - Unblock, Block Persona'
+      }, { revokedStatus })}
+    </Button>,
     <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
@@ -269,6 +369,16 @@ function PersonaDetailsPageHeader (props: {
   return (
     <PageHeader
       title={title}
+      titleExtra={revokedStatus
+        && <>
+          <PersonaBlockedIcon />
+          <Tag
+            style={blockedTagStyle}
+            color={cssStr('--acx-semantics-red-20')}
+          >
+            {$t({ defaultMessage: 'Blocked' })}
+          </Tag>
+        </>}
       extra={extra}
       breadcrumb={[
         {

@@ -73,23 +73,29 @@ export const CloseIcon = styled(Close)`
   font-size: large;
   margin-top: 2px;
 `
-
 interface WrapperProps {
-  needPadding?: boolean
+  needPadding?: boolean;
 }
 export const Wrapper = styled.div<WrapperProps>`
-  height: 160px;
+  height: auto;
   width: 375px;
   padding: ${props => props.needPadding ? '10px 15px' : undefined};
-  margin-bottom: ${props => !props.needPadding ? '-25px' : undefined};
 `
 export const CellWrapper = styled(Space)`
   justify-content: left;
   width: 100%;
   height: 22px;
 `
+export const ChartWrapper = styled(CellWrapper)`
+  position: relative;
+  top: 2px;
+`
+export const CountWrapper = styled(CellWrapper)`
+  display: inline;
+`
 export const TextWrapper = styled(CellWrapper)`
-  color: var(--acx-neutrals-60)
+  color: var(--acx-neutrals-60);
+  display: inline;
 `
 export const InfoWindowHeader = styled.div`
   height: 35px;

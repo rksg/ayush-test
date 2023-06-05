@@ -9,7 +9,8 @@ import {
   Table,
   TableProps,
   deviceStatusColors,
-  ColumnType
+  ColumnType,
+  showToast
 } from '@acx-ui/components'
 import {
   Features,
@@ -367,7 +368,20 @@ export function ApTable (props: ApTableProps) {
     label: $t({ defaultMessage: 'Reboot' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows, clearSelection) => {
-      apAction.showRebootAp(rows[0].serialNumber, params.tenantId, clearSelection)
+      const showSendingToast = () => {
+        showToast({
+          type: 'success',
+          content: $t(
+            { defaultMessage: 'Sending command: [reboot] to the AP: {ap}' },
+            { ap: rows[0]?.serialNumber }
+          )
+        })
+      }
+      const callback = () => {
+        clearSelection()
+        showSendingToast()
+      }
+      apAction.showRebootAp(rows[0].serialNumber, params.tenantId, callback)
     }
   }, {
     label: $t({ defaultMessage: 'Download Log' }),
@@ -488,7 +502,9 @@ export function ApTable (props: ApTableProps) {
                   { payload: { requestId: res.requestId } }, true)
                   .unwrap()
                 setImportResult(result)
-              } }).unwrap()
+              } }).unwrap().catch(() => {
+              setIsImportResultLoading(false)
+            })
           } else {
             importAps({ params: {}, payload: formData })
           }

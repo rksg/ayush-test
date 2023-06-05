@@ -48,6 +48,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
     newApi: true
   },
+  addNetworkVenues: {
+    method: 'post',
+    url: '/networkActivations/mappings',
+    oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
+    newApi: true
+  },
   updateNetworkVenue: {
     method: 'put',
     url: '/networkActivations/:networkVenueId?quickAck=true',
@@ -58,6 +64,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/networkActivations/:networkVenueId',
     oldUrl: '/api/tenant/:tenantId/wifi/network-venue/:networkVenueId',
+    newApi: true
+  },
+  deleteNetworkVenues: {
+    method: 'delete',
+    url: '/networkActivations',
+    oldUrl: '/api/tenant/:tenantId/wifi/network-venue',
     newApi: true
   },
   getVenueExternalAntenna: {
@@ -449,6 +461,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/aps/:serialNumber/networkSettings',
     oldUrl: '/api/venues/aps/:serialNumber/networkSettings',
+    newApi: true
+  },
+  getApMeshSettings: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/meshSettings',
+    newApi: true
+  },
+  updateApMeshSettings: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/meshSettings',
+    newApi: true
+  },
+  getMeshUplinkAPs: {
+    method: 'post',
+    url: '/aps/neighbors/query',
     newApi: true
   }
 }

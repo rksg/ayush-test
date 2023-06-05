@@ -34,6 +34,7 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon, Drag } from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
@@ -55,7 +56,8 @@ import {
   isOperationalSwitch,
   SwitchViewModel,
   redirectPreviousPage,
-  LocationExtended
+  LocationExtended,
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -121,12 +123,23 @@ export function StackForm () {
 
   const dataFetchedRef = useRef(false)
 
+  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
+
+  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
-    { key: '2', id: '', model: '', disabled: false },
-    { key: '3', id: '', model: '', disabled: false }
+    { key: '2', id: '', model: '', disabled: false }
   ]
   const [tableData, setTableData] = useState(isStackSwitches ? [] : defaultArray)
+
+  const getSwitchModelWithRodan = function (serial: string) {
+    if (isSupportIcx8200) {
+      return getSwitchModel(serial)
+    } else {
+      return getSwitchModel(serial)?.includes('8200') ? undefined : getSwitchModel(serial)
+    }
+  }
 
   useEffect(() => {
     if (!isVenuesListLoading) {
@@ -197,7 +210,7 @@ export function StackForm () {
             return {
               ...item,
               key,
-              model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
+              model: `${item.model === undefined ? getSwitchModelWithRodan(item.id) : item.model}
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
@@ -265,7 +278,7 @@ export function StackForm () {
       `serialNumber${row.key}`
     )
     dataRows[index].id = serialNumber
-    dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
+    dataRows[index].model = serialNumber && getSwitchModelWithRodan(serialNumber)
     setTableData(dataRows)
 
     const modelList = dataRows
@@ -364,7 +377,7 @@ export function StackForm () {
   const handleSaveStackSwitches = async (values: SwitchViewModel) => {
     try {
       const activeSwitch = formRef.current?.getFieldValue(`serialNumber${activeRow}`)
-      const activeSwitchModel = getSwitchModel(activeSwitch ?? '')
+      const activeSwitchModel = getSwitchModelWithRodan(activeSwitch ?? '')
       const isIcx7650 = activeSwitchModel?.includes('ICX7650')
       const payload = {
         name: values.name || '',
@@ -390,12 +403,13 @@ export function StackForm () {
   }
 
   const validatorSwitchModel = (serialNumber: string) => {
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
+      : new RegExp(SWITCH_SERIAL_PATTERN)
     if (serialNumber && !re.test(serialNumber)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
 
-    const model = getSwitchModel(serialNumber) || ''
+    const model = getSwitchModelWithRodan(serialNumber) || ''
 
     return modelNotSupportStack.indexOf(model) > -1
       ? Promise.reject(
@@ -598,6 +612,26 @@ export function StackForm () {
     return <SortableItem index={index} {...restProps} />
   }
 
+  const enableAddMember = () => {
+    const switchModel =
+      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    if (!enableStackUnitLimitationFlag) {
+      return true
+    }
+
+    if (switchModel?.includes('ICX7150') || switchModel === 'Unknown') {
+      return tableData.length < 2
+    } else {
+      return tableData.length < 4
+    }
+  }
+
+  const getStackUnitsMinLimitaion = () => {
+    const switchModel =
+      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))
+    return switchModel?.includes('ICX7150') ? 2 : 4
+  }
+
   return (
     <>
       <PageHeader
@@ -752,7 +786,7 @@ export function StackForm () {
                         }
                       }}
                     />
-                    {tableData.length < 12 && (
+                    {tableData.length < 12 && enableAddMember() && (
                       <Button
                         onClick={handleAddRow}
                         type='link'
@@ -766,6 +800,10 @@ export function StackForm () {
                   </TableContainer>
 
                   <SwitchUpgradeNotification
+                    switchModel={
+                      // eslint-disable-next-line max-len
+                      getSwitchModelWithRodan(formRef.current?.getFieldValue(`serialNumber${activeRow}`))}
+                    stackUnitsMinLimitaion={getStackUnitsMinLimitaion()}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
                     type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}

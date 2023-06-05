@@ -14,7 +14,7 @@ function MockLayout (props: React.PropsWithChildren) {
 storiesOf('StepsFormNew', module)
   .add('Basic', () => <MockLayout><BasicMultiSteps /></MockLayout>)
   .add('With Async Validation', () => <MockLayout><AsyncValidation /></MockLayout>)
-  .add('Edit Mode', () => <MockLayout><EditMode/ ></MockLayout>)
+  .add('Edit Mode', () => <MockLayout><EditMode /></MockLayout>)
   .add('Dynamic Steps', () => <MockLayout><DynamicSteps /></MockLayout>)
   .add('Single Step', () => <MockLayout><SingleStep /></MockLayout>)
   .add('Custom Inputs', () => <MockLayout><CustomInputForm /></MockLayout>)

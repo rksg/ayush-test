@@ -6,17 +6,16 @@ import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/c
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
-  useAdaptivePolicyListQuery,
-  useAdaptivePolicySetListQuery,
+  useAdaptivePolicyListQuery, useAdaptivePolicySetLisByQueryQuery,
   useDeleteAdaptivePolicySetMutation, useGetDpskListQuery,
   useLazyGetPrioritizedPoliciesQuery, useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicySet,
+  AdaptivePolicySet, FILTER,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, useTableQuery
+  PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
@@ -34,7 +33,8 @@ export default function AdaptivePolicySetTable () {
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({
-    useQuery: useAdaptivePolicySetListQuery,
+    useQuery: useAdaptivePolicySetLisByQueryQuery,
+    apiParams: { sort: 'name,ASC', excludeContent: 'false' },
     defaultPayload: {}
   })
 
@@ -183,38 +183,36 @@ export default function AdaptivePolicySetTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    disabled: (([selectedItem]) =>
-      (selectedItem && selectedItem.id)
-        ? assignedMacPools.has(selectedItem.id) || assignedDpsks.has(selectedItem.id): false
-    ),
-    tooltip: (([selectedItem]) =>
-      selectedItem ?
-        (assignedMacPools.has(selectedItem.id) || assignedDpsks.has(selectedItem.id) ?
-        // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'This set is in use by one or more Mac Registrations Lists and one or more DPSK.' }) : undefined ) : undefined
-    ),
     onClick: ([{ name, id }], clearSelection) => {
-      showActionModal({
-        type: 'confirm',
-        customContent: {
-          action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Policy Set' }),
-          entityValue: name
-        },
-        onOk: async () => {
-          deletePolicy({ params: { policySetId: id } })
-            .unwrap()
-            .then(() => {
-              showToast({
-                type: 'success',
-                content: $t({ defaultMessage: 'Policy Set {name} was deleted' }, { name })
+      if (assignedMacPools.has(id) || assignedDpsks.has(id)) {
+        showActionModal({
+          type: 'error',
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'This set is in use by one or more Mac Registrations Lists and one or more DPSK.' })
+        })
+      } else {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Policy Set' }),
+            entityValue: name
+          },
+          onOk: async () => {
+            deletePolicy({ params: { policySetId: id } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Policy Set {name} was deleted' }, { name })
+                })
+                clearSelection()
+              }).catch((error) => {
+                console.log(error) // eslint-disable-line no-console
               })
-              clearSelection()
-            }).catch((error) => {
-              console.log(error) // eslint-disable-line no-console
-            })
-        }
-      })
+          }
+        })
+      }
     }
   }]
 
@@ -231,12 +229,18 @@ export default function AdaptivePolicySetTable () {
     }
   }]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
+    tableQuery.setPayload(payload)
+  }
+
   return (
     <Loader states={[
       tableQuery,
       { isLoading: false, isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
+        enableApiFilter
         settingsId='adaptive-policy-set-list-table'
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
@@ -244,6 +248,7 @@ export default function AdaptivePolicySetTable () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
+        onFilterChange={handleFilterChange}
         rowSelection={{ type: 'radio' }}
         actions={filterByAccess(actions)}
       />

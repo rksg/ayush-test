@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
@@ -12,6 +12,7 @@ import {
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
+  useGetConnectionMeteringListQuery,
   useAdaptivePolicyListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -94,7 +95,8 @@ function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
   const attributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
 
@@ -177,6 +179,16 @@ function useCardData (): CardDataProps[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
       disabled: !isEdgeEnabled
+    },
+    {
+      type: PolicyType.CONNECTION_METERING,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      totalCount: useGetConnectionMeteringListQuery({
+        params
+      }, { skip: !isConnectionMeteringEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
+      disabled: !isConnectionMeteringEnabled
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,

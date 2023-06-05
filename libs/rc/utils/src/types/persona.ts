@@ -18,6 +18,7 @@ export interface Persona {
   id: string,
   name: string,
   groupId: string,
+  revoked: boolean,
   deviceCount?: number,
   description?: string,
   tenantId?: string,
@@ -31,7 +32,10 @@ export interface Persona {
   identityId?: string,
   createdAt?: string,
   updatedAt?: string,
-  switches?: PersonaSwitch[]
+  switches?: PersonaSwitch[],
+  meteringProfileId?: string | null,
+  expirationEpoch?: number | null,
+  expirationDate?: string | null
 }
 
 export interface PersonaSwitch {

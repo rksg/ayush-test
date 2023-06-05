@@ -24,6 +24,9 @@ import { mockedRegistration,
 
 import { TemplateSelector } from '.'
 
+
+// NOTE: this tests both TemplateSelector and TemplateSelect,
+// which is why TemplateSelect isn't tested separately.
 describe('TemplateSelector', () => {
 
   beforeEach(() => {
@@ -71,7 +74,7 @@ describe('TemplateSelector', () => {
     )
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName).value)
+      expect(formRef.current.getFieldValue(formItemName))
         .toEqual(mockedTemplateScope.defaultTemplateId)
     })
     await waitFor(() => {
@@ -125,7 +128,7 @@ describe('TemplateSelector', () => {
     )
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName).value)
+      expect(formRef.current.getFieldValue(formItemName))
         .toEqual(mockedRegistration.templateId)
     })
     await waitFor(() => {

@@ -1,4 +1,3 @@
-import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -11,6 +10,7 @@ import {
 import {
   TaskContextType
 } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 // import * as UI from '../styledComponents'
 
@@ -24,10 +24,10 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { currentTask } = props
 
-  return (<>
+  return (
     <Descriptions>
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Bak File' })}
+        label={$t({ defaultMessage: 'Backup File' })}
         children={currentTask.fileName ?? '--'} />
 
       <Descriptions.Item
@@ -45,24 +45,20 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'Venue' })}
-        children={'--'} />
-    </Descriptions>
+        children={currentTask.venueName ?? '--'} />
 
-    <Divider />
-
-    <Descriptions>
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Unsupported model' })}
-        children={'--'} />
-    </Descriptions>
+        label={$t({ defaultMessage: 'Description' })}
+        children={currentTask.description ?? '--'} />
 
-    <Divider />
-
-    <Descriptions>
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Duplicated in tenant' })}
-        children={'--'} />
+        label={$t({ defaultMessage: 'Migrartion Summary' })}
+        children={
+          <TenantLink to={`/administration/onpremMigration/${currentTask.taskId}/summary`}>
+            { $t({ defaultMessage: 'summary' }) }
+          </TenantLink>
+        }
+      />
     </Descriptions>
-
-  </>)
+  )
 }

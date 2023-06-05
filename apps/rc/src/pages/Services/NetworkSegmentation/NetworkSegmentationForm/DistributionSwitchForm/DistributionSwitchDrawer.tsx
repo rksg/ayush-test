@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Space, Transfer } from 'antd'
+import _                                                               from 'lodash'
 import { useIntl }                                                     from 'react-intl'
 
-import { Button, Drawer, Modal, Subtitle, Table }                                   from '@acx-ui/components'
-import { useGetAccessSwitchesByDSQuery, useValidateDistributionSwitchInfoMutation } from '@acx-ui/rc/services'
+import { Button, Drawer, Modal, Subtitle, Table, useStepFormContext } from '@acx-ui/components'
+import { useValidateDistributionSwitchInfoMutation }                  from '@acx-ui/rc/services'
 import {
   AccessSwitch,
   checkVlanMember,
@@ -16,53 +17,55 @@ import {
 import { useParams }                   from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import { NetworkSegmentationGroupFormData } from '..'
+
 export function DistributionSwitchDrawer (props: {
   open: boolean;
   editRecord?: DistributionSwitch;
   availableSwitches: SwitchLite[];
-  originalAccessSwitches?: AccessSwitch[];
-  selectedSwitches: DistributionSwitch[];
-  venueId: string;
-  edgeId: string;
   onClose?: () => void;
   onSaveDS?: (values: DistributionSwitch) => void;
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [form] = Form.useForm()
-  const {
-    open, editRecord, availableSwitches, selectedSwitches,
-    originalAccessSwitches, venueId, edgeId, onClose = ()=>{}, onSaveDS
-  } = props
+  const [form] = Form.useForm<DistributionSwitch>()
+  const { open, editRecord, availableSwitches, onClose = ()=>{}, onSaveDS } = props
+
+  const { form: nsgForm } = useStepFormContext<NetworkSegmentationGroupFormData>()
+  const venueId = nsgForm.getFieldValue('venueId')
+  const edgeId = nsgForm.getFieldValue('edgeId')
 
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeId }
 
   const [openModal, setOpenModal] = useState(false)
+  const [availableSwitchList, setAvailableSwitchList] = useState<SwitchLite[]>([])
 
   const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
 
   const dsId = Form.useWatch('id', form)
-  const asList = Form.useWatch('accessSwitches', form)
-
-  const { availableAs } = useGetAccessSwitchesByDSQuery(
-    { params: { tenantId, venueId, switchId: dsId } }, {
-      skip: !venueId || !dsId,
-      selectFromResult: ({ data }) => {
-        const inUseSwitchIds = (selectedSwitches || []).map(ds => ds.id).concat([dsId])
-        return {
-          availableAs: data?.switchViewList?.filter(sw => !inUseSwitchIds.includes(sw.id)) || []
-        }
-      }
-    }
-  )
+  const accessSwitches = Form.useWatch('accessSwitches', form)
 
   useEffect(() => {
     form.resetFields()
     form.setFieldValue('accessSwitches', editRecord?.accessSwitches || [])
   }, [form, open, editRecord])
 
+  useEffect(() => {
+    const originalDistriSwitches = nsgForm.getFieldValue('originalDistributionSwitchInfos') || []
+    const originalAccessSwitches = nsgForm.getFieldValue('originalAccessSwitchInfos') || []
+    const distributionSwitchInfos = nsgForm.getFieldValue('distributionSwitchInfos') || []
+    const accessSwitchInfos = nsgForm.getFieldValue('accessSwitchInfos') || []
+    const removedSwitchList = _.differenceBy(
+      [ ...originalDistriSwitches, ...originalAccessSwitches ],
+      [ ...distributionSwitchInfos, ...accessSwitchInfos ], 'id')
+    const inUseSwitchIds = (accessSwitches || []).map(sw=>sw.id).concat(dsId)
+    const availableSwitchList =
+      availableSwitches.concat(removedSwitchList).filter(sw=>!inUseSwitchIds.includes(sw.id))
+    setAvailableSwitchList(availableSwitchList)
+  }, [nsgForm, availableSwitches, dsId, accessSwitches])
+
   const handleFormFinish = (values: DistributionSwitch) => {
-    onSaveDS && onSaveDS({ ...values, accessSwitches: asList })
+    onSaveDS && onSaveDS({ ...values, accessSwitches: accessSwitches })
   }
 
   return (
@@ -71,7 +74,6 @@ export function DistributionSwitchDrawer (props: {
         $t({ defaultMessage: 'Edit Distribution Switch' }) :
         $t({ defaultMessage: 'Add Distribution Switch' })}
       visible={open}
-      mask={true}
       onClose={onClose}
       destroyOnClose={true}
       width={450}
@@ -101,12 +103,12 @@ export function DistributionSwitchDrawer (props: {
           hidden={!!editRecord}
         >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
-            options={availableSwitches.map(item => ({
+            options={availableSwitchList.map(item => ({
               value: item.id,
               label: item.name
             }))}
             onChange={(newId) => {
-              form.setFieldValue('name', availableSwitches.find(s => s.id === newId)?.name)
+              form.setFieldValue('name', availableSwitchList.find(s => s.id === newId)?.name)
             }} />
         </Form.Item>
         <Form.Item name='name'
@@ -173,7 +175,7 @@ export function DistributionSwitchDrawer (props: {
             dataIndex: ['uplinkInfo', 'uplinkId'],
             key: 'uplinkInfo'
           }]}
-          dataSource={asList}
+          dataSource={accessSwitches}
           type='form'
           rowKey='id' />
         <Form.Item rules={[{
@@ -188,8 +190,8 @@ export function DistributionSwitchDrawer (props: {
           setOpenModal(false)
         }}
         onCancel={() => setOpenModal(false)}
-        selected={asList}
-        availableAs={availableAs.concat(originalAccessSwitches || [])}
+        selected={accessSwitches}
+        availableAs={availableSwitchList.concat(accessSwitches || [])}
         switchId={dsId} />
     </Drawer>
   )

@@ -54,8 +54,8 @@ describe('ResidentPortalForm', () => {
         PropertyUrlsInfo.getResidentPortal.url,
         (req, res, ctx) => res(ctx.json(mockedResidentPortal))
       ),
-      rest.get(
-        '/residentPortals',
+      rest.post(
+        '/residentPortals/query',
         (req, res, ctx) => res(ctx.json({ ...mockedResidentPortalList }))
       ),
       rest.post(

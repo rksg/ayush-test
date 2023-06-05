@@ -32,8 +32,7 @@ export function useMenuConfig () {
   const showSV = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
 
-  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
@@ -75,11 +74,11 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Health' })
             },
             ...(showSV ? [{
-              uri: '/serviceValidation/networkHealth',
+              uri: '/analytics/serviceValidation',
               label: $t({ defaultMessage: 'Service Validation' })
             }] : []),
             ...(showSV && showVideoCallQoe ? [{
-              uri: '/serviceValidation/videoCallQoe',
+              uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
           ]
@@ -286,13 +285,13 @@ export function useMenuConfig () {
             },
             {
               uri: '/timeline/adminLogs',
-              label: $t({ defaultMessage: 'Administrative Logs' })
+              label: $t({ defaultMessage: 'Admin Logs' })
             }
           ]
         },
         {
           type: 'group' as const,
-          label: 'Account Management',
+          label: $t({ defaultMessage: 'Account Management' }),
           children: [
             {
               uri: '/administration/accountSettings',
@@ -312,7 +311,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/administration/fwVersionMgmt',
-              label: $t({ defaultMessage: 'Firmware Version Management' })
+              label: $t({ defaultMessage: 'Version Management' })
             },
             ...(isCloudMoteEnabled ? [{
               uri: '/administration/onpremMigration',

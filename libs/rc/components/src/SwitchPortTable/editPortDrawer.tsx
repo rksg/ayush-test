@@ -150,6 +150,7 @@ export function EditPortDrawer ({
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
+  const hasBreakoutPort = selectedPorts.filter(p => p.portIdentifier.includes(':')).length > 0
 
   const [aclsOptions, setAclsOptions] = useState([] as DefaultOptionType[])
   const [vlansOptions, setVlansOptions] = useState([] as DefaultOptionType[])
@@ -413,6 +414,7 @@ export function EditPortDrawer ({
         return vlansOptions?.length <= 1 ? $t(EditPortMessages.VOICE_VLAN_DISABLE) : ''
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'egressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
+      case 'portSpeed': return hasBreakoutPort ? $t(EditPortMessages.PORT_SPEED_TOOLTIP) : ''
       default: return ''
     }
   }
@@ -434,7 +436,8 @@ export function EditPortDrawer ({
         || !poeEnable
         || (poeClass !== 'ZERO' && poeClass !== 'UNSET')
       case 'useVenuesettings': return disabledUseVenueSetting || switchDetail?.vlanCustomize
-      case 'portSpeed': return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed
+      case 'portSpeed':
+        return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'voiceVlan': return (isMultipleEdit && !voiceVlanCheckbox) || vlansOptions?.length <= 1
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
       default:
@@ -451,7 +454,7 @@ export function EditPortDrawer ({
       case 'poeBudget':
         return disablePoeCapability || !poeEnable
       case 'voiceVlan': return vlansOptions?.length === 1
-      case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed
+      case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed || hasBreakoutPort
       default: return false
     }
   }
@@ -477,9 +480,10 @@ export function EditPortDrawer ({
   }
 
   const transformData = (data: PortSettingModel) => {
+    const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
-      if (overrideFields?.includes('portVlans')) {
+      if (overrideFields?.includes('portVlans') && !(hasBreakoutPortAndVenueSettings)) {
         overrideFields.push('taggedVlans', 'untaggedVlan')
       }
       return !isMultipleEdit
@@ -495,7 +499,7 @@ export function EditPortDrawer ({
     const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
-      isMultipleEdit && !portVlansCheckbox && 'revert',
+      isMultipleEdit && (!portVlansCheckbox || hasBreakoutPortAndVenueSettings) && 'revert',
       checkVlanIgnore(
         'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
@@ -723,7 +727,6 @@ export function EditPortDrawer ({
     visible={visible}
     onClose={onClose}
     footer={footer}
-    mask={false}
     children={<Loader states={[{
       isLoading: loading,
       isFetching: isPortsSettingUpdating
@@ -908,7 +911,7 @@ export function EditPortDrawer ({
                     {getPortEditStatus(portEditStatus)}
                   </Space>
                   <Space size={0} split={<UI.Divider />}>
-                    <UI.LinkButton type='link'
+                    <Button type='link'
                       key='edit'
                       size='small'
                       data-testid='edit-vlans'
@@ -916,18 +919,19 @@ export function EditPortDrawer ({
                     >{portEditStatus && (portEditStatus !== 'port')
                         ? $t({ defaultMessage: 'Customize' })
                         : $t({ defaultMessage: 'Edit' })
-                      }</UI.LinkButton>
-                    {(!useVenueSettings || !portEditStatus || portEditStatus === 'port') &&
+                      }</Button>
+                    {((!useVenueSettings || !portEditStatus || portEditStatus === 'port')
+                      && !hasBreakoutPort) &&
                       <Tooltip title={getFieldTooltip('useVenuesettings')} >
                         <Space>
-                          <UI.LinkButton type='link'
+                          <Button type='link'
                             key='use-venue-settings'
                             size='small'
                             disabled={getFieldDisabled('useVenuesettings')}
                             onClick={onApplyVenueSettings}
                           >
                             {$t({ defaultMessage: 'Use Venue settings' })}
-                          </UI.LinkButton>
+                          </Button>
                         </Space>
                       </Tooltip>
                     }
@@ -1046,18 +1050,23 @@ export function EditPortDrawer ({
         { getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
-            name='portSpeed'
             label={$t({ defaultMessage: 'Port Speed' })}
-            initialValue='NONE'
             children={isMultipleEdit && !portSpeedCheckbox && hasMultipleValue.includes('portSpeed')
               ? <MultipleText />
-              : <Select
-                options={portSpeedOptions.map((p: string) => ({
-                  label: PORT_SPEED[p as keyof typeof PORT_SPEED], value: p
-                }))}
-                disabled={getFieldDisabled('portSpeed')}
-                className={getToggleClassName('portSpeed', isMultipleEdit, hasMultipleValue)}
-              />}
+              : <Tooltip title={getFieldTooltip('portSpeed')}>
+                <Form.Item
+                  name='portSpeed'
+                  initialValue='NONE'>
+                  <Select
+                    options={portSpeedOptions.map((p: string) => ({
+                      label: PORT_SPEED[p as keyof typeof PORT_SPEED], value: p
+                    }))}
+                    disabled={getFieldDisabled('portSpeed')}
+                    className={getToggleClassName('portSpeed', isMultipleEdit, hasMultipleValue)}
+                  ></Select>
+                </Form.Item>
+              </Tooltip>
+            }
           />,
           'portSpeed', $t({ defaultMessage: 'Port Speed' })
         )}
@@ -1168,7 +1177,7 @@ export function EditPortDrawer ({
             initialValue={false}
             children={isMultipleEdit && !lldpQosCheckbox && hasMultipleValue.includes('lldpQos')
               ? <MultipleText />
-              : <UI.LinkButton type='link'
+              : <Button type='link'
                 key='create-lldp'
                 size='small'
                 disabled={isMultipleEdit && !lldpQosCheckbox}
@@ -1177,7 +1186,7 @@ export function EditPortDrawer ({
                 }}
               >
                 {$t({ defaultMessage: 'Create' })}
-              </UI.LinkButton>
+              </Button>
             }
           />,
           'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
@@ -1220,14 +1229,14 @@ export function EditPortDrawer ({
             {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
             <Tooltip title={getFieldTooltip('ingressAcl')}>
               <Space style={{ marginLeft: '8px', marginBottom: isMultipleEdit ? '10px' : '' }}>
-                <UI.LinkButton type='link'
+                <Button type='link'
                   key='add-ingress-acl'
                   size='small'
                   disabled={(isMultipleEdit && !ingressAclCheckbox) || !hasSwitchProfile || ipsg}
                   onClick={() => { setDrawerAclVisible(true) }}
                 >
                   {$t({ defaultMessage: 'Add ACL' })}
-                </UI.LinkButton>
+                </Button>
               </Space>
             </Tooltip>}
           </>,
@@ -1253,13 +1262,13 @@ export function EditPortDrawer ({
             {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
             <Tooltip title={getFieldTooltip('egressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
-                <UI.LinkButton type='link'
+                <Button type='link'
                   key='add-egress-acl'
                   size='small'
                   disabled={(isMultipleEdit && !egressAclCheckbox) || !hasSwitchProfile}
                   onClick={() => { setDrawerAclVisible(true) }}
                 >{$t({ defaultMessage: 'Add ACL' })}
-                </UI.LinkButton>
+                </Button>
               </Space>
             </Tooltip>}
           </>,

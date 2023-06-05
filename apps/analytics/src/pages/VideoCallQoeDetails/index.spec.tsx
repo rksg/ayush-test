@@ -1,6 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { Provider, dataApiSearchURL, store, videoCallQoeURL } from '@acx-ui/store'
 import {
   mockGraphqlMutation,
@@ -18,6 +19,7 @@ describe('VideoCallQoe Details Page', () => {
     tenantId: 'tenant-id'
   }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(clientSearchApi.util.resetApiState())
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: searchClientsFixture
@@ -33,7 +35,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
@@ -49,7 +51,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
@@ -65,7 +67,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
@@ -83,9 +85,8 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
-    await screen.findByText('Select Client MAC')
     await screen.findByText('A8:64:F1:1A:D0:33')
     const radioButtons = screen.getAllByRole('radio')
     await userEvent.click(radioButtons[2])
@@ -102,7 +103,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
     await screen.findByText('Select Client MAC')
     await screen.findByText('A8:64:F1:1A:D0:33')
@@ -116,7 +117,6 @@ describe('VideoCallQoe Details Page', () => {
       expect(screen.queryByText('Cancel')).not.toBeInTheDocument()
     })
   })
-
   it('should search the client', async () => {
     mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
@@ -129,7 +129,7 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
     const searchInput = await screen.findByPlaceholderText(/search by mac, username or hostname/i)
     await userEvent.type(searchInput, 'DPSK_User_8709')
@@ -138,7 +138,6 @@ describe('VideoCallQoe Details Page', () => {
     })
     expect(await screen.findByText('A8:64:F1:1A:D0:33')).toBeVisible()
   })
-
   it('render the page properly when call stats are null', async () => {
     mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures4 })
@@ -148,10 +147,19 @@ describe('VideoCallQoe Details Page', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
     expect(fragment).toMatchSnapshot()
+  })
+  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', { data: callQoeTestDetailsFixtures1 })
+    render(<VideoCallQoeDetails />, {
+      wrapper: Provider, route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.queryByText('AI Assurance')).toBeNull()
+    expect(screen.queryByText('Network Assurance')).toBeNull()
   })
 })

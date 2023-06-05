@@ -4,10 +4,10 @@ import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import { useIntl }               from 'react-intl'
 
-import { StepsFormLegacy }                          from '@acx-ui/components'
-import { useLazyValidateUniqueProfileNameQuery }    from '@acx-ui/rc/services'
-import { checkObjectNotExists, excludeSpaceRegExp } from '@acx-ui/rc/utils'
-import { useParams }                                from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }                       from '@acx-ui/components'
+import { useLazyValidateUniqueProfileNameQuery } from '@acx-ui/rc/services'
+import { checkObjectNotExists }                  from '@acx-ui/rc/utils'
+import { useParams }                             from '@acx-ui/react-router-dom'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
@@ -29,7 +29,7 @@ export function GeneralSetting () {
   const nameValidator = async (value: string) => {
     const payload = { ...profileListPayload, searchString: value }
     const list = (await validateUniqueProfileName({ params, payload }, true).unwrap()).data
-      .filter(n => n.id !== params.networkId)
+      .filter(n => n.id !== params.profileId)
       .map(n => n.name)
 
     return checkObjectNotExists(list, value, $t({ defaultMessage: 'Configuration Profile' }))
@@ -53,7 +53,6 @@ export function GeneralSetting () {
           rules={[
             { required: true },
             { max: 64 },
-            { validator: (_, value) => excludeSpaceRegExp(value) },
             { validator: (_, value) => nameValidator(value) }
           ]}
           hasFeedback

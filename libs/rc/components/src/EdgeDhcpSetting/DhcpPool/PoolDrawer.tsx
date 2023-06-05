@@ -2,9 +2,9 @@
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { Drawer }                                                from '@acx-ui/components'
-import { EdgeDhcpPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                           from '@acx-ui/utils'
+import { Drawer }                                                                from '@acx-ui/components'
+import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                           from '@acx-ui/utils'
 
 import { useDrawerControl } from '..'
 
@@ -101,7 +101,14 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           label={$t({ defaultMessage: 'End IP Address' })}
           rules={[
             { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) }
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            {
+              validator: (_, value) => IpInSubnetPool(
+                value,
+                form.getFieldValue('poolStartIp'),
+                form.getFieldValue('subnetMask')
+              )
+            }
           ]}
           children={<Input />}
         />
@@ -138,7 +145,6 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
       title={getTitle()}
       visible={visible}
       onClose={onClose}
-      mask={true}
       children={drawerContent}
       destroyOnClose={true}
       width={475}

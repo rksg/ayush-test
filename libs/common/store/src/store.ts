@@ -24,13 +24,16 @@ import {
   baseTimelineApi as timelineApi,
   baseVenueApi as venueApi,
   baseTunnelProfileApi as tunnelProfileApi,
+  baseResidentPortalApi as residentPortalApi,
+  baseConnectionMeteringApi as connectionMeteringApi,
   dataApi,
   dataApiSearch,
-  networkHealthApi,
+  serviceGuardApi,
   userApi,
   baseMsgTemplateApi as msgTemplateApi,
   videoCallQoeApi,
-  baseEdgeFirewallApi as edgeFirewallApi
+  baseEdgeFirewallApi as edgeFirewallApi,
+  baseSigPackApi as sigPackApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -59,12 +62,15 @@ export const store = configureStore({
     [migrationApi.reducerPath]: migrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
-    [networkHealthApi.reducerPath]: networkHealthApi.reducer,
+    [serviceGuardApi.reducerPath]: serviceGuardApi.reducer,
     [nsgApi.reducerPath]: nsgApi.reducer,
     [tunnelProfileApi.reducerPath]: tunnelProfileApi.reducer,
     [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
+    [connectionMeteringApi.reducerPath]: connectionMeteringApi.reducer,
     [videoCallQoeApi.reducerPath]: videoCallQoeApi.reducer,
-    [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer
+    [edgeFirewallApi.reducerPath]: edgeFirewallApi.reducer,
+    [sigPackApi.reducerPath]: sigPackApi.reducer,
+    [residentPortalApi.reducerPath]: residentPortalApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -95,12 +101,15 @@ export const store = configureStore({
       migrationApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware,
-      networkHealthApi.middleware,
+      serviceGuardApi.middleware,
       nsgApi.middleware,
       tunnelProfileApi.middleware,
       msgTemplateApi.middleware,
+      connectionMeteringApi.middleware,
       videoCallQoeApi.middleware,
-      edgeFirewallApi.middleware
+      edgeFirewallApi.middleware,
+      sigPackApi.middleware,
+      residentPortalApi.middleware
     ])
   },
 

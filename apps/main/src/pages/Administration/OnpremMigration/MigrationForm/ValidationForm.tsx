@@ -1,3 +1,5 @@
+import React, { useContext, useEffect } from 'react'
+
 import {
   Col,
   Row,
@@ -16,8 +18,11 @@ import {
   useGetMigrationResultQuery
 } from '@acx-ui/rc/services'
 import {
+  MigrationActionTypes,
   MigrationResultType
 } from '@acx-ui/rc/utils'
+
+import MigrationContext from '../MigrationContext'
 
 type ValidationFormProps = {
   taskId?: string
@@ -27,21 +32,28 @@ const ValidationForm = (props: ValidationFormProps) => {
   const { $t } = useIntl()
   const { taskId } = props
   const params = useParams()
-  // const dataMock = [{
-  //   name: 'AP-1',
-  //   description: 'zd ap',
-  //   serialNumber: '123456789021',
-  //   status: 'Failed',
-  //   failure: 'Not support model'
-  // },{
-  //   name: 'AP-2',
-  //   description: 'zd ap2',
-  //   serialNumber: '234789879791',
-  //   status: 'Success',
-  //   failure: 'Not found ap serial number'
-  // }]
+
+  const {
+    dispatch
+  } = useContext(MigrationContext)
+
   // eslint-disable-next-line max-len
-  const { data: validateResult, isLoading, isFetching } = useGetMigrationResultQuery({ params: { ...params, id: taskId } })
+  const { data: validateResult } = useGetMigrationResultQuery({ params: { ...params, id: taskId } })
+
+  useEffect(()=>{
+    if (validateResult?.state && validateResult?.state === 'Qualified') {
+      dispatch({
+        type: MigrationActionTypes.ERRORMSG,
+        payload: {
+          errorMsg: ''
+        }
+      })
+    }
+  },[validateResult])
+
+  const callbackfn = (item: MigrationResultType) => {
+    return item.state === 'Valid'
+  }
 
   const columns: TableProps<MigrationResultType>['columns'] = [
     {
@@ -89,17 +101,27 @@ const ValidationForm = (props: ValidationFormProps) => {
 
   return (
     <Loader states={[
-      { isLoading: isLoading,
-        isFetching: isFetching
+      { isLoading: false,
+        isFetching: !validateResult?.state
       }
     ]}>
       <Row>
         <Col span={12}>
           <Subtitle level={4}>
-            {$t({ defaultMessage: 'Validation Table' })}
-          </Subtitle>
-          <Subtitle level={3}>
             {$t({ defaultMessage: 'Validation State' })}: {validateResult?.state ?? '--'}
+          </Subtitle>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={3}>
+          <Subtitle level={5}>
+            {$t({ defaultMessage: 'Total' })}: {validateResult?.apImportResults?.length ?? '--'}
+          </Subtitle>
+        </Col>
+        <Col span={3}>
+          <Subtitle level={5}>
+            {$t({ defaultMessage: 'Valid' })}: {
+              validateResult?.apImportResults?.filter(callbackfn).length ?? '--'}
           </Subtitle>
         </Col>
       </Row>

@@ -9,7 +9,8 @@ import {
   fakeIncidentSwitchMemory,
   fakeIncidentPoePd,
   fakeIncidentTtc
-} from '@acx-ui/analytics/utils'
+}                         from '@acx-ui/analytics/utils'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -165,6 +166,7 @@ describe('Test', () => {
       }
     ].forEach((test) => {
       it(`should render ${test.component.name} correctly`, () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
         const params = { incidentId: test.fakeIncident.id }
         const { asFragment } = render(<Provider>
           <test.component {...test.fakeIncident} />
@@ -189,6 +191,16 @@ describe('Test', () => {
           expect(screen.getByTestId(chart)).toBeVisible()
         })
         expect(asFragment()).toMatchSnapshot()
+      })
+      // eslint-disable-next-line max-len
+      it(`should handle ${test.component.name} when feature flag NAVBAR_ENHANCEMENT is off`, async () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(false)
+        const params = { incidentId: test.fakeIncident.id }
+        render(<Provider>
+          <test.component {...test.fakeIncident} />
+        </Provider>, { route: { params } })
+        expect(screen.queryByText('AI Assurance')).toBeNull()
+        expect(screen.queryByText('Network Assurance')).toBeNull()
       })
     })
   })

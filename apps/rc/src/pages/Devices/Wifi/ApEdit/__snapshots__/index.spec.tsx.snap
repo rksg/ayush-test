@@ -3,7 +3,7 @@
 exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -298,6 +298,20 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                 data-testid="QuestionMarkCircleOutlined"
                 style="margin-left: 8px; margin-bottom: -3px; height: 16px; width: 16px;"
               />
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-mesh"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-mesh"
+              role="tab"
+              tabindex="0"
+            >
+              Mesh
             </div>
           </div>
           <div
@@ -950,6 +964,32 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                               </div>
                                             </div>
                                           </div>
+                                          <div
+                                            class="ant-form-item ant-form-item-hidden"
+                                          >
+                                            <div
+                                              class="ant-row ant-form-item-row"
+                                            >
+                                              <div
+                                                class="ant-col ant-form-item-control"
+                                              >
+                                                <div
+                                                  class="ant-form-item-control-input"
+                                                >
+                                                  <div
+                                                    class="ant-form-item-control-input-content"
+                                                  >
+                                                    <input
+                                                      class="ant-input"
+                                                      id="0_lan_0_vni"
+                                                      type="text"
+                                                      value=""
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -1285,6 +1325,32 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                               </div>
                                             </div>
                                           </div>
+                                          <div
+                                            class="ant-form-item ant-form-item-hidden"
+                                          >
+                                            <div
+                                              class="ant-row ant-form-item-row"
+                                            >
+                                              <div
+                                                class="ant-col ant-form-item-control"
+                                              >
+                                                <div
+                                                  class="ant-form-item-control-input"
+                                                >
+                                                  <div
+                                                    class="ant-form-item-control-input-content"
+                                                  >
+                                                    <input
+                                                      class="ant-input"
+                                                      id="0_lan_1_vni"
+                                                      type="text"
+                                                      value=""
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -1385,6 +1451,15 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-multicast"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-multicast"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-mesh"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-mesh"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"

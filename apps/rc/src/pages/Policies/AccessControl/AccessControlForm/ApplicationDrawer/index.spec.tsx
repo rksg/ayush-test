@@ -14,72 +14,55 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import ApplicationDrawer from './index'
 
-const queryApplication = {
-  data: [
-    {
-      id: 'edac8b0c22e140cd95e63a9e81421576',
-      name: 'app1',
-      rulesCount: 2,
-      networksCount: 0
-    },
-    {
-      id: 'e51edc33a9764b1284c0fd201806e4d4',
-      name: 'app2',
-      description: 'sdfasdf',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '02f18ac24a504cd88ed6a94025b64d44',
-      name: 'app3',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '9ad95d4741b44fbfbab55914c104eea4',
-      name: 'app4',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: '8403ff88c526465b8070f50ca4547281',
-      name: 'app5',
-      rulesCount: 1,
-      networksCount: 0
-    },
-    {
-      id: 'e1ba3e5ca73b4bbf8c53bb5feff31f9b',
-      name: 'app6-activityMsg',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  fields: [
-    'check-all',
-    'name',
-    'description',
-    'rulesCount',
-    'networksCount',
-    'id'
-  ],
-  totalCount: 6,
-  totalPages: 1,
-  page: 1
-}
+const queryApplication = [
+  {
+    id: 'edac8b0c22e140cd95e63a9e81421576',
+    name: 'app1',
+    rulesCount: 2,
+    networksCount: 0
+  },
+  {
+    id: 'e51edc33a9764b1284c0fd201806e4d4',
+    name: 'app2',
+    description: 'sdfasdf',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '02f18ac24a504cd88ed6a94025b64d44',
+    name: 'app3',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '9ad95d4741b44fbfbab55914c104eea4',
+    name: 'app4',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '8403ff88c526465b8070f50ca4547281',
+    name: 'app5',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: 'e1ba3e5ca73b4bbf8c53bb5feff31f9b',
+    name: 'app6-activityMsg',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
 
-const queryApplicationUpdate = {
+const queryApplicationUpdate = [
   ...queryApplication,
-  data: [
-    ...queryApplication.data,
-    {
-      id: '6ab1a781711e492eb05a70f9f9ba253a',
-      name: 'app1-test',
-      rulesCount: 1,
-      networksCount: 0
-    }
-  ],
-  totalCount: 7
-}
+  {
+    id: '6ab1a781711e492eb05a70f9f9ba253a',
+    name: 'app1-test',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
 
 const applicationDetail = {
   tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
@@ -207,7 +190,7 @@ const systemDefinedSection = async () => {
 
   await userEvent.selectOptions(
     screen.getAllByRole('combobox')[1],
-    screen.getByRole('option', { name: 'All' })
+    screen.getAllByRole('option', { name: 'All' })[0]
   )
 
   await screen.findByRole('option', { name: 'BBC' })
@@ -228,7 +211,7 @@ const systemDefinedSection = async () => {
 describe('ApplicationDrawer Component', () => {
   it('Render ApplicationDrawer component successfully with new added profile', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         AccessControlUrls.getAppPolicyList.url,
         (_, res, ctx) => res(
           ctx.json(queryApplication)
@@ -288,7 +271,7 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.post(
+    mockServer.use(rest.get(
       AccessControlUrls.getAppPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryApplicationUpdate)
@@ -300,27 +283,28 @@ describe('ApplicationDrawer Component', () => {
   })
 
   it('Render ApplicationDrawer component successfully with UserDefined rule', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryApplication)
-      )
-    ), rest.post(
-      AccessControlUrls.addAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCategory.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ) )
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.post(
+        AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationResponse)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ) )
 
     render(
       <Provider>
@@ -333,8 +317,6 @@ describe('ApplicationDrawer Component', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'app1' })
 
     await userEvent.click(screen.getByText('Add New'))
 
@@ -384,27 +366,28 @@ describe('ApplicationDrawer Component', () => {
   })
 
   it('Render ApplicationDrawer component successfully with edit and del action', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryApplication)
-      )
-    ), rest.post(
-      AccessControlUrls.addAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCategory.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ))
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.post(
+        AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationResponse)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ))
 
     render(
       <Provider>
@@ -417,8 +400,6 @@ describe('ApplicationDrawer Component', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'app1' })
 
     await userEvent.click(screen.getByText('Add New'))
 
@@ -495,27 +476,28 @@ describe('ApplicationDrawer Component', () => {
   })
 
   it('Render ApplicationDrawer component successfully for access control part', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryApplication)
-      )
-    ), rest.post(
-      AccessControlUrls.addAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCategory.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
-      )
-    ))
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.post(
+        AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationResponse)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
+      ))
 
     render(
       <Provider>
@@ -587,27 +569,28 @@ describe('ApplicationDrawer Component', () => {
   })
 
   it('Render ApplicationDrawer component successfully for qos content', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryApplication)
-      )
-    ), rest.post(
-      AccessControlUrls.addAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCategory.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
-      )
-    ))
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.post(
+        AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationResponse)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
+      ))
 
     render(
       <Provider>
@@ -665,27 +648,28 @@ describe('ApplicationDrawer Component', () => {
   })
 
   it('Render ApplicationDrawer component in viewMode successfully', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryApplication)
-      )
-    ), rest.get(
-      AccessControlUrls.getAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationDetail)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCategory.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
-      )
-    ))
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationDetail)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
+      ))
 
     render(
       <Provider>
