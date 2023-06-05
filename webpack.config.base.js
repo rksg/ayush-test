@@ -12,25 +12,12 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
   moduleFederationConfig,
   additionalWebpackConfig = {   
     cache: true,
-    experiments: {
-      topLevelAwait: true,
-      // Enable fast-refresh
-    },
     watchOptions: {
-      // Ignore specific directories or files
       ignored: /node_modules/,
-      // Check for changes every 300ms
       aggregateTimeout: 150,
-      
-      // Enable polling for file changes
       poll: 500,
     },
     plugins: [
-      new ReactRefreshWebpackPlugin(),
-      new webpack.IgnorePlugin({
-        resourceRegExp: /^\.\/node_modules\$/,
-        contextRegExp: /react-loadable/,
-      }),
       new ForkTsCheckerWebpackPlugin({
         typescript: {
           configFile: './tsconfig.json',
