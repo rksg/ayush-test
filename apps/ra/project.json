@@ -1,0 +1,99 @@
+{
+  "sourceRoot": "apps/ra/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/ra",
+        "index": "apps/ra/src/index.html",
+        "baseHref": "/analytics/next/",
+        "main": "apps/ra/src/main.tsx",
+        "polyfills": "apps/ra/src/polyfills.ts",
+        "tsConfig": "apps/ra/tsconfig.app.json",
+        "assets": [
+          "apps/ra/src/favicon.ico",
+          "apps/ra/src/env.json",
+          "apps/ra/src/assets",
+          "apps/ra/src/locales",
+          "apps/ra/src/robots.txt"
+        ],
+        "styles": [],
+        "scripts": [],
+        "webpackConfig": "apps/ra/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/ra/webpack.config.js"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "baseHref": "/",
+        "buildTarget": "ra:build",
+        "hmr": true,
+        "port": 3333
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "ra:build:development"
+        },
+        "production": {
+          "buildTarget": "ra:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ra/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/ra"],
+      "options": {
+        "jestConfig": "apps/ra/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "serve-static": {
+      "executor": "@nrwl/web:file-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "ra:build",
+        "port": 3333
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "ra:build:development"
+        },
+        "production": {
+          "buildTarget": "ra:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}

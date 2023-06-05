@@ -1,6 +1,6 @@
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Select, Loader }                      from '@acx-ui/components'
+import { Cascader, Loader }                    from '@acx-ui/components'
 import { useVenuesListQuery }                  from '@acx-ui/rc/services'
 import { useParams }                           from '@acx-ui/react-router-dom'
 import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
@@ -39,7 +39,7 @@ export function VenueFilter () {
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
-        <Select
+        <Cascader
           entityName={{
             singular: defineMessage({ defaultMessage: 'venue' }),
             plural: defineMessage({ defaultMessage: 'venues' })

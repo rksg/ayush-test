@@ -169,7 +169,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
       uiNodes.forEach(node => {
         graph.setNode(node.id, {
-          label: node?.label,
+          label: truncateLabel(node?.label as string, 15),
           width: 64,
           height: 48,
           expanded: false })
@@ -286,6 +286,15 @@ export function TopologyGraph (props:{ venueId?: string,
     }
 
   },[graphRef, topologyGraphData])
+
+  function truncateLabel (label: string, maxWidth: number) {
+    const ellipsis = '...'
+    if (label.length <= maxWidth) {
+      return label
+    } else {
+      return label.slice(0, maxWidth - ellipsis.length) + ellipsis
+    }
+  }
 
 
   // fit graph to screen

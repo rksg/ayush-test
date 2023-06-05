@@ -97,3 +97,13 @@ export const FieldGroup = styled.div`
   grid-template-columns: [column-1] 150px [column-2] auto;
   margin-bottom: 10px;
 `
+
+export const ValueContainer = styled.div`
+  margin: 12px 12px 4px 32px;
+  &.disabled * {
+    color: rgba(0, 0, 0, 0.25)
+  }
+  .ant-radio-group {
+    font-size: unset;
+  }
+`

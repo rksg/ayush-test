@@ -4,7 +4,7 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
 
-import {  Tabs }                                                 from '@acx-ui/components'
+import {  Loader, Tabs }                                         from '@acx-ui/components'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { useExportAllSigPackMutation, useExportSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationUpdateType }                                 from '@acx-ui/rc/utils'
@@ -28,7 +28,9 @@ const ApplicationPolicyMgmt = ()=>{
     renamed,
     updateAvailable,
     confirmationType,
-    rulesCount
+    rulesCount,
+    isFetching,
+    isLoading
   } = useSigPackDetails()
 
   const showCurrentInfo = ()=>{
@@ -184,9 +186,9 @@ const ApplicationPolicyMgmt = ()=>{
       </div>
     </>
   }
-  return <>
+  return <Loader states={[{ isLoading: isLoading || isFetching }]}>
     {showCurrentInfo()}
     {updateAvailable&&updateDetails()}
-  </>
+  </Loader>
 }
 export default ApplicationPolicyMgmt

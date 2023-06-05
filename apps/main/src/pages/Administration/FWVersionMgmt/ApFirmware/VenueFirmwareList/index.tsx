@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { Tooltip } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -10,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
@@ -36,7 +37,8 @@ import {
   useTableQuery,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  EolApFirmware
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -52,11 +54,11 @@ import {
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
 
-import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import { RevertDialog }         from './RevertDialog'
-import { UpdateNowDialog }      from './UpdateNowDialog'
+import { AdvancedUpdateNowDialog } from './AdvancedUpdateNowDialog'
+import { ChangeScheduleDialog }    from './ChangeScheduleDialog'
+import { RevertDialog }            from './RevertDialog'
+import { UpdateNowDialog }         from './UpdateNowDialog'
 
-const transform = firmwareTypeTrans()
 
 function useColumns (
   searchable?: boolean,
@@ -64,6 +66,7 @@ function useColumns (
 ) {
   const intl = useIntl()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const transform = firmwareTypeTrans(intl.$t)
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
@@ -128,7 +131,7 @@ function useColumns (
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(intl, row)}</UI.ScheduleTooltipText>} placement='bottom'>
             <UI.ScheduleText>{getApNextScheduleTpl(intl, row)}</UI.ScheduleText>
           </Tooltip>
         )
@@ -165,10 +168,7 @@ export const VenueFirmwareTable = (
   const [revertModelVisible, setRevertModelVisible] = useState(false)
   const [venues, setVenues] = useState<FirmwareVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const [eol, setEol] = useState(false)
-  const [eolName, setEolName] = useState('')
-  const [latestEolVersion, setLatestEolVersion] = useState('')
-  const [eolModels, setEolModels] = useState<string[]>([])
+  const [eolApFirmwareList, setEolApFirmwareList] = useState<EolApFirmware[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
 
@@ -237,7 +237,20 @@ export const VenueFirmwareTable = (
     }
   }
 
-  const columns = useColumns(searchable, filterables)
+  const processEolApFirmwares = (selectedRows: FirmwareVenue[]) => {
+    const selectedEolApFirmwares = _.compact(selectedRows.map(row => row.eolApFirmwares)).flat()
+    // eslint-disable-next-line max-len
+    const uniqueEolApFirmwares = selectedEolApFirmwares.reduce((acc: EolApFirmware[], cur: EolApFirmware) => {
+      const foundIndex = acc.findIndex(e1 => e1.name === cur.name)
+      if (foundIndex === -1) {
+        return acc.concat([cur])
+      }
+      acc[foundIndex].apModels = _.uniq(acc[foundIndex].apModels.concat(cur.apModels))
+      return acc
+    }, [])
+
+    setEolApFirmwareList(uniqueEolApFirmwares)
+  }
 
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
     visible: (selectedRows) => {
@@ -299,22 +312,7 @@ export const VenueFirmwareTable = (
     label: $t({ defaultMessage: 'Update Now' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
-      let eolAp = false
-      let eolName = ''
-      let latestEolVersion = ''
-      let eolModels: string[] = []
-      for (let v of selectedRows) {
-        if (v['eolApFirmwares']) {
-          eolAp = true
-          eolName = v['eolApFirmwares'][0].name
-          latestEolVersion = v['eolApFirmwares'][0].latestEolVersion
-          eolModels = [...new Set([...eolModels, ...v['eolApFirmwares'][0].apModels])]
-        }
-      }
-      setEol(eolAp)
-      setEolName(eolName)
-      setLatestEolVersion(latestEolVersion)
-      setEolModels(eolModels)
+      processEolApFirmwares(selectedRows)
 
       let filterVersions: FirmwareVersion[] = []
       if (selectedRows.length === 1) {
@@ -513,7 +511,7 @@ export const VenueFirmwareTable = (
       { isLoading: false }
     ]}>
       <Table
-        columns={columns}
+        columns={useColumns(searchable, filterables)}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
@@ -526,14 +524,11 @@ export const VenueFirmwareTable = (
           onClick: () => setModelVisible(true)
         }])}
       />
-      <UpdateNowDialog
+      <UpdateNowDialogSwitcher
         visible={updateModelVisible}
         data={venues}
         availableVersions={upgradeVersions}
-        eol={eol}
-        eolName={eolName}
-        latestEolVersion={latestEolVersion}
-        eolModels={eolModels}
+        eolApFirmwares={eolApFirmwareList}
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />
@@ -602,3 +597,32 @@ function hasApSchedule (venue: FirmwareVenue): boolean {
   return venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc).length > 0
 }
 
+interface UpdateNowDialogSwitcherProps {
+  visible: boolean,
+  onCancel: () => void,
+  onSubmit: (data: UpdateNowRequest[]) => void,
+  data?: FirmwareVenue[],
+  availableVersions?: FirmwareVersion[],
+  eolApFirmwares?: EolApFirmware[]
+}
+
+function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
+  const isEolApPhase2Enabled = useIsSplitOn(Features.EOL_AP_2022_12_PHASE_2_TOGGLE)
+  const {
+    eolApFirmwares = [],
+    ...rest
+  } = props
+
+  const eolApFirmware = eolApFirmwares.length > 0
+    ? {
+      eol: true,
+      eolName: eolApFirmwares[0].name,
+      latestEolVersion: eolApFirmwares[0].latestEolVersion,
+      eolModels: eolApFirmwares[0].apModels
+    }
+    : {}
+
+  return isEolApPhase2Enabled
+    ? <AdvancedUpdateNowDialog {...props} />
+    : <UpdateNowDialog {...({ ...rest, ...eolApFirmware })} />
+}

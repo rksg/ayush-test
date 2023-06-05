@@ -12,8 +12,8 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import {
   InformationSolid,
   QuestionMarkCircleOutlined
@@ -153,13 +153,20 @@ export function WISPrForm () {
           form.setFieldValue('enableSecondaryAcctServer',true)
         }
       }
+      if ([
+        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
+        (!data?.wlan?.bypassCNA)
+      ].every(Boolean)) {dispatch(statesCollection.useAllAccept)}
 
-      if(data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT) {
-        dispatch(statesCollection.useAllAccept)
-      }
-      if(data?.wlan?.bypassCNA === true) {
-        dispatch(statesCollection.useBypassCNAAndAuth)
-      }
+      if ([
+        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
+        (data?.wlan?.bypassCNA)
+      ].every(Boolean)) {dispatch(statesCollection.useBypassCNAAndAuth)}
+
+      if ([
+        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
+        (!data?.wlan?.bypassCNA)
+      ].every(Boolean)) {dispatch(statesCollection.useOnlyAuth)}
     }
   },[providerData.data,data,isMspEc])
   useEffect(()=>{
@@ -335,7 +342,7 @@ export function WISPrForm () {
             ]}
             validateFirst
             extra={$t({ defaultMessage: '8 characters minimum' })}
-            children={<Input.Password />}
+            children={<PasswordInput />}
           />
         }
         {enablePreShared && wlanSecurity === 'WEP' &&
@@ -352,7 +359,7 @@ export function WISPrForm () {
                   {$t({ defaultMessage: 'Generate' })}
                 </Button></div>
             </>}
-            children={<Input.Password />}
+            children={<PasswordInput />}
           />
         }
         {enablePreShared &&
@@ -371,7 +378,7 @@ export function WISPrForm () {
             ]}
             validateFirst
             extra={$t({ defaultMessage: '8 characters minimum' })}
-            children={<Input.Password />}
+            children={<PasswordInput />}
           />
         }
         {enablePreShared && <Form.Item

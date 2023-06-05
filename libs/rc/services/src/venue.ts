@@ -183,6 +183,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      providesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateMeshOptions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'WIFI_SETTINGS' }]))
+          })
+        })
       }
     }),
     updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
@@ -192,7 +203,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }]
     }),
     updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
       query: ({ params, payload }) => {
