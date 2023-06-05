@@ -314,7 +314,8 @@ function PersonaDetailsPageHeader (props: {
       defaultMessage: `{revokedStatus, select,
       true {Unblock}
       other {Block}
-      } this Persona: {name}`
+      } this Persona: {name}`,
+      description: 'Translation strings - Unblock, Block, this Persona'
     }, {
       revokedStatus,
       name: title
@@ -326,7 +327,9 @@ function PersonaDetailsPageHeader (props: {
       defaultMessage: `{revokedStatus, select,
       true {Are you sure you want to unblock this persona?}
       other {The user will be blocked. Are you sure want to block this persona?}
-      }`
+      }`,
+      // eslint-disable-next-line max-len
+      description: 'Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona'
     }, {
       revokedStatus
     })
@@ -340,7 +343,8 @@ function PersonaDetailsPageHeader (props: {
       okText: $t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
-        other {Block}}`
+        other {Block}}`,
+        description: 'Translation strings - Unblock, Block'
       }, { revokedStatus }),
       okType: 'primary',
       cancelText: $t({ defaultMessage: 'Cancel' }),
@@ -350,9 +354,12 @@ function PersonaDetailsPageHeader (props: {
 
   const extra = filterByAccess([
     <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
-      {$t({ defaultMessage: `{revokedStatus, select,
-      true {Unblock}
-      other {Block Persona}}` }, { revokedStatus })}
+      {$t({
+        defaultMessage: `{revokedStatus, select,
+        true {Unblock}
+        other {Block Persona}}`,
+        description: 'Translation strings - Unblock, Block Persona'
+      }, { revokedStatus })}
     </Button>,
     <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}
