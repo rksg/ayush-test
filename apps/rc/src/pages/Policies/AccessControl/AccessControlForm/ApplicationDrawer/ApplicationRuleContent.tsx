@@ -183,7 +183,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         showSearch
         style={{ width: '100%' }}
         optionFilterProp='children'
-        filterOption={(input, option) => (option?.value?.toString() ?? '').includes(input)}
+        filterOption={(input, option) => (String(option?.value) ?? '').includes(input)}
         onChange={(evt) => {
           drawerForm.setFieldValue('applicationNameSystemDefined', evt)
         }}
@@ -198,13 +198,18 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     const categoryId = avcSelectOptions
       .findIndex(cat => cat.catName === category)
 
+    const renderOptions = avcSelectOptions[categoryId]?.appNames.slice(1) ?? []
+
     return <Select
+      showSearch
       style={{ width: '100%' }}
+      optionFilterProp='children'
+      filterOption={(input, option) => (String(option?.value) ?? '').includes(input)}
       onChange={(evt) => {
         drawerForm.setFieldValue('applicationNameSystemDefined', evt)
       }}
     >
-      {avcSelectOptions[categoryId]?.appNames.map((avcApp: string) => {
+      {['All', ...renderOptions.sort()].map((avcApp: string) => {
         return <Select.Option key={`${category}_${avcApp}`} value={`${category}_${avcApp}`}>
           {avcApp}
         </Select.Option>
@@ -253,7 +258,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
             >
               {rateLimitContent}
             </Form.Item>
-          </div> : null}
+          </div> : <div></div>}
       </GridCol>
 
       <GridCol col={{ span: 24 }}>
@@ -262,7 +267,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         </Radio>
       </GridCol>
       <GridCol col={{ span: 24 }}>
-        {sourceValue === ApplicationAclType.QOS ? <QosContent drawerForm={drawerForm}/> : null}
+        {sourceValue === ApplicationAclType.QOS ? <QosContent drawerForm={drawerForm}/> : <div></div>}
       </GridCol>
     </GridRow>
 
