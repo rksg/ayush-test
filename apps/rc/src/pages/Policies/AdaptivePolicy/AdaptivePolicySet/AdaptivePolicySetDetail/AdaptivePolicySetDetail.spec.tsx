@@ -45,7 +45,7 @@ describe('AdaptivePolicySetDetail', () => {
       route: { params, path: '/:tenantId/:policyId' }
     })
 
-    await screen.findByText('Policy Name')
+    await screen.findByText('Policy Set Name')
 
     const names = await screen.findAllByText(adaptivePolicy.name)
     expect(names).toHaveLength(2)

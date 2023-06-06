@@ -198,12 +198,20 @@ export function APDetailsCard (props: {
 
       </Descriptions>
       <Divider />
+      {/* Mesh Role  */}
       <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'Mesh Role' })}
           children={
             getMeshRole(apDetail?.meshRole as APMeshRole || noDataDisplay)
           }
+        />
+      </Descriptions>
+      {/* Connected APs  */}
+      <Descriptions labelWidthPercent={50}>
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Connected APs' })}
+          children={apDetail?.downLinkCount || noDataDisplay}
         />
       </Descriptions>
 
