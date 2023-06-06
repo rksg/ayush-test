@@ -432,7 +432,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Pre-Shared Key (PSK)
+                                                  Passphrase (PSK/SAE)
                                                   <div
                                                     class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                   >
@@ -583,7 +583,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                           class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
-                            alt="Pre-Shared Key (PSK)"
+                            alt="Passphrase (PSK/SAE)"
                             src="psk.png"
                           />
                         </div>
@@ -988,7 +988,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                           class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
-                            alt="Pre-Shared Key (PSK)"
+                            alt="Passphrase (PSK/SAE)"
                             src="psk.png"
                           />
                         </div>
@@ -1878,7 +1878,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              Pre-Shared Key (PSK)
+                              Passphrase (PSK/SAE)
                             </div>
                           </div>
                         </div>
@@ -2645,7 +2645,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Pre-Shared Key (PSK)
+                                                  Passphrase (PSK/SAE)
                                                   <div
                                                     class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                   >
