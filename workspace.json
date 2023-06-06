@@ -35,7 +35,8 @@
       "options": {
         "ignored": "node_modules/**",
         "nodeModulesIsolate": true,
-        "cacheable": true
+        "cacheable": true,
+        "incremental": true
       }
     }
   }
