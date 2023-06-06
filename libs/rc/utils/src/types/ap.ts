@@ -362,10 +362,13 @@ export interface APPhoto {
   imageUrl: string,
   updatedDate: string
 }
-export interface DhcpAp {
+
+export type DhcpApBase = {
   requestId: string,
   response?: DhcpApInfo[]
 }
+
+export type DhcpAp = DhcpApBase | DhcpApInfo[]
 
 export interface PacketCaptureState {
   status: ApPacketCaptureStateEnum,

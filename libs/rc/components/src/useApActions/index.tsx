@@ -23,8 +23,7 @@ import {
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
   APExtended,
-  CommonResult,
-  CountdownNode,
+  CountdownNode, DhcpAp, DhcpApBase,
   DhcpApInfo
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -35,6 +34,8 @@ const blinkLedCount = 30
 
 export function useApActions () {
   const { $t } = useIntl()
+  const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
+  const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const [ downloadApLog ] = useDownloadApLogMutation()
   const [ getDhcpAp ] = useLazyGetDhcpApQuery()
   const [ getApList ] = useLazyApListQuery()
@@ -144,7 +145,7 @@ export function useApActions () {
       payload: rows.map(row => row.serialNumber)
     }, true).unwrap()
 
-    if (hasDhcpAps(dhcpAps)) {
+    if (hasDhcpAps(dhcpAps, wifiEdaflag || wifiEdaGatewayflag)) {
       showActionModal({
         type: 'warning',
         content: $t({ defaultMessage: 'Not allow to delete DHCP APs' })
@@ -211,17 +212,21 @@ const hasInvalidAp = (selectedRows: AP[]) => {
   })
 }
 
-const hasDhcpAps = (dhcpAps: CommonResult) => {
-  if (dhcpAps && dhcpAps.response) {
-    const res: DhcpApInfo[] = Array.isArray(dhcpAps.response)? dhcpAps.response : []
-    const dhcpApMap = res.filter(dhcpAp =>
-      dhcpAp.venueDhcpEnabled === true &&
-      (dhcpAp.dhcpApRole === ApDhcpRoleEnum.PrimaryServer ||
-        dhcpAp.dhcpApRole === ApDhcpRoleEnum.BackupServer))
-
-    return dhcpApMap.length > 0
+const hasDhcpAps = (dhcpAps: DhcpAp, featureFlag: boolean) => {
+  let res: DhcpApInfo[] = []
+  if (dhcpAps && featureFlag) {
+    res = dhcpAps as DhcpApInfo[]
+  } else {
+    const response = dhcpAps as DhcpApBase
+    res = Array.isArray(response.response) ? response.response : []
   }
-  return false
+
+  const dhcpApMap = res.filter(dhcpAp =>
+    dhcpAp.venueDhcpEnabled === true &&
+    (dhcpAp.dhcpApRole === ApDhcpRoleEnum.PrimaryServer ||
+      dhcpAp.dhcpApRole === ApDhcpRoleEnum.BackupServer))
+
+  return dhcpApMap.length > 0
 }
 
 const genDeleteModal = (
