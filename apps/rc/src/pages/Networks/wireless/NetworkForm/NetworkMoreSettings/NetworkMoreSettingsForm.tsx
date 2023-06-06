@@ -86,7 +86,9 @@ export function NetworkMoreSettingsForm (props: {
         managementFrameMinimumPhyRate: get(data,
           'wlan.advancedCustomization.radioCustomization.managementFrameMinimumPhyRate'),
         bssMinimumPhyRate: get(data,
-          'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
+          'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate'),
+        enableVxLan: data.wlan?.advancedCustomization?.tunnelProfileId !== "" && 
+          data.wlan?.advancedCustomization?.tunnelProfileId !== null
       })
     }
   }, [data, editMode, cloneMode])
@@ -129,7 +131,8 @@ export function MoreSettingsForm (props: {
     enableTransientClientManagement,
     enableOce,
     enableVlanPooling,
-    bssMinimumPhyRate //BSS Min Rate
+    bssMinimumPhyRate, //BSS Min Rate
+    enableVxLan
   ] = [
     useWatch<boolean>('enableDhcp'),
     useWatch<boolean>('enableOfdmOnly'),
@@ -140,7 +143,8 @@ export function MoreSettingsForm (props: {
     useWatch<boolean>(['wlan', 'advancedCustomization',
       'enableOptimizedConnectivityExperience']),
     useWatch<boolean>('enableVlanPooling'),
-    useWatch<string>('bssMinimumPhyRate')
+    useWatch<string>('bssMinimumPhyRate'),
+    useWatch<boolean>('enableVxLan')
   ]
 
   const form = Form.useFormInstance()

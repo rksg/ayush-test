@@ -18,6 +18,8 @@ export class DpskWlanAdvancedCustomization {
 
   urlFilteringPolicyId?: null
 
+  tunnelProfileId?: string | null
+
   userUplinkRateLimiting?: number
 
   // Mbps
