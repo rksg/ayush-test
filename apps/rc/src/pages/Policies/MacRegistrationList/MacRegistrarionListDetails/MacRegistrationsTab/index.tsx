@@ -6,7 +6,7 @@ import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import { CsvSize, ImportFileDrawer }            from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useDeleteMacRegistrationMutation, useGetMacRegListQuery,
+  useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
   useSearchMacRegistrationsQuery,
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
@@ -59,9 +59,9 @@ export function MacRegistrationsTab () {
   },[uploadCsvResult])
 
   const [
-    deleteMacRegistration,
-    { isLoading: isDeleteMacRegistrationUpdating }
-  ] = useDeleteMacRegistrationMutation()
+    deleteMacRegistrations,
+    { isLoading: isDeleteMacRegistrationsUpdating }
+  ] = useDeleteMacRegistrationsMutation()
 
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
 
@@ -77,24 +77,35 @@ export function MacRegistrationsTab () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    visible: (selectedRows) => selectedRows.length === 1,
-    onClick: ([selectedRow], clearSelection) => {
+    onClick: (selectedRows: MacRegistration[], clearSelection) => {
       doProfileDelete(
-        [selectedRow],
+        selectedRows,
         $t({ defaultMessage: 'MAC Address' }),
-        selectedRow.macAddress,
+        selectedRows[0].macAddress,
         [
           { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Persona' }) }
         ],
-        async () => deleteMacRegistration({ params: { policyId, registrationId: selectedRow.id } })
+        // eslint-disable-next-line max-len
+        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })
           .then(() => {
-            showToast({
-              type: 'success',
-              content: $t(
-                { defaultMessage: 'MAC Address  {macAddress} was deleted' },
-                { macAddress: selectedRow.macAddress }
-              )
-            })
+            const macAddress = selectedRows.map(row => row.macAddress).join(', ')
+            if(selectedRows.length > 1) {
+              showToast({
+                type: 'success',
+                content: $t(
+                  { defaultMessage: 'MAC Address {macAddress} were deleted' },
+                  { macAddress }
+                )
+              })
+            } else {
+              showToast({
+                type: 'success',
+                content: $t(
+                  { defaultMessage: 'MAC Address {macAddress} was deleted' },
+                  { macAddress }
+                )
+              })
+            }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
@@ -197,7 +208,7 @@ export function MacRegistrationsTab () {
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: false, isFetching: isDeleteMacRegistrationUpdating }
+      { isLoading: false, isFetching: isDeleteMacRegistrationsUpdating }
     ]}>
       <MacAddressDrawer
         visible={visible}
@@ -235,7 +246,7 @@ export function MacRegistrationsTab () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={{ type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
