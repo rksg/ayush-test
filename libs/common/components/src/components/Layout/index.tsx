@@ -12,8 +12,6 @@ import {
 import { useIntl } from 'react-intl'
 
 import { TenantType, useLocation, TenantNavLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                              from '@acx-ui/types'
-import { hasRoles }                               from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -147,19 +145,6 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   </>
 }
 
-function findDashboard (menuConfig: ItemType[]): ItemType | undefined {
-  let dashboard: ItemType | undefined
-  for (const item of menuConfig) {
-    if (isMenuItemGroupType(item) || isSubMenuType(item)) {
-      dashboard = findDashboard(item.children!)
-      return dashboard
-    }
-    dashboard = (item?.uri && item.uri.startsWith('/dashboard')) ? item : undefined
-    if (dashboard) break
-  }
-  return dashboard
-}
-
 export function Layout ({
   logo,
   menuConfig,
@@ -171,10 +156,6 @@ export function Layout ({
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
 
-  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
-  const dashboard = findDashboard(menuConfig)
-
   return <UI.Wrapper>
     <ProLayout
       breakpoint='xl'
@@ -183,11 +164,7 @@ export function Layout ({
       fixSiderbar={true}
       location={location}
       menuContentRender={() => <SiderMenu menuConfig={menuConfig}/>}
-      menuHeaderRender={() => <TenantNavLink
-        to={indexPath}
-        tenantType={get(dashboard, 'tenantType', 't')}
-        children={logo}
-      />}
+      menuHeaderRender={() => logo}
       headerContentRender={() => leftHeaderContent &&
         <UI.LeftHeaderContentWrapper children={leftHeaderContent} />}
       rightContentRender={() => <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
