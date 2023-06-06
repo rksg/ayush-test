@@ -124,7 +124,7 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
       />
 
       <StepsFormLegacy.FieldLabel width={'190px'}>
-        {intl.$t({ defaultMessage: 'Allow Residents to set DPSK' })}
+        {intl.$t({ defaultMessage: 'Allow Residents to Set DPSK' })}
         <Form.Item
           name='tenantSetDpsk'
           rules={[{ required: true }]}

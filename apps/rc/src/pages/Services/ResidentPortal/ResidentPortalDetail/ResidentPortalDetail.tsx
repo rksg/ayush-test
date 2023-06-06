@@ -168,7 +168,7 @@ export default function ResidentPortalDetail () {
                   </Card.Title>
                   <Typography.Paragraph>
                     {residentPortalData?.uiConfiguration?.access?.tenantSetDpsk ?
-                      $t({ defaultMessage: 'ENABLED' }) : $t({ defaultMessage: 'DISABLED' })}
+                      $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })}
                   </Typography.Paragraph>
                 </GridCol>
               </GridRow>
