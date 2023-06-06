@@ -8,7 +8,7 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import * as fixtures from './__tests__/fixtures'
 
-import { useServiceGuard } from '.'
+import { useServiceGuard, ServiceGuard } from '.'
 
 describe('Service Validation', () => {
   beforeEach(() => {
@@ -44,11 +44,7 @@ describe('Service Validation', () => {
   })
   it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const Component = () => {
-      const { component } = useServiceGuard()
-      return component
-    }
-    render(<Component/>, { wrapper: Provider, route: {} })
+    render(<ServiceGuard/>, { wrapper: Provider, route: {} })
     expect(screen.queryByText('Service Validation')).toBeVisible()
     expect(await screen.findByText('Test Name')).toBeVisible()
     expect(await screen.findByText('Create Test')).toBeVisible()

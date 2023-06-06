@@ -94,7 +94,7 @@ export default function AdaptivePolicySetDetail () {
             <Form layout={'vertical'}>
               <GridRow>
                 <GridCol col={{ span: 6 }}>
-                  <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
+                  <Form.Item label={$t({ defaultMessage: 'Policy Set Name' })}>
                     <Paragraph>{policySetData?.name}</Paragraph>
                   </Form.Item>
                 </GridCol>
