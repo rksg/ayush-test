@@ -143,7 +143,7 @@ export function ApTable (props: ApTableProps) {
 
   const columns = useMemo(() => {
     const extraParams = tableQuery?.data?.extra ?? {
-      channel24: true,
+      channel24: false,
       channel50: false,
       channelL50: false,
       channelU50: false,
