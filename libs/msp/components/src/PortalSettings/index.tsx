@@ -90,8 +90,6 @@ export function PortalSettings () {
   const [customProfileName, setCustomProfileName] = useState<string>('')
   const [isOtherProvider, setOtherProvider] = useState(false)
   const [accountServerEnabled, setAccountServer] = useState(false)
-  const [enableSecondaryServer, setSecondaryServer] = useState(false)
-  const [enableAcctSecondaryServer, setAcctSecondaryServer] = useState(false)
   const [changeNeeded, setChangeNeeded] = useState(true)
 
   const [showContactSupport, setContactSupport] = useState(false)
@@ -166,12 +164,8 @@ export function PortalSettings () {
           setPreferredProvider('Other provider')
           setCustomProfileName(mspLabel.preferredWisprProvider.providerName)
           setOtherProvider(true)
-          mspLabel.preferredWisprProvider.auth?.secondary
-            ? setSecondaryServer(true) : setSecondaryServer(false)
           if (mspLabel.preferredWisprProvider.acct) {
             setAccountServer(true)
-            mspLabel.preferredWisprProvider.acct?.secondary
-              ? setAcctSecondaryServer(true) : setAcctSecondaryServer(false)
           }
         } else {
           setPreferredProvider(mspLabel.preferredWisprProvider.providerName)
@@ -484,11 +478,22 @@ export function PortalSettings () {
     )
   }
 
-  const accountServerOnChange = (checked: boolean) => {
-    setAccountServer(checked)
-  }
-
   const AuthAccServerSetting = () => {
+    const form = Form.useFormInstance()
+    const { useWatch } = Form
+    const [enableAccServer ] = [useWatch('enableAccServer')]
+    useEffect(() => {
+      if (mspLabel?.preferredWisprProvider && mspLabel.preferredWisprProvider.providerName) {
+        if (mspLabel.preferredWisprProvider.customExternalProvider) {
+          form.setFieldValue('enableAccServer', mspLabel.preferredWisprProvider.acct)
+          form.setFieldValue('enableSecondaryServer',
+            mspLabel.preferredWisprProvider.auth?.secondary)
+          form.setFieldValue('enableAcctSecondaryServer',
+            mspLabel.preferredWisprProvider.acct?.secondary)
+        }
+      }
+    }, [mspLabel])
+
     return <>
       <Divider></Divider>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -511,17 +516,23 @@ export function PortalSettings () {
 
       <Subtitle level={4} style={{ marginTop: '15px' }}>
         { intl.$t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
-      <Switch style={{ marginTop: '-5px' }}
-        defaultChecked={accountServerEnabled}
-        onChange={accountServerOnChange}
-      />
-      {accountServerEnabled && <AccServerSetting/>}
+      <Form.Item noStyle name='enableAccServer'>
+        <Switch style={{ marginTop: '-5px' }}
+          defaultChecked={accountServerEnabled}
+          onChange={() => {
+            form.setFieldValue('enableAccServer',!enableAccServer)
+          }}
+        />
+      </Form.Item>
+      {enableAccServer && <AccServerSetting/>}
     </>
   }
 
   const AuthServerSetting = () => {
-    const form = Form.useFormInstance()
     const ACCT_FORBIDDEN_PORT = 1812
+    const form = Form.useFormInstance()
+    const { useWatch } = Form
+    const [enableSecondaryServer ] = [useWatch('enableSecondaryServer')]
     return <>
       <Divider></Divider>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -569,15 +580,18 @@ export function PortalSettings () {
             children={<Input.Password />}
           />
         </Fieldset>
-        <Button
-          type='link'
-          onClick={() => {
-            setSecondaryServer(!enableSecondaryServer)
-          }}
-        >
-          {enableSecondaryServer ? intl.$t({ defaultMessage: 'Remove Secondary Server' }):
-            intl.$t({ defaultMessage: 'Add Secondary Server' })}
-        </Button>
+        <Form.Item noStyle name='enableSecondaryServer'>
+          <Button
+            type='link'
+            onClick={() => {
+              form.setFieldValue('enableSecondaryServer',!enableSecondaryServer)
+            }}
+          >
+            {enableSecondaryServer ? intl.$t({ defaultMessage: 'Remove Secondary Server' }):
+              intl.$t({ defaultMessage: 'Add Secondary Server' })}
+          </Button>
+        </Form.Item>
+
         {enableSecondaryServer &&
         <Fieldset label={intl.$t({ defaultMessage: 'Secondary Server' })}
           checked={true}
@@ -635,8 +649,10 @@ export function PortalSettings () {
   }
 
   const AccServerSetting = () => {
-    const form = Form.useFormInstance()
     const AUTH_FORBIDDEN_PORT = 1813
+    const form = Form.useFormInstance()
+    const { useWatch } = Form
+    const [enableAccSecondaryServer ] = [useWatch('enableAccSecondaryServer')]
     return <>
       <Divider></Divider>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -682,16 +698,19 @@ export function PortalSettings () {
             children={<Input.Password />}
           />
         </Fieldset>
-        <Button
-          type='link'
-          onClick={() => {
-            setAcctSecondaryServer(!enableAcctSecondaryServer)
-          }}
-        >
-          {enableAcctSecondaryServer ? intl.$t({ defaultMessage: 'Remove Secondary Server' }):
-            intl.$t({ defaultMessage: 'Add Secondary Server' })}
-        </Button>
-        {enableAcctSecondaryServer &&
+        <Form.Item noStyle name='enableAccSecondaryServer'>
+          <Button
+            type='link'
+            onClick={() => {
+              form.setFieldValue('enableAccSecondaryServer',!enableAccSecondaryServer)
+            }}
+          >
+            {enableAccSecondaryServer ? intl.$t({ defaultMessage: 'Remove Secondary Server' }):
+              intl.$t({ defaultMessage: 'Add Secondary Server' })}
+          </Button>
+        </Form.Item>
+
+        {enableAccSecondaryServer &&
         <Fieldset label={intl.$t({ defaultMessage: 'Secondary Server' })}
           checked={true}
           switchStyle={{ display: 'none' }}
