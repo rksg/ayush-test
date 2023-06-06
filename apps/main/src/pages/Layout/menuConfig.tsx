@@ -297,7 +297,7 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
-          label: 'Account Management',
+          label: $t({ defaultMessage: 'Account Management' }),
           children: [
             {
               uri: '/administration/accountSettings',
@@ -317,7 +317,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/administration/fwVersionMgmt',
-              label: $t({ defaultMessage: 'Firmware Version Management' })
+              label: $t({ defaultMessage: 'Version Management' })
             },
             ...(isCloudMoteEnabled ? [{
               uri: '/administration/onpremMigration',

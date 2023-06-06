@@ -29,6 +29,7 @@ export interface UpdateNowDialogProps {
 
 export function UpdateNowDialog (props: UpdateNowDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, availableVersions } = props
   const [selectedVersion, setSelectedVersion] = useState<string>('')
@@ -84,7 +85,7 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
             value={selectedVersion}>
             <Space direction={'vertical'}>
               { availableVersions?.map(v =>
-                <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(v)}</Radio>)}
+                <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
             </Space>
           </Radio.Group>
           <UI.Section>

@@ -5,14 +5,13 @@ import {
   Form,
   Switch,
   Select,
-  Input,
   Radio
 } from 'antd'
 import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
-import { Subtitle, Tooltip }                               from '@acx-ui/components'
+import { Subtitle, Tooltip, PasswordInput }                from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
 import { useGetAAAPolicyListQuery }                        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType, AuthRadiusEnum } from '@acx-ui/rc/utils'
@@ -194,7 +193,7 @@ export function WISPrAuthAccServer (props : {
               })} />
             <Form.Item
               label={$t({ defaultMessage: 'Shared Secret' })}
-              children={<Input.Password
+              children={<PasswordInput
                 readOnly
                 bordered={false}
                 value={_.get(radiusValue,
@@ -212,7 +211,7 @@ export function WISPrAuthAccServer (props : {
               })} />
             <Form.Item
               label={$t({ defaultMessage: 'Shared Secret' })}
-              children={<Input.Password
+              children={<PasswordInput
                 readOnly
                 bordered={false}
                 value={_.get(radiusValue,

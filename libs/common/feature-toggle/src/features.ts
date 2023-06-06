@@ -43,6 +43,7 @@ export enum Features {
   RADIUS_ATTRIBUTE_GROUP_CONFIG = 'radius-attrib-group-service-enabled',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
+  ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
@@ -56,5 +57,6 @@ export enum Features {
   NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation',
-  CONFIG_CHANGE = 'acx-ui-config-change-toggle'
+  CONFIG_CHANGE = 'acx-ui-config-change-toggle',
+  MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional'
 }

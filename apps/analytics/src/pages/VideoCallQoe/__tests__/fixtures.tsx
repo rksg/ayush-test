@@ -424,7 +424,7 @@ export const callQoeTestDetailsFixtures1 = {
                 apGroup: 'AP-group',
                 apName: 'AP-Group-Issue',
                 apMac: 'F0:3E:90:36:D3:00',
-                apSerial: '1234567890',
+                apSerial: 'Unknown',
                 ssid: 'CIOT',
                 radio: '2.4'
               },

@@ -264,8 +264,15 @@
     box-shadow: none !important;
   }
 
-  .ant-input-affix-wrapper-readonly.ant-input-password {
-    width: fit-content;
+  .ant-input-password {
+    .ant-input-password-icon {
+      width: 16px;
+      height: auto;
+      cursor: pointer;
+    }
+    &.ant-input-affix-wrapper-readonly {
+      width: fit-content;
+    }
   }
 
   .ant-input-affix-wrapper .ant-input-prefix {

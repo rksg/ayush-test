@@ -68,7 +68,6 @@ async function updateLanPorts () {
 async function updateMeshNetwork () {
   fireEvent.click(await screen.getAllByText('Mesh Network')[0]) // anchor
   await userEvent.click(screen.getByTestId('mesh-switch'))
-  await userEvent.click(await screen.findByRole('button', { name: 'Enable Mesh' }))
 }
 
 describe('VenueEdit - handle unsaved/invalid changes modal', () => {
