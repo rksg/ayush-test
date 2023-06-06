@@ -280,7 +280,8 @@ function ConnectedNetworkFilter (
 ) {
   const { $t } = useIntl()
   const [ open, setOpen ] = useState(false)
-  const { setNetworkPath, filters, raw } = useAnalyticsFilter()
+  const { setNetworkPath, filters, raw, getNetworkFilter } = useAnalyticsFilter()
+  console.log('testing filters', getNetworkFilter())
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter

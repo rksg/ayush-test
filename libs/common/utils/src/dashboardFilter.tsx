@@ -9,7 +9,7 @@ import type { NetworkPath, PathFilter } from './types/networkFilter'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
-export type DashboardFilter = DateFilter & { path: NetworkPath } & { filter? : PathFilter }
+export type DashboardFilter = DateFilter & { filter : PathFilter }
 
 export function useDashboardFilter () {
   const { read, write } = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
@@ -18,7 +18,6 @@ export function useDashboardFilter () {
     const { nodes } = read() || { nodes: [] }
     return {
       filters: {
-        path: defaultNetworkPath,
         ...dateFilter,
         filter: nodes.length
           ? generateVenueFilter(nodes.map(([name]:string[]) => name))
