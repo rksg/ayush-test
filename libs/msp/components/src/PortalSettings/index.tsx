@@ -443,14 +443,14 @@ export function PortalSettings () {
         }),
         okText: intl.$t({ defaultMessage: 'Continue' }),
         onOk: () => {
-          (value === 'Other provider') ? setOtherProvider(true) : setOtherProvider(false)
+          setOtherProvider(value === 'Other provider')
           setPreferredProvider(value)
           setCustomProfileName('')
         },
         onCancel: () => formRef.current?.setFieldValue('external_provider', preferredProvider)
       })
     } else {
-      (value === 'Other provider') ? setOtherProvider(true) : setOtherProvider(false)
+      setOtherProvider(value === 'Other provider')
       setPreferredProvider(value)
     }
   }
