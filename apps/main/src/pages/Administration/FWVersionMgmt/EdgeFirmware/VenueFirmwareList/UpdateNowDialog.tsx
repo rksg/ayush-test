@@ -23,6 +23,7 @@ export interface UpdateApNowDialogProps {
 
 export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   const selectMode = useWatch('selectMode', form)
   const selectedVersion = useWatch('selectedVersion', form)
@@ -105,7 +106,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
               >
                 <Space direction={'vertical'}>
                   <Radio value={VersionsSelectMode.Radio}>
-                    {getVersionLabel(versionOptions[0])}
+                    {getVersionLabel(intl, versionOptions[0])}
                   </Radio>
                   {
                     // otherVersions.length > 0 ?

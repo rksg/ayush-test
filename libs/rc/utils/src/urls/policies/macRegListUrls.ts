@@ -67,6 +67,12 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: macRegApiBaseUrl + '/:policyId/registrations/:registrationId',
     newApi: true
   },
+  deleteMacRegistrations: {
+    method: 'delete',
+    url: newMacRegApiBaseUrl + '/:policyId/registrations',
+    oldUrl: macRegApiBaseUrl + '/:policyId/registrations',
+    newApi: true
+  },
   getMacRegistration: {
     method: 'get',
     url: newMacRegApiBaseUrl + '/:policyId/registrations/:registrationId',

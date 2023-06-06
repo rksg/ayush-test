@@ -59,7 +59,6 @@ import { ChangeScheduleDialog }    from './ChangeScheduleDialog'
 import { RevertDialog }            from './RevertDialog'
 import { UpdateNowDialog }         from './UpdateNowDialog'
 
-const transform = firmwareTypeTrans()
 
 function useColumns (
   searchable?: boolean,
@@ -67,6 +66,7 @@ function useColumns (
 ) {
   const intl = useIntl()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const transform = firmwareTypeTrans(intl.$t)
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
@@ -131,7 +131,7 @@ function useColumns (
         return (!isNextScheduleTooltipDisabled(row)
           ? getApNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
+          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(intl, row)}</UI.ScheduleTooltipText>} placement='bottom'>
             <UI.ScheduleText>{getApNextScheduleTpl(intl, row)}</UI.ScheduleText>
           </Tooltip>
         )

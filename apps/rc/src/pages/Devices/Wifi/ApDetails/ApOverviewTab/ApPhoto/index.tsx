@@ -23,7 +23,8 @@ export function ApPhoto () {
   const [tempUrl, setTempUrl] = useState('')
   const [visible, setVisible] = useState(false)
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [activeImage, setActiveImage] = useState<boolean[]>([false])
+  const [activeImage, setActiveImage] = useState<boolean[]>([true, false])
+  const [imageList, setImageList] = useState<string[]>([])
   const params = useApContext()
 
   const apViewModelPayload = {
@@ -59,9 +60,11 @@ export function ApPhoto () {
       if(apPhoto?.data?.imageUrl){
         setActiveImage([true, false])
         setImageUrl(apPhoto?.data.imageUrl)
+        setImageList([apPhoto?.data.imageUrl, defaultImageUrl])
       }else{
         setActiveImage([false, true])
         setImageUrl('')
+        setImageList([defaultImageUrl])
       }
     }
   }, [apPhoto, currentAP, wifiCapabilities])
@@ -77,7 +80,7 @@ export function ApPhoto () {
     }
     const isLt10M = file.size / 1024 / 1024 < 10
     if (!isLt10M) {
-      const content = $t({ defaultMessage: 'Image must smaller than 10MB!' })
+      const content = $t({ defaultMessage: 'Image file size cannot exceed 10 MB' })
       openToastAndResetFile(content)
       return
     }
@@ -130,7 +133,6 @@ export function ApPhoto () {
             </RoundIconDiv>
           </Upload>
         </StyledSpace>
-        <PhotoDiv></PhotoDiv>
         <PhotoDiv>
           {imageUrl !== '' && activeImage[0] &&
             <Image
@@ -149,28 +151,33 @@ export function ApPhoto () {
               data-testid='image2'
             />
           }
-          <DotsDiv>
-            {imageUrl !== '' &&
-              <div
-                className={`dot ${activeImage[0] ? 'active-dot' : ''}`}
-                onClick={() => setActiveImage([true, false])}
-                data-testid='dot1'>
-              </div>
-            }
-            {defaultImageUrl !== '' &&
-              <div
-                className={`dot ${activeImage[1] ? 'active-dot' : ''}`}
-                onClick={() => setActiveImage([false, true])}
-                data-testid='dot2'>
-              </div>
-            }
-          </DotsDiv>
+          {imageUrl && defaultImageUrl &&
+            <DotsDiv>
+              {imageUrl !== '' &&
+                <div
+                  className={`dot ${activeImage[0] ? 'active-dot' : ''}`}
+                  onClick={() => setActiveImage([true, false])}
+                  data-testid='dot1'>
+                </div>
+              }
+              {defaultImageUrl !== '' &&
+                <div
+                  className={`dot ${activeImage[1] ? 'active-dot' : ''}`}
+                  onClick={() => setActiveImage([false, true])}
+                  data-testid='dot2'>
+                </div>
+              }
+            </DotsDiv>
+          }
           <div style={{ display: 'none' }}>
             <Image.PreviewGroup
-              preview={{ visible, onVisibleChange: (vis) => setVisible(vis), current: 0 }}
+              preview={{
+                visible,
+                current: imageUrl !== '' ? (activeImage[0] ? 0 : 1) : 0,
+                onVisibleChange: (vis) => { setVisible(vis) }
+              }}
             >
-              {defaultImageUrl &&<Image src={defaultImageUrl} /> }
-              {imageUrl && <Image src={imageUrl}/> }
+              {imageList.map((item) => <Image src={item} />)}
             </Image.PreviewGroup>
           </div>
         </PhotoDiv>
