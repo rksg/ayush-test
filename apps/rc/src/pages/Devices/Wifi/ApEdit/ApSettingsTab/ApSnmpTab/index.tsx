@@ -26,7 +26,8 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { ApEditContext } from '../..'
+import { ApEditContextType } from '../..'
+import { ApEditContext }     from '../..'
 
 export function ApSnmp () {
 
@@ -44,6 +45,7 @@ export function ApSnmp () {
   const { tenantId, serialNumber } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const toPolicyPath = useTenantLink('')
 
   const { editContextData, setEditContextData } = useContext(ApEditContext)
 
@@ -262,15 +264,38 @@ export function ApSnmp () {
               />
             </Form.Item>
             {((RetrievedApSnmpAgentList?.data?.length as number) < 64) &&
-                <TenantLink
-                  to={getPolicyRoutePath({
+            <>
+              {/* <TenantLink
+                to={getPolicyRoutePath({
+                  type: PolicyType.SNMP_AGENT,
+                  oper: PolicyOperation.CREATE
+                })}
+                onClick={() => {setEditContextData({} as ApEditContextType)}}
+                style={{ marginLeft: '20px' }}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </TenantLink> */}
+
+              <Button
+                data-testid='use-push'
+                type='link'
+                onClick={async () => {
+                  await setEditContextData({
+                    ...editContextData,
+                    isDirty: false,
+                    hasError: false
+                  })
+                  await navigate(`${toPolicyPath.pathname}/${getPolicyRoutePath({
                     type: PolicyType.SNMP_AGENT,
                     oper: PolicyOperation.CREATE
-                  })}
-                  style={{ marginLeft: '20px' }}
-                >
-                  {$t({ defaultMessage: 'Add' })}
-                </TenantLink>
+                  })}`)
+                }
+                }
+                style={{ color: '#5598EA' }}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
+            </>
             }
           </Row>
         </Col>
