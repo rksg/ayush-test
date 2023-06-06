@@ -15,7 +15,8 @@ import {
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useLazyGetConnectionMeteringByIdQuery,
-  useUpdatePersonaMutation
+  useUpdatePersonaMutation,
+  useAllocatePersonaVniMutation
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
@@ -51,6 +52,7 @@ function PersonaDetails () {
 
   // TODO: isLoading state?
   const [updatePersona] = useUpdatePersonaMutation()
+  const [allocatePersonaVni] = useAllocatePersonaVniMutation()
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
@@ -62,6 +64,7 @@ function PersonaDetails () {
   const deviceCount = personaDetailsQuery.data?.devices?.length ?? 0
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
+  const [vniRetryable, setVniRetryable] = useState<boolean>(false)
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -121,10 +124,25 @@ function PersonaDetails () {
     }
   }, [personaGroupData])
 
+  useEffect(() => {
+    if (!personaGroupData || !personaDetailsQuery.data) return
+    const { primary, identityId, revoked } = personaDetailsQuery.data
+    const hasNSG = !!personaGroupData?.nsgId
+    const isPrimary = !!identityId && !!primary
+
+    setVniRetryable(hasNSG && isPrimary && !revoked)
+  }, [personaGroupData, personaDetailsQuery])
+
   const revokePersona = async () => {
     return await updatePersona({
       params: { groupId: personaGroupId, id: personaId },
       payload: { revoked: !personaDetailsQuery.data?.revoked }
+    })
+  }
+
+  const allocateVni = async () => {
+    return await allocatePersonaVni({
+      params: { groupId: personaGroupId, id: personaId }
     })
   }
 
@@ -182,7 +200,14 @@ function PersonaDetails () {
 
   const netSeg = [
     { label: $t({ defaultMessage: 'Assigned VNI' }),
-      value: personaDetailsQuery.data?.vni
+      value: personaDetailsQuery.data?.vni ??
+        (vniRetryable ?
+          <Space size={'middle'}>
+            <Typography.Text>{noDataDisplay}</Typography.Text>
+            <Button size={'small'} type={'default'} onClick={allocateVni}>
+              {$t({ defaultMessage: 'Retry VNI' })}
+            </Button>
+          </Space> : undefined)
     },
     { label: $t({ defaultMessage: 'Network Segmentation' }),
       value:
