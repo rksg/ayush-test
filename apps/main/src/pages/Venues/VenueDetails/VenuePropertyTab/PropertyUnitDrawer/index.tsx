@@ -511,7 +511,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         meteringProfileId: profileId,
         expirationDate: newExpirationDate
       })
-      : await patchPersona(personaId, unitPersona)
+      : await patchPersona(personaId,
+        {
+          ...unitPersona,
+          meteringProfileId: profileId,
+          expirationDate: newExpirationDate
+        })
 
     // update GuestPersona
     const guestUpdateResult = await patchPersona(
@@ -548,8 +553,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     const trafficControl = isConnectionMeteringEnabled && meteringProfileId && expirationDate ?
       {
-        qosProfileId: meteringProfileId,
-        qosExpiryTime: expirationDate.startOf('day').toISOString()
+        meteringProfileId: meteringProfileId,
+        profileExpiry: expirationDate.startOf('day').toISOString()
       } : undefined
 
     return {
