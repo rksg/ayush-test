@@ -126,11 +126,10 @@ function PersonaDetails () {
 
   useEffect(() => {
     if (!personaGroupData || !personaDetailsQuery.data) return
-    const { primary, identityId, revoked } = personaDetailsQuery.data
+    const { primary = true, revoked } = personaDetailsQuery.data
     const hasNSG = !!personaGroupData?.nsgId
-    const isPrimary = !!identityId && !!primary
 
-    setVniRetryable(hasNSG && isPrimary && !revoked)
+    setVniRetryable(hasNSG && primary && !revoked)
   }, [personaGroupData, personaDetailsQuery])
 
   const revokePersona = async () => {
