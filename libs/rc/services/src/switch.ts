@@ -479,7 +479,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
               ...item,
               createdDate: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
-              status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
+              backupStatus: transformConfigBackupStatus(item) as ConfigurationBackupStatus
             })) : []
         }
       },
