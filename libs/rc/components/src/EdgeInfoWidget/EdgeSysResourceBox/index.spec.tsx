@@ -15,6 +15,13 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  components.Typography.Text = (props: React.PropsWithChildren<{ className?:string }>) => {
+    return <div className={props.className} data-testid='rc-text'>{props.children}</div>
+  }
+  return { ...components }
+})
 
 describe('Edge resource utilization chart', () => {
   let params: { tenantId: string, serialNumber: string } =
@@ -27,15 +34,15 @@ describe('Edge resource utilization chart', () => {
           isLoading={false}
           type={EdgeResourceUtilizationEnum.STORAGE}
           title={'Storage Usage'}
-          value={currentEdge?.diskUsedKb}
-          totalVal={currentEdge?.diskTotalKb}
+          value={currentEdge?.diskUsed}
+          totalVal={currentEdge?.diskTotal}
         />
       </Provider>,{
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
     let targetBox = await screen.findByText('Storage Usage')
-    expect(targetBox.parentElement?.getElementsByClassName('ant-statistic-content-value')[0].innerHTML).toBe('250 GB')
+    expect(targetBox.parentElement?.getElementsByClassName('ant-statistic-content-value')[0].textContent).toBe('250GB')
   })
 
   it('should display used pesentage', async () => {
@@ -94,9 +101,19 @@ describe('Edge resource utilization chart', () => {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
       })
 
-    const exptectedStr = '0 B'
     const exptectedUsedStr = '(0%)'
-    expect(await screen.findByText(exptectedStr)).toBeTruthy()
-    expect(await screen.findByText(exptectedUsedStr)).toBeTruthy()
+    const textDatas = await screen.findAllByTestId('rc-text')
+    textDatas.forEach((ele) => {
+      let expectedStr
+      if (ele.className === 'value') {
+        expectedStr = '0'
+      } else {
+        expectedStr = 'B'
+      }
+
+      expect(ele.textContent).toBe(expectedStr)
+    })
+
+    await screen.findByText(exptectedUsedStr)
   })
 })

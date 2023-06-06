@@ -376,9 +376,22 @@ export interface MspPreferredWisprProvider {
   apiKey?: string;
   apiSecret?: string;
   customExternalProvider?: boolean;
-  auth?: string;
-  acct?: string;
+  auth?: authService;
+  acct?: authService;
   externalProviderDisplayName?: string;
+}
+
+export interface authService{
+    primary?: {
+      ip: string;
+      port: number;
+      sharedSecret?: string;
+    };
+    secondary?: {
+      ip: string;
+      port: number;
+      sharedSecret?: string;
+    };
 }
 
 export interface MspPortal {
