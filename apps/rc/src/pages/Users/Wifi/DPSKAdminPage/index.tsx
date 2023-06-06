@@ -41,15 +41,6 @@ export default function DPSKAdminPage () {
     setEndDate(period.endDate)
   }
 
-  const dateFilter = {
-    range,
-    setRange,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate
-  }
-
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'Guest Management' })}
