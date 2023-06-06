@@ -1,8 +1,6 @@
 const withModuleFederation = require('@nrwl/react/module-federation')
 const { merge } = require('webpack-merge')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const modifyVars = require('./libs/common/components/src/theme/modify-vars')
-const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 /**
@@ -48,7 +46,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
     config.module.rules.push({
       test: /\.less$/,
-      use: 'thread-loader',
       use: ['style-loader', 'css-loader', {
         loader: 'less-loader',
         options: {
