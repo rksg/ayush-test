@@ -20,14 +20,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { VenueApSnmpSettings, ApSnmpSettings } from '@acx-ui/rc/utils'
 import {
-  TenantLink,
   useParams,
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { ApEditContextType } from '../..'
-import { ApEditContext }     from '../..'
+import { ApEditContext } from '../..'
 
 export function ApSnmp () {
 
@@ -264,18 +262,6 @@ export function ApSnmp () {
               />
             </Form.Item>
             {((RetrievedApSnmpAgentList?.data?.length as number) < 64) &&
-            <>
-              {/* <TenantLink
-                to={getPolicyRoutePath({
-                  type: PolicyType.SNMP_AGENT,
-                  oper: PolicyOperation.CREATE
-                })}
-                onClick={() => {setEditContextData({} as ApEditContextType)}}
-                style={{ marginLeft: '20px' }}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </TenantLink> */}
-
               <Button
                 data-testid='use-push'
                 type='link'
@@ -295,7 +281,6 @@ export function ApSnmp () {
               >
                 {$t({ defaultMessage: 'Add' })}
               </Button>
-            </>
             }
           </Row>
         </Col>

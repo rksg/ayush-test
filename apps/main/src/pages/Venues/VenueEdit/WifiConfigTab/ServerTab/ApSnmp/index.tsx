@@ -17,7 +17,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { VenueApSnmpSettings } from '@acx-ui/rc/utils'
 import {
-  TenantLink,
   useParams,
   useNavigate,
   useTenantLink
@@ -171,16 +170,6 @@ export function ApSnmp () {
           style={{ width: '200px' }}
         />
         {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64) &&
-        <>
-          {/* <TenantLink
-            to={getPolicyRoutePath({
-              type: PolicyType.SNMP_AGENT,
-              oper: PolicyOperation.CREATE
-            })}
-            style={{ marginLeft: '20px' }}
-          >
-            {$t({ defaultMessage: 'Add' })}
-          </TenantLink> */}
           <Button
             data-testid='use-push'
             type='link'
@@ -199,8 +188,7 @@ export function ApSnmp () {
             style={{ color: '#5598EA' }}
           >
             {$t({ defaultMessage: 'Add' })}
-          </Button>
-        </>}
+          </Button>}
       </Form.Item>}
     </Space>
   </Loader>)
