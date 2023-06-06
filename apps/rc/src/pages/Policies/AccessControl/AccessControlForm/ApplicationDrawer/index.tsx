@@ -186,7 +186,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const [ updateAppPolicy ] = useUpdateAppPolicyMutation()
 
-  const { appSelectOptions, appList } = useAppPolicyListQuery({
+  const { appSelectOptions, appList, appIdList } = useAppPolicyListQuery({
     params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
@@ -195,7 +195,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           item => {
             return <Option key={item.id}>{item.name}</Option>
           }) : [],
-        appList: data ? data.map(item => item.name) : []
+        appList: data ? data.map(item => item.name) : [],
+        appIdList: data ? data.map(item => item.id) : []
       }
     }
   })
@@ -207,7 +208,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
       }
     },
-    { skip: skipFetch }
+    { skip: skipFetch ||
+        (applicationPolicyId !== undefined
+          && !appIdList.some(appId => appId === applicationPolicyId)) }
   )
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
