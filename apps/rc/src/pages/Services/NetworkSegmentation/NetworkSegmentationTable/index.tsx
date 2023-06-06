@@ -114,7 +114,9 @@ const NetworkSegmentationTable = () => {
       key: 'switches',
       dataIndex: 'switches',
       align: 'center',
-      sorter: true
+      render: (data, row) => {
+        return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
+      }
     },
     {
       title: $t({ defaultMessage: 'Health' }),
