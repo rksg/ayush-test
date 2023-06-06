@@ -53,7 +53,7 @@ describe('formatter', () => {
     123000000000000000000000000000: '102000 YB',
     1025: '1 KB',
     1024: '1 KB',
-    1023: '1020 B'
+    1023: '1023 B'
   }))
   it('networkSpeedFormat', () => testFormat('networkSpeedFormat', {
     7.131: '7.13 Kbps',

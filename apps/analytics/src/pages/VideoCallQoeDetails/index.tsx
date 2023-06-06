@@ -65,6 +65,18 @@ export function VideoCallQoeDetails (){
     })
   }) })
 
+  const formatValue = (value: unknown, row: Participants) => {
+    if (!value)
+      return '-'
+    let apID = row.apDetails?.apSerial
+    if ( apID === 'Unknown') {
+      apID = row.apDetails?.apMac?.toUpperCase()
+    }
+    return <TenantLink
+      to={`/devices/wifi/${apID}/details/overview`}>
+      {value as string}</TenantLink>
+  }
+
   const columnHeaders: TableProps<Participants>['columns'] = [
     {
       title: $t({ defaultMessage: 'Client MAC' }),
@@ -118,25 +130,13 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: ['apDetails','apName'],
       key: 'apName',
-      render: (value:unknown,row)=>{
-        if(!value)
-          return '-'
-        return <TenantLink
-          to={`/devices/wifi/${row.apDetails?.apSerial}/details/overview`}>
-          {value as string}</TenantLink>
-      }
+      render: formatValue
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
-      render: (value:unknown,row)=>{
-        if(!value)
-          return '-'
-        return <TenantLink
-          to={`/devices/wifi/${row.apDetails?.apSerial}/details/overview`}>
-          {value as string}</TenantLink>
-      }
+      render: formatValue
     },
     {
       title: $t({ defaultMessage: 'SSID' }),
