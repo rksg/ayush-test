@@ -5,7 +5,8 @@ import {
   generateVenueFilter,
   useDateFilter,
   useEncodedParameter,
-  generatePathFilter
+  generatePathFilter,
+  getPathFromFilter
 } from '@acx-ui/utils'
 import type {
   DateFilter,
@@ -43,8 +44,8 @@ export function useAnalyticsFilter () {
       const { filter: currentFilter, raw: rawVal } = networkFilter
       let filter, raw
       if (isHealthPage) {
-        const { networkNodes } = currentFilter
-        if (networkNodes.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
+        const path = getPathFromFilter(currentFilter)
+        if (path.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
           filter = generatePathFilter(defaultNetworkPath)
           raw = []
         } else {
@@ -52,9 +53,9 @@ export function useAnalyticsFilter () {
           raw = rawVal
         }
       } else { // incident page, ...
-        const { networkNodes } = currentFilter
-        if (networkNodes.length === 2) { // venues
-          filter = generateVenueFilter([networkNodes[1].name])
+        const path = getPathFromFilter(currentFilter)
+        if (path.length === 2) { // venues
+          filter = generateVenueFilter([path[1].name])
         } else {
           filter = currentFilter
         }

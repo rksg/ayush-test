@@ -1,8 +1,8 @@
 import { gql }  from 'graphql-request'
 import { find } from 'lodash'
 
-import { dataApi }     from '@acx-ui/store'
-import { NetworkPath } from '@acx-ui/utils'
+import { dataApi }                       from '@acx-ui/store'
+import { getPathFromFilter, PathFilter } from '@acx-ui/utils'
 
 export interface ConnectionDrilldown {
     connectionDrilldown: {
@@ -44,13 +44,13 @@ export interface ImpactedClient {
   username: string | string[]
 }
 export interface RequestPayload {
-  path: NetworkPath
+  filter: PathFilter
   start: string
   end: string
 }
 
 export interface PieChartPayload {
-  path: NetworkPath
+  filter: PathFilter
   start: string
   end: string
   queryType: string
@@ -67,23 +67,24 @@ export type ImpactedNodesAndWlans = {
 }
 
 export const pieChartQuery = (
-  path: NetworkPath,
+  filter: PathFilter,
   type: string,
-  filter: string
+  stageFilter: string
 ) => {
+  const path = getPathFromFilter(filter)
   const apNode = find(path, { type: 'AP' })
   switch (type) {
     case 'connectionFailure': {
       return apNode
-        ? `wlans: topNSSIDbyConnFailure(n: 6, stage: "${filter}") { key value }`
-        : `nodes: topNNodebyConnFailure(n: 6, stage: "${filter}") { key value name }
-      wlans: topNSSIDbyConnFailure(n: 6, stage: "${filter}") { key value }`
+        ? `wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
+        : `nodes: topNNodebyConnFailure(n: 6, stage: "${stageFilter}") { key value name }
+      wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
     }
     case 'ttc': {
       return apNode
-        ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${filter}") { key value }`
-        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${filter}") { key value name }
-        wlans: topNSSIDbyAvgTTC(n: 6, stage: "${filter}") { key value }`
+        ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
+        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${stageFilter}") { key value name }
+        wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
     }
     default: {
       return ''
@@ -148,6 +149,7 @@ export const api = dataApi.injectEndpoints({
         `,
         variables: {
           ...payload,
+          path: getPathFromFilter(payload.filter),
           granularity: 'all'
         }
       })
@@ -177,14 +179,17 @@ export const api = dataApi.injectEndpoints({
             }
           }
         `,
-        variables: payload
+        variables: {
+          ...payload,
+          path: getPathFromFilter(payload.filter)
+        }
         }}
     }),
 
     pieChart: build.query<ImpactedNodesAndWlans, PieChartPayload>({
       query: payload => {
-        const { path, queryType, queryFilter } = payload
-        const innerQuery = pieChartQuery(path, queryType, queryFilter)
+        const { filter, queryType, queryFilter } = payload
+        const innerQuery = pieChartQuery(filter, queryType, queryFilter)
         return ({
           document: gql`
             query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
@@ -198,7 +203,8 @@ export const api = dataApi.injectEndpoints({
           variables: {
             start: payload.start,
             end: payload.end,
-            path: payload.path
+            filter: payload.filter,
+            path: getPathFromFilter(payload.filter)
           }
         })
       }

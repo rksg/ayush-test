@@ -47,7 +47,9 @@ export function ApOverviewTab () {
       setCurrentApDevice(_currentApDevice)
       setApFilter({
         ...dateFilter,
-        path: [{ type: 'AP', name: currentAP.apMac as string }]
+        filter: {
+          networkNodes: [[{ type: 'AP', name: currentAP.apMac as string }]]
+        }
       })
     }
   }, [currentAP, dateFilter])

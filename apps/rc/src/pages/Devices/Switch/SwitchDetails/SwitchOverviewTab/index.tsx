@@ -8,7 +8,7 @@ import { SwitchInfoWidget }                                                     
 import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery }                 from '@acx-ui/rc/services'
 import { NetworkDevice, NetworkDeviceType, SwitchViewModel, isRouter, SWITCH_TYPE, StackMember } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                 from '@acx-ui/react-router-dom'
-import { useDateFilter }                                                                         from '@acx-ui/utils'
+import { generatePathFilter, useDateFilter }                                                     from '@acx-ui/utils'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
 import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
@@ -61,9 +61,11 @@ export function SwitchOverviewTab () {
       }
       _currentSwitchDevice.position=switchDetail?.position
       setCurrentSwitchDevice(_currentSwitchDevice)
+      const filter = generatePathFilter([
+        { type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }])
       setSwitchFilter({
         ...dateFilter,
-        path: [{ type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }]
+        filter
       })
     }
   }, [switchDetail, dateFilter])

@@ -54,7 +54,7 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
   const intl = useIntl()
   const { $t } = intl
   const payload = {
-    path: filters.path,
+    filter: filters.filter,
     start: filters.startDate,
     end: filters.endDate
   }

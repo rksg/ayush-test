@@ -33,8 +33,8 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          path: payload.path,
-          filter: payload.filter ?? {}
+          path: [{ type: 'network', name: 'Network' }],
+          filter: payload.filter
         }
       }),
       transformResponse: (result: Response) =>

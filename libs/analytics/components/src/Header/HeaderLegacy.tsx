@@ -6,7 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
-import { useDateFilter, NodeType }                                            from '@acx-ui/utils'
+import { useDateFilter, NodeType, getPathFromFilter }                         from '@acx-ui/utils'
 
 import { NetworkFilter }                from '../NetworkFilter'
 import { useNetworkFilterQuery, Child } from '../NetworkFilter/services'
@@ -67,7 +67,8 @@ export const HeaderLegacy = ({ shouldQuerySwitch, withIncidents, ...props }: Hea
   const filterResult = useNetworkFilterQuery(networkFilter)
   const state = { ...results, ...filterResult, isLoading: false } // isLoading to false to prevent blank header on load
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
-  const { networkFilter: { path } } = getNetworkFilter()
+  const { networkFilter: { filter: currFilter } } = getNetworkFilter()
+  const path = getPathFromFilter(currFilter)
   const { name, type } = (filter || path).slice(-1)[0]
   return <PageHeader
     {...props}

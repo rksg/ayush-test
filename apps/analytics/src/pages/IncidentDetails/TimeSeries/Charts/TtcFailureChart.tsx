@@ -3,7 +3,7 @@ import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 import AutoSizer       from 'react-virtualized-auto-sizer'
 
-import { healthApi, KpiPayload }                          from '@acx-ui/analytics/services'
+import { healthApi }                                      from '@acx-ui/analytics/services'
 import { getSeriesData, kpiConfig }                       from '@acx-ui/analytics/utils'
 import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                                      from '@acx-ui/formatter'
@@ -53,8 +53,9 @@ export const TtcFailureChart = ({ chartRef, data, incident, buffer }: TimeSeries
     startDate: start.toISOString(),
     endDate: end.toISOString(),
     kpi: 'timeToConnect',
+    filter: {},
     threshold: kpiConfig.timeToConnect.histogram.initialThreshold.toString()
-  } as KpiPayload, {
+  }, {
     selectFromResult: ({ data: connectionData, ...rest }) => {
       const { ttcFailureChart } = data
       const time = ttcFailureChart.time as string[]

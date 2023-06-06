@@ -62,7 +62,11 @@ const getAttributesByNodeType = (nodeType: NodeType) => {
   return attributes[key]
 }
 
-const getQuery = (path: NetworkPath) : string => {
+const getQuery = (filter: PathFilter) : string => {
+  const paths = filter.networkNodes
+    ? filter.networkNodes
+    : [[{ type: 'network' as 'network', name: 'Network' }]]
+  const path = paths[0]
   const [{ type }] = path.slice(-1)
   switch (type) {
     case 'AP': return gql`
@@ -108,7 +112,11 @@ const getQuery = (path: NetworkPath) : string => {
 }
 
 const getQueryVariables = (payload: AnalyticsFilter): QueryVariables => {
-  const { path } = payload
+  const { filter } = payload
+  const paths = filter.networkNodes
+    ? filter.networkNodes
+    : [[{ type: 'network' as 'network', name: 'Network' }]]
+  const path = paths[0]
   const [{ type, name }] = path.slice(-1)
   switch(type) {
     case 'AP':
@@ -138,7 +146,7 @@ export const api = dataApi.injectEndpoints({
       AnalyticsFilter
     >({
       query: (payload) => ({
-        document: getQuery(payload.path),
+        document: getQuery(payload.filter),
         variables: getQueryVariables(payload)
       }),
       transformResponse:

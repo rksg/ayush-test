@@ -48,7 +48,7 @@ export const api = dataApi.injectEndpoints({
         }
       `,
         variables: {
-          path: payload.path,
+          path: [{ type: 'network', name: 'Network' }],
           start: payload.startDate,
           end: payload.endDate,
           granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),

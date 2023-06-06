@@ -43,7 +43,7 @@ export const api = dataApi.injectEndpoints({
         }
         `,
         variables: {
-          path: payload.path,
+          path: [{ type: 'network', name: 'Network' }],
           start: payload.startDate,
           end: payload.endDate,
           n: 5,

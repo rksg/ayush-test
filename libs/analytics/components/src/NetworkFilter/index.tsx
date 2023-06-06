@@ -9,10 +9,10 @@ import {
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
-import { Cascader, Loader, RadioBand } from '@acx-ui/components'
-import type { CascaderOption }         from '@acx-ui/components'
-import { useReportsFilter }            from '@acx-ui/reports/utils'
-import { NetworkPath, getIntl }        from '@acx-ui/utils'
+import { Cascader, Loader, RadioBand }              from '@acx-ui/components'
+import type { CascaderOption }                      from '@acx-ui/components'
+import { useReportsFilter }                         from '@acx-ui/reports/utils'
+import { NetworkPath, getIntl, generatePathFilter } from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -189,7 +189,8 @@ export const onApply = (
   const path = !value || value.length === 0
     ? defaultNetworkPath
     : JSON.parse(value?.slice(-1)[0] as string)
-  setNetworkPath(path, value || [])
+  const filter = generatePathFilter(path)
+  setNetworkPath(filter, value || [])
 }
 
 export { ConnectedNetworkFilter as NetworkFilter }
@@ -208,15 +209,12 @@ function ConnectedNetworkFilter (
 ) {
   const { $t } = useIntl()
   const [ open, setOpen ] = useState(false)
-  const { setNetworkPath, filters, raw, getNetworkFilter } = useAnalyticsFilter()
-  console.log('testing filters', getNetworkFilter())
+  const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
-    omit({
-      ...filters, path: defaultNetworkPath, includeMuted: false
-    }, 'filter'),
+    { ...filters, includeMuted: true },
     {
       skip: !Boolean(withIncidents),
       selectFromResult: ({ data }) => ({

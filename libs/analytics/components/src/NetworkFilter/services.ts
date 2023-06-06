@@ -26,7 +26,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkFilter: build.query<
       Child[],
-      Omit<NetworkHierarchyFilter, 'path'>
+      Omit<NetworkHierarchyFilter, 'filter'>
     >({
       query: payload => ({
         document: gql`
@@ -75,7 +75,7 @@ export const api = dataApi.injectEndpoints({
     }),
     recentNetworkFilter: build.query<
       Child[],
-      Omit<NetworkHierarchyFilter, 'path'>
+      Omit<NetworkHierarchyFilter, 'filter'>
     >({
       query: payload => ({
         document: gql`

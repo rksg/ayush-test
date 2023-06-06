@@ -38,7 +38,7 @@ const HealthDrillDown = (props: {
     cssStr('--acx-accents-blue-50')
   ]
   const payload = {
-    path: filters.path,
+    filter: filters.filter,
     start: filters.startDate,
     end: filters.endDate
   }

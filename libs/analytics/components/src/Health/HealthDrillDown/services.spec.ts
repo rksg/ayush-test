@@ -9,7 +9,10 @@ describe('Connection drill down api', () => {
     store.dispatch(api.util.resetApiState())
   )
   const payload: RequestPayload = {
-    path: [{ name: 'Network', type: 'network' }],
+    filter: {
+      networkNodes: [[{ name: 'Network', type: 'network' }]],
+      switchNodes: [[{ name: 'Network', type: 'network' }]]
+    },
     start: '2021-12-31T00:00:00+00:00',
     end: '2022-01-01T00:00:00+00:00'
   }
@@ -68,7 +71,10 @@ describe('Connection drill down api', () => {
     afterEach(() => store.dispatch(api.util.resetApiState()))
 
     const payload: PieChartPayload = {
-      path: [{ name: 'Network', type: 'network' }],
+      filter: {
+        networkNodes: [[{ name: 'Network', type: 'network' }]],
+        switchNodes: [[{ name: 'Network', type: 'network' }]]
+      },
       start: '2023-03-15T00:00:00+00:00',
       end: '2023-03-16T00:00:00+00:00',
       queryType: 'connectionFailure',
@@ -77,7 +83,7 @@ describe('Connection drill down api', () => {
 
     describe('pieChartQuery', () => {
       it('should handle unepxected key', () => {
-        const empty = pieChartQuery(payload.path, 'wrong', 'wrong')
+        const empty = pieChartQuery(payload.filter, 'wrong', 'wrong')
         expect(empty).toMatch('')
       })
     })
@@ -97,7 +103,7 @@ describe('Connection drill down api', () => {
       const { status, data, error } = await store.dispatch(
         api.endpoints.pieChart.initiate({
           ...payload,
-          path: mockPathWithAp
+          filter: { networkNodes: [mockPathWithAp] }
         })
       )
       expect(status).toBe('fulfilled')
@@ -122,7 +128,7 @@ describe('Connection drill down api', () => {
       const { status, data, error } = await store.dispatch(
         api.endpoints.pieChart.initiate({
           ...payload,
-          path: mockPathWithAp,
+          filter: { networkNodes: [mockPathWithAp] },
           queryFilter: 'ttc',
           queryType: 'ttc'
         })

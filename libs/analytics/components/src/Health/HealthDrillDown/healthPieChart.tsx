@@ -12,8 +12,8 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
-import { formatter }   from '@acx-ui/formatter'
-import { NetworkPath } from '@acx-ui/utils'
+import { formatter }                     from '@acx-ui/formatter'
+import { getPathFromFilter, PathFilter } from '@acx-ui/utils'
 
 import {
   Stages,
@@ -60,7 +60,8 @@ const transformData = (
   return { nodes: [], wlans: [] }
 }
 
-export function pieNodeMap (node: NetworkPath) {
+export function pieNodeMap (filter: PathFilter) {
+  const node = getPathFromFilter(filter)
   switch (node[node.length - 1].type) {
     case 'zone':
       return defineMessage({ defaultMessage: `{ count, plural,
@@ -131,18 +132,18 @@ export const HealthPieChart = ({
   valueFormatter: (value: unknown, tz?: string | undefined) => string
 }) => {
   const { $t } = useIntl()
-  const { startDate: start, endDate: end, path } = filters
+  const { startDate: start, endDate: end, filter } = filters
   const queryResults = usePieChartQuery(
     {
       start,
       end,
-      path,
+      filter,
       queryType: queryType as string,
       queryFilter: stageNameToCodeMap[selectedStage]
     }
   )
   const { nodes, wlans } = transformData(queryResults.data)
-  const venueTitle = $t(pieNodeMap(path), { count: nodes.length })
+  const venueTitle = $t(pieNodeMap(filter), { count: nodes.length })
   const wlansTitle = $t(pieWlanMap(), { count: wlans.length })
   const tabDetails: ContentSwitcherProps['tabDetails'] = [{
     label: wlansTitle,

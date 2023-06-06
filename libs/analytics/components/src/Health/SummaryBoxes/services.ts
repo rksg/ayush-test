@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }     from '@acx-ui/store'
-import { NetworkPath } from '@acx-ui/utils'
+import { dataApi }         from '@acx-ui/store'
+import type { PathFilter } from '@acx-ui/utils'
 
 export interface SummaryData {
   timeSeries: {
@@ -17,7 +17,7 @@ export interface SummaryData {
 }
 
 export interface RequestPayload {
-  path: NetworkPath
+  filter: PathFilter
   start: string
   end: string
 }
@@ -27,15 +27,20 @@ export const api = dataApi.injectEndpoints({
     summary: build.query<SummaryData, RequestPayload>({
       query: payload => ({
         document: gql`
-          query HealthSummary($path: [HierarchyNodeInput],
-          $start: DateTime, $end: DateTime, $granularity: String) {
+          query HealthSummary(
+          $path: [HierarchyNodeInput],
+          $start: DateTime, 
+          $end: DateTime, 
+          $granularity: String,
+          $filter: FilterInput
+          ) {
             timeSeries(
               path: $path,
               start: $start,
               end: $end,
               granularity: $granularity
             ) { connectionSuccessAndAttemptCount }
-            avgTTC: network(start: $start, end: $end) {
+            avgTTC: network(start: $start, end: $end, filter: $filter) {
             hierarchyNode(path: $path) {
               incidentCharts: timeSeries(granularity: $granularity) {
                 ttc: timeToConnect
@@ -44,6 +49,7 @@ export const api = dataApi.injectEndpoints({
           }`,
         variables: {
           ...payload,
+          path: [{ type: 'network', name: 'Network' }],
           granularity: 'all'
         }
       })
