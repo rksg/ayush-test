@@ -3,6 +3,7 @@ import { isEqual }                  from 'lodash'
 import { FormInstance }             from 'rc-field-form/lib/interface'
 import { useIntl, IntlShape }       from 'react-intl'
 
+import { PasswordInput } from '@acx-ui/components'
 import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
@@ -52,7 +53,7 @@ export function IpPortSecretForm ({ serverType, order }:
           { required: true },
           { validator: (_, value) => networkWifiSecretRegExp(value) }
         ]}
-        children={<Input.Password />}
+        children={<PasswordInput />}
       />
     </>
   )

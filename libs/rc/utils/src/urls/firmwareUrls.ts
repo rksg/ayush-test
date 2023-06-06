@@ -4,22 +4,20 @@ const venueVersionParams = '?firmware_version=:version&firmware_type=:type&searc
 
 export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getUpgradePreferences: {
-    // [New API] new uri not ready
     method: 'get',
     url: '/upgradeConfig/preferences',
     oldUrl: '/api/upgrade/tenant/:tenantId/preference',
-    newApi: false
+    newApi: true
   },
   getSwitchUpgradePreferences: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/switchPreference'
   },
   updateUpgradePreferences: {
-    // [New API] new uri not ready
     method: 'put',
     url: '/upgradeConfig/preferences',
     oldUrl: '/api/upgrade/tenant/:tenantId/preference',
-    newApi: false
+    newApi: true
   },
   updateSwitchUpgradePreferences: {
     method: 'put',
@@ -114,11 +112,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getInvalidTimeSlots: {
-    // [New API] new uri not ready
     method: 'get',
     url: '/upgradeConfig/invalidTime',
     oldUrl: '/api/upgrade/tenant/:tenantId/invalid-time',
-    newApi: false
+    newApi: true
   },
   getSwitchFirmwarePredownload: {
     method: 'get',

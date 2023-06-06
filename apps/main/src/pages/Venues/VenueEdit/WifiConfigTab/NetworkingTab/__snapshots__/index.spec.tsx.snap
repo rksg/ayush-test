@@ -749,50 +749,46 @@ exports[`NetworkingTab should render correctly 1`] = `
                         <div
                           class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                         >
-                          <div
-                            class="ant-form-item"
+                          <label
+                            class="styledComponents__FieldLabel-sc-71wmpn-5 ejrqod"
+                            width="160px"
                           >
+                            Mesh Network
                             <div
-                              class="ant-row ant-form-item-row"
+                              class="ant-form-item"
                             >
                               <div
-                                class="ant-col ant-form-item-label"
-                              >
-                                <label
-                                  class=""
-                                  title="Mesh Network"
-                                >
-                                  Mesh Network
-                                </label>
-                              </div>
-                              <div
-                                class="ant-col ant-form-item-control"
+                                class="ant-row ant-form-item-row"
                               >
                                 <div
-                                  class="ant-form-item-control-input"
+                                  class="ant-col ant-form-item-control"
                                 >
                                   <div
-                                    class="ant-form-item-control-input-content"
+                                    class="ant-form-item-control-input"
                                   >
-                                    <button
-                                      aria-checked="true"
-                                      class="ant-switch ant-switch-checked"
-                                      data-testid="mesh-switch"
-                                      role="switch"
-                                      type="button"
+                                    <div
+                                      class="ant-form-item-control-input-content"
                                     >
-                                      <div
-                                        class="ant-switch-handle"
-                                      />
-                                      <span
-                                        class="ant-switch-inner"
-                                      />
-                                    </button>
+                                      <button
+                                        aria-checked="true"
+                                        class="ant-switch ant-switch-checked"
+                                        data-testid="mesh-switch"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </label>
                         </div>
                       </div>
                     </div>

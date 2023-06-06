@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
-import {  EyeOutlined, EyeInvisibleOutlined }      from '@ant-design/icons'
-import { Col, List, Form, Row, Typography, Input } from 'antd'
-import _                                           from 'lodash'
-import { useIntl }                                 from 'react-intl'
-import styled                                      from 'styled-components/macro'
+import { Col, List, Form, Row, Typography } from 'antd'
+import _                                    from 'lodash'
+import { useIntl }                          from 'react-intl'
+import styled                               from 'styled-components/macro'
 
-
+import { PasswordInput }      from '@acx-ui/components'
 import { SpaceWrapper }       from '@acx-ui/rc/components'
 import { RecoveryPassphrase } from '@acx-ui/rc/utils'
 import { RolesEnum }          from '@acx-ui/types'
@@ -32,10 +31,6 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
     setOpenPassphraseDrawer(true)
   }
 
-  const passwordIconRender = (visible: boolean) => {
-    return visible ? <EyeInvisibleOutlined/> : <EyeOutlined/>
-  }
-
   const hasPassphrase = !_.isEmpty(recoveryPassphraseData)
   const passphraseData = recoveryPassphraseData?.psk.match(/.{1,4}/g)?.join(' ') ?? ''
 
@@ -52,10 +47,9 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
                 <Form.Item
                   noStyle
                 >
-                  <Input.Password
+                  <PasswordInput
                     bordered={false}
                     value={passphraseData}
-                    iconRender={passwordIconRender}
                   />
                 </Form.Item>
                 {hasPermission &&

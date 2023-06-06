@@ -37,13 +37,14 @@ const mockPersona: Persona = {
   groupId: 'persona-group-id-1',
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
+  revoked: false,
   ethernetPorts: [{
     portIndex: 1,
     personaId: 'persona-id-1',
     macAddress: 'ap-mac-address'
   }],
   meteringProfileId: mockConnectionMeterings[0].id,
-  expirationEpoch: moment.now() / 1000
+  expirationDate: moment().toISOString()
 }
 
 

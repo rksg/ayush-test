@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps, PasswordInput } from '@acx-ui/components'
 import {
   useGetRadiusClientConfigQuery,
   useGetRadiusServerSettingQuery,
@@ -139,7 +139,7 @@ export function RadiusServerForm () {
                   ]}>
                   {
                     !changePassword ?
-                      <Input.Password
+                      <PasswordInput
                         readOnly={true}
                         bordered={false} />
                       :

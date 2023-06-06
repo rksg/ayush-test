@@ -148,17 +148,6 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'WebAuthNSG', id: 'LIST' }]
     }),
-    getAccessSwitchesByDS: build.query<{
-      switchViewList: SwitchLite[]
-    }, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitchesByDS, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getAvailableSwitches: build.query<{
       switchViewList: SwitchLite[]
     }, RequestPayload>({
@@ -234,7 +223,6 @@ export const {
   useCreateWebAuthTemplateMutation,
   useUpdateWebAuthTemplateMutation,
   useDeleteWebAuthTemplateMutation,
-  useGetAccessSwitchesByDSQuery,
   useGetAvailableSwitchesQuery,
   useValidateDistributionSwitchInfoMutation,
   useValidateAccessSwitchInfoMutation

@@ -68,7 +68,7 @@ describe('MdnsProxyDetail', () => {
   })
 
   it.skip('should navigate to the edit page', async () => {
-    const editLink = `/t/${params.tenantId}/` + getServiceDetailsLink({
+    const editLink = `/${params.tenantId}/t/` + getServiceDetailsLink({
       type: ServiceType.MDNS_PROXY,
       oper: ServiceOperation.EDIT,
       serviceId: params.serviceId
