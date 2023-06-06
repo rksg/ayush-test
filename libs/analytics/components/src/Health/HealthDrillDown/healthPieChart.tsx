@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { useIntl, defineMessage } from 'react-intl'
-import AutoSizer                  from 'react-virtualized-auto-sizer'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import AutoSizer                                     from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -60,7 +60,7 @@ const transformData = (
   return { nodes: [], wlans: [] }
 }
 
-export function pieNodeMap (filter: PathFilter) {
+export function pieNodeMap (filter: PathFilter): MessageDescriptor {
   const node = getPathFromFilter(filter)
   switch (node[node.length - 1].type) {
     case 'zone':

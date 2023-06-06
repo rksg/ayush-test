@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import {
+  AnalyticsFilter,
   fakeIncident,
   IncidentCode,
   transformIncidentQueryResult
@@ -9,7 +10,6 @@ import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 import {
   DateRange,
   setUpIntl,
-  NetworkPath,
   NodeType,
   PathNode
 } from '@acx-ui/utils'
@@ -17,13 +17,12 @@ import {
 import { api, transformData } from './services'
 
 describe('IncidentTable: services', () => {
-  const props = {
+  const props: AnalyticsFilter = {
     startDate: '2022-08-15T00:00:00+08:00',
     endDate: '2022-08-16T00:00:00+08:00',
     range: DateRange.last24Hours,
-    path: [{ type: 'network', name: 'Network' }] as NetworkPath,
     filter: {}
-  } as const
+  }
 
   const expectedResult = {
     network: {

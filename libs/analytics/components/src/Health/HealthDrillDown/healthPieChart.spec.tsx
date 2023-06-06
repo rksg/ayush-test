@@ -1,12 +1,20 @@
+import { MessageFormatElement } from 'react-intl'
+
 import { AnalyticsFilter }                                                                 from '@acx-ui/analytics/utils'
 import { formatter }                                                                       from '@acx-ui/formatter'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup } from '@acx-ui/test-utils'
-import { DateRange }                                                                       from '@acx-ui/utils'
+import { DateRange, generatePathFilter }                                                   from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
 import { HealthPieChart, pieNodeMap, tooltipFormatter }                                          from './healthPieChart'
 import { api }                                                                                   from './services'
+
+
+jest.mock('react-intl', () => ({
+  ...jest.requireActual('react-intl'),
+  defineMessage: jest.fn(message => message)
+}))
 
 describe('HealthPieChart', () => {
 
@@ -18,7 +26,7 @@ describe('HealthPieChart', () => {
     startDate: '01-03-2023',
     endDate: '02-03-2023',
     range: DateRange.last24Hours,
-    path: [{ type: 'network', name: 'Network' }]
+    filter: {}
   }
 
   it('should render correctly for many connectionFailures', async () => {
@@ -42,7 +50,10 @@ describe('HealthPieChart', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_]')
-      .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+      .forEach((node: Element) => {
+        node.setAttribute('_echarts_instance_', 'ec_mock')
+        node.setAttribute('size-sensor-id', 'sensor-mock')
+      })
     expect(fragment).toMatchSnapshot()
   })
 
@@ -67,7 +78,10 @@ describe('HealthPieChart', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_]')
-      .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+      .forEach((node: Element) => {
+        node.setAttribute('_echarts_instance_', 'ec_mock')
+        node.setAttribute('size-sensor-id', 'sensor-mock')
+      })
     expect(fragment).toMatchSnapshot()
   })
 
@@ -93,7 +107,10 @@ describe('HealthPieChart', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_]')
-      .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+      .forEach((node: Element) => {
+        node.setAttribute('_echarts_instance_', 'ec_mock')
+        node.setAttribute('size-sensor-id', 'sensor-mock')
+      })
     expect(fragment).toMatchSnapshot()
   })
 
@@ -130,11 +147,15 @@ describe('HealthPieChart', () => {
   })
   describe('pieNodeMap', () => {
     it('should return correct venue title', () => {
-      const group = pieNodeMap([{ type: 'zone', name: 'Zone' }])
-      expect(group).toMatchObject({})
+      const zone = pieNodeMap(generatePathFilter([{ type: 'zone', name: 'Zone' }]))
+      expect(zone.defaultMessage).toHaveLength(1)
+      let msg = (zone.defaultMessage as MessageFormatElement[])[0]
+      expect(msg).toBeDefined()
 
-      const ap = pieNodeMap([{ type: 'ap', name: 'AP' }])
-      expect(ap).toMatchObject({})
+      const ap = pieNodeMap(generatePathFilter([{ type: 'ap', name: 'AP' }]))
+      expect(ap.defaultMessage).toHaveLength(1)
+      msg = (ap.defaultMessage as MessageFormatElement[])[0]
+      expect(msg).toBeDefined()
     })
   })
 })
