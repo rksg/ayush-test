@@ -122,7 +122,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
         </Form.Item>
         <div style={{ marginTop: '30px', marginBottom: '25px' }}>
           <label>
-            {$t({ defaultMessage: 'Didn\'t get it?' })}
+            {$t({ defaultMessage: 'Didn’t get it?' })}
           </label>
           <Button
             type='link'
