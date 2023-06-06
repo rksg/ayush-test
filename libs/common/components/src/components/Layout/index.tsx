@@ -172,7 +172,9 @@ export function Layout ({
   const location = useLocation()
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const indexPath = isGuestManager ? '/users/guestsManager'
+    : (isDPSKAdmin ? '/users/dpskAdmin' : '/dashboard')
   const dashboard = findDashboard(menuConfig)
 
   return <UI.Wrapper>

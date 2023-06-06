@@ -52,7 +52,9 @@ function Layout () {
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const basePath = useTenantLink('/users/guestsManager')
+  const dpskBasePath = useTenantLink('/users/dpskAdmin')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
@@ -60,7 +62,13 @@ function Layout () {
         pathname: `${basePath.pathname}`
       })
     }
-  }, [isGuestManager, params['*']])
+    if (isDPSKAdmin && params['*'] !== 'dpskAdmin') {
+      navigate({
+        ...dpskBasePath,
+        pathname: `${dpskBasePath.pathname}`
+      })
+    }
+  }, [isGuestManager, isDPSKAdmin, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
