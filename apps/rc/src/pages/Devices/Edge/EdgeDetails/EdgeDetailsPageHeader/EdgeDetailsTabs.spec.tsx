@@ -32,12 +32,12 @@ const currentEdge:EdgeStatus = {
   ip: '1.1.1.1',
   ports: '62,66',
   tags: [],
-  cpuTotal: 65 * Math.pow(1024, 2),
-  cpuUsed: 5 * Math.pow(1024, 2),
-  memTotal: 120 * Math.pow(1024, 2),
-  memUsed: 50 * Math.pow(1024, 2),
-  diskTotal: 250 * Math.pow(1024, 3),
-  diskUsed: 162 * Math.pow(1024, 3)
+  cpuCores: 2,
+  cpuUsedPercentage: 66,
+  memoryTotalKb: 120 * Math.pow(1024, 2),
+  memoryUsedKb: 50 * Math.pow(1024, 2),
+  diskTotalKb: 250 * Math.pow(1024, 3),
+  diskUsedKb: 162 * Math.pow(1024, 3)
 }
 
 const mockedUsedNavigate = jest.fn()
@@ -76,9 +76,7 @@ describe('Edge Details Tabs', () => {
   it('should redirect to timeline tab', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs
-          currentEdge={currentEdge}
-        />
+        <EdgeDetailsTabs/>
       </Provider>
       , {
         route: { params }
@@ -95,9 +93,7 @@ describe('Edge Details Tabs', () => {
   it('should render services count correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs
-          currentEdge={currentEdge}
-        />
+        <EdgeDetailsTabs />
       </Provider>
       , {
         route: { params }
