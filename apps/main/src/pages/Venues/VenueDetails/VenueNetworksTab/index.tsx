@@ -239,6 +239,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
+      sorter: true,
       render: function (data, row) {
         let disabled = false
         // eslint-disable-next-line max-len
