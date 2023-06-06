@@ -36,7 +36,8 @@
         "ignored": "node_modules/**",
         "nodeModulesIsolate": true,
         "cacheable": true,
-        "incremental": true
+        "incremental": true,
+        "parallel": true
       }
     }
   }

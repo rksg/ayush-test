@@ -14,8 +14,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
     cache: true,
     watchOptions: {
       ignored: /node_modules/,
-      aggregateTimeout: 150,
-      poll: 500,
+      poll: 1000,
     },
     plugins: [
       new ForkTsCheckerWebpackPlugin({
