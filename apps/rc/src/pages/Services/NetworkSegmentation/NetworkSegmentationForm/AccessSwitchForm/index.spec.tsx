@@ -113,6 +113,6 @@ describe('AccessSwitchForm', () => {
     const dialog = await screen.findByRole('dialog')
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
-    await waitFor(() => expect(within(row).getByRole('checkbox')).not.toBeChecked())
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 })

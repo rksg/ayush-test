@@ -43,6 +43,7 @@ export interface UpdateApNowDialogProps {
 
 export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   // eslint-disable-next-line max-len
   const { visible, onSubmit, onCancel, data, availableVersions, eol, eolName, latestEolVersion, eolModels } = props
@@ -90,7 +91,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
 
   const otherOptions = otherVersions.map((version) => {
     return {
-      label: getVersionLabel(version),
+      label: getVersionLabel(intl, version),
       value: version.name,
       title: '',
       style: { fontSize: 12 }
@@ -166,21 +167,21 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
                 { // eslint-disable-next-line max-len
                   $t({ defaultMessage: 'Choose which version to update the venue to:' })}
               </Typography>
-              <UI.TitleActive>Active Device</UI.TitleActive>
+              <UI.TitleActive>{$t({ defaultMessage: 'Active Device' })}</UI.TitleActive>
               <Radio.Group
                 style={{ margin: 12 }}
                 onChange={onSelectModeChange}
                 value={selectMode}>
                 <Space direction={'vertical'}>
                   <Radio value={VersionsSelectMode.Radio}>
-                    {getVersionLabel(versionOptions[0])}
+                    {getVersionLabel(intl, versionOptions[0])}
                   </Radio>
                   { otherVersions.length > 0 ?
                     <UI.SelectDiv>
                       <Radio value={VersionsSelectMode.Dropdown}>
                         <Select
                           style={{ width: '420px', fontSize: '12px' }}
-                          placeholder='Select other version...'
+                          placeholder={$t({ defaultMessage: 'Select other version...' })}
                           onChange={handleChange}
                           options={otherOptions}
                         />

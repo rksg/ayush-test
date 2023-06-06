@@ -116,7 +116,7 @@ export function EmbeddedReport (props: ReportProps) {
 
   useEffect(() => {
     const embeddedData = {
-      allowed_domains: [HOST_NAME],
+      allowed_domains: [],
       dashboard_title: embedDashboardName
     }
     embeddedId({ payload: embeddedData }).unwrap().then(uuid => setDashboardEmbeddedId(uuid))
