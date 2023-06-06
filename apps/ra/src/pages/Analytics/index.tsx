@@ -1,18 +1,20 @@
 import { useIntl } from 'react-intl'
 
-import { Loader } from '@acx-ui/components'
-import { get }    from '@acx-ui/config'
 import { useUserProfileContext } from '@acx-ui/analytics/utils'
+import { Loader }                from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
 function Analytics () {
   const { $t } = useIntl()
-  
+
   const { data } = useUserProfileContext()
-  return <Loader states={[{ isLoading: !data }]}>
+  return <Loader>
     <UI.DummyWrapper>
-      {$t({ defaultMessage: 'user profile loaded: {env}' }, { env: data?.firstName })}
+      {$t(
+        { defaultMessage: 'profile loaded for the user: {user}' },
+        { user: `${data?.firstName}  ${data?.lastName}` }
+      )}
     </UI.DummyWrapper>
   </Loader>
 }

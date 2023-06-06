@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react'
 
 import { useGetUserProfileQuery } from './services'
-import { UserProfile }    from './types'
-import { setUserProfile } from './userProfile'
+import { UserProfile }            from './types'
+import { setUserProfile }         from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined
@@ -14,12 +14,13 @@ export const useUserProfileContext = () => useContext(UserProfileContext)
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
 
-  const { data: profile } = useGetUserProfileQuery({})
+  const result = useGetUserProfileQuery({})
+  const { data: profile, isLoading } = result
 
-  setUserProfile(profile!)
+  const isUserProfilePresent = !isLoading && profile
+  isUserProfilePresent && setUserProfile(profile)
 
-  return <UserProfileContext.Provider
-    value={{ data: profile }}
-    children={props.children}
-  />
+  return isUserProfilePresent
+    ? <UserProfileContext.Provider value={{ data: profile }} children={props.children} />
+    : null
 }

@@ -6,7 +6,7 @@ import { createHttpRequest } from '@acx-ui/utils'
 import { UserProfile } from './types'
 
 
-const userApi = createApi({
+export const userApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'userApi',
   tagTypes: ['UserProfileRA'],
@@ -17,7 +17,7 @@ const userApi = createApi({
 export const { useGetUserProfileQuery } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getUserProfile: build.query<UserProfile, RequestPayload>({
-      query: () => createHttpRequest({ 
+      query: () => createHttpRequest({
         method: 'get',
         url: '/analytics/api/rsa-mlisa-rbac/users/profile'
       }),

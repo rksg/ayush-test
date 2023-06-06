@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Root } from 'react-dom/client'
 
+import { UserProfileProvider } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
@@ -9,9 +10,6 @@ import {
 } from '@acx-ui/components'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 import { Provider }      from '@acx-ui/store'
-
-import { UserProfileProvider } from '@acx-ui/analytics/utils'
-
 import {
   useLocaleContext,
   LangKey,
@@ -59,7 +57,7 @@ export async function init (root: Root) {
       <Provider>
         <LocaleProvider>
           <PreferredLangConfigProvider>
-           <UserProfileProvider>
+            <UserProfileProvider>
               <BrowserRouter>
                 <React.Suspense fallback={null}>
                   <AllRoutes />

@@ -1,4 +1,4 @@
-
+/* Provide profile outside component */
 import { UserProfile } from './types'
 
 const user = {
