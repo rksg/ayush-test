@@ -49,6 +49,7 @@ export function VenueSwitch () {
       </div>
     }
     {showIdx === 1 && <SwitchTable searchable={true}
+      isVenueLevel={true}
       enableActions={true}
       filterableKeys={{ model: getSwitchModelList }} />}
     { showIdx === 2 && <SwitchPortTable isVenueLevel={true} />}

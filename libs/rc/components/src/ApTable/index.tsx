@@ -108,6 +108,7 @@ export const APStatus = (
 interface ApTableProps
   extends Omit<TableProps<APExtended>, 'columns'> {
   tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
+  isVenueLevel?: boolean
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -118,7 +119,7 @@ export function ApTable (props: ApTableProps) {
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables } = props
+  const { searchable, filterables, isVenueLevel } = props
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
@@ -225,17 +226,17 @@ export function ApTable (props: ApTableProps) {
     //     </Space>)
     //   }
     // },
-    {
+    ...(isVenueLevel ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
-      render: (data, row : APExtended) => (
+      render: (data: React.ReactNode, row : APExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       )
-    }, {
+    }]), {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
