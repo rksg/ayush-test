@@ -135,6 +135,9 @@
   "+dbj3T": {
     "defaultMessage": "New Application Category"
   },
+  "+eW1pq": {
+    "defaultMessage": "Change preferred update slot"
+  },
   "+frS59": {
     "defaultMessage": "Version Management"
   },
@@ -307,11 +310,17 @@
   "/P3VsM": {
     "defaultMessage": "Target IP"
   },
+  "/QQYb6": {
+    "defaultMessage": "Preferred update slot(s):"
+  },
   "/RRvw+": {
     "defaultMessage": "Duplicate test name exist"
   },
   "/TDfu/": {
     "defaultMessage": "<p>The following are not supported:</p> <ul> <li>802.1X with WPA3, EAP-TLS and EAP-SIM</li> <li>WEP encryption</li> <li>WPA3/WPA2 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li> <li>Captive portal</li> <li>Cloudpath</li> <li>DPSK</li> </ul>"
+  },
+  "/UZHRz": {
+    "defaultMessage": "The PSK is invalid"
   },
   "/V0Dqn": {
     "defaultMessage": "Best effort"
@@ -702,9 +711,6 @@
   "1Ew0iu": {
     "defaultMessage": "All the rectangles in the drag area will receive the same status – opposite the status of the rectangle where the drag started"
   },
-  "1FxV5K": {
-    "defaultMessage": "Server Configuration Conflict"
-  },
   "1G1Ohw": {
     "defaultMessage": "No 3rd Party Administrator Invited"
   },
@@ -1072,6 +1078,9 @@
   "2sH94b": {
     "defaultMessage": "dhcp-state"
   },
+  "2tDDRh": {
+    "defaultMessage": "Uplink Selection"
+  },
   "2tpfU+": {
     "defaultMessage": "3. 'My Open Cases' link behavior"
   },
@@ -1110,6 +1119,9 @@
   },
   "32tcqf": {
     "defaultMessage": "It is the user's responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures"
+  },
+  "334+Ex": {
+    "defaultMessage": "The Mesh Network Name is invalid"
   },
   "33Ko8D": {
     "defaultMessage": "Select Switch..."
@@ -1253,6 +1265,9 @@
   "3d6C4k": {
     "defaultMessage": "Adaptive Policy Sets"
   },
+  "3g6QAZ": {
+    "defaultMessage": "This action will cause network interruption and impact service delivery."
+  },
   "3g9ANZ": {
     "defaultMessage": "Malicious"
   },
@@ -1289,6 +1304,9 @@
   },
   "3uXfAz": {
     "defaultMessage": "AAA Policy"
+  },
+  "3v7bUi": {
+    "defaultMessage": "Connected APs"
   },
   "3vwDOf": {
     "defaultMessage": "{apsFinishedTest} of {apsUnderTest} {apsUnderTest, plural, one {AP} other {APs}} tested"
@@ -1505,6 +1523,9 @@
   },
   "4tv7lM": {
     "defaultMessage": "Enter a short description, up to 64 characters"
+  },
+  "4wO9//": {
+    "defaultMessage": "Additional external configuration is required for this option to function. <br></br> Please refer to the {link} for more details"
   },
   "4y+HDO": {
     "defaultMessage": "ACL"
@@ -1822,6 +1843,9 @@
   "6I9iA+": {
     "defaultMessage": "Ios"
   },
+  "6Jg9Lf": {
+    "defaultMessage": "5 & 6 GHz"
+  },
   "6JhMpu": {
     "defaultMessage": "Add Configuration Profile"
   },
@@ -1839,6 +1863,9 @@
   },
   "6NUzkq": {
     "defaultMessage": "You’ll receive a login code via an authentication app"
+  },
+  "6QBsLu": {
+    "defaultMessage": "Manually update firmware per venue"
   },
   "6RKXNK": {
     "defaultMessage": "Use RADIUS Server"
@@ -3021,6 +3048,9 @@
   "B//K0I": {
     "defaultMessage": "CLI Provisioning"
   },
+  "B/XrZJ": {
+    "defaultMessage": "Other provider"
+  },
   "B1glSA": {
     "defaultMessage": "Continue Reading"
   },
@@ -3035,6 +3065,9 @@
   },
   "B6Nc0o": {
     "defaultMessage": "Edit SNMPv3 Agent"
+  },
+  "B7i3/p": {
+    "defaultMessage": "AP Models: {apModels}"
   },
   "B96BAr": {
     "defaultMessage": "In Discards"
@@ -3098,6 +3131,9 @@
   },
   "BNHFY1": {
     "defaultMessage": "Only letters and numbers can be used"
+  },
+  "BNayx5": {
+    "defaultMessage": "Select other version..."
   },
   "BNj+Ba": {
     "defaultMessage": "R760 radio bands management"
@@ -3203,6 +3239,9 @@
   "BlDrs8": {
     "defaultMessage": "802.11 Authentication Request"
   },
+  "BlyOAW": {
+    "defaultMessage": "WISPr API documentation"
+  },
   "BqgUnS": {
     "defaultMessage": "# of successful allocations"
   },
@@ -3211,6 +3250,9 @@
   },
   "Br4bB2": {
     "defaultMessage": "Rate Limiting"
+  },
+  "BrkrKD": {
+    "defaultMessage": "If this option is selected, users will be informed their personal information is being collected"
   },
   "Brplhy": {
     "defaultMessage": "The rule has reached the limit ({maxCount})."
@@ -3284,9 +3326,6 @@
   },
   "C5VhoH": {
     "defaultMessage": "Secondary SIM"
-  },
-  "C7HRVW": {
-    "defaultMessage": "Firmware Version Management"
   },
   "C8efXI": {
     "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase",
@@ -3485,6 +3524,9 @@
   "D6UU7g": {
     "defaultMessage": "Add Network"
   },
+  "D7/GIg": {
+    "defaultMessage": "Enabling mesh for a venue is a global configuration and once mesh links are formed (automatically), it cannot be undone."
+  },
   "D73EmX": {
     "defaultMessage": "{n} of {d} connections under {threshold}"
   },
@@ -3542,6 +3584,9 @@
   },
   "DSCPXP": {
     "defaultMessage": "Save Preferences"
+  },
+  "DSMot1": {
+    "defaultMessage": "Select up to 3 days"
   },
   "DT1Xmz": {
     "defaultMessage": "Failure reason: {reason}"
@@ -3916,6 +3961,9 @@
   "FACmOV": {
     "defaultMessage": "Ports:"
   },
+  "FD2wXd": {
+    "defaultMessage": "Active Device"
+  },
   "FEeg08": {
     "defaultMessage": "Supported Device Models"
   },
@@ -3970,6 +4018,9 @@
   "FV+P4u": {
     "defaultMessage": "802.3af"
   },
+  "FVB7Oy": {
+    "defaultMessage": "Selected time will apply to each venue according to own time-zone"
+  },
   "FX7pkg": {
     "defaultMessage": "The service is currently not supported in the country which you entered.<br></br>Please make sure that you entered the correct address."
   },
@@ -3991,6 +4042,9 @@
   },
   "FckSlh": {
     "defaultMessage": "Domain 1 countries"
+  },
+  "FdQlmc": {
+    "defaultMessage": "Select Uplink AP Manually"
   },
   "FeeZwa": {
     "defaultMessage": "RSN IE is inconsistent"
@@ -4230,9 +4284,6 @@
   "GeH82N": {
     "defaultMessage": "Image Download Using USB"
   },
-  "GegfmV": {
-    "defaultMessage": "Service Validation is not enabled"
-  },
   "GgEWLv": {
     "defaultMessage": "Add SNMP Agent"
   },
@@ -4462,9 +4513,6 @@
   },
   "Hgj+nK": {
     "defaultMessage": "The Community name already exists"
-  },
-  "HhiEq3": {
-    "defaultMessage": "Video Call QoE is not enabled"
   },
   "HiAhyX": {
     "defaultMessage": "Make sure to include a city and country in the address"
@@ -4860,6 +4908,9 @@
   "JCIgkj": {
     "defaultMessage": "Username"
   },
+  "JDxiP3": {
+    "defaultMessage": "Only runs as Mesh AP"
+  },
   "JEFJiM": {
     "defaultMessage": "Invalid pairwise master key identified (PMKI)"
   },
@@ -5043,6 +5094,9 @@
   },
   "K3kfTi": {
     "defaultMessage": "Event Start Time"
+  },
+  "K3qnJa": {
+    "defaultMessage": "Update time:"
   },
   "K3r6DQ": {
     "defaultMessage": "Delete"
@@ -5367,9 +5421,6 @@
   "LN27XK": {
     "defaultMessage": "Multi-Factors Authentication Setup"
   },
-  "LNH75V": {
-    "defaultMessage": "You cannot set Mesh off because you have connected Mesh APs"
-  },
   "LNL61o": {
     "defaultMessage": "Port VLANs"
   },
@@ -5446,6 +5497,10 @@
   },
   "Lk4Mip": {
     "defaultMessage": "<p>Clients are failing authentication because the passphrase (PSK) does not match the AP/SSID configuration.</p>"
+  },
+  "LpGq/Y": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block Persona}}",
+    "description": "Translation strings - Unblock, Block Persona"
   },
   "Lpfnla": {
     "defaultMessage": "One of the values you entered conflicts with an existing authentication server configuration in another network."
@@ -5689,6 +5744,9 @@
   "MsO5zT": {
     "defaultMessage": "Jumbo Mode"
   },
+  "Mso9EU": {
+    "defaultMessage": "Zero Touch Mesh"
+  },
   "MsxfS5": {
     "defaultMessage": "Application Type"
   },
@@ -5832,9 +5890,6 @@
   },
   "NN9jmN": {
     "defaultMessage": "Please select a DPSK pool"
-  },
-  "NO0VM6": {
-    "defaultMessage": "Override the conflicting server configuration"
   },
   "NOiJNj": {
     "defaultMessage": "Next Hop"
@@ -6239,6 +6294,9 @@
   "OvzONl": {
     "defaultMessage": "Off"
   },
+  "OxfTrY": {
+    "defaultMessage": "PSK must be between 8 and 63 characters"
+  },
   "OyuYNU": {
     "defaultMessage": "* There are more historical clients than can be displayed. If you don’t see the client you are looking for, narrow the list by entering a more specific text in the search box."
   },
@@ -6482,9 +6540,6 @@
     "defaultMessage": "Please enter a valid phone number",
     "description": "Validation - phone number checks"
   },
-  "Q7r9fB": {
-    "defaultMessage": "Enable Mesh"
-  },
   "Q8Qw5B": {
     "defaultMessage": "Description"
   },
@@ -6515,6 +6570,9 @@
   "QExggt": {
     "defaultMessage": "Using configured password"
   },
+  "QF+PNv": {
+    "defaultMessage": "Account Management"
+  },
   "QF20FV": {
     "defaultMessage": "query-end-time"
   },
@@ -6535,6 +6593,9 @@
   },
   "QN9BCR": {
     "defaultMessage": "Passphrase Reset"
+  },
+  "QNKY+S": {
+    "defaultMessage": "Invalid Mesh Network Name"
   },
   "QO3d1l": {
     "defaultMessage": "Above {threshold}"
@@ -6819,6 +6880,9 @@
   },
   "Rncbm3": {
     "defaultMessage": "Voice VLAN"
+  },
+  "Rnhiac": {
+    "defaultMessage": "Mesh Network Name"
   },
   "RnonLg": {
     "defaultMessage": "Syslog Server Configuration"
@@ -7146,6 +7210,10 @@
   "T7pTaH": {
     "defaultMessage": "Lookback Interface ID"
   },
+  "T8/xYg": {
+    "defaultMessage": "{revokedStatus, select, true {Are you sure you want to unblock this persona?} other {The user will be blocked. Are you sure want to block this persona?} }",
+    "description": "Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona"
+  },
   "T8S06b": {
     "defaultMessage": "Max Data Comsumption"
   },
@@ -7194,6 +7262,9 @@
   "TJo5E6": {
     "defaultMessage": "Preview"
   },
+  "TJuRC7": {
+    "defaultMessage": "Select up to 3 slots"
+  },
   "TKYlMB": {
     "defaultMessage": "STA Disassoc (DHCP Timeout)"
   },
@@ -7211,9 +7282,6 @@
   },
   "TNy171": {
     "defaultMessage": "There are no APs to run the test"
-  },
-  "TO3YlU": {
-    "defaultMessage": "Occured Error"
   },
   "TP/cMX": {
     "defaultMessage": "Ended"
@@ -7649,6 +7717,9 @@
   "VK81Ki": {
     "defaultMessage": "Invalid Pairwise Key Cipher"
   },
+  "VKfWR3": {
+    "defaultMessage": "Recommended"
+  },
   "VKikS4": {
     "defaultMessage": "Invalid RSN IE Capability"
   },
@@ -7679,6 +7750,9 @@
   "VSiY8k": {
     "defaultMessage": "DHCP Offer"
   },
+  "VU151L": {
+    "defaultMessage": "Since there are active mesh links in this venue, in order prevent networking issues, you cannot turn mesh networking off"
+  },
   "VUbBN1": {
     "defaultMessage": "Ethernet link"
   },
@@ -7696,6 +7770,9 @@
   },
   "VWIe2D": {
     "defaultMessage": "VLAN Pools"
+  },
+  "VWhS5n": {
+    "defaultMessage": "If you set rate limit on network level, it will override any rate limit set on policy level."
   },
   "VX2yLr": {
     "defaultMessage": "Configure {name}"
@@ -7743,9 +7820,6 @@
   },
   "Vh5emq": {
     "defaultMessage": "Please select the category"
-  },
-  "ViS54z": {
-    "defaultMessage": "If you have Mesh-APs, you will not be able to disable this option."
   },
   "Vl9Unn": {
     "defaultMessage": "Host Approval",
@@ -7834,6 +7908,9 @@
   "W0+ZGa": {
     "defaultMessage": "Profile Name"
   },
+  "W0/+8Z": {
+    "defaultMessage": "\"Zero touch mesh\" is an automated networking technology that allows for seamless setup and expansion of mesh networks without manual intervention. This option is only available when Mesh is enabled for 5 & 6 GHz networks"
+  },
   "W18Mk/": {
     "defaultMessage": "AP Mac"
   },
@@ -7872,6 +7949,9 @@
   },
   "WBmgnd": {
     "defaultMessage": "Test Time"
+  },
+  "WCCfEs": {
+    "defaultMessage": "Video Call QoE {count, select, null {} other {({count})}}"
   },
   "WCp/2r": {
     "defaultMessage": "LTE APs"
@@ -8029,9 +8109,6 @@
   },
   "X+aUZF": {
     "defaultMessage": "File size cannot exceed {maxSize}"
-  },
-  "X1bhjS": {
-    "defaultMessage": "Didn't get it?"
   },
   "X2pnl0": {
     "defaultMessage": "Map is not enabled."
@@ -8379,6 +8456,9 @@
   "Yb2goG": {
     "defaultMessage": "Firewall Server"
   },
+  "YbP2Pl": {
+    "defaultMessage": "Enabling mesh for a venue creates a new WLAN for mesh communication between Access Points"
+  },
   "YceVNq": {
     "defaultMessage": "Total Upload limit"
   },
@@ -8684,9 +8764,6 @@
   "ZnqHg6": {
     "defaultMessage": "L3 Authentication Failure"
   },
-  "ZoiazP": {
-    "defaultMessage": "As required for privacy compliance, the user will be informed of that is the case"
-  },
   "Zp6g/K": {
     "defaultMessage": "View ACL"
   },
@@ -8863,6 +8940,9 @@
   },
   "aXVbF0": {
     "defaultMessage": "Select Template ..."
+  },
+  "aXuQWM": {
+    "defaultMessage": "DATA API: {env}"
   },
   "aY7Or3": {
     "defaultMessage": "Enable Guest"
@@ -9069,6 +9149,9 @@
   "bQaOC6": {
     "defaultMessage": "PoE Budget"
   },
+  "bRu/Qu": {
+    "defaultMessage": "Legacy Device"
+  },
   "bRwQfU": {
     "defaultMessage": "Copy from your WiFi4EU installation report"
   },
@@ -9080,6 +9163,9 @@
   },
   "bTbgra": {
     "defaultMessage": "BSSID"
+  },
+  "bVzeaJ": {
+    "defaultMessage": "While this incident is muted, it will be hidden in the UI. You can unmute this incident via setting icon in the {link}."
   },
   "bWjdfa": {
     "defaultMessage": "URL"
@@ -9339,6 +9425,9 @@
   "cUB5Wh": {
     "defaultMessage": "Please enter To"
   },
+  "cVArhg": {
+    "defaultMessage": "Legacy Device ({eolName})"
+  },
   "cVVoGX": {
     "defaultMessage": "Error: Can not detect passphrase format value"
   },
@@ -9365,6 +9454,9 @@
   },
   "cXBJ7U": {
     "defaultMessage": "Privacy"
+  },
+  "caN8Yy": {
+    "defaultMessage": "Service Details"
   },
   "cb2kY6": {
     "defaultMessage": "Standard"
@@ -9575,6 +9667,9 @@
   "dJpSA/": {
     "defaultMessage": "Once the ICX switch is connected to RUCKUS One:"
   },
+  "dKUE97": {
+    "defaultMessage": "Only runs as Root AP"
+  },
   "dL+iuj": {
     "defaultMessage": "Or enter this key into the app:"
   },
@@ -9680,6 +9775,9 @@
   "drIivK": {
     "defaultMessage": "MAC address {macAddress} is already exists"
   },
+  "dtAFE6": {
+    "defaultMessage": "Apply Mesh"
+  },
   "dtZG/H": {
     "defaultMessage": "Sequence"
   },
@@ -9719,9 +9817,6 @@
   "e1BV06": {
     "defaultMessage": "\"`\" and \"$(\" are not allowed",
     "description": "Validation - grave accent and dollar sign checks"
-  },
-  "e1Rb9q": {
-    "defaultMessage": "Additional external configuration is required for this option to function. <br></br> Please refer to the WISPr API documentation for more details"
   },
   "e1tK8K": {
     "defaultMessage": "SNMPv3 Agent"
@@ -10115,6 +10210,9 @@
   "fg1Vhq": {
     "defaultMessage": "hour"
   },
+  "fhgXQt": {
+    "defaultMessage": "Mesh Radio"
+  },
   "fiNfmb": {
     "defaultMessage": "Language:"
   },
@@ -10238,6 +10336,9 @@
   "gGtESL": {
     "defaultMessage": "Please select a Venue"
   },
+  "gHWqQU": {
+    "defaultMessage": "Mesh APs automatically select the best uplink"
+  },
   "gI6szY": {
     "defaultMessage": "{count} {count, plural, one {AP} other {APs}}"
   },
@@ -10280,6 +10381,9 @@
   },
   "gQ7kPU": {
     "defaultMessage": "Android"
+  },
+  "gQhilt": {
+    "defaultMessage": "Mesh role is assigned automatically"
   },
   "gSkKa5": {
     "defaultMessage": "Please enter network address"
@@ -10361,6 +10465,9 @@
   "goLlgP": {
     "defaultMessage": "EC support disabled"
   },
+  "godfwh": {
+    "defaultMessage": "Invalid Mesh PSK"
+  },
   "gpsa1w": {
     "defaultMessage": "VLAN #"
   },
@@ -10435,6 +10542,9 @@
   },
   "hEsZtC": {
     "defaultMessage": "Add Host"
+  },
+  "hEwmQH": {
+    "defaultMessage": "User recovery codes to log in if you can’t receive a verification code via email, SMS, or an auth app"
   },
   "hG0vhN": {
     "defaultMessage": "The mesh STA performs channel switch with unspecified reason"
@@ -10511,6 +10621,9 @@
   "hbiilD": {
     "defaultMessage": "Class2 Frame from Non-Auth STA"
   },
+  "hc136e": {
+    "defaultMessage": "Not support on this port"
+  },
   "hdGKYY": {
     "defaultMessage": "Require users to enter a passphrase (that you have defined for the network) to connect",
     "description": "Description for Pre-Shared Key (PSK)"
@@ -10560,6 +10673,9 @@
   },
   "hnrKAf": {
     "defaultMessage": "This event occurs when the client disconnects by force dynamic host configuration protocol (DHCP)"
+  },
+  "hnzuN7": {
+    "defaultMessage": "Mesh is disabled"
   },
   "holi8H": {
     "defaultMessage": "iTunes Sharing"
@@ -11164,9 +11280,6 @@
   "kBbkVq": {
     "defaultMessage": "Enable load balancing between APs"
   },
-  "kCk40q": {
-    "defaultMessage": "AP-{serialNumber}"
-  },
   "kDQuqz": {
     "defaultMessage": "MSP Administrators"
   },
@@ -11418,6 +11531,9 @@
   "l6kkAc": {
     "defaultMessage": "Configures VLAN tag usage for the port"
   },
+  "l6pGKO": {
+    "defaultMessage": "Mesh PSK"
+  },
   "l7HNFB": {
     "defaultMessage": "Reboot due to IP mode change or mesh enablement"
   },
@@ -11668,9 +11784,6 @@
   "m8IJs3": {
     "defaultMessage": "Basic Service Set"
   },
-  "m8RhbD": {
-    "defaultMessage": "While this incident is muted, it will be hidden in the UI. You can unmute this incident via setting icon in the {link}"
-  },
   "m9MVq0": {
     "defaultMessage": "Selected order"
   },
@@ -11845,9 +11958,6 @@
   "myH0Ir": {
     "defaultMessage": "Last Updated:"
   },
-  "mzAhcs": {
-    "defaultMessage": "({usedPercentage}%)"
-  },
   "mzoq+x": {
     "defaultMessage": "Please enter a number between 2 and 20"
   },
@@ -11863,6 +11973,9 @@
   "n0hHJu": {
     "defaultMessage": "APs:"
   },
+  "n11iLA": {
+    "defaultMessage": "The Mesh Network Name must be between 2 and 32 characters"
+  },
   "n1RvLH": {
     "defaultMessage": "Select Pool"
   },
@@ -11874,6 +11987,9 @@
   },
   "n4DOF2": {
     "defaultMessage": "Add Application Policy"
+  },
+  "n4IV7E": {
+    "defaultMessage": "Update date:"
   },
   "n6+fBA": {
     "defaultMessage": "Firmware Update - Writing To Flash"
@@ -12048,6 +12164,9 @@
   "nmr0Pp": {
     "defaultMessage": "Manage Subscriptions"
   },
+  "nmuldp": {
+    "defaultMessage": "When do you want the update to run?"
+  },
   "nnUexJ": {
     "defaultMessage": "Requested from peer STA as the STA is leaving the BSS (or resetting)"
   },
@@ -12122,6 +12241,10 @@
   },
   "o0yS7Z": {
     "defaultMessage": "Switch Not Found"
+  },
+  "o1fwp7": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block} } this Persona: {name}",
+    "description": "Translation strings - Unblock, Block, this Persona"
   },
   "o1vbho": {
     "defaultMessage": "Policy"
@@ -12206,6 +12329,9 @@
   "oLkLww": {
     "defaultMessage": "Score"
   },
+  "oLoTZr": {
+    "defaultMessage": "Image file size cannot exceed 10 MB"
+  },
   "oNA+iT": {
     "defaultMessage": "Passphrase:"
   },
@@ -12253,6 +12379,9 @@
   "ob4aTr": {
     "defaultMessage": "Command Authorization"
   },
+  "obpIrr": {
+    "defaultMessage": "Mesh is not enabled at the venue where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the venue, you will be able to set the AP's mesh role and select the uplink AP."
+  },
   "oc+y+9": {
     "defaultMessage": "Trusted Ports:"
   },
@@ -12261,6 +12390,9 @@
   },
   "ogRVmq": {
     "defaultMessage": "Select RADIUS"
+  },
+  "ogvi9f": {
+    "defaultMessage": "Please enter Mesh PSK"
   },
   "oir8uG": {
     "defaultMessage": "Firmware Update - Validating Image"
@@ -12285,6 +12417,9 @@
   },
   "ooCnVf": {
     "defaultMessage": "HEX"
+  },
+  "oohAuA": {
+    "defaultMessage": "MAC Address {macAddress} were deleted"
   },
   "orEaKq": {
     "defaultMessage": "All types"
@@ -12385,6 +12520,9 @@
   "pAFisK": {
     "defaultMessage": "IP Assignment Type"
   },
+  "pAnEZ9": {
+    "defaultMessage": "Please enter the Mesh Network Name"
+  },
   "pHFK4f": {
     "defaultMessage": "Guest Portal Service"
   },
@@ -12466,6 +12604,9 @@
   },
   "pVBJf0": {
     "defaultMessage": "VLAN member"
+  },
+  "pWpMby": {
+    "defaultMessage": "AP-{name}"
   },
   "pXXLgA": {
     "defaultMessage": "Details of switch inventory including models and software versions"
@@ -12569,6 +12710,9 @@
   "pyy2lm": {
     "defaultMessage": "Never contacted Active Switch"
   },
+  "pzYj0w": {
+    "defaultMessage": "Some features may no longer be availabe with previous versions of device firmware."
+  },
   "pzpZWz": {
     "defaultMessage": "Go to floor plans to place the {deviceType}"
   },
@@ -12577,9 +12721,6 @@
   },
   "q+1Dri": {
     "defaultMessage": "AC/DC Power supply"
-  },
-  "q+eJuS": {
-    "defaultMessage": "Image must smaller than 10MB!"
   },
   "q/9Vqr": {
     "defaultMessage": "Select Policies"
@@ -12700,8 +12841,14 @@
   "qSpbOu": {
     "defaultMessage": "Signal Threshold"
   },
+  "qUJTsT": {
+    "defaultMessage": "Blocked"
+  },
   "qWBAzj": {
     "defaultMessage": "Assoc DoS Prevention"
+  },
+  "qWMB28": {
+    "defaultMessage": "To prevent networking issues, you can change this property only once, when activating the mesh option. It is highly recommended not to change them unless there is an urgent operational need."
   },
   "qWQB8J": {
     "defaultMessage": "Lease expires in..."
@@ -12733,6 +12880,9 @@
   },
   "qeU60o": {
     "defaultMessage": "If it is the first time the ICX switch is connected to the cloud, the switch reloads after the necessary firmware is applied."
+  },
+  "qf0/Bg": {
+    "defaultMessage": "Preferred Time Slot:"
   },
   "qg1V4V": {
     "defaultMessage": "Choose update schedule method:"
@@ -12960,6 +13110,9 @@
   "rikb48": {
     "defaultMessage": "5 GHz"
   },
+  "riw/yc": {
+    "defaultMessage": "Beta"
+  },
   "rjwV0J": {
     "defaultMessage": "Change to Time limited connection"
   },
@@ -13128,6 +13281,9 @@
   },
   "sMnDSO": {
     "defaultMessage": "Wi-Fi APs"
+  },
+  "sQltSv": {
+    "defaultMessage": "Upgrade preference saved for each venue based on venue’s local time-zone"
   },
   "sRTzEd": {
     "defaultMessage": "name"
@@ -13464,6 +13620,9 @@
   "tthToS": {
     "defaultMessage": "Disabled"
   },
+  "ttkc4T": {
+    "defaultMessage": "Didn’t get it?"
+  },
   "tu3sH4": {
     "defaultMessage": "NAS Request Timeout"
   },
@@ -13513,9 +13672,6 @@
   },
   "u0lL8w": {
     "defaultMessage": "Services is not enabled"
-  },
-  "u1nVsn": {
-    "defaultMessage": "Select preferred provider"
   },
   "u2EbNi": {
     "defaultMessage": "This {deviceType} is not placed on any floor plan"
@@ -13618,6 +13774,9 @@
   },
   "uUfVAP": {
     "defaultMessage": "Target host or IP address"
+  },
+  "uUrwd9": {
+    "defaultMessage": "No uplink APs detected"
   },
   "uWddQs": {
     "defaultMessage": "OFF now"
@@ -13902,6 +14061,9 @@
   "vknTf8": {
     "defaultMessage": "Must be 26 hex characters"
   },
+  "vkv6jN": {
+    "defaultMessage": "Preview: {name}"
+  },
   "vkxFH6": {
     "defaultMessage": "Once this connection time limit has been reached, the client will be disconnected"
   },
@@ -13937,6 +14099,9 @@
   },
   "vy/Kkh": {
     "defaultMessage": "Cancel Invitation"
+  },
+  "vyGzDg": {
+    "defaultMessage": "Template Preview"
   },
   "vzGrnm": {
     "defaultMessage": "Scope",
@@ -14001,6 +14166,10 @@
   },
   "wJLtSR": {
     "defaultMessage": "Resend verification error. Please try again."
+  },
+  "wKwiLp": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block}}",
+    "description": "Translation strings - Unblock, Block"
   },
   "wL7VAE": {
     "defaultMessage": "Actions"
@@ -14076,9 +14245,6 @@
   },
   "wk2gIX": {
     "defaultMessage": "Trusted"
-  },
-  "wkYPjX": {
-    "defaultMessage": "Use existing server configuration"
   },
   "wlK3EK": {
     "defaultMessage": "Persona Group Name"
@@ -14204,6 +14370,9 @@
   },
   "xBkv0R": {
     "defaultMessage": "Layer 2"
+  },
+  "xD8rZt": {
+    "defaultMessage": "Service Validation {count, select, null {} other {({count})}}"
   },
   "xEJGT1": {
     "defaultMessage": "Set number (1-{max})"
@@ -14875,6 +15044,9 @@
   "zqarJS": {
     "defaultMessage": "Collect User Email Address:"
   },
+  "zrFQvM": {
+    "defaultMessage": "Preferred day(s):"
+  },
   "zs74F6": {
     "defaultMessage": "This incident impacted {count} {count, plural, one {operating system} other {operating systems} }"
   },
@@ -14904,6 +15076,9 @@
   },
   "zyojKJ": {
     "defaultMessage": "Devices ({deviceCount})"
+  },
+  "zyqEJ2": {
+    "defaultMessage": "Start firmware upgrade retry"
   },
   "zz6ObK": {
     "defaultMessage": "Restore"

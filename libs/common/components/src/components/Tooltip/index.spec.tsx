@@ -15,4 +15,16 @@ describe('Tooltip', () => {
     const icon = await screen.findByTestId('QuestionMarkCircleOutlined')
     expect(icon).toBeVisible()
   })
+
+  it('renders Tooltip.Info', async () => {
+    render(<Tooltip.Info title='info tooltip' />)
+    const icon = await screen.findByTestId('InformationOutlined')
+    expect(icon).toBeVisible()
+  })
+
+  it('renders Tooltip.InfoFilled', async () => {
+    render(<Tooltip.InfoFilled title='info filled tooltip' />)
+    const icon = await screen.findByTestId('InformationSolid')
+    expect(icon).toBeVisible()
+  })
 })

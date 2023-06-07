@@ -132,7 +132,7 @@ export function PropertyManagementTab () {
       .map(scopeId => {
         let selectedOption = formRef?.current?.getFieldValue(scopeId)
 
-        if(selectedOption && selectedOption.value !== '') {
+        if(selectedOption && selectedOption !== '') {
           return updateRegistration({
             params: {
               templateScopeId: scopeId,
@@ -140,7 +140,7 @@ export function PropertyManagementTab () {
             },
             payload: {
               id: scopeId,
-              templateId: selectedOption.value,
+              templateId: selectedOption,
               usageLocalizationKey: 'venue.property.management',
               usageDescriptionFieldOne: venueData?.name ?? venueId,
               usageDescriptionFieldTwo: venueId

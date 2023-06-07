@@ -31,6 +31,7 @@ export interface AdvancedUpdateNowDialogProps {
 
 export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const {
     visible,
     onSubmit,
@@ -58,7 +59,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
 
   const otherActiveVersionOptions = otherActiveVersions.map((version) => {
     return {
-      label: getVersionLabel(version),
+      label: getVersionLabel(intl, version),
       value: version.name
     }
   })
@@ -106,7 +107,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             categoryId={'active'}
             abfLabel={$t({ defaultMessage: 'Active Device' })}
             defaultVersionId={defaultActiveVersion.id}
-            defaultVersionLabel={getVersionLabel(defaultActiveVersion)}
+            defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
             otherVersions={otherActiveVersionOptions}
             update={updateSelectedABF}
           />

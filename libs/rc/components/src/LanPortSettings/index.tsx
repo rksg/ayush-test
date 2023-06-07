@@ -88,7 +88,9 @@ export function LanPortSettings (props: {
       children={<Switch
         disabled={readOnly
           || isDhcpEnabled
-          || !selectedPortCaps?.supportDisable}
+          || !selectedPortCaps?.supportDisable
+          || lan?.vni > 0
+        }
       />}
     />
     <Form.Item
@@ -110,6 +112,7 @@ export function LanPortSettings (props: {
           || isDhcpEnabled
           || !lan?.enabled
           || selectedPortCaps?.trunkPortOnly
+          || lan?.vni > 0
         }
         options={Object.keys(ApLanPortTypeEnum).map(type => ({ label: type, value: type }))}
         onChange={(value) => handlePortTypeChange(value, index)}
@@ -135,6 +138,7 @@ export function LanPortSettings (props: {
           || isDhcpEnabled
           || !lan?.enabled
           || lan?.type === ApLanPortTypeEnum.TRUNK
+          || lan?.vni > 0
         }
         onChange={(value) => {
           if (lan?.type === ApLanPortTypeEnum.ACCESS) {
@@ -167,8 +171,15 @@ export function LanPortSettings (props: {
         disabled={readOnly
           || isDhcpEnabled
           || !lan?.enabled
-          || lan?.type !== ApLanPortTypeEnum.GENERAL}
+          || lan?.type !== ApLanPortTypeEnum.GENERAL
+          || lan?.vni > 0
+        }
       />}
+    />
+    <Form.Item
+      hidden={true}
+      name={['lan', index, 'vni']}
+      children={<Input />}
     />
   </>)
 }

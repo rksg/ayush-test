@@ -14,7 +14,7 @@ describe('PassphraseViewer', () => {
 
     render(<PassphraseViewer passphrase={'test1234'} />)
 
-    await userEvent.click(await screen.findByRole('img', { name: /eye-invisible/ }))
+    await userEvent.click(await screen.findByTestId('EyeOpenSolid'))
     expect(await screen.findByDisplayValue('test1234')).toBeInTheDocument()
 
     await userEvent.click(await screen.findByRole('button'))
