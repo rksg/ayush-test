@@ -244,8 +244,6 @@ function Table <RecordType extends Record<string, any>> ({
       if (!isSelected) {
         newKeys = [key]
         newRows = [record]
-        setSelectedRowKeys([key])
-        setSelectedRows([record])
       }
     } else {
       type = 'multiple'
@@ -260,11 +258,13 @@ function Table <RecordType extends Record<string, any>> ({
         ? selectedRows.filter(item => getRowKey(item) !== key)
         // add into collection if not selected
         : [...selectedRows, record]
-
-      setSelectedRowKeys(newKeys)
-      setSelectedRows(newRows)
     }
-    if (!newKeys) return
+    if (!newKeys) {
+      return
+    }
+    setSelectedRowKeys(newKeys)
+    setSelectedRows(newRows as RecordType[])
+
     props.rowSelection?.onChange?.(newKeys, newRows as RecordType[], { type })
   }
 

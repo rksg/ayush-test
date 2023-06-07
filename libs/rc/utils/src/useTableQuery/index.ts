@@ -182,8 +182,8 @@ export function useTableQuery <
     handlePagination(api.data)
   }, [api.data])
 
-  const getAllPagesData = option.enableSelectAllPagesData && (() => {
-    return getAllDataApi && (getAllDataApi.data ? getAllDataApi.data.data : [])
+  const getAllPagesData = (() => {
+    return getAllDataApi && getAllDataApi.data ? getAllDataApi.data.data : []
   })
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
