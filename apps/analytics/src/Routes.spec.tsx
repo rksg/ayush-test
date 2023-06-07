@@ -18,12 +18,14 @@ jest.mock('./pages/ServiceGuard/ServiceGuardDetails',() => ({
 }))
 
 jest.mock('./pages/ServiceGuard', () => ({
+  ServiceGuard: () => <div data-testid='ServiceGuardPage' />,
   useServiceGuard: () => ({
     component: <div data-testid='ServiceGuardPage' />
   })
 }))
 
 jest.mock('./pages/VideoCallQoe', () => ({
+  VideoCallQoe: () => <div data-testid='VideoCallQoePage' />,
   useVideoCallQoe: () => ({
     component: <div data-testid='VideoCallQoePage' />
   })
@@ -44,6 +46,11 @@ jest.mock('./pages/NetworkAssurance', () => ({
   NetworkAssurance: () => <div data-testid='networkAssurance' />
 }))
 
+jest.mock('./pages/AIAnalytics', () => ({
+  ...jest.requireActual('./pages/AIAnalytics'),
+  AIAnalytics: () => <div data-testid='aiAnalytics' />
+}))
+
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
 
 test('should redirect analytics to analytics/incidents', async () => {
@@ -55,7 +62,7 @@ test('should redirect analytics to analytics/incidents', async () => {
   })
   expect(screen.getByTestId('incidentListPage')).toBeVisible()
 })
-test('should navigate to analytics/incidents', async () => {
+test('should navigate to analytics/incidents page', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/tenantId/t/analytics/incidents',
@@ -63,6 +70,16 @@ test('should navigate to analytics/incidents', async () => {
     }
   })
   expect(screen.getByTestId('incidentListPage')).toBeVisible()
+})
+test('should navigate to analytics/incidents tab', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/tenantId/t/analytics/incidents',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
 })
 test('should navigate to analytics/serviceValidation', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -165,13 +182,14 @@ test('should navigate to analytics/health/tab/overview tab', async () => {
   expect(screen.getByTestId('networkAssurance')).toBeVisible()
 })
 test('should navigate to analytics/configChange', () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/tenantId/t/analytics/configChange',
       wrapRoutes: false
     }
   })
-  expect(screen.getByText('Config Change')).toBeVisible()
+  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
 })
 test('should navigate to analytics/incidentDetails', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {

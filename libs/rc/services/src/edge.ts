@@ -77,6 +77,10 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'LIST' }],
+      transformResponse: (result: TableResult<EdgeStatus>) => {
+        EdgeStatusTransformer(result.data)
+        return result
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -125,6 +129,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgeStatus>) {
+        EdgeStatusTransformer(result.data)
         return result.data[0]
       }
     }),
@@ -376,6 +381,20 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     })
   })
 })
+
+const EdgeStatusTransformer = (data: EdgeStatus[]) => {
+  data.forEach(item => {
+    if (item?.memoryUsedKb)
+      item.memoryUsed = item?.memoryUsedKb * 1024
+    if (item?.memoryTotalKb)
+      item.memoryTotal = item?.memoryTotalKb * 1024
+    if (item?.diskUsedKb)
+      item.diskUsed = item?.diskUsedKb * 1024
+    if (item?.diskTotalKb)
+      item.diskTotal = item?.diskTotalKb * 1024
+  })
+  return data
+}
 
 export const {
   useAddEdgeMutation,
