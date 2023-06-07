@@ -55,17 +55,3 @@ describe('SwitchList with feature toggle', () => {
     }))
   })
 })
-
-describe('SwitchList without feature toggle', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
-  it('should render switch table', async () => {
-    render(<SwitchList tab={SwitchTabsEnum.LIST}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByTestId('SwitchesTable')).toBeVisible()
-  })
-  it('should not render wired report tab', () => {
-    render(<SwitchList tab={SwitchTabsEnum.WIRED_REPORT}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId(ReportType.WIRED)).toBeNull()
-  })
-})

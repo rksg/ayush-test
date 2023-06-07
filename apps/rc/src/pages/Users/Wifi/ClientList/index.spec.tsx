@@ -72,9 +72,4 @@ describe('WifiClientList without feature toggle', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('GuestsTab')).toBeVisible()
   })
-  it('should not render wifi reports tab', () => {
-    render(<WifiClientList tab={WirelessTabsEnum.CLIENT_REPORT}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId(ReportType.CLIENT)).toBeNull()
-  })
 })

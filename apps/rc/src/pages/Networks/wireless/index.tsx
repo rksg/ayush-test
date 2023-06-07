@@ -25,7 +25,7 @@ interface NetworkTab {
 }
 
 function isElementArray (data: JSX.Element | JSX.Element[]
-  ): data is JSX.Element[] {
+): data is JSX.Element[] {
   return Array.isArray(data)
 }
 
@@ -82,7 +82,7 @@ export function NetworksList ({ tab }: { tab: NetworkTabsEnum }) {
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
   const tabs = useTabs()
-  const { component, headerExtra} = tabs.find(({ key }) => key === tab)!
+  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
       title={isNavbarEnhanced

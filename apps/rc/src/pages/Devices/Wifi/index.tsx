@@ -24,8 +24,8 @@ interface WifiTab {
 }
 
 function isElementArray (data: JSX.Element | JSX.Element[]
-  ): data is JSX.Element[] {
-  return Array.isArray(data)
+): data is JSX.Element[] {
+  return data ? Array.isArray(data) : false
 }
 
 const useTabs = () : WifiTab[] => {
@@ -71,7 +71,7 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
   const tabs = useTabs()
-  const { component, headerExtra} = tabs.find(({ key }) => key === tab)!
+  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
       title={isNavbarEnhanced

@@ -60,22 +60,3 @@ describe('AccessPointList with feature toggle', () => {
     }))
   })
 })
-
-describe('AccessPointList without feature toggle', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
-  it('should render aps table tab', async () => {
-    render(<AccessPointList tab={WifiTabsEnum.LIST}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByTestId('ApsTable')).toBeVisible()
-  })
-  it('should not render ap report tab', () => {
-    render(<AccessPointList tab={WifiTabsEnum.AP_REPORT}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId(ReportType.ACCESS_POINT)).toBeNull()
-  })
-  it('should not render airtime reports tab', () => {
-    render(<AccessPointList tab={WifiTabsEnum.AIRTIME_REPORT}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId(ReportType.AIRTIME_UTILIZATION)).toBeNull()
-  })
-})

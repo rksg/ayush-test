@@ -33,7 +33,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
-  const linkToList = useTenantLink(tablePath)
+  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance>()
   // eslint-disable-next-line max-len

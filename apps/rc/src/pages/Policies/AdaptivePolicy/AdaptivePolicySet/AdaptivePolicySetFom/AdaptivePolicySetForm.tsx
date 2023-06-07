@@ -36,7 +36,7 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
   const { policyId } = useParams()
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
-  const linkToList = useTenantLink(tablePath)
+  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance>()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)

@@ -292,6 +292,7 @@ jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () =
 })
 
 describe('RcRoutes: Devices', () => {
+  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {

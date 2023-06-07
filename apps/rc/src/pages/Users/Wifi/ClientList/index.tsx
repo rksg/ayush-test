@@ -34,7 +34,7 @@ interface WirelessTab {
 }
 
 function isElementArray (data: JSX.Element | JSX.Element[]
-  ): data is JSX.Element[] {
+): data is JSX.Element[] {
   return Array.isArray(data)
 }
 
@@ -109,7 +109,8 @@ const useTabs = () : WirelessTab[] => {
     ,
     component: <ClientTabContext.Provider value={{ setClientCount }}>
       <ClientDualTable />
-    </ClientTabContext.Provider>
+    </ClientTabContext.Provider>,
+    headerExtra: []
   }
   const guestTab = {
     key: WirelessTabsEnum.GUESTS,
@@ -154,7 +155,7 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
   const tabs = useTabs()
-  const { component, headerExtra} = tabs.find(({ key }) => key === tab)!
+  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
   return <>
     <PageHeader
       title={isNavbarEnhanced

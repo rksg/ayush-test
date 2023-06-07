@@ -36,7 +36,7 @@ export function ClientDualTable () {
       window.scrollTo({ top: element.offsetHeight })
     }
   }
-  setClientCount(connectedClientCount)
+  setClientCount?.(connectedClientCount)
 
   return <>
     <div id='ClientsTable'>

@@ -35,7 +35,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const { policyId, templateId } = useParams()
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })
-  const linkToList = useTenantLink(tablePath)
+  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance>()
   const [addAdaptivePolicy] = useAddAdaptivePolicyMutation()

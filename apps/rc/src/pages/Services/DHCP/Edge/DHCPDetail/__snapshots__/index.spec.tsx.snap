@@ -17,22 +17,6 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/services/list"
-              >
-                Services
-              </a>
-            </span>
-            <span
-              class="ant-breadcrumb-separator"
-            >
-              /
-            </span>
-          </li>
-          <li>
-            <span
-              class="ant-breadcrumb-link"
-            >
-              <a
                 href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/services/edgeDhcp/list"
               >
                 DHCP for SmartEdge

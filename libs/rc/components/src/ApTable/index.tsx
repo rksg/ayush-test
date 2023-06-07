@@ -135,7 +135,7 @@ export function ApTable (props: ApTableProps) {
   const tableQuery = props.tableQuery || apListTableQuery
 
   useEffect(() => {
-    setApsCount(tableQuery.data?.totalCount || 0)
+    setApsCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
   const apAction = useApActions()

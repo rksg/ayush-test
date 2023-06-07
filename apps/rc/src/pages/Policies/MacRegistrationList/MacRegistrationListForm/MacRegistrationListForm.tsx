@@ -37,7 +37,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const { policyId } = useParams()
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
-  const linkToList = useTenantLink(tablePath)
+  const linkToList = useTenantLink(`/${tablePath}`)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<MacRegistrationPoolFormFields>>()
 

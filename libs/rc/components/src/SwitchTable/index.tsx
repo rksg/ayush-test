@@ -128,7 +128,7 @@ export function SwitchTable (props : SwitchTableProps) {
   const tableQuery = props.tableQuery || inlineTableQuery
 
   useEffect(() => {
-    setSwitchCount(tableQuery.data?.totalCount || 0)
+    setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)

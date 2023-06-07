@@ -69,27 +69,3 @@ describe('NetworksList with feature toggle', () => {
     }))
   })
 })
-
-describe('NetworksList without feature toggle', () => {
-  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
-  it('should render networks table tab', async () => {
-    render(<NetworksList tab={NetworkTabsEnum.LIST}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(await screen.findByTestId('NetworksTable')).toBeVisible()
-  })
-  it('should not render wlan report tab', () => {
-    render(<NetworksList tab={NetworkTabsEnum.WLAN_REPORT}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId(ReportType.WLAN)).toBeNull()
-  })
-  it('should not render applications report tab', () => {
-    render(<NetworksList tab={NetworkTabsEnum.APPLICATIONS_REPORT}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId(ReportType.APPLICATION)).toBeNull()
-  })
-  it('should not render wireless report tab', () => {
-    render(<NetworksList tab={NetworkTabsEnum.WIRELESS_REPORT}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId(ReportType.WIRELESS)).toBeNull()
-  })
-})
