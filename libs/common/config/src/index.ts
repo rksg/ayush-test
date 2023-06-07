@@ -31,6 +31,7 @@ type R1Environment = {
 }
 
 type RAEnvironment = {
+  IS_MLISA_SA: string
   MLISA_DATA_API_URL: string
   MlISA_SMARTZONE_MGR_URL: string
   MLISA_LOGOUT_URL: string

@@ -13,8 +13,7 @@ import {
   HeaderContext,
   Logo
 } from '@acx-ui/main/components'
-import { Outlet }    from '@acx-ui/react-router-dom'
-import { useParams } from '@acx-ui/react-router-dom'
+import { Outlet, useParams } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 // import SearchBar         from './SearchBar'

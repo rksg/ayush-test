@@ -11,7 +11,8 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { TenantType, useLocation, TenantNavLink } from '@acx-ui/react-router-dom'
+import { get as getEnv }                                           from '@acx-ui/config'
+import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -62,6 +63,9 @@ export interface LayoutProps {
 
 function useActiveUri () {
   const { pathname } = useLocation()
+  if (getEnv('IS_MLISA_SA')) {
+    return pathname.replace(MLISA_BASE_PATH, '')
+  }
   const chunks = pathname.split('/')
   for (const c in chunks) {
     if (['v', 't'].includes(chunks[c])) {
