@@ -675,7 +675,7 @@ export function RadioSettings () {
                   {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
                 </Radio>
                 <Radio value={false}>
-                  {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
+                  {$t({ defaultMessage: 'Use 5 and 6 GHz bands' })}
                 </Radio>
               </Radio.Group>
             </Form.Item>
