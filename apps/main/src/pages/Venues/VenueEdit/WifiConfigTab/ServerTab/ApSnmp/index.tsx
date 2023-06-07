@@ -69,7 +69,7 @@ export function ApSnmp () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Services and Policies' }),
+      tabTitle: $t({ defaultMessage: 'Network Controls' }),
       isDirty: !isEqual(newVenueApSnmpSetting, stateOfVenueApSnmpSettings)
     })
 
@@ -87,7 +87,7 @@ export function ApSnmp () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Services and Policies' }),
+      tabTitle: $t({ defaultMessage: 'Network Controls' }),
       isDirty: !isEqual(newVenueApSnmpSetting, stateOfVenueApSnmpSettings)
     })
 
@@ -115,7 +115,7 @@ export function ApSnmp () {
       setEditContextData && setEditContextData({
         ...editContextData,
         unsavedTabKey: 'servers',
-        tabTitle: $t({ defaultMessage: 'Servers' }),
+        tabTitle: $t({ defaultMessage: 'Network Controls' }),
         isDirty: false,
         hasError: false
       })
