@@ -6,6 +6,6 @@ describe('AllRoutes', () => {
   afterEach(() => cleanup())
   it('should render correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/incidents' } })
-    await screen.findByText('doc url:')
+    await screen.findByText('profile loaded for the user:', { exact: false })
   })
 })
