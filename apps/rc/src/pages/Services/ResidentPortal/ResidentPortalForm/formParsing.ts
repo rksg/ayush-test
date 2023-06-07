@@ -42,18 +42,18 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
   formValues.tenantSetDpsk = data.uiConfiguration?.access?.tenantSetDpsk ?? false
 
   if(data.uiConfiguration?.text) {
-    formValues.textTitle = data.uiConfiguration.text.title ?? ''
-    formValues.textSubtitle = data.uiConfiguration.text.subTitle ?? ''
-    formValues.textLogin = data.uiConfiguration.text.loginText ?? ''
-    formValues.textAnnouncements = data.uiConfiguration.text.announcements ?? ''
-    formValues.textHelp = data.uiConfiguration.text.helpText ?? ''
+    formValues.textTitle = data.uiConfiguration.text.title
+    formValues.textSubtitle = data.uiConfiguration.text.subTitle
+    formValues.textLogin = data.uiConfiguration.text.loginText
+    formValues.textAnnouncements = data.uiConfiguration.text.announcements
+    formValues.textHelp = data.uiConfiguration.text.helpText
   }
 
   if(data.uiConfiguration?.color) {
-    formValues.colorMain = data.uiConfiguration.color.mainColor ?? ''
-    formValues.colorAccent = data.uiConfiguration.color.accentColor ?? ''
-    formValues.colorSeparator = data.uiConfiguration.color.separatorColor ?? ''
-    formValues.colorText = data.uiConfiguration.color.textColor ?? ''
+    formValues.colorMain = data.uiConfiguration.color.mainColor
+    formValues.colorAccent = data.uiConfiguration.color.accentColor
+    formValues.colorSeparator = data.uiConfiguration.color.separatorColor
+    formValues.colorText = data.uiConfiguration.color.textColor
   }
 
   return {
@@ -88,9 +88,9 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
       },
       files: {
         logoFileName: data.fileLogo?.file && !data.fileLogo.isRemoved ?
-          data.fileLogo.file.name : (data.fileLogo.isRemoved ? '' : undefined),
+          data.fileLogo.file.name : (data.fileLogo?.isRemoved ? '' : undefined),
         favIconFileName: data.fileFavicon?.file && !data.fileLogo.isRemoved ?
-          data.fileFavicon.file.name : (data.fileFavicon.isRemoved ? '' : undefined)
+          data.fileFavicon.file.name : (data.fileFavicon?.isRemoved ? '' : undefined)
       }
     }
   }
