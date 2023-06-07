@@ -83,6 +83,22 @@ export const venue = [
         type: 'AP_FIRMWARE_UPGRADE',
         category: 'RECOMMENDED'
       }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.433',
+        latestEolVersion: '6.1.0.10.433',
+        apCount: 1,
+        apModels: ['R300', 'R500', 'R550']
+      },
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.533',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['R500']
+      }
     ]
   }
 ]

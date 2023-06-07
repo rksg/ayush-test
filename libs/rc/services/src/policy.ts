@@ -109,7 +109,8 @@ const ApplicationUseCases = [
 const AccessControlUseCases = [
   'AddAccessControlProfile',
   'UpdateAccessControlProfile',
-  'DeleteAccessControlProfile'
+  'DeleteAccessControlProfile',
+  'DeleteBulkAccessControlProfiles'
 ]
 
 export const policyApi = basePolicyApi.injectEndpoints({
@@ -235,7 +236,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
     deleteAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    deleteAccessControlProfiles: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfiles, params)
         return {
           ...req,
           body: payload
@@ -245,7 +257,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params)
         return {
           ...req
         }
@@ -323,7 +335,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params)
         return {
           ...req,
           body: payload
@@ -333,7 +345,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAppPolicy: build.query<appPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params)
         return {
           ...req
         }
@@ -370,15 +382,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
-    devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    devicePolicyList: build.query<DevicePolicy[], RequestPayload>({
+      query: ({ params }) => {
         const devicePolicyListReq = createHttpRequest(
           AccessControlUrls.getDevicePolicyList,
           params
         )
         return {
-          ...devicePolicyListReq,
-          body: payload
+          ...devicePolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -734,15 +745,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const l2AclPolicyListReq = createHttpRequest(
           AccessControlUrls.getL2AclPolicyList,
           params
         )
         return {
-          ...l2AclPolicyListReq,
-          body: payload
+          ...l2AclPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -759,15 +769,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    l3AclPolicyList: build.query<L3AclPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const l3AclPolicyListReq = createHttpRequest(
           AccessControlUrls.getL3AclPolicyList,
           params
         )
         return {
-          ...l3AclPolicyListReq,
-          body: payload
+          ...l3AclPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -784,15 +793,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    appPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
+    appPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
+      query: ({ params }) => {
         const appPolicyListReq = createHttpRequest(
           AccessControlUrls.getAppPolicyList,
           params
         )
         return {
-          ...appPolicyListReq,
-          body: payload
+          ...appPolicyListReq
         }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
@@ -909,6 +917,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistration, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    deleteMacRegistrations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
@@ -1262,7 +1280,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
             'UpdateSyslogServerProfile',
-            'DeleteSyslogServerProfile'
+            'DeleteSyslogServerProfile',
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -1293,7 +1312,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
             'UpdateSyslogServerProfile',
-            'DeleteSyslogServerProfile'
+            'DeleteSyslogServerProfile',
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -1866,6 +1886,7 @@ export const {
   useSearchMacRegistrationsQuery,
   useLazySearchMacRegistrationsQuery,
   useDeleteMacRegistrationMutation,
+  useDeleteMacRegistrationsMutation,
   useAddMacRegistrationMutation,
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
@@ -1890,6 +1911,7 @@ export const {
   useAddAccessControlProfileMutation,
   useUpdateAccessControlProfileMutation,
   useDeleteAccessControlProfileMutation,
+  useDeleteAccessControlProfilesMutation,
   useGetAccessControlProfileQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,

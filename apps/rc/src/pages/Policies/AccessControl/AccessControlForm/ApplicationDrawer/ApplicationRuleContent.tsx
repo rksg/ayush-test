@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, Slider } from 'antd'
-import { defineMessage, MessageDescriptor, useIntl }                                    from 'react-intl'
+import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, Slider, Tooltip } from 'antd'
+import { defineMessage, MessageDescriptor, useIntl }                                             from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                              from '@acx-ui/icons'
 import {
   ApplicationAclType,
   ApplicationRuleType, AvcCategory, generalIpAddressRegExp,
@@ -158,6 +159,14 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     setSourceValue(e.target.value)
   }
 
+  const sortOptions = (a: string, b: string) => {
+    const compareA = a.split('_')[1].toUpperCase()
+    const compareB = b.split('_')[1].toUpperCase()
+    if (compareA > compareB) return 1
+    if (compareA < compareB) return -1
+    return 0
+  }
+
   const selectApplication = (category: string) => {
     if (category === 'All') {
       let optionsList = [] as string[]
@@ -172,12 +181,15 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         }
       })
       return <Select
+        showSearch
         style={{ width: '100%' }}
+        optionFilterProp='children'
+        filterOption={(input, option) => (String(option?.value) ?? '').includes(input)}
         onChange={(evt) => {
           drawerForm.setFieldValue('applicationNameSystemDefined', evt)
         }}
       >
-        {optionsList.map(option => {
+        {optionsList.sort(sortOptions).map(option => {
           return <Select.Option key={option} value={option}>
             {option.split('_')[1]}
           </Select.Option>
@@ -187,13 +199,18 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
     const categoryId = avcSelectOptions
       .findIndex(cat => cat.catName === category)
 
+    const renderOptions = avcSelectOptions[categoryId]?.appNames.slice(1) ?? []
+
     return <Select
+      showSearch
       style={{ width: '100%' }}
+      optionFilterProp='children'
+      filterOption={(input, option) => (String(option?.value) ?? '').includes(input)}
       onChange={(evt) => {
         drawerForm.setFieldValue('applicationNameSystemDefined', evt)
       }}
     >
-      {avcSelectOptions[categoryId]?.appNames.map((avcApp: string) => {
+      {[$t({ defaultMessage: 'All' }), ...renderOptions.sort()].map((avcApp: string) => {
         return <Select.Option key={`${category}_${avcApp}`} value={`${category}_${avcApp}`}>
           {avcApp}
         </Select.Option>
@@ -221,6 +238,13 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       <GridCol col={{ span: 24 }}>
         <Radio value={ApplicationAclType.RATE_LIMIT}>
           {$t(AppAclLabelMapping[ApplicationAclType.RATE_LIMIT])}
+          {/* eslint-disable-next-line max-len */}
+          <Tooltip title={$t({ defaultMessage: 'If you set rate limit on network level, it will override any rate limit set on policy level.' })}
+            placement='bottom'>
+            <QuestionMarkCircleOutlined
+              style={{ marginLeft: 3, marginBottom: -7, width: '20px' }}
+            />
+          </Tooltip>
         </Radio>
       </GridCol>
       <GridCol col={{ span: 24 }}>
@@ -242,7 +266,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
             >
               {rateLimitContent}
             </Form.Item>
-          </div> : null}
+          </div> : <div></div>}
       </GridCol>
 
       <GridCol col={{ span: 24 }}>
@@ -251,7 +275,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         </Radio>
       </GridCol>
       <GridCol col={{ span: 24 }}>
-        {sourceValue === ApplicationAclType.QOS ? <QosContent drawerForm={drawerForm}/> : null}
+        {sourceValue === ApplicationAclType.QOS
+          ? <QosContent drawerForm={drawerForm}/>
+          : <div></div>}
       </GridCol>
     </GridRow>
 
@@ -294,7 +320,8 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       validateFirst
       rules={[
         { required: true },
-        { max: 64 },
+        { min: 2 },
+        { max: 32 },
         { validator: (_, value) => {
           if (!editMode && applicationsRuleList.findIndex(rule => rule.ruleName === value) !== -1) {
             return Promise.reject($t({ defaultMessage: 'This rule name has been existed.' }))

@@ -135,6 +135,9 @@
   "+dbj3T": {
     "defaultMessage": "New Application Category"
   },
+  "+eW1pq": {
+    "defaultMessage": "Change preferred update slot"
+  },
   "+frS59": {
     "defaultMessage": "Version Management"
   },
@@ -289,6 +292,9 @@
   "/IRNBr": {
     "defaultMessage": "Backup restore is in progress"
   },
+  "/JfTrU": {
+    "defaultMessage": "Select server"
+  },
   "/JlOnM": {
     "defaultMessage": "3G:"
   },
@@ -304,11 +310,17 @@
   "/P3VsM": {
     "defaultMessage": "Target IP"
   },
+  "/QQYb6": {
+    "defaultMessage": "Preferred update slot(s):"
+  },
   "/RRvw+": {
     "defaultMessage": "Duplicate test name exist"
   },
   "/TDfu/": {
     "defaultMessage": "<p>The following are not supported:</p> <ul> <li>802.1X with WPA3, EAP-TLS and EAP-SIM</li> <li>WEP encryption</li> <li>WPA3/WPA2 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li> <li>Captive portal</li> <li>Cloudpath</li> <li>DPSK</li> </ul>"
+  },
+  "/UZHRz": {
+    "defaultMessage": "The PSK is invalid"
   },
   "/V0Dqn": {
     "defaultMessage": "Best effort"
@@ -669,6 +681,9 @@
   "14AxbZ": {
     "defaultMessage": "Client RSS"
   },
+  "17nHpL": {
+    "defaultMessage": "Please enter a number between 2 and 10"
+  },
   "17wnA0": {
     "defaultMessage": "from MAC addresses listed below"
   },
@@ -695,9 +710,6 @@
   },
   "1Ew0iu": {
     "defaultMessage": "All the rectangles in the drag area will receive the same status – opposite the status of the rectangle where the drag started"
-  },
-  "1FxV5K": {
-    "defaultMessage": "Server Configuration Conflict"
   },
   "1G1Ohw": {
     "defaultMessage": "No 3rd Party Administrator Invited"
@@ -752,6 +764,10 @@
   },
   "1WCywA": {
     "defaultMessage": "<p>Clients are failing at the authentication stage of an 802.11r (Fast Transition) roam. The client is including PMKID information from its roam-from AP, but the roam-to AP does not have the key.</p> <p>This scenario is most commonly caused in the following scenarios:</p> <ol> <li>The roam-from and roam-to APs cannot share keys with one another, which happens if they are not RF neighbors or if they do not have IP connectivity for AP-to-AP communication.</li> <li>The roam-from and roam-to APs are not RF neighbors. Clients may assume that all APs sharing an SSID will have the key, but the key may only be shared with RF neighbors.</li> </ol>"
+  },
+  "1WSnFV": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline",
+    "description": "Translation string - Offline"
   },
   "1X6HtI": {
     "defaultMessage": "All Categories"
@@ -856,6 +872,9 @@
   },
   "1xvLbG": {
     "defaultMessage": "WLAN"
+  },
+  "1yS18m": {
+    "defaultMessage": "DDoS"
   },
   "1yXMf2": {
     "defaultMessage": "4. Use the Zoom desktop or mobile application (not web browser version)"
@@ -1059,6 +1078,9 @@
   "2sH94b": {
     "defaultMessage": "dhcp-state"
   },
+  "2tDDRh": {
+    "defaultMessage": "Uplink Selection"
+  },
   "2tpfU+": {
     "defaultMessage": "3. 'My Open Cases' link behavior"
   },
@@ -1089,11 +1111,17 @@
   "307CiC": {
     "defaultMessage": "Cloudpath Captive Portal"
   },
+  "32LHHJ": {
+    "defaultMessage": "An upgrade schedule for the new firmware version is available."
+  },
   "32hdkB": {
     "defaultMessage": "Switch must be operational before you can see rear view"
   },
   "32tcqf": {
     "defaultMessage": "It is the user's responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures"
+  },
+  "334+Ex": {
+    "defaultMessage": "The Mesh Network Name is invalid"
   },
   "33Ko8D": {
     "defaultMessage": "Select Switch..."
@@ -1237,6 +1265,9 @@
   "3d6C4k": {
     "defaultMessage": "Adaptive Policy Sets"
   },
+  "3g6QAZ": {
+    "defaultMessage": "This action will cause network interruption and impact service delivery."
+  },
   "3g9ANZ": {
     "defaultMessage": "Malicious"
   },
@@ -1249,9 +1280,6 @@
   "3lzMi0": {
     "defaultMessage": "The VLAN ID already exists",
     "description": "Validation - validate vlan id"
-  },
-  "3mdxYI": {
-    "defaultMessage": "No Switch Clients"
   },
   "3mgRaU": {
     "defaultMessage": "Portal Details"
@@ -1276,6 +1304,9 @@
   },
   "3uXfAz": {
     "defaultMessage": "AAA Policy"
+  },
+  "3v7bUi": {
+    "defaultMessage": "Connected APs"
   },
   "3vwDOf": {
     "defaultMessage": "{apsFinishedTest} of {apsUnderTest} {apsUnderTest, plural, one {AP} other {APs}} tested"
@@ -1492,6 +1523,9 @@
   },
   "4tv7lM": {
     "defaultMessage": "Enter a short description, up to 64 characters"
+  },
+  "4wO9//": {
+    "defaultMessage": "Additional external configuration is required for this option to function. <br></br> Please refer to the {link} for more details"
   },
   "4y+HDO": {
     "defaultMessage": "ACL"
@@ -1809,6 +1843,9 @@
   "6I9iA+": {
     "defaultMessage": "Ios"
   },
+  "6Jg9Lf": {
+    "defaultMessage": "5 & 6 GHz"
+  },
   "6JhMpu": {
     "defaultMessage": "Add Configuration Profile"
   },
@@ -1827,6 +1864,9 @@
   "6NUzkq": {
     "defaultMessage": "You’ll receive a login code via an authentication app"
   },
+  "6QBsLu": {
+    "defaultMessage": "Manually update firmware per venue"
+  },
   "6RKXNK": {
     "defaultMessage": "Use RADIUS Server"
   },
@@ -1835,6 +1875,9 @@
   },
   "6U6zBD": {
     "defaultMessage": "Outbound SSH (TCP 22) from APs and Switches to:"
+  },
+  "6UFHgi": {
+    "defaultMessage": "User-defined"
   },
   "6Uezdk": {
     "defaultMessage": "Linked to Root AP \"{rootApName}\""
@@ -2004,6 +2047,9 @@
     "defaultMessage": "Can not be a broadcast address",
     "description": "Validation - switch broadcast address"
   },
+  "733SFg": {
+    "defaultMessage": "Enable Data Consumption control"
+  },
   "73nhOH": {
     "defaultMessage": "CLI template"
   },
@@ -2106,6 +2152,9 @@
   "7Rz663": {
     "defaultMessage": "DHCP Service"
   },
+  "7SSF71": {
+    "defaultMessage": "No SmartEdges"
+  },
   "7Sk+pg": {
     "defaultMessage": "Your GPS coordinates are outside the venue: {venueName}. Are you sure you want to place the device in this new position?"
   },
@@ -2183,6 +2232,9 @@
   },
   "7tSsC/": {
     "defaultMessage": "<p>This issue is typically the result of an intended policy configuration. No action may be needed, but if this behavior is creating unwanted user disruption, consider modifying the policy configurations:</p> <ol> <li>Confirm the L2 MAC ACL policy.</li> <li>Confirm the Blocked Client List.</li> </ol>"
+  },
+  "7uudSn": {
+    "defaultMessage": "Add Connection Metering"
   },
   "7vTvJh": {
     "defaultMessage": "WiFi4EU is enabled but not configured!"
@@ -2291,6 +2343,9 @@
   "8GEsJg": {
     "defaultMessage": "IDM_REQ"
   },
+  "8GgiA0": {
+    "defaultMessage": "{minStackes} switches"
+  },
   "8HCPWj": {
     "defaultMessage": "Enable load balancing between all radios"
   },
@@ -2385,6 +2440,9 @@
   "8c5zSU": {
     "defaultMessage": "Default VLAN settings won't be applied if there is the same VLAN ID in switch"
   },
+  "8cADk1": {
+    "defaultMessage": "Data Rate Settings"
+  },
   "8cF6CF": {
     "defaultMessage": "Error: Can not detect passphrase expiration value"
   },
@@ -2394,11 +2452,11 @@
   "8eC8OK": {
     "defaultMessage": "NIS-Server-Addr"
   },
+  "8f9Nsx": {
+    "defaultMessage": "RADIUS Options"
+  },
   "8fWwfB": {
     "defaultMessage": "HomeAvEquipment"
-  },
-  "8g/xri": {
-    "defaultMessage": "Overwrite Configuration"
   },
   "8hHLAJ": {
     "defaultMessage": "<p>Might be caused by network stability issues.</p>"
@@ -2680,9 +2738,6 @@
   "9q7E+6": {
     "defaultMessage": "CLI Session - {switchName}"
   },
-  "9qW5S9": {
-    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requires Attention"
-  },
   "9rPWO/": {
     "defaultMessage": "Disassociated because excessive number of frames need to be acknowledged, but are not acknowledged due to AP transmissions and/or poor channel conditions"
   },
@@ -2852,6 +2907,9 @@
   "AVqRVD": {
     "defaultMessage": "Select option from list"
   },
+  "AWu0gS": {
+    "defaultMessage": "BSS Priority"
+  },
   "AXDHYL": {
     "defaultMessage": "Enable 5 GHz band:"
   },
@@ -2881,9 +2939,6 @@
   },
   "AdM0fK": {
     "defaultMessage": "Mask Discovery"
-  },
-  "AeCgAI": {
-    "defaultMessage": "Unit {names} was deleted"
   },
   "AetNAD": {
     "defaultMessage": "Browse"
@@ -2942,6 +2997,9 @@
   "Ar4vtA": {
     "defaultMessage": "Add Persona Group"
   },
+  "ArUk+O": {
+    "defaultMessage": "Denied Packet"
+  },
   "ArhATs": {
     "defaultMessage": "Client Experience"
   },
@@ -2971,9 +3029,6 @@
   },
   "AxDOiG": {
     "defaultMessage": "Months"
-  },
-  "AxJKYT": {
-    "defaultMessage": "Summary Table"
   },
   "AxMhQr": {
     "defaultMessage": "High"
@@ -3011,6 +3066,9 @@
   "B6Nc0o": {
     "defaultMessage": "Edit SNMPv3 Agent"
   },
+  "B7i3/p": {
+    "defaultMessage": "AP Models: {apModels}"
+  },
   "B96BAr": {
     "defaultMessage": "In Discards"
   },
@@ -3028,6 +3086,9 @@
   },
   "BCvEn5": {
     "defaultMessage": "Mask: {mask}"
+  },
+  "BCy8ZE": {
+    "defaultMessage": "DHCP Server is Enabled"
   },
   "BEaQgL": {
     "defaultMessage": "This applies only to AP models that support tri-band, such as the R760"
@@ -3065,8 +3126,14 @@
   "BMa+lq": {
     "defaultMessage": "Paste the text here..."
   },
+  "BN5yXZ": {
+    "defaultMessage": "Valid"
+  },
   "BNHFY1": {
     "defaultMessage": "Only letters and numbers can be used"
+  },
+  "BNayx5": {
+    "defaultMessage": "Select other version..."
   },
   "BNj+Ba": {
     "defaultMessage": "R760 radio bands management"
@@ -3172,11 +3239,20 @@
   "BlDrs8": {
     "defaultMessage": "802.11 Authentication Request"
   },
+  "BlyOAW": {
+    "defaultMessage": "WISPr API documentation"
+  },
   "BqgUnS": {
     "defaultMessage": "# of successful allocations"
   },
   "Bqj0zp": {
     "defaultMessage": "Switches running 08.0.70x or older releases need to go through a 2 step upgrade process."
+  },
+  "Br4bB2": {
+    "defaultMessage": "Rate Limiting"
+  },
+  "BrkrKD": {
+    "defaultMessage": "If this option is selected, users will be informed their personal information is being collected"
   },
   "Brplhy": {
     "defaultMessage": "The rule has reached the limit ({maxCount})."
@@ -3251,8 +3327,9 @@
   "C5VhoH": {
     "defaultMessage": "Secondary SIM"
   },
-  "C7HRVW": {
-    "defaultMessage": "Firmware Version Management"
+  "C8efXI": {
+    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase",
+    "description": "Translation string - In Setup Phase"
   },
   "C9eWwX": {
     "defaultMessage": "DNS Proxy"
@@ -3331,6 +3408,9 @@
   "CQg4Lt": {
     "defaultMessage": "{years} y"
   },
+  "CRa5Ia": {
+    "defaultMessage": "NAS ID will identify clients to a RADIUS server"
+  },
   "CV+md2": {
     "defaultMessage": "Logo Preview:"
   },
@@ -3382,6 +3462,9 @@
   },
   "CgnWQX": {
     "defaultMessage": "Value must between 2-14400 minutes or 1-240 hours or 1-10 days"
+  },
+  "Cj3YE3": {
+    "defaultMessage": "Delimiter"
   },
   "CkGdGi": {
     "defaultMessage": "EAPOL Failure"
@@ -3441,6 +3524,9 @@
   "D6UU7g": {
     "defaultMessage": "Add Network"
   },
+  "D7/GIg": {
+    "defaultMessage": "Enabling mesh for a venue is a global configuration and once mesh links are formed (automatically), it cannot be undone."
+  },
   "D73EmX": {
     "defaultMessage": "{n} of {d} connections under {threshold}"
   },
@@ -3498,6 +3584,9 @@
   },
   "DSCPXP": {
     "defaultMessage": "Save Preferences"
+  },
+  "DSMot1": {
+    "defaultMessage": "Select up to 3 days"
   },
   "DT1Xmz": {
     "defaultMessage": "Failure reason: {reason}"
@@ -3598,6 +3687,9 @@
   },
   "DqD1yK": {
     "defaultMessage": "Applications"
+  },
+  "DqTQOp": {
+    "defaultMessage": "Once"
   },
   "DxrJDu": {
     "defaultMessage": "Encryption for Users’ MAC and IP addresses:"
@@ -3788,6 +3880,9 @@
   "EuK7yR": {
     "defaultMessage": "October"
   },
+  "EuMEYh": {
+    "defaultMessage": "Instances ({size})"
+  },
   "EvG8up": {
     "defaultMessage": "1 Month"
   },
@@ -3799,6 +3894,9 @@
   },
   "EzTaEJ": {
     "defaultMessage": "Dropped auth frame by Transient Client Management"
+  },
+  "F/++n1": {
+    "defaultMessage": "No Switch clients"
   },
   "F/1pwP": {
     "defaultMessage": "Venues:"
@@ -3863,6 +3961,9 @@
   "FACmOV": {
     "defaultMessage": "Ports:"
   },
+  "FD2wXd": {
+    "defaultMessage": "Active Device"
+  },
   "FEeg08": {
     "defaultMessage": "Supported Device Models"
   },
@@ -3917,6 +4018,9 @@
   "FV+P4u": {
     "defaultMessage": "802.3af"
   },
+  "FVB7Oy": {
+    "defaultMessage": "Selected time will apply to each venue according to own time-zone"
+  },
   "FX7pkg": {
     "defaultMessage": "The service is currently not supported in the country which you entered.<br></br>Please make sure that you entered the correct address."
   },
@@ -3929,12 +4033,18 @@
   "FbnpZB": {
     "defaultMessage": "Cluster of {count} Venues"
   },
+  "Fbq2xR": {
+    "defaultMessage": "Enabling this feature allows the APs to maintain one accounting session for a client roaming between APs. If the client roams from one AP to another, the accounting session ID and statistics will be carried while roaming from one AP to the other."
+  },
   "FcSN56": {
     "defaultMessage": "Please enter a valid Name",
     "description": "Validation - Name checks"
   },
   "FckSlh": {
     "defaultMessage": "Domain 1 countries"
+  },
+  "FdQlmc": {
+    "defaultMessage": "Select Uplink AP Manually"
   },
   "FeeZwa": {
     "defaultMessage": "RSN IE is inconsistent"
@@ -4168,11 +4278,11 @@
   "GcXfck": {
     "defaultMessage": "3rd party administrator found"
   },
+  "GdukQo": {
+    "defaultMessage": "Authentication Connections"
+  },
   "GeH82N": {
     "defaultMessage": "Image Download Using USB"
-  },
-  "GegfmV": {
-    "defaultMessage": "Service Validation is not enabled"
   },
   "GgEWLv": {
     "defaultMessage": "Add SNMP Agent"
@@ -4376,6 +4486,10 @@
   "Hc0dIr": {
     "defaultMessage": "This agent is currently activated on venues. Deleting it will deactivate the agent for those venues/ APs. Are you sure you want to delete it?"
   },
+  "HcncMB": {
+    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation not needed"
+  },
   "Hd4nBy": {
     "defaultMessage": "Please create 1 rule at least."
   },
@@ -4399,9 +4513,6 @@
   },
   "Hgj+nK": {
     "defaultMessage": "The Community name already exists"
-  },
-  "HhiEq3": {
-    "defaultMessage": "Video Call QoE is not enabled"
   },
   "HiAhyX": {
     "defaultMessage": "Make sure to include a city and country in the address"
@@ -4430,6 +4541,9 @@
   "Hpv4PA": {
     "defaultMessage": "Excellent"
   },
+  "HqDBH2": {
+    "defaultMessage": "Please select Policy Type"
+  },
   "HqDq9z": {
     "defaultMessage": "Help Text"
   },
@@ -4447,6 +4561,9 @@
   },
   "Hxs7w2": {
     "defaultMessage": "DHCP NAK"
+  },
+  "HyUzUt": {
+    "defaultMessage": "Called Station ID"
   },
   "HzVRrn": {
     "defaultMessage": "Please enter address mask"
@@ -4483,6 +4600,9 @@
   },
   "I328Ej": {
     "defaultMessage": "-Actual UI may be different and is not under Ruckus Networks responsibility"
+  },
+  "I3D6GX": {
+    "defaultMessage": "Breakout Port"
   },
   "I3JhPS": {
     "defaultMessage": "Network"
@@ -4564,6 +4684,9 @@
   },
   "IQrRCX": {
     "defaultMessage": "No data to display"
+  },
+  "IRIC7Z": {
+    "defaultMessage": "Connection Metering"
   },
   "IS/0Ju": {
     "defaultMessage": "Wireless Network"
@@ -4668,9 +4791,6 @@
   "IqBkBl": {
     "defaultMessage": "DHCP"
   },
-  "IrnXwi": {
-    "defaultMessage": "VLAN-{id} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
-  },
   "ItEQ44": {
     "defaultMessage": "Resend Invitation"
   },
@@ -4694,6 +4814,9 @@
   },
   "IxX0/A": {
     "defaultMessage": "Disassociated for unspecified, QoS-related reason"
+  },
+  "IyOpR5": {
+    "defaultMessage": "VxLAN PMTU Value"
   },
   "IygFVO": {
     "defaultMessage": "Please select Layer 2 profile"
@@ -4785,6 +4908,9 @@
   "JCIgkj": {
     "defaultMessage": "Username"
   },
+  "JDxiP3": {
+    "defaultMessage": "Only runs as Mesh AP"
+  },
   "JEFJiM": {
     "defaultMessage": "Invalid pairwise master key identified (PMKI)"
   },
@@ -4797,8 +4923,8 @@
   "JGu6zs": {
     "defaultMessage": "Persona"
   },
-  "JI7IJE": {
-    "defaultMessage": "SmartEdge Status"
+  "JHk/NO": {
+    "defaultMessage": "Some browser's security extensions/plugins might block this feature. Please disable those extensions/plugins and try again."
   },
   "JIPniO": {
     "defaultMessage": "Linked to Root AP \"{rootApName}\" {isRootApUnplaced, select, true {(unplaced)} other {}} {hops, plural, =0 {} one {({hops} Hop)} other {({hops} Hops)}}"
@@ -4968,6 +5094,9 @@
   },
   "K3kfTi": {
     "defaultMessage": "Event Start Time"
+  },
+  "K3qnJa": {
+    "defaultMessage": "Update time:"
   },
   "K3r6DQ": {
     "defaultMessage": "Delete"
@@ -5292,9 +5421,6 @@
   "LN27XK": {
     "defaultMessage": "Multi-Factors Authentication Setup"
   },
-  "LNH75V": {
-    "defaultMessage": "You cannot set Mesh off because you have connected Mesh APs"
-  },
   "LNL61o": {
     "defaultMessage": "Port VLANs"
   },
@@ -5325,6 +5451,9 @@
   },
   "LUtYvq": {
     "defaultMessage": "Enable 802.11k neighbor reports"
+  },
+  "LVPkIk": {
+    "defaultMessage": "Colon"
   },
   "LW8TBO": {
     "defaultMessage": "Edit Client Isolation Profile"
@@ -5368,6 +5497,10 @@
   },
   "Lk4Mip": {
     "defaultMessage": "<p>Clients are failing authentication because the passphrase (PSK) does not match the AP/SSID configuration.</p>"
+  },
+  "LpGq/Y": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block Persona}}",
+    "description": "Translation strings - Unblock, Block Persona"
   },
   "Lpfnla": {
     "defaultMessage": "One of the values you entered conflicts with an existing authentication server configuration in another network."
@@ -5560,9 +5693,6 @@
   "McAp05": {
     "defaultMessage": "Subscription about to expire in {daysText} days"
   },
-  "McKt/u": {
-    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operational"
-  },
   "McnLsx": {
     "defaultMessage": "When"
   },
@@ -5613,6 +5743,9 @@
   },
   "MsO5zT": {
     "defaultMessage": "Jumbo Mode"
+  },
+  "Mso9EU": {
+    "defaultMessage": "Zero Touch Mesh"
   },
   "MsxfS5": {
     "defaultMessage": "Application Type"
@@ -5665,9 +5798,6 @@
   "N5Sbxy": {
     "defaultMessage": "Configuration Profiles"
   },
-  "N6bCx+": {
-    "defaultMessage": "This policy has been applied in network"
-  },
   "N7EdjU": {
     "defaultMessage": "Seconds"
   },
@@ -5688,6 +5818,9 @@
   },
   "NAidKb": {
     "defaultMessage": "Notifications"
+  },
+  "NBTwVC": {
+    "defaultMessage": "Invalid NAS ID"
   },
   "NBfpt8": {
     "defaultMessage": "Drop It"
@@ -5757,9 +5890,6 @@
   },
   "NN9jmN": {
     "defaultMessage": "Please select a DPSK pool"
-  },
-  "NO0VM6": {
-    "defaultMessage": "Override the conflicting server configuration"
   },
   "NOiJNj": {
     "defaultMessage": "Next Hop"
@@ -5909,6 +6039,9 @@
   "NyusYn": {
     "defaultMessage": "Factory default"
   },
+  "O+w68O": {
+    "defaultMessage": "Edge Status"
+  },
   "O0CDOi": {
     "defaultMessage": "MAC Address ( {count}/{count_limit} )"
   },
@@ -5956,6 +6089,9 @@
   },
   "O7/Tcq": {
     "defaultMessage": "Each route should have unique Network Address + Subnet Mask"
+  },
+  "O9/wTE": {
+    "defaultMessage": "Total Download limit"
   },
   "O95R3Z": {
     "defaultMessage": "Phone"
@@ -6054,9 +6190,6 @@
   "OT4kCw": {
     "defaultMessage": "AP Name"
   },
-  "OTAs3L": {
-    "defaultMessage": "Enter phone number"
-  },
   "OUB35b": {
     "defaultMessage": "Copy from your Cloudpath's configuration"
   },
@@ -6123,6 +6256,10 @@
   "Ok71Hw": {
     "defaultMessage": "Security Protocol:"
   },
+  "OkxXZB": {
+    "defaultMessage": "{showSeverity, selectordinal, one {4 } other {}}Operational",
+    "description": "Translation string - Operational"
+  },
   "OlFEok": {
     "defaultMessage": "Upgrading the switch"
   },
@@ -6148,11 +6285,17 @@
   "OtVKk/": {
     "defaultMessage": "No error"
   },
+  "OuCSDn": {
+    "defaultMessage": "Disk"
+  },
   "OuPiSR": {
     "defaultMessage": "ARP Inspection:"
   },
   "OvzONl": {
     "defaultMessage": "Off"
+  },
+  "OxfTrY": {
+    "defaultMessage": "PSK must be between 8 and 63 characters"
   },
   "OyuYNU": {
     "defaultMessage": "* There are more historical clients than can be displayed. If you don’t see the client you are looking for, narrow the list by entering a more specific text in the search box."
@@ -6176,11 +6319,17 @@
   "P0c/ms": {
     "defaultMessage": "One of the values you entered conflicts with existing authentication and accounting server configurations in another network."
   },
+  "P0ste6": {
+    "defaultMessage": "{status} (IN: {inCount} {inCount, plural, one {rule} other {rules}}, OUT: {outCount} {outCount, plural, one {rule} other {rules}})"
+  },
   "P0vpSy": {
     "defaultMessage": "Port Type"
   },
   "P2PgnZ": {
     "defaultMessage": "Accounting Port"
+  },
+  "P4JJ2W": {
+    "defaultMessage": "Traffic Control"
   },
   "P4UW09": {
     "defaultMessage": "Most impacted WLAN: {ssid}"
@@ -6229,6 +6378,9 @@
   },
   "PLUhm9": {
     "defaultMessage": "VLAN ID"
+  },
+  "PLbaPX": {
+    "defaultMessage": "Collect Config"
   },
   "PLboZB": {
     "defaultMessage": "Select Wi-Fi Calling Profiles"
@@ -6290,6 +6442,9 @@
   "PgM1mM": {
     "defaultMessage": "DHCP Settings"
   },
+  "Pha+88": {
+    "defaultMessage": "Expiration Time"
+  },
   "PiIN3F": {
     "defaultMessage": "Cannot locate this rogue AP since the detecting APs are not placed in any floor plans."
   },
@@ -6316,6 +6471,9 @@
   },
   "PsEEfC": {
     "defaultMessage": "The email address belongs to a registered user in this account. Please select him using the \"Registered User\" option"
+  },
+  "PtipaP": {
+    "defaultMessage": "Consumption Cycle"
   },
   "PtkzSB": {
     "defaultMessage": "Backup creation is in progress"
@@ -6382,9 +6540,6 @@
     "defaultMessage": "Please enter a valid phone number",
     "description": "Validation - phone number checks"
   },
-  "Q7r9fB": {
-    "defaultMessage": "Enable Mesh"
-  },
   "Q8Qw5B": {
     "defaultMessage": "Description"
   },
@@ -6415,6 +6570,9 @@
   "QExggt": {
     "defaultMessage": "Using configured password"
   },
+  "QF+PNv": {
+    "defaultMessage": "Account Management"
+  },
   "QF20FV": {
     "defaultMessage": "query-end-time"
   },
@@ -6435,6 +6593,9 @@
   },
   "QN9BCR": {
     "defaultMessage": "Passphrase Reset"
+  },
+  "QNKY+S": {
+    "defaultMessage": "Invalid Mesh Network Name"
   },
   "QO3d1l": {
     "defaultMessage": "Above {threshold}"
@@ -6592,9 +6753,6 @@
   "RBQU2R": {
     "defaultMessage": "No data to display."
   },
-  "RESuN/": {
-    "defaultMessage": "Detail content Error"
-  },
   "REux5E": {
     "defaultMessage": "Add VLAN Pool"
   },
@@ -6723,6 +6881,9 @@
   "Rncbm3": {
     "defaultMessage": "Voice VLAN"
   },
+  "Rnhiac": {
+    "defaultMessage": "Mesh Network Name"
+  },
   "RnonLg": {
     "defaultMessage": "Syslog Server Configuration"
   },
@@ -6783,6 +6944,9 @@
   "RzY1EZ": {
     "defaultMessage": "Please enter Offset"
   },
+  "Rzc4YD": {
+    "defaultMessage": "Max Data: {dataCapacity}{unit} {cycleType, select, CYCLE_MONTHLY {(Monthly)} CYCLE_WEEKLY {(Weekly)} CYCLE_NUM_DAYS {(Per {cycleDays} days)} other {} }"
+  },
   "RzoePB": {
     "defaultMessage": "Servers & Users"
   },
@@ -6803,6 +6967,9 @@
   },
   "S3XVto": {
     "defaultMessage": "Activity Details"
+  },
+  "S7ExKS": {
+    "defaultMessage": "In order to enable this option you have to uncheck the “Enable MAC auth bypass” option"
   },
   "S86/4L": {
     "defaultMessage": "Edit Classification Rule"
@@ -6929,6 +7096,9 @@
   "Sjo1P4": {
     "defaultMessage": "Custom"
   },
+  "Sl3qYt": {
+    "defaultMessage": "Edit Connection Metering"
+  },
   "Sl7JdH": {
     "defaultMessage": "Multiple AP DHCP"
   },
@@ -6952,6 +7122,9 @@
   },
   "SqY6EK": {
     "defaultMessage": "EAPOL Attempts"
+  },
+  "Sr9Yav": {
+    "defaultMessage": "Data comsumption"
   },
   "Srb91A": {
     "defaultMessage": "Install an authentication app on your mobile device"
@@ -6995,6 +7168,9 @@
   "T2dNwy": {
     "defaultMessage": "MAC Registration"
   },
+  "T39hTl": {
+    "defaultMessage": "EdgeStatus"
+  },
   "T3UF92": {
     "defaultMessage": "Authentication Server"
   },
@@ -7033,6 +7209,13 @@
   },
   "T7pTaH": {
     "defaultMessage": "Lookback Interface ID"
+  },
+  "T8/xYg": {
+    "defaultMessage": "{revokedStatus, select, true {Are you sure you want to unblock this persona?} other {The user will be blocked. Are you sure want to block this persona?} }",
+    "description": "Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona"
+  },
+  "T8S06b": {
+    "defaultMessage": "Max Data Comsumption"
   },
   "T8nGWN": {
     "defaultMessage": "Service State"
@@ -7079,6 +7262,9 @@
   "TJo5E6": {
     "defaultMessage": "Preview"
   },
+  "TJuRC7": {
+    "defaultMessage": "Select up to 3 slots"
+  },
   "TKYlMB": {
     "defaultMessage": "STA Disassoc (DHCP Timeout)"
   },
@@ -7096,9 +7282,6 @@
   },
   "TNy171": {
     "defaultMessage": "There are no APs to run the test"
-  },
-  "TO3YlU": {
-    "defaultMessage": "Occured Error"
   },
   "TP/cMX": {
     "defaultMessage": "Ended"
@@ -7165,6 +7348,9 @@
   },
   "TfpT1u": {
     "defaultMessage": "Backup File"
+  },
+  "Tfv1P0": {
+    "defaultMessage": "{status} ({rulesCount} {rulesCount, plural, one {rule} other {rules}})"
   },
   "Tgyxau": {
     "defaultMessage": "Application Category"
@@ -7287,6 +7473,9 @@
   },
   "UDFpiZ": {
     "defaultMessage": "Per radio client count at which an AP will stop converting group addressed data traffic to unicast"
+  },
+  "UDKmkz": {
+    "defaultMessage": "Add Connection metering profile"
   },
   "UF3jdf": {
     "defaultMessage": "Add DNS Proxy Rule"
@@ -7423,6 +7612,9 @@
   "UmkImZ": {
     "defaultMessage": "{months} {months, plural, one {month} other {months}}"
   },
+  "Umnevm": {
+    "defaultMessage": "Action for overage data"
+  },
   "Up5U7K": {
     "defaultMessage": "Block"
   },
@@ -7525,6 +7717,9 @@
   "VK81Ki": {
     "defaultMessage": "Invalid Pairwise Key Cipher"
   },
+  "VKfWR3": {
+    "defaultMessage": "Recommended"
+  },
   "VKikS4": {
     "defaultMessage": "Invalid RSN IE Capability"
   },
@@ -7555,6 +7750,9 @@
   "VSiY8k": {
     "defaultMessage": "DHCP Offer"
   },
+  "VU151L": {
+    "defaultMessage": "Since there are active mesh links in this venue, in order prevent networking issues, you cannot turn mesh networking off"
+  },
   "VUbBN1": {
     "defaultMessage": "Ethernet link"
   },
@@ -7572,6 +7770,9 @@
   },
   "VWIe2D": {
     "defaultMessage": "VLAN Pools"
+  },
+  "VWhS5n": {
+    "defaultMessage": "If you set rate limit on network level, it will override any rate limit set on policy level."
   },
   "VX2yLr": {
     "defaultMessage": "Configure {name}"
@@ -7620,9 +7821,6 @@
   "Vh5emq": {
     "defaultMessage": "Please select the category"
   },
-  "ViS54z": {
-    "defaultMessage": "If you have Mesh-APs, you will not be able to disable this option."
-  },
   "Vl9Unn": {
     "defaultMessage": "Host Approval",
     "description": "Guest network type - Host Approval"
@@ -7630,9 +7828,6 @@
   "Vlg571": {
     "defaultMessage": "{entityName} with that {key, select, name {name} other {value} } already exists{ extra }",
     "description": "Validation - duplication checks"
-  },
-  "VmBHQi": {
-    "defaultMessage": "IP Address {ipAddress} was {editMode, select, true {updated} other {added}}"
   },
   "Vnv9od": {
     "defaultMessage": "User Connection Settings(Default)"
@@ -7670,8 +7865,15 @@
   "Vu4t30": {
     "defaultMessage": "OPTION_V4_SZTP_REDIRECT"
   },
+  "VuMX8q": {
+    "defaultMessage": "Accept All Connections"
+  },
   "VuTwsh": {
     "defaultMessage": "9 Mbps"
+  },
+  "VwJEJV": {
+    "defaultMessage": "Block a client for <blockingPeriod></blockingPeriod> seconds after <failThreshold></failThreshold> repeat authentication failures within <checkPeriod></checkPeriod> seconds",
+    "description": "Translation string - Block a client for, seconds after, repeat authentication failures within, seconds"
   },
   "VxUjLr": {
     "defaultMessage": "Add App"
@@ -7697,9 +7899,6 @@
   "W/8riE": {
     "defaultMessage": "<p>System has detected the AP(s) are underperforming due to low WAN bandwidth availability. This can occur due to following reasons:</p> <ol> <li>Upstream peer device configuration is wrong and not matching as per AP Ethernet WAN port capacity.</li> <li>Upstream peer device cannnot support multi gig throughput needed by APs.</li> <li>Faulty cables and incorrect cable types can lead to Ethernet link not negotiated properly.</li> </ol>"
   },
-  "W/KQKM": {
-    "defaultMessage": "8 (802.3bt 99 W)"
-  },
   "W/V6+Y": {
     "defaultMessage": "Collapse"
   },
@@ -7708,6 +7907,9 @@
   },
   "W0+ZGa": {
     "defaultMessage": "Profile Name"
+  },
+  "W0/+8Z": {
+    "defaultMessage": "\"Zero touch mesh\" is an automated networking technology that allows for seamless setup and expansion of mesh networks without manual intervention. This option is only available when Mesh is enabled for 5 & 6 GHz networks"
   },
   "W18Mk/": {
     "defaultMessage": "AP Mac"
@@ -7748,6 +7950,9 @@
   "WBmgnd": {
     "defaultMessage": "Test Time"
   },
+  "WCCfEs": {
+    "defaultMessage": "Video Call QoE {count, select, null {} other {({count})}}"
+  },
   "WCp/2r": {
     "defaultMessage": "LTE APs"
   },
@@ -7765,6 +7970,9 @@
   },
   "WGDxJ8": {
     "defaultMessage": "Standalone switch"
+  },
+  "WH4SDF": {
+    "defaultMessage": "Service Type"
   },
   "WHa0VT": {
     "defaultMessage": "Field must be at least $'{min}' characters",
@@ -7902,9 +8110,6 @@
   "X+aUZF": {
     "defaultMessage": "File size cannot exceed {maxSize}"
   },
-  "X1bhjS": {
-    "defaultMessage": "Didn't get it?"
-  },
   "X2pnl0": {
     "defaultMessage": "Map is not enabled."
   },
@@ -7954,9 +8159,6 @@
   "XBk/Qf": {
     "defaultMessage": "Resident Portal profile"
   },
-  "XC2277": {
-    "defaultMessage": "Total Uptime:"
-  },
   "XCvHUK": {
     "defaultMessage": "Authentication Port"
   },
@@ -7989,6 +8191,9 @@
   },
   "XNfKGr": {
     "defaultMessage": "RADIUS Attribute Groups ({count})"
+  },
+  "XOYw9i": {
+    "defaultMessage": "Repeat cycles"
   },
   "XPd4np": {
     "defaultMessage": "Station AP MAC"
@@ -8028,6 +8233,10 @@
   },
   "XXmzTE": {
     "defaultMessage": "This metric measures the percentage of roaming attempts that have completed successfully. A roaming attempt is deemed successful when the Wifi client has its session transferred from one AP to the next. It is possible for a single Wifi client to have multiple roaming attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "XY5jQE": {
+    "defaultMessage": "Name is invalid",
+    "description": "Validation - name for service and policy"
   },
   "XZRi3V": {
     "defaultMessage": "<p>In these multi-issue failures, there are a few general recommendations to check:</p> <ol> <li>Were new clients or APs introduced in the environment?</li> <li>Were the impacted client OS types recently upgraded?</li> <li>Was the AP firmware recently upgraded?</li> <li>Were the AP radio or WLAN settings recently modified?</li> <li>Check for high levels of RF performance interference, which may be causing high error rates.</li> <li>Compare the configuration and operating deployment of the affected WLAN or network scope (AP, AP group, etc) with others to identify any unique settings that may be causing issues.</li> </ol>"
@@ -8202,6 +8411,9 @@
   "YLZ+2O": {
     "defaultMessage": "Switches:"
   },
+  "YLdDef": {
+    "defaultMessage": "8 (802.3bt 90 W)"
+  },
   "YLraaM": {
     "defaultMessage": "You must have at least one RADIUS or TACACS+ server set-up in order to enable authorization or accounting"
   },
@@ -8243,6 +8455,12 @@
   },
   "Yb2goG": {
     "defaultMessage": "Firewall Server"
+  },
+  "YbP2Pl": {
+    "defaultMessage": "Enabling mesh for a venue creates a new WLAN for mesh communication between Access Points"
+  },
+  "YceVNq": {
+    "defaultMessage": "Total Upload limit"
   },
   "YdQxfw": {
     "defaultMessage": "Contact Support"
@@ -8440,6 +8658,10 @@
   "ZLzqDd": {
     "defaultMessage": "Reboot due to country code change"
   },
+  "ZMT2+a": {
+    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue",
+    "description": "Translation string - Transient Issue"
+  },
   "ZNM0ht": {
     "defaultMessage": "Do not proceed unless all the switches have the minimum FW version running (or) have been manually upgraded. All members must be running the same FW version."
   },
@@ -8542,9 +8764,6 @@
   "ZnqHg6": {
     "defaultMessage": "L3 Authentication Failure"
   },
-  "ZoiazP": {
-    "defaultMessage": "As required for privacy compliance, the user will be informed of that is the case"
-  },
   "Zp6g/K": {
     "defaultMessage": "View ACL"
   },
@@ -8586,6 +8805,9 @@
   },
   "a+0Mbo": {
     "defaultMessage": "Acknowledge"
+  },
+  "a+K186": {
+    "defaultMessage": "This switch can no longer act as a DHCP client since DHCP Server is enabled. Configure DHCP service state and try again."
   },
   "a+UC3X": {
     "defaultMessage": "If this DHCP service is going to be used for Network Segmentation service, please make sure you set the DHCP pool for it."
@@ -8637,6 +8859,10 @@
   },
   "a81isK": {
     "defaultMessage": "Do not proceed unless the switch has minimum FW version running or is manually upgraded."
+  },
+  "aA90jI": {
+    "defaultMessage": "IP Address {ipAddress} was {editMode, select, true {updated} other {added}}",
+    "description": "Translation strings - IP Address, was"
   },
   "aAN3V3": {
     "defaultMessage": "Field exceeds $'{max}' characters",
@@ -8715,6 +8941,9 @@
   "aXVbF0": {
     "defaultMessage": "Select Template ..."
   },
+  "aXuQWM": {
+    "defaultMessage": "DATA API: {env}"
+  },
   "aY7Or3": {
     "defaultMessage": "Enable Guest"
   },
@@ -8775,6 +9004,9 @@
   },
   "ajmHoX": {
     "defaultMessage": "NNTP-Server"
+  },
+  "akB+qv": {
+    "defaultMessage": "Policy Set Name"
   },
   "alT0Lo": {
     "defaultMessage": "One Time Password (OTP)"
@@ -8917,6 +9149,9 @@
   "bQaOC6": {
     "defaultMessage": "PoE Budget"
   },
+  "bRu/Qu": {
+    "defaultMessage": "Legacy Device"
+  },
   "bRwQfU": {
     "defaultMessage": "Copy from your WiFi4EU installation report"
   },
@@ -8928,6 +9163,9 @@
   },
   "bTbgra": {
     "defaultMessage": "BSSID"
+  },
+  "bVzeaJ": {
+    "defaultMessage": "While this incident is muted, it will be hidden in the UI. You can unmute this incident via setting icon in the {link}."
   },
   "bWjdfa": {
     "defaultMessage": "URL"
@@ -9010,6 +9248,9 @@
   "blWvag": {
     "defaultMessage": "Models"
   },
+  "bmfyzo": {
+    "defaultMessage": "MaxData:"
+  },
   "bmmzd4": {
     "defaultMessage": "Please select logo"
   },
@@ -9079,14 +9320,14 @@
   "c3VJQo": {
     "defaultMessage": "Device"
   },
-  "c3gDWz": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase"
-  },
   "c4PxNN": {
     "defaultMessage": "Password Expires After:"
   },
   "c54Xnz": {
     "defaultMessage": "You must specify subnet network"
+  },
+  "c5ZJN5": {
+    "defaultMessage": "NAS ID"
   },
   "c8MmZr": {
     "defaultMessage": "Please configure facebook"
@@ -9184,6 +9425,9 @@
   "cUB5Wh": {
     "defaultMessage": "Please enter To"
   },
+  "cVArhg": {
+    "defaultMessage": "Legacy Device ({eolName})"
+  },
   "cVVoGX": {
     "defaultMessage": "Error: Can not detect passphrase format value"
   },
@@ -9210,6 +9454,9 @@
   },
   "cXBJ7U": {
     "defaultMessage": "Privacy"
+  },
+  "caN8Yy": {
+    "defaultMessage": "Service Details"
   },
   "cb2kY6": {
     "defaultMessage": "Standard"
@@ -9420,6 +9667,9 @@
   "dJpSA/": {
     "defaultMessage": "Once the ICX switch is connected to RUCKUS One:"
   },
+  "dKUE97": {
+    "defaultMessage": "Only runs as Root AP"
+  },
   "dL+iuj": {
     "defaultMessage": "Or enter this key into the app:"
   },
@@ -9525,6 +9775,9 @@
   "drIivK": {
     "defaultMessage": "MAC address {macAddress} is already exists"
   },
+  "dtAFE6": {
+    "defaultMessage": "Apply Mesh"
+  },
   "dtZG/H": {
     "defaultMessage": "Sequence"
   },
@@ -9537,8 +9790,14 @@
   "dvOgRm": {
     "defaultMessage": "Version 2"
   },
+  "dvwJXS": {
+    "defaultMessage": "Connection Metering {name} was deleted"
+  },
   "dx09pY": {
     "defaultMessage": "FT (11r) Roam Failure"
+  },
+  "e+LJQU": {
+    "defaultMessage": "Notify when data volume reaches:(%)"
   },
   "e//hEp": {
     "defaultMessage": "Since you have purchased MSP licenses, we will now refresh the system and take you to the special MSP dashboard. This dashboard will serve as an entry point to Ruckus Cloud from now on, for all users of this account. Purchase MSP licenses to enable adding customers."
@@ -9851,9 +10110,6 @@
   "fDINOd": {
     "defaultMessage": "Admin Activity"
   },
-  "fEE7ng": {
-    "defaultMessage": "{showSeverity, selectordinal, one {2 } other {}}Transient Issue"
-  },
   "fENfxR": {
     "defaultMessage": "OPTION-IPv4_FQDN-MoS"
   },
@@ -9889,9 +10145,6 @@
   },
   "fNCCY7": {
     "defaultMessage": "Basic"
-  },
-  "fNXaus": {
-    "defaultMessage": "{language} ({localLanguage})"
   },
   "fO6qJ+": {
     "defaultMessage": "AP Reboot by User"
@@ -9956,6 +10209,9 @@
   },
   "fg1Vhq": {
     "defaultMessage": "hour"
+  },
+  "fhgXQt": {
+    "defaultMessage": "Mesh Radio"
   },
   "fiNfmb": {
     "defaultMessage": "Language:"
@@ -10080,6 +10336,9 @@
   "gGtESL": {
     "defaultMessage": "Please select a Venue"
   },
+  "gHWqQU": {
+    "defaultMessage": "Mesh APs automatically select the best uplink"
+  },
   "gI6szY": {
     "defaultMessage": "{count} {count, plural, one {AP} other {APs}}"
   },
@@ -10122,6 +10381,9 @@
   },
   "gQ7kPU": {
     "defaultMessage": "Android"
+  },
+  "gQhilt": {
+    "defaultMessage": "Mesh role is assigned automatically"
   },
   "gSkKa5": {
     "defaultMessage": "Please enter network address"
@@ -10203,6 +10465,9 @@
   "goLlgP": {
     "defaultMessage": "EC support disabled"
   },
+  "godfwh": {
+    "defaultMessage": "Invalid Mesh PSK"
+  },
   "gpsa1w": {
     "defaultMessage": "VLAN #"
   },
@@ -10269,11 +10534,17 @@
   "hDAjXs": {
     "defaultMessage": "Custom String"
   },
+  "hDJDN/": {
+    "defaultMessage": "More details"
+  },
   "hDMRzb": {
     "defaultMessage": "The password needs to:<br></br> <ul> <li>Be 8 to 64 characters long</li> <li>Include both uppercase and lowercase characters (ABC, xyz)</li> <li>Include at least one number (0-9)</li> <li>Include at least one symbol (@, #, $, %, etc. use of \"!\" is not allowed)</li> </ul> Password cannot: <ul> <li>Contain spaces</li> </ul>"
   },
   "hEsZtC": {
     "defaultMessage": "Add Host"
+  },
+  "hEwmQH": {
+    "defaultMessage": "User recovery codes to log in if you can’t receive a verification code via email, SMS, or an auth app"
   },
   "hG0vhN": {
     "defaultMessage": "The mesh STA performs channel switch with unspecified reason"
@@ -10317,6 +10588,9 @@
   "hNA6lI": {
     "defaultMessage": "Set address here"
   },
+  "hNTzW5": {
+    "defaultMessage": "UP: {uploadRate, select, 0 {Unlimited} other {{uploadRate}Mbps} }"
+  },
   "hPBTq9": {
     "defaultMessage": "WPAD"
   },
@@ -10325,6 +10599,9 @@
   },
   "hTHEQk": {
     "defaultMessage": "Max. Number of Clients"
+  },
+  "hVYAtX": {
+    "defaultMessage": "Authenticate Connections"
   },
   "hWJebo": {
     "defaultMessage": "radios"
@@ -10343,6 +10620,9 @@
   },
   "hbiilD": {
     "defaultMessage": "Class2 Frame from Non-Auth STA"
+  },
+  "hc136e": {
+    "defaultMessage": "Not support on this port"
   },
   "hdGKYY": {
     "defaultMessage": "Require users to enter a passphrase (that you have defined for the network) to connect",
@@ -10394,6 +10674,9 @@
   "hnrKAf": {
     "defaultMessage": "This event occurs when the client disconnects by force dynamic host configuration protocol (DHCP)"
   },
+  "hnzuN7": {
+    "defaultMessage": "Mesh is disabled"
+  },
   "holi8H": {
     "defaultMessage": "iTunes Sharing"
   },
@@ -10405,9 +10688,6 @@
   },
   "hpSf0W": {
     "defaultMessage": "Delete \"{count, plural, one {{entityValue}} other {{count} {formattedEntityName}} }\"?"
-  },
-  "hqB66n": {
-    "defaultMessage": "One of the policy has been applied in network."
   },
   "hr/G8O": {
     "defaultMessage": "DHCP timeout count"
@@ -10472,6 +10752,9 @@
   "hzXHmo": {
     "defaultMessage": "models"
   },
+  "i+jtYC": {
+    "defaultMessage": "Provides data rate and data consumption control"
+  },
   "i+qzhd": {
     "defaultMessage": "This is a stacking port and can not be configured"
   },
@@ -10481,6 +10764,9 @@
   "i/CBRC": {
     "defaultMessage": "Minimal value is {value}",
     "description": "Validation - min value checks"
+  },
+  "i0isur": {
+    "defaultMessage": "Data Consumption Settings"
   },
   "i16dQa": {
     "defaultMessage": "DHCP_DONE"
@@ -10493,6 +10779,12 @@
   },
   "i647fD": {
     "defaultMessage": "Select Profile"
+  },
+  "i7T4Zm": {
+    "defaultMessage": "Hits"
+  },
+  "iAMjUL": {
+    "defaultMessage": "Rate limiting"
   },
   "iBBcur": {
     "defaultMessage": "Disassociated because the information in the Supported Channels element is unacceptable"
@@ -10564,6 +10856,9 @@
   "iS0vZo": {
     "defaultMessage": "Total Clients"
   },
+  "iSilzS": {
+    "defaultMessage": "Repeating cycles { cycleType, select, CYCLE_MONTHLY {(Monthly)} CYCLE_WEEKLY {(Weekly)} CYCLE_NUM_DAYS {(Per {cycleDays} days)} other {} }"
+  },
   "iU0Fa3": {
     "defaultMessage": "Firmware updating"
   },
@@ -10575,6 +10870,9 @@
   },
   "ia0RRf": {
     "defaultMessage": "Client disconnected"
+  },
+  "ia1yNY": {
+    "defaultMessage": "NAS Reconnect Primary"
   },
   "ibIuFF": {
     "defaultMessage": "DPSK Password"
@@ -10593,6 +10891,9 @@
   },
   "ijrcfH": {
     "defaultMessage": "Please select a DHCP Pool"
+  },
+  "ikSVnE": {
+    "defaultMessage": "Enable Rate Limiting"
   },
   "ils6sH": {
     "defaultMessage": "For optimal test results, you are asked to"
@@ -10666,6 +10967,9 @@
   },
   "j+3Knb": {
     "defaultMessage": "Chat with Support"
+  },
+  "j/LgMv": {
+    "defaultMessage": "Overwrite"
   },
   "j24fP+": {
     "defaultMessage": "ACLs"
@@ -10791,6 +11095,10 @@
   "jUmhKd": {
     "defaultMessage": "No Online information"
   },
+  "jVGVFN": {
+    "defaultMessage": "{showSeverity, selectordinal, one {1 } other {}}Requires Attention",
+    "description": "Translation string - Requires Attention"
+  },
   "jW/2xv": {
     "defaultMessage": "Edit MAC Address"
   },
@@ -10811,6 +11119,9 @@
   },
   "jZ5XsT": {
     "defaultMessage": "Disconnect Client"
+  },
+  "jZDyb5": {
+    "defaultMessage": "DPSK Network with Non-Proxy mode is not supported at this moment!"
   },
   "jbyIro": {
     "defaultMessage": "Tenant account ID is invalid"
@@ -10860,6 +11171,9 @@
   "jq5DDY": {
     "defaultMessage": "Destination Mask"
   },
+  "jr6YwT": {
+    "defaultMessage": "For the {model} series, a stack may hold up to"
+  },
   "jr8yqe": {
     "defaultMessage": "WPA",
     "description": "WLAN security type - WPA"
@@ -10881,9 +11195,6 @@
   },
   "jyRZTB": {
     "defaultMessage": "Length is limited to 1-32 characters."
-  },
-  "k+2zBz": {
-    "defaultMessage": "This list is in use by one or more Networks and one or more Personas."
   },
   "k+BdkG": {
     "defaultMessage": "dBi"
@@ -10969,9 +11280,6 @@
   "kBbkVq": {
     "defaultMessage": "Enable load balancing between APs"
   },
-  "kCk40q": {
-    "defaultMessage": "AP-{serialNumber}"
-  },
   "kDQuqz": {
     "defaultMessage": "MSP Administrators"
   },
@@ -11011,6 +11319,9 @@
   },
   "kOJCG1": {
     "defaultMessage": "Online APs measures the percentage of APs which are online and connected to RUCKUS One.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page."
+  },
+  "kOT9eK": {
+    "defaultMessage": "Dash"
   },
   "kPZn/7": {
     "defaultMessage": "Paid Subscriptions"
@@ -11183,6 +11494,9 @@
   "l/e8Fv": {
     "defaultMessage": "AP(s) operating in Low Power Mode: {scope}"
   },
+  "l06gtU": {
+    "defaultMessage": "All devices that belong to this unit will be applied to the selected connection metering policy"
+  },
   "l0Stk4": {
     "defaultMessage": "Deactive DHCP Service"
   },
@@ -11205,6 +11519,9 @@
   "l4NqVU": {
     "defaultMessage": "<p>To remediate the problems identified above, follow the corresponding recommended actions:</p> <ol> <li>Consider turning on auto channel selection algorithms - Background scan or ChannelFly.</li> <li>If ChannelFly is selected it is mandatory to turn ON background scan.</li> <li>Scan your environments for rogue APs and remove them if possible.</li> </ol>"
   },
+  "l50mT4": {
+    "defaultMessage": "One cycle"
+  },
   "l5MUct": {
     "defaultMessage": "WWW HTTP"
   },
@@ -11213,6 +11530,9 @@
   },
   "l6kkAc": {
     "defaultMessage": "Configures VLAN tag usage for the port"
+  },
+  "l6pGKO": {
+    "defaultMessage": "Mesh PSK"
   },
   "l7HNFB": {
     "defaultMessage": "Reboot due to IP mode change or mesh enablement"
@@ -11328,6 +11648,9 @@
   "lb5sKC": {
     "defaultMessage": "Search by VLAN ID or name"
   },
+  "lbGSzh": {
+    "defaultMessage": "Total Downtime"
+  },
   "lbjlTc": {
     "defaultMessage": "Static Route"
   },
@@ -11398,9 +11721,6 @@
   "loWsfn": {
     "defaultMessage": "Could not find AP {apId}"
   },
-  "lqxCzR": {
-    "defaultMessage": "Expireation Time"
-  },
   "lrHc+J": {
     "defaultMessage": "Add Access Point"
   },
@@ -11461,8 +11781,8 @@
   "m8B9gB": {
     "defaultMessage": "<p>P3 - Contact RUCKUS Support.</p> <p>P2 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p> <p>P1 - Schedule a maintenance window and reboot the switch if the memory utilization continues to increase. Contact RUCKUS Support.</p>"
   },
-  "m8RhbD": {
-    "defaultMessage": "While this incident is muted, it will be hidden in the UI. You can unmute this incident via setting icon in the {link}"
+  "m8IJs3": {
+    "defaultMessage": "Basic Service Set"
   },
   "m9MVq0": {
     "defaultMessage": "Selected order"
@@ -11613,6 +11933,9 @@
   "mqq9sX": {
     "defaultMessage": "MAC Address Format"
   },
+  "mrjxQS": {
+    "defaultMessage": "DOWN: {downloadRate, select, 0 {Unlimited} other {{downloadRate}Mbps} }"
+  },
   "msBGI+": {
     "defaultMessage": "Select attribute type"
   },
@@ -11635,8 +11958,11 @@
   "myH0Ir": {
     "defaultMessage": "Last Updated:"
   },
-  "mzAhcs": {
-    "defaultMessage": "({usedPercentage}%)"
+  "mzoq+x": {
+    "defaultMessage": "Please enter a number between 2 and 20"
+  },
+  "n+IeDj": {
+    "defaultMessage": "Retries"
   },
   "n/qhwR": {
     "defaultMessage": "CTS Abuse"
@@ -11646,6 +11972,9 @@
   },
   "n0hHJu": {
     "defaultMessage": "APs:"
+  },
+  "n11iLA": {
+    "defaultMessage": "The Mesh Network Name must be between 2 and 32 characters"
   },
   "n1RvLH": {
     "defaultMessage": "Select Pool"
@@ -11658,6 +11987,9 @@
   },
   "n4DOF2": {
     "defaultMessage": "Add Application Policy"
+  },
+  "n4IV7E": {
+    "defaultMessage": "Update date:"
   },
   "n6+fBA": {
     "defaultMessage": "Firmware Update - Writing To Flash"
@@ -11823,11 +12155,17 @@
     "defaultMessage": "Must be a network address",
     "description": "Validation - subnet address checks"
   },
+  "nmpevl": {
+    "defaultMessage": "Discard"
+  },
   "nmqTps": {
     "defaultMessage": "Hop Count"
   },
   "nmr0Pp": {
     "defaultMessage": "Manage Subscriptions"
+  },
+  "nmuldp": {
+    "defaultMessage": "When do you want the update to run?"
   },
   "nnUexJ": {
     "defaultMessage": "Requested from peer STA as the STA is leaving the BSS (or resetting)"
@@ -11849,6 +12187,9 @@
   },
   "nqLyH7": {
     "defaultMessage": "All Customers"
+  },
+  "nrEPlE": {
+    "defaultMessage": "Radius Attribute group (TBD)"
   },
   "nsS2jY": {
     "defaultMessage": "Neighbor AP"
@@ -11898,6 +12239,13 @@
   "o0jcye": {
     "defaultMessage": "OS"
   },
+  "o0yS7Z": {
+    "defaultMessage": "Switch Not Found"
+  },
+  "o1fwp7": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block} } this Persona: {name}",
+    "description": "Translation strings - Unblock, Block, this Persona"
+  },
   "o1vbho": {
     "defaultMessage": "Policy"
   },
@@ -11935,6 +12283,9 @@
   "oAzpTF": {
     "defaultMessage": "<p>Clients are failing in the 802.11 open authentication stage because the authentication algorithm in the authentication request is not supported by the WLAN/AP.</p>"
   },
+  "oBNTHg": {
+    "defaultMessage": "This group is still in use by another service."
+  },
   "oBqS+O": {
     "defaultMessage": "Select a registered user. Registered user is a user which has a Ruckus Support Account"
   },
@@ -11960,6 +12311,9 @@
   "oHumRY": {
     "defaultMessage": "Run Revert"
   },
+  "oI0/wq": {
+    "defaultMessage": "Maximun is 64 characters"
+  },
   "oI8Hht": {
     "defaultMessage": "Allow AP wired clients"
   },
@@ -11974,6 +12328,9 @@
   },
   "oLkLww": {
     "defaultMessage": "Score"
+  },
+  "oLoTZr": {
+    "defaultMessage": "Image file size cannot exceed 10 MB"
   },
   "oNA+iT": {
     "defaultMessage": "Passphrase:"
@@ -12022,6 +12379,9 @@
   "ob4aTr": {
     "defaultMessage": "Command Authorization"
   },
+  "obpIrr": {
+    "defaultMessage": "Mesh is not enabled at the venue where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the venue, you will be able to set the AP's mesh role and select the uplink AP."
+  },
   "oc+y+9": {
     "defaultMessage": "Trusted Ports:"
   },
@@ -12030,6 +12390,9 @@
   },
   "ogRVmq": {
     "defaultMessage": "Select RADIUS"
+  },
+  "ogvi9f": {
+    "defaultMessage": "Please enter Mesh PSK"
   },
   "oir8uG": {
     "defaultMessage": "Firmware Update - Validating Image"
@@ -12054,6 +12417,9 @@
   },
   "ooCnVf": {
     "defaultMessage": "HEX"
+  },
+  "oohAuA": {
+    "defaultMessage": "MAC Address {macAddress} were deleted"
   },
   "orEaKq": {
     "defaultMessage": "All types"
@@ -12142,6 +12508,9 @@
   "p6nnXh": {
     "defaultMessage": "Please enter the ip address"
   },
+  "p7UeBO": {
+    "defaultMessage": "No SmartEdge clients"
+  },
   "p9cc+P": {
     "defaultMessage": "Name must be between 2 and 32 alpha-numeric characters. Backtick \"`\" and the \"$(\" combination are not allowed."
   },
@@ -12150,6 +12519,9 @@
   },
   "pAFisK": {
     "defaultMessage": "IP Assignment Type"
+  },
+  "pAnEZ9": {
+    "defaultMessage": "Please enter the Mesh Network Name"
   },
   "pHFK4f": {
     "defaultMessage": "Guest Portal Service"
@@ -12233,6 +12605,9 @@
   "pVBJf0": {
     "defaultMessage": "VLAN member"
   },
+  "pWpMby": {
+    "defaultMessage": "AP-{name}"
+  },
   "pXXLgA": {
     "defaultMessage": "Details of switch inventory including models and software versions"
   },
@@ -12244,6 +12619,9 @@
   },
   "pa7dvf": {
     "defaultMessage": "Invalid Key Data in EAPOL-Key Msg 2 of 4"
+  },
+  "paBpxN": {
+    "defaultMessage": "Ignore"
   },
   "pcUnyI": {
     "defaultMessage": "Guest Pass - Connect"
@@ -12332,6 +12710,9 @@
   "pyy2lm": {
     "defaultMessage": "Never contacted Active Switch"
   },
+  "pzYj0w": {
+    "defaultMessage": "Some features may no longer be availabe with previous versions of device firmware."
+  },
   "pzpZWz": {
     "defaultMessage": "Go to floor plans to place the {deviceType}"
   },
@@ -12340,9 +12721,6 @@
   },
   "q+1Dri": {
     "defaultMessage": "AC/DC Power supply"
-  },
-  "q+eJuS": {
-    "defaultMessage": "Image must smaller than 10MB!"
   },
   "q/9Vqr": {
     "defaultMessage": "Select Policies"
@@ -12463,11 +12841,20 @@
   "qSpbOu": {
     "defaultMessage": "Signal Threshold"
   },
+  "qUJTsT": {
+    "defaultMessage": "Blocked"
+  },
   "qWBAzj": {
     "defaultMessage": "Assoc DoS Prevention"
   },
+  "qWMB28": {
+    "defaultMessage": "To prevent networking issues, you can change this property only once, when activating the mesh option. It is highly recommended not to change them unless there is an urgent operational need."
+  },
   "qWQB8J": {
     "defaultMessage": "Lease expires in..."
+  },
+  "qWb835": {
+    "defaultMessage": "The Consumption data is due to expire on {expireDate}"
   },
   "qYBnMW": {
     "defaultMessage": "WPA3",
@@ -12493,6 +12880,9 @@
   },
   "qeU60o": {
     "defaultMessage": "If it is the first time the ICX switch is connected to the cloud, the switch reloads after the necessary firmware is applied."
+  },
+  "qf0/Bg": {
+    "defaultMessage": "Preferred Time Slot:"
   },
   "qg1V4V": {
     "defaultMessage": "Choose update schedule method:"
@@ -12588,6 +12978,9 @@
   "r3nC+X": {
     "defaultMessage": "WLAN configuration errors"
   },
+  "r6HxLz": {
+    "defaultMessage": "NAS Max Number of Retries"
+  },
   "r72cq4": {
     "defaultMessage": "Start value must be lower than end value",
     "description": "Validation - range checks"
@@ -12623,9 +13016,6 @@
   "rITqXY": {
     "defaultMessage": "Broadcast Probe Response Delay:"
   },
-  "rIgzAj": {
-    "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}Offline"
-  },
   "rIw+Gj": {
     "defaultMessage": "Module 4"
   },
@@ -12650,14 +13040,17 @@
   "rPBWRi": {
     "defaultMessage": "MAC Address:"
   },
-  "rPiY6S": {
-    "defaultMessage": "Validation Table"
+  "rQE+Y2": {
+    "defaultMessage": "Please enter a number between 1 and 300"
   },
   "rQgpPD": {
     "defaultMessage": "[Yesterday,] HH:mm"
   },
   "rRts53": {
     "defaultMessage": "Apply Ports General"
+  },
+  "rUi8KN": {
+    "defaultMessage": "Custom Provider"
   },
   "rV0gjK": {
     "defaultMessage": "{count} Impacted {count, plural, one {Client} other {Clients}}"
@@ -12696,6 +13089,12 @@
   "reKx6/": {
     "defaultMessage": "Captive Portal URL"
   },
+  "rffrhe": {
+    "defaultMessage": "Consumption cycle:"
+  },
+  "rgLUJY": {
+    "defaultMessage": "WLAN BSSID"
+  },
   "rglDic": {
     "defaultMessage": "Parameter List"
   },
@@ -12711,11 +13110,17 @@
   "rikb48": {
     "defaultMessage": "5 GHz"
   },
+  "riw/yc": {
+    "defaultMessage": "Beta"
+  },
   "rjwV0J": {
     "defaultMessage": "Change to Time limited connection"
   },
   "rk1Bvz": {
     "defaultMessage": "IotDevice"
+  },
+  "rkQPia": {
+    "defaultMessage": "Migrartion Summary"
   },
   "rljVzi": {
     "defaultMessage": "Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists"
@@ -12877,8 +13282,8 @@
   "sMnDSO": {
     "defaultMessage": "Wi-Fi APs"
   },
-  "sPq/xd": {
-    "defaultMessage": "Total Downtime:"
+  "sQltSv": {
+    "defaultMessage": "Upgrade preference saved for each venue based on venue’s local time-zone"
   },
   "sRTzEd": {
     "defaultMessage": "name"
@@ -13215,6 +13620,12 @@
   "tthToS": {
     "defaultMessage": "Disabled"
   },
+  "ttkc4T": {
+    "defaultMessage": "Didn’t get it?"
+  },
+  "tu3sH4": {
+    "defaultMessage": "NAS Request Timeout"
+  },
   "tu9GFW": {
     "defaultMessage": "{count} {count, plural, one {Switch} other {Switches}}"
   },
@@ -13262,9 +13673,6 @@
   "u0lL8w": {
     "defaultMessage": "Services is not enabled"
   },
-  "u1nVsn": {
-    "defaultMessage": "Select preferred provider"
-  },
   "u2EbNi": {
     "defaultMessage": "This {deviceType} is not placed on any floor plan"
   },
@@ -13303,6 +13711,9 @@
   },
   "u8yrV2": {
     "defaultMessage": "Top {limit}"
+  },
+  "u93pr8": {
+    "defaultMessage": "summary"
   },
   "u9b1zq": {
     "defaultMessage": "Self Sign In - Connect"
@@ -13364,6 +13775,9 @@
   "uUfVAP": {
     "defaultMessage": "Target host or IP address"
   },
+  "uUrwd9": {
+    "defaultMessage": "No uplink APs detected"
+  },
   "uWddQs": {
     "defaultMessage": "OFF now"
   },
@@ -13412,6 +13826,9 @@
   "ukFIyf": {
     "defaultMessage": "Your Attention is Required"
   },
+  "ukFhky": {
+    "defaultMessage": "Retry firmware update"
+  },
   "uliJ05": {
     "defaultMessage": "The cellular AP cannot be moved to the venue which doesn’t enable DHCP service",
     "description": "Validation - Cellular AP Dhcp checks"
@@ -13457,6 +13874,9 @@
   },
   "uzH6wz": {
     "defaultMessage": "Authentication radius port cannot be {authForbiddenPort} and Accounting radius port cannot be {acctForbiddenPort}"
+  },
+  "uzpv0F": {
+    "defaultMessage": "Rate limit:"
   },
   "v+3TzS": {
     "defaultMessage": "Jitter"
@@ -13542,6 +13962,9 @@
   "vIArWU": {
     "defaultMessage": "Select provider"
   },
+  "vJ/eSO": {
+    "defaultMessage": "No AP clients"
+  },
   "vJ0dqP": {
     "defaultMessage": "Reject Request?"
   },
@@ -13556,6 +13979,9 @@
   },
   "vLbXPl": {
     "defaultMessage": "Configure syslog to an external server for offline reporting"
+  },
+  "vMR+CJ": {
+    "defaultMessage": "Expiration Date of Data Consumption"
   },
   "vONi+O": {
     "defaultMessage": "Country"
@@ -13635,6 +14061,9 @@
   "vknTf8": {
     "defaultMessage": "Must be 26 hex characters"
   },
+  "vkv6jN": {
+    "defaultMessage": "Preview: {name}"
+  },
   "vkxFH6": {
     "defaultMessage": "Once this connection time limit has been reached, the client will be disconnected"
   },
@@ -13670,6 +14099,9 @@
   },
   "vy/Kkh": {
     "defaultMessage": "Cancel Invitation"
+  },
+  "vyGzDg": {
+    "defaultMessage": "Template Preview"
   },
   "vzGrnm": {
     "defaultMessage": "Scope",
@@ -13735,6 +14167,10 @@
   "wJLtSR": {
     "defaultMessage": "Resend verification error. Please try again."
   },
+  "wKwiLp": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block}}",
+    "description": "Translation strings - Unblock, Block"
+  },
   "wL7VAE": {
     "defaultMessage": "Actions"
   },
@@ -13758,6 +14194,9 @@
   },
   "wSp1C8": {
     "defaultMessage": "NotifySuccess ({count} / {percent}%)"
+  },
+  "wV3cp1": {
+    "defaultMessage": "Bytes"
   },
   "wW0MIl": {
     "defaultMessage": "Add Guest Portal Service"
@@ -13789,6 +14228,9 @@
   "wbmIQn": {
     "defaultMessage": "V4_ACCESS_DOMAIN"
   },
+  "wcKjhc": {
+    "defaultMessage": "Default Vlan"
+  },
   "wcgl+F": {
     "defaultMessage": "Add SNMPv3 Agent"
   },
@@ -13803,9 +14245,6 @@
   },
   "wk2gIX": {
     "defaultMessage": "Trusted"
-  },
-  "wkYPjX": {
-    "defaultMessage": "Use existing server configuration"
   },
   "wlK3EK": {
     "defaultMessage": "Persona Group Name"
@@ -13932,6 +14371,9 @@
   "xBkv0R": {
     "defaultMessage": "Layer 2"
   },
+  "xD8rZt": {
+    "defaultMessage": "Service Validation {count, select, null {} other {({count})}}"
+  },
   "xEJGT1": {
     "defaultMessage": "Set number (1-{max})"
   },
@@ -14020,9 +14462,6 @@
   "xatcqQ": {
     "defaultMessage": "Join Time"
   },
-  "xbKzeb": {
-    "defaultMessage": "Block a client for <blockingPeriod></blockingPeriod> seconds after <failThreshold></failThreshold> repeat authentication failures within <checkPeriod></checkPeriod> seconds"
-  },
   "xciyj1": {
     "defaultMessage": "Use MAC authentication during reconnection:"
   },
@@ -14038,6 +14477,9 @@
   "xfSyOu": {
     "defaultMessage": "Could not enable wifi-calling with no profiles selected"
   },
+  "xhAcGU": {
+    "defaultMessage": "Recurring Schedule"
+  },
   "xhBLiY": {
     "defaultMessage": "Down"
   },
@@ -14046,6 +14488,9 @@
   },
   "xhw/tf": {
     "defaultMessage": "Edit Unit"
+  },
+  "xi3TU8": {
+    "defaultMessage": "{name} (Regex)"
   },
   "xiLyrR": {
     "defaultMessage": "Select Client MAC"
@@ -14119,6 +14564,9 @@
   "xxQxLE": {
     "defaultMessage": "Email Address"
   },
+  "xyZWEA": {
+    "defaultMessage": "Pass Packet"
+  },
   "xzWp9X": {
     "defaultMessage": "Switches"
   },
@@ -14176,6 +14624,10 @@
   "y99cMc": {
     "defaultMessage": "You can choose only APs that already connected to the cloud"
   },
+  "y9b5Vt": {
+    "defaultMessage": "VLAN Pool: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }",
+    "description": "Translation string - VLAN Pool"
+  },
   "y9lmDE": {
     "defaultMessage": "Layer 2 Policy"
   },
@@ -14187,9 +14639,6 @@
   },
   "yCDkU6": {
     "defaultMessage": "Time to connect is greater than {threshold} in {scope}"
-  },
-  "yCeZ/i": {
-    "defaultMessage": "VLAN Pool: {poolName} {isCustom, selectordinal, one {(Custom)} other {(Default)} }"
   },
   "yDq3qb": {
     "defaultMessage": "Add Sub-interface"
@@ -14332,6 +14781,9 @@
   "ykUMzk": {
     "defaultMessage": "Download Log"
   },
+  "ylR06j": {
+    "defaultMessage": "Custom NAS ID"
+  },
   "ym2VIm": {
     "defaultMessage": "Valid VLAN member ID is between 2 and 4094",
     "description": "Validation - VLAN ID invalid checks"
@@ -14352,6 +14804,12 @@
   },
   "yqrFMI": {
     "defaultMessage": "Current AP Firmware"
+  },
+  "yr4JsI": {
+    "defaultMessage": "Data Consumption"
+  },
+  "yrJcH+": {
+    "defaultMessage": "ZD Migration Summary"
   },
   "ysmIeD": {
     "defaultMessage": "Recommended Action"
@@ -14388,6 +14846,9 @@
   },
   "z4U35p": {
     "defaultMessage": "Add VLAN interface (VE)"
+  },
+  "z5Lg4o": {
+    "defaultMessage": "Override the settings in active networks"
   },
   "z5epQF": {
     "defaultMessage": "Radios"
@@ -14463,9 +14924,6 @@
   },
   "zLJt0p": {
     "defaultMessage": "Tunnel"
-  },
-  "zLM75r": {
-    "defaultMessage": "No AP Clients"
   },
   "zMSnGf": {
     "defaultMessage": "Field must be exactly $'{len}' characters",
@@ -14561,6 +15019,10 @@
   "zifKlV": {
     "defaultMessage": "Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}."
   },
+  "zm37dx": {
+    "defaultMessage": "Special character is invalid",
+    "description": "Validation - name for service and policy"
+  },
   "zmEuGu": {
     "defaultMessage": "Current Firmware"
   },
@@ -14581,6 +15043,9 @@
   },
   "zqarJS": {
     "defaultMessage": "Collect User Email Address:"
+  },
+  "zrFQvM": {
+    "defaultMessage": "Preferred day(s):"
   },
   "zs74F6": {
     "defaultMessage": "This incident impacted {count} {count, plural, one {operating system} other {operating systems} }"
@@ -14611,6 +15076,9 @@
   },
   "zyojKJ": {
     "defaultMessage": "Devices ({deviceCount})"
+  },
+  "zyqEJ2": {
+    "defaultMessage": "Start firmware upgrade retry"
   },
   "zz6ObK": {
     "defaultMessage": "Restore"

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import _ from 'lodash'
+
 import { useGetSigPackQuery }                                             from '@acx-ui/rc/services'
 import { ApplicationConfirmType, ApplicationInfo, ApplicationUpdateType } from '@acx-ui/rc/utils'
 
@@ -12,7 +14,8 @@ export function useSigPackDetails () {
   const [ renamed, setRenamed ] = useState([] as ApplicationInfo[])
   const [ confirmationType, setConfirmationType ] = useState(ApplicationConfirmType.NEW_APP_ONLY)
   const [ rulesCount, setRulesCount ] = useState(0)
-  const { data } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
+  const { data, isFetching, isLoading } =
+    useGetSigPackQuery({ params: { changesIncluded: 'true' } })
 
   useEffect(() => {
     if(data && data.changedApplications?.length) {
@@ -43,10 +46,12 @@ export function useSigPackDetails () {
       setConfirmationType(ApplicationConfirmType.NEW_APP_ONLY)
     } else if(removed.length && (updatedWithAddedCount() === 0)){
       setConfirmationType(ApplicationConfirmType.REMOVED_APP_ONLY)
-      setRulesCount(removed.length)
+      setRulesCount(_.sumBy(removed, (item)=>item.impactedItems?.length||0))
     } else if(!added.length && !removed.length && updatedCount() === 1){
       setConfirmationType(ApplicationConfirmType.UPDATED_APP_ONLY)
-      setRulesCount(updated.length + merged.length + renamed.length)
+      setRulesCount(_.sumBy(updated, (item)=>item.impactedItems?.length||0) +
+      _.sumBy(merged, (item)=>item.impactedItems?.length||0) +
+      _.sumBy(renamed, (item)=>item.impactedItems?.length||0))
     } else if(!removed.length && (updatedWithAddedCount() > 1)){
       setConfirmationType(ApplicationConfirmType.UPDATED_APPS)
     } else if(removed.length && (updatedWithAddedCount() >= 1)){
@@ -64,6 +69,8 @@ export function useSigPackDetails () {
     renamed,
     updateAvailable,
     confirmationType,
-    rulesCount
+    rulesCount,
+    isFetching,
+    isLoading
   }
 }

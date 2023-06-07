@@ -28,10 +28,10 @@ import {
 
 import { UpdateNowDialog } from './UpdateNowDialog'
 
-const transform = firmwareTypeTrans()
 
 export function VenueFirmwareList () {
   const { $t } = useIntl()
+  const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
   const {
     data: venueFirmwareList,

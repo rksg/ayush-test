@@ -6,8 +6,7 @@ import {
   Form,
   Row,
   Select,
-  Switch,
-  Input
+  Switch
 } from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
@@ -15,7 +14,8 @@ import {
   StepsFormLegacy,
   Button,
   Subtitle,
-  Tooltip
+  Tooltip,
+  PasswordInput
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid }       from '@acx-ui/icons'
@@ -209,7 +209,7 @@ function SettingsForm () {
               ]}
               validateFirst
               extra={intl.$t({ defaultMessage: '8 characters minimum' })}
-              children={<Input.Password />}
+              children={<PasswordInput />}
             />
           }
           {wlanSecurity === 'WEP' && <>
@@ -221,7 +221,7 @@ function SettingsForm () {
                 { validator: (_, value) => hexRegExp(value) }
               ]}
               extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
-              children={<Input.Password />}
+              children={<PasswordInput />}
             />
             <div style={{ position: 'absolute', top: '111px', right: '15px' }}>
               <Button type='link' onClick={onGenerateHexKey}>
@@ -244,7 +244,7 @@ function SettingsForm () {
               ]}
               validateFirst
               extra={intl.$t({ defaultMessage: '8 characters minimum' })}
-              children={<Input.Password />}
+              children={<PasswordInput />}
             />
           }
           <Form.Item

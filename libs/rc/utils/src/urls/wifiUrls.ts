@@ -26,17 +26,15 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addNetworkDeep: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
-    //url: '/networks',
-    //oldUrl: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true',
-    //newApi: true
+    url: '/networks',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true',
+    newApi: true
   },
   updateNetworkDeep: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true'
-    //url: '/networks/:networkId',
-    //oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true',
-    //newApi: true
+    url: '/networks/:networkId',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId/deep?quickAck=true',
+    newApi: true
   },
   deleteNetwork: {
     method: 'delete',
@@ -463,6 +461,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/aps/:serialNumber/networkSettings',
     oldUrl: '/api/venues/aps/:serialNumber/networkSettings',
+    newApi: true
+  },
+  getApMeshSettings: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/meshSettings',
+    newApi: true
+  },
+  updateApMeshSettings: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/meshSettings',
+    newApi: true
+  },
+  getMeshUplinkAPs: {
+    method: 'post',
+    url: '/aps/neighbors/query',
     newApi: true
   }
 }
