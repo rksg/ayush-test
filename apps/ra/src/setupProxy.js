@@ -15,15 +15,10 @@ module.exports = async function setupProxy (app) {
       .get(LOCAL_MLISA_URL, () => { resolve('up') })
       .on('error', () => { resolve('down') })
   })
-  if (await localDataApi === 'up') {
-    app.use(createProxyMiddleware(
-      '/analytics',
-      {
-        target: LOCAL_MLISA_URL,
-        changeOrigin: true
-      }
-    ))
-  }
+  app.use(createProxyMiddleware('/analytics', {
+    target: await localDataApi === 'up' ? LOCAL_MLISA_URL : CLOUD_URL,
+    changeOrigin: true
+  }))
 
   app.use(createProxyMiddleware(
     '/docs',
@@ -40,16 +35,6 @@ module.exports = async function setupProxy (app) {
       changeOrigin: true,
       onProxyReqWs: function (request) {
         request.setHeader('origin', STATIC_ASSETS)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/analytics',
-    {
-      target: CLOUD_URL,
-      changeOrigin: true,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
       }
     }
   ))
