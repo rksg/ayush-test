@@ -14,6 +14,8 @@ import {
   useEdgeBySerialNumberQuery, useGetDnsServersQuery, useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
 
+import { wrapperStyle } from './styledComponents'
+
 export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const params = useParams()
   const edgeStatusPayload = {
@@ -93,12 +95,4 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       </GridCol>
     </GridRow>
   )
-})`
-div.statistic {
-    height: 280px;
-
-    &.upTimeWidget {
-      height: 100px;
-    }
-}
-`
+})`${wrapperStyle}`
