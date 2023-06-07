@@ -91,7 +91,20 @@ export function NetworkMoreSettingsForm (props: {
     }
   }, [data, editMode, cloneMode])
   const { $t } = useIntl()
+
+  /* Please be advised that why we use clone mode as state here
+   * usually edit mode will show more setting in step form seperately
+   * and clone mode just like usual adding network.
+   * But when MoreSettingForm is not rendered (user didn't click
+   * the show more button), the copied value in more setting will be
+   * ignored.
+   * In cause this scenario happen, MoreSettingsForm will auto expand
+   * under clone mode, user can collapse manually, it will force React
+   * to render MoreSettingsForm.
+   * There should be no side effect when adding/editing a network.
+   */
   const [enableMoreSettings, setEnabled] = useState(cloneMode)
+
   if (data && editMode) {
     return <MoreSettingsForm wlanData={wlanData} />
   } else {
