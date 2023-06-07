@@ -8,6 +8,7 @@ function AllRoutes () {
     <Route path='/' element={<Navigate replace to={MLISA_BASE_PATH} />} />
     <Route path={MLISA_BASE_PATH}>
       <Route path='' element={<Navigate replace to='incidents' />} />
+      <Route path='dashboard' element={<div>dashboard</div>} />
       <Route path='incidents' element={<Incidents />} />
     </Route>
   </Route>)
