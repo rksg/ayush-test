@@ -7,7 +7,7 @@ import { screen, render, mockGraphqlQuery, waitForElementToBeRemoved } from '@ac
 import { getAllCallQoeTests, getAllCallQoeTestsWithNotStarted } from './__tests__/fixtures'
 import { api }                                                  from './services'
 
-import { useVideoCallQoe } from '.'
+import { useVideoCallQoe, VideoCallQoe } from '.'
 
 describe('VideoCallQoeListPage', () => {
   const params = { tenantId: 'tenant-id' }
@@ -56,11 +56,7 @@ describe('VideoCallQoeListPage', () => {
 
   it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const Component = () => {
-      const { component } = useVideoCallQoe()
-      return component
-    }
-    render(<Component/>, { wrapper: Provider, route: { params } })
+    render(<VideoCallQoe/>, { wrapper: Provider, route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
     expect(await screen.findByText('Video Call QoE')).toBeVisible()
     expect(await screen.findByText('Test Call Name')).toBeVisible()
