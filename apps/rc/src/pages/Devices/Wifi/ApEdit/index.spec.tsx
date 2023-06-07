@@ -183,6 +183,7 @@ describe('ApEdit', () => {
     })
 
     it('should handle error occurred', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockServer.use(
         rest.put(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => {
