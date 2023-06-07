@@ -168,9 +168,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getWifiCapabilities: {
     // [New API] new uri not ready
     method: 'get',
-    url: '/venues/aps/capabilities',
-    oldUrl: '/api/tenant/:tenantId/wifi/capabilities',
-    newApi: true
+    // url: '/venues/aps/capabilities',
+    // oldUrl: '/api/tenant/:tenantId/wifi/capabilities',
+    // newApi: true
+    url: '/api/tenant/:tenantId/wifi/capabilities',
+    newApi: false
   },
   addAp: {
     method: 'post',
