@@ -183,11 +183,16 @@ describe('Networks Table', () => {
     }
 
     render(<Component/>, { wrapper: Provider, route: {} })
-    screen.logTestingPlaygroundURL()
     expect(await screen.findByText('network-01 (SSID: 01)')).toBeVisible()
-    expect(await screen.findByText('network-01 (SSID: 01)')).toBeVisible()
-    expect(await screen.findByText('network-01 (SSID: 01)')).toBeVisible()
-    expect(await screen.findByText('network-01 (SSID: 01)')).toBeVisible()
+    expect(await screen.findByText('network-02 (SSID: 02)')).toBeVisible()
+    expect(await screen.findByText('network-03 (SSID: 03)')).toBeVisible()
+    expect(await screen.findByText('network-04 (SSID: 04)')).toBeVisible()
+    expect(await screen.findByText('network-05 (SSID: 05)')).toBeVisible()
+    expect(await screen.findByText('network-06 (SSID: 06)')).toBeVisible()
+    expect(await screen.findByText('network-07 (SSID: 07)')).toBeVisible()
+    expect(await screen.findByText('network-08 (SSID: 08)')).toBeVisible()
+    expect(await screen.findByText('network-09 (SSID: 09)')).toBeVisible()
+    expect(await screen.findByText('network-10 (SSID: 10)')).toBeVisible()
   })
 
   it('should render title with count correctly', async () => {

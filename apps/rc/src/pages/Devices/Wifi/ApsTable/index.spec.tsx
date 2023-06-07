@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -102,22 +103,19 @@ describe('AP List Table', () => {
 
   it('should show import CSV dialog', async () => {
     const Component = () => {
-      const { title, headerExtra, component } = useApsTable()
-      return <>{title}{headerExtra}{component}</>
+      const { headerExtra, component } = useApsTable()
+      return <>{headerExtra}{component}</>
     }
     render(<Component/>, { wrapper: Provider, route: {} })
     const csvFile = new File([''], 'aps_import_template.csv', { type: 'text/csv' })
 
-    // await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-    // await userEvent.click(await screen.findByText('Import from file'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    await userEvent.click(await screen.findByText('Import from file'))
 
-    // const dialog = await screen.findByRole('dialog')
+    const dialog = await screen.findByRole('dialog')
 
-    // // eslint-disable-next-line testing-library/no-node-access
-    // await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
-    // expect(dialog).toHaveTextContent('aps_import_template.csv')
-
-    // await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
-    // await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+    expect(dialog).toHaveTextContent('aps_import_template.csv')
   })
 })

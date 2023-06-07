@@ -116,18 +116,24 @@ describe('Switch List Table', () => {
     }
     render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Add')).toBeVisible()
-    // await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-    // await userEvent.click(await screen.findByText('Import from file'))
+  })
 
-    // screen.logTestingPlaygroundURL()
-    // const dialog = await screen.findByRole('dialog')
-    // const csvFile = new File(['(⌐□_□)'], 'aps_import_template.csv', { type: 'text/csv' })
+  it.only('should show import CSV dialog', async () => {
+    const Component = () => {
+      const { headerExtra, component } = useSwitchesTable()
+      return <span>{headerExtra}{component}</span>
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
 
-    // // eslint-disable-next-line testing-library/no-node-access
-    // await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
-    // expect(dialog).toHaveTextContent('aps_import_template.csv')
+    const csvFile = new File(['(⌐□_□)'], 'aps_import_template.csv', { type: 'text/csv' })
 
-    // await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
-    // await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    await userEvent.click(await screen.findByText('Import from file'))
+
+    const dialog = await screen.findByRole('dialog')
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+    expect(dialog).toHaveTextContent('aps_import_template.csv')
   })
 })
