@@ -237,7 +237,6 @@ export function VenueWifi () {
         </div>
       }
       {showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }}
-        isVenueLevel={true}
         searchable={true}
         enableActions={true}
         filterables={{

@@ -95,7 +95,6 @@ export const defaultSwitchPayload = {
 
 interface SwitchTableProps
   extends Omit<TableProps<SwitchRow>, 'columns'> {
-  isVenueLevel?: boolean,
   showAllColumns?: boolean,
   tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
   searchable?: boolean
@@ -107,7 +106,7 @@ export function SwitchTable (props : SwitchTableProps) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const { isVenueLevel, showAllColumns, searchable, filterableKeys } = props
+  const { showAllColumns, searchable, filterableKeys } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
   const [ importVisible, setImportVisible] = useState(false)
@@ -222,7 +221,7 @@ export function SwitchTable (props : SwitchTableProps) {
     //   title: $t({ defaultMessage: 'Incidents' }),
     //   dataIndex: 'incidents',
     // },
-    ...(isVenueLevel ? [] : [{
+    ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
