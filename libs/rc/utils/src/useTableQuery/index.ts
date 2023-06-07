@@ -48,7 +48,7 @@ export interface TABLE_QUERY <
   search?: SEARCH
   rowKey?: string
   option?: UseQueryOptions
-  enableSelectAllPagesData?: boolean
+  enableSelectAllPagesData?: string[] // query fields for all data
 }
 export type PAGINATION = {
   page: number,
@@ -164,6 +164,7 @@ export function useTableQuery <
     params: { ...params, ...option.apiParams },
     payload: {
       ...payload,
+      fields: option.enableSelectAllPagesData,
       page: 1,
       pageSize: TABLE_MAX_PAGE_SIZE
     }

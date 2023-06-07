@@ -297,7 +297,7 @@ export function VenuesTable () {
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
     },
-    enableSelectAllPagesData: true
+    enableSelectAllPagesData: ['id', 'name']
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {

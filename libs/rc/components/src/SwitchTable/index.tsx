@@ -122,7 +122,8 @@ export function SwitchTable (props : SwitchTableProps) {
       searchTargetFields: defaultSwitchPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) },
-    enableSelectAllPagesData: true
+    enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig' ]
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)

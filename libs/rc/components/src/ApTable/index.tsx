@@ -130,7 +130,8 @@ export function ApTable (props: ApTableProps) {
       searchTargetFields: defaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) },
-    enableSelectAllPagesData: true
+    enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'deviceGroupName', 'deviceGroupId',
+      'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
 

@@ -67,20 +67,22 @@ export function SwitchPortTable ({ isVenueLevel }: {
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
   ]
 
+  const queryFields = ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
+    'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
+    'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
+    'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
+    'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
+    'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
+    'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
+    'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
+  ]
+
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortlistQuery,
     defaultPayload: {
       filters: venueId ? { venueId: [venueId] } :
         serialNumber ? { switchId: [serialNumber] } : {},
-      fields: ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
-        'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
-        'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
-        'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-        'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
-        'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
-        'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-        'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
-      ]
+      fields: queryFields
     },
     search: {
       searchTargetFields: ['name', 'portIdentifier', 'neighborName']
@@ -89,7 +91,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       sortField: 'portIdentifierFormatted',
       sortOrder: 'ASC'
     },
-    enableSelectAllPagesData: true
+    enableSelectAllPagesData: queryFields
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
