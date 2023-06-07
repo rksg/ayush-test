@@ -294,8 +294,26 @@ describe('NetworkMoreSettingsForm', () => {
         }
       }
     }
-
     expect(hasAuthRadius(guestData, guestWlanData)).toBeTruthy()
+
+    const guestAlwayAccessWlanData = {
+      guestPortal: {
+        wisprPage: {
+          customExternalProvider: true,
+          authType: 'ALWAYS_ACCEPT'
+        }
+      }
+    }
+    expect(hasAuthRadius(guestData, guestAlwayAccessWlanData)).toBeFalsy()
+
+    const guestAccountData = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      enableAccountingService: true,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.WISPr
+      }
+    }
+    expect(hasAuthRadius(guestAccountData, guestAlwayAccessWlanData)).toBeTruthy()
 
     expect(hasAuthRadius({ }, {})).toBeFalsy()
   })
