@@ -85,6 +85,7 @@ export interface MigrationResultType {
 export interface TaskContextType {
   taskId: string,
   createTime: number,
+  completedTime?: number,
   state: string,
   tenantId: string,
   fileName: string,

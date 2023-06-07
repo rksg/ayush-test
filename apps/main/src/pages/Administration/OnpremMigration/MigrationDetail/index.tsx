@@ -37,7 +37,8 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'End Time' })}
-        children={'--'} />
+        // eslint-disable-next-line max-len
+        children={currentTask.completedTime ? formatter(DateFormatEnum.DateTimeFormat)(currentTask.completedTime) : '--'} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'State' })}
