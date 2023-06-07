@@ -24,8 +24,18 @@ jest.mock('@acx-ui/utils', () => ({
     messages: { 'en-US': { lang: 'Language' } },
     lang: 'en-US'
   })
+// useLocaleContext: () => ({
+//   messages: { 'en-US': { lang: 'Language' } },
+//   lang: 'en-US'
+// })
 }))
-
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  UserProfileProvider: (props: { children: React.ReactNode }) => <div
+    {...props}
+    data-testid='profile-provider'
+  />
+}))
 describe('bootstrap.init', () => {
   it('renders correctly', async () => {
     const rootEl = document.createElement('div')
