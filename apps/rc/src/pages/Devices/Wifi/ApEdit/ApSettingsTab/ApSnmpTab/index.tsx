@@ -277,7 +277,6 @@ export function ApSnmp () {
                   })}`)
                 }
                 }
-                style={{ color: '#5598EA' }}
               >
                 {$t({ defaultMessage: 'Add' })}
               </Button>
