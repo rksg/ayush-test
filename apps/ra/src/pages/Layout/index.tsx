@@ -13,7 +13,7 @@ import {
   HeaderContext,
   Logo
 } from '@acx-ui/main/components'
-import { Outlet, useParams } from '@acx-ui/react-router-dom'
+import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 // import SearchBar         from './SearchBar'
@@ -27,7 +27,7 @@ function Layout () {
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   return (
     <LayoutComponent
-      logo={<Logo />}
+      logo={<TenantNavLink to={''} children={<Logo />} />}
       menuConfig={useMenuConfig()}
       content={<Outlet />}
       leftHeaderContent={<>{$t({ defaultMessage: 'Analytics' })}</>}
