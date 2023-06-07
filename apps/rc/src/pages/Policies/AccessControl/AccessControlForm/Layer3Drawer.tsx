@@ -40,7 +40,6 @@ import { filterByAccess } from '@acx-ui/user'
 import { layer3ProtocolLabelMapping }      from '../../contentsMap'
 import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
-import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
@@ -757,7 +756,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
     <DndProvider backend={HTML5Backend} >
-      {isOnlyViewMode ? <Table
+      {isOnlyViewMode && !editMode.isEdit ? <Table
         columns={basicColumns}
         dataSource={layer3RuleList as Layer3Rule[]}
       /> : <Table
@@ -1039,9 +1038,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
         zIndex={10}
-        onClose={() => !isViewMode()
-          ? showUnsavedConfirmModal(handleLayer3DrawerClose)
-          : handleLayer3DrawerClose()
+        onClose={() => handleLayer3DrawerClose()
         }
         destroyOnClose={true}
         children={content}

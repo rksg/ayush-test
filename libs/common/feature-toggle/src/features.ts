@@ -56,5 +56,7 @@ export enum Features {
   EOL_AP_2022_12_PHASE_2_TOGGLE='eol-ap-2022-12-phase-2-toggle',
   NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
-  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation'
+  SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation',
+  CONFIG_CHANGE = 'acx-ui-config-change-toggle',
+  MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional'
 }
