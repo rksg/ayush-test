@@ -161,7 +161,7 @@ describe('ApMeshTab', () => {
 
     await userEvent.click(checkboxes[0])
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply Mesh' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
 
