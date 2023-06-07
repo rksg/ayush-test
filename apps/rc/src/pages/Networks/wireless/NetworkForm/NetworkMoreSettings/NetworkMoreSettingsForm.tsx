@@ -91,7 +91,7 @@ export function NetworkMoreSettingsForm (props: {
     }
   }, [data, editMode, cloneMode])
   const { $t } = useIntl()
-  const [enableMoreSettings, setEnabled] = useState(false)
+  const [enableMoreSettings, setEnabled] = useState(cloneMode)
   if (data && editMode) {
     return <MoreSettingsForm wlanData={wlanData} />
   } else {
