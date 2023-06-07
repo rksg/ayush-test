@@ -106,9 +106,8 @@ export function NetworkMoreSettingsForm (props: {
           $t({ defaultMessage: 'Show less settings' }) :
           $t({ defaultMessage: 'Show more settings' })}
       </Button>
-      <div style={{ display: enableMoreSettings ? 'block' : 'none' }}>
-        <MoreSettingsForm wlanData={wlanData} />
-      </div>
+      {enableMoreSettings &&
+        <MoreSettingsForm wlanData={wlanData} />}
     </div>
   }
 }
