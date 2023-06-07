@@ -195,3 +195,32 @@ export interface EdgeService {
   currentVersion: string
   targetVersion: string
 }
+
+export interface EdgesTopTraffic {
+  topTraffic: {
+      name: string
+      serial: string
+      rxBytes: number
+      txBytes: number
+  } []
+}
+
+export interface EdgesTopResources {
+  cpu: {
+      name: string
+      serial: string
+      percentage: number
+  } [],
+  memory: {
+    name: string
+    serial: string
+    percentage: number
+    usedBytes: number
+  } [],
+  disk: {
+    name: string
+    serial: string
+    percentage: number
+    usedBytes: number
+  } []
+}

@@ -230,7 +230,7 @@ export function useMenuConfig () {
       ]
     },
     ...(isEdgeEnabled ? [{
-      uri: '/devices/edge/list',
+      uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
       label: $t({ defaultMessage: 'SmartEdge' }),
       inactiveIcon: SmartEdgeOutlined,

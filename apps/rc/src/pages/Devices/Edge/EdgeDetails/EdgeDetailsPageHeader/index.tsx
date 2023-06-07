@@ -82,7 +82,7 @@ export const EdgeDetailsPageHeader = () => {
     if (!serialNumber || serialNumber === 'undefined') return
     if(e.key === 'delete') {
       actions[e.key as keyof typeof actions](
-        () => navigate(`${basePath.pathname}/devices/edge/list`)
+        () => navigate(`${basePath.pathname}/devices/edge`)
       )
     } else {
       actions[e.key as keyof typeof actions]()
@@ -110,7 +110,7 @@ export const EdgeDetailsPageHeader = () => {
       title={currentEdge?.name || ''}
       titleExtra={<EdgeStatusLight data={status} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
+        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
       extra={filterByAccess([
         <RangePicker

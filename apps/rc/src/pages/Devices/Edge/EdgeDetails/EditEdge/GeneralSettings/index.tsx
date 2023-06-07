@@ -18,7 +18,7 @@ const GeneralSettings = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const linkToEdgeList = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
   const { data: edgeGeneralSettings } = useGetEdgeQuery({
     params: { serialNumber: params.serialNumber }
