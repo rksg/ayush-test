@@ -9,7 +9,7 @@ function Analytics () {
   const { $t } = useIntl()
   return <Loader>
     <UI.DummyWrapper>
-      {$t({ defaultMessage: 'DATA API: {env}' }, { env: get('MLISA_DATA_API_URL') })}
+      {$t({ defaultMessage: 'doc url: {env}' }, { env: get('MLISA_DOCUMENTATION_URL') })}
     </UI.DummyWrapper>
   </Loader>
 }
