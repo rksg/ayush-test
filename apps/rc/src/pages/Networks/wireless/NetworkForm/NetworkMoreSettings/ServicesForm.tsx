@@ -6,14 +6,17 @@ import {
   Form,
   InputNumber,
   Switch,
-  Tooltip
+  Tooltip,
+  Select
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { QuestionMarkCircleOutlined }                                                           from '@acx-ui/icons'
+import { useGetTunnelProfileViewDataListQuery }                                                 from '@acx-ui/rc/services'
 import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
 
-import NetworkFormContext from '../NetworkFormContext'
+import NetworkFormContext        from '../NetworkFormContext'
+import { hasVxLanTunnelProfile } from '../utils'
 
 import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
 import { DnsProxyModal }           from './DnsProxyModal'
@@ -77,6 +80,26 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
     }
     return Promise.resolve()
   }
+
+  const showTunnelProfile = hasVxLanTunnelProfile(data)
+
+  const tunnelProfileDefaultPayload = {
+    fields: ['name', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
+  const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
+    payload: tunnelProfileDefaultPayload
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        isLoading
+      }
+    }
+  })
 
   return (
     <>
@@ -237,6 +260,20 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
             $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
         }
       />
+
+      { showTunnelProfile &&
+      <Form.Item
+        name={['wlan','advancedCustomization','tunnelProfileId']}
+        label={$t({ defaultMessage: 'Tunnel Profile' })}
+        children={
+          <Select
+            loading={isTunnelLoading}
+            options={tunnelOptions}
+            disabled={true}
+          />
+        }
+      />
+      }
     </>
   )
 }

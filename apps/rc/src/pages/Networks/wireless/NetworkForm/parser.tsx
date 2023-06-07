@@ -15,6 +15,8 @@ import {
   ClientIsolationVenue
 } from '@acx-ui/rc/utils'
 
+import { hasVxLanTunnelProfile } from './utils'
+
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
@@ -324,6 +326,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   if(!get(data, 'enableVlanPooling')){
     advancedCustomization.vlanPool=null
     vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
+  }
+
+  if (hasVxLanTunnelProfile(data) && data.type === NetworkTypeEnum.DPSK) {
+    (advancedCustomization as DpskWlanAdvancedCustomization).enableAaaVlanOverride = false
   }
 
   let saveData:NetworkSaveData = {

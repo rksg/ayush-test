@@ -1,5 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 
+import { Console } from 'console'
+
 import {
   Checkbox,
   Collapse,
@@ -21,9 +23,9 @@ import { RadiusOptionsForm }                                                    
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                                    from '@acx-ui/utils'
 
-import NetworkFormContext                     from '../NetworkFormContext'
-import { hasAccountingRadius, hasAuthRadius } from '../utils'
-import VLANPoolInstance                       from '../VLANPoolInstance'
+import NetworkFormContext                                            from '../NetworkFormContext'
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile } from '../utils'
+import VLANPoolInstance                                              from '../VLANPoolInstance'
 
 import { AccessControlForm }  from './AccessControlForm'
 import { LoadControlForm }    from './LoadControlForm'
@@ -86,9 +88,7 @@ export function NetworkMoreSettingsForm (props: {
         managementFrameMinimumPhyRate: get(data,
           'wlan.advancedCustomization.radioCustomization.managementFrameMinimumPhyRate'),
         bssMinimumPhyRate: get(data,
-          'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate'),
-        enableVxLan: data.wlan?.advancedCustomization?.tunnelProfileId !== "" && 
-          data.wlan?.advancedCustomization?.tunnelProfileId !== null
+          'wlan.advancedCustomization.radioCustomization.bssMinimumPhyRate')
       })
     }
   }, [data, editMode, cloneMode])
@@ -131,8 +131,7 @@ export function MoreSettingsForm (props: {
     enableTransientClientManagement,
     enableOce,
     enableVlanPooling,
-    bssMinimumPhyRate, //BSS Min Rate
-    enableVxLan
+    bssMinimumPhyRate //BSS Min Rate
   ] = [
     useWatch<boolean>('enableDhcp'),
     useWatch<boolean>('enableOfdmOnly'),
@@ -143,8 +142,7 @@ export function MoreSettingsForm (props: {
     useWatch<boolean>(['wlan', 'advancedCustomization',
       'enableOptimizedConnectivityExperience']),
     useWatch<boolean>('enableVlanPooling'),
-    useWatch<string>('bssMinimumPhyRate'),
-    useWatch<boolean>('enableVxLan')
+    useWatch<string>('bssMinimumPhyRate')
   ]
 
   const form = Form.useFormInstance()
@@ -183,6 +181,8 @@ export function MoreSettingsForm (props: {
 
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
+
+  const enableVxLan = hasVxLanTunnelProfile(wlanData)
 
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
@@ -226,7 +226,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch disabled={!useIsSplitOn(Features.POLICIES)}/>}
+              children={<Switch disabled={!useIsSplitOn(Features.POLICIES) || enableVxLan}/>}
             />
           </UI.FieldLabel>
 
@@ -241,7 +241,8 @@ export function MoreSettingsForm (props: {
                   message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
-              children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
+              children={<InputNumber style={{ width: '80px' }}
+                disabled={isPortalDefaultVLANId || enableVxLan}/>}
             />
 
             {showDynamicWlan &&
@@ -252,7 +253,8 @@ export function MoreSettingsForm (props: {
                   valuePropName='checked'
                   initialValue={true}
                   children={
-                    <Checkbox children={$t({ defaultMessage: 'Dynamic VLAN' })} />
+                    <Checkbox disabled={enableVxLan}
+                      children={$t({ defaultMessage: 'Dynamic VLAN' })} />
                   }
                 />
               </UI.FieldLabel>
