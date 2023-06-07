@@ -7,13 +7,22 @@ import {
   InputNumber,
   Switch,
   Tooltip,
-  Select
+  Select,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { QuestionMarkCircleOutlined }                                                           from '@acx-ui/icons'
-import { useGetTunnelProfileViewDataListQuery }                                                 from '@acx-ui/rc/services'
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
+import { QuestionMarkCircleOutlined }           from '@acx-ui/icons'
+import { useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  DnsProxyRule,
+  DnsProxyContextType,
+  WifiCallingSettingContextType,
+  WifiCallingSetting,
+  getServiceDetailsLink,
+  ServiceOperation,
+  ServiceType } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import NetworkFormContext        from '../NetworkFormContext'
 import { hasVxLanTunnelProfile } from '../utils'
@@ -274,6 +283,36 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         }
       />
       }
+
+      { showTunnelProfile &&
+        <Space size={1}>
+          <UI.InfoIcon />
+          <UI.Description>
+            {
+              $t({
+                defaultMessage: `All networks under the same Network Segmentation 
+                share the same tunnel profile. Go `
+              })
+            }
+            &nbsp;
+            <Space size={1}></Space>
+            <TenantLink to={getServiceDetailsLink({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.DETAIL,
+              serviceId: ''
+            })}>
+              { $t({ defaultMessage: 'here' }) }
+            </TenantLink>
+            &nbsp;
+            {
+              $t({
+                defaultMessage: 'to change'
+              })
+            }
+          </UI.Description>
+        </Space>
+      }
+
     </>
   )
 }

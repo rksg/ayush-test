@@ -259,6 +259,21 @@ export function MoreSettingsForm (props: {
             }
 
           </div>}
+
+          {enableVxLan &&
+            <Space size={1}>
+              <UI.InfoIcon />
+              <UI.Description>
+                {
+                  $t({
+                    defaultMessage: `Not able to modify when the network 
+                    enables network segmentation service`
+                  })
+                }
+              </UI.Description>
+            </Space>
+          }
+
           {enableVlanPooling &&
         <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
           <VLANPoolInstance/>
@@ -272,7 +287,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch />}
+              children={<Switch disabled={enableVxLan}/>}
             />
           </UI.FieldLabel>
         </>
