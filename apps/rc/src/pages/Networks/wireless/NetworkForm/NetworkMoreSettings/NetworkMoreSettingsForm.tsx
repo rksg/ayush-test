@@ -1,7 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { Console } from 'console'
-
 import {
   Checkbox,
   Collapse,
