@@ -164,7 +164,7 @@ export default function ResidentPortalDetail () {
                 </GridCol>
                 <GridCol col={{ span: 6 }}>
                   <Card.Title>
-                    {$t({ defaultMessage: 'Allow Residents to Set DPSK' })}
+                    {$t({ defaultMessage: 'Allow Residents to Set Passphrase' })}
                   </Card.Title>
                   <Typography.Paragraph>
                     {residentPortalData?.uiConfiguration?.access?.tenantSetDpsk ?
