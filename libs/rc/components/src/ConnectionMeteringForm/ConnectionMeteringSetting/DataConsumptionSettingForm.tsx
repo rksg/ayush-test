@@ -158,8 +158,7 @@ export function DataConsumptionSettingForm () {
                   label={' '}
                   rules={
                     [
-                      { required: true },
-                      { min: 1 }
+                      { required: true }
                     ]
                   }
                 >
