@@ -354,6 +354,8 @@ export function SwitchTable (props : SwitchTableProps) {
       onChange={tableQuery.handleTableChange}
       onFilterChange={handleFilterChange}
       enableApiFilter={true}
+      searchableWidth={220}
+      filterableWidth={140}
       rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
       rowSelection={searchable !== false ? {
