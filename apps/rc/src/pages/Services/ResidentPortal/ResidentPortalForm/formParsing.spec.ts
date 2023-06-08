@@ -20,6 +20,7 @@ describe('ResidentPortal parser', () => {
     expect(saveData.uiConfiguration?.text.announcements)
       .toBe(mockedCreateFormData.textAnnouncements)
     expect(saveData.uiConfiguration?.text.helpText).toBe(mockedCreateFormData.textHelp)
+    expect(saveData.uiConfiguration?.access?.tenantSetDpsk).toBe(mockedCreateFormData.tenantSetDpsk)
     expect(saveData.uiConfiguration?.color?.mainColor).toBe(mockedCreateFormData.colorMain)
     expect(saveData.uiConfiguration?.color?.accentColor).toBe(mockedCreateFormData.colorAccent)
     expect(saveData.uiConfiguration?.color?.separatorColor)
@@ -31,7 +32,7 @@ describe('ResidentPortal parser', () => {
       .toBe(mockedCreateFormData.fileFavicon.file?.name)
   })
 
-  it('should remove file name when file is removed', () => {
+  it('should remove filename when file is removed', () => {
     const formDataRemovedFiles: CreateResidentPortalFormFields = {
       serviceName: 'New Resident Portal',
       textTitle: 'Welcome',
@@ -39,6 +40,7 @@ describe('ResidentPortal parser', () => {
       textLogin: 'Login Please',
       textAnnouncements: 'Announcing a Mocked Portal',
       textHelp: 'This is a test.',
+      tenantSetDpsk: true,
       colorMain: '',
       colorAccent: '',
       colorSeparator: '',
@@ -70,6 +72,43 @@ describe('ResidentPortal parser', () => {
     expect(saveData.uiConfiguration?.files?.favIconFileName).toBe('')
   })
 
+  it('should not change filename when file is unchanged', () => {
+    const formDataRemovedFiles: CreateResidentPortalFormFields = {
+      serviceName: 'New Resident Portal',
+      textTitle: 'Welcome',
+      textSubtitle: 'This is a Mocked Portal',
+      textLogin: 'Login Please',
+      textAnnouncements: 'Announcing a Mocked Portal',
+      textHelp: 'This is a test.',
+      tenantSetDpsk: true,
+      colorMain: '',
+      colorAccent: '',
+      colorSeparator: '',
+      colorText: '',
+      fileLogo: { file: undefined },
+      fileFavicon: { file: undefined }
+    }
+
+    const saveData: ResidentPortal =
+      transferFormFieldsToSaveData(formDataRemovedFiles)
+
+    expect(saveData.name).toBe(formDataRemovedFiles.serviceName)
+    expect(saveData.uiConfiguration?.text.title).toBe(formDataRemovedFiles.textTitle)
+    expect(saveData.uiConfiguration?.text.subTitle).toBe(formDataRemovedFiles.textSubtitle)
+    expect(saveData.uiConfiguration?.text.loginText).toBe(formDataRemovedFiles.textLogin)
+    expect(saveData.uiConfiguration?.text.announcements)
+      .toBe(formDataRemovedFiles.textAnnouncements)
+    expect(saveData.uiConfiguration?.text.helpText).toBe(formDataRemovedFiles.textHelp)
+    expect(saveData.uiConfiguration?.color?.mainColor).toBe(formDataRemovedFiles.colorMain)
+    expect(saveData.uiConfiguration?.color?.accentColor).toBe(formDataRemovedFiles.colorAccent)
+    expect(saveData.uiConfiguration?.color?.separatorColor)
+      .toBe(formDataRemovedFiles.colorSeparator)
+    expect(saveData.uiConfiguration?.color?.textColor).toBe(formDataRemovedFiles.colorText)
+    expect(saveData.uiConfiguration?.files?.logoFileName).toBeUndefined()
+    expect(saveData.uiConfiguration?.files?.favIconFileName).toBeUndefined()
+  })
+
+
   it('should transfer the ResidentPortal data to form fields', () => {
     const formData: CreateResidentPortalFormFields =
       transferSaveDataToFormFields(mockedResidentPortal as ResidentPortal)
@@ -80,6 +119,7 @@ describe('ResidentPortal parser', () => {
     expect(formData.textLogin).toBe(mockedResidentPortal.uiConfiguration.text.loginText)
     expect(formData.textAnnouncements).toBe(mockedResidentPortal.uiConfiguration.text.announcements)
     expect(formData.textHelp).toBe(mockedResidentPortal.uiConfiguration.text.helpText)
+    expect(formData.tenantSetDpsk).toBe(mockedResidentPortal.uiConfiguration.access.tenantSetDpsk)
     expect(formData.colorMain).toBe(mockedResidentPortal.uiConfiguration.color.mainColor)
     expect(formData.colorAccent).toBe(mockedResidentPortal.uiConfiguration.color.accentColor)
     expect(formData.colorSeparator).toBe(mockedResidentPortal.uiConfiguration.color.separatorColor)
@@ -119,6 +159,7 @@ describe('ResidentPortal parser', () => {
     expect(formData.textLogin).toBe('')
     expect(formData.textAnnouncements).toBe('')
     expect(formData.textHelp).toBe('')
+    expect(formData.tenantSetDpsk).toBeFalsy()
     expect(formData.colorMain).toBe('')
     expect(formData.colorAccent).toBe('')
     expect(formData.colorSeparator).toBe('')
@@ -141,6 +182,7 @@ describe('ResidentPortal parser', () => {
     expect(formData.textLogin).toBe('')
     expect(formData.textAnnouncements).toBe('')
     expect(formData.textHelp).toBe('')
+    expect(formData.tenantSetDpsk).toBeFalsy()
     expect(formData.colorMain).toBe('')
     expect(formData.colorAccent).toBe('')
     expect(formData.colorSeparator).toBe('')

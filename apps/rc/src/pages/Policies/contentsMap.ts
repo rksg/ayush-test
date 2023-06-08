@@ -98,6 +98,7 @@ export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {
   [OsVendorEnum.GameCube]: defineMessage({ defaultMessage: 'GameCube' }),
   [OsVendorEnum.Wii]: defineMessage({ defaultMessage: 'Wii' }),
   [OsVendorEnum.PlayStation3]: defineMessage({ defaultMessage: 'PlayStation3' }),
+  [OsVendorEnum.PlayStation]: defineMessage({ defaultMessage: 'PlayStation' }),
   [OsVendorEnum.Xbox]: defineMessage({ defaultMessage: 'Xbox' }),
   [OsVendorEnum.Nintendo]: defineMessage({ defaultMessage: 'Nintendo' }),
   [OsVendorEnum.HpPrinter]: defineMessage({ defaultMessage: 'HpPrinter' }),
@@ -172,4 +173,3 @@ export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescrip
   [OperatorType.ADD_REPLACE]: defineMessage({ defaultMessage: 'Add or Replace (Single)' }),
   [OperatorType.DOES_NOT_EXIST]: defineMessage({ defaultMessage: 'Add if it Doesn\'t Exist' })
 }
-
