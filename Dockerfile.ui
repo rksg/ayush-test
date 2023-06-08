@@ -87,10 +87,11 @@ COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
 ARG PRECOMMIT GIT_COMMIT_BRANCH
-RUN [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ] &&  node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
-RUN [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ] &&  node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
-RUN [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ] &&  node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=50%
-RUN [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ] &&  node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics,rc-components --coverage --runInBand --verbose
+RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
+        node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%; \
+        node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%; \
+        node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=50%; \
+        node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics,rc-components --coverage --runInBand --verbose; fi
 
 ###############################################################
 FROM nginx:1.21.6-alpine
