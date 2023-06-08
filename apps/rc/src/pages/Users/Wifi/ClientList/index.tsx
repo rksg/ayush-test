@@ -32,8 +32,8 @@ export default function ClientList () {
       { <ClientDualTable /> }
     </>
     : <>
-      <PageHeader du03je;
-      ter={dateFilter}/>
+      <PageHeader dateFilter={dateFilter}/>
+
       <GuestsTab dateFilter={dateFilter}/>
     </>
 }
