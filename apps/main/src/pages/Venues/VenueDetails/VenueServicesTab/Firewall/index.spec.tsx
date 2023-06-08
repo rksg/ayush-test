@@ -97,7 +97,7 @@ describe('Venue Firewall Service', () => {
     const ddosInfo = screen.queryByText('DDoS Rate-limiting')
     // eslint-disable-next-line testing-library/no-node-access
     const ddosWrapper = ddosInfo?.closest('div.ant-space')! as HTMLDivElement
-    expect(within(ddosWrapper).queryByText('OFF (0 rules)')).toBeValid()
+    expect(within(ddosWrapper).queryByText('OFF')).toBeValid()
     const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
@@ -157,7 +157,7 @@ describe('Venue Firewall Service', () => {
     const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
-    expect(within(aclWrapper).queryByText('OFF (IN: 1 rule, OUT: 5 rules)')).toBeValid()
+    expect(within(aclWrapper).queryByText('OFF')).toBeValid()
 
     // display ddos rules
     const ddosPane = screen.getByRole('tabpanel', { hidden: false })
@@ -179,7 +179,7 @@ describe('Venue Firewall Service', () => {
       await screen.findByRole('combobox'),
       'Outbound')
     const aclOutRows = await within(aclPane).findAllByRole('row')
-    expect(aclOutRows.length).toBe(6) // 5 + 1(header)
+    expect(aclOutRows.length).toBe(2) // no data row + 1(header)
   })
 
   it('should render correctly when ddos use All rule', async () => {
@@ -222,7 +222,7 @@ describe('Venue Firewall Service', () => {
     const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
-    expect(within(aclWrapper).queryByText('OFF (IN: 1 rule, OUT: 5 rules)')).toBeValid()
+    expect(within(aclWrapper).queryByText('OFF')).toBeValid()
 
     // display ddos rules
     const ddosPane = screen.getByRole('tabpanel', { hidden: false })
@@ -234,5 +234,51 @@ describe('Venue Firewall Service', () => {
     expect(within(ddosPane).queryByRole('row', { name: /DNS Response 100 -- --/ })).toBeValid()
     expect(within(ddosPane).queryByRole('row', { name: /NTP Reflection 100 -- --/ })).toBeValid()
     expect(within(ddosPane).queryByRole('row', { name: /TCP SYN 100 9 21/ })).toBeValid()
+  })
+
+  it('should render correctly when ddos does not have rule', async () => {
+    const mockFirewall4 = { ...mockFirewall2,
+      serviceName: 'mocked-firewall-ddos-empty',
+      ddosRateLimitingRules: [] }
+    delete mockFirewall4.ddosRateLimitingRules
+
+    mockServer.use(
+      rest.get(
+        EdgeFirewallUrls.getEdgeFirewall.url,
+        (req, res, ctx) => {
+          mockedGetFirewallFn()
+          return res(ctx.json(mockFirewall4))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgeFirewall edgeData={mockedEdgeStatus as EdgeStatus}/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetFirewallFn).toBeCalled()
+    })
+
+    // display firewall config data
+    expect(await screen.findByRole('link', { name: 'mocked-firewall-ddos-empty' })).toBeVisible()
+    const ddosInfo = screen.queryByText('DDoS Rate-limiting')
+    // eslint-disable-next-line testing-library/no-node-access
+    const ddosWrapper = ddosInfo?.closest('div.ant-space')! as HTMLDivElement
+    expect(within(ddosWrapper).queryByText('ON (0 rules)')).toBeValid()
+    const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
+    // eslint-disable-next-line testing-library/no-node-access
+    const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
+    expect(within(aclWrapper).queryByText('OFF')).toBeValid()
+
+    // display ddos rules
+    const ddosPane = screen.getByRole('tabpanel', { hidden: false })
+    const ddosRows = await within(ddosPane).findAllByRole('row')
+
+    // should expand rule - all one by one
+    expect(ddosRows.length).toBe(3) // no data row + 2(header)
   })
 })

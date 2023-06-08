@@ -13,7 +13,7 @@ import {
 
 interface DDoSRulesTableProps
   extends Omit<TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>,
-  'rowKey' | 'locale' | 'columns'> {
+  'rowKey' | 'columns'> {
     // custom column is optional
     columns?: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns']
   }

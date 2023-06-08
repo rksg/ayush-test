@@ -31,18 +31,23 @@ export const DDoSRulesTable = (props: DDoSRulesTableProps) => {
       start: dateFilter?.startDate,
       end: dateFilter?.endDate,
       granularity: calculateGranularity(dateFilter?.startDate, dateFilter?.endDate, 'PT15M')
-    } })
+    } }, {
+      skip: !firewallData?.ddosRateLimitingEnabled
+    })
 
   // query statistic data and aggregate with rules.
   // need to expand ddosAttackType.ALL to each type one by one
-  const aggregated: DDoSRuleStatisticModel[] = ddosRules?.flatMap((rule:DdosRateLimitingRule) => {
-    return rule.ddosAttackType === DdosAttackType.ALL
-      ? expandDDoSAttackTypeAllRule(rule)
-      : rule
-  }).map((rule) => {
-    const target = _.filter(stats, { ddosAttackType: rule.ddosAttackType })[0]
-    return _.merge({ ...rule }, target)
-  }) || [] as DDoSRuleStatisticModel[]
+  // noticed that: display data only when DDoS enabled.
+  const aggregated: DDoSRuleStatisticModel[] = firewallData?.ddosRateLimitingEnabled
+    ? ddosRules?.flatMap((rule:DdosRateLimitingRule) => {
+      return rule.ddosAttackType === DdosAttackType.ALL
+        ? expandDDoSAttackTypeAllRule(rule)
+        : rule
+    }).map((rule) => {
+      const target = _.filter(stats, { ddosAttackType: rule.ddosAttackType })[0]
+      return _.merge({ ...rule }, target)
+    }) || [] as DDoSRuleStatisticModel[]
+    : [] as DDoSRuleStatisticModel[]
 
   return (
     <Loader states={[{ isLoading }]}>

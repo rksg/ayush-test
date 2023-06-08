@@ -61,36 +61,33 @@ const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) 
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),
       content: () => (
-        $t(
+        edgeFirewallData.ddosRateLimitingEnabled ? $t(
           { defaultMessage:
-            '{status} ({rulesCount} {rulesCount, plural, one {rule} other {rules}})' },
+            'ON ({rulesCount} {rulesCount, plural, one {rule} other {rules}})' },
           {
-            status: edgeFirewallData.ddosRateLimitingEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
             rulesCount: Object.keys(edgeFirewallData?.ddosRateLimitingRules || []).length
           }
         )
+          : $t({ defaultMessage: 'OFF' })
       )
     },
     {
       title: $t({ defaultMessage: 'Stateful ACL' }),
       content: () => (
-        $t(
-          { defaultMessage: `{status} (IN: {inCount} {inCount, plural, one {rule} other {rules}},
+        edgeFirewallData.statefulAclEnabled
+          ? $t(
+            { defaultMessage: `ON (IN: {inCount} {inCount, plural, one {rule} other {rules}},
              OUT: {outCount} {outCount, plural, one {rule} other {rules}})` },
-          {
-            status: edgeFirewallData.statefulAclEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
-            inCount: edgeFirewallData.statefulAcls.filter(item =>
-              item.direction === ACLDirection.INBOUND
-            )[0].rules.length,
-            outCount: edgeFirewallData.statefulAcls.filter(item =>
-              item.direction === ACLDirection.OUTBOUND
-            )[0].rules.length
-          }
-        )
+            {
+              inCount: edgeFirewallData.statefulAcls.filter(item =>
+                item.direction === ACLDirection.INBOUND
+              )[0].rules.length,
+              outCount: edgeFirewallData.statefulAcls.filter(item =>
+                item.direction === ACLDirection.OUTBOUND
+              )[0].rules.length
+            }
+          )
+          : $t({ defaultMessage: 'OFF' })
       )
     }
   ] : []
