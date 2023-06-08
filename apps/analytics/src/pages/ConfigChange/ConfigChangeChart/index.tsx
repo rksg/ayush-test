@@ -15,7 +15,7 @@ export function ConfigChangeChart (){
       <AutoSizer>
         {({ width }) =>
           <Chart
-            style={{ width: width - 250 }}
+            style={{ width }}
             data={queryResults.data ?? []}
             chartBoundary={[
               moment(startDate).valueOf(),

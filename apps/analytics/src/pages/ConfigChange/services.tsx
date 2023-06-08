@@ -32,7 +32,7 @@ export const api = dataApi.injectEndpoints({
         `
       }),
       transformResponse: (response: Response<ConfigChangeResponse> ) =>
-        response.network.hierarchyNode.configChanges
+        response.network.hierarchyNode.configChanges.map((value, id)=>({ ...value, id }))
     })
   })
 })
