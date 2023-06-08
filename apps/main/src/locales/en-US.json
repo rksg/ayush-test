@@ -135,6 +135,9 @@
   "+dbj3T": {
     "defaultMessage": "New Application Category"
   },
+  "+eW1pq": {
+    "defaultMessage": "Change preferred update slot"
+  },
   "+frS59": {
     "defaultMessage": "Version Management"
   },
@@ -306,6 +309,9 @@
   },
   "/P3VsM": {
     "defaultMessage": "Target IP"
+  },
+  "/QQYb6": {
+    "defaultMessage": "Preferred update slot(s):"
   },
   "/RRvw+": {
     "defaultMessage": "Duplicate test name exist"
@@ -704,9 +710,6 @@
   },
   "1Ew0iu": {
     "defaultMessage": "All the rectangles in the drag area will receive the same status – opposite the status of the rectangle where the drag started"
-  },
-  "1FxV5K": {
-    "defaultMessage": "Server Configuration Conflict"
   },
   "1G1Ohw": {
     "defaultMessage": "No 3rd Party Administrator Invited"
@@ -1262,6 +1265,9 @@
   "3d6C4k": {
     "defaultMessage": "Adaptive Policy Sets"
   },
+  "3g6QAZ": {
+    "defaultMessage": "This action will cause network interruption and impact service delivery."
+  },
   "3g9ANZ": {
     "defaultMessage": "Malicious"
   },
@@ -1298,6 +1304,9 @@
   },
   "3uXfAz": {
     "defaultMessage": "AAA Policy"
+  },
+  "3v7bUi": {
+    "defaultMessage": "Connected APs"
   },
   "3vwDOf": {
     "defaultMessage": "{apsFinishedTest} of {apsUnderTest} {apsUnderTest, plural, one {AP} other {APs}} tested"
@@ -1779,9 +1788,6 @@
   "620GDh": {
     "defaultMessage": "Client authentication failed"
   },
-  "62NdbL": {
-    "defaultMessage": "{revokedStatus, select, true {Are you sure you want to unblock this persona?} other {The user will be blocked. Are you sure want to block this persona?} }"
-  },
   "641c9K": {
     "defaultMessage": "Address Request"
   },
@@ -1857,6 +1863,9 @@
   },
   "6NUzkq": {
     "defaultMessage": "You’ll receive a login code via an authentication app"
+  },
+  "6QBsLu": {
+    "defaultMessage": "Manually update firmware per venue"
   },
   "6RKXNK": {
     "defaultMessage": "Use RADIUS Server"
@@ -2636,9 +2645,6 @@
   "9TLnVl": {
     "defaultMessage": "There is already a test call which is not started."
   },
-  "9TxnIh": {
-    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block} } this Persona: {name}"
-  },
   "9U6D5+": {
     "defaultMessage": "Known"
   },
@@ -2779,9 +2785,6 @@
   },
   "A1ykkc": {
     "defaultMessage": "Units"
-  },
-  "A291SA": {
-    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block}}"
   },
   "A2fHI3": {
     "defaultMessage": "Edit Details"
@@ -3045,6 +3048,9 @@
   "B//K0I": {
     "defaultMessage": "CLI Provisioning"
   },
+  "B/XrZJ": {
+    "defaultMessage": "Other provider"
+  },
   "B1glSA": {
     "defaultMessage": "Continue Reading"
   },
@@ -3245,6 +3251,9 @@
   "Br4bB2": {
     "defaultMessage": "Rate Limiting"
   },
+  "BrkrKD": {
+    "defaultMessage": "If this option is selected, users will be informed their personal information is being collected"
+  },
   "Brplhy": {
     "defaultMessage": "The rule has reached the limit ({maxCount})."
   },
@@ -3317,9 +3326,6 @@
   },
   "C5VhoH": {
     "defaultMessage": "Secondary SIM"
-  },
-  "C7HRVW": {
-    "defaultMessage": "Firmware Version Management"
   },
   "C8efXI": {
     "defaultMessage": "{showSeverity, selectordinal, one {3 } other {}}In Setup Phase",
@@ -3578,6 +3584,9 @@
   },
   "DSCPXP": {
     "defaultMessage": "Save Preferences"
+  },
+  "DSMot1": {
+    "defaultMessage": "Select up to 3 days"
   },
   "DT1Xmz": {
     "defaultMessage": "Failure reason: {reason}"
@@ -4008,6 +4017,9 @@
   },
   "FV+P4u": {
     "defaultMessage": "802.3af"
+  },
+  "FVB7Oy": {
+    "defaultMessage": "Selected time will apply to each venue according to own time-zone"
   },
   "FX7pkg": {
     "defaultMessage": "The service is currently not supported in the country which you entered.<br></br>Please make sure that you entered the correct address."
@@ -5083,6 +5095,9 @@
   "K3kfTi": {
     "defaultMessage": "Event Start Time"
   },
+  "K3qnJa": {
+    "defaultMessage": "Update time:"
+  },
   "K3r6DQ": {
     "defaultMessage": "Delete"
   },
@@ -5483,6 +5498,10 @@
   "Lk4Mip": {
     "defaultMessage": "<p>Clients are failing authentication because the passphrase (PSK) does not match the AP/SSID configuration.</p>"
   },
+  "LpGq/Y": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block Persona}}",
+    "description": "Translation strings - Unblock, Block Persona"
+  },
   "Lpfnla": {
     "defaultMessage": "One of the values you entered conflicts with an existing authentication server configuration in another network."
   },
@@ -5871,9 +5890,6 @@
   },
   "NN9jmN": {
     "defaultMessage": "Please select a DPSK pool"
-  },
-  "NO0VM6": {
-    "defaultMessage": "Override the conflicting server configuration"
   },
   "NOiJNj": {
     "defaultMessage": "Next Hop"
@@ -7194,6 +7210,10 @@
   "T7pTaH": {
     "defaultMessage": "Lookback Interface ID"
   },
+  "T8/xYg": {
+    "defaultMessage": "{revokedStatus, select, true {Are you sure you want to unblock this persona?} other {The user will be blocked. Are you sure want to block this persona?} }",
+    "description": "Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona"
+  },
   "T8S06b": {
     "defaultMessage": "Max Data Comsumption"
   },
@@ -7242,6 +7262,9 @@
   "TJo5E6": {
     "defaultMessage": "Preview"
   },
+  "TJuRC7": {
+    "defaultMessage": "Select up to 3 slots"
+  },
   "TKYlMB": {
     "defaultMessage": "STA Disassoc (DHCP Timeout)"
   },
@@ -7259,9 +7282,6 @@
   },
   "TNy171": {
     "defaultMessage": "There are no APs to run the test"
-  },
-  "TO3YlU": {
-    "defaultMessage": "Occured Error"
   },
   "TP/cMX": {
     "defaultMessage": "Ended"
@@ -7697,6 +7717,9 @@
   "VK81Ki": {
     "defaultMessage": "Invalid Pairwise Key Cipher"
   },
+  "VKfWR3": {
+    "defaultMessage": "Recommended"
+  },
   "VKikS4": {
     "defaultMessage": "Invalid RSN IE Capability"
   },
@@ -7747,6 +7770,9 @@
   },
   "VWIe2D": {
     "defaultMessage": "VLAN Pools"
+  },
+  "VWhS5n": {
+    "defaultMessage": "If you set rate limit on network level, it will override any rate limit set on policy level."
   },
   "VX2yLr": {
     "defaultMessage": "Configure {name}"
@@ -8083,9 +8109,6 @@
   },
   "X+aUZF": {
     "defaultMessage": "File size cannot exceed {maxSize}"
-  },
-  "X1bhjS": {
-    "defaultMessage": "Didn't get it?"
   },
   "X2pnl0": {
     "defaultMessage": "Map is not enabled."
@@ -8740,9 +8763,6 @@
   },
   "ZnqHg6": {
     "defaultMessage": "L3 Authentication Failure"
-  },
-  "ZoiazP": {
-    "defaultMessage": "As required for privacy compliance, the user will be informed of that is the case"
   },
   "Zp6g/K": {
     "defaultMessage": "View ACL"
@@ -9434,6 +9454,9 @@
   },
   "cXBJ7U": {
     "defaultMessage": "Privacy"
+  },
+  "caN8Yy": {
+    "defaultMessage": "Service Details"
   },
   "cb2kY6": {
     "defaultMessage": "Standard"
@@ -10346,9 +10369,6 @@
   "gNVVvs": {
     "defaultMessage": "1 Mbps"
   },
-  "gOAZJ1": {
-    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block Persona}}"
-  },
   "gOhRIc": {
     "defaultMessage": "Traffic From Client"
   },
@@ -10523,6 +10543,9 @@
   "hEsZtC": {
     "defaultMessage": "Add Host"
   },
+  "hEwmQH": {
+    "defaultMessage": "User recovery codes to log in if you can’t receive a verification code via email, SMS, or an auth app"
+  },
   "hG0vhN": {
     "defaultMessage": "The mesh STA performs channel switch with unspecified reason"
   },
@@ -10597,6 +10620,9 @@
   },
   "hbiilD": {
     "defaultMessage": "Class2 Frame from Non-Auth STA"
+  },
+  "hc136e": {
+    "defaultMessage": "Not support on this port"
   },
   "hdGKYY": {
     "defaultMessage": "Require users to enter a passphrase (that you have defined for the network) to connect",
@@ -11932,9 +11958,6 @@
   "myH0Ir": {
     "defaultMessage": "Last Updated:"
   },
-  "mzAhcs": {
-    "defaultMessage": "({usedPercentage}%)"
-  },
   "mzoq+x": {
     "defaultMessage": "Please enter a number between 2 and 20"
   },
@@ -11964,6 +11987,9 @@
   },
   "n4DOF2": {
     "defaultMessage": "Add Application Policy"
+  },
+  "n4IV7E": {
+    "defaultMessage": "Update date:"
   },
   "n6+fBA": {
     "defaultMessage": "Firmware Update - Writing To Flash"
@@ -12138,6 +12164,9 @@
   "nmr0Pp": {
     "defaultMessage": "Manage Subscriptions"
   },
+  "nmuldp": {
+    "defaultMessage": "When do you want the update to run?"
+  },
   "nnUexJ": {
     "defaultMessage": "Requested from peer STA as the STA is leaving the BSS (or resetting)"
   },
@@ -12212,6 +12241,10 @@
   },
   "o0yS7Z": {
     "defaultMessage": "Switch Not Found"
+  },
+  "o1fwp7": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block} } this Persona: {name}",
+    "description": "Translation strings - Unblock, Block, this Persona"
   },
   "o1vbho": {
     "defaultMessage": "Policy"
@@ -12295,6 +12328,9 @@
   },
   "oLkLww": {
     "defaultMessage": "Score"
+  },
+  "oLoTZr": {
+    "defaultMessage": "Image file size cannot exceed 10 MB"
   },
   "oNA+iT": {
     "defaultMessage": "Passphrase:"
@@ -12381,6 +12417,9 @@
   },
   "ooCnVf": {
     "defaultMessage": "HEX"
+  },
+  "oohAuA": {
+    "defaultMessage": "MAC Address {macAddress} were deleted"
   },
   "orEaKq": {
     "defaultMessage": "All types"
@@ -12671,6 +12710,9 @@
   "pyy2lm": {
     "defaultMessage": "Never contacted Active Switch"
   },
+  "pzYj0w": {
+    "defaultMessage": "Some features may no longer be availabe with previous versions of device firmware."
+  },
   "pzpZWz": {
     "defaultMessage": "Go to floor plans to place the {deviceType}"
   },
@@ -12679,9 +12721,6 @@
   },
   "q+1Dri": {
     "defaultMessage": "AC/DC Power supply"
-  },
-  "q+eJuS": {
-    "defaultMessage": "Image must smaller than 10MB!"
   },
   "q/9Vqr": {
     "defaultMessage": "Select Policies"
@@ -12841,6 +12880,9 @@
   },
   "qeU60o": {
     "defaultMessage": "If it is the first time the ICX switch is connected to the cloud, the switch reloads after the necessary firmware is applied."
+  },
+  "qf0/Bg": {
+    "defaultMessage": "Preferred Time Slot:"
   },
   "qg1V4V": {
     "defaultMessage": "Choose update schedule method:"
@@ -13068,6 +13110,9 @@
   "rikb48": {
     "defaultMessage": "5 GHz"
   },
+  "riw/yc": {
+    "defaultMessage": "Beta"
+  },
   "rjwV0J": {
     "defaultMessage": "Change to Time limited connection"
   },
@@ -13236,6 +13281,9 @@
   },
   "sMnDSO": {
     "defaultMessage": "Wi-Fi APs"
+  },
+  "sQltSv": {
+    "defaultMessage": "Upgrade preference saved for each venue based on venue’s local time-zone"
   },
   "sRTzEd": {
     "defaultMessage": "name"
@@ -13572,6 +13620,9 @@
   "tthToS": {
     "defaultMessage": "Disabled"
   },
+  "ttkc4T": {
+    "defaultMessage": "Didn’t get it?"
+  },
   "tu3sH4": {
     "defaultMessage": "NAS Request Timeout"
   },
@@ -13621,9 +13672,6 @@
   },
   "u0lL8w": {
     "defaultMessage": "Services is not enabled"
-  },
-  "u1nVsn": {
-    "defaultMessage": "Select preferred provider"
   },
   "u2EbNi": {
     "defaultMessage": "This {deviceType} is not placed on any floor plan"
@@ -14013,6 +14061,9 @@
   "vknTf8": {
     "defaultMessage": "Must be 26 hex characters"
   },
+  "vkv6jN": {
+    "defaultMessage": "Preview: {name}"
+  },
   "vkxFH6": {
     "defaultMessage": "Once this connection time limit has been reached, the client will be disconnected"
   },
@@ -14048,6 +14099,9 @@
   },
   "vy/Kkh": {
     "defaultMessage": "Cancel Invitation"
+  },
+  "vyGzDg": {
+    "defaultMessage": "Template Preview"
   },
   "vzGrnm": {
     "defaultMessage": "Scope",
@@ -14112,6 +14166,10 @@
   },
   "wJLtSR": {
     "defaultMessage": "Resend verification error. Please try again."
+  },
+  "wKwiLp": {
+    "defaultMessage": "{revokedStatus, select, true {Unblock} other {Block}}",
+    "description": "Translation strings - Unblock, Block"
   },
   "wL7VAE": {
     "defaultMessage": "Actions"
@@ -14187,9 +14245,6 @@
   },
   "wk2gIX": {
     "defaultMessage": "Trusted"
-  },
-  "wkYPjX": {
-    "defaultMessage": "Use existing server configuration"
   },
   "wlK3EK": {
     "defaultMessage": "Persona Group Name"
@@ -14989,6 +15044,9 @@
   "zqarJS": {
     "defaultMessage": "Collect User Email Address:"
   },
+  "zrFQvM": {
+    "defaultMessage": "Preferred day(s):"
+  },
   "zs74F6": {
     "defaultMessage": "This incident impacted {count} {count, plural, one {operating system} other {operating systems} }"
   },
@@ -15018,6 +15076,9 @@
   },
   "zyojKJ": {
     "defaultMessage": "Devices ({deviceCount})"
+  },
+  "zyqEJ2": {
+    "defaultMessage": "Start firmware upgrade retry"
   },
   "zz6ObK": {
     "defaultMessage": "Restore"

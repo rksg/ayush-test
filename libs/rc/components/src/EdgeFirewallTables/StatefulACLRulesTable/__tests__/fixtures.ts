@@ -103,7 +103,7 @@ export const mockACLInboundRulesWithStatistic = [
     protocolValue: 0,
     sourceAddressType: AddressType.ANY_IP_ADDRESS,
     destinationAddressType: AddressType.ANY_IP_ADDRESS,
-    hits: 19,
+    packets: 19,
     bytes: 300
   }
 ]
