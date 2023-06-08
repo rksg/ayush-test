@@ -140,6 +140,9 @@ interface uiConfiguration {
     announcements: string,
     helpText: string
   },
+  access?: {
+    tenantSetDpsk: boolean
+  },
   color?: {
     mainColor: string,
     accentColor: string,
@@ -147,7 +150,7 @@ interface uiConfiguration {
     textColor: string
   },
   files?: {
-    logoFileName: string,
-    favIconFileName: string
+    logoFileName?: string,
+    favIconFileName?: string
   }
 }

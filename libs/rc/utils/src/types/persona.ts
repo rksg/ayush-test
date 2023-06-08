@@ -29,6 +29,7 @@ export interface Persona {
   dpskPassphrase?: string,
   devices?: PersonaDevice[],
   ethernetPorts?: PersonaEthernetPort[],
+  primary?: boolean,
   identityId?: string,
   createdAt?: string,
   updatedAt?: string,
