@@ -25,13 +25,15 @@ export default function ClientList () {
     setEndDate
   }
 
+
   return activeTab === 'clients'
     ? <>
       <PageHeader dateFilter={dateFilter}/>
       { <ClientDualTable /> }
     </>
     : <>
-      <PageHeader dateFilter={dateFilter}/>
+      <PageHeader du03je;
+      ter={dateFilter}/>
       <GuestsTab dateFilter={dateFilter}/>
     </>
 }
