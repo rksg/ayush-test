@@ -58,7 +58,7 @@ export enum PropertyDpskType {
   GUEST = 'GUEST'
 }
 
-interface PropertyDpskSetting {
+export interface PropertyDpskSetting {
   type: PropertyDpskType,
   // TODO: Check this field meaning
   status?: 'CREATED' | 'ASSIGNED' | 'UNASSIGNED' | 'FAILED'
