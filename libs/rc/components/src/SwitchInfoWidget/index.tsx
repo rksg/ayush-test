@@ -182,10 +182,10 @@ export function SwitchInfoWidget (props:{
               </UI.Wrapper>
             </TenantLink>
           </GridCol>
-          <GridCol col={{ span: 5 }}>
+          <GridCol col={{ span: 5 }} style={{ justifyContent: 'center' }}>
             <GridRow>
               <GridCol col={{ span: 24 }} >
-                <UI.Wrapper>
+                <UI.Wrapper style={{ minHeight: '31px' }}>
                   <Client />
                 </UI.Wrapper>
                 <UI.Wrapper>
@@ -199,7 +199,7 @@ export function SwitchInfoWidget (props:{
                   <UI.TenantLinkBlack
                     to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`}
                   >
-                    <UI.LargeText>
+                    <UI.LargeText style={{ minHeight: '38px' }}>
                       {switchDetail?.clientCount || 0}
                     </UI.LargeText>
                   </UI.TenantLinkBlack>
@@ -207,10 +207,10 @@ export function SwitchInfoWidget (props:{
               </GridCol>
             </GridRow>
           </GridCol>
-          <GridCol col={{ span: 5 }}>
+          <GridCol col={{ span: 5 }} style={{ justifyContent: 'center' }}>
             <GridRow>
               <GridCol col={{ span: 24 }} >
-                <UI.Wrapper>
+                <UI.Wrapper style={{ minHeight: '31px' }}>
                   <PoeUsage />
                 </UI.Wrapper>
                 <UI.Wrapper>
@@ -219,7 +219,7 @@ export function SwitchInfoWidget (props:{
                   </UI.ChartTopTitle>
                 </UI.Wrapper>
                 <UI.Wrapper style={{ marginTop: '5px' }}>
-                  <UI.LargeText>
+                  <UI.LargeText style={{ minHeight: '38px' }}>
                     {poeUsage?.used}W/{poeUsage?.total}W
                     <Typography.Title level={3}>
                     ({poeUsage?.percentage})
