@@ -614,11 +614,11 @@ export function MspCustomers () {
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && !isIntegrator && <MspEcTable />}
       {!userProfile?.support && isIntegrator && <IntegratorTable />}
-      <ResendInviteModal
+      {modalVisible && <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
         tenantId={ecTenantId}
-      />
+      />}
       {drawerAdminVisible && <ManageAdminsDrawer
         visible={drawerAdminVisible}
         setVisible={setDrawerAdminVisible}

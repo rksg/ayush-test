@@ -221,7 +221,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
               style="padding-left: 10px; padding-right: 10px;"
             >
               <h3
-                class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
               >
                 Network Details
               </h3>
@@ -486,7 +486,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-3 ZwdW"
         data-testid="steps-form-actions"
       >
         <div
