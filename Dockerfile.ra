@@ -71,13 +71,13 @@ COPY tools/docker/nginx/nginx.conf \
 COPY --from=build /app/dist/apps ./
 
 RUN \
-  # Move all other apps into main
+  # Move all other apps into ra
   ls | grep -v ra | xargs mv -t ra && \
   # Create structure to match deployment need
-  mkdir -p analytics/next && \
+  mkdir -p tenant/t && \
   # Move all files into it
-  cp -a ra/* analytics/next/ && \
-  # Remove the main folder
+  cp -a ra/* tenant/t && \
+  # Remove the ra folder
   rm -rf ra
 
 EXPOSE 8080
