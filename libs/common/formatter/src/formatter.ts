@@ -48,9 +48,7 @@ const durations = [
 ] as const
 
 const shorten = (value: number) => {
-  return Number.isSafeInteger(value)
-    ? value.toString()
-    : parseFloat(value.toPrecision(3)).toString()
+  return parseFloat(value.toPrecision(3)).toString()
 }
 
 const durationMapping = {
