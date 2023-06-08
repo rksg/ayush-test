@@ -244,6 +244,7 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
               { type: 'string' },
               { min: 2 },
               { max: 32 },
+              { pattern: /^\w+$/ },
               {
                 validator: (_, value) => nameValidator(value)
               }

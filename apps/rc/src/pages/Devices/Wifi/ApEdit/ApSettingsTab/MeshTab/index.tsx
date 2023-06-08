@@ -199,7 +199,7 @@ export function ApMesh () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{
-        submit: $t({ defaultMessage: 'Apply Mesh' })
+        submit: $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
