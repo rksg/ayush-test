@@ -17,7 +17,7 @@ describe('Persona Portal', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
-  it('should render persona page', async () => {
+  it('should render persona group table view', async () => {
     render(
       <Provider>
         <PersonaPortal />
