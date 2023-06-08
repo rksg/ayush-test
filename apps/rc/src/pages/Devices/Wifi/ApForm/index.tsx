@@ -48,7 +48,7 @@ import {
   WifiNetworkMessages,
   gpsToFixed,
   redirectPreviousPage,
-  validateTags, DhcpAp, DhcpApBase
+  validateTags, DhcpAp, DhcpApResponse
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -115,7 +115,7 @@ export function ApForm () {
       const result = dhcpApResponse as DhcpApInfo[]
       return result[0]
     } else {
-      const result = dhcpApResponse as DhcpApBase
+      const result = dhcpApResponse as DhcpApResponse
       return result.response?.[0]
     }
   }

@@ -23,7 +23,7 @@ import {
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
   APExtended,
-  CountdownNode, DhcpAp, DhcpApBase,
+  CountdownNode, DhcpAp, DhcpApResponse,
   DhcpApInfo
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -217,7 +217,7 @@ const hasDhcpAps = (dhcpAps: DhcpAp, featureFlag: boolean) => {
   if (dhcpAps && featureFlag) {
     res = dhcpAps as DhcpApInfo[]
   } else {
-    const response = dhcpAps as DhcpApBase
+    const response = dhcpAps as DhcpApResponse
     res = Array.isArray(response.response) ? response.response : []
   }
 
