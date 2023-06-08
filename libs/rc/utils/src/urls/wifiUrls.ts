@@ -79,7 +79,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueApCapabilities: {
-    // [New API] new uri not ready
     method: 'get',
     url: '/venues/:venueId/aps/capabilities',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities',
@@ -166,7 +165,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getWifiCapabilities: {
-    // [New API] new uri not ready
     method: 'get',
     // url: '/venues/aps/capabilities',
     // oldUrl: '/api/tenant/:tenantId/wifi/capabilities',
@@ -373,7 +371,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApCapabilities: {
-    // [New API] new uri not ready
     method: 'get',
     url: '/venues/aps/:serialNumber/capabilities',
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities',
