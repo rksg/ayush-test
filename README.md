@@ -119,6 +119,12 @@ before executing the command.
 npx nx run main:serve --devRemotes=rc,analytics,msp,reports
 ```
 
+or for Ruckus Analytics:
+
+```sh
+npx nx run ra:serve --devRemotes=ra,analytics
+```
+
 If you are not working on a particular app, you can choose to remove it from `--devRemotes`.
 E.g. `--devRemotes=analytics` will only run `analytics` in dev mode with changes being monitored
 while `rc` will be built statically.

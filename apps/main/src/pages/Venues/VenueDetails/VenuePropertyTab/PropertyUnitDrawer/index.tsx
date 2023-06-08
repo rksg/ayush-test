@@ -190,7 +190,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 label={$t({ defaultMessage: 'Expiration Date of Data Consumption' })}
                 required
                 rules={[{ required: true }]}
-                getValueFromEvent={(onChange) => moment(onChange)}
+                getValueFromEvent={(onChange) => onChange ? moment(onChange): undefined}
                 getValueProps={(i) => ({ value: i ? moment(i) : undefined })}
                 initialValue={form.getFieldValue('expirationDate')}
               >
