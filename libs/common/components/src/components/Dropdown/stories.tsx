@@ -4,8 +4,9 @@ import { storiesOf } from '@storybook/react'
 import { Menu }      from 'antd'
 import styled        from 'styled-components/macro'
 
-import { WorldSolid, ArrowExpand, QuestionMarkCircleSolid } from '@acx-ui/icons'
+import { WorldSolid, ArrowExpand, QuestionMarkCircleSolid, ConfigurationOutlined } from '@acx-ui/icons'
 
+import { Button }   from '../Button'
 import { LayoutUI } from '../Layout/styledComponents'
 
 import { Dropdown } from '.'
@@ -41,7 +42,7 @@ export const helpMenu = <Menu
 />
 
 storiesOf('Dropdown', module)
-  .add('Selectable', () => {
+  .add('Header Selectable', () => {
     return <Dropdown overlay={regionMenu}>{(selectedKeys) =>
       <LayoutUI.DropdownText>
         <Icon children={<WorldSolid />} />
@@ -50,8 +51,32 @@ storiesOf('Dropdown', module)
       </LayoutUI.DropdownText>
     }</Dropdown>
   })
-  .add('Icon', () => {
+  .add('Header Icon', () => {
     return <Dropdown overlay={helpMenu}>{() =>
       <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
     }</Dropdown>
+  })
+  .add('Button', () => {
+    return <>
+      <p>
+        <Dropdown overlay={helpMenu}>{() =>
+          <Button icon={<ConfigurationOutlined />} />
+        }</Dropdown>
+      </p>
+      <p>
+        <Dropdown overlay={helpMenu}>{() =>
+          <Button>Open Dropdown</Button>
+        }</Dropdown>
+      </p>
+    </>
+  })
+  .add('Custom Overlay', () => {
+    return <Dropdown
+      overlay={
+        <Dropdown.OverlayContainer>
+          <Dropdown.OverlayTitle>Custom Title</Dropdown.OverlayTitle>
+          Custom content here
+        </Dropdown.OverlayContainer>
+      }
+    >{() => <Button>Open Overlay</Button>}</Dropdown>
   })

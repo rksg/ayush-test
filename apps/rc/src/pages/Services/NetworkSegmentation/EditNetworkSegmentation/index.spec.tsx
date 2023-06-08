@@ -138,10 +138,6 @@ describe('Update NetworkSegmentation', () => {
         NetworkSegmentationUrls.getAvailableSwitches.url,
         (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
       ),
-      rest.get(
-        NetworkSegmentationUrls.getAccessSwitchesByDS.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.accessSwitches }))
-      ),
       rest.post(
         NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
         (req, res, ctx) => res(ctx.json({ response: { valid: true } }))

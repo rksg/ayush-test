@@ -852,6 +852,10 @@ export function GroupTable (props: TableProps<APExtended | APExtendedGroupedResp
     deviceStatus: cleanResponse(deviceStatusResponse),
     model: cleanResponse(modelResponse)
   }
+  const rowSelection = {
+    defaultSelectedRowKeys: [],
+    ...(props.rowSelection && props.rowSelection)
+  }
   return <>
     with groupby:
     <Table<APExtendedGroupedResponse | APExtended>
@@ -861,7 +865,7 @@ export function GroupTable (props: TableProps<APExtended | APExtendedGroupedResp
       rowKey='id' // need to set unique entry per record to ensure proper behaviour
       indentSize={6}
       columnEmptyText='-'
-      rowSelection={{ defaultSelectedRowKeys: [] }}
+      rowSelection={rowSelection}
       onFilterChange={(_filter, _search, groupBy) => setGrouping(groupBy)}
     />
   </>

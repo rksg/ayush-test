@@ -921,6 +921,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
+    deleteMacRegistrations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
     getMacRegList: build.query<MacRegistrationPool, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPool, params)
@@ -1876,6 +1886,7 @@ export const {
   useSearchMacRegistrationsQuery,
   useLazySearchMacRegistrationsQuery,
   useDeleteMacRegistrationMutation,
+  useDeleteMacRegistrationsMutation,
   useAddMacRegistrationMutation,
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
