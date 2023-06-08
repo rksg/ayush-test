@@ -34,6 +34,11 @@ export enum NotificationEndpointType {
   mobile_push = 'MOBILE_PUSH'
 }
 
+export enum TenantAuthenticationType {
+  saml = 'SAML',
+  ladp = 'LADP'
+}
+
 export interface TenantDelegation {
   id: string
   type: TenantDelegationType
@@ -172,6 +177,17 @@ export interface NotificationRecipientResponse {
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;
+}
+
+export interface TenantAuthentications {
+  name: string;
+  authenticationType: string;
+  clientID?: string;
+  clientSecret?: string;
+  tokenURL?: string;
+  samlFileURL?: string;
+  authorizationURL?: string;
+  tenant?: string;
 }
 
 export const getRoles = () => {

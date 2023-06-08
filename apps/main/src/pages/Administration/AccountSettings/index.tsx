@@ -1,11 +1,12 @@
 import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
-import { Loader }                 from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Loader }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetRecoveryPassphraseQuery,
-  useGetMspEcProfileQuery
+  useGetMspEcProfileQuery,
+  useGetTenantAuthenticationsQuery
 } from '@acx-ui/rc/services'
 import { MSPUtils, isDelegationMode } from '@acx-ui/rc/utils'
 import {
@@ -15,6 +16,7 @@ import {
 import { useTenantId } from '@acx-ui/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
+import { AppTokenFormItem }              from './AppTokenFormItem'
 import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
 import { MapRegionFormItem }             from './MapRegionFormItem'
@@ -50,6 +52,8 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
+  const authenticationData =
+    useGetTenantAuthenticationsQuery({ params }, { skip: !isIdmDecoupling })
   const isFetching = recoveryPassphraseData.isFetching
 
   return (
@@ -98,7 +102,20 @@ const AccountSettings = (props : AccountSettingsProps) => {
         { isPrimeAdminUser && isIdmDecoupling && (
           <>
             <Divider />
-            <AuthServerFormItem />
+            <AuthServerFormItem
+              tenantAuthenticationData={authenticationData.data}
+              isPrimeAdminUser={isPrimeAdminUser}
+            />
+          </>
+        )}
+
+        { isPrimeAdminUser && isIdmDecoupling && (
+          <>
+            <Divider />
+            <AppTokenFormItem
+              tenantAuthenticationData={authenticationData.data}
+              // isPrimeAdminUser={isPrimeAdminUser}
+            />
           </>
         )}
 

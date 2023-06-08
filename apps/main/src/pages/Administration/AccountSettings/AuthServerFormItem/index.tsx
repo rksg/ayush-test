@@ -3,74 +3,33 @@ import { useState } from 'react'
 import { Form, Col, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { Button, Tooltip } from '@acx-ui/components'
-import { CsvSize }         from '@acx-ui/rc/components'
+
+import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
+import { CsvSize }                                from '@acx-ui/rc/components'
+import {  TenantAuthentications }                 from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
 
 import { SetupAzureDrawer } from './SetupAzureDrawer'
 import { ButtonWrapper }    from './styledComponents'
 
-const AuthServerFormItem = () => {
+interface AuthServerFormItemProps {
+  className?: string;
+  tenantAuthenticationData?: TenantAuthentications[];
+  isPrimeAdminUser: boolean;
+}
+
+const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const { $t } = useIntl()
+  const { className, tenantAuthenticationData, isPrimeAdminUser } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const navigate = useNavigate()
+  const linkToAdministrators = useTenantLink('/administration/administrators')
 
   const onSetUpValue = () => {
     setDrawerVisible(true)
   }
 
-  // interface AuthAppProps {
-  //   visible: boolean
-  //   setVisible: (visible: boolean) => void
-  // }
-
-  // const SetupAzureDrawer = (props: AuthAppProps) => {
-  //   const { $t } = useIntl()
-  //   const { visible, setVisible } = props
-  //   const [form] = Form.useForm()
-
-  //   const onClose = () => {
-  //     setVisible(false)
-  //     form.resetFields()
-  //   }
-
-  //   const handleSave = () => {
-  //     setVisible(false)
-  //   }
-
-  //   const footer = <Drawer.FormFooter
-  //     buttonLabel={{ save: $t({ defaultMessage: 'Apply' }) }}
-  //     onCancel={onClose}
-  //     onSave={async () => handleSave()}
-  //   />
-
-  //   return (
-  //     // <Drawer
-  //     //   title={$t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
-  //     //   visible={visible}
-  //     //   onClose={onClose}
-  //     //   footer={footer}
-  //     //   destroyOnClose
-  //     //   width={550}
-  //     // >
-  //     //   <Typography.Text>
-  //     //     { $t({ defaultMessage: 'IdP Metadata' }) }
-  //     //   </Typography.Text>
-  //     //   <TextArea
-  //     //     placeholder='Paste IDP metadata here...'
-  //     //     style={{
-  //     //       fontSize: '12px',
-  //     //       resize: 'none',
-  //     //       marginTop: '15px',
-  //     //       height: '661px',
-  //     //       borderRadius: '4px'
-  //     //     }}
-  //     //     autoSize={false}
-  //     //     readOnly={false}
-  //     //   />
-  //     // </Drawer>
-  //   )
-  // }
-
-  const hasSsoConfigured = false
+  const hasSsoConfigured = true
 
   return ( <>
     <Row gutter={24}>
@@ -92,30 +51,72 @@ const AuthServerFormItem = () => {
               >
                 <Button type='link'
                   key='editsso'
-                  onClick={() => { }}>
+                  onClick={() => {
+                    setDrawerVisible(true)
+                  }}>
                   {$t({ defaultMessage: 'Edit' })}
                 </Button>
                 <Button type='link'
                   key='deletesso'
-                  onClick={() => { }}>
+                  onClick={() => {
+                    showActionModal({
+                      title: $t({ defaultMessage: 'Delete Azure AD SSO Service' }),
+                      type: 'confirm',
+                      customContent: {
+                        action: 'DELETE',
+                        entityName: $t({ defaultMessage: 'sso' }),
+                        // entityValue: name,
+                        confirmationText: $t({ defaultMessage: 'Delete' })
+                      },
+                      onOk: () => {}
+                      // deleteMspEc({ params: { mspEcTenantId: id } })
+                      //   .then(clearSelection)
+                    })
+
+                  }}>
                   {$t({ defaultMessage: 'Delete' })}
                 </Button>
               </ButtonWrapper>
             </Space>
           }
         />
+
+        {hasSsoConfigured && <Col span={6}>
+          <Card type='solid-bg'>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'IdP Metadata' })}
+            />
+            <div style={{ marginTop: '-10px' }}><Button type='link'
+              key='viewxml'
+              onClick={() => { }}>
+              {$t({ defaultMessage: 'View XML code' })}
+            </Button></div>
+            <div style={{ marginTop: '5px' }}><Button type='link'
+              key='manageusers'
+              onClick={() => {
+                navigate(linkToAdministrators)
+              }}>
+              {$t({ defaultMessage: 'Manage SSO Users' })}
+            </Button></div>
+          </Card>
+        </Col>
+        }
+
         {!hasSsoConfigured &&
         <Button onClick={onSetUpValue}>{$t({ defaultMessage: 'Set Up' })}</Button>}
       </Col>
     </Row>
+
     {drawerVisible &&
     <SetupAzureDrawer
-      visible={drawerVisible}
       title={$t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
+      visible={drawerVisible}
+      setVisible={setDrawerVisible}
       type='DPSK'
       maxSize={CsvSize['5MB']}
       maxEntries={512}
-      acceptType={['csv']}
+      acceptType={['xml']}
       templateLink='assets/templates/mac_registration_import_template.csv'
       // importRequest={async (formData) => {
       //   // try {
@@ -126,7 +127,6 @@ const AuthServerFormItem = () => {
       //   //   console.log(error) // eslint-disable-line no-console
       //   // }
       // }}
-      setVisible={setDrawerVisible}
     />}
   </>
   )

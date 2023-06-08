@@ -153,7 +153,7 @@ describe('Account Settings', () => {
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-AccessSupportFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(2)
+    expect((await screen.findAllByRole('separator')).length).toBe(3)
   })
   it('should not display enable MFA checkbox', async () => {
     const fakeUser = _.cloneDeep(fakeUserProfile)
@@ -172,6 +172,6 @@ describe('Account Settings', () => {
 
     await screen.findByTestId('rc-MapRegionFormItem')
     expect(screen.queryByTestId('rc-MFAFormItem')).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('separator')).length).toBe(2)
+    expect((await screen.findAllByRole('separator')).length).toBe(3)
   })
 })

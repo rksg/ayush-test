@@ -25,7 +25,8 @@ import {
   TenantDetails,
   EntitlementSummary,
   Entitlement,
-  NewEntitlementSummary
+  NewEntitlementSummary,
+  TenantAuthentications
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi } from '@acx-ui/store'
 
@@ -524,7 +525,17 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getTenantAuthentications: build.query<TenantAuthentications[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getTenantAuthentications, params)
+        return {
+          ...req
+        }
+      }
     })
+
   })
 })
 
@@ -575,5 +586,6 @@ export const {
   useConvertNonVARToMSPMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
-  useGetRadiusServerSettingQuery
+  useGetRadiusServerSettingQuery,
+  useGetTenantAuthenticationsQuery
 } = administrationApi
