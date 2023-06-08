@@ -43,15 +43,20 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
       end: dateFilter?.endDate,
       granularity: calculateGranularity(dateFilter?.startDate, dateFilter?.endDate, 'PT15M'),
       direction
-    } })
+    } }, {
+      skip: !firewallData?.statefulAclEnabled
+    })
 
   const statsData = stats?.direction === direction ? stats.aclRuleStatsList : []
 
   // query statistic data and aggregate with rules.
-  const aggregated: FirewallACLRuleStatisticModel[] = aclRules?.map((rule) => {
-    const target = _.filter(statsData, { priority: rule.priority })[0]
-    return _.merge({ ...rule }, target)
-  }) as FirewallACLRuleStatisticModel[]
+  // noticed that: display data only when stateful ACL enabled.
+  const aggregated: FirewallACLRuleStatisticModel[] = firewallData?.statefulAclEnabled
+    ? aclRules?.map((rule) => {
+      const target = _.filter(statsData, { priority: rule.priority })[0]
+      return _.merge({ ...rule }, target)
+    }) as FirewallACLRuleStatisticModel[]
+    : [] as FirewallACLRuleStatisticModel[]
 
   return (
     <Loader states={[{ isLoading }]}>

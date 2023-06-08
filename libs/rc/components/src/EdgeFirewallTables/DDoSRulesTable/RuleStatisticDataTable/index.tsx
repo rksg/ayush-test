@@ -1,7 +1,15 @@
-import { useIntl } from 'react-intl'
+import { QuestionCircleOutlined }   from '@ant-design/icons'
+import { Empty, Space, Typography } from 'antd'
+import { useIntl }                  from 'react-intl'
 
-import { Table, TableProps }                                                                         from '@acx-ui/components'
-import { defaultSort, sortProp, DdosRateLimitingRule, DDoSRuleStatisticModel, transformDisplayText } from '@acx-ui/rc/utils'
+import { Table, TableProps, Tooltip } from '@acx-ui/components'
+import {
+  defaultSort,
+  sortProp,
+  DdosRateLimitingRule,
+  DDoSRuleStatisticModel,
+  transformDisplayText
+} from '@acx-ui/rc/utils'
 
 import { DDoSRulesTable, useDefaultDDoSRulesColumns } from '..'
 
@@ -12,7 +20,19 @@ export const RuleStatisticDataTable = ({ dataSource }:
 
   const statisticColumns: TableProps<DdosRateLimitingRule | DDoSRuleStatisticModel>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Hits' }),
+      title: <Space size={3}>
+        <Typography.Text>
+          {$t({ defaultMessage: 'Hits' })}
+        </Typography.Text>
+        <Tooltip
+          placement='topRight'
+          title={
+            $t({ defaultMessage: 'Hit counts would be cleared when the rule has any changes' })
+          }
+        >
+          <QuestionCircleOutlined />
+        </Tooltip>
+      </Space>,
       key: 'hit',
       dataIndex: 'hit',
       children: [{
@@ -43,6 +63,9 @@ export const RuleStatisticDataTable = ({ dataSource }:
     <DDoSRulesTable
       columns={defaultColumns.concat(statisticColumns)}
       dataSource={dataSource}
+      locale={{
+        emptyText: <Empty description={$t({ defaultMessage: 'No data' })} />
+      }}
     />
   )
 }

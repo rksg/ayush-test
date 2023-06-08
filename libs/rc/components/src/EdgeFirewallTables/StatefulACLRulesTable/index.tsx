@@ -15,7 +15,7 @@ import { getRuleSrcDstString } from './utils'
 
 interface StatefulACLRulesTableProps
   extends Omit<TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>,
-  'rowKey' | 'locale' | 'columns'> {
+  'rowKey' | 'columns'> {
     // custom column is optional
     columns?: TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>['columns']
   }

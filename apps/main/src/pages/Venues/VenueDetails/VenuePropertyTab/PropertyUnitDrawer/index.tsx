@@ -190,7 +190,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 label={$t({ defaultMessage: 'Expiration Date of Data Consumption' })}
                 required
                 rules={[{ required: true }]}
-                getValueFromEvent={(onChange) => moment(onChange)}
+                getValueFromEvent={(onChange) => onChange ? moment(onChange): undefined}
                 getValueProps={(i) => ({ value: i ? moment(i) : undefined })}
                 initialValue={form.getFieldValue('expirationDate')}
               >
@@ -430,7 +430,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
           const {
-            vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationEpoch
+            vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationDate
           } = personaResult.data as Persona
           if (withNsg) {
             const apName = ethernetPorts?.[0]?.name
@@ -445,11 +445,11 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
           if (isConnectionMeteringEnabled) {
             form.setFieldValue('meteringProfileId', meteringProfileId)
-            form.setFieldValue('expirationDate', expirationEpoch ?
-              moment.unix(expirationEpoch) : undefined)
+            form.setFieldValue('expirationDate', expirationDate ?
+              moment(expirationDate) : undefined)
             setQosSetting({
               profileId: meteringProfileId,
-              expirationDate: expirationEpoch ? moment.unix(expirationEpoch): undefined
+              expirationDate: expirationDate ? moment(expirationDate): undefined
             })
           }
 
@@ -491,16 +491,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       meteringProfileId !== qosSetting?.profileId ? meteringProfileId ?? null : undefined
       : undefined
 
-    let expirationEpoch = isConnectionMeteringEnabled ?
+    let newExpirationDate = isConnectionMeteringEnabled ?
       meteringProfileId ?
-        expirationDate && expirationDate !== qosSetting?.expirationDate ?
-          expirationDate.unix() : undefined
+        expirationDate && expirationDate.startOf('day') !== qosSetting?.expirationDate ?
+          expirationDate.startOf('day').toISOString() : undefined
         : qosSetting?.profileId ? null : undefined
       : undefined
-
-    if (expirationEpoch) {
-      expirationEpoch = expirationEpoch - expirationDate!!.unix() % 86400
-    }
 
     // update UnitPersona
     const personaUpdateResult = withNsg
@@ -513,9 +509,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
           name: apName
         } as PersonaEthernetPort)) ?? [],
         meteringProfileId: profileId,
-        expirationEpoch: expirationEpoch
+        expirationDate: newExpirationDate
       })
-      : await patchPersona(personaId, unitPersona)
+      : await patchPersona(personaId,
+        {
+          ...unitPersona,
+          meteringProfileId: profileId,
+          expirationDate: newExpirationDate
+        })
 
     // update GuestPersona
     const guestUpdateResult = await patchPersona(
@@ -523,7 +524,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       { ...guestPersona,
         vlan: guestPersona?.vlan ?? unitPersona?.vlan,
         meteringProfileId: undefined,
-        expirationEpoch: undefined
+        expirationDate: undefined
       }
     )
 
@@ -552,8 +553,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     const trafficControl = isConnectionMeteringEnabled && meteringProfileId && expirationDate ?
       {
-        qosProfileId: meteringProfileId,
-        qosExpiryTime: expirationDate.unix() - expirationDate.unix() % 86400
+        meteringProfileId: meteringProfileId,
+        profileExpiry: expirationDate.startOf('day').toISOString()
       } : undefined
 
     return {

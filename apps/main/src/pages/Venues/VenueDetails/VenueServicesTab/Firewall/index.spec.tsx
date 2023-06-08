@@ -66,7 +66,7 @@ describe('Venue Firewall Service', () => {
     const ddosInfo = screen.queryByText('DDoS Rate-limiting')
     // eslint-disable-next-line testing-library/no-node-access
     const ddosWrapper = ddosInfo?.closest('div.ant-space')! as HTMLDivElement
-    expect(within(ddosWrapper).queryByText('OFF (0 rules)')).toBeValid()
+    expect(within(ddosWrapper).queryByText('OFF')).toBeValid()
     const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
@@ -124,7 +124,7 @@ describe('Venue Firewall Service', () => {
     const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
-    expect(within(aclWrapper).queryByText('OFF (IN: 1 rule, OUT: 5 rules)')).toBeValid()
+    expect(within(aclWrapper).queryByText('OFF')).toBeValid()
 
     // display grouped table
     expect(screen.queryByTestId('rc-EdgeFirewallGroupedStatsTables')).toBeVisible()

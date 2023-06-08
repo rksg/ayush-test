@@ -32,6 +32,7 @@ export interface ChangeScheduleDialogProps {
 
 export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, availableVersions } = props
   const [selectedVersion, setSelectedVersion] = useState('')
@@ -128,7 +129,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
               value={selectedVersion}>
               <Space direction={'vertical'}>
                 { availableVersions?.map(v =>
-                  <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(v)}</Radio>)}
+                  <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(intl, v)}</Radio>)}
               </Space>
             </Radio.Group>
           </div>
