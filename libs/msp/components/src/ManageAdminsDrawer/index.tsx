@@ -56,14 +56,14 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   useEffect(() => {
     if (queryResults?.data && delegatedAdmins?.data) {
-      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
-      setSelectedKeys(getSelectedKeys(queryResults?.data as MspAdministrator[], admins))
-      const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
-      setSelectedRows(selRows)
       const selRoles = delegatedAdmins?.data?.map((admin) => {
         return { id: admin.msp_admin_id, role: admin.msp_admin_role }
       })
       setSelectedRoles(selRoles)
+      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
+      setSelectedKeys(getSelectedKeys(queryResults?.data as MspAdministrator[], admins))
+      const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
+      setSelectedRows(selRows)
     }
   }, [queryResults?.data, delegatedAdmins?.data])
 
@@ -71,6 +71,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     setVisible(false)
     setSelectedRows([])
     setSelectedRoles([])
+    setSelectedKeys([])
   }
 
   const resetFields = () => {
@@ -153,7 +154,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
-    return <Select defaultValue={role}
+    return <Select value={role}
       style={{ width: '200px' }}
       onChange={value => handleRoleChange(id, value)}>
       {

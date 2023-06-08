@@ -64,7 +64,8 @@ export interface AP {
   apDownRssi?: number,
   apUpRssi?: number,
   poePort?: string,
-  healthStatus?: string
+  healthStatus?: string,
+  downLinkCount?: number
 }
 
 export interface ApViewModel extends AP {
@@ -441,4 +442,36 @@ export type ImportErrorRes = {
   downloadUrl?: string
   txId: string
   fileErrorsCount: number
+}
+
+export enum MeshModeEnum {
+  AUTO ='AUTO',
+  ROOT ='ROOT',
+  MESH ='MESH',
+  DISABLED = 'DISABLED'
+}
+
+export enum UplinkModeEnum {
+  MANUAL = 'MANUAL',
+  SMART = 'SMART'
+}
+
+export type APMeshSettings = {
+  venueMeshEnabled?: boolean, //read-only (get method only)
+  meshMode: MeshModeEnum,
+  uplinkMode?: UplinkModeEnum,
+  uplinkMacAddresses?: string[]
+}
+
+export type MeshApNeighbor = {
+  rssi: number,
+  mac: string,
+  apName: string
+}
+
+export type MeshUplinkAp = {
+  name: string,
+  deviceStatus: string,
+  healthStatus: string,
+  neighbors: MeshApNeighbor[]
 }
