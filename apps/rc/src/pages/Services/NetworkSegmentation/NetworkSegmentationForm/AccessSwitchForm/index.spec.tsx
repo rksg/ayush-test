@@ -33,10 +33,10 @@ jest.mock('./AccessSwitchDrawer', () => ({
   AccessSwitchDrawer: ({ onSave, onClose, open }: MockDrawerProps) =>
     open && <div data-testid={'AccessSwitchDrawer'}>
       <button onClick={(e)=>{
-        onSave()
         e.preventDefault()
+        onSave()
       }}>Save</button>
-      <button onClick={()=>onClose()}>Canel</button>
+      <button onClick={()=>onClose()}>Cancel</button>
     </div>
 }))
 
