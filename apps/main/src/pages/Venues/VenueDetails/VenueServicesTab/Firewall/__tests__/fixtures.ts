@@ -225,3 +225,35 @@ export const mockFirewall2 = {
     }
   ]
 }
+
+export const mockFirewallDDoSStats = {
+  ddosStatsList: [
+    {
+      ddosAttackType: 'ICMP',
+      deniedPackets: 12,
+      passedPackets: 20
+    },
+    {
+      ddosAttackType: 'TCP_SYN',
+      deniedPackets: 9,
+      passedPackets: 21
+    }
+  ]
+}
+
+export const mockFirewallACLStats = {
+  direction: ACLDirection.OUTBOUND,
+  permittedSessions: 100,
+  aclRuleStatsList: [
+    {
+      priority: 1,
+      packets: 12,
+      bytes: 72
+    },
+    {
+      priority: 2,
+      packets: 9,
+      bytes: 168
+    }
+  ]
+}
