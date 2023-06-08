@@ -481,9 +481,12 @@ export function EditPortDrawer ({
 
   const transformData = (data: PortSettingModel) => {
     const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
+    const vlansHasChanged = form?.isFieldTouched('taggedVlans') ||
+      form?.isFieldTouched('untaggedVlan')
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
-      if (overrideFields?.includes('portVlans') && !(hasBreakoutPortAndVenueSettings)) {
+      if ((overrideFields?.includes('portVlans') && vlansHasChanged)
+        && !(hasBreakoutPortAndVenueSettings)) {
         overrideFields.push('taggedVlans', 'untaggedVlan')
       }
       return !isMultipleEdit
@@ -499,7 +502,8 @@ export function EditPortDrawer ({
     const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
-      isMultipleEdit && (!portVlansCheckbox || hasBreakoutPortAndVenueSettings) && 'revert',
+      isMultipleEdit && (!portVlansCheckbox || !vlansHasChanged
+        || hasBreakoutPortAndVenueSettings) && 'revert',
       checkVlanIgnore(
         'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
@@ -638,7 +642,7 @@ export function EditPortDrawer ({
     const setButtonStatus = () => {
       const isPoeBudgetInvalid = form?.getFieldError('poeBudget').length > 0
       const isVlansInvalid
-        = (!isMultipleEdit || !!portVlansCheckbox) && (!untaggedVlan && !taggedVlans)
+      = (!isMultipleEdit || !!portVlansCheckbox) && (!untaggedVlan && !taggedVlans)
       const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
 
       setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
