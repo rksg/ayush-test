@@ -43,7 +43,8 @@ export function ConfigChangeChart ({
 
   const chartLayoutConfig = getChartLayoutConfig(props.style?.width as number, chartRowMapping)
   const {
-    chartPadding, rowHeight, xAxisHeight, brushWidth
+    chartPadding, legendHeight, brushTextHeight, rowHeight, rowGap,
+    xAxisHeight, brushWidth, symbolSize
   } = chartLayoutConfig
 
   const [selected, setSelected] = useState<number|undefined>(selectedData)
@@ -63,12 +64,12 @@ export function ConfigChangeChart ({
   const option: EChartsOption = {
     animation: false,
     grid: {
-      top: rowHeight + chartPadding,
+      top: legendHeight + brushTextHeight ,
       bottom: 0,
       left: chartPadding,
       right: chartPadding,
       width: (props.style?.width as number) - 2 * chartPadding,
-      height: (chartRowMapping.length + 1) * rowHeight // 1 = bar
+      height: (chartRowMapping.length + 1) * (rowHeight + rowGap) // +1 = bar
     },
     tooltip: {
       // TODO: tooltip shows x-Position (https://github.com/apache/echarts/issues/16621)
@@ -84,14 +85,13 @@ export function ConfigChangeChart ({
       },
       formatter: tooltipFormatter,
       ...tooltipOptions(),
-      position: (point) => [point[0] + 12, rowHeight + chartPadding] // 10 for gap between tooltip and tracker
+      position: (point) => [point[0] + 12, legendHeight + brushTextHeight] // 12 for gap between tooltip and tracker
     },
     legend: {
       right: chartPadding,
       icon: 'circle',
-      itemWidth: 8,
-      itemGap: 3,
-      padding: 0,
+      itemWidth: symbolSize,
+      itemGap: 7,
       textStyle: legendTextStyleOptions(),
       selected: selectedLegend
     },
@@ -128,7 +128,7 @@ export function ConfigChangeChart ({
         show: true,
         lineStyle: {
           color: [cssStr('--acx-primary-white')],
-          width: 1
+          width: 4
         }
       },
       data: [
@@ -147,7 +147,7 @@ export function ConfigChangeChart ({
           type: 'scatter',
           name: label,
           symbol: getSymbol(selected as number),
-          symbolSize: 10,
+          symbolSize,
           colorBy: 'series',
           animation: false,
           data: data
@@ -165,7 +165,8 @@ export function ConfigChangeChart ({
         style={{
           ...props.style,
           WebkitUserSelect: 'none',
-          height: (chartRowMapping.length + 2) * rowHeight + xAxisHeight // 2 = bar + legend
+          height: (chartRowMapping.length + 1) * (rowHeight + rowGap) // +1 = bar
+            + legendHeight + brushTextHeight + xAxisHeight
         }}
         ref={eChartsRef}
         option={option}

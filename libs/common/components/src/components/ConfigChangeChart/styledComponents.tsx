@@ -8,5 +8,5 @@ export const ChartWrapper = styled.div`
 `
 export const ResetButton = styled(Button)`
   float: right;
-  margin-top: 5px;
+  margin-right: 10px;
 `

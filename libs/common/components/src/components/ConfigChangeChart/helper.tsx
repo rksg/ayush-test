@@ -5,8 +5,8 @@ import { renderToString }                  from 'react-dom/server'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { cssStr }         from '../../theme/helper'
-import { TooltipWrapper } from '../Chart/styledComponents'
+import { cssNumber, cssStr } from '../../theme/helper'
+import { TooltipWrapper }    from '../Chart/styledComponents'
 
 import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 export type ConfigChange = {
@@ -37,17 +37,20 @@ export const chartRowMapping = [
   { key: 'venue', label: 'Venue', color: cssStr('--acx-viz-qualitative-1') }
 ] as ChartRowMappingType[]
 
-const rowHeight = 20
+const rowHeight = 16, rowGap = 4
 export const getChartLayoutConfig = (
   chartWidth: number, chartRowMapping: ChartRowMappingType[]
 ) => ({
   chartWidth,
   chartPadding: 10,
-  legendWidth: 85,
-  rowHeight: 20,
+  rowHeight,
+  rowGap,
   xAxisHeight: 30,
-  brushHeight: chartRowMapping.length * rowHeight,
-  brushWidth: 24 * 60 * 60 * 1000
+  brushHeight: chartRowMapping.length * (rowHeight + rowGap),
+  brushWidth: 24 * 60 * 60 * 1000,
+  brushTextHeight: 12,
+  legendHeight: 24,
+  symbolSize: 12
 })
 
 export const getBoundary = (
@@ -121,7 +124,8 @@ export const draw = (
   const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
 
   const {
-    chartWidth, chartPadding, rowHeight, brushHeight, brushWidth
+    chartWidth, chartPadding, legendHeight, brushTextHeight, rowHeight, rowGap,
+    brushHeight, brushWidth
   } = chartLayoutConfig
 
   echartInstance.setOption({
@@ -132,7 +136,7 @@ export const draw = (
           id: 'brush-bar',
           slient: true,
           x: chartPadding, // gap between contianer and grid
-          y: rowHeight + chartPadding,
+          y: legendHeight + brushTextHeight,
           z: 1,
           shape: { width: (chartWidth as number) - 2 * chartPadding, height: rowHeight, r: 3 },
           style: { fill: cssStr('--acx-neutrals-20') },
@@ -156,7 +160,7 @@ export const draw = (
                   invisible: true,
                   slient: width <= 0,
                   x: position[0],
-                  y: rowHeight + chartPadding,
+                  y: legendHeight + brushTextHeight,
                   z: 100,
                   shape: { width, height: rowHeight },
                   draggable: width <= 0 ? false : 'horizontal',
@@ -182,15 +186,15 @@ export const draw = (
                     style: {
                       text: index === 0 ? 'BEFORE' : 'AFTER',
                       fill: cssStr('--acx-accents-blue-50'),
-                      fontSize: 9,
-                      fontWeight: 700
+                      fontSize: cssNumber('--acx-body-6-font-size'),
+                      fontWeight: cssNumber('--acx-body-font-weight-bold')
                     }
                   },
                   textConfig: { position: 'insideBottom' },
                   x: position[0],
-                  y: chartPadding,
+                  y: legendHeight,
                   z: 100,
-                  shape: { width, height: rowHeight, r: 3 },
+                  shape: { width, height: brushTextHeight, r: 3 },
                   style: {
                     fill: 'transparent',
                     stroke: 'transparent'
@@ -216,7 +220,7 @@ export const draw = (
                   },
                   textConfig: { position: 'inside' },
                   x: position[0],
-                  y: rowHeight + chartPadding,
+                  y: legendHeight + brushTextHeight,
                   z: 1,
                   shape: { width, height: rowHeight, r: 3 },
                   style: {
@@ -230,7 +234,7 @@ export const draw = (
                   slient: true,
                   invisible: width <= 0,
                   x: position[0],
-                  y: 2 * rowHeight + chartPadding + 3, // 3 px for gap between boxes
+                  y: legendHeight + brushTextHeight + (rowHeight + rowGap),
                   z: 1,
                   shape: { width, height: brushHeight, r: 3 },
                   style: {
