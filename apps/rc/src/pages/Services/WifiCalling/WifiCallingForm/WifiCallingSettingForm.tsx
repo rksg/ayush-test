@@ -100,7 +100,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
       form.setFieldValue('qosPriority', data.qosPriority)
     }
     if (state.ePDG.length) {
-      form.validateFields().then(r => r)
+      form.validateFields().then()
     }
   }, [data, state.ePDG.length])
 
