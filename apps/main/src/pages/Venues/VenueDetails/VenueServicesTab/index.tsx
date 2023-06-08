@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Tabs }                       from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useGetEdgeListQuery }        from '@acx-ui/rc/services'
-import { PolicyType, ServiceType }    from '@acx-ui/rc/utils'
+import { Tabs }                                from '@acx-ui/components'
+import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
+import { useGetEdgeListQuery }                 from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType } from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -86,12 +86,12 @@ export function VenueServicesTab () {
       </Tabs.TabPane>
       {
         isEdgeEnabled && isAppliedFirewall && !isEdgeLoading &&
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Firewall' })}
-        key={ServiceType.EDGE_FIREWALL}
-      >
-        <EdgeFirewall serviceId={edgeData?.firewallId!}/>
-      </Tabs.TabPane>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Firewall' })}
+            key={ServiceType.EDGE_FIREWALL}
+          >
+            <EdgeFirewall edgeData={edgeData as EdgeStatus}/>
+          </Tabs.TabPane>
       }
     </Tabs>
   )

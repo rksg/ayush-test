@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                                     from '@acx-ui/rc/components'
 import { isDelegationMode }                                       from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink }      from '@acx-ui/react-router-dom'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { RolesEnum }                                              from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                        from '@acx-ui/user'
@@ -52,6 +52,7 @@ function Layout () {
     PverName.ACX_HYBRID === getJwtTokenPayload().pver)
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const basePath = useTenantLink('/users/guestsManager')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
@@ -70,7 +71,7 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={logo}
+      logo={<TenantNavLink to={indexPath} children={logo} />}
       menuConfig={useMenuConfig()}
       content={
         <>

@@ -31,20 +31,11 @@ type R1Environment = {
 }
 
 type RAEnvironment = {
-  MLISA_DATA_API_URL: string
-  MlISA_SMARTZONE_MGR_URL: string
-  MLISA_LOGOUT_URL: string
-  MLISA_RBAC_URL: string
+  IS_MLISA_SA: string
   MLISA_REGION: string
   MLISA_VERSION: string
   MLISA_DOCUMENTATION_URL: string
-  MLISA_NOTIFICATION_URL: string
   MLISA_UI_USER_TRACKING: string
-  MLISA_SERVICE_GUARD_URL: string
-  MLISA_VIDEO_CALL_QOE_URL: string
-  MLISA_OCCUPANCY_URL: string
-  ASK_MLISA_URL: string
-  MLISA_SUPERSET_URL: string
 }
 
 type EnvironmentConfig = commonEnvironment & R1Environment & RAEnvironment
