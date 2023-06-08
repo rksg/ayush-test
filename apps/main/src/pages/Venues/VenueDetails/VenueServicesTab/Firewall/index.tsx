@@ -30,7 +30,6 @@ interface EdgeFirewallServiceProps {
 
 const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) => {
   const { $t } = useIntl()
-  // const period = getDateRangeFilter(DateRange.last7Days)
   const { startDate, endDate, range, setDateFilter } = useDateFilter()
   const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
   const directionOpts = getACLDirectionOptions($t)
@@ -139,11 +138,6 @@ const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) 
             {filterByAccess([
               <RangePicker
                 key='date-filter'
-                // selectedRange={{
-                //   startDate: moment(period.startDate),
-                //   endDate: moment(period.endDate)
-                // }}
-                // selectionType={period.range}
                 selectedRange={filterPeriod}
                 selectionType={range}
                 onDateApply={setDateFilter as CallableFunction}
@@ -177,11 +171,6 @@ const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) 
             {filterByAccess([
               <RangePicker
                 key='date-filter'
-                // selectedRange={{
-                //   startDate: moment(period.startDate),
-                //   endDate: moment(period.endDate)
-                // }}
-                // selectionType={period.range}
                 selectedRange={filterPeriod}
                 selectionType={range}
                 onDateApply={setDateFilter as CallableFunction}
