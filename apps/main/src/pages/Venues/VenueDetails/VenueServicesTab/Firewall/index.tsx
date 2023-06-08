@@ -5,10 +5,11 @@ import moment                        from 'moment'
 import { useIntl }                   from 'react-intl'
 import styled                        from 'styled-components/macro'
 
-import { Card, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
-import { useGetEdgeFirewallQuery }                           from '@acx-ui/rc/services'
+import { Card, DateRangeType, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
+import { useGetEdgeFirewallQuery }                                          from '@acx-ui/rc/services'
 import {
   ACLDirection,
+  EdgeStatus,
   getACLDirectionOptions,
   getServiceDetailsLink,
   ServiceOperation,
@@ -22,12 +23,17 @@ import { DDoSRulesTable }        from './DDoSRulesTable'
 import { StatefulACLRulesTable } from './StatefulACLRulesTable'
 import * as UI                   from './styledComponents'
 
-const EdgeFirewall = styled(({ className, serviceId }:
-   { className?: string, serviceId: string }) => {
+interface EdgeFirewallServiceProps {
+  className?: string;
+  edgeData: EdgeStatus;
+}
+
+const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) => {
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, range, setDateFilter } = useDateFilter()
   const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
   const directionOpts = getACLDirectionOptions($t)
+  const serviceId = edgeData.firewallId
 
   // get firewall by firewallId
   const {
@@ -55,42 +61,44 @@ const EdgeFirewall = styled(({ className, serviceId }:
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),
       content: () => (
-        $t(
+        edgeFirewallData.ddosRateLimitingEnabled ? $t(
           { defaultMessage:
-            '{status} ({rulesCount} {rulesCount, plural, one {rule} other {rules}})' },
+            'ON ({rulesCount} {rulesCount, plural, one {rule} other {rules}})' },
           {
-            status: edgeFirewallData.ddosRateLimitingEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
             rulesCount: Object.keys(edgeFirewallData?.ddosRateLimitingRules || []).length
           }
         )
+          : $t({ defaultMessage: 'OFF' })
       )
     },
     {
       title: $t({ defaultMessage: 'Stateful ACL' }),
       content: () => (
-        $t(
-          { defaultMessage: `{status} (IN: {inCount} {inCount, plural, one {rule} other {rules}},
+        edgeFirewallData.statefulAclEnabled
+          ? $t(
+            { defaultMessage: `ON (IN: {inCount} {inCount, plural, one {rule} other {rules}},
              OUT: {outCount} {outCount, plural, one {rule} other {rules}})` },
-          {
-            status: edgeFirewallData.statefulAclEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
-            inCount: edgeFirewallData.statefulAcls.filter(item =>
-              item.direction === ACLDirection.INBOUND
-            )[0].rules.length,
-            outCount: edgeFirewallData.statefulAcls.filter(item =>
-              item.direction === ACLDirection.OUTBOUND
-            )[0].rules.length
-          }
-        )
+            {
+              inCount: edgeFirewallData.statefulAcls.filter(item =>
+                item.direction === ACLDirection.INBOUND
+              )[0].rules.length,
+              outCount: edgeFirewallData.statefulAcls.filter(item =>
+                item.direction === ACLDirection.OUTBOUND
+              )[0].rules.length
+            }
+          )
+          : $t({ defaultMessage: 'OFF' })
       )
     }
   ] : []
 
   const handleACLDirectionChange = (val:ACLDirection) => {
     setACLDirection(val)
+  }
+
+  const filterPeriod:DateRangeType = {
+    startDate: moment(startDate),
+    endDate: moment(endDate)
   }
 
   return (<Loader states={[
@@ -127,14 +135,22 @@ const EdgeFirewall = styled(({ className, serviceId }:
             {filterByAccess([
               <RangePicker
                 key='date-filter'
-                selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+                selectedRange={filterPeriod}
+                selectionType={range}
                 onDateApply={setDateFilter as CallableFunction}
                 showTimePicker
-                selectionType={range}
               />])
             }
           </UI.ActionsContainer>
-          <DDoSRulesTable firewallData={edgeFirewallData} />
+          <DDoSRulesTable
+            firewallData={edgeFirewallData}
+            dateFilter={{
+              startDate,
+              endDate
+            }}
+            edgeId={edgeData.serialNumber}
+            venueId={edgeData.venueId}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Stateful ACL' })}
@@ -149,8 +165,26 @@ const EdgeFirewall = styled(({ className, serviceId }:
                 (<Select.Option value={value} key={value} children={label} />)
               )}
             </Select>
+            {filterByAccess([
+              <RangePicker
+                key='date-filter'
+                selectedRange={filterPeriod}
+                selectionType={range}
+                onDateApply={setDateFilter as CallableFunction}
+                showTimePicker
+              />])
+            }
           </UI.ActionsContainer>
-          <StatefulACLRulesTable firewallData={edgeFirewallData} direction={aclDirection} />
+          <StatefulACLRulesTable
+            firewallData={edgeFirewallData}
+            direction={aclDirection}
+            dateFilter={{
+              startDate,
+              endDate
+            }}
+            edgeId={edgeData.serialNumber}
+            venueId={edgeData.venueId}
+          />
         </Tabs.TabPane>
       </Tabs>
     </Space>
