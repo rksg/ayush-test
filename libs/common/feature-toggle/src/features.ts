@@ -58,5 +58,6 @@ export enum Features {
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
-  MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional'
+  MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
+  MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion'
 }
