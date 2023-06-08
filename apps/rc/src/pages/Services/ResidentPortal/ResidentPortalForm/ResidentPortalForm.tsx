@@ -59,7 +59,8 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
   const initialValues: Partial<CreateResidentPortalFormFields> = {
     textTitle: $t({ defaultMessage: 'Resident Portal' }),
-    textLogin: $t({ defaultMessage: 'Welcome to Your Portal' })
+    textLogin: $t({ defaultMessage: 'Welcome to Your Portal' }),
+    tenantSetDpsk: false
   }
 
   const [areImagesLoading, setImagesLoading] = useState<boolean>(true)
