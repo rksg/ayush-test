@@ -12,8 +12,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { QuestionMarkCircleOutlined }           from '@acx-ui/icons'
-import { useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
+import { useGetTunnelProfileViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import {
   DnsProxyRule,
   DnsProxyContextType,
@@ -21,7 +21,8 @@ import {
   WifiCallingSetting,
   getServiceDetailsLink,
   ServiceOperation,
-  ServiceType } from '@acx-ui/rc/utils'
+  ServiceType,
+  DpskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import NetworkFormContext        from '../NetworkFormContext'
@@ -106,6 +107,23 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       return {
         tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
         isLoading
+      }
+    }
+  })
+
+  const tunnelProfileId =
+    (data?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)?.tunnelProfileId
+  const {
+    nsgId
+  } = useGetNetworkSegmentationViewDataListQuery({
+    payload: {
+      filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
+    }
+  }, {
+    skip: !!!tunnelProfileId,
+    selectFromResult: ({ data }) => {
+      return {
+        nsgId: data?.data[0]?.id
       }
     }
   })
@@ -296,13 +314,15 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
             }
             &nbsp;
             <Space size={1}></Space>
+            { nsgId &&
             <TenantLink to={getServiceDetailsLink({
               type: ServiceType.NETWORK_SEGMENTATION,
               oper: ServiceOperation.DETAIL,
-              serviceId: ''
+              serviceId: nsgId!
             })}>
               { $t({ defaultMessage: 'here' }) }
             </TenantLink>
+            }
             &nbsp;
             {
               $t({
