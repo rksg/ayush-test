@@ -283,6 +283,14 @@ export const personaApi = basePersonaApi.injectEndpoints({
           }
         }
       }
+    }),
+    allocatePersonaVni: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(PersonaUrls.allocateVni, params)
+        }
+      },
+      invalidatesTags: [{ type: 'Persona', id: 'ID' }]
     })
   })
 })
@@ -296,7 +304,8 @@ export const {
   useLazyGetPersonaGroupByIdQuery,
   useUpdatePersonaGroupMutation,
   useDeletePersonaGroupMutation,
-  useLazyDownloadPersonaGroupsQuery
+  useLazyDownloadPersonaGroupsQuery,
+  useAllocatePersonaVniMutation
 } = personaApi
 
 export const {
