@@ -223,17 +223,17 @@ export function SwitchTable (props : SwitchTableProps) {
     //   title: $t({ defaultMessage: 'Incidents' }),
     //   dataIndex: 'incidents',
     // },
-    {
+    ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       sorter: true,
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
-      render: (data, row) => (
+      render: (data: React.ReactNode, row: SwitchRow) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       )
-    }, {
+    }]), {
       key: 'uptime',
       title: $t({ defaultMessage: 'Up Time' }),
       dataIndex: 'uptime',

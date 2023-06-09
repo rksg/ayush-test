@@ -133,19 +133,19 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
         </Tooltip>
       }
     },
-    {
+    ...(venueId ? [] : [{
       key: 'venueId',
       title: intl.$t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       sorter: true,
       filterKey: 'venueId',
       filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
-      render: (data, row) => {
+      render: (data: React.ReactNode, row: ClientList) => {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
         )
       }
-    },
+    }]),
     {
       key: 'serialNumber',
       title: intl.$t({ defaultMessage: 'AP' }),
