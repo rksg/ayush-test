@@ -18,6 +18,7 @@ export interface Persona {
   id: string,
   name: string,
   groupId: string,
+  revoked: boolean,
   deviceCount?: number,
   description?: string,
   tenantId?: string,
@@ -28,12 +29,14 @@ export interface Persona {
   dpskPassphrase?: string,
   devices?: PersonaDevice[],
   ethernetPorts?: PersonaEthernetPort[],
+  primary?: boolean,
   identityId?: string,
   createdAt?: string,
   updatedAt?: string,
   switches?: PersonaSwitch[],
   meteringProfileId?: string | null,
-  expirationEpoch?: number | null
+  expirationEpoch?: number | null,
+  expirationDate?: string | null
 }
 
 export interface PersonaSwitch {

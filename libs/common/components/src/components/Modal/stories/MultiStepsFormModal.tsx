@@ -4,7 +4,7 @@ import { Form, Input, Row, Col, Select } from 'antd'
 
 import { Button }           from '../../Button'
 import { Modal, ModalType } from '../../Modal'
-import { StepsFormLegacy }  from '../../StepsFormLegacy'
+import { StepsForm }        from '../../StepsForm'
 import { showToast }        from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
@@ -22,7 +22,7 @@ export function MultiStepsFormModal () {
         visible={visible}
         type={ModalType.ModalStepsForm}
       >
-        <StepsFormLegacy
+        <StepsForm
           onCancel={() => {
             showToast({ type: 'info', content: 'Cancel' })
             setVisible(false)
@@ -32,10 +32,10 @@ export function MultiStepsFormModal () {
             showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
             setVisible(false)
           }}>
-          <StepsFormLegacy.StepForm title='Step 1'>
+          <StepsForm.StepForm title='Step 1'>
             <Row gutter={20}>
               <Col span={10}>
-                <StepsFormLegacy.Title children='Step 1' />
+                <StepsForm.Title children='Step 1' />
                 <Form.Item name='field1' label='Field 1'>
                   <Input />
                 </Form.Item>
@@ -67,11 +67,11 @@ export function MultiStepsFormModal () {
                 </Form.Item>
               </Col>
             </Row>
-          </StepsFormLegacy.StepForm>
-          <StepsFormLegacy.StepForm title='Step 2'>
+          </StepsForm.StepForm>
+          <StepsForm.StepForm title='Step 2'>
             <Row gutter={20}>
               <Col span={10}>
-                <StepsFormLegacy.Title children='Step 2' />
+                <StepsForm.Title children='Step 2' />
                 <Form.Item name='field8' label='Field 8'>
                   <Input />
                 </Form.Item>
@@ -80,8 +80,8 @@ export function MultiStepsFormModal () {
                 </Form.Item>
               </Col>
             </Row>
-          </StepsFormLegacy.StepForm>
-        </StepsFormLegacy>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Modal>
     </>
   )

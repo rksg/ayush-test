@@ -2,7 +2,7 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
   PersonaUrls,
@@ -22,6 +22,7 @@ import {
   mockPersona,
   mockPersonaGroup,
   mockPersonaGroupList,
+  mockUnBlockedPersona,
   replacePagination
 } from '../__tests__/fixtures'
 
@@ -36,6 +37,7 @@ Object.assign(navigator, {
 })
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe('Persona Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
@@ -199,5 +201,65 @@ describe('Persona Details', () => {
     const confirmDialog = await screen.findByRole('dialog')
     const confirmBtn = await within(confirmDialog).findByRole('button', { name: /Delete/i })
     await userEvent.click(confirmBtn)
+  })
+
+  it('should blocked the persona', async () => {
+    const blockedFn = jest.fn()
+    mockServer.use(
+      rest.get(
+        PersonaUrls.getPersonaById.url,
+        (req, res, ctx) => res(ctx.json(mockUnBlockedPersona))
+      ),
+      rest.patch(
+        PersonaUrls.updatePersona.url,
+        (req, res, ctx) => {
+          blockedFn(req.body)
+          return res(ctx.json({}))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <PersonaDetails />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+      }
+    )
+
+    const blockedButton = await screen.findByRole('button', { name: /Block/i })
+    await userEvent.click(blockedButton)
+
+    const confirmButton = await within(await screen.findByRole('dialog'))
+      .findByRole('button', { name: /Block/i })
+    await userEvent.click(confirmButton)
+
+    expect(blockedFn).toBeCalledWith({ revoked: true })
+  })
+
+  it('should retry vni', async () => {
+    const retryFn = jest.fn()
+    mockServer.use(
+      rest.delete(
+        PersonaUrls.allocateVni.url,
+        (_, res, ctx) => {
+          retryFn()
+          return res(ctx.json({}))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <PersonaDetails />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+      }
+    )
+
+    const retryVniButton = await screen.findByRole('button', { name: /Retry/i })
+    await userEvent.click(retryVniButton)
+
+    expect(retryFn).toHaveBeenCalled()
   })
 })

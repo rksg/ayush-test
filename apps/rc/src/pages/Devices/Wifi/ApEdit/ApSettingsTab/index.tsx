@@ -15,6 +15,7 @@ import { DirectedMulticast } from './DirectedMulticast'
 import { IpSettings }        from './General/IpSettings'
 import { LanPorts }          from './LanPorts'
 import { MdnsProxyTab }      from './MdnsProxyTab/MdnsProxyTab'
+import { ApMesh }            from './MeshTab'
 import { RadioSettings }     from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
@@ -29,6 +30,7 @@ export function ApSettingsTab () {
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const supportMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -52,7 +54,8 @@ export function ApSettingsTab () {
       lanPort: $t({ defaultMessage: 'LAN Port' }),
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
       multicast: $t({ defaultMessage: 'Directed Multicast' }),
-      snmp: $t({ defaultMessage: 'AP SNMP' })
+      snmp: $t({ defaultMessage: 'AP SNMP' }),
+      mesh: $t({ defaultMessage: 'Mesh' })
     }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
@@ -98,6 +101,11 @@ export function ApSettingsTab () {
         </>}
         key='multicast'>
           <DirectedMulticast />
+        </TabPane>
+      }
+      {supportMeshEnhancement &&
+        <TabPane tab={tabTitleMap('mesh')} key='mesh'>
+          <ApMesh />
         </TabPane>
       }
     </Tabs>

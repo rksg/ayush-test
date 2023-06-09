@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { Form }                                     from 'antd'
-import { DefaultOptionType }                        from 'antd/lib/cascader'
 import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
@@ -67,7 +66,7 @@ export function APsSelection () {
       children={<APsSelectionInput
         autoFocus
         placeholder={$t({ defaultMessage: 'Select Venues / APs to test' })}
-        options={options as DefaultOptionType[]}
+        options={options}
       />}
     />
   </Loader>
@@ -98,6 +97,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
       .map(item => <FormattedMessage
         key={item.name}
         defaultMessage='{name} — {count} {count, plural, one {AP} other {APs}}{br}'
+        description='Translation strings - AP, APs'
         values={{ ...item, br: <br/> }}
       />)
 

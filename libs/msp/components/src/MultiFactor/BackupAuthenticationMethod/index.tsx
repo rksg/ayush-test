@@ -26,8 +26,9 @@ export const BackupAuthenticationMethod = (props: { recoveryCodes: string[] }) =
           <UI.FieldLabel width='275px'>
             <UI.OtpLabel>
               {$t({ defaultMessage: 'Recovery Codes' })}
-              {'User recovery codes to log in if you can’t receive a verification code via ' +
-             'email, SMS, or an auth app'}
+              {$t({ defaultMessage:
+                  'User recovery codes to log in if you can’t receive a verification code via ' +
+                  'email, SMS, or an auth app' })}
             </UI.OtpLabel>
             <Form.Item
               children={<UI.FieldTextLink onClick={()=>setVisible(true)}>

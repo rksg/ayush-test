@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
@@ -20,6 +21,7 @@ import { filterByAccess }                                       from '@acx-ui/us
 
 import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
 import { PersonaDrawer }                                          from '../PersonaDrawer'
+import { PersonaBlockedIcon }                                     from '../styledComponents'
 
 
 
@@ -50,6 +52,15 @@ function useColumns (
       ,
       sorter: true,
       ...props.name
+    },
+    {
+      key: 'revoked',
+      dataIndex: 'revoked',
+      title: $t({ defaultMessage: 'Blocked' }),
+      align: 'center',
+      sorter: true,
+      render: (_, row) => row.revoked && <PersonaBlockedIcon />,
+      ...props.revoked
     },
     {
       key: 'email',
@@ -245,10 +256,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
     {
       label: $t({ defaultMessage: 'Import From File' }),
       onClick: () => setUploadCsvDrawerVisible(true)
-    },
-    {
-      label: $t({ defaultMessage: 'Export To File' }),
-      onClick: downloadPersona
     }
   ]
 
@@ -342,8 +349,9 @@ export function BasePersonaTable (props: PersonaTableProps) {
         { isLoading: false, isFetching: isDeletePersonasUpdating }
       ]}
     >
-      <Table
+      <Table<Persona>
         enableApiFilter
+        settingsId='base-persona-table'
         columns={columns}
         dataSource={personaListQuery.data?.data}
         pagination={personaListQuery.pagination}
@@ -353,6 +361,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
+        iconButton={{
+          icon: <DownloadOutlined data-testid={'export-persona'} />,
+          onClick: downloadPersona
+        }}
       />
 
       <PersonaDrawer

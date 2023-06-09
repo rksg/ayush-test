@@ -1,3 +1,5 @@
+import moment from 'moment-timezone'
+
 import {
   DpskSaveData,
   MacRegistrationPool,
@@ -28,6 +30,13 @@ const defaultPageable: NewTablePageable = {
   unpaged: false
 }
 
+export const mockUnBlockedPersona: Persona = {
+  id: 'persona-id-1',
+  name: 'persona-name-1',
+  groupId: 'group-id-1',
+  revoked: false
+}
+
 export const mockPersona: Persona = {
   id: 'persona-id-1',
   name: 'persona-name-1',
@@ -35,6 +44,7 @@ export const mockPersona: Persona = {
   dpskGuid: 'dpsk-guid-1',
   dpskPassphrase: 'dpsk-passphrase',
   identityId: 'unit-id-1',
+  revoked: false,
   devices: [
     {
       macAddress: '11:11:11:11:11:11',
@@ -58,7 +68,7 @@ export const mockPersona: Persona = {
     }
   ],
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
-  expirationEpoch: 1684000000
+  expirationDate: moment().add(-8, 'days').toISOString()
 }
 
 export const mockPersonaGroup: PersonaGroup = {
@@ -83,14 +93,16 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       name: 'persona-name-1',
       groupId: 'persona-group-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-2',
       name: 'persona-name-2',
       groupId: 'persona-group-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     },
     {
       id: 'persona-id-3',
@@ -98,7 +110,8 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       groupId: 'persona-group-id-1',
       identityId: 'persona-identity-id-1',
       meteringProfileId: null,
-      expirationEpoch: null
+      expirationEpoch: null,
+      revoked: false
     }
   ]
 }

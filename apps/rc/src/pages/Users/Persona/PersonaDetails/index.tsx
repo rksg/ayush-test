@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Input, Row, Space, Typography } from 'antd'
-import { useIntl }                            from 'react-intl'
-import {  useParams }                         from 'react-router-dom'
+import { Col, Row, Space, Tag, Typography } from 'antd'
+import { useIntl }                          from 'react-intl'
+import { useParams }                        from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }     from '@acx-ui/feature-toggle'
-import { CopyOutlined }                                 from '@acx-ui/icons'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { CopyOutlined }                                                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
@@ -14,7 +14,9 @@ import {
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
-  useLazyGetConnectionMeteringByIdQuery
+  useLazyGetConnectionMeteringByIdQuery,
+  useUpdatePersonaMutation,
+  useAllocatePersonaVniMutation
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
@@ -28,7 +30,8 @@ import {
   PersonaGroupLink,
   PropertyUnitLink
 } from '../LinkHelper'
-import { PersonaDrawer } from '../PersonaDrawer'
+import { PersonaDrawer }                       from '../PersonaDrawer'
+import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
@@ -48,6 +51,8 @@ function PersonaDetails () {
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
   // TODO: isLoading state?
+  const [updatePersona] = useUpdatePersonaMutation()
+  const [allocatePersonaVni] = useAllocatePersonaVniMutation()
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
@@ -59,6 +64,7 @@ function PersonaDetails () {
   const deviceCount = personaDetailsQuery.data?.devices?.length ?? 0
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
+  const [vniRetryable, setVniRetryable] = useState<boolean>(false)
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -118,6 +124,27 @@ function PersonaDetails () {
     }
   }, [personaGroupData])
 
+  useEffect(() => {
+    if (!personaGroupData || !personaDetailsQuery.data) return
+    const { primary = true, revoked } = personaDetailsQuery.data
+    const hasNSG = !!personaGroupData?.nsgId
+
+    setVniRetryable(hasNSG && primary && !revoked)
+  }, [personaGroupData, personaDetailsQuery])
+
+  const revokePersona = async () => {
+    return await updatePersona({
+      params: { groupId: personaGroupId, id: personaId },
+      payload: { revoked: !personaDetailsQuery.data?.revoked }
+    })
+  }
+
+  const allocateVni = async () => {
+    return await allocatePersonaVni({
+      params: { groupId: personaGroupId, id: personaId }
+    })
+  }
+
   const details = [
     { label: $t({ defaultMessage: 'Email' }), value: personaDetailsQuery.data?.email },
     { label: $t({ defaultMessage: 'Description' }), value: personaDetailsQuery.data?.description },
@@ -139,7 +166,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
         <>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={personaDetailsQuery.data?.dpskPassphrase}
@@ -172,7 +199,14 @@ function PersonaDetails () {
 
   const netSeg = [
     { label: $t({ defaultMessage: 'Assigned VNI' }),
-      value: personaDetailsQuery.data?.vni
+      value: personaDetailsQuery.data?.vni ??
+        (vniRetryable ?
+          <Space size={'middle'}>
+            <Typography.Text>{noDataDisplay}</Typography.Text>
+            <Button size={'small'} type={'default'} onClick={allocateVni}>
+              {$t({ defaultMessage: 'Retry VNI' })}
+            </Button>
+          </Space> : undefined)
     },
     { label: $t({ defaultMessage: 'Network Segmentation' }),
       value:
@@ -205,6 +239,11 @@ function PersonaDetails () {
     >
       <PersonaDetailsPageHeader
         title={personaDetailsQuery.data?.name ?? personaId}
+        revoked={{
+          status: personaDetailsQuery.data?.revoked ?? false,
+          allowed: !personaDetailsQuery.data?.identityId,
+          onRevoke: revokePersona
+        }}
         onClick={() => setEditDrawerVisible(true)}
       />
       <Space direction={'vertical'} size={24}>
@@ -284,12 +323,68 @@ function PersonaDetails () {
 
 function PersonaDetailsPageHeader (props: {
   title?: string,
+  revoked: {
+    allowed: boolean,
+    status?: boolean
+    onRevoke: () => void
+  }
   onClick: () => void
 }) {
   const { $t } = useIntl()
-  const { title, onClick } = props
+  const { title, revoked: { allowed, status: revokedStatus, onRevoke }, onClick } = props
+
+  const getRevokedTitle = () => {
+    return $t({
+      defaultMessage: `{revokedStatus, select,
+      true {Unblock}
+      other {Block}
+      } this Persona: {name}`,
+      description: 'Translation strings - Unblock, Block, this Persona'
+    }, {
+      revokedStatus,
+      name: title
+    })
+  }
+
+  const getRevokedContent = () => {
+    return $t({
+      defaultMessage: `{revokedStatus, select,
+      true {Are you sure you want to unblock this persona?}
+      other {The user will be blocked. Are you sure want to block this persona?}
+      }`,
+      // eslint-disable-next-line max-len
+      description: 'Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona'
+    }, {
+      revokedStatus
+    })
+  }
+
+  const showRevokedModal = () => {
+    showActionModal({
+      type: 'confirm',
+      title: getRevokedTitle(),
+      content: getRevokedContent(),
+      okText: $t({
+        defaultMessage: `{revokedStatus, select,
+        true {Unblock}
+        other {Block}}`,
+        description: 'Translation strings - Unblock, Block'
+      }, { revokedStatus }),
+      okType: 'primary',
+      cancelText: $t({ defaultMessage: 'Cancel' }),
+      onOk: () => onRevoke()
+    })
+  }
 
   const extra = filterByAccess([
+    <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
+      {$t({
+        defaultMessage: `{revokedStatus, select,
+        true {Unblock}
+        other {Block Persona}}`,
+        description: 'Translation strings - Unblock, Block Persona'
+      }, { revokedStatus })}
+    </Button>,
     <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
@@ -298,6 +393,16 @@ function PersonaDetailsPageHeader (props: {
   return (
     <PageHeader
       title={title}
+      titleExtra={revokedStatus
+        && <>
+          <PersonaBlockedIcon />
+          <Tag
+            style={blockedTagStyle}
+            color={cssStr('--acx-semantics-red-20')}
+          >
+            {$t({ defaultMessage: 'Blocked' })}
+          </Tag>
+        </>}
       extra={extra}
       breadcrumb={[
         {

@@ -157,6 +157,31 @@ describe('Table component', () => {
     expect(table).toHaveStyle('table-layout: fixed')
   })
 
+  it('should render select data from all pages option', async () => {
+    const currentPageData = [
+      ...testData
+    ]
+    currentPageData.splice(2,1)
+    const getAllPagesData = () => {
+      return testData
+    }
+    render(<Table
+      columns={testColumns}
+      dataSource={currentPageData}
+      getAllPagesData={getAllPagesData}
+      rowSelection={{ type: 'checkbox' }}
+      pagination={{ defaultPageSize: 2 }}
+    />)
+
+    const icon = await screen.findByRole('img', { name: 'down' })
+    await userEvent.hover(icon)
+    const selectAllOption = await screen.findByText('Select data from all pages')
+    await userEvent.click(selectAllOption)
+    expect(await screen.findByText('3 selected')).toBeVisible()
+    fireEvent.click((await screen.findAllByRole('checkbox'))[1])
+    expect(await screen.findByText('2 selected')).toBeVisible()
+  })
+
   it('should render multi select table and render action buttons correctly', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
     const rowActions = [
@@ -758,16 +783,22 @@ describe('Table component', () => {
     })
 
     it('should not do local filter/search when enableApiFilter', async () => {
+      const onAction = jest.fn()
       render(<Table
         columns={filteredColumns}
         dataSource={filteredData}
         enableApiFilter={true}
         floatRightFilters={true}
+        rowSelection={{ type: 'checkbox' }}
+        rowActions={[{ label: 'Delete', onClick: onAction }]}
       />)
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       fireEvent.change(input, { target: { value: 'John Doe' } })
       expect(await screen.findAllByText('Jordan')).toHaveLength(1)
+      fireEvent.click((await screen.findAllByRole('checkbox'))[1])
+      fireEvent.click((await screen.findAllByRole('button', { name: 'Delete' }))[0])
+      expect(onAction).toBeCalledTimes(1)
     })
 
     it('should not throw in search when column data is undefined', async () => {
@@ -783,6 +814,49 @@ describe('Table component', () => {
 
       const tbody = await findTBody()
       expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
+    })
+
+    it('should call onDisplayRowChange with filtered data (enableApiFilter=false)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        floatRightFilters={true}
+        enableApiFilter={false}
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      expect(onDisplayRowChange)
+        .toHaveBeenNthCalledWith(2, [{ ...filteredData![0], children: undefined }])
+    })
+
+    it('should call onDisplayRowChange with empty array (datasource undefined)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        floatRightFilters={true}
+        enableApiFilter={false}
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      await screen.findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      expect(onDisplayRowChange).toHaveBeenCalledWith([])
+    })
+
+    it('should call onDisplayRowChange with unfiltered data (enableApiFilter=true)', async () => {
+      const onDisplayRowChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        floatRightFilters={true}
+        enableApiFilter
+        onDisplayRowChange={onDisplayRowChange}
+      />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      expect(onDisplayRowChange).toHaveBeenNthCalledWith(2, filteredData)
     })
   })
 
@@ -935,7 +1009,7 @@ describe('Table component', () => {
 
   describe('groupBy table', () => {
     it('should render groupBy correctly', async () => {
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -947,8 +1021,43 @@ describe('Table component', () => {
       fireEvent.click(clearBtn)
     })
 
+    it('should render select data from all pages option correctly', async () => {
+      render(<GroupTable columns={[]} />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      const icon = await screen.findByRole('img', { name: 'down' })
+      await userEvent.hover(icon)
+      const selectAllOption = await screen.findByText('Select data from all pages')
+      await userEvent.click(selectAllOption)
+      expect(await screen.findByText('3 selected')).toBeVisible()
+    })
+
+    it('should render groupBy disabled rows correctly', async () => {
+      render(<GroupTable rowSelection={{
+        type: 'checkbox',
+        getCheckboxProps: (record) => ({
+          disabled: record.deviceStatus
+        })
+      }}/>)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      fireEvent.click((await screen.findAllByRole('checkbox'))[1])
+      const selectedRow = (await screen.findAllByRole('checkbox')) as HTMLInputElement[]
+      expect(selectedRow.filter(el => el.checked)).toHaveLength(0)
+    })
+
     it('should expand and close table row', async () => {
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -960,7 +1069,7 @@ describe('Table component', () => {
     })
 
     it('should trigger edit action', async () => {
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -975,7 +1084,7 @@ describe('Table component', () => {
 
     it('should trigger action on child row', async () => {
       const onAction = jest.fn()
-      render(<GroupTable rowActions={[{ label: 'Delete', onClick: onAction }]} />)
+      render(<GroupTable columns={[]} rowActions={[{ label: 'Delete', onClick: onAction }]} />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -990,7 +1099,7 @@ describe('Table component', () => {
 
     it('should support groupBy, search and filter', async () => {
       jest.useFakeTimers()
-      render(<GroupTable />)
+      render(<GroupTable columns={[]}/>)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]

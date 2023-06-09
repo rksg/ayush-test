@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { SortOrder }          from 'antd/lib/table/interface'
 import { startCase, toLower } from 'lodash'
@@ -21,8 +21,11 @@ import * as UI                  from './styledComponents'
 import { TestDetailsDrawer }    from './TestDetailsDrawer'
 import { Meeting, TestDetails } from './types'
 
+import { CountContext } from '.'
+
 export function VideoCallQoeTable () {
   const { $t } = useIntl()
+  const { setCount } = useContext(CountContext)
   const [visible, setVisible] = useState(false)
   const [testDetails, setTestDetails] = useState<TestDetails>({ name: '', link: '' })
   const queryResults = useVideoCallQoeTestsQuery({})
@@ -108,13 +111,16 @@ export function VideoCallQoeTable () {
       dataIndex: 'status',
       key: 'status',
       render: (value: unknown, row: unknown) => {
+        const meetingStatus = $t(statusMapping[value as keyof typeof statusMapping])
         const formattedStatus = startCase(toLower(value as string))
-        return (formattedStatus !== MeetingType.INVALID ? formattedStatus :
+        return (formattedStatus !== MeetingType.INVALID ? meetingStatus :
           (<Tooltip placement='top'
             title={$t(messageMapping[
             (row as Meeting).invalidReason as keyof typeof messageMapping
             ])}>
-            <UI.WithDottedUnderline>{formattedStatus}</UI.WithDottedUnderline>
+            <UI.WithDottedUnderline>
+              {meetingStatus}
+            </UI.WithDottedUnderline>
           </Tooltip>))
       },
       sorter: { compare: sortProp('status', defaultSort) },
@@ -130,8 +136,13 @@ export function VideoCallQoeTable () {
       render: (value: unknown) => {
         const mos = value as number
         const isValidMos = mos ? true : false
-        return isValidMos ? (mos >= 4 ? <TrendPill value='Good' trend='positive' /> :
-          <TrendPill value='Bad' trend='negative' />) : '-'
+        return isValidMos ? (mos >= 4 ? <TrendPill
+          value={$t({ defaultMessage: 'Good' })}
+          trend='positive'
+        /> :
+          <TrendPill
+            value={$t({ defaultMessage: 'Bad' })}
+            trend='negative' />) : '-'
       },
       sorter: { compare: sortProp('mos', defaultSort) },
       align: 'center',
@@ -176,6 +187,7 @@ export function VideoCallQoeTable () {
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
         }}
+        onDisplayRowChange={(dataSource) => setCount?.(dataSource.length)}
       />
       <TestDetailsDrawer visible={visible} setVisible={setVisible} testDetails={testDetails}/>
     </Loader>

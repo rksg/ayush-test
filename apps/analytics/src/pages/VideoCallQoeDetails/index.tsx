@@ -11,6 +11,7 @@ import { Loader, PageHeader, Table, TableProps, Tooltip,
   TrendType, cssStr,  Card, GridCol, GridRow,
   MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
   Drawer, SearchBar }                from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
@@ -29,6 +30,7 @@ import * as UI                                               from './styledCompo
 export function VideoCallQoeDetails (){
   const intl= useIntl()
   const { $t } = intl
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const { testId } = useParams()
   const [isDrawerOpen,setIsDrawerOpen] = useState(false)
   const [participantId,setParticipantId] = useState<number|null>(null)
@@ -63,7 +65,17 @@ export function VideoCallQoeDetails (){
     })
   }) })
 
-
+  const formatValue = (value: unknown, row: Participants) => {
+    if (!value)
+      return '-'
+    let apID = row.apDetails?.apSerial
+    if ( apID === 'Unknown') {
+      apID = row.apDetails?.apMac?.toUpperCase()
+    }
+    return <TenantLink
+      to={`/devices/wifi/${apID}/details/overview`}>
+      {value as string}</TenantLink>
+  }
 
   const columnHeaders: TableProps<Participants>['columns'] = [
     {
@@ -118,25 +130,13 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: ['apDetails','apName'],
       key: 'apName',
-      render: (value:unknown,row)=>{
-        if(!value)
-          return '-'
-        return <TenantLink
-          to={`/devices/wifi/${row.apDetails?.apSerial}/details/overview`}>
-          {value as string}</TenantLink>
-      }
+      render: formatValue
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
-      render: (value:unknown,row)=>{
-        if(!value)
-          return '-'
-        return <TenantLink
-          to={`/devices/wifi/${row.apDetails?.apSerial}/details/overview`}>
-          {value as string}</TenantLink>
-      }
+      render: formatValue
     },
     {
       title: $t({ defaultMessage: 'SSID' }),
@@ -145,7 +145,7 @@ export function VideoCallQoeDetails (){
       render: (value:unknown)=>{
         if(!value)
           return '-'
-        return <TenantLink to={'/networks/wireless'}>{value as string}</TenantLink>
+        return value as string
       }
     },
     {
@@ -210,8 +210,12 @@ export function VideoCallQoeDetails (){
     }
   ]
   const getPill = (mos:number)=>{
-    return mos >= 4 ? <UI.BigTrendPill value='Good' trend='positive' /> :
-      <UI.BigTrendPill value='Bad' trend='negative' />
+    return mos >= 4 ? <UI.BigTrendPill
+      value={$t({ defaultMessage: 'Good' })}
+      trend='positive' /> :
+      <UI.BigTrendPill
+        value={$t({ defaultMessage: 'Bad' })}
+        trend='negative' />
   }
 
   const seriesMapping = [{
@@ -312,11 +316,11 @@ export function VideoCallQoeDetails (){
         { callQoeDetails && currentMeeting && <PageHeader
           title={callQoeDetails.name}
           subTitle={
-            `Start Time:
+            `${$t({ defaultMessage: 'Start Time' })}:
             ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.startTime)}` +
-            ` | End Time:
+            ` | ${$t({ defaultMessage: 'End Time' })}:
             ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.endTime)}` +
-            ` | Duration:
+            ` | ${$t({ defaultMessage: 'Duration' })}:
             ${formatter('durationFormat')(new Date(currentMeeting.endTime).getTime()
               - new Date(currentMeeting.startTime).getTime())}`
           }
@@ -324,10 +328,16 @@ export function VideoCallQoeDetails (){
             <div style={{ paddingTop: '4px' }}>{$t({ defaultMessage: 'Video Call QoE' })}</div>,
             <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>
           ]}
-          breadcrumb={[{
-            text: $t({ defaultMessage: 'Video Call QoE' }),
-            link: '/analytics/videoCallQoe'
-          }]}
+          breadcrumb={[
+            ...(isNavbarEnhanced ? [
+              { text: $t({ defaultMessage: 'AI Assurance' }) },
+              { text: $t({ defaultMessage: 'Network Assurance' }) }
+            ]:[]),
+            {
+              text: $t({ defaultMessage: 'Video Call QoE' }),
+              link: '/analytics/videoCallQoe'
+            }
+          ]}
         />}
       </Loader>
       <Loader states={[queryResults]}>

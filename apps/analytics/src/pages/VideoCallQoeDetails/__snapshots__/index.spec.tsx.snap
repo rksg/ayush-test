@@ -19,6 +19,30 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
               <span
                 class="ant-breadcrumb-link"
               >
+                AI Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                Network Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
                 <a
                   href="/tenant-id/t/analytics/videoCallQoe"
                 >
@@ -155,7 +179,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jUkPXI"
     >
       <div
         class="ant-pro-table"
@@ -540,7 +564,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/1234567890/details/overview"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
                                 >
                                   AP-Group-Issue
                                 </a>
@@ -549,7 +573,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/1234567890/details/overview"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
@@ -557,11 +581,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  CIOT
-                                </a>
+                                CIOT
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4980,6 +5000,30 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
               <span
                 class="ant-breadcrumb-link"
               >
+                AI Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                Network Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
                 <a
                   href="/tenant-id/t/analytics/videoCallQoe"
                 >
@@ -5079,7 +5123,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jUkPXI"
     >
       <div
         class="ant-pro-table"
@@ -5464,11 +5508,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  Divya_unlimited
-                                </a>
+                                Divya_unlimited
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5569,11 +5609,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  CIOT
-                                </a>
+                                CIOT
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -9632,6 +9668,30 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
               <span
                 class="ant-breadcrumb-link"
               >
+                AI Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                Network Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
                 <a
                   href="/tenant-id/t/analytics/videoCallQoe"
                 >
@@ -9769,7 +9829,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jUkPXI"
     >
       <div
         class="ant-pro-table"
@@ -11086,6 +11146,30 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
               <span
                 class="ant-breadcrumb-link"
               >
+                AI Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
+                Network Assurance
+              </span>
+              <span
+                class="ant-breadcrumb-separator"
+              >
+                /
+              </span>
+            </li>
+            <li>
+              <span
+                class="ant-breadcrumb-link"
+              >
                 <a
                   href="/tenant-id/t/analytics/videoCallQoe"
                 >
@@ -11223,7 +11307,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 fiibDB"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jUkPXI"
     >
       <div
         class="ant-pro-table"

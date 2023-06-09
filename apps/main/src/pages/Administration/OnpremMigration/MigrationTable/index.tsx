@@ -110,8 +110,9 @@ const MigrationTable = () => {
       title: $t({ defaultMessage: 'End Date' }),
       key: 'endTime',
       dataIndex: 'endTime',
-      render: () => {
-        return '--'
+      render: (_, row) => {
+        // eslint-disable-next-line max-len
+        return row.completedTime ? formatter(DateFormatEnum.DateTimeFormat)(row.completedTime) : '--'
       }
     }
   ]
@@ -119,7 +120,6 @@ const MigrationTable = () => {
   const rowActions: TableProps<TaskContextType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
-    // onClick: (rows) => {
       showActionModal({
         type: 'confirm',
         customContent: {
@@ -127,7 +127,7 @@ const MigrationTable = () => {
           entityName: $t({ defaultMessage: 'Migrations' }),
           entityValue: rows.length === 1 ? rows[0].fileName : undefined,
           numOfEntities: rows.length,
-          confirmationText: 'Delete'
+          confirmationText: $t({ defaultMessage: 'Delete' })
         },
         onOk: () => {
           rows.forEach(function (item) {
@@ -167,6 +167,7 @@ const MigrationTable = () => {
         rowKey='taskId'
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
+        searchableWidth={430}
         locale={{
           // eslint-disable-next-line max-len
           emptyText: <Empty description={$t({ defaultMessage: 'No migration data' })} />
