@@ -23,13 +23,17 @@ export function useSigPackDetails () {
       setAdded(data.changedApplications.filter(item => item.type ===
         ApplicationUpdateType.APPLICATION_ADDED))
       setUpdated(data.changedApplications.filter(item => item.type ===
-        ApplicationUpdateType.CATEGORY_UPDATED))
+        ApplicationUpdateType.CATEGORY_UPDATED).sort((a, b) =>
+        (b.impactedItems?.length||0)-(a.impactedItems?.length||0)))
       setMerged(data.changedApplications.filter(item => item.type ===
-        ApplicationUpdateType.APPLICATION_MERGED))
+        ApplicationUpdateType.APPLICATION_MERGED).sort((a, b) =>
+        (b.impactedItems?.length||0)-(a.impactedItems?.length||0)))
       setRemoved(data.changedApplications.filter(item => item.type ===
-        ApplicationUpdateType.APPLICATION_REMOVED))
+        ApplicationUpdateType.APPLICATION_REMOVED).sort((a, b) =>
+        (b.impactedItems?.length||0)-(a.impactedItems?.length||0)))
       setRenamed(data.changedApplications.filter(item => item.type ===
-        ApplicationUpdateType.APPLICATION_RENAMED))
+        ApplicationUpdateType.APPLICATION_RENAMED).sort((a, b) =>
+        (b.impactedItems?.length||0)-(a.impactedItems?.length||0)))
     } else {
       setUpdateAvailable(false)
     }
