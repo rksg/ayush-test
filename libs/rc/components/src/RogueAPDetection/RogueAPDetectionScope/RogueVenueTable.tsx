@@ -157,7 +157,8 @@ export const RogueVenueTable = () => {
               ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
               : false
           }
-          onClick={() => {
+          onClick={(_, e) => {
+            e.stopPropagation()
             state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
               ? deactivateVenue([row])
               : activateVenue([row])
