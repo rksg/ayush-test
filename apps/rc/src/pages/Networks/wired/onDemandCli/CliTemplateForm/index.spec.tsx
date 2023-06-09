@@ -346,15 +346,15 @@ describe('Cli Template Form - Edit', () => {
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     expect(await screen.findByText(/Read this before you start/)).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
     await screen.findByText('test CLI commands')
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('Switches'))
 
     await screen.findByRole('heading', { level: 3, name: 'Switches' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
   it('should render tooltip correctly', async () => {
@@ -369,7 +369,7 @@ describe('Cli Template Form - Edit', () => {
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     expect(await screen.findByText(/Read this before you start/)).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
@@ -390,7 +390,7 @@ describe('Cli Template Form - Edit', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
@@ -416,7 +416,7 @@ describe('Cli Template Form - Edit', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
@@ -442,7 +442,7 @@ describe('Cli Template Form - Edit', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
@@ -463,7 +463,7 @@ describe('Cli Template Form - Edit', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
@@ -488,7 +488,7 @@ describe('Cli Template Form - Edit', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
@@ -539,14 +539,14 @@ describe('Cli Template Form - Edit', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('CLI Configuration'))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByText('Switches'))
 
     await screen.findByRole('heading', { level: 3, name: 'Switches' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
     // await screen.findByText('Server Error')
   })
