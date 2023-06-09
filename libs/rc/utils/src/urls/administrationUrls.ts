@@ -200,7 +200,12 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateTenantAuthentications: {
     method: 'put',
-    url: '/tenants/authentications',
+    url: '/tenants/authentications/:authenticationId',
+    newApi: true
+  },
+  deleteTenantAuthentications: {
+    method: 'delete',
+    url: '/tenants/authentications/:authenticationId',
     newApi: true
   }
   // acceptRejectInvitation: {

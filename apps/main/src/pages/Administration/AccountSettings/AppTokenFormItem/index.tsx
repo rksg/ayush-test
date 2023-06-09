@@ -55,8 +55,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       },
       {
         title: $t({ defaultMessage: 'Status' }),
-        dataIndex: 'updatedDate',
-        key: 'updatedDate'
+        dataIndex: 'clientIDStatus',
+        key: 'clientIDStatus'
       },
       {
         title: $t({ defaultMessage: 'Client ID' }),
@@ -79,6 +79,14 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       }
     ]
 
+    const actions: TableProps<TenantAuthentications>['actions'] = [
+      {
+        label: $t({ defaultMessage: 'Add Token' }),
+        onClick: () => {
+        }
+      }
+    ]
+
     const rowActions: TableProps<TenantAuthentications>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
@@ -96,6 +104,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       <Table
         settingsId='msp-subscription-table'
         columns={columns}
+        actions={actions}
         dataSource={appTokenData}
         rowKey='id'
         rowActions={rowActions}
@@ -105,9 +114,10 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   }
 
   return ( <>
-    <Row gutter={24}>
+    <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col span={10}>
         <Form.Item
+          style={{ marginBottom: '-20px' }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'Application Tokens' })}

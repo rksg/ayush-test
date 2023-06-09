@@ -14,9 +14,14 @@ import {
 import TextArea    from 'antd/lib/input/TextArea'
 import { useIntl } from 'react-intl'
 
-import { Button, DrawerProps } from '@acx-ui/components'
-import { formatter }           from '@acx-ui/formatter'
-import { GuestErrorRes }       from '@acx-ui/user'
+import { Button, DrawerProps }             from '@acx-ui/components'
+import { formatter }                       from '@acx-ui/formatter'
+import {
+  useAddTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation
+} from '@acx-ui/rc/services'
+import {  TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { GuestErrorRes }                                    from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -33,7 +38,6 @@ type ImportErrorRes = {
 type AcceptableType = 'xml'
 
 interface ImportFileDrawerProps extends DrawerProps {
-  templateLink?: string
   maxSize: number
   maxEntries?: number
   isLoading?: boolean
@@ -42,10 +46,10 @@ interface ImportFileDrawerProps extends DrawerProps {
   readAsText?: boolean,
   formDataName?: string,
   acceptType: string[]
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI' | 'PropertyUnit'
   extraDescription?: string[]
   setVisible: (visible: boolean) => void
   isEditMode: boolean
+  editData?: TenantAuthentications
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
@@ -56,9 +60,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
 
-  const { maxSize, isLoading,
-    importError, acceptType,
-    formDataName = 'file', setVisible, isEditMode } = props
+  const { maxSize, isLoading, importError, acceptType,
+    formDataName = 'file', setVisible, isEditMode, editData } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -68,6 +71,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [uploadFile, setUploadFile] = useState(false)
 
   const bytesFormatter = formatter('bytesFormat')
+  const [addSso] = useAddTenantAuthenticationsMutation()
+  const [updateSso] = useUpdateTenantAuthenticationsMutation()
 
   useEffect(()=>{
     form.resetFields()
@@ -147,22 +152,36 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     return false
   }
 
-  const okHandler = () => {
-    // if (readAsText) {
-    //   const fileReader = new FileReader()
-    //   fileReader.onload = () => {
-    //     let result = String(fileReader.result)
-    //     // if (isCsvFile(fileName as string)) {
-    //     //   result = convertCsvToText(result)
-    //     // }
-    //     // importRequest(formData as FormData, {}, result)
-    //   }
-    //   fileReader.readAsText(file as Blob)
-    // } else {
-    //   form.validateFields().then(values => {
-    //     // formData && importRequest(formData, values)
-    //   }).catch(() => {})
-    // }
+  const okHandler = async () => {
+    try {
+      const ssoData: TenantAuthentications = {
+        name: 'saml_user',
+        authenticationType: TenantAuthenticationType.saml,
+        samlFileURL: 'my.xml'
+      }
+
+      const ssoEditData: TenantAuthentications = {
+        name: 'saml_user',
+        authenticationType: TenantAuthenticationType.saml,
+        samlFileURL: 'myedit.xml'
+      }
+
+      if(isEditMode) {
+        const result =
+        await updateSso({ params: { authenticationId: editData?.id },
+          payload: ssoEditData }).unwrap()
+        if (result) {
+        }
+      } else {
+        const result =
+        await addSso({ payload: ssoData }).unwrap()
+        if (result) {
+        }
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+
     setVisible(false)
   }
 

@@ -534,8 +534,34 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    deleteTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -587,5 +613,8 @@ export const {
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
   useGetRadiusServerSettingQuery,
-  useGetTenantAuthenticationsQuery
+  useGetTenantAuthenticationsQuery,
+  useDeleteTenantAuthenticationsMutation,
+  useAddTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation
 } = administrationApi

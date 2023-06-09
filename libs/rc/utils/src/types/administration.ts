@@ -35,8 +35,11 @@ export enum NotificationEndpointType {
 }
 
 export enum TenantAuthenticationType {
+  idm = 'IDM',
   saml = 'SAML',
-  ldap = 'LDAP'
+  oauth2_client = 'OAUTH2_CLIENT_CREDENTIALS',
+  oauth2_oidc = 'OAUTH2_OIDC',
+  ldap = 'LDAP',
 }
 
 export interface TenantDelegation {
@@ -180,9 +183,11 @@ export interface NotificationRecipientResponse {
 }
 
 export interface TenantAuthentications {
+  id?: string;
   name: string;
   authenticationType: string;
   clientID?: string;
+  clientIDStatus?: string;
   clientSecret?: string;
   tokenURL?: string;
   samlFileURL?: string;

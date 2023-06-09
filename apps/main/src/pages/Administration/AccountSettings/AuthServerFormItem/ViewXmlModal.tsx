@@ -6,12 +6,13 @@ import { Button, Modal, Subtitle } from '@acx-ui/components'
 
 interface ViewXmlModalProps {
   visible: boolean
+  viewText: string
   setVisible: (visible: boolean) => void
 }
 
 export const ViewXmlModal = (props: ViewXmlModalProps) =>{
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, viewText, setVisible } = props
 
   const [form] = Form.useForm()
 
@@ -22,7 +23,7 @@ export const ViewXmlModal = (props: ViewXmlModalProps) =>{
     <Subtitle level={3}>{$t({ defaultMessage: 'IdP Metadata' })}</Subtitle>
     <Form.Item
       name='description'
-      children={<Input.TextArea rows={32} disabled={true}/>}
+      children={<Input.TextArea defaultValue={viewText} rows={32} disabled={true}/>}
     />
   </Form>
 
