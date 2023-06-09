@@ -184,7 +184,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         showSearch
         style={{ width: '100%' }}
         optionFilterProp='children'
-        filterOption={(input, option) => (String(option?.value) ?? '').includes(input)}
+        filterOption={(input, option) =>
+          (String(option?.value).toLowerCase() ?? '').includes(input.toLowerCase())
+        }
         onChange={(evt) => {
           drawerForm.setFieldValue('applicationNameSystemDefined', evt)
         }}
@@ -205,7 +207,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       showSearch
       style={{ width: '100%' }}
       optionFilterProp='children'
-      filterOption={(input, option) => (String(option?.value) ?? '').includes(input)}
+      filterOption={(input, option) =>
+        (String(option?.value).toLowerCase() ?? '').includes(input.toLowerCase())
+      }
       onChange={(evt) => {
         drawerForm.setFieldValue('applicationNameSystemDefined', evt)
       }}
