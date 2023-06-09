@@ -5,6 +5,9 @@ import { Drawer }                                                               
 import { EdgeService, EdgeServiceTypeEnum, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                             from '@acx-ui/react-router-dom'
 
+
+import { getEdgeServiceTypeString } from '../utils'
+
 import { DhcpDetails }     from './DhcpDetails'
 import { FirewallDetails } from './FirewallDetails'
 
@@ -17,7 +20,7 @@ interface ServiceDetailDrawerProps {
 const drawerWidthMap = {
   [EdgeServiceTypeEnum.DHCP]: 500,
   [EdgeServiceTypeEnum.FIREWALL]: '60%',
-  [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: 500
+  [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: '55%'
 }
 
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
@@ -47,7 +50,7 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
       />
       <Form.Item
         label={$t({ defaultMessage: 'Service Type' })}
-        children={serviceData.serviceType}
+        children={getEdgeServiceTypeString($t, serviceData.serviceType)}
       />
       {getContentByType(serviceData)}
     </Form>

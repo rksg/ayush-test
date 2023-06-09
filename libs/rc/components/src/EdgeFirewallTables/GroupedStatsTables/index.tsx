@@ -22,13 +22,12 @@ interface GroupedStatsTablesProps {
   className?: string;
   edgeData: EdgeStatus;
   edgeFirewallData: EdgeFirewallSetting;
-  displayACLOtherInfo?: boolean;
 }
 
 export const GroupedStatsTables =
   styled((props: GroupedStatsTablesProps) => {
     const { $t } = useIntl()
-    const { className, edgeData, edgeFirewallData, displayACLOtherInfo } = props
+    const { className, edgeData, edgeFirewallData } = props
     const { startDate, endDate, range, setDateFilter } = useDateFilter()
     const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
     const directionOpts = getACLDirectionOptions($t)
@@ -100,7 +99,6 @@ export const GroupedStatsTables =
           }}
           edgeId={edgeData.serialNumber}
           venueId={edgeData.venueId}
-          displayOtherInfo={displayACLOtherInfo}
         />
       </Tabs.TabPane>
     </Tabs>

@@ -42,7 +42,6 @@ export const FirewallDetails = (props: FirewallDetailsProps) => {
     <EdgeFirewallGroupedStatsTables
       edgeData={edgeData!}
       edgeFirewallData={edgeFirewallData!}
-      displayACLOtherInfo={true}
     />
   </Loader>
 }

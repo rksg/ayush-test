@@ -115,17 +115,16 @@ describe('Edge firewall service grouped rule tables with stats', () => {
     // check inbound data
     const aclPane = screen.getByRole('tabpanel', { hidden: false })
     const aclInRows = await within(aclPane).findAllByRole('row')
-    expect(aclInRows.length).toBe(2) // 1 + 1(header)
+    expect(aclInRows.length).toBe(4) // 1 + 1(header) + 2 rows in info table
 
     // change ACL direction
     await userEvent.selectOptions(
       await screen.findByRole('combobox'),
       'Outbound')
     const aclOutRows = await within(aclPane).findAllByRole('row')
-    expect(aclOutRows.length).toBe(6) // 5 + 1(header)
-    expect(screen.queryByText('Permmited by ACL Sessions')).toBeNull()
-    expect(within(aclPane).queryByRole('row', { name: /1 Default ACL rule Inspect Any Any Any 12 72/ })).toBeValid()
-    expect(within(aclPane).queryByRole('row', { name: /2 Default ACL rule Inspect Any Any 443 TCP 9 168/ })).toBeValid()
+    expect(aclOutRows.length).toBe(8) // 5 + 1(header) + 2 rows in info table
+    expect(within(aclPane).queryByRole('row', { name: /1 Default ACL rule Inspect Any Any Any 12 72 B/ })).toBeValid()
+    expect(within(aclPane).queryByRole('row', { name: /2 Default ACL rule Inspect Any Any 443 TCP 9 168 B/ })).toBeValid()
     expect(within(aclPane).queryByRole('row', { name: /3 Default ACL rule Inspect Any Any 123 Any -- --/ })).toBeValid()
     expect(within(aclPane).queryByRole('row', { name: /4 Block Any Any ICMP -- --/ })).toBeValid()
     expect(within(aclPane).queryByRole('row', { name: /5 Default ACL rule Inspect Any Any Any -- --/ })).toBeValid()
@@ -137,7 +136,6 @@ describe('Edge firewall service grouped rule tables with stats', () => {
         <GroupedStatsTables
           edgeData={mockedEdgeStatus as EdgeStatus}
           edgeFirewallData={mockFirewall as EdgeFirewallSetting}
-          displayACLOtherInfo={true}
         />
       </Provider>, {
         route: { params }
@@ -225,8 +223,46 @@ describe('Edge firewall service grouped rule tables with stats', () => {
     const ddosPane = screen.getByRole('tabpanel', { hidden: false })
     const ddosRows = await within(ddosPane).findAllByRole('row')
 
-    // should expand rule - all one by one
     expect(ddosRows.length).toBe(3) // message row + 2(header)
     expect(within(ddosPane).queryByRole('row', { name: '' })).toBeValid()
+  })
+
+  it('should correctly render when ddos,ACL is disabled', async () => {
+    const mockFirewallAllDisabled = { ...mockFirewall,
+      serviceName: 'mocked-firewall-disabled',
+      ddosRateLimitingEnabled: false,
+      statefulAclEnabled: false
+    }
+
+    render(
+      <Provider>
+        <GroupedStatsTables
+          edgeData={mockedEdgeStatus as EdgeStatus}
+          edgeFirewallData={mockFirewallAllDisabled as EdgeFirewallSetting}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    // display ddos rules
+    const ddosPane = screen.getByRole('tabpanel', { hidden: false })
+    expect(mockedGetDDoSDataFn).not.toBeCalled()
+    const ddosRows = await within(ddosPane).findAllByRole('row')
+
+    expect(ddosRows.length).toBe(3) // message row + 2(header)
+    expect(within(ddosPane).queryByRole('row', { name: '' })).toBeValid()
+
+    // display stateful ACL rules
+    await userEvent.click(screen.getByRole('tab', { name: 'Stateful ACL' }))
+    expect(mockedGetACLDataFn).not.toBeCalled()
+    await waitFor(async () => {
+      expect(await screen.findByText('Src Port')).toBeVisible()
+    })
+
+    const aclPane = screen.getByRole('tabpanel', { hidden: false })
+    expect(aclPane.id).toBe('rc-tabs-test-panel-acl')
+    const aclInRows = await within(aclPane).findAllByRole('row')
+    expect(within(aclPane).queryByRole('row', { name: '' })).toBeValid()
+    expect(aclInRows.length).toBe(4) // message row + 1(header) + 2 rows in info table
   })
 })

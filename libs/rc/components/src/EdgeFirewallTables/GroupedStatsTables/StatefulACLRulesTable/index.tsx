@@ -20,7 +20,6 @@ interface StatefulACLRulesTableProps {
   dateFilter: Omit<DateRangeFilter, 'range'>;
   edgeId: string;
   venueId: string;
-  displayOtherInfo?: boolean
 }
 
 export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
@@ -29,8 +28,7 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
     direction,
     dateFilter,
     edgeId,
-    venueId,
-    displayOtherInfo = false
+    venueId
   } = props
   const acls = firewallData?.statefulAcls
   const aclRules = _.find(acls, { direction })?.rules
@@ -61,10 +59,7 @@ export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   return (
     <Loader states={[{ isLoading }]}>
       <Space size='large' direction='vertical'>
-        {displayOtherInfo &&
         <ACLOtherInfoTable stats={stats} />
-        }
-
         <ACLRuleStatisticDataTable
           dataSource={aggregated}
         />

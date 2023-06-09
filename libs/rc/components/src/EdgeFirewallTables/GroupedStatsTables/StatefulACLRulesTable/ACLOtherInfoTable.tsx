@@ -1,8 +1,10 @@
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Space, Typography }      from 'antd'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
 
 import { defaultSort, sortProp }                       from '@acx-ui/analytics/utils'
-import { Table, TableProps }                           from '@acx-ui/components'
+import { Table, TableProps, Tooltip }                  from '@acx-ui/components'
 import {
   EdgeFirewallACLStatsViewData, transformDisplayText } from '@acx-ui/rc/utils'
 
@@ -14,7 +16,6 @@ interface ACLOtherInfo {
   description: string;
   hits?: number;
 }
-
 
 export const ACLOtherInfoTable = (props: ACLOtherInfoTableProps) => {
   const { $t } = useIntl()
@@ -33,11 +34,26 @@ export const ACLOtherInfoTable = (props: ACLOtherInfoTableProps) => {
       sorter: { compare: sortProp('description', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Hits' }),
+      title: <Space size={3}>
+        <Typography.Text>
+          {$t({ defaultMessage: 'Hits' })}
+        </Typography.Text>
+        <Tooltip
+          placement='topRight'
+          title={
+            $t({ defaultMessage: 'Hit counts would be cleared when the rule has any changes' })
+          }
+        >
+          <QuestionCircleOutlined />
+        </Tooltip>
+      </Space>,
       key: 'hits',
       dataIndex: 'hits',
       sorter: { compare: sortProp('hits', defaultSort) },
-      render: (data, row) => transformDisplayText(row.hits?.toString())
+      render: (_, row) => transformDisplayText(isNaN(Number(row.hits))
+        ? undefined
+        : row.hits?.toString()
+      )
     }
   ]
 
