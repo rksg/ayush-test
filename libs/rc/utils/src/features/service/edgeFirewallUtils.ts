@@ -1,6 +1,7 @@
 import { IntlShape } from 'react-intl'
 
 import { AccessAction, ACLDirection, AddressType, DdosAttackType, ProtocolType } from '../../models/EdgeFirewallEnum'
+import { DdosRateLimitingRule }                                                  from '../../types'
 
 export const getDDoSAttackTypeString = ($t: IntlShape['$t'], type: DdosAttackType) => {
   switch (type) {
@@ -92,4 +93,17 @@ export const getACLDirectionOptions = ($t: IntlShape['$t'])
       label: getACLDirectionString($t, key as ACLDirection),
       value: key as ACLDirection
     }))
+}
+
+export const expandDDoSAttackTypeAllRule = (rule: DdosRateLimitingRule): DdosRateLimitingRule[] => {
+  if (rule.ddosAttackType === DdosAttackType.ALL) {
+    return Object.keys(DdosAttackType)
+      .map(key => ({
+        ...rule,
+        ddosAttackType: key
+      } as DdosRateLimitingRule))
+      .filter(o => o.ddosAttackType !== DdosAttackType.ALL)
+  } else {
+    return [rule]
+  }
 }
