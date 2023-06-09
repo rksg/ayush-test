@@ -79,13 +79,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueApCapabilities: {
-    // [New API] new uri not ready
-    // method: 'get',
-    // url: '/venues/:venueId/aps/capabilities',
-    // oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities',
-    // newApi: false
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
+    url: '/venues/:venueId/aps/capabilities',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities',
+    newApi: true
   },
   updateVenueExternalAntenna: {
     method: 'put',
@@ -120,12 +117,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueTripleBandRadioSettings: {
     // [New API] private api
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
+    url: '/venues/:venueId/tripleBands',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band',
+    newApi: true
   },
   updateVenueTripleBandRadioSettings: {
     // [New API] private api
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
+    url: '/venues/:venueId/tripleBands',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band',
+    newApi: true
   },
   getAvailableLteBands: {
     method: 'get',
@@ -164,13 +165,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getWifiCapabilities: {
-    // [New API] new uri not ready
-    // method: 'get',
-    // url: '/venues/aps/capabilities',
-    // oldUrl: '/api/tenant/:tenantId/wifi/capabilities',
-    // newApi: false
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/capabilities'
+    url: '/venues/aps/capabilities',
+    oldUrl: '/api/tenant/:tenantId/wifi/capabilities',
+    newApi: true
   },
   addAp: {
     method: 'post',
@@ -371,13 +369,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApCapabilities: {
-    // [New API] new uri not ready
-    // method: 'get',
-    // url: '/venues/aps/:serialNumber/capabilities',
-    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities',
-    // newApi: false
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
+    url: '/venues/aps/:serialNumber/capabilities',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities',
+    newApi: true
   },
   getDpskPassphraseByQuery: {
     method: 'post',

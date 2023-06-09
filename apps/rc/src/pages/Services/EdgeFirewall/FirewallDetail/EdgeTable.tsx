@@ -81,7 +81,7 @@ export const EdgeTable = (props: EdgeTableProps) => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        rowKey='serailNumber'
+        rowKey='serialNumber'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

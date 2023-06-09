@@ -90,7 +90,7 @@ describe('AccessControlTable', () => {
         ctx.json(layer2PolicyListResponse)
       )
     ), rest.delete(
-      AccessControlUrls.delL2AclPolicy.url,
+      AccessControlUrls.delL2AclPolicies.url,
       (_, res, ctx) => res(
         ctx.json({ requestId: 'requestId1' })
       )

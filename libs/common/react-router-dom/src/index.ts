@@ -5,3 +5,5 @@ export * from './TenantLink'
 export * from './TenantNavLink'
 export * from './TenantNavigate'
 export * from './useNavigateToPath'
+
+export const MLISA_BASE_PATH = '/analytics/next'
