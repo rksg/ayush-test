@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 import { AnalyticsFilter, calculateGranularity, kpiConfig } from '@acx-ui/analytics/utils'
 import { dataApi }                                          from '@acx-ui/store'
-import type { NetworkPath, PathFilter }                     from '@acx-ui/utils'
+import { getPathFromFilter, NetworkPath, PathFilter }       from '@acx-ui/utils'
 
 export interface KpiThresholdType {
   timeToConnect: number;
@@ -132,12 +132,12 @@ export const healthApi = dataApi.injectEndpoints({
         }
       `,
           variables: {
-            path: payload.path ?? [{ type: 'network', name: 'Network' }],
+            path: [{ type: 'network', name: 'Network' }],
             start: payload.startDate,
             end: payload.endDate,
             granularity: payload.granularity ||
            getGranularity(payload.startDate, payload.endDate, payload.kpi),
-            filter: payload.filter ?? {}
+            filter: payload.filter
           }
         }),
         providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
@@ -180,9 +180,7 @@ export const healthApi = dataApi.injectEndpoints({
           }
           `,
           variables: {
-            path: payload.filter?.networkNodes // get kpi threshold does not accept filter
-              ? payload.filter.networkNodes?.[0]
-              : [{ type: 'network', name: 'Network' }]
+            path: getPathFromFilter(payload.filter)
           }
         }
       },
@@ -192,34 +190,23 @@ export const healthApi = dataApi.injectEndpoints({
       ThresholdPermissionResponse,
       ThresholdPermissionPayload
     >({
-      query: (payload) => {
-        const { networkNodes } = payload.filter
-        const path = networkNodes && networkNodes.length
-          ? networkNodes[0]
-          : [{ type: 'network', name: 'Network' }]
-        return {
-          document: gql`
+      query: (payload) => ({
+        document: gql`
           query KPI($path: [HierarchyNodeInput]) {
             mutationAllowed: ThresholdMutationAllowed(networkPath: $path)
           }
           `,
-          variables: {
-            path
-          }
+        variables: {
+          path: getPathFromFilter(payload.filter)
         }
-      }
+      })
     }),
     saveThreshold: build.mutation<
       ThresholdMutationResponse,
       ThresholdMutationPayload
     >({
-      query: (payload) => {
-        const { networkNodes } = payload.filter
-        const path = networkNodes && networkNodes.length
-          ? networkNodes[0]
-          : [{ type: 'network', name: 'Network' }]
-        return {
-          document: gql`
+      query: (payload) => ({
+        document: gql`
           mutation SaveThreshold(
               $name: String!
               $value: Float!
@@ -230,13 +217,13 @@ export const healthApi = dataApi.injectEndpoints({
               }
             }
           `,
-          variables: {
-            networkPath: path,
-            name: payload.name,
-            value: payload.value
-          }
+        variables: {
+          networkPath: getPathFromFilter(payload.filter),
+          name: payload.name,
+          value: payload.value
         }
       }
+      )
     })
   })
 })
