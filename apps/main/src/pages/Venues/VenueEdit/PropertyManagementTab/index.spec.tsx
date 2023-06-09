@@ -3,9 +3,11 @@ import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { rest }            from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   MacRegListUrlsInfo,
+  MsgTemplateUrls,
   NewDpskBaseUrl,
   NewPersonaBaseUrl,
   PersonaUrls,
@@ -21,8 +23,13 @@ import {
   mockPersonaGroupList,
   replacePagination
 } from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
-import { mockEnabledNoNSGPropertyConfig, mockPropertyUnitList, mockResidentPortalProfileList } from '../../__tests__/fixtures'
-import { VenueEditContext }                                                                    from '../index'
+import {
+  mockedTemplateScope,
+  mockEnabledNoNSGPropertyConfig,
+  mockPropertyUnitList,
+  mockResidentPortalProfileList
+} from '../../__tests__/fixtures'
+import { VenueEditContext } from '../index'
 
 import { PropertyManagementTab } from './index'
 
@@ -94,6 +101,10 @@ describe('Property Config Tab', () => {
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
         (_, res, ctx) => res(ctx.json(mockPersonaGroupList.content[0]))
+      ),
+      rest.get(
+        MsgTemplateUrls.getTemplateScopeById.url,
+        (_, res, ctx) => res(ctx.json(mockedTemplateScope))
       )
     )
   })
@@ -187,5 +198,31 @@ describe('Property Config Tab', () => {
     await userEvent.click(formSaveBtn)
 
     await waitFor(() => expect(saveConfigFn).toHaveBeenCalled())
+  })
+
+  it('should render Property config tab with msg-template', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider
+          // @ts-ignore
+          value={{ editContextData: null, setEditContextData: setEditContextDataFn }}
+        >
+          <PropertyManagementTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params: enabledParams } }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // check toggle with 'true' value
+    await screen.findByRole('switch', {
+      name: 'Enable Property Management',
+      checked: true
+    })
+
+    // check rending msg-template tab list view
+    await screen.findByRole('tablist')
   })
 })
