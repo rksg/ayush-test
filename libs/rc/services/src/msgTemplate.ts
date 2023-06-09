@@ -77,7 +77,8 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
           } }
       },
       providesTags: (result, error, arg) =>
-        [{ type: 'TemplateSelection', id: (arg.templateScopeId as string) }]
+        [{ type: 'TemplateSelection', id: (arg.templateScopeId as string) },
+          { type: 'TemplateRegistration', id: (arg.registrationId as string) }]
     })
   })
 })

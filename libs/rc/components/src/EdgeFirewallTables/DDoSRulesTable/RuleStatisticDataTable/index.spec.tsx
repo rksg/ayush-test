@@ -19,6 +19,6 @@ describe('DDoS rules table with statistic data', () => {
       </Provider>)
 
     const rows = await screen.findAllByRole('row')
-    expect(rows.length).toBe(3) // 2 + 1(header row)
+    expect(rows.length).toBe(4) // 2 + 2(header row)
   })
 })

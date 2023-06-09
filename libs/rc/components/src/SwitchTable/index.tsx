@@ -10,7 +10,8 @@ import {
   TableProps,
   Loader,
   deviceStatusColors,
-  ColumnType
+  ColumnType,
+  showToast
 } from '@acx-ui/components'
 import {
   Features,
@@ -327,7 +328,14 @@ export function SwitchTable (props : SwitchTableProps) {
     },
     onClick: async (rows, clearSelection) => {
       const switchId = rows[0].id ? rows[0].id : rows[0].serialNumber
-      switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, clearSelection)
+      const callback = () => {
+        clearSelection?.()
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: 'Start firmware upgrade retry' })
+        })
+      }
+      switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
