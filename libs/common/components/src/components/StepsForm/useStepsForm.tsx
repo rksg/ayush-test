@@ -142,16 +142,13 @@ export function useStepsForm <T> ({
     stepsProps
   }
 
-  const stepsEls = <>
-    <UI.StepsGlobalOverride />
-    <UI.Steps {...stepsProps} $editMode={editMode}>
-      {steps.map(({ props }) => <Steps.Step
-        key={props.name}
-        title={props.title}
-        disabled={submitting || (!editMode && newConfig.current < props.step)}
-      />)}
-    </UI.Steps>
-  </>
+  const stepsEls = <UI.Steps {...stepsProps} $editMode={editMode}>
+    {steps.map(({ props }) => <Steps.Step
+      key={props.name}
+      title={props.title}
+      disabled={submitting || (!editMode && newConfig.current < props.step)}
+    />)}
+  </UI.Steps>
 
   const labels = {
     next: $t({ defaultMessage: 'Next' }),
@@ -209,20 +206,12 @@ export function useStepsForm <T> ({
     {buttons.cancel}
   </>
 
-  const buttonEls = <>
-    <UI.ActionsContainerGlobalOverride />
-    <UI.ActionsContainer data-testid='steps-form-actions'>
-      <Space
-        align={editMode ? 'start' : 'center'}
-        size={12}
-        style={{ marginLeft: editMode ? `calc((
-          100% - var(--acx-sider-width) -
-          var(--acx-content-horizontal-space) * 2
-        ) * 4 / 24 + var(--acx-content-horizontal-space))` : undefined }}
-        children={buttonsLayout}
-      />
-    </UI.ActionsContainer>
-  </>
+  const buttonEls = <UI.ActionsContainer data-testid='steps-form-actions'>
+    <UI.ActionsButtons
+      editMode={editMode}
+      children={buttonsLayout}
+    />
+  </UI.ActionsContainer>
 
   const currentStepEl = steps[newConfig.current]
 
@@ -235,7 +224,7 @@ export function useStepsForm <T> ({
 
   const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
     <Form {...newConfig.formProps}>
-      <Row>{formLayout}</Row>
+      <Row gutter={20}>{formLayout}</Row>
       {buttonEls}
     </Form>
   </UI.Wrapper>

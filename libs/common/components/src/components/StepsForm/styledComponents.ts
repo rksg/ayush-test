@@ -1,6 +1,7 @@
-import { Typography, Steps as AntSteps }  from 'antd'
-import styled, { css, createGlobalStyle } from 'styled-components/macro'
+import { Typography, Steps as AntSteps, Space } from 'antd'
+import styled, { css }                          from 'styled-components/macro'
 
+import modifyVars   from '../../theme/modify-vars'
 import { Subtitle } from '../Subtitle'
 
 export const Wrapper = styled.section`
@@ -33,6 +34,17 @@ const stepCompletedStyle = css`
 
 export const Steps = styled(AntSteps)<{ $editMode?: boolean }>`
   position: fixed;
+  // col span=4/24, gutter=20px
+  width: calc((
+    (100% + 20px)
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  ) * 4 / 24 - 20px);
+  min-width: calc((
+    (${modifyVars['@screen-xl']} + 20px)
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  ) * 4 / 24 - 20px);
   padding-top: calc(
     var(--acx-steps-form-form-title-line-height) +
     var(--acx-steps-form-form-title-margin-bottom) +
@@ -76,7 +88,6 @@ export const Steps = styled(AntSteps)<{ $editMode?: boolean }>`
           min-height: calc(var(--acx-body-4-line-height) * 2);
         }
       }
-
 
       .ant-steps-item-icon {
         width: var(--acx-steps-form-steps-step-size);
@@ -124,40 +135,18 @@ export const Steps = styled(AntSteps)<{ $editMode?: boolean }>`
     }
   }
 `
-
-export const StepsContainer = styled.div`
-  position: fixed;
-  padding-top: calc(
-    var(--acx-steps-form-form-title-line-height) +
-    var(--acx-steps-form-form-title-margin-bottom) +
-    3px
-  );
-  z-index: 1;
-`
-
-export const StepsGlobalOverride = createGlobalStyle`
-  .ant-pro-basicLayout {
-    ${StepsContainer} {
-      // col span=4/24, gutter=20px
-      width: calc((
-        100% - var(--acx-sider-width) -
-        var(--acx-content-horizontal-space) * 2
-      ) * 4 / 24 - 20px);
-    }
-  }
-  .ant-pro-basicLayout.sider-collapsed {
-    ${StepsContainer} {
-      // col span=4/24, gutter=20px
-      width: calc((
-        100% - var(--acx-sider-collapsed-width) -
-        var(--acx-content-horizontal-space) * 2
-      ) * 4 / 24 - 20px);
-    }
-  }
-`
-
 export const ActionsContainer = styled.div`
   position: fixed;
+  width: calc(
+    100%
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  );
+  min-width: calc(
+    ${modifyVars['@screen-xl']}
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  );
   bottom: 0;
   padding: var(--acx-steps-form-actions-vertical-space) 0;
   background-color: var(--acx-neutrals-10);
@@ -175,23 +164,15 @@ export const ActionsContainer = styled.div`
     transform: translate(-50%, 0);
   }
 `
-export const ActionsContainerGlobalOverride = createGlobalStyle`
-  .ant-pro-basicLayout {
-    ${ActionsContainer} {
-      width: calc(
-        100% - var(--acx-sider-width) -
-        var(--acx-content-horizontal-space) * 2
-      );
-    }
-  }
-  .ant-pro-basicLayout.sider-collapsed {
-    ${ActionsContainer} {
-      width: calc(
-        100% - var(--acx-sider-collapsed-width) -
-        var(--acx-content-horizontal-space) * 2
-      );
-    }
-  }
+interface ActionsButtonsProps { editMode?: boolean }
+export const ActionsButtons = styled(Space).attrs((props: ActionsButtonsProps) => ({
+  size: 12,
+  align: props.editMode ? 'start' : 'center'
+}))<ActionsButtonsProps>`
+  ${props => props.editMode && `
+    // col span=4/24, gutter=20px
+    margin-left: calc((100% + 20px) * 4 / 24);
+  `}
 `
 
 export const Title = styled(Typography.Title).attrs({ level: 3 })`

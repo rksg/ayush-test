@@ -1,16 +1,13 @@
 import styled, { css } from 'styled-components/macro'
 
-import { StepsContainer } from '../StepsForm/styledComponents'
+import modifyVars from '../../theme/modify-vars'
 
 export {
   Title,
   SectionTitle,
   FieldLabel,
   MultiSelect,
-  ActionsContainer,
-  ActionsContainerGlobalOverride,
-  StepsGlobalOverride as StepsContainerGlobalOverride,
-  StepsContainer
+  ActionsContainer
 } from '../StepsForm/styledComponents'
 
 const stepCompletedStyle = css`
@@ -21,6 +18,27 @@ const stepCompletedStyle = css`
       background-color: var(--acx-steps-form-steps-step-color);
     }
   }
+`
+
+export const StepsContainer = styled.div`
+  position: fixed;
+  // col span=4/24, gutter=20px
+  width: calc((
+    (100% + 20px)
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  ) * 4 / 24 - 20px);
+  min-width: calc((
+    (${modifyVars['@screen-xl']} + 20px)
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  ) * 4 / 24 - 20px);
+  padding-top: calc(
+    var(--acx-steps-form-form-title-line-height) +
+    var(--acx-steps-form-form-title-margin-bottom) +
+    3px
+  );
+  z-index: 1;
 `
 
 export const Wrapper = styled.section<{
@@ -148,8 +166,10 @@ export const Wrapper = styled.section<{
 
   .ant-pro-steps-form-container {
     margin: unset;
-    // col span=4/24
-    margin-left: ${props => props.singleStep ? '0' : '16.66666667%'};
+    ${props => !props.singleStep && `
+      // col span=4/24, gutter=20px
+      margin-left: calc((100% + 20px) * 4 / 24);
+    `}
     // button height=32px
     margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
     width: unset;
