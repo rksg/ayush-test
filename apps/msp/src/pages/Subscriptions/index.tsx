@@ -248,10 +248,10 @@ export function Subscriptions () {
           dataSource={subscriptionData}
           rowKey='id'
         />
-        <SubscriptionUsageReportDialog
+        {showDialog && <SubscriptionUsageReportDialog
           visible={showDialog}
           setVisible={setShowDialog}
-        />
+        />}
       </Loader>
     )
   }
