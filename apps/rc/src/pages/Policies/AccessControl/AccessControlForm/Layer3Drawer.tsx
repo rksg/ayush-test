@@ -778,16 +778,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const portRangeValidator = (value: string) => {
     const validationList: string[] = value.split('-')
     if (value.includes('-')) {
-      if (validationList[1] === '') {
-        return Promise.reject($t({
-          defaultMessage: 'Please enter another valid number between 0 and 65535'
-        }))
-      }
-      if (validationList[0] >= validationList[1]) {
+      if (validationList[1] === '' || Number(validationList[0]) >= Number(validationList[1])) {
         return Promise.reject($t({
           defaultMessage: 'Please enter another valid number between {number} and 65535'
         }, {
-          number: validationList[0]
+          number: Number(validationList[0]) + 1
         }))
       }
     }
