@@ -104,7 +104,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
             <Divider />
             <AuthServerFormItem
               tenantAuthenticationData={authenticationData.data}
-              isPrimeAdminUser={isPrimeAdminUser}
             />
           </>
         )}
@@ -114,7 +113,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
             <Divider />
             <AppTokenFormItem
               tenantAuthenticationData={authenticationData.data}
-              // isPrimeAdminUser={isPrimeAdminUser}
             />
           </>
         )}

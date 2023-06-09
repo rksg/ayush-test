@@ -30,7 +30,7 @@ type ImportErrorRes = {
   txId: string
 } | GuestErrorRes
 
-type AcceptableType = 'csv' | 'txt' | 'xlsx' | 'xml'
+type AcceptableType = 'xml'
 
 interface ImportFileDrawerProps extends DrawerProps {
   templateLink?: string
@@ -45,19 +45,10 @@ interface ImportFileDrawerProps extends DrawerProps {
   type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI' | 'PropertyUnit'
   extraDescription?: string[]
   setVisible: (visible: boolean) => void
-}
-
-export const CsvSize = {
-  '1MB': 1024*1*1024,
-  '2MB': 1024*2*1024,
-  '5MB': 1024*5*1024,
-  '20MB': 1024*20*1024
+  isEditMode: boolean
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
-  csv: ['text/csv', 'application/vnd.ms-excel'],
-  xlsx: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-  txt: ['text/plain'],
   xml: ['text/xml']
 }
 
@@ -66,13 +57,13 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [form] = Form.useForm()
 
   const { maxSize, isLoading,
-    importError, readAsText, acceptType,
-    formDataName = 'file', setVisible } = props
+    importError, acceptType,
+    formDataName = 'file', setVisible, isEditMode } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
-  const [file, setFile] = useState<Blob>()
-  const [fileName, setFileName] = useState<string>()
+  // const [file, setFile] = useState<Blob>()
+  // const [fileName, setFileName] = useState<string>()
 
   const [uploadFile, setUploadFile] = useState(false)
 
@@ -82,6 +73,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     form.resetFields()
     setFormData(undefined)
     setFileDescription('')
+    setUploadFile(isEditMode)
   }, [form, props.visible])
 
   useEffect(()=>{
@@ -147,8 +139,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     const newFormData = new FormData()
     newFormData.append(formDataName, file, file.name)
 
-    setFile(file)
-    setFileName(file.name)
+    // setFile(file)
+    // setFileName(file.name)
     setFormData(newFormData)
     setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
 
@@ -156,21 +148,21 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   }
 
   const okHandler = () => {
-    if (readAsText) {
-      const fileReader = new FileReader()
-      fileReader.onload = () => {
-        let result = String(fileReader.result)
-        // if (isCsvFile(fileName as string)) {
-        //   result = convertCsvToText(result)
-        // }
-        // importRequest(formData as FormData, {}, result)
-      }
-      fileReader.readAsText(file as Blob)
-    } else {
-      form.validateFields().then(values => {
-        // formData && importRequest(formData, values)
-      }).catch(() => {})
-    }
+    // if (readAsText) {
+    //   const fileReader = new FileReader()
+    //   fileReader.onload = () => {
+    //     let result = String(fileReader.result)
+    //     // if (isCsvFile(fileName as string)) {
+    //     //   result = convertCsvToText(result)
+    //     // }
+    //     // importRequest(formData as FormData, {}, result)
+    //   }
+    //   fileReader.readAsText(file as Blob)
+    // } else {
+    //   form.validateFields().then(values => {
+    //     // formData && importRequest(formData, values)
+    //   }).catch(() => {})
+    // }
     setVisible(false)
   }
 
@@ -195,11 +187,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
     </div>} >
-    <Typography.Text>
+    <label>
       { $t({ defaultMessage: 'IdP Metadata' }) }
-    </Typography.Text>
+    </label>
     {!uploadFile && <Button
-      // style={{ marginTop: '-5px', right: '0px' }}
       type='link'
       key='pasteIdp'
       onClick={() => { setUploadFile(true) }}>
@@ -246,26 +237,3 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   </UI.ImportFileDrawer>)
 }
 
-// function isCsvFile (fileName: string) {
-//   return fileName.endsWith('.csv')
-// }
-
-// function convertCsvToText (csvData: string) {
-//   const allTextLines = csvData.split(/\r?\n|\r/)
-//   const headers = allTextLines[0].split(',')
-//   let text = ''
-
-//   for (let i = 0; i < allTextLines.length; i++) {
-//     // split content based on comma
-//     let data = allTextLines[i].split(',')
-//     if (data.length === headers.length) {
-//       let tarr = []
-//       for (let j = 0; j < headers.length; j++) {
-//         tarr.push(data[j])
-//       }
-
-//       text = text + tarr.join(' ') + '\n'
-//     }
-//   }
-//   return text
-// }

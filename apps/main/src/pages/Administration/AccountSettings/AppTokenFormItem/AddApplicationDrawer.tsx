@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
@@ -7,88 +5,30 @@ import { Drawer, PasswordInput } from '@acx-ui/components'
 import {
   excludeExclamationRegExp,
   excludeSpaceRegExp,
-  notAllDigitsRegExp,
-  RadiusServer
+  notAllDigitsRegExp
 } from '@acx-ui/rc/utils'
-// import { useParams } from '@acx-ui/react-router-dom'
 
 interface AddApplicationDrawerProps {
   visible: boolean
-  setVisible: (visible: boolean) => void
   isEditMode: boolean
-  editData?: RadiusServer
+  setVisible: (visible: boolean) => void
 }
 
 export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, isEditMode, editData } = props
-  // const [resetField, setResetField] = useState(false)
-  // const params = useParams()
+  const { visible, setVisible, isEditMode } = props
   const [form] = Form.useForm()
-
-  useEffect(()=>{
-    if (editData && visible) {
-      form.setFieldsValue(editData)
-    }
-  }, [editData, visible])
-
-  const getTitle = () => {
-    const title = isEditMode
-      ? $t({ defaultMessage: 'Edit API Token' })
-      : $t({ defaultMessage: 'Add API Token' })
-    return title
-  }
 
   const onClose = () => {
     setVisible(false)
     form.resetFields()
   }
 
-  // const resetFields = () => {
-  //   setResetField(true)
-  //   onClose()
-  // }
-
   const onSubmit = async () => {
-    // setLoading(true)
-    // try {
-    //   if (!isEditMode) {
-    //     const payload = {
-    //       ...data,
-    //       serverType
-    //     }
-    //     await addAAAServer({
-    //       params,
-    //       payload
-    //     }).unwrap()
-    //   } else {
-    //     const payload = {
-    //       ...editData,
-    //       ...data
-    //     }
-    //     await updateAAAServer({
-    //       params: {
-    //         ...params,
-    //         aaaServerId: payload.id
-    //       },
-    //       payload
-    //     }).unwrap()
-    //   }
-    // }
-    // catch (error) {
-    //   console.log(error) // eslint-disable-line no-console
-    // }
-    // setLoading(false)
-    // onClose()
-    // const clearButton = document?.querySelector('button[data-id="table-clear-btn"]')
-    // if (clearButton) {
-    //   // @ts-ignore
-    //   clearButton.click()
-    // }
   }
 
-  const radiusForm = <Form layout='vertical'form={form} onFinish={onSubmit}>
+  const formContent = <Form layout='vertical'form={form} onFinish={onSubmit}>
     <Form.Item
       name='name'
       label={$t({ defaultMessage: 'Application Name' })}
@@ -126,11 +66,13 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
 
   return (
     <Drawer
-      title={getTitle()}
-      onBackClick={onClose}
+      title={isEditMode
+        ? $t({ defaultMessage: 'Edit API Token' })
+        : $t({ defaultMessage: 'Add API Token' })}
+      width={'452'}
       visible={visible}
       onClose={onClose}
-      children={radiusForm}
+      children={formContent}
       footer={
         <Drawer.FormFooter
           buttonLabel={{
@@ -150,8 +92,6 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
           }}
         />
       }
-      // destroyOnClose={resetField}
-      width={'452'}
     />
   )
 }

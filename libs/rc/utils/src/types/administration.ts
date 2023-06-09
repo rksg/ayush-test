@@ -36,7 +36,7 @@ export enum NotificationEndpointType {
 
 export enum TenantAuthenticationType {
   saml = 'SAML',
-  ladp = 'LADP'
+  ldap = 'LDAP'
 }
 
 export interface TenantDelegation {

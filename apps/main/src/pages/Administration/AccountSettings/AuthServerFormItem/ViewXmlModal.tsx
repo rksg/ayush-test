@@ -1,0 +1,52 @@
+
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
+
+import { Button, Modal, Subtitle } from '@acx-ui/components'
+
+interface ViewXmlModalProps {
+  visible: boolean
+  setVisible: (visible: boolean) => void
+}
+
+export const ViewXmlModal = (props: ViewXmlModalProps) =>{
+  const { $t } = useIntl()
+  const { visible, setVisible } = props
+
+  const [form] = Form.useForm()
+
+  const formContent = <Form
+    form={form}
+    layout='vertical'
+  >
+    <Subtitle level={3}>{$t({ defaultMessage: 'IdP Metadata' })}</Subtitle>
+    <Form.Item
+      name='description'
+      children={<Input.TextArea rows={32} disabled={true}/>}
+    />
+  </Form>
+
+  const handleOk = () => {
+    setVisible(false)
+    form.resetFields()
+  }
+
+  return (
+    <Modal
+      title='  '
+      width={880}
+      visible={visible}
+      footer={
+        <Button onClick={() => handleOk()}
+          type={'secondary'}
+        >
+          {$t({ defaultMessage: 'Ok' })}
+        </Button>}
+      onCancel={handleOk}
+      maskClosable={false}
+    >
+      {formContent}
+    </Modal>
+  )
+}
+

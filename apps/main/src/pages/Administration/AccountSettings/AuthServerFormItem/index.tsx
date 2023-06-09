@@ -4,32 +4,37 @@ import { Form, Col, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
 
-import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
-import { CsvSize }                                from '@acx-ui/rc/components'
-import {  TenantAuthentications }                 from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+import { Button, Card, showActionModal, Tooltip }           from '@acx-ui/components'
+import { CsvSize }                                          from '@acx-ui/rc/components'
+import {  TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
 
 import { SetupAzureDrawer } from './SetupAzureDrawer'
 import { ButtonWrapper }    from './styledComponents'
+import { ViewXmlModal }     from './ViewXmlModal'
 
 interface AuthServerFormItemProps {
   className?: string;
   tenantAuthenticationData?: TenantAuthentications[];
-  isPrimeAdminUser: boolean;
 }
 
 const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const { $t } = useIntl()
-  const { className, tenantAuthenticationData, isPrimeAdminUser } = props
+  const { tenantAuthenticationData } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [isEditMode, setEditMode] = useState(false)
   const navigate = useNavigate()
   const linkToAdministrators = useTenantLink('/administration/administrators')
 
   const onSetUpValue = () => {
+    setEditMode(false)
     setDrawerVisible(true)
   }
 
-  const hasSsoConfigured = true
+  const ssoData = tenantAuthenticationData?.filter(n =>
+    n.authenticationType === TenantAuthenticationType.saml)
+  const hasSsoConfigured = ssoData && ssoData?.length > 0
 
   return ( <>
     <Row gutter={24}>
@@ -52,6 +57,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                 <Button type='link'
                   key='editsso'
                   onClick={() => {
+                    setEditMode(true)
                     setDrawerVisible(true)
                   }}>
                   {$t({ defaultMessage: 'Edit' })}
@@ -89,7 +95,9 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
             />
             <div style={{ marginTop: '-10px' }}><Button type='link'
               key='viewxml'
-              onClick={() => { }}>
+              onClick={() => {
+                setModalVisible(true)
+              }}>
               {$t({ defaultMessage: 'View XML code' })}
             </Button></div>
             <div style={{ marginTop: '5px' }}><Button type='link'
@@ -110,8 +118,12 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
 
     {drawerVisible &&
     <SetupAzureDrawer
-      title={$t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })}
+      title={isEditMode
+        ? $t({ defaultMessage: 'Edit SSO with 3rd Party Provider' })
+        : $t({ defaultMessage: 'Set Up SSO with 3rd Party Provider' })
+      }
       visible={drawerVisible}
+      isEditMode={isEditMode}
       setVisible={setDrawerVisible}
       type='DPSK'
       maxSize={CsvSize['5MB']}
@@ -128,6 +140,11 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
       //   // }
       // }}
     />}
+    {modalVisible && <ViewXmlModal
+      visible={modalVisible}
+      setVisible={setModalVisible}
+    />}
+
   </>
   )
 }
