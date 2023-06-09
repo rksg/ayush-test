@@ -2,7 +2,6 @@ import _ from 'lodash'
 
 import { calculateGranularity }             from '@acx-ui/analytics/utils'
 import { Loader }                           from '@acx-ui/components'
-import { DDoSRuleStatisticDataTable }       from '@acx-ui/rc/components'
 import { useGetEdgeFirewallDDoSStatsQuery } from '@acx-ui/rc/services'
 import {
   DdosAttackType,
@@ -12,6 +11,8 @@ import {
   expandDDoSAttackTypeAllRule
 } from '@acx-ui/rc/utils'
 import { DateRangeFilter } from '@acx-ui/utils'
+
+import { RuleStatisticDataTable as DDoSRuleStatisticDataTable } from '../../DDoSRulesTable/RuleStatisticDataTable'
 
 interface DDoSRulesTableProps {
   firewallData: EdgeFirewallSetting | undefined;
