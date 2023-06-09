@@ -52,6 +52,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const currentUserMail = userProfileData?.email
   const currentUserDetailLevel = userProfileData?.detailLevel
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
+  const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
@@ -82,7 +83,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       }
     })
 
-    return (isMspEc && optionalAdminFF) ? false : isAllSelected
+    return (isMspEc && (optionalAdminFF || allowDeleteAdminFF)) ? false : isAllSelected
   }
 
   const isSelfSelected = (selectedRows: Administrator[]): boolean => {
