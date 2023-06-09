@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { DdosAttackType, EdgeFirewallUrls, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -13,7 +13,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockFirewall, mockFirewall2 } from './__tests__/fixtures'
+import { mockEdgeList, mockFirewall, mockFirewall2, mockFirewallACLStats, mockFirewallDDoSStats } from './__tests__/fixtures'
 
 import  EdgeFirewall from './'
 
@@ -45,6 +45,12 @@ jest.mock('antd', () => {
 })
 
 const mockedGetFirewallFn = jest.fn()
+const mockedEdgeStatus = {
+  serialNumber: '0000000001',
+  venueId: '00001',
+  firewallId: 'mock-serviceId'
+}
+
 describe('Venue Firewall Service', () => {
   let params: { tenantId: string, venueId: string }
 
@@ -62,14 +68,24 @@ describe('Venue Firewall Service', () => {
       rest.get(
         EdgeFirewallUrls.getEdgeFirewall.url,
         (req, res, ctx) => res(ctx.json(mockFirewall))
+      ),
+      rest.post(
+        EdgeFirewallUrls.getEdgeFirewallDDoSStats.url,
+        (req, res, ctx) => res(ctx.json(mockFirewallDDoSStats))
+      ),
+      rest.post(
+        EdgeFirewallUrls.getEdgeFirewallACLStats.url,
+        (req, res, ctx) => res(ctx.json(mockFirewallACLStats))
       )
     )
+
+    mockedGetFirewallFn.mockReset()
   })
 
   it('should render correctly when ddos disabled, ACL enabled', async () => {
     render(
       <Provider>
-        <EdgeFirewall serviceId='mock-serviceId'/>
+        <EdgeFirewall edgeData={mockedEdgeStatus as EdgeStatus} />
       </Provider>, {
         route: { params }
       })
@@ -81,7 +97,7 @@ describe('Venue Firewall Service', () => {
     const ddosInfo = screen.queryByText('DDoS Rate-limiting')
     // eslint-disable-next-line testing-library/no-node-access
     const ddosWrapper = ddosInfo?.closest('div.ant-space')! as HTMLDivElement
-    expect(within(ddosWrapper).queryByText('OFF (0 rules)')).toBeValid()
+    expect(within(ddosWrapper).queryByText('OFF')).toBeValid()
     const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
@@ -91,7 +107,7 @@ describe('Venue Firewall Service', () => {
     const ddosPane = screen.getByRole('tabpanel', { hidden: false })
     const ddosRows = await within(ddosPane).findAllByRole('row')
     // only default table row
-    expect(ddosRows.length).toBe(2) // message row + 1(header)
+    expect(ddosRows.length).toBe(3) // message row + 2(header)
 
     // display stateful ACL rules
     await userEvent.click(screen.getByRole('tab', { name: 'Stateful ACL' }))
@@ -123,7 +139,7 @@ describe('Venue Firewall Service', () => {
 
     render(
       <Provider>
-        <EdgeFirewall serviceId='mock-serviceId'/>
+        <EdgeFirewall edgeData={mockedEdgeStatus as EdgeStatus}/>
       </Provider>, {
         route: { params }
       })
@@ -141,13 +157,13 @@ describe('Venue Firewall Service', () => {
     const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
-    expect(within(aclWrapper).queryByText('OFF (IN: 1 rule, OUT: 5 rules)')).toBeValid()
+    expect(within(aclWrapper).queryByText('OFF')).toBeValid()
 
     // display ddos rules
     const ddosPane = screen.getByRole('tabpanel', { hidden: false })
     const ddosRows = await within(ddosPane).findAllByRole('row')
     // only default table row
-    expect(ddosRows.length).toBe(3) // 2 + 1(header)
+    expect(ddosRows.length).toBe(4) // 2 + 2(header)
 
     // display stateful ACL rules
     await userEvent.click(screen.getByRole('tab', { name: 'Stateful ACL' }))
@@ -163,6 +179,106 @@ describe('Venue Firewall Service', () => {
       await screen.findByRole('combobox'),
       'Outbound')
     const aclOutRows = await within(aclPane).findAllByRole('row')
-    expect(aclOutRows.length).toBe(6) // 5 + 1(header)
+    expect(aclOutRows.length).toBe(2) // no data row + 1(header)
+  })
+
+  it('should render correctly when ddos use All rule', async () => {
+    const mockFirewall3 = { ...mockFirewall2,
+      serviceName: 'mocked-firewall-ddos2',
+      ddosRateLimitingRules: [
+        {
+          ddosAttackType: DdosAttackType.ALL,
+          rateLimiting: 100
+        }
+      ] }
+
+    mockServer.use(
+      rest.get(
+        EdgeFirewallUrls.getEdgeFirewall.url,
+        (req, res, ctx) => {
+          mockedGetFirewallFn()
+          return res(ctx.json(mockFirewall3))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgeFirewall edgeData={mockedEdgeStatus as EdgeStatus}/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetFirewallFn).toBeCalled()
+    })
+
+    // display firewall config data
+    expect(await screen.findByRole('link', { name: 'mocked-firewall-ddos2' })).toBeVisible()
+    const ddosInfo = screen.queryByText('DDoS Rate-limiting')
+    // eslint-disable-next-line testing-library/no-node-access
+    const ddosWrapper = ddosInfo?.closest('div.ant-space')! as HTMLDivElement
+    expect(within(ddosWrapper).queryByText('ON (1 rule)')).toBeValid()
+    const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
+    // eslint-disable-next-line testing-library/no-node-access
+    const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
+    expect(within(aclWrapper).queryByText('OFF')).toBeValid()
+
+    // display ddos rules
+    const ddosPane = screen.getByRole('tabpanel', { hidden: false })
+    const ddosRows = await within(ddosPane).findAllByRole('row')
+
+    // should expand rule - all one by one
+    expect(ddosRows.length).toBe(6) // 4 + 2(header)
+    expect(within(ddosPane).queryByRole('row', { name: /ICMP 100 12 20/ })).toBeValid()
+    expect(within(ddosPane).queryByRole('row', { name: /DNS Response 100 -- --/ })).toBeValid()
+    expect(within(ddosPane).queryByRole('row', { name: /NTP Reflection 100 -- --/ })).toBeValid()
+    expect(within(ddosPane).queryByRole('row', { name: /TCP SYN 100 9 21/ })).toBeValid()
+  })
+
+  it('should render correctly when ddos does not have rule', async () => {
+    const mockFirewall4 = { ...mockFirewall2,
+      serviceName: 'mocked-firewall-ddos-empty',
+      ddosRateLimitingRules: [] }
+    delete mockFirewall4.ddosRateLimitingRules
+
+    mockServer.use(
+      rest.get(
+        EdgeFirewallUrls.getEdgeFirewall.url,
+        (req, res, ctx) => {
+          mockedGetFirewallFn()
+          return res(ctx.json(mockFirewall4))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgeFirewall edgeData={mockedEdgeStatus as EdgeStatus}/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(() => {
+      expect(mockedGetFirewallFn).toBeCalled()
+    })
+
+    // display firewall config data
+    expect(await screen.findByRole('link', { name: 'mocked-firewall-ddos-empty' })).toBeVisible()
+    const ddosInfo = screen.queryByText('DDoS Rate-limiting')
+    // eslint-disable-next-line testing-library/no-node-access
+    const ddosWrapper = ddosInfo?.closest('div.ant-space')! as HTMLDivElement
+    expect(within(ddosWrapper).queryByText('ON (0 rules)')).toBeValid()
+    const aclInfo = screen.queryAllByText('Stateful ACL').filter(elem => elem.tagName === 'SPAN')[0]
+    // eslint-disable-next-line testing-library/no-node-access
+    const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
+    expect(within(aclWrapper).queryByText('OFF')).toBeValid()
+
+    // display ddos rules
+    const ddosPane = screen.getByRole('tabpanel', { hidden: false })
+    const ddosRows = await within(ddosPane).findAllByRole('row')
+
+    // should expand rule - all one by one
+    expect(ddosRows.length).toBe(3) // no data row + 2(header)
   })
 })
