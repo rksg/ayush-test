@@ -40,5 +40,15 @@ export const EdgeFirewallUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeFirewallServices/query',
     newApi: true
+  },
+  getEdgeFirewallDDoSStats: {
+    method: 'post',
+    url: '/edgeFirewallServices/ddosStats',
+    newApi: true
+  },
+  getEdgeFirewallACLStats: {
+    method: 'post',
+    url: '/edgeFirewallServices/aclStats',
+    newApi: true
   }
 }
