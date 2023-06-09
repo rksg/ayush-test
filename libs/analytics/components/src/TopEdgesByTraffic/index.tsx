@@ -31,6 +31,17 @@ const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'Received', y: 'name', seriesName: 'Received' }
 ]
 
+export const onClick = (navigate: NavigateFunction, basePath: Path) => {
+  return (params: EventParams) => {
+    const serial = params.componentType ==='series' && Array.isArray(params.value)
+      && params.value[1]
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${serial}/details/overview`
+    })
+  }
+}
+
 function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const basePath = useTenantLink('/devices/edge/')
@@ -59,17 +70,6 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
     }
   })
   const { data } = queryResults
-
-  const onClick = (navigate: NavigateFunction, basePath: Path) => {
-    return (params: EventParams) => {
-      const serial = params.componentType ==='series' && Array.isArray(params.value)
-        && params.value[1]
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${serial}/details/overview`
-      })
-    }
-  }
 
   return (
     <Loader states={[queryResults]}>

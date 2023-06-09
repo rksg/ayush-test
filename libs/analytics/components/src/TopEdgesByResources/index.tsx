@@ -61,7 +61,16 @@ const seriesMapping: BarChartData['seriesEncode'] = [
   { x: 'percentage', y: 'name' }
 ]
 
-
+export const onClick = (navigate: NavigateFunction, basePath: Path) => {
+  return (params: EventParams) => {
+    const serial = params.componentType ==='series' && Array.isArray(params.value)
+      && params.value[1]
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${serial}/details/overview`
+    })
+  }
+}
 
 function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) {
   const intl = useIntl()
@@ -100,17 +109,6 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
       value: 'memory'
     }
   ]
-
-  const onClick = (navigate: NavigateFunction, basePath: Path) => {
-    return (params: EventParams) => {
-      const serial = params.componentType ==='series' && Array.isArray(params.value)
-        && params.value[1]
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${serial}/details/overview`
-      })
-    }
-  }
 
   return (
     <Loader states={[queryResults]}>
