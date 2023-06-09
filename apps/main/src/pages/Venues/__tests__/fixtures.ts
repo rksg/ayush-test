@@ -18,7 +18,9 @@ import {
   NewTablePageable,
   ResidentPortal,
   ConnectionMetering,
-  BillingCycleType
+  BillingCycleType,
+  TemplateScope,
+  MessageType
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -3054,4 +3056,11 @@ export const mockConnectionMeteringTableResult : NewTableResult<ConnectionMeteri
   totalPages: 1,
   totalElements: 4,
   sort: defaultPageable.sort
+}
+
+export const mockedTemplateScope: TemplateScope = {
+  id: '648269aa-23c7-41da-baa4-811e92d89ed1',
+  messageType: MessageType.EMAIL,
+  nameLocalizationKey: 'unit.assigned.email',
+  defaultTemplateId: '746ac7b2-1ec5-412c-9354-e5ac274b7bd9'
 }
