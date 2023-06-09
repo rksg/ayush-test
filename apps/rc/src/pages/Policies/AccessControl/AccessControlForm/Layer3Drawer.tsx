@@ -775,6 +775,25 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     </DndProvider>
   </Form>
 
+  const portRangeValidator = (value: string) => {
+    const validationList: string[] = value.split('-')
+    if (value.includes('-')) {
+      if (validationList[1] === '') {
+        return Promise.reject($t({
+          defaultMessage: 'Please enter another valid number between 0 and 65535'
+        }))
+      }
+      if (validationList[0] >= validationList[1]) {
+        return Promise.reject($t({
+          defaultMessage: 'Please enter another valid number between {number} and 65535'
+        }, {
+          number: validationList[0]
+        }))
+      }
+    }
+    return Promise.all(validationList.map(value => portRegExp(value)))
+  }
+
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
     <DrawerFormItem
       name='description'
@@ -871,7 +890,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { validator: (_, value) => portRegExp(value) }
+          { validator: (_, value) => portRangeValidator(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
@@ -957,7 +976,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { validator: (_, value) => portRegExp(value) }
+          { validator: (_, value) => portRangeValidator(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
