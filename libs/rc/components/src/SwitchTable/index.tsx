@@ -122,7 +122,9 @@ export function SwitchTable (props : SwitchTableProps) {
     search: {
       searchTargetFields: defaultSwitchPayload.searchTargetFields
     },
-    option: { skip: Boolean(props.tableQuery) }
+    option: { skip: Boolean(props.tableQuery) },
+    enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig' ]
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
@@ -185,7 +187,7 @@ export function SwitchTable (props : SwitchTableProps) {
       fixed: 'left',
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
-      groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
+      groupable: filterableKeys && getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (data, row) => <SwitchStatus row={row}/>
     }, {
       key: 'model',
@@ -194,7 +196,7 @@ export function SwitchTable (props : SwitchTableProps) {
       filterable: filterableKeys ? filterableKeys['model'] : false,
       sorter: true,
       searchable: searchable,
-      groupable: getGroupableConfig()?.modelGroupableOptions
+      groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions
     }, {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -355,13 +357,16 @@ export function SwitchTable (props : SwitchTableProps) {
       settingsId='switch-table'
       columns={columns}
       dataSource={tableData}
+      getAllPagesData={tableQuery.getAllPagesData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={handleFilterChange}
       enableApiFilter={true}
+      searchableWidth={220}
+      filterableWidth={140}
       rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{
+      rowSelection={searchable !== false ? {
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record.isFirstLevel
@@ -371,7 +376,7 @@ export function SwitchTable (props : SwitchTableProps) {
         getCheckboxProps: (record) => ({
           disabled: !record.isFirstLevel
         })
-      }}
+      } : undefined}
       actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
         onClick: () => {
