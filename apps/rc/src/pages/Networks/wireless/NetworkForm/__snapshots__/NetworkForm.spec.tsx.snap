@@ -72,13 +72,15 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
     >
       <div
         class="ant-row"
+        style="margin-left: -10px; margin-right: -10px;"
       >
         <div
           class="ant-col ant-col-4"
           data-testid="steps-form-steps"
+          style="padding-left: 10px; padding-right: 10px;"
         >
           <div
-            class="ant-steps ant-steps-vertical styledComponents__Steps-sc-1ibvcih-1 bfZYhj ant-steps-dot"
+            class="ant-steps ant-steps-vertical styledComponents__Steps-sc-1ibvcih-1 iloyDM ant-steps-dot"
           >
             <div
               class="ant-steps-item ant-steps-item-process ant-steps-item-active"
@@ -211,6 +213,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
         <div
           class="ant-col ant-col-20"
           data-testid="steps-form-body"
+          style="padding-left: 10px; padding-right: 10px;"
         >
           <div
             class="ant-row"
@@ -573,11 +576,11 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 ZwdW"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
         data-testid="steps-form-actions"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-space ant-space-horizontal ant-space-align-center styledComponents__ActionsButtons-sc-1ibvcih-3"
         >
           <div
             class="ant-space-item"
@@ -705,13 +708,15 @@ exports[`NetworkForm should create open network successfully 1`] = `
     >
       <div
         class="ant-row"
+        style="margin-left: -10px; margin-right: -10px;"
       >
         <div
           class="ant-col ant-col-4"
           data-testid="steps-form-steps"
+          style="padding-left: 10px; padding-right: 10px;"
         >
           <div
-            class="ant-steps ant-steps-vertical styledComponents__Steps-sc-1ibvcih-1 bfZYhj ant-steps-dot"
+            class="ant-steps ant-steps-vertical styledComponents__Steps-sc-1ibvcih-1 iloyDM ant-steps-dot"
           >
             <div
               class="ant-steps-item ant-steps-item-process ant-steps-item-active"
@@ -844,6 +849,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
         <div
           class="ant-col ant-col-20"
           data-testid="steps-form-body"
+          style="padding-left: 10px; padding-right: 10px;"
         >
           <div
             class="ant-row"
@@ -1206,11 +1212,11 @@ exports[`NetworkForm should create open network successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-3 ZwdW"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
         data-testid="steps-form-actions"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-space ant-space-horizontal ant-space-align-center styledComponents__ActionsButtons-sc-1ibvcih-3"
         >
           <div
             class="ant-space-item"
