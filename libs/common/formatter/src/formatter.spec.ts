@@ -38,6 +38,7 @@ describe('formatter', () => {
     1000000: '1 kW'
   }))
   it('bytesFormat', () => testFormat('bytesFormat', {
+    1: '1 B',
     7.131: '7.13 B',
     123456: '121 KB',
     1000000000: '954 MB',
@@ -53,7 +54,10 @@ describe('formatter', () => {
     123000000000000000000000000000: '102000 YB',
     1025: '1 KB',
     1024: '1 KB',
-    1023: '1023 B'
+    1023: '0.999 KB',
+    1097901000000: '0.999 TB',
+    1092532300000: '0.994 TB',
+    1099082100000: '1 TB'
   }))
   it('networkSpeedFormat', () => testFormat('networkSpeedFormat', {
     7.131: '7.13 Kbps',
