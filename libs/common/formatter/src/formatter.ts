@@ -48,9 +48,7 @@ const durations = [
 ] as const
 
 const shorten = (value: number) => {
-  return Number.isSafeInteger(value)
-    ? value.toString()
-    : parseFloat(value.toPrecision(3)).toString()
+  return parseFloat(value.toPrecision(3)).toString()
 }
 
 const durationMapping = {
@@ -109,9 +107,14 @@ function durationFormat (milliseconds: number, format: 'short' | 'long', { $t }:
 }
 
 function numberFormat (base: number, units: string[], value: number) {
+  const baseExpo = Number(base.toExponential().split('e')[1])
+  // threshold that we need to trigger division.
+  // baseExpo >= 1
+  const dividerThreshold = Math.pow(10, baseExpo - 1)
+
   for (let a = 1; a <= units.length; a++) {
     const lowest = value / Math.pow(base, a - 1)
-    if (Math.abs(lowest) < base) {
+    if (Math.abs(lowest) < Math.round(base / dividerThreshold) * dividerThreshold) {
       return shorten(lowest) + units[a - 1]
     }
   }

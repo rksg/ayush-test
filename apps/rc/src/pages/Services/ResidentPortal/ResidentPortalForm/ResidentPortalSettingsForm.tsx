@@ -1,6 +1,7 @@
 import {
   Form,
-  Input
+  Input,
+  Switch
 } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 
@@ -121,6 +122,16 @@ export default function ResidentPortalSettingsForm (props : SettingsFormProps) {
         hasFeedback
         children={<TextArea />}
       />
+
+      <StepsFormLegacy.FieldLabel width={'92%'}>
+        {intl.$t({ defaultMessage: 'Allow Residents to Set Passphrase' })}
+        <Form.Item
+          name='tenantSetDpsk'
+          rules={[{ required: true }]}
+          valuePropName={'checked'}
+          children={<Switch />}
+        />
+      </StepsFormLegacy.FieldLabel>
       {/* ** Visual Properties ** */}
       <Subtitle level={3}>
         { intl.$t({ defaultMessage: 'VisualProperties' }) }

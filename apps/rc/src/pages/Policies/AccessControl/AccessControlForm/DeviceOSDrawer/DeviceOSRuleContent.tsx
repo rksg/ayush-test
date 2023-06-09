@@ -4,6 +4,7 @@ import { Checkbox, Form, FormInstance, FormItemProps, Input, Select, Slider } fr
 import { useIntl }                                                            from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps }      from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { AccessStatus, DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils'
 
 import { deviceTypeLabelMapping, osVenderLabelMapping } from '../../../contentsMap'
@@ -53,7 +54,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     drawerForm.getFieldValue('deviceType') as DeviceTypeEnum
   )
   const [osVendor, setOsVendor] = useState(
-    $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
+    drawerForm.getFieldValue('osVendor') as OsVendorEnum
   )
   const [deviceOSMappingTable] = useState(
     deviceOsVendorMappingTable(
@@ -82,19 +83,26 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     ruleDrawerEditMode ? drawerForm.getFieldValue('toClientValue') : 200
   )
 
+  const isNewOsVendorFeatureEnabled = useIsSplitOn(Features.NEW_OS_VENDOR_IN_DEVICE_POLICY)
+
   useEffect(() => {
     const tempOsVendor = drawerForm.getFieldValue('tempOsVendor')
     setOsVendorOptionList([
       { value: 'Please select...', label: $t({ defaultMessage: 'Please select...' }) },
-      ...getOsVendorOptions(deviceType).map(option => ({
-        value: option,
-        label: $t(osVenderLabelMapping[option as OsVendorEnum]),
-        disabled: isDeviceOSEnabled(
-          deviceType,
-          option,
-          deviceOSMappingTable,
-          ruleDrawerEditMode ? tempOsVendor : '')
-      }))
+      ...getOsVendorOptions(deviceType)
+        .filter(option => deviceType !== DeviceTypeEnum.Gaming ||
+          !(isNewOsVendorFeatureEnabled ?
+            [OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.PlayStation3] :
+            [OsVendorEnum.PlayStation]).includes(option))
+        .map(option => ({
+          value: option,
+          label: $t(osVenderLabelMapping[option as OsVendorEnum]),
+          disabled: isDeviceOSEnabled(
+            deviceType,
+            option,
+            deviceOSMappingTable,
+            ruleDrawerEditMode ? tempOsVendor : '')
+        }))
     ] as { value: string, label: string }[])
   }, [deviceType, osVendor])
 
@@ -131,6 +139,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
 
   const handleDeviceTypeChange = (value: DeviceTypeEnum) => {
     setDeviceType(value)
+    drawerForm.resetFields(['osVendor'])
   }
 
   const rateLimitContent = <div>
@@ -251,7 +260,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     <DrawerFormItem
       name='osVendor'
       label={$t({ defaultMessage: 'OS Vender' })}
-      initialValue={osVendor}
+      initialValue={$t({ defaultMessage: 'Please select...' })}
       rules={[
         { required: true },
         { validator: (_, value) => {
