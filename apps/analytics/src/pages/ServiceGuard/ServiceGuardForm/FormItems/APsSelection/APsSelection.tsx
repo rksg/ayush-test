@@ -97,6 +97,7 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
       .map(item => <FormattedMessage
         key={item.name}
         defaultMessage='{name} — {count} {count, plural, one {AP} other {APs}}{br}'
+        description='Translation strings - AP, APs'
         values={{ ...item, br: <br/> }}
       />)
 

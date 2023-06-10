@@ -145,7 +145,7 @@ export function VideoCallQoeDetails (){
       render: (value:unknown)=>{
         if(!value)
           return '-'
-        return <TenantLink to={'/networks/wireless'}>{value as string}</TenantLink>
+        return value as string
       }
     },
     {
@@ -210,8 +210,12 @@ export function VideoCallQoeDetails (){
     }
   ]
   const getPill = (mos:number)=>{
-    return mos >= 4 ? <UI.BigTrendPill value='Good' trend='positive' /> :
-      <UI.BigTrendPill value='Bad' trend='negative' />
+    return mos >= 4 ? <UI.BigTrendPill
+      value={$t({ defaultMessage: 'Good' })}
+      trend='positive' /> :
+      <UI.BigTrendPill
+        value={$t({ defaultMessage: 'Bad' })}
+        trend='negative' />
   }
 
   const seriesMapping = [{
@@ -312,11 +316,11 @@ export function VideoCallQoeDetails (){
         { callQoeDetails && currentMeeting && <PageHeader
           title={callQoeDetails.name}
           subTitle={
-            `Start Time:
+            `${$t({ defaultMessage: 'Start Time' })}:
             ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.startTime)}` +
-            ` | End Time:
+            ` | ${$t({ defaultMessage: 'End Time' })}:
             ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.endTime)}` +
-            ` | Duration:
+            ` | ${$t({ defaultMessage: 'Duration' })}:
             ${formatter('durationFormat')(new Date(currentMeeting.endTime).getTime()
               - new Date(currentMeeting.startTime).getTime())}`
           }
