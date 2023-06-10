@@ -1,13 +1,17 @@
 import { ReactNode, useEffect, useState } from 'react'
 
+import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Card, Table, TableProps }                                                              from '@acx-ui/components'
+import { Card, Table, TableProps } from '@acx-ui/components'
 import {
-  useLazyGetPropertyUnitByIdQuery, useLazySearchPersonaGroupListQuery, useLazyVenuesListQuery
+  useLazyGetPropertyUnitByIdQuery,
+  useLazySearchPersonaGroupListQuery,
+  useLazyVenuesListQuery,
+  useLazyGetQosStatsQuery
 } from '@acx-ui/rc/services'
-import { Persona } from '@acx-ui/rc/utils'
+import { Persona, PersonaGroup, QosStats } from '@acx-ui/rc/utils'
 
 import { PersonaDetailsLink, PropertyUnitLink, VenueLink } from '../LinkHelper'
 
@@ -24,7 +28,11 @@ export interface ConnectionMeteringInstanceItem {
   personas: Persona[],  // contains UnitPersona and GuestPersona
   groupId: string,      // use the group id of the UnitPersona
   segment?: number      // use the vni of the UnitPersona
+  expirationDate?: string | null
 }
+
+
+
 
 export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   const { $t } = useIntl()
@@ -32,22 +40,27 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   const [datasource, setDatasource] = useState<ConnectionMeteringInstanceItem[]>()
 
   const [propertyUnitMap, setPropertyUnitMap] = useState(new Map<string, string>())
-  const [groupVenueMap, setGroupVenueMap] = useState(new Map<string, string>())
+  const [groupMap, setGroupMap] = useState(new Map<string, PersonaGroup>())
   const [venueMap, setVenueMap] = useState(new Map<string, string>())
+  const [statsMap, setStatsMap] = useState(new Map<string, QosStats>())
 
   const [searchPersonaGroups, { isLoading: isGroupLoading }] = useLazySearchPersonaGroupListQuery()
   const [getVenues, { isLoading: isVenueLoading }] = useLazyVenuesListQuery()
   const [getUnitById, { isLoading: isPropertyUnitLoading }] = useLazyGetPropertyUnitByIdQuery()
+  const [getQosStats, { isLoading: isQosStatsLoading }] = useLazyGetQosStatsQuery()
 
   useEffect(() => {
     setDatasource(toInstance(props.data))
+    fetchQosStats(props.data)
   }, [props.data])
 
   useEffect(() => {
-    if (groupVenueMap.size === 0) return
-    fetchVenueData([...groupVenueMap.values()])
+    if (groupMap.size === 0) return
+    fetchVenueData([...groupMap.values()]
+      .filter((group)=> group.propertyId !== undefined)
+      .map((group)=> group.propertyId!!))
     fetchPropertyUnits()
-  }, [groupVenueMap])
+  }, [groupMap])
 
   const toInstance = (personas: Persona[]): ConnectionMeteringInstanceItem[] => {
     const personaGroupSet = new Set<string>()
@@ -70,7 +83,8 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
         unitId,
         personas,
         groupId: personas[0]?.groupId,
-        segment: personas[0]?.vni
+        segment: personas[0]?.vni,
+        expirationDate: personas[0]?.expirationDate
       })
     })
 
@@ -86,7 +100,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       if (result.data?.data) {
         result.data.data.forEach(group => {
           if (group.propertyId) {
-            setGroupVenueMap(map => new Map(map.set(group.id, group.propertyId!)))
+            setGroupMap(map => new Map(map.set(group.id, group as PersonaGroup)))
           }
         })
       }
@@ -105,7 +119,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
 
   const fetchPropertyUnits = () => {
     datasource?.forEach(({ unitId, groupId }) => {
-      getUnitById({ params: { venueId: groupVenueMap.get(groupId), unitId } })
+      getUnitById({ params: { venueId: groupMap.get(groupId)?.propertyId, unitId } })
         .then(result => {
           if (result.data) {
             const { name } = result.data
@@ -115,6 +129,39 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
     })
   }
 
+  const fetchQosStats = (personas: Persona[]) => {
+    const payload = [] as { field: string, value:string } [][]
+    personas.forEach(persona => {
+      payload.push([{ field: 'personaId', value: persona.id }])
+    })
+    getQosStats({ payload: payload })
+      .then(result=> {
+        if (result.data?.data) {
+          setStatsMap(new Map(result.data.data?.map(v => [v.personaId, { ...v }])))
+        }
+      })
+  }
+
+  const getQosStatsByInstance = (instance: ConnectionMeteringInstanceItem):
+    QosStats| undefined => {
+    let result:QosStats | undefined = undefined
+    instance.personas.forEach(persona => {
+      let stats = statsMap.get(persona.id)
+      if (stats) {
+        if (!result) {
+          result = { ...stats }
+        } else {
+          result.uploadPackets += stats.uploadPackets
+          result.uploadBytes += stats.uploadBytes
+          result.downloadBytes += stats.downloadBytes
+          result.downloadPackets += stats.downloadPackets
+        }
+      }
+    })
+    return result
+  }
+
+
   const columns: TableProps<ConnectionMeteringInstanceItem>['columns'] = [
     {
       title: $t({ defaultMessage: 'Unit' }),
@@ -123,7 +170,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       render: (_, { unitId, groupId }) =>
         <PropertyUnitLink
           id={unitId}
-          venueId={groupVenueMap.get(groupId)}
+          venueId={groupMap.get(groupId)?.propertyId}
           name={propertyUnitMap.get(unitId)}
         />
     },
@@ -141,7 +188,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       dataIndex: 'venueId',
       key: 'venueId',
       render: (_, { groupId }) => {
-        const venueId = groupVenueMap.get(groupId)
+        const venueId = groupMap.get(groupId)?.propertyId
         return (
           <VenueLink
             venueId={venueId}
@@ -154,8 +201,112 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       title: $t({ defaultMessage: 'Segment #' }),
       dataIndex: 'segment',
       key: 'segment'
+    },
+    {
+      title: $t({ defaultMessage: 'Up Packets' }),
+      dataIndex: 'upPackets',
+      key: 'upPackets',
+      render: (_, row) => {
+        const stat = getQosStatsByInstance(row)
+        if (stat) {
+          return <span>{stat.uploadPackets}</span>
+        }
+        return undefined
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Up Bytes' }),
+      dataIndex: 'upBytes',
+      key: 'upBytes',
+      render: (_, row) => {
+        const stat = getQosStatsByInstance(row)
+        if (stat) {
+          return <span>{$t({ defaultMessage: '{upBytes} MB' },
+            { upBytes: stat.uploadBytes / 1000 })}</span>
+        }
+        return undefined
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Down Packets' }),
+      dataIndex: 'downPackets',
+      key: 'downPackets',
+      render: (_, row) => {
+        const stat = getQosStatsByInstance(row)
+        if (stat) {
+          return <span>{stat.downloadPackets}</span>
+        }
+        return undefined
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Down Bytes' }),
+      dataIndex: 'downBytes',
+      key: 'downBytes',
+      render: (_, row) => {
+        const stat = getQosStatsByInstance(row)
+        if (stat) {
+          return <span>{$t({ defaultMessage: '{downBytes} MB' },
+            { downBytes: stat.downloadBytes / 1000 })}</span>
+        }
+        return undefined
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Total Bytes' }),
+      dataIndex: 'totalBytes',
+      key: 'totalBytes',
+      render: (_, row) => {
+        const stat = getQosStatsByInstance(row)
+        if (stat) {
+          return <span>{$t({ defaultMessage: '{totalBytes} MB' },
+            { totalBytes: (stat.uploadBytes + stat.downloadBytes) / 1000 })}</span>
+        }
+        return undefined
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Cycle Start Date' }),
+      dataIndex: 'cycleStartDate',
+      key: 'cycleStartDate',
+      render: (_, row) => {
+        const stat = getQosStatsByInstance(row)
+        if (stat && stat.billingStartEpoch) {
+          return <span>{moment(stat.billingStartEpoch).format('MM/DD/YYYY')}</span>
+        }
+        return undefined
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Data Consumption Expires' }),
+      dataIndex: 'dataComsumptionExpires',
+      key: 'dataConsumptionExpires',
+      render: (_, row) => {
+        if (row.expirationDate) {
+          const expirationDate = moment(row.expirationDate)
+          const expired = expirationDate.diff(moment.now()) < 0
+          return <span style={expired ? { color: 'red' }: {}}>{
+            expirationDate.format('MM/DD/YYYY')}</span>
+        }
+        return undefined
+      }
     }
   ]
+
+  const columnState: TableProps<ConnectionMeteringInstanceItem>['columnState'] = {
+    defaultValue: {
+      unitId: true,
+      personas: true,
+      segment: true,
+      upPackets: true,
+      upBytes: true,
+      downPackets: true,
+      downBytes: true,
+      totalBytes: true,
+      cycleStartDate: false,
+      dataConsumptionExpires: false
+    }
+  }
 
   return (
     <>
@@ -163,10 +314,12 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
         {$t({ defaultMessage: 'Instances ({size})' }, { size: propertyUnitMap.size })}
       </Card.Title>
       <Table<ConnectionMeteringInstanceItem>
-        loading={isGroupLoading || isVenueLoading || isPropertyUnitLoading}
+        loading={isGroupLoading || isVenueLoading || isPropertyUnitLoading || isQosStatsLoading}
         columns={columns}
         dataSource={datasource}
+        columnState={columnState}
         rowKey='unitId'
+        settingsId='connection-metering-detail-column-settings'
       />
     </>
   )
