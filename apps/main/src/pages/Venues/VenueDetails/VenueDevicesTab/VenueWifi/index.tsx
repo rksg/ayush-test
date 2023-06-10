@@ -103,18 +103,6 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
-      key: 'venueName',
-      title: intl.$t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venueName',
-      sorter: true,
-      align: 'center',
-      render: function (data, row) {
-        return (
-          <TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
-        )
-      }
-    },
-    {
       key: 'apUpRssi',
       title: intl.$t({ defaultMessage: 'Signal' }),
       dataIndex: 'apUpRssi',

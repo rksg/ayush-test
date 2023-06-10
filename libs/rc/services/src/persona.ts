@@ -11,7 +11,9 @@ import {
   createNewTableHttpRequest,
   TableChangePayload,
   downloadFile,
-  RequestFormData
+  RequestFormData,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { basePersonaApi } from '@acx-ui/store'
 
@@ -192,6 +194,20 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       transformResponse (result: NewTableResult<Persona>) {
         return transferToTableResult<Persona>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ADD_UNIT',
+            'UPDATE_UNIT',
+            'DELETE_UNIT'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(personaApi.util.invalidateTags([
+              { type: 'Persona', id: 'LIST' }
+            ]))
+          })
+        })
       },
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),

@@ -28,7 +28,8 @@ export function useServiceGuard () {
   useEffect(()=> setCount(queryResults.data?.length || 0),[queryResults])
 
   const title = defineMessage({
-    defaultMessage: 'Service Validation {count, select, null {} other {({count})}}'
+    defaultMessage: 'Service Validation {count, select, null {} other {({count})}}',
+    description: 'Translation string - Service Validation'
   })
 
   const extra = [

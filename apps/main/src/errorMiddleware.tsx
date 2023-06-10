@@ -123,6 +123,7 @@ export const getErrorContent = (action: ErrorAction) => {
       break
     case 504: // no connection [development mode]
     case 0:   // no connection
+    case 'FETCH_ERROR' as unknown as number: // no connection
       errorMsg = errorMessage.CHECK_YOUR_CONNECTION
       type = 'info'
       callback = () => window.location.reload()
