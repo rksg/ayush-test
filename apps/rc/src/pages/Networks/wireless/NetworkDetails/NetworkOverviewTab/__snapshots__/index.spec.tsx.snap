@@ -46,7 +46,7 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                           <div
                             class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                           >
-                            Pre-Shared Key (PSK)
+                            Passphrase (PSK/SAE)
                           </div>
                         </div>
                         <div
@@ -397,7 +397,7 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                           <div
                             class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                           >
-                            Pre-Shared Key (PSK)
+                            Passphrase (PSK/SAE)
                           </div>
                         </div>
                         <div
