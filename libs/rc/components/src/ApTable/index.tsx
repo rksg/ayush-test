@@ -129,7 +129,9 @@ export function ApTable (props: ApTableProps) {
     search: {
       searchTargetFields: defaultApPayload.searchTargetFields
     },
-    option: { skip: Boolean(props.tableQuery) }
+    option: { skip: Boolean(props.tableQuery) },
+    enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'deviceGroupName', 'deviceGroupId',
+      'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
 
@@ -143,7 +145,7 @@ export function ApTable (props: ApTableProps) {
 
   const columns = useMemo(() => {
     const extraParams = tableQuery?.data?.extra ?? {
-      channel24: true,
+      channel24: false,
       channel50: false,
       channelL50: false,
       channelU50: false,
@@ -169,7 +171,7 @@ export function ApTable (props: ApTableProps) {
       fixed: 'left',
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
+      groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
@@ -177,7 +179,7 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'model',
       searchable: searchable,
       sorter: true,
-      groupable: getGroupableConfig()?.modelGroupableOptions
+      groupable: filterables && getGroupableConfig()?.modelGroupableOptions
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -225,17 +227,17 @@ export function ApTable (props: ApTableProps) {
     //     </Space>)
     //   }
     // },
-    {
+    ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
-      render: (data, row : APExtended) => (
+      render: (data: React.ReactNode, row : APExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       )
-    }, {
+    }]), {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
@@ -270,7 +272,8 @@ export function ApTable (props: ApTableProps) {
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+      groupable: filterables &&
+        getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
     }, {
       key: 'rf-channels',
       dataIndex: 'rf-channels',
@@ -451,6 +454,7 @@ export function ApTable (props: ApTableProps) {
         settingsId='ap-table'
         columns={columns}
         dataSource={tableData}
+        getAllPagesData={tableQuery.getAllPagesData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={handleTableChange}

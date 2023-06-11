@@ -7,7 +7,7 @@ import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
   useApViewModelQuery,
-  useWifiCapabilitiesQuery
+  useGetApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import { useApContext } from '@acx-ui/rc/utils'
 import { getIntl }      from '@acx-ui/utils'
@@ -37,16 +37,16 @@ export function ApPhoto () {
     filters: { serialNumber: [params.serialNumber] }
   }
   const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const wifiCapabilitiesQuery = useWifiCapabilitiesQuery({ params })
+  const apCapabilitiesQuery = useGetApCapabilitiesQuery({ params })
   const currentAP = apViewModelQuery.data
-  const wifiCapabilities = wifiCapabilitiesQuery.data
+  const apCapabilities = apCapabilitiesQuery.data
 
   const [addApPhoto] = useAddApPhotoMutation()
   const apPhoto = useGetApPhotoQuery({ params })
 
   useEffect(() => {
-    if(wifiCapabilities){
-      const allModelsCapabilities = wifiCapabilities?.apModels
+    if(apCapabilities){
+      const allModelsCapabilities = apCapabilities?.apModels
       const filteredModelCapabilities = allModelsCapabilities?.filter((modelCapabilities:
         { model: string })=> modelCapabilities.model === apViewModelQuery.data?.model)
       if(filteredModelCapabilities[0]){
@@ -67,7 +67,7 @@ export function ApPhoto () {
         setImageList([defaultImageUrl])
       }
     }
-  }, [apPhoto, currentAP, wifiCapabilities])
+  }, [apPhoto, currentAP, apCapabilities])
 
   const { $t } = getIntl()
   const beforeUpload = async function (file: File) {
@@ -111,7 +111,7 @@ export function ApPhoto () {
   }
 
   return (
-    <Loader states={[apPhoto, wifiCapabilitiesQuery]}>
+    <Loader states={[apPhoto, apCapabilitiesQuery]}>
       <Card>
         <StyledSpace>
           <RoundIconDiv>

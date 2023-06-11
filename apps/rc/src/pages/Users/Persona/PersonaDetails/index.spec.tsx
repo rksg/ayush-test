@@ -2,7 +2,7 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
   PersonaUrls,
@@ -37,6 +37,7 @@ Object.assign(navigator, {
 })
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe('Persona Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
@@ -234,5 +235,31 @@ describe('Persona Details', () => {
     await userEvent.click(confirmButton)
 
     expect(blockedFn).toBeCalledWith({ revoked: true })
+  })
+
+  it('should retry vni', async () => {
+    const retryFn = jest.fn()
+    mockServer.use(
+      rest.delete(
+        PersonaUrls.allocateVni.url,
+        (_, res, ctx) => {
+          retryFn()
+          return res(ctx.json({}))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <PersonaDetails />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+      }
+    )
+
+    const retryVniButton = await screen.findByRole('button', { name: /Retry/i })
+    await userEvent.click(retryVniButton)
+
+    expect(retryFn).toHaveBeenCalled()
   })
 })

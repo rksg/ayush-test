@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Empty, Form, Space } from 'antd'
-import _                      from 'lodash'
-import { useIntl }            from 'react-intl'
+import { Form, Space } from 'antd'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
 
-import { cssNumber, Drawer, showActionModal, Table, TableProps, useStepFormContext } from '@acx-ui/components'
-import { DdosRateLimitingRule, defaultSort, getDDoSAttackTypeString, sortProp }      from '@acx-ui/rc/utils'
-import { filterByAccess }                                                            from '@acx-ui/user'
+import { cssNumber, Drawer, showActionModal, TableProps, useStepFormContext } from '@acx-ui/components'
+import { DDoSRulesTable as DefaultDDoSRulesTable }                            from '@acx-ui/rc/components'
+import { DdosRateLimitingRule, getDDoSAttackTypeString }                      from '@acx-ui/rc/utils'
+import { filterByAccess }                                                     from '@acx-ui/user'
 
 import { FirewallFormModel } from '../../..'
 import { DDoSRuleDialog }    from '../DDoSRuleDialog'
@@ -39,25 +40,6 @@ export const DDoSRateLimitRulesTable = (props: DDoSRateLimitRulesTableProps) => 
 
     form.setFieldValue('rules', currentData)
   }
-
-  const columns: TableProps<DdosRateLimitingRule>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'DDoS Attack Type' }),
-      key: 'ddosAttackType',
-      dataIndex: 'ddosAttackType',
-      defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('ddosAttackType', defaultSort) },
-      render: (_, row) => {
-        return getDDoSAttackTypeString($t, row.ddosAttackType)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Rate-limit Value' }),
-      key: 'rateLimiting',
-      dataIndex: 'rateLimiting',
-      sorter: { compare: sortProp('rateLimiting', defaultSort) }
-    }
-  ]
 
   const rowActions: TableProps<DdosRateLimitingRule>['rowActions'] = [
     {
@@ -112,16 +94,11 @@ export const DDoSRateLimitRulesTable = (props: DDoSRateLimitRulesTableProps) => 
 
   return (
     <>
-      <Table
-        columns={columns}
+      <DefaultDDoSRulesTable
         dataSource={data}
-        rowKey='ddosAttackType'
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         actions={actions}
-        locale={{
-          emptyText: <Empty description={$t({ defaultMessage: 'No rules created yet' })} />
-        }}
       />
 
       <DDoSRuleDialog

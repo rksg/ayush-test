@@ -769,6 +769,7 @@ const setAPRadioInfo = (row: APExtended, APRadio: RadioProperties[], channelColu
 
 
   if (channelColunnnShow) {
+    if (!channelColunnnShow.channel24 && apRadio24) channelColunnnShow.channel24 = true
     if (!channelColunnnShow.channel50 && apRadio50) channelColunnnShow.channel50 = true
     if (!channelColunnnShow.channelL50 && apRadioL50) channelColunnnShow.channelL50 = true
     if (!channelColunnnShow.channelU50 && apRadioU50) channelColunnnShow.channelU50 = true
@@ -793,7 +794,7 @@ const setPoEPortStatus = (row: APExtended, lanPortStatus: LanPortStatusPropertie
 
 const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
   let channelColumnStatus = {
-    channel24: true,
+    channel24: false,
     channel50: false,
     channelL50: false,
     channelU50: false,
@@ -819,7 +820,7 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
 
 const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>) => {
   let channelColumnStatus = {
-    channel24: true,
+    channel24: false,
     channel50: false,
     channelL50: false,
     channelU50: false,
