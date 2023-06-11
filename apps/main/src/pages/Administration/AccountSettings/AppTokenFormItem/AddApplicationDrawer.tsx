@@ -1,11 +1,12 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer, PasswordInput } from '@acx-ui/components'
+import { Button, Drawer, PasswordInput } from '@acx-ui/components'
 import {
   excludeExclamationRegExp,
   excludeSpaceRegExp,
-  notAllDigitsRegExp
+  notAllDigitsRegExp,
+  generateHexKey
 } from '@acx-ui/rc/utils'
 
 interface AddApplicationDrawerProps {
@@ -43,25 +44,35 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     <Form.Item
       name='ip'
       label={$t({ defaultMessage: 'Client ID' })}
-      rules={[
-        { required: true },
-        { min: 2 },
-        { max: 64 },
-        { validator: (_, value) => excludeExclamationRegExp(value) }
-      ]}
-      children={<Input />}
+      initialValue={generateHexKey(32)}
+      // rules={[
+      //   { required: true },
+      //   { validator: (_, value) => excludeExclamationRegExp(value) }
+      // ]}
+      children={<Input disabled={true} />}
     />
     <Form.Item
       name='secret'
       label={$t({ defaultMessage: 'Clirnt secret' })}
+      // initialValue={secret}
       rules={[
         { required: true },
-        { max: 64 },
+        // { max: 64 },
         { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => notAllDigitsRegExp(value) }
       ]}
       children={<PasswordInput />}
     />
+    <Button
+      // style={{ marginLeft: '300px', marginTop: '17px' }}
+      type='link'
+      onClick={() => {
+        const sec = generateHexKey(30)
+        form.setFieldValue('secret', sec)
+      }}>
+      {$t({ defaultMessage: 'Generate Secret' })}
+    </Button>
+
   </Form>
 
   return (

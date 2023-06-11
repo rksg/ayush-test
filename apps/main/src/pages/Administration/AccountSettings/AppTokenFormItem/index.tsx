@@ -36,7 +36,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
                 style={{ marginLeft: '300px', marginTop: '17px' }}
                 type='link'
                 key='viewxml'
-                onClick={() => {onAddAppToekn() }}>
+                onClick={() => {onAddAppToekn()}}>
                 {$t({ defaultMessage: 'Add Application Token' })}
               </Button>
             }
@@ -82,7 +82,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     const actions: TableProps<TenantAuthentications>['actions'] = [
       {
         label: $t({ defaultMessage: 'Add Token' }),
-        onClick: () => {
+        onClick: () => {onAddAppToekn()
         }
       }
     ]
