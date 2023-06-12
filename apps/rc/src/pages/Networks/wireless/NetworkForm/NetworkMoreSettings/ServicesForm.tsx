@@ -233,7 +233,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         />
       </UI.FieldLabel>
 
-      <UI.FieldLabel width='125px'>
+      <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
         <Form.Item
           name={['wlan','advancedCustomization','enableSyslog']}
