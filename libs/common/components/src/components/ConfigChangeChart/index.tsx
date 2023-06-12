@@ -24,7 +24,8 @@ import {
   chartRowMapping,
   getSymbol,
   getChartLayoutConfig,
-  tooltipFormatter
+  tooltipFormatter,
+  getTooltipCoordinate
 } from './helper'
 import { ResetButton, ChartWrapper } from './styledComponents'
 
@@ -59,7 +60,7 @@ export function ConfigChangeChart ({
   const { setBoundary } =
     useBoundaryChange(eChartsRef, chartLayoutConfig, chartBoundary, brushWidth)
   const { canResetZoom, resetZoomCallback } =
-    useDataZoom(eChartsRef, true, chartBoundary, setBoundary)
+    useDataZoom(eChartsRef, chartBoundary, setBoundary)
 
   const option: EChartsOption = {
     animation: false,
@@ -85,7 +86,7 @@ export function ConfigChangeChart ({
       },
       formatter: tooltipFormatter,
       ...tooltipOptions(),
-      position: (point) => [point[0] + 12, legendHeight + brushTextHeight] // 12 for gap between tooltip and tracker
+      position: getTooltipCoordinate(legendHeight + brushTextHeight)
     },
     legend: {
       right: chartPadding,

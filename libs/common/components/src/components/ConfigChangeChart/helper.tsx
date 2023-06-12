@@ -21,7 +21,6 @@ export type ConfigChange = {
 
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
-
   chartBoundary: [ number, number],
   selectedData?: number,
   onDotClick?: (params: unknown) => void
@@ -53,11 +52,11 @@ export const getChartLayoutConfig = (
   symbolSize: 12
 })
 
-export const getBoundary = (
+export const getInitBoundary = (
   chartBoundary: ConfigChangeChartProps['chartBoundary']
 ) => ({ min: chartBoundary[0], max: chartBoundary[1] })
 
-export const getBrushPositions = (
+export const getInitBrushPositions = (
   chartBoundary: ConfigChangeChartProps['chartBoundary'],
   brushWidth: ReturnType<typeof getChartLayoutConfig>['brushWidth']
 ) => {
@@ -68,6 +67,8 @@ export const getBrushPositions = (
   return { actual: brushes, show: brushes }
 }
 
+// TODO: when window is smaller than width of 2 brushes, brushes will be rendered outside of the window,
+//       might need to fix when we decide how to show this case
 export const adjustAfterBoundaryChanged = (
   boundary: { min: number, max: number }, actualArea: number[][], index: number
 ) => {
@@ -257,7 +258,6 @@ export const draw = (
 
 export function useDataZoom (
   eChartsRef: RefObject<ReactECharts>,
-  zoomable: boolean,
   chartBoundary: number[],
   setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>
 ) {
@@ -278,7 +278,7 @@ export function useDataZoom (
   }, [chartBoundary, setBoundary])
 
   useEffect(() => {
-    if (!eChartsRef?.current || !zoomable) return
+    if (!eChartsRef?.current) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({
       type: 'takeGlobalCursor',
@@ -286,8 +286,12 @@ export function useDataZoom (
       dataZoomSelectActive: true
     })
     echartInstance.on('datazoom', onDatazoomCallback)
-    return () => { echartInstance.off('datazoom', onDatazoomCallback) }
-  }, [eChartsRef, onDatazoomCallback, zoomable])
+    return () => {
+      if (echartInstance && !echartInstance.isDisposed?.() && echartInstance.off) {
+        echartInstance.off('datazoom', onDatazoomCallback)
+      }
+    }
+  }, [eChartsRef, onDatazoomCallback])
 
   const resetZoomCallback = useCallback(() => {
     if (!eChartsRef?.current) return
@@ -296,7 +300,7 @@ export function useDataZoom (
       type: 'dataZoom',
       batch: [{ startValue: chartBoundary[0], endValue: chartBoundary[1] }]
     })
-  }, [eChartsRef, chartBoundary])
+  }, [eChartsRef, chartBoundary ])
 
   useEffect(() => { resetZoomCallback() }, [resetZoomCallback])
 
@@ -322,7 +326,11 @@ export function useDotClick (
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.on('click', onDotClickCallback)
-    return () => { echartInstance.off('click', onDotClickCallback) }
+    return () => {
+      if (echartInstance && !echartInstance.isDisposed?.() && echartInstance.off) {
+        echartInstance.off('click', onDotClickCallback)
+      }
+    }
   }, [eChartsRef, onDotClickCallback])
 }
 
@@ -347,7 +355,11 @@ export function useLegendSelectChanged (
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.on('legendselectchanged', onLegendChangedCallback)
-    return () => { echartInstance.off('legendselectchanged', onLegendChangedCallback) }
+    return () => {
+      if (echartInstance && !echartInstance.isDisposed?.() && echartInstance.off) {
+        echartInstance.off('legendselectchanged', onLegendChangedCallback)
+      }
+    }
   }, [eChartsRef, onLegendChangedCallback])
 }
 
@@ -357,12 +369,16 @@ export const useBoundaryChange = (
   chartBoundary: ConfigChangeChartProps['chartBoundary'],
   brushWidth: number
 ) => {
-  const [boundary, setBoundary] = useState(getBoundary(chartBoundary))
-  const [brushPositions, setBrushPositions] = useState(getBrushPositions(chartBoundary, brushWidth))
+  const [boundary, setBoundary] = useState(getInitBoundary(chartBoundary))
+  const [brushPositions, setBrushPositions] =
+    useState(getInitBrushPositions(chartBoundary, brushWidth))
 
   useEffect(()=>{
-    setBoundary(getBoundary(chartBoundary))
-    setBrushPositions(getBrushPositions(chartBoundary, brushWidth))
+    if(chartBoundary[0] === boundary.min &&
+      chartBoundary[1] === boundary.max ) return
+    setBoundary(getInitBoundary(chartBoundary))
+    setBrushPositions(getInitBrushPositions(chartBoundary, brushWidth))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartBoundary, brushWidth])
 
   useEffect(() => {
@@ -374,7 +390,7 @@ export const useBoundaryChange = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boundary])
 
-  return { boundary, setBoundary, setBrushPositions }
+  return { boundary, brushPositions, setBoundary, setBrushPositions }
 }
 
 export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
@@ -387,6 +403,9 @@ export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams
     </TooltipWrapper>
   )
 }
+
+export const getTooltipCoordinate = (y: number) =>
+  (point: [number, number]) => [point[0] + 12, y] // 12 for gap between tooltip and tracker
 
 export const hexToRGB = (hex: string) =>
   `rgb(${hex.match(/[0-9A-F]{1,2}/g)?.map(hex => parseInt(hex, 16)).join(',')})`
