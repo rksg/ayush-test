@@ -154,7 +154,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
-    return <Select value={role}
+    return <Select defaultValue={role}
       style={{ width: '200px' }}
       onChange={value => handleRoleChange(id, value)}>
       {
