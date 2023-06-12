@@ -243,6 +243,7 @@ export default function NetworkForm (props:{
         saveRadiusData?.authRadius)
       || !_.isEqual(radiusData?.accountingRadius, saveRadiusData?.accountingRadius)
       const radiusValidate = !radiusData.cloudpathServerId && radiusChanged
+      && saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr
         ? await checkIpsValues(radiusData) : false
       const hasRadiusError = radiusValidate
         ? await checkRadiusError(radiusData, radiusValidate) : false
@@ -319,7 +320,9 @@ export default function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath){
+    if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
+      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr
+    ){
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
@@ -636,7 +639,6 @@ export default function NetworkForm (props:{
               <StepsForm.StepForm
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 onFinish={handleOnboarding}
               >
                 {pickOneCaptivePortalForm(saveState)}
