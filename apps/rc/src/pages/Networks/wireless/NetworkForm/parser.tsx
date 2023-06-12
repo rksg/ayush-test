@@ -126,29 +126,24 @@ const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
-  let saveData
-  if (editMode) {
-    saveData = {
-      ...data,
-      ...{
-        wlan: {
-          wlanSecurity: data.dpskWlanSecurity
-        }
-      }
-    }
-  } else {
-    saveData = {
-      ...data,
-      ...{
-        wlan: {
-          wlanSecurity: data.dpskWlanSecurity,
+  const saveData = {
+    ...data,
+    ...{
+      wlan: {
+        wlanSecurity: data.dpskWlanSecurity,
+        ...(editMode ? {} : {
           enable: true,
           vlanId: 1,
           advancedCustomization: new DpskWlanAdvancedCustomization()
-        }
+        })
       }
     }
   }
+
+  if (data.dpskServiceProfileId === '') {
+    delete saveData.dpskServiceProfileId
+  }
+
   return saveData
 }
 
@@ -335,6 +330,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       advancedCustomization
     }
   }
+
   if(data.guestPortal){
     saveData = {
       ...saveData,
@@ -344,6 +340,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       }
     }
   }
+
+  if (saveData.dpskServiceProfileId === '') {
+    delete saveData.dpskServiceProfileId
+  }
+
   return saveData
 }
 
