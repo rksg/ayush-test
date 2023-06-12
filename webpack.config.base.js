@@ -1,7 +1,6 @@
 const withModuleFederation = require('@nrwl/react/module-federation')
 const { merge } = require('webpack-merge')
 const modifyVars = require('./libs/common/components/src/theme/modify-vars')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 /**
  * @param {Parameters<typeof withModuleFederation>[0]} moduleFederationConfig
@@ -10,35 +9,19 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
   moduleFederationConfig,
   additionalWebpackConfig = {}
 ) {
-  const doModuleFederation = await withModuleFederation({
-    ...moduleFederationConfig,
-  })
+  const doModuleFederation = await withModuleFederation(moduleFederationConfig)
   return function (config) {
-    config = merge(doModuleFederation(config), {
-      ...additionalWebpackConfig,
-      ...(process.env.NODE_ENV === 'development'
-        ? {
-          cache: true,
-          watchOptions: {
-            ignored: /node_modules/,
-            poll: 1000,
-          },
-          plugins: [
-            new ForkTsCheckerWebpackPlugin({
-              typescript: {
-                configFile: './tsconfig.json',
-              },
-            })
-          ]
-        }
-        : {}
-      )
-    })
-
+    config = merge(doModuleFederation(config), additionalWebpackConfig)
     if (process.env.NODE_ENV === 'production') {
       config.devtool = 'hidden-source-map'
       config.mode = 'production'
       config.optimization.minimize = true
+    } else {
+      config.cache = true
+      config.watchOptions = {
+        ignored: /node_modules/,
+        poll: 1000
+      }
     }
 
     config.module.rules = config.module.rules.map(rule => {
