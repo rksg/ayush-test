@@ -15,13 +15,17 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 function execute_copy(source_domain, tab) {
+  const domain = tab.url.startsWith('https://staging.mlisa.io')
+    ? 'staging.mlisa.io'
+    : source_domain
+  console.log('copying cookies from domain', domain)
   chrome.cookies.getAll({ domain: "localhost" }, function (cookies) {
     cookies.forEach(function (item, i) {
       chrome.cookies.remove({ url: "http://localhost" + cookies[i].path, name: cookies[i].name });
     });
   });
 
-  chrome.cookies.getAll({"domain": source_domain}, function(cookie) {
+  chrome.cookies.getAll({"domain": domain}, function(cookie) {
     // Set to localhost
     cookie.forEach(function (item, index) {
       item.domain = '';
@@ -31,13 +35,17 @@ function execute_copy(source_domain, tab) {
 
     var opt = {
       type: "basic",
-      title: source_domain + ' cookies are copied to localhost',
+      title: domain + ' cookies are copied to localhost',
       message: '',
       iconUrl: chrome.runtime.getURL("wallet.png")
     };
 
     chrome.notifications.create('', opt);
-    open_localhost(tab);
+    if (domain === 'staging.mlisa.io') {
+      open_localhostRA(tab)
+    } else {
+      open_localhost(tab);// ACX/R1
+    }
   });
 }
 
@@ -73,4 +81,24 @@ function open_localhost(tab) {
     console.log('tab opened');
   });
 
+}
+function open_localhostRA(tab) {
+  console.log('Current tab URL = ' + tab.url);
+
+  if (!tab.url) {
+    console.log('No URL. Do not open new tab');
+    return;
+  }
+
+  if (tab.url.indexOf('staging.mlisa.io') === -1) {
+    console.log('Not a RUCKUS Analytics URL. Do not open new tab');
+    return;
+  }
+  chrome.tabs.create({
+    active: true,
+    index: tab.index + 1,
+    url: `http://localhost:3333/`
+  }, (tab) => {
+    console.log('tab opened');
+  });
 }

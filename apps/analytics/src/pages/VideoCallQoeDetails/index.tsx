@@ -145,7 +145,7 @@ export function VideoCallQoeDetails (){
       render: (value:unknown)=>{
         if(!value)
           return '-'
-        return <TenantLink to={'/networks/wireless'}>{value as string}</TenantLink>
+        return value as string
       }
     },
     {
@@ -210,8 +210,12 @@ export function VideoCallQoeDetails (){
     }
   ]
   const getPill = (mos:number)=>{
-    return mos >= 4 ? <UI.BigTrendPill value='Good' trend='positive' /> :
-      <UI.BigTrendPill value='Bad' trend='negative' />
+    return mos >= 4 ? <UI.BigTrendPill
+      value={$t({ defaultMessage: 'Good' })}
+      trend='positive' /> :
+      <UI.BigTrendPill
+        value={$t({ defaultMessage: 'Bad' })}
+        trend='negative' />
   }
 
   const seriesMapping = [{
