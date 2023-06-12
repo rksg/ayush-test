@@ -334,6 +334,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
 
   let saveData:NetworkSaveData = {
     ...originalData,
+    ...data,
     wlan: {
       ...originalData?.wlan,
       vlanId,
@@ -367,8 +368,9 @@ export function transferVenuesToSave (data: NetworkSaveData, originalData: Netwo
 
 function cleanClientIsolationAllowlistId (venues: NetworkVenue[]): NetworkVenue[] {
   const incomingVenues = [...venues!]
-  incomingVenues.forEach((v: NetworkVenue) => {
-    v.clientIsolationAllowlistId = undefined
+
+  incomingVenues.map((v) => {
+    return { ...v, clientIsolationAllowlistId: undefined }
   })
 
   return incomingVenues

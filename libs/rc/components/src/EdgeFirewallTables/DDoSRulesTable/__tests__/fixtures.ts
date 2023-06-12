@@ -16,13 +16,13 @@ export const mockDDoSRulesWithStatistic = [
   {
     ddosAttackType: DdosAttackType.ICMP,
     rateLimiting: 12,
-    deniedPacket: 6,
-    passPacket: 100
+    deniedPackets: 6,
+    passedPackets: 100
   },
   {
     ddosAttackType: DdosAttackType.TCP_SYN,
     rateLimiting: 200,
-    deniedPacket: 0,
-    passPacket: 120
+    deniedPackets: 0,
+    passedPackets: 120
   }
 ]

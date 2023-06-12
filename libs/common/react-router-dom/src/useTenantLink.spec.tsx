@@ -3,7 +3,12 @@ import React from 'react'
 import { renderHook }                  from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
+import * as config from '@acx-ui/config'
+
 import { useTenantLink } from './useTenantLink'
+
+jest.mock('@acx-ui/config')
+const get = jest.mocked(config.get)
 
 const getWrapper = (basePath: string = '') =>
   ({ children }: { children: React.ReactElement }) => (
@@ -15,6 +20,17 @@ const getWrapper = (basePath: string = '') =>
   )
 
 describe('useTenantLink', () => {
+  afterEach(() => {
+    get.mockReturnValue('')
+  })
+  it('returns path prepend with MLISA base path', () => {
+    get.mockReturnValue('true')
+    const { result } = renderHook(
+      () => useTenantLink('/networks'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/analytics/next/networks')
+  })
   it('returns path prepend with :tenantId/t', () => {
     const { result } = renderHook(
       () => useTenantLink('/networks'),

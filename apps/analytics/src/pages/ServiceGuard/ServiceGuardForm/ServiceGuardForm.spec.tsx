@@ -189,7 +189,7 @@ describe('ServiceGuardForm', () => {
     })
 
     // Submit
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText('Service Validation test updated')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
@@ -222,7 +222,7 @@ describe('ServiceGuardForm', () => {
     })
 
     // Submit
-    await click(actions.getByRole('button', { name: 'Finish' }))
+    await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText('Duplicate test name exist')).toBeVisible()
     expect(mockedNavigate).not.toBeCalled()
