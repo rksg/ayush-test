@@ -275,8 +275,9 @@ export function Unit (props:{
         entityValue: unit.model,
         numOfEntities: 1
       },
-      onOk: () => {
-        deleteStackMember({ params: { tenantId, stackSwitchSerialNumber: unit.serialNumber } })
+      onOk: async() => {
+        await deleteStackMember({ params: { tenantId, stackSwitchSerialNumber: unit.serialNumber } }).unwrap()
+        window.location.reload()
       }
     })
   }

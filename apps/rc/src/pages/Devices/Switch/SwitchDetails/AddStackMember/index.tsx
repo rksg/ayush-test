@@ -205,7 +205,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     const dataRows = [...tableData]
     const serialNumber = form.getFieldValue(
       `serialNumber${row.key}`
-    )
+    )?.toUpperCase()
     dataRows[index].id = serialNumber
     dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
     setTableData(dataRows)
@@ -234,6 +234,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
         ]
       }
       await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
+      window.location.reload()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

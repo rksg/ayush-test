@@ -10,6 +10,7 @@ import { SwitchDetailsContext }                                                 
 import { stackMemberStandalone, standaloneFront, standaloneRear, switchDetailSatckOnline, switchDetailSwitchOffline } from '../__tests__/fixtures'
 
 import { SwitchFrontRearView } from '.'
+import userEvent from '@testing-library/user-event'
 
 describe('SwitchFrontRearView', () => {
   beforeEach(() => {
@@ -49,6 +50,11 @@ describe('SwitchFrontRearView', () => {
 
     expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
     expect(await screen.findByText('Active')).toBeVisible()
+    const rearViewButton = await screen.getByRole('button', { name: /rear view/i })
+    expect(rearViewButton).toBeVisible()
+    await userEvent.click(rearViewButton)
+    expect(await screen.findByText('Front View')).toBeVisible()
+    expect(await screen.findByText('Slot 1')).toBeVisible()
   })
 
   it('should render correctly : switch offline', async () => {
@@ -75,8 +81,8 @@ describe('SwitchFrontRearView', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
       }
     })
-
-    expect(await screen.findByText('Rear View')).toBeVisible()
+    const rearViewButton = await screen.getByRole('button', { name: /rear view/i })
+    expect(rearViewButton).toBeDisabled()
   })
 
 })
