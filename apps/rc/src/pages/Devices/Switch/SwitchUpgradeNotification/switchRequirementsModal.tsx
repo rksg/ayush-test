@@ -95,7 +95,7 @@ export function SwitchRequirementsModal (props: {
           <UI.OrderList type={'a'}>
             <UI.ListItems>
               {$t({ defaultMessage: 'Switches running 08.0.80 and above can be directly upgraded to 09.0.10f UFI router image' })}
-              <br />/switches/clients/query
+              <br />
               {$t({ defaultMessage: 'Example:' })}
               <UI.CommandRectengle>
                 copy tftp flash &lt;TFTP server IP address&gt; SPR09010fufi.bin primary
