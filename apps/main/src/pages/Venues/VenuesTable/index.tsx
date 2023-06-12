@@ -302,7 +302,10 @@ export function VenuesTable () {
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
     selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({ key: v.name, value: _.capitalize(v.name) })) || true
+      cityFilterOptions: data?.map(v=>({
+        key: v.name,
+        value: v.name.split(', ').map(_.startCase).join(', ')
+      })) || true
     })
   })
 
