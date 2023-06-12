@@ -44,7 +44,7 @@ RUN export $(cat ${ENV_FILE}) \
 
 ###############################################################
 FROM build-base as acx-ui-lint
-RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose --parallel
+RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
 FROM build-base as acx-ui-tslint
@@ -72,7 +72,7 @@ RUN tools/docker/locales/generate.sh
 
 FROM build-base as build
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --all --parallel
+RUN node ./node_modules/.bin/nx run-many --target=build --all
 
 ###############################################################
 FROM build-base as acx-ui-base-test
@@ -134,11 +134,7 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
 
-COPY --from=acx-ui-group1-test /app/dist/apps ./
-COPY --from=acx-ui-group2-test /app/dist/apps ./
-COPY --from=acx-ui-group3-test /app/dist/apps ./
-COPY --from=acx-ui-group4-test /app/dist/apps ./
-COPY --from=acx-ui-group5-test /app/dist/apps ./
+COPY --from=build /app/dist/apps ./
 RUN \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \
