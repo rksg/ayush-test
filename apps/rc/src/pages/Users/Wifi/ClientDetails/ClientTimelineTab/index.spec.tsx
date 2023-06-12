@@ -57,7 +57,7 @@ describe('ClientTimelineTab', ()=>{
       }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
-      .toEqual('Sessions')
+      .toEqual('Completed Sessions')
     expect(await screen.findByTestId('rc-SessionTable')).toBeVisible()
   })
 })
