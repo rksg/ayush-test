@@ -33,9 +33,6 @@ COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
 COPY tools/tests ./tools/tests
-COPY cicd_tool ./cicd_tool
-COPY test_cases.table ./test_cases.table
-RUN chmod a+x ./cicd_tool/run_test_cases_tool.sh
 
 # dump git information
 RUN export $(cat ${ENV_FILE}) \
@@ -81,6 +78,9 @@ ENV NODE_OPTIONS=--max-old-space-size=10240
 COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
 COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
+COPY cicd_tool ./cicd_tool
+COPY test_cases.table ./test_cases.table
+RUN chmod a+x ./cicd_tool/run_test_cases_tool.sh
 
 FROM acx-ui-base-test as acx-ui-group1-test
 ARG PRECOMMIT=true
@@ -148,4 +148,3 @@ RUN \
 EXPOSE 8080
 
 CMD ["/bin/sh", "/etc/nginx/start-nginx.sh"]
-
