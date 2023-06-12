@@ -463,8 +463,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddWiFiCallingServiceProfile',
-            'UpdateWiFiCallingServiceProfile',
+            'AddWifiCallingServiceProfile',
+            'UpdateWifiCallingServiceProfile',
             'DeleteWifiCallingServiceProfile',
             'DeleteWifiCallingServiceProfiles'
           ], () => {
@@ -491,8 +491,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddWiFiCallingServiceProfile',
-            'UpdateWiFiCallingServiceProfile',
+            'AddWifiCallingServiceProfile',
+            'UpdateWifiCallingServiceProfile',
             'DeleteWifiCallingServiceProfile',
             'DeleteWifiCallingServiceProfiles'
           ], () => {

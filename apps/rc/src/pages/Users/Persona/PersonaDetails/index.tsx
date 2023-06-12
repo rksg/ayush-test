@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Input, Row, Space, Tag, Typography } from 'antd'
-import { useIntl }                                 from 'react-intl'
-import { useParams }                               from 'react-router-dom'
+import { Col, Row, Space, Tag, Typography } from 'antd'
+import { useIntl }                          from 'react-intl'
+import { useParams }                        from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
-import { CopyOutlined }                                                  from '@acx-ui/icons'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { CopyOutlined }                                                                 from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
@@ -15,7 +15,8 @@ import {
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useLazyGetConnectionMeteringByIdQuery,
-  useUpdatePersonaMutation
+  useUpdatePersonaMutation,
+  useAllocatePersonaVniMutation
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
@@ -51,6 +52,7 @@ function PersonaDetails () {
 
   // TODO: isLoading state?
   const [updatePersona] = useUpdatePersonaMutation()
+  const [allocatePersonaVni] = useAllocatePersonaVniMutation()
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
@@ -62,6 +64,7 @@ function PersonaDetails () {
   const deviceCount = personaDetailsQuery.data?.devices?.length ?? 0
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
+  const [vniRetryable, setVniRetryable] = useState<boolean>(false)
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -121,10 +124,24 @@ function PersonaDetails () {
     }
   }, [personaGroupData])
 
+  useEffect(() => {
+    if (!personaGroupData || !personaDetailsQuery.data) return
+    const { primary = true, revoked } = personaDetailsQuery.data
+    const hasNSG = !!personaGroupData?.nsgId
+
+    setVniRetryable(hasNSG && primary && !revoked)
+  }, [personaGroupData, personaDetailsQuery])
+
   const revokePersona = async () => {
     return await updatePersona({
       params: { groupId: personaGroupId, id: personaId },
       payload: { revoked: !personaDetailsQuery.data?.revoked }
+    })
+  }
+
+  const allocateVni = async () => {
+    return await allocatePersonaVni({
+      params: { groupId: personaGroupId, id: personaId }
     })
   }
 
@@ -149,7 +166,7 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
         <>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={personaDetailsQuery.data?.dpskPassphrase}
@@ -182,7 +199,14 @@ function PersonaDetails () {
 
   const netSeg = [
     { label: $t({ defaultMessage: 'Assigned VNI' }),
-      value: personaDetailsQuery.data?.vni
+      value: personaDetailsQuery.data?.vni ??
+        (vniRetryable ?
+          <Space size={'middle'}>
+            <Typography.Text>{noDataDisplay}</Typography.Text>
+            <Button size={'small'} type={'default'} onClick={allocateVni}>
+              {$t({ defaultMessage: 'Retry VNI' })}
+            </Button>
+          </Space> : undefined)
     },
     { label: $t({ defaultMessage: 'Network Segmentation' }),
       value:
@@ -314,7 +338,8 @@ function PersonaDetailsPageHeader (props: {
       defaultMessage: `{revokedStatus, select,
       true {Unblock}
       other {Block}
-      } this Persona: {name}`
+      } this Persona: {name}`,
+      description: 'Translation strings - Unblock, Block, this Persona'
     }, {
       revokedStatus,
       name: title
@@ -326,7 +351,9 @@ function PersonaDetailsPageHeader (props: {
       defaultMessage: `{revokedStatus, select,
       true {Are you sure you want to unblock this persona?}
       other {The user will be blocked. Are you sure want to block this persona?}
-      }`
+      }`,
+      // eslint-disable-next-line max-len
+      description: 'Translation strings - Are you sure you want to unblock this persona, The user will be blocked. Are you sure want to block this persona'
     }, {
       revokedStatus
     })
@@ -340,7 +367,8 @@ function PersonaDetailsPageHeader (props: {
       okText: $t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
-        other {Block}}`
+        other {Block}}`,
+        description: 'Translation strings - Unblock, Block'
       }, { revokedStatus }),
       okType: 'primary',
       cancelText: $t({ defaultMessage: 'Cancel' }),
@@ -350,9 +378,12 @@ function PersonaDetailsPageHeader (props: {
 
   const extra = filterByAccess([
     <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
-      {$t({ defaultMessage: `{revokedStatus, select,
-      true {Unblock}
-      other {Block Persona}}` }, { revokedStatus })}
+      {$t({
+        defaultMessage: `{revokedStatus, select,
+        true {Unblock}
+        other {Block Persona}}`,
+        description: 'Translation strings - Unblock, Block Persona'
+      }, { revokedStatus })}
     </Button>,
     <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}

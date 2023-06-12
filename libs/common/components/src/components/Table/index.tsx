@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key, useCallback, useEffect, useRef } from 'react'
+import React, { useMemo, useState, Key, useEffect, useRef } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, Space }                                                from 'antd'
@@ -70,17 +70,18 @@ export interface TableProps <RecordType>
     )
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
-    enableApiFilter?: boolean,
-    floatRightFilters?: boolean,
+    enableApiFilter?: boolean
+    floatRightFilters?: boolean
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
       groupBy?: string | undefined
     ) => void
     iconButton?: IconButtonProps,
-    filterableWidth?: number,
-    searchableWidth?: number,
+    filterableWidth?: number
+    searchableWidth?: number
     onDisplayRowChange?: (displayRows: RecordType[]) => void
+    getAllPagesData?: () => RecordType[]
   }
 
 export interface TableHighlightFnArgs {
@@ -101,9 +102,16 @@ const defaultPagination = {
 
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
-): [Key[], React.Dispatch<React.SetStateAction<Key[]>>] {
+): [Key[], React.Dispatch<React.SetStateAction<Key[]>>,
+  RecordType[], React.Dispatch<React.SetStateAction<RecordType[]>>,
+  RecordType[], React.Dispatch<React.SetStateAction<RecordType[]>>
+] {
   const [selectedRowKeys, setSelectedRowKeys]
     = useState<Key[]>(rowSelection?.defaultSelectedRowKeys ?? [])
+  const [selectedRows, setSelectedRows]
+    = useState<RecordType[]>([])
+  const [allRows, setAllRows]
+    = useState<RecordType[]>([])
 
   useEffect(() => {
     if (rowSelection?.selectedRowKeys !== undefined) {
@@ -111,7 +119,7 @@ function useSelectedRowKeys <RecordType> (
     }
   }, [rowSelection?.selectedRowKeys])
 
-  return [selectedRowKeys, setSelectedRowKeys]
+  return [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows, allRows, setAllRows]
 }
 
 // following the same typing from antd
@@ -129,7 +137,10 @@ function Table <RecordType extends Record<string, any>> ({
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
-  const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
+  const getRowKey = (data: RecordType) => {
+    return typeof rowKey === 'function' ? rowKey(data) : data[rowKey] as unknown as Key
+  }
+  const allKeys = dataSource?.map(row => getRowKey(row))
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
@@ -184,12 +195,8 @@ function Table <RecordType extends Record<string, any>> ({
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })
-  const {
-    groupable,
-    expandable,
-    columns,
-    isGroupByActive
-  } = useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value)
+  const { groupable, expandable, columns, isGroupByActive, onExpand } =
+  useGroupBy<RecordType>(baseColumns, allKeys, groupByValue, columnsState.value, rowKey)
 
   const setting: SettingOptionType | false = type === 'tall' && settingsId ? {
     draggable: true,
@@ -216,42 +223,49 @@ function Table <RecordType extends Record<string, any>> ({
     children: <SettingsOutlined/>
   } : false
 
-  const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
-  const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
+  const [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows, allRows, setAllRows] =
+  useSelectedRowKeys(props.rowSelection)
 
-    const dataSource = (!isGroupByActive ?
-      props.dataSource : props.dataSource?.flatMap(item => item.children)) as RecordType[]
-
-    return dataSource?.filter((item: RecordType) => {
-      return item && selectedRowKeys.includes(typeof rowKey === 'function' ?
-        rowKey(item) : item[rowKey] as unknown as Key)
-    }) ?? []
-  }, [props.dataSource, rowKey])
   const onRowClick = (record: RecordType) => {
-    if (!props.rowSelection) return
-    if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
+    if (
+      !props.rowSelection ||
+      rowSelection?.getCheckboxProps?.(record)?.disabled
+    )
+      return
 
-    const key = typeof rowKey === 'function' ? rowKey(record) : record[rowKey] as unknown as Key
+    const key = getRowKey(record)
     const isSelected = selectedRowKeys.includes(key)
 
     let newKeys: Key[] | undefined
+    let newRows: RecordType[] | undefined
     let type: RowSelectMethod
     if (props.rowSelection.type === 'radio') {
       type = 'single'
       if (!isSelected) {
         newKeys = [key]
+        newRows = [record]
       }
     } else {
       type = 'multiple'
       newKeys = isSelected
-        // remove if selected
+      // remove if selected
         ? selectedRowKeys.filter(k => k !== key)
-        // add into collection if not selected
+      // add into collection if not selected
         : [...selectedRowKeys, key]
+
+      newRows = isSelected
+        // remove if selected
+        ? selectedRows.filter(item => getRowKey(item) !== key)
+        // add into collection if not selected
+        : [...selectedRows, record]
     }
-    if (!newKeys) return
+    if (!newKeys) {
+      return
+    }
     setSelectedRowKeys(newKeys)
-    props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
+    setSelectedRows(newRows as RecordType[])
+
+    props.rowSelection?.onChange?.(newKeys, newRows as RecordType[], { type })
   }
 
   const aggregator = (
@@ -278,19 +292,47 @@ function Table <RecordType extends Record<string, any>> ({
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected &&
     (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
+  const selectAllRowSelection = {
+    columnWidth: '45px',
+    selections: [
+      {
+        key: 'SELECTION_ALL_PAGES',
+        text: $t({ defaultMessage: 'Select data from all pages' }),
+        onSelect: () => {
+          let data = props.getAllPagesData && props.getAllPagesData()
+          if(data){
+            if(isGroupByActive) {
+              data = data?.flatMap(item => item.children)
+            }
+            setSelectedRowKeys(data.map(row => getRowKey(row)))
+            setSelectedRows(data)
+            setAllRows(data)
+          }
+        }
+      }
+    ]
+  }
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
+    ...(props.getAllPagesData && selectAllRowSelection),
     ..._.omit(props.rowSelection, 'defaultSelectedRowKeys'),
     selectedRowKeys,
     preserveSelectedRowKeys: true,
     onChange: (keys, rows, info) => {
       setSelectedRowKeys(keys)
-      props.rowSelection?.onChange?.(keys, rows, info)
+      const newRows = rows.findIndex(item => !item) !== -1
+        ? allRows.filter(item => keys.includes(getRowKey(item))) : rows
+      setSelectedRows(newRows)
+      props.rowSelection?.onChange?.(keys, newRows, info)
     },
     ...isGroupByActive
       ? {
-        getCheckboxProps: record => 'children' in record
-          ? ({ disabled: true, style: { display: 'none' } })
-          : ({})
+        getCheckboxProps: record => {
+          return 'children' in record && !('isFirstLevel' in record)
+            ? ({ disabled: true, style: { display: 'none' } })
+            : props.rowSelection?.getCheckboxProps
+              ? props.rowSelection?.getCheckboxProps(record)
+              :({})
+        }
       }
       : {}
   } : undefined
@@ -367,7 +409,6 @@ function Table <RecordType extends Record<string, any>> ({
       children: column.children?.map(child => _.flow([columnRender, columnResize])(child))
     })
   }))
-
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
@@ -468,9 +509,10 @@ function Table <RecordType extends Record<string, any>> ({
       showSorterTooltip={false}
       tableAlertOptionRender={false}
       expandable={expandable}
+      onExpand={isGroupByActive ? onExpand : undefined}
       rowClassName={props.rowClassName
         ? props.rowClassName
-        : (record) => isGroupByActive && 'children' in record
+        : (record) => isGroupByActive && 'children' in record && !('isFirstLevel' in record)
           ? 'parent-row-data'
           : ''
       }
@@ -488,7 +530,16 @@ function Table <RecordType extends Record<string, any>> ({
           </Space>
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
-              const rows = getSelectedRows(selectedRowKeys)
+              const rows = enableApiFilter
+                ? selectedRows
+                : selectedRows.map(row => {
+                  const tmp = { ...row }
+                  if(tmp.hasOwnProperty('children') && !tmp.children) {
+                  // remove children from getFilteredData
+                    delete tmp.children
+                  }
+                  return tmp
+                })
 
               const visible = typeof option.visible === 'function'
                 ? option.visible(rows)
@@ -518,7 +569,7 @@ function Table <RecordType extends Record<string, any>> ({
                 {...buttonProps}
                 disabled={disabled}
                 onClick={() =>
-                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })
+                  option.onClick(rows, () => { onCleanSelected() })
                 }
               >
                 {label}

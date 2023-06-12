@@ -1,13 +1,13 @@
 import { useState } from 'react'
 
-import { Input }                     from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal,
+  PasswordInput
 } from '@acx-ui/components'
 import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
@@ -51,7 +51,7 @@ function useColumns (type: AAAServerTypeEnum) {
       dataIndex: 'secret',
       render: function (data, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={row.secret}
@@ -86,7 +86,7 @@ function useColumns (type: AAAServerTypeEnum) {
       dataIndex: 'secret',
       render: function (data, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={row.secret}
@@ -117,7 +117,7 @@ function useColumns (type: AAAServerTypeEnum) {
       dataIndex: 'password',
       render: function (data, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
+          <PasswordInput
             readOnly
             bordered={false}
             value={row.password}

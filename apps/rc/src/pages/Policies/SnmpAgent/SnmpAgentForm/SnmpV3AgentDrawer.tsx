@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Tooltip }                                            from '@acx-ui/components'
+import { Drawer, Tooltip, PasswordInput }                             from '@acx-ui/components'
 import { SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
@@ -111,7 +111,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         { min: 8 },
         { max: 32 }
       ]}
-      children={<Input.Password />}
+      children={<PasswordInput />}
     />
     <Form.Item
       name='privacyProtocol'
@@ -138,7 +138,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
           { min: 8 },
           { max: 32 }
         ]}
-        children={<Input.Password />}
+        children={<PasswordInput />}
       />
     }
     <PrivilegeForm

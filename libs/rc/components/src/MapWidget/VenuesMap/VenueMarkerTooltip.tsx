@@ -1,6 +1,6 @@
 import { defineMessage, useIntl } from 'react-intl'
 
-import { StackedBarChart }                 from '@acx-ui/components'
+import { StackedBarChart, TableProps }     from '@acx-ui/components'
 import { Table }                           from '@acx-ui/components'
 import { getDeviceConnectionStatusColors } from '@acx-ui/components'
 import { VenueMarkerOptions }              from '@acx-ui/rc/utils'
@@ -9,7 +9,14 @@ import * as UI from './styledComponents'
 
 import { NavigateProps } from './index'
 
-function getCols ({ $t }: ReturnType<typeof useIntl>) {
+interface VenueData {
+  key: string;
+  name: string;
+  networkDevices: React.ReactNode;
+  clients: React.ReactNode;
+}
+
+function getCols ({ $t }: ReturnType<typeof useIntl>): TableProps<VenueData>['columns'] {
   const columns = [
     {
       title: '',
@@ -24,10 +31,11 @@ function getCols ({ $t }: ReturnType<typeof useIntl>) {
     },
     {
       title: $t({ defaultMessage: 'Clients' }),
+      align: 'center',
       dataIndex: 'clients',
       key: 'clients'
     }
-  ]
+  ] as TableProps<VenueData>['columns']
   return columns
 }
 
@@ -72,7 +80,7 @@ export function VenueMarkerTooltip (
       key: '1',
       name: $t({ defaultMessage: 'Wi-Fi' }),
       networkDevices: apsCount > 0
-        ? <UI.CellWrapper>
+        ? <UI.ChartWrapper>
           <StackedBarChart
             data={apStat}
             {...commonProps}/>
@@ -80,17 +88,17 @@ export function VenueMarkerTooltip (
             () => onNavigate && onNavigate({ venueId, path: 'venue-details/devices' })}>
             {apsCount}
           </UI.TotalCount>
-        </UI.CellWrapper>
+        </UI.ChartWrapper>
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No APs' })}
         </UI.TextWrapper>,
       clients: clientsCount && clientsCount > 0
-        ? <UI.CellWrapper>
+        ? <UI.CountWrapper>
           <UI.TotalCount onClick={
             () => onNavigate && onNavigate({ venueId, path: 'venue-details/clients/wifi' })}>
             {clientsCount}
           </UI.TotalCount>
-        </UI.CellWrapper>
+        </UI.CountWrapper>
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No AP clients' })}
         </UI.TextWrapper>
@@ -99,7 +107,7 @@ export function VenueMarkerTooltip (
       key: '2',
       name: $t({ defaultMessage: 'Switch' }),
       networkDevices: switchesCount > 0
-        ? <UI.CellWrapper>
+        ? <UI.ChartWrapper>
           <StackedBarChart
             data={switchStat}
             {...commonProps} />
@@ -107,17 +115,17 @@ export function VenueMarkerTooltip (
             () => onNavigate && onNavigate({ venueId, path: 'venue-details/devices/switch' })}>
             {switchesCount}
           </UI.TotalCount>
-        </UI.CellWrapper>
+        </UI.ChartWrapper>
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No Switches' })}
         </UI.TextWrapper>,
       clients: switchClientsCount && switchClientsCount > 0
-        ? <UI.CellWrapper>
+        ? <UI.CountWrapper>
           <UI.TotalCount onClick={
             () => onNavigate && onNavigate({ venueId, path: 'venue-details/clients/switch' })}>
             {switchClientsCount}
           </UI.TotalCount>
-        </UI.CellWrapper>
+        </UI.CountWrapper>
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No Switch clients' })}
         </UI.TextWrapper>
@@ -129,7 +137,7 @@ export function VenueMarkerTooltip (
       key: '3',
       name: $t({ defaultMessage: 'SmartEdge' }),
       networkDevices: edgesCount > 0
-        ? <UI.CellWrapper>
+        ? <UI.ChartWrapper>
           <StackedBarChart
             data={edgeStat}
             {...commonProps} />
@@ -137,17 +145,17 @@ export function VenueMarkerTooltip (
             () => onNavigate && onNavigate({ venueId, path: 'venue-details/devices/edge' })}>
             {edgesCount}
           </UI.TotalCount>
-        </UI.CellWrapper>
+        </UI.ChartWrapper>
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No SmartEdges' })}
         </UI.TextWrapper>,
       clients: edgeClientsCount && edgeClientsCount > 0
-        ? <UI.CellWrapper>
+        ? <UI.CountWrapper>
           <UI.TotalCount onClick={
             () => onNavigate && onNavigate({ venueId, path: 'venue-details/clients/edge' })}>
             {edgeClientsCount}
           </UI.TotalCount>
-        </UI.CellWrapper>
+        </UI.CountWrapper>
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No SmartEdge clients' })}
         </UI.TextWrapper>

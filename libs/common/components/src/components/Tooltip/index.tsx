@@ -1,6 +1,6 @@
 import { Tooltip as AntTooltip } from 'antd'
 
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { InformationOutlined, InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -25,5 +25,18 @@ type PredefinedTooltipProps = Omit<TooltipProps, 'children'>
 Tooltip.Question = function QuestionTooltip (props: PredefinedTooltipProps) {
   return <Tooltip {...props}>
     <QuestionMarkCircleOutlined />
+  </Tooltip>
+}
+
+Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
+  return <Tooltip {...props} >
+    <InformationOutlined />
+  </Tooltip>
+}
+
+
+Tooltip.InfoFilled = function InfoFilledTooltip (props: PredefinedTooltipProps) {
+  return <Tooltip {...props} >
+    <InformationSolid />
   </Tooltip>
 }

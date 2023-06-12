@@ -204,7 +204,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Switch', id: 'Detail' }]
+      providesTags: [{ type: 'Switch', id: 'Detail' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateSwitch'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'DETAIL' }]))
+          })
+        })
+      }
     }),
     switchFrontView: build.query<SwitchFrontView, RequestPayload>({
       query: ({ params }) => {
@@ -479,7 +489,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
               ...item,
               createdDate: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
-              status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
+              backupStatus: transformConfigBackupStatus(item) as ConfigurationBackupStatus
             })) : []
         }
       },
@@ -626,7 +636,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'Switch', id: 'LIST' },
+        { type: 'Switch', id: 'DETAIL' },
+        { type: 'Switch', id: 'SWITCH' }
+      ]
     }),
     getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
       query: ({ params }) => {
@@ -680,7 +694,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Switch', id: 'DETAIL' }]
+      providesTags: [{ type: 'Switch', id: 'SWITCH' }]
     }),
     getSwitchModelList: build.query<TableResult<Switch>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1160,7 +1174,7 @@ const aggregatedSwitchGroupByListData = (switches: TableResult<SwitchRow>,
             tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
           }
         })
-        // i.children = tmpMember // TODO: stack members in group by table
+        i.children = tmpMember
       }
     })
   })

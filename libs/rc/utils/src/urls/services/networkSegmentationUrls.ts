@@ -50,12 +50,7 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId',
     newApi: true
   },
-  getAccessSwitchesByDS: {
-    method: 'get',
-    url: '/venues/:venueId/networkSegmentations',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations',
-    newApi: true
-  },
+
   validateDistributionSwitchInfo: {
     method: 'post',
     url: '/venues/:venueId/networkSegmentations/distributionSwitchInfo',
