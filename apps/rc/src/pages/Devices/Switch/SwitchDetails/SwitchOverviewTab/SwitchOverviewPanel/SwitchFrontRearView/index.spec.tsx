@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { switchApi }                  from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
@@ -10,7 +11,6 @@ import { SwitchDetailsContext }                                                 
 import { stackMemberStandalone, standaloneFront, standaloneRear, switchDetailSatckOnline, switchDetailSwitchOffline } from '../__tests__/fixtures'
 
 import { SwitchFrontRearView } from '.'
-import userEvent from '@testing-library/user-event'
 
 describe('SwitchFrontRearView', () => {
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe('SwitchFrontRearView', () => {
 
     expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
     expect(await screen.findByText('Active')).toBeVisible()
-    const rearViewButton = await screen.getByRole('button', { name: /rear view/i })
+    const rearViewButton = screen.getByRole('button', { name: /rear view/i })
     expect(rearViewButton).toBeVisible()
     await userEvent.click(rearViewButton)
     expect(await screen.findByText('Front View')).toBeVisible()
@@ -81,7 +81,7 @@ describe('SwitchFrontRearView', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
       }
     })
-    const rearViewButton = await screen.getByRole('button', { name: /rear view/i })
+    const rearViewButton = screen.getByRole('button', { name: /rear view/i })
     expect(rearViewButton).toBeDisabled()
   })
 

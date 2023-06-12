@@ -427,8 +427,8 @@ export function SwitchForm () {
                   validateTrigger={['onKeyUp', 'onBlur']}
                   validateFirst
                   children={
-                    <Input 
-                      disabled={readOnly || editMode} 
+                    <Input
+                      disabled={readOnly || editMode}
                       style={{ textTransform: 'uppercase' }}
                       onBlur={() => handleChangeSerialNumber(editMode ? 'serialNumber' : 'id')}
                     />
