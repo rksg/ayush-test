@@ -3,24 +3,26 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                  from '@acx-ui/icons'
-import { useEdgeExportCsv }                  from '@acx-ui/rc/components'
-import { useGetEdgeServiceListQuery }        from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps, showActionModal }        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                          from '@acx-ui/icons'
+import { useEdgeExportCsv }                                          from '@acx-ui/rc/components'
+import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import {
   EdgeService,
   RequestPayload,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { ServiceDetailDrawer } from './ServiceDetailDrawer'
 
 export const EdgeServices = () => {
 
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
+  const params = useParams()
+  const { serialNumber } = params
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -37,6 +39,7 @@ export const EdgeServices = () => {
   const { exportCsv, disabled } = useEdgeExportCsv<EdgeService>(
     tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
   )
+  const [removeServices] = useDeleteEdgeServicesMutation()
 
   const showServiceDetailsDrawer = (data: EdgeService) => {
     setCurrentData(data)
@@ -99,14 +102,58 @@ export const EdgeServices = () => {
     }
   ]
 
+  const rowActions: TableProps<EdgeService>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Remove' }),
+      onClick: (selectedRows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({
+            defaultMessage: `Remove "{count, plural,
+              one {{entityValue}}
+              other {{count} Services}
+            }"?`
+          }, { count: selectedRows.length, entityValue: selectedRows[0].serviceName }),
+          content: $t({
+            defaultMessage: `Are you sure you want to remove {count, plural,
+              one {this service}
+              other {these services}
+            }?`
+          }, { count: selectedRows.length }),
+          customContent: {
+            action: 'CUSTOM_BUTTONS',
+            buttons: [
+              {
+                text: $t({ defaultMessage: 'Cancel' }),
+                type: 'default',
+                key: 'cancel'
+              }, {
+                text: $t({ defaultMessage: 'Remove' }),
+                type: 'primary',
+                key: 'ok',
+                closeAfterAction: true,
+                handler: () => {
+                  removeServices({ params, payload: {
+                    serviceList: selectedRows.map(item => item.serviceId)
+                  } }).then(clearSelection)
+                }
+              }
+            ]
+          }
+        })
+      }
+    }
+  ]
+
   return (
     <Loader states={[
       tableQuery
     ]}>
       <Table
         settingsId='edge-services-table'
-        rowKey='edgeId'
-        // rowActions={filterByAccess(rowActions)}
+        rowKey='serviceId'
+        rowSelection={{ type: 'checkbox' }}
+        rowActions={filterByAccess(rowActions)}
         columns={columns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}

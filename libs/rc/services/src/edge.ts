@@ -378,6 +378,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }]
+    }),
+    deleteEdgeServices: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.deleteService, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'SERVICE' }]
     })
   })
 })
@@ -427,5 +437,6 @@ export const {
   useGetEdgeTopTrafficQuery,
   useGetEdgeResourceUtilizationQuery,
   useGetEdgePortTrafficQuery,
-  useGetEdgeServiceListQuery
+  useGetEdgeServiceListQuery,
+  useDeleteEdgeServicesMutation
 } = edgeApi

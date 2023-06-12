@@ -178,5 +178,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/services/query',
     oldUrl: '/edges/services/query',
     newApi: true
+  },
+  deleteService: {
+    method: 'delete',
+    url: '/edges/:serialNumber/service',
+    oldUrl: '/edges/:serialNumber/service',
+    newApi: true
   }
 }
