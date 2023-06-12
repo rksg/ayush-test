@@ -37,7 +37,7 @@ export function SwitchUpgradeNotification (props: {
     stackUnitsMinLimitaion,
     switchModel } = props
 
-  const targetVersion = '09.0.10e'
+  const targetVersion = '09.0.10f'
   const upgradeDescription = {
     stack: [{
       // normal

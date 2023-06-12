@@ -9,8 +9,8 @@ export enum DdosAttackType {
 }
 
 export enum ACLDirection {
-  OUTBOUND = 'OUTBOUND',
-  INBOUND = 'INBOUND'
+  INBOUND = 'INBOUND',
+  OUTBOUND = 'OUTBOUND'
 }
 
 export enum AccessAction {
