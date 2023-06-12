@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { Provider } from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import {
   render,
   screen
@@ -34,6 +35,21 @@ describe('Switch Requriements Modal', () => {
     await userEvent.click(await screen.findByText(/Click here/))
     expect(await screen.findByText(/Upgrading the switch/)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: /ok/i }))
+  })
+
+  it('render 8200 correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <SwitchUpgradeNotification
+          isDisplay={true}
+          stackUnitsMinLimitaion={4}
+          switchModel={'ICX8200-24'}
+          isDisplayHeader={true}
+          type={SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH}
+          validateModel={['ICX8200-24']} />
+      </Provider>)
+    expect(await screen.findByText(/For the ICX8200 series/)).toBeVisible()
   })
 
 })
