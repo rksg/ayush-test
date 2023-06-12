@@ -128,7 +128,9 @@ export function VlanPortsModal (props: {
     switchFamilyModelsData.untaggedPorts = vlanSettingValues.throughSecondStep ?
       data.switchFamilyModels.untaggedPorts.join(',') :
       vlanSettingValues.switchFamilyModels?.untaggedPorts
-    switchFamilyModelsData.taggedPorts = data.switchFamilyModels.taggedPorts.join(',')
+    switchFamilyModelsData.taggedPorts = vlanSettingValues.throughSecondStep ?
+      data.switchFamilyModels.taggedPorts.join(',') :
+      vlanSettingValues.switchFamilyModels?.taggedPorts
     onSave(switchFamilyModelsData)
   }
 
