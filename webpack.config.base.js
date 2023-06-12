@@ -19,8 +19,7 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
     } else {
       config.cache = true
       config.watchOptions = {
-        ignored: /node_modules/,
-        poll: 1000
+        ignored: /node_modules/
       }
     }
 
