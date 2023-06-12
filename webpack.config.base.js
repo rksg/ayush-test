@@ -8,27 +8,31 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
  */
  module.exports = async function webpackConfigWithModuleFederation (
   moduleFederationConfig,
-  additionalWebpackConfig = {   
-    cache: true,
-    watchOptions: {
-      ignored: /node_modules/,
-      poll: 1000,
-    },
-    plugins: [
-      new ForkTsCheckerWebpackPlugin({
-        typescript: {
-          configFile: './tsconfig.json',
-        },
-      })
-    ],
-  }
+  additionalWebpackConfig = {}
 ) {
   const doModuleFederation = await withModuleFederation({
     ...moduleFederationConfig,
   })
   return function (config) {
     config = merge(doModuleFederation(config), {
-      ...additionalWebpackConfig
+      ...additionalWebpackConfig,
+      ...(process.env.NODE_ENV === 'development'
+        ? {
+          cache: true,
+          watchOptions: {
+            ignored: /node_modules/,
+            poll: 1000,
+          },
+          plugins: [
+            new ForkTsCheckerWebpackPlugin({
+              typescript: {
+                configFile: './tsconfig.json',
+              },
+            })
+          ]
+        }
+        : {}
+      )
     })
 
     if (process.env.NODE_ENV === 'production') {
