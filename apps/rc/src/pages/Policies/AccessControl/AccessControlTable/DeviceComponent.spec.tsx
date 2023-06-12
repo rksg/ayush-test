@@ -78,7 +78,7 @@ describe('AccessControlTable', () => {
         ctx.json(devicePolicyListResponse)
       )
     ), rest.delete(
-      AccessControlUrls.delDevicePolicy.url,
+      AccessControlUrls.delDevicePolicies.url,
       (_, res, ctx) => res(
         ctx.json({ requestId: 'requestId1' })
       )

@@ -6,6 +6,7 @@ import { ResidentPortalImageValue } from './ResidentPortalImageUpload'
 export interface CreateResidentPortalFormFields {
   id?: string;
   serviceName: string;
+  tenantSetDpsk: boolean;
   textTitle: string;
   textSubtitle: string;
   textLogin: string;
@@ -20,29 +21,14 @@ export interface CreateResidentPortalFormFields {
 }
 
 export function transferSaveDataToFormFields (data: ResidentPortal):CreateResidentPortalFormFields {
-  const uiConfiguration = data.uiConfiguration && data.uiConfiguration.text ? {
-    textTitle: data.uiConfiguration.text.title ? data.uiConfiguration.text.title : '',
-    textSubtitle: data.uiConfiguration.text.subTitle ? data.uiConfiguration.text.subTitle : '',
-    textLogin: data.uiConfiguration.text.loginText ? data.uiConfiguration.text.loginText : '',
-    textAnnouncements: data.uiConfiguration.text.announcements ?
-      data.uiConfiguration.text.announcements : '',
-    textHelp: data.uiConfiguration.text.helpText ? data.uiConfiguration.text.helpText : '',
-
-    colorMain: data.uiConfiguration?.color?.mainColor ? data.uiConfiguration.color.mainColor : '',
-    colorAccent: data.uiConfiguration?.color?.accentColor ?
-      data.uiConfiguration.color.accentColor : '',
-    colorSeparator: data.uiConfiguration?.color?.separatorColor ?
-      data.uiConfiguration.color.separatorColor : '',
-    colorText: data.uiConfiguration?.color?.textColor ? data.uiConfiguration.color.textColor : '',
-
-    fileLogo: { file: undefined },
-    fileFavicon: { file: undefined }
-  } : {
+  const formValues = {
     textTitle: '',
     textSubtitle: '',
     textLogin: '',
     textAnnouncements: '',
     textHelp: '',
+
+    tenantSetDpsk: false,
 
     colorMain: '',
     colorAccent: '',
@@ -53,10 +39,27 @@ export function transferSaveDataToFormFields (data: ResidentPortal):CreateReside
     fileFavicon: { file: undefined }
   }
 
+  formValues.tenantSetDpsk = data.uiConfiguration?.access?.tenantSetDpsk ?? false
+
+  if(data.uiConfiguration?.text) {
+    formValues.textTitle = data.uiConfiguration.text.title
+    formValues.textSubtitle = data.uiConfiguration.text.subTitle
+    formValues.textLogin = data.uiConfiguration.text.loginText
+    formValues.textAnnouncements = data.uiConfiguration.text.announcements
+    formValues.textHelp = data.uiConfiguration.text.helpText
+  }
+
+  if(data.uiConfiguration?.color) {
+    formValues.colorMain = data.uiConfiguration.color.mainColor
+    formValues.colorAccent = data.uiConfiguration.color.accentColor
+    formValues.colorSeparator = data.uiConfiguration.color.separatorColor
+    formValues.colorText = data.uiConfiguration.color.textColor
+  }
+
   return {
     id: data.id,
     serviceName: data.name,
-    ...uiConfiguration
+    ...formValues
   }
 }
 
@@ -66,6 +69,9 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
     name: data.serviceName,
     uiConfiguration: {
       type: 'uiConfiguration',
+      access: {
+        tenantSetDpsk: data.tenantSetDpsk
+      },
       text: {
         type: 'text',
         title: data.textTitle,
@@ -81,10 +87,10 @@ export function transferFormFieldsToSaveData (data: CreateResidentPortalFormFiel
         textColor: data.colorText
       },
       files: {
-        logoFileName:
-          data.fileLogo?.file && !data.fileLogo.isRemoved ? data.fileLogo.file.name : '',
-        favIconFileName:
-          data.fileFavicon?.file && !data.fileLogo.isRemoved ? data.fileFavicon.file.name : ''
+        logoFileName: data.fileLogo?.file && !data.fileLogo.isRemoved ?
+          data.fileLogo.file.name : (data.fileLogo?.isRemoved ? '' : undefined),
+        favIconFileName: data.fileFavicon?.file && !data.fileLogo.isRemoved ?
+          data.fileFavicon.file.name : (data.fileFavicon?.isRemoved ? '' : undefined)
       }
     }
   }
