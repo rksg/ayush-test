@@ -1,22 +1,7 @@
-import { useIntl } from 'react-intl'
-
-import { useUserProfileContext } from '@acx-ui/analytics/utils'
-import { Loader }                from '@acx-ui/components'
-
-import * as UI from './styledComponents'
+import { IncidentListPageLegacy } from '@acx-ui/analytics/components'
 
 function Analytics () {
-  const { $t } = useIntl()
-
-  const { data } = useUserProfileContext()
-  return <Loader>
-    <UI.DummyWrapper>
-      {$t(
-        { defaultMessage: 'profile loaded for the user: {user}' },
-        { user: `${data?.firstName}  ${data?.lastName}` }
-      )}
-    </UI.DummyWrapper>
-  </Loader>
+  return <IncidentListPageLegacy />
 }
 
 export default Analytics
