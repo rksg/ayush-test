@@ -140,8 +140,7 @@ export const draw = (
           y: legendHeight + brushTextHeight,
           z: 1,
           shape: { width: (chartWidth as number) - 2 * chartPadding, height: rowHeight, r: 3 },
-          style: { fill: cssStr('--acx-neutrals-20') },
-          cursor: 'default'
+          style: { fill: cssStr('--acx-neutrals-20') }
         },
         {
           type: 'group',
@@ -165,7 +164,6 @@ export const draw = (
                   z: 100,
                   shape: { width, height: rowHeight },
                   draggable: width <= 0 ? false : 'horizontal',
-                  cursor: width <= 0 ? 'default' : 'all-scroll',
                   ondrag: function () {
                     const [xPosition] = echartInstance.convertFromPixel('grid', [this.x])
                     const newAreas = getDrawPosition(
@@ -189,7 +187,8 @@ export const draw = (
                       fill: cssStr('--acx-accents-blue-50'),
                       fontSize: cssNumber('--acx-body-6-font-size'),
                       fontWeight: cssNumber('--acx-body-font-weight-bold')
-                    }
+                    },
+                    cursor: 'default'
                   },
                   textConfig: { position: 'insideBottom' },
                   x: position[0],
@@ -216,7 +215,6 @@ export const draw = (
                       text: '|||',
                       fill: cssStr('--acx-accents-blue-60')
                     },
-                    cursor: 'default',
                     z: 1
                   },
                   textConfig: { position: 'inside' },
@@ -244,8 +242,7 @@ export const draw = (
                     lineDash: 2,
                     lineDashOffset: 2,
                     lineWidth: 2
-                  },
-                  cursor: 'default'
+                  }
                 }
               ]
             }
