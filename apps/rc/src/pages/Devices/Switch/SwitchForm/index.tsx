@@ -435,7 +435,7 @@ export function SwitchForm () {
                   }
                 />
 
-                {!editMode &&
+                {!editMode && !isRodanModel &&
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
