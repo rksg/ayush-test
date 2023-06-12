@@ -183,6 +183,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
+    delL2AclPolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.delL2AclPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
     addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params)
@@ -198,6 +208,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(AccessControlUrls.delL3AclPolicy, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    delL3AclPolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.delL3AclPolicies, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
@@ -323,6 +343,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
+    delDevicePolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.delDevicePolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
     updateDevicePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AccessControlUrls.updateDevicePolicy, params)
@@ -368,6 +398,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(AccessControlUrls.delAppAclPolicy, params)
         return {
           ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    delAppPolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.delAppAclPolicies, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
@@ -1899,14 +1939,17 @@ export const {
   useAddL2AclPolicyMutation,
   useGetL2AclPolicyQuery,
   useDelL2AclPolicyMutation,
+  useDelL2AclPoliciesMutation,
   useUpdateL2AclPolicyMutation,
   useAddAppPolicyMutation,
   useGetAppPolicyQuery,
   useDelAppPolicyMutation,
+  useDelAppPoliciesMutation,
   useUpdateAppPolicyMutation,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
   useDelL3AclPolicyMutation,
+  useDelL3AclPoliciesMutation,
   useUpdateL3AclPolicyMutation,
   useAddAccessControlProfileMutation,
   useUpdateAccessControlProfileMutation,
@@ -1918,6 +1961,7 @@ export const {
   useAddDevicePolicyMutation,
   useGetDevicePolicyQuery,
   useDelDevicePolicyMutation,
+  useDelDevicePoliciesMutation,
   useUpdateDevicePolicyMutation,
   useDevicePolicyListQuery,
   useAppPolicyListQuery,

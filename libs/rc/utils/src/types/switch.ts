@@ -330,6 +330,7 @@ export interface ConfigurationBackup {
   backupType: string
   backupName: string
   status: ConfigurationBackupStatus
+  backupStatus: ConfigurationBackupStatus
   config: string
   switchId: string
   restoreStatus: ConfigurationBackupStatus

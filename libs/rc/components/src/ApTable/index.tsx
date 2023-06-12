@@ -227,17 +227,17 @@ export function ApTable (props: ApTableProps) {
     //     </Space>)
     //   }
     // },
-    {
+    ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
-      render: (data, row : APExtended) => (
+      render: (data: React.ReactNode, row : APExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       )
-    }, {
+    }]), {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
