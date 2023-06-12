@@ -67,7 +67,7 @@ export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any)
   return enableAccountingService === true
 }
 
-export const hasVxLanTunnelProfile = (wlanData: any) => {
+export const hasVxLanTunnelProfile = (wlanData: NetworkSaveData | null) => {
   if (!wlanData) return false
 
   const wlanAdvaced = (wlanData?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)
