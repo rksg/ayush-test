@@ -1,4 +1,19 @@
-import { ACLDirection, AccessAction, ProtocolType, AddressType } from '@acx-ui/rc/utils'
+import { ACLDirection, AccessAction, ProtocolType, AddressType, DdosAttackType } from '@acx-ui/rc/utils'
+
+export const mockEdgeList = {
+  fields: [
+    'name','serialNumber', 'firewallId'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'Smart Edge 1',
+      serialNumber: '0000000001',
+      firewallId: 'mockedFirewallId'
+    }
+  ]
+}
 
 export const mockFirewall = {
   id: 'mock-id',
@@ -6,8 +21,17 @@ export const mockFirewall = {
   serviceName: 'mocked-firewall',
   tags: [],
   edgeIds: [],
-  ddosRateLimitingEnabled: false,
-  ddosRateLimitingRules: null,
+  ddosRateLimitingEnabled: true,
+  ddosRateLimitingRules: [
+    {
+      ddosAttackType: DdosAttackType.ICMP,
+      rateLimiting: 200
+    },
+    {
+      ddosAttackType: DdosAttackType.NTP_REFLECTION,
+      rateLimiting: 120
+    }
+  ],
   statefulAclEnabled: true,
   statefulAcls: [
     {
@@ -97,6 +121,38 @@ export const mockFirewall = {
           destinationPort: ''
         }
       ]
+    }
+  ]
+}
+
+export const mockFirewallDDoSStats = {
+  ddosStatsList: [
+    {
+      ddosAttackType: DdosAttackType.ICMP,
+      deniedPackets: 12,
+      passedPackets: 20
+    },
+    {
+      ddosAttackType: DdosAttackType.NTP_REFLECTION,
+      deniedPackets: 9,
+      passedPackets: 21
+    }
+  ]
+}
+
+export const mockFirewallACLStats = {
+  direction: ACLDirection.OUTBOUND,
+  permittedSessions: 150,
+  aclRuleStatsList: [
+    {
+      priority: 1,
+      packets: 12,
+      bytes: 72
+    },
+    {
+      priority: 2,
+      packets: 9,
+      bytes: 168
     }
   ]
 }
