@@ -298,7 +298,7 @@ export function MoreSettingsForm (props: {
 
         <AccessControlForm/>
 
-        <UI.FieldLabel width='125px'>
+        <UI.FieldLabel width='250px'>
           {$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })}
           <Form.Item
             name={['enableOfdmOnly']}
@@ -395,7 +395,7 @@ export function MoreSettingsForm (props: {
             } />
         </div>
 
-        <UI.FieldLabel width='125px'>
+        <UI.FieldLabel width='250px'>
           {$t({ defaultMessage: 'Enable 802.11k neighbor reports' })}
           <Form.Item
             name={['wlan','advancedCustomization','enableNeighborReport']}

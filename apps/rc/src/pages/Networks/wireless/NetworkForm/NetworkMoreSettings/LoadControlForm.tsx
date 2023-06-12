@@ -85,7 +85,7 @@ export function LoadControlForm () {
         />
       </Form.Item>
 
-      <UI.FieldLabel width='125px'>
+      <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Enable load balancing between all radios' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
@@ -96,7 +96,7 @@ export function LoadControlForm () {
         />
       </UI.FieldLabel>
 
-      <UI.FieldLabel width='125px'>
+      <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Enable load balancing between APs' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
