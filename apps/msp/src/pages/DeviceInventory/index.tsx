@@ -12,8 +12,7 @@ import {
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation,
-  useGetTenantDetailsQuery,
-  useIntegratorDeviceInventoryListQuery
+  useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
   APView,
@@ -100,11 +99,18 @@ export function DeviceInventory () {
       'name',
       'deviceStatus'
     ],
-    searchTargetFields: ['apMac','switchMac','serialNumber']
+    searchTargetFields: ['apMac','switchMac','serialNumber'],
+    filters: {}
+  }
+  if (isIntegrator) {
+    filterPayload.filters = {
+      id: [ tenantId ]
+    }
   }
 
   const filterResults = useTableQuery({
     useQuery: useDeviceInventoryListQuery,
+    apiParams: { tenantId: isIntegrator ? (parentTenantid as string) : (tenantId as string) },
     pagination: {
       pageSize: 10000
     },
@@ -225,31 +231,19 @@ export function DeviceInventory () {
       'model',
       'customerName',
       'deviceStatus' ],
-    searchTargetFields: ['apMac', 'switchMac', 'serialNumber']
-  }
-
-  const integratorPayload = {
-    searchString: '',
-    fields: [
-      'deviceType',
-      'venueName',
-      'serialNumber',
-      'switchMac',
-      'name',
-      'tenantId',
-      'apMac',
-      'model',
-      'customerName',
-      'deviceStatus' ],
     searchTargetFields: ['apMac', 'switchMac', 'serialNumber'],
-    filters: {
-      id: [{ tenantId }]
+    filters: {}
+  }
+  if (isIntegrator) {
+    defaultPayload.filters = {
+      id: [ tenantId ]
     }
   }
 
   const DeviceTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
+      apiParams: { tenantId: isIntegrator ? (parentTenantid as string) : (tenantId as string) },
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
