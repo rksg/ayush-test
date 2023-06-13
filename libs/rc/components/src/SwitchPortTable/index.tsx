@@ -67,20 +67,22 @@ export function SwitchPortTable ({ isVenueLevel }: {
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
   ]
 
+  const queryFields = ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
+    'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
+    'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
+    'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
+    'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
+    'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
+    'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
+    'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
+  ]
+
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortlistQuery,
     defaultPayload: {
       filters: venueId ? { venueId: [venueId] } :
         serialNumber ? { switchId: [serialNumber] } : {},
-      fields: ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
-        'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
-        'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
-        'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-        'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
-        'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
-        'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-        'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
-      ]
+      fields: queryFields
     },
     search: {
       searchTargetFields: ['name', 'portIdentifier', 'neighborName']
@@ -88,7 +90,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
     sorter: {
       sortField: 'portIdentifierFormatted',
       sortOrder: 'ASC'
-    }
+    },
+    enableSelectAllPagesData: queryFields
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
@@ -280,11 +283,17 @@ export function SwitchPortTable ({ isVenueLevel }: {
     }
   }]
 
+  const getAllPagesData = () => {
+    const data = transformData(tableQuery.getAllPagesData())
+    return data?.filter(port => !port.inactiveRow) || []
+  }
+
   return <Loader states={[tableQuery]}>
     <Table
       settingsId='switch-port-table'
       columns={getColumns()}
       dataSource={transformData(tableQuery.data?.data)}
+      getAllPagesData={getAllPagesData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}

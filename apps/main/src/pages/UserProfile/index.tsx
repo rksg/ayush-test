@@ -3,7 +3,7 @@ import { useIntl }                            from 'react-intl'
 
 import {
   PageHeader,
-  StepsFormLegacy,
+  StepsForm,
   Tabs
 } from '@acx-ui/components'
 import { MultiFactor } from '@acx-ui/msp/components'
@@ -81,12 +81,12 @@ export function UserProfile () {
 
   const SettingsTab = () => {
     return (
-      <StepsFormLegacy
+      <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
         onFinish={handleUpdateSettings}
         onCancel={async () => handleCancel()}
       >
-        <StepsFormLegacy.StepForm>
+        <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
@@ -123,8 +123,8 @@ export function UserProfile () {
               />
             </Col>
           </Row>
-        </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
+        </StepsForm.StepForm>
+      </StepsForm>
     )
   }
 

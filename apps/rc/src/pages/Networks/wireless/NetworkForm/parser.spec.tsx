@@ -11,6 +11,7 @@ describe('NetworkForm parser', () => {
     beforeEach(() => {
       mockedNetworkVenue = {
         allApGroupsRadio: RadioEnum.Both,
+        clientIsolationAllowlistId: 'c123',
         venueId: '6de6a5239a1441cfb9c7fde93aa613fe'
       }
 

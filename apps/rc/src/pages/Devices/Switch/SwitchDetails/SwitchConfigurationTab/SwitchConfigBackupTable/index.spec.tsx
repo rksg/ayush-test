@@ -346,7 +346,7 @@ describe('SwitchConfigBackupTable', () => {
   it('should render inRestoreProgress correctly', async () => {
     const inRestoreProgressList = JSON.parse(JSON.stringify(list))
     inRestoreProgressList.data.push({
-      id: 'f89fee4468d2405cbfc7fb012d0632c8',
+      id: 'f89fee4468d2405cbfc7fb012d0632c9',
       createdDate: '2023-01-10T05:00:00.408+00:00',
       name: 'testBackup',
       backupType: 'SCHEDULED',

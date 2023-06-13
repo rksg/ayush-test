@@ -45,7 +45,7 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
       headerCellRef.current!.addEventListener('click', handleStopPropagation, { once: true })
     }}
     onResize={(_: React.SyntheticEvent<Element>, { size }) => {
-      onResize(size.width)
+      if (onResize) onResize(size.width)
       setWidth(size.width)
     }}
     draggableOpts={{ enableUserSelectHack: false }}

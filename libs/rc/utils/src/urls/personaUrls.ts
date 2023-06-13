@@ -6,8 +6,12 @@ export const PersonaBaseUrl = '/api/personaGroups'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
-// eslint-disable-next-line max-len
-type PersonaUrlType = 'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' | 'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaList' | 'getPersonaById' | 'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' | 'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' | 'exportPersonaGroup' | 'deletePersonas'
+type PersonaUrlType =
+  'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
+  'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaList' | 'getPersonaById' |
+  'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' |
+  'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
+  'exportPersonaGroup' | 'deletePersonas' | 'allocateVni'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -128,6 +132,12 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`,
     oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`,
+    newApi: true
+  },
+  allocateVni: {
+    method: 'delete',
+    url: `${NewPersonaBaseUrl}/:groupId/personas/:id/vnis`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id/vnis`,
     newApi: true
   }
 }

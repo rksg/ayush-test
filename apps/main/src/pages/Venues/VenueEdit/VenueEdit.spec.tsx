@@ -4,7 +4,7 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls }                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls, WifiUrlsInfo }                          from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -76,7 +76,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(CommonUrlsInfo.getVenueCapabilities.url,
+      rest.get(WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(venueLed))),
