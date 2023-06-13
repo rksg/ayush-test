@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Card, Table, TableProps } from '@acx-ui/components'
+import { formatter }               from '@acx-ui/formatter'
 import {
   useLazyGetPropertyUnitByIdQuery,
   useLazySearchPersonaGroupListQuery,
@@ -48,7 +49,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   const [getVenues, { isLoading: isVenueLoading }] = useLazyVenuesListQuery()
   const [getUnitById, { isLoading: isPropertyUnitLoading }] = useLazyGetPropertyUnitByIdQuery()
   const [getQosStats, { isLoading: isQosStatsLoading }] = useLazyGetQosStatsQuery()
-
+  const bytesFormatter = formatter('bytesFormat')
   useEffect(() => {
     setDatasource(toInstance(props.data))
     fetchQosStats(props.data)
@@ -221,8 +222,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       render: (_, row) => {
         const stat = getQosStatsByInstance(row)
         if (stat) {
-          return <span>{$t({ defaultMessage: '{upBytes} MB' },
-            { upBytes: stat.uploadBytes / 1000 })}</span>
+          return <span>{bytesFormatter(stat.uploadBytes)}</span>
         }
         return undefined
       }
@@ -246,8 +246,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       render: (_, row) => {
         const stat = getQosStatsByInstance(row)
         if (stat) {
-          return <span>{$t({ defaultMessage: '{downBytes} MB' },
-            { downBytes: stat.downloadBytes / 1000 })}</span>
+          return <span>{formatter('bytesFormat')(stat.downloadBytes)}</span>
         }
         return undefined
       }
@@ -259,8 +258,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       render: (_, row) => {
         const stat = getQosStatsByInstance(row)
         if (stat) {
-          return <span>{$t({ defaultMessage: '{totalBytes} MB' },
-            { totalBytes: (stat.uploadBytes + stat.downloadBytes) / 1000 })}</span>
+          return <span>{bytesFormatter(stat.uploadBytes + stat.downloadBytes)}</span>
         }
         return undefined
       }
