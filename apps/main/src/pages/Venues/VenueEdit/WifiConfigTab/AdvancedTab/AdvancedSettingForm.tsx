@@ -10,15 +10,10 @@ import {
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, StepsFormLegacy, Table, TableProps, Loader, showToast } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                            from '@acx-ui/icons'
-import {
-  useGetVenueCapabilitiesQuery,
-  useGetVenueLedOnQuery,
-  useGetVenueApModelsQuery,
-  useUpdateVenueLedOnMutation
-} from '@acx-ui/rc/services'
-import { VenueLed, redirectPreviousPage } from '@acx-ui/rc/utils'
+import { Button, StepsFormLegacy, Table, TableProps, Loader, showToast }                                                from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                                                                           from '@acx-ui/icons'
+import { useGetVenueLedOnQuery, useGetVenueApModelsQuery, useUpdateVenueLedOnMutation, useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
+import { VenueLed, redirectPreviousPage }                                                                               from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -37,7 +32,7 @@ export function AdvancedSettingForm () {
   const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
-  const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
+  const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
   const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
   const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
@@ -69,6 +64,7 @@ export function AdvancedSettingForm () {
   useEffect(() => {
     const apModels = venueCaps?.data?.apModels
     if (apModels?.length) {
+      // @ts-ignore
       const supportModels: string[] = apModels?.filter(apModel => apModel.ledOn)
         .map(apModel => apModel.model)
       const venueApLeds = venueLed?.data?.map((item: VenueLed) => ({

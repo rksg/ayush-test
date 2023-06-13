@@ -45,7 +45,7 @@ describe('NetworkingTab', () => {
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
-        CommonUrlsInfo.getVenueCapabilities.url,
+        WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,

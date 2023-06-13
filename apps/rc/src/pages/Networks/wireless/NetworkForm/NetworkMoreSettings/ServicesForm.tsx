@@ -6,14 +6,27 @@ import {
   Form,
   InputNumber,
   Switch,
-  Tooltip
+  Tooltip,
+  Select,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { QuestionMarkCircleOutlined }                                                           from '@acx-ui/icons'
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
+import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
+import { useGetTunnelProfileViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  DnsProxyRule,
+  DnsProxyContextType,
+  WifiCallingSettingContextType,
+  WifiCallingSetting,
+  getServiceDetailsLink,
+  ServiceOperation,
+  ServiceType,
+  DpskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
-import NetworkFormContext from '../NetworkFormContext'
+import NetworkFormContext        from '../NetworkFormContext'
+import { hasVxLanTunnelProfile } from '../utils'
 
 import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
 import { DnsProxyModal }           from './DnsProxyModal'
@@ -77,6 +90,43 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
     }
     return Promise.resolve()
   }
+
+  const showTunnelProfile = hasVxLanTunnelProfile(data)
+
+  const tunnelProfileDefaultPayload = {
+    fields: ['name', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
+  const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
+    payload: tunnelProfileDefaultPayload
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        isLoading
+      }
+    }
+  })
+
+  const tunnelProfileId =
+    (data?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)?.tunnelProfileId
+  const {
+    nsgId
+  } = useGetNetworkSegmentationViewDataListQuery({
+    payload: {
+      filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
+    }
+  }, {
+    skip: !!!tunnelProfileId,
+    selectFromResult: ({ data }) => {
+      return {
+        nsgId: data?.data[0]?.id
+      }
+    }
+  })
 
   return (
     <>
@@ -237,6 +287,52 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
             $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
         }
       />
+
+      { showTunnelProfile &&
+      <Form.Item
+        name={['wlan','advancedCustomization','tunnelProfileId']}
+        label={$t({ defaultMessage: 'Tunnel Profile' })}
+        children={
+          <Select
+            loading={isTunnelLoading}
+            options={tunnelOptions}
+            disabled={true}
+          />
+        }
+      />
+      }
+
+      { showTunnelProfile &&
+        <Space size={1}>
+          <UI.InfoIcon />
+          <UI.Description>
+            {
+              $t({
+                defaultMessage: `All networks under the same Network Segmentation 
+                share the same tunnel profile. Go `
+              })
+            }
+            &nbsp;
+            <Space size={1}></Space>
+            { nsgId &&
+            <TenantLink to={getServiceDetailsLink({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.DETAIL,
+              serviceId: nsgId!
+            })}>
+              { $t({ defaultMessage: 'here' }) }
+            </TenantLink>
+            }
+            &nbsp;
+            {
+              $t({
+                defaultMessage: 'to change'
+              })
+            }
+          </UI.Description>
+        </Space>
+      }
+
     </>
   )
 }
