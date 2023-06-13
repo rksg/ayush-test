@@ -177,20 +177,33 @@ export function UntaggedPortsStep () {
   const handleCheckboxGroupChange =
     (moduleName: string, checkedValues: string[], setValues: (arg0: string[]) => void) => {
       setValues(checkedValues)
+      let selectedUntaggedPorts: string[] = []
       switch(moduleName){
         case 'module1':
-          form.setFieldValue(['switchFamilyModels', 'untaggedPorts'],
-            _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues]))
+          // eslint-disable-next-line max-len
+          selectedUntaggedPorts = _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues])
           break
         case 'module2':
-          form.setFieldValue(['switchFamilyModels', 'untaggedPorts'],
-            _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues]))
+          // eslint-disable-next-line max-len
+          selectedUntaggedPorts = _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues])
           break
         case 'module3':
-          form.setFieldValue(['switchFamilyModels', 'untaggedPorts'],
-            _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues]))
+          // eslint-disable-next-line max-len
+          selectedUntaggedPorts = _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues])
           break
       }
+
+      form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], selectedUntaggedPorts)
+      setVlanSettingValues({
+        ...vlanSettingValues,
+        switchFamilyModels: {
+          id: vlanSettingValues.switchFamilyModels?.id,
+          model: vlanSettingValues.switchFamilyModels?.model || '',
+          slots: vlanSettingValues.switchFamilyModels?.slots || [],
+          untaggedPorts: selectedUntaggedPorts,
+          taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
+        }
+      })
     }
 
   const getDisabledPorts = (timeslot: string) => {
