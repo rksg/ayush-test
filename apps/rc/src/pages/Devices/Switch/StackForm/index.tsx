@@ -808,6 +808,7 @@ export function StackForm () {
                     stackUnitsMinLimitaion={getStackUnitsMinLimitaion()}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
+                    isFromSwitchForm={false}
                     type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
                     validateModel={validateModel}
                   />

@@ -435,10 +435,11 @@ export function SwitchForm () {
                   }
                 />
 
-                {!editMode && !isRodanModel &&
+                {!editMode &&
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
+                    isFromSwitchForm={true}
                     type={switchRole === MEMEBER_TYPE.STANDALONE ?
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
                       SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
