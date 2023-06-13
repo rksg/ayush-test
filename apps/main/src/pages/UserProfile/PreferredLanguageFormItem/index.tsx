@@ -1,6 +1,5 @@
 import { Form, Select } from 'antd'
 import { useIntl }      from 'react-intl'
-import styled           from 'styled-components'
 
 import { useUserProfileContext } from '@acx-ui/user'
 import { DEFAULT_SYS_LANG }      from '@acx-ui/utils'
@@ -24,25 +23,25 @@ export function PreferredLanguageFormItem () {
   }))
 
   return (
-      <Form.Item
-        name='preferredLanguage'
-        label={$t({ defaultMessage: 'Preferred Language' })}
-        initialValue={userProfile?.preferredLanguage}
+    <Form.Item
+      name='preferredLanguage'
+      label={$t({ defaultMessage: 'Preferred Language' })}
+      initialValue={userProfile?.preferredLanguage}
+    >
+      <Select
+        value={userProfile?.preferredLanguage || DEFAULT_SYS_LANG}
+        optionFilterProp='children'
+        style={{ textTransform: 'capitalize' }}
       >
-        <Select
-          value={userProfile?.preferredLanguage || DEFAULT_SYS_LANG}
-          optionFilterProp='children'
-          style={{ textTransform: 'capitalize' }}
-        >
-          {supportedLangs.map(({ label, value }) =>
-            (<Select.Option
-              style={{ textTransform: 'capitalize' }}
-              value={value}
-              key={value}
-              children={label}/>)
-          )}
-        </Select>
-      </Form.Item>
+        {supportedLangs.map(({ label, value }) =>
+          (<Select.Option
+            style={{ textTransform: 'capitalize' }}
+            value={value}
+            key={value}
+            children={label}/>)
+        )}
+      </Select>
+    </Form.Item>
   )
 }
 
