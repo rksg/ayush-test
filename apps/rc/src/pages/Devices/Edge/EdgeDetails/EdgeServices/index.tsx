@@ -134,7 +134,10 @@ export const EdgeServices = () => {
                 closeAfterAction: true,
                 handler: () => {
                   removeServices({ params, payload: {
-                    serviceList: selectedRows.map(item => item.serviceId)
+                    serviceList: selectedRows.map(item => ({
+                      serviceId: item.serviceId,
+                      serviceType: item.serviceType
+                    }))
                   } }).then(clearSelection)
                 }
               }
