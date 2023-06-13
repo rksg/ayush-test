@@ -1,5 +1,4 @@
 import {
-  Badge,
   Dropdown,
   Menu,
   MenuProps,
@@ -9,7 +8,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal } from '@acx-ui/components'
-import { ArrowExpand, BulbOutlined }                        from '@acx-ui/icons'
+import { ArrowExpand }                                      from '@acx-ui/icons'
 import { EdgeStatusLight }                                  from '@acx-ui/rc/components'
 import {
   useDeleteEdgeMutation,
@@ -29,19 +28,6 @@ import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
 import EdgeDetailsTabs from './EdgeDetailsTabs'
-
-// TODO: component purpose is TBD
-const EdgeBulb = (
-  { count = 0 }: { count: number | undefined }
-) => {
-  return (
-    <Badge count={count}>
-      <Button>
-        <BulbOutlined />
-      </Button>
-    </Badge>
-  )
-}
 
 export const EdgeDetailsPageHeader = () => {
   const { $t } = useIntl()

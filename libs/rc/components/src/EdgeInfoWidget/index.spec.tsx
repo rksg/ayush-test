@@ -7,7 +7,7 @@ import { render,
 } from '@acx-ui/test-utils'
 
 
-import { tenantID, currentEdge, edgePortsSetting, alarmList, edgeDnsServers } from './__tests__/fixtures'
+import { tenantID, currentEdge, edgePortsSetting, alarmList } from './__tests__/fixtures'
 
 import { EdgeInfoWidget, getChartData } from '.'
 
