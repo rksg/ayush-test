@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 
-import { useMuteIncidentsMutation } from '@acx-ui/analytics/components'
-import { fakeIncident1 }            from '@acx-ui/analytics/utils'
-import { showToast }                from '@acx-ui/components'
-import { Provider }                 from '@acx-ui/store'
-import { render, screen }           from '@acx-ui/test-utils'
+import { fakeIncident1 }  from '@acx-ui/analytics/utils'
+import { showToast }      from '@acx-ui/components'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+
+import { useMuteIncidentsMutation } from '../../IncidentTable/services'
 
 import MuteIncident from './MuteIncident'
 
