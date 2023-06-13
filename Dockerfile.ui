@@ -88,38 +88,43 @@ FROM acx-ui-base-test as acx-ui-group1-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
 RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
-        ./cicd_tool/run_test_cases_tool.sh Group1; fi
+	    ./cicd_tool/run_test_cases_tool.sh Group1; \
+	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group2-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
 RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
-        ./cicd_tool/run_test_cases_tool.sh Group2; fi
+        ./cicd_tool/run_test_cases_tool.sh Group2; \
+	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group3-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
 RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
-        ./cicd_tool/run_test_cases_tool.sh Group3; fi
+        ./cicd_tool/run_test_cases_tool.sh Group3; \
+	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group4-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
 RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
-        ./cicd_tool/run_test_cases_tool.sh Group4; fi
+        ./cicd_tool/run_test_cases_tool.sh Group4; \
+	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group5-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
 RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
-        ./cicd_tool/run_test_cases_tool.sh Group5; fi
+        ./cicd_tool/run_test_cases_tool.sh Group5; \
+	else mkdir -p /app/coverage; fi
 
 FROM build-base as acx-ui-sonar-run
-COPY --from=acx-ui-group1-test /app/coverage/* /app/coverage
-COPY --from=acx-ui-group2-test /app/coverage/* /app/coverage
-COPY --from=acx-ui-group3-test /app/coverage/* /app/coverage
-COPY --from=acx-ui-group4-test /app/coverage/* /app/coverage
-COPY --from=acx-ui-group5-test /app/coverage/* /app/coverage
+COPY --from=acx-ui-group1-test /app/coverage /app/coverage
+COPY --from=acx-ui-group2-test /app/coverage /app/coverage
+COPY --from=acx-ui-group3-test /app/coverage /app/coverage
+COPY --from=acx-ui-group4-test /app/coverage /app/coverage
+COPY --from=acx-ui-group5-test /app/coverage /app/coverage
 RUN touch tests-done
 
 ###############################################################
@@ -135,6 +140,9 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/start-nginx.sh \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
+
+# Multistage: trigger run
+COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 COPY --from=build /app/dist/apps ./
 RUN \

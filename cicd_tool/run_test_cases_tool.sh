@@ -16,3 +16,5 @@ do
     echo $cmd
     bash -c $cmd
 done
+
+bash -c "mkdir -p /app/coverage"
