@@ -1022,7 +1022,9 @@ describe('Table component', () => {
     })
 
     it('should render select data from all pages option correctly', async () => {
-      render(<GroupTable columns={[]} />)
+      render(<GroupTable rowSelection={{
+        type: 'checkbox'
+      }} />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]

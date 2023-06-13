@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from 'react'
 
-import { Form, Select, Space, Switch } from 'antd'
-import { isEqual }                     from 'lodash'
-import { useIntl }                     from 'react-intl'
+import { Form, Select, Space, Switch,Button } from 'antd'
+import { isEqual }                            from 'lodash'
+import { useIntl }                            from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal } from '@acx-ui/components'
 import {
@@ -17,8 +17,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { VenueApSnmpSettings } from '@acx-ui/rc/utils'
 import {
-  TenantLink,
-  useParams
+  useParams,
+  useNavigate,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../..'
@@ -26,6 +27,9 @@ import { VenueEditContext } from '../../..'
 export function ApSnmp () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+  const navigate = useNavigate()
+  const toPolicyPath = useTenantLink('')
+
 
   const {
     editContextData,
@@ -65,7 +69,7 @@ export function ApSnmp () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Servers' }),
+      tabTitle: $t({ defaultMessage: 'Network Controls' }),
       isDirty: !isEqual(newVenueApSnmpSetting, stateOfVenueApSnmpSettings)
     })
 
@@ -83,7 +87,7 @@ export function ApSnmp () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
-      tabTitle: $t({ defaultMessage: 'Servers' }),
+      tabTitle: $t({ defaultMessage: 'Network Controls' }),
       isDirty: !isEqual(newVenueApSnmpSetting, stateOfVenueApSnmpSettings)
     })
 
@@ -111,7 +115,7 @@ export function ApSnmp () {
       setEditContextData && setEditContextData({
         ...editContextData,
         unsavedTabKey: 'servers',
-        tabTitle: $t({ defaultMessage: 'Servers' }),
+        tabTitle: $t({ defaultMessage: 'Network Controls' }),
         isDirty: false,
         hasError: false
       })
@@ -165,15 +169,25 @@ export function ApSnmp () {
           })}
           style={{ width: '200px' }}
         />
-        {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64) && <TenantLink
-          to={getPolicyRoutePath({
-            type: PolicyType.SNMP_AGENT,
-            oper: PolicyOperation.CREATE
-          })}
-          style={{ marginLeft: '20px' }}
-        >
-          {$t({ defaultMessage: 'Add' })}
-        </TenantLink>}
+        {((RetrievedVenueApSnmpAgentList?.data?.length as number) < 64) &&
+          <Button
+            data-testid='use-push'
+            type='link'
+            onClick={async () => {
+              await setEditContextData({
+                ...editContextData,
+                isDirty: false,
+                hasError: false
+              })
+              await navigate(`${toPolicyPath.pathname}/${getPolicyRoutePath({
+                type: PolicyType.SNMP_AGENT,
+                oper: PolicyOperation.CREATE
+              })}`)
+            }
+            }
+          >
+            {$t({ defaultMessage: 'Add' })}
+          </Button>}
       </Form.Item>}
     </Space>
   </Loader>)
