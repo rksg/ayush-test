@@ -13,11 +13,21 @@ export enum OsVendorEnum {
   AvayaIpPhone = 'AvayaIpPhone',
   LinksysPapVoip = 'LinksysPapVoip',
   NortelIpPhone = 'NortelIpPhone',
+  /**
+   * @deprecated
+   */
   Xbox360 = 'Xbox360',
+  /**
+   * @deprecated
+   */
   PlayStation2 = 'PlayStation2',
   GameCube = 'GameCube',
   Wii = 'Wii',
+  /**
+   * @deprecated
+   */
   PlayStation3 = 'PlayStation3',
+  PlayStation = 'PlayStation',
   Xbox = 'Xbox',
   Nintendo = 'Nintendo',
   HpPrinter = 'HpPrinter',

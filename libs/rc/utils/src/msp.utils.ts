@@ -13,9 +13,14 @@ import {
 } from './types/msp'
 
 const devicesCountMap = {
-  switch: defineMessage({ defaultMessage:
-    '{count} {count, plural, one {Switch} other {Switches}}' }),
-  ap: defineMessage({ defaultMessage: '{count} {count, plural, one {AP} other {APs}}' })
+  switch: defineMessage({
+    defaultMessage: '{count} {count, plural, one {Switch} other {Switches}}',
+    description: 'Translation strings - Switch, Switches'
+  }),
+  ap: defineMessage({
+    defaultMessage: '{count} {count, plural, one {AP} other {APs}}',
+    description: 'Translation strings - AP, APs'
+  })
 }
 
 export const MSP_USER_SETTING = 'COMMON$MSP'

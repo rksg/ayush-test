@@ -79,7 +79,7 @@ export function WISPrAuthAccServer (props : {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Connections' })}</Subtitle>
+        <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
 
         <Form.Item
           name={['guestPortal','wisprPage','authType']}

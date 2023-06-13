@@ -4,7 +4,7 @@ import { Form, Radio, RadioChangeEvent, Space }     from 'antd'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import { useNavigate, useParams }                   from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                              from '@acx-ui/components'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal }                                                             from '@acx-ui/components'
 import { useGetApMeshSettingsQuery, useGetApQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
 import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended, redirectPreviousPage }                             from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
@@ -130,9 +130,21 @@ export function ApMesh () {
 
       if (uplinkMode === UplinkModeEnum.MANUAL &&
           (meshMode === MeshModeEnum.AUTO || meshMode === MeshModeEnum.MESH)) {
-        payload = {
-          ...values,
-          uplinkMacAddresses: uplinkMac
+        if (uplinkMac && uplinkMac.length > 0) {
+          payload = {
+            ...values,
+            uplinkMacAddresses: uplinkMac
+          }
+        } else {
+          showActionModal({
+            type: 'error',
+            title: $t({ defaultMessage: 'No Uplink Selected' }),
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'For manual uplink configuration, you must select at least one uplink access point from the list before you may apply your changes'
+            })
+          })
+          return
         }
       }
 
@@ -199,7 +211,7 @@ export function ApMesh () {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{
-        submit: $t({ defaultMessage: 'Apply Mesh' })
+        submit: $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsFormLegacy.StepForm initialValues={initData}>

@@ -1,31 +1,67 @@
-import { useIntl } from 'react-intl'
+import { QuestionCircleOutlined }   from '@ant-design/icons'
+import { Empty, Space, Typography } from 'antd'
+import { useIntl }                  from 'react-intl'
 
-import { TableProps }                             from '@acx-ui/components'
-import { StatefulAclRule, defaultSort, sortProp } from '@acx-ui/rc/utils'
+import { TableProps, Tooltip } from '@acx-ui/components'
+import { formatter }           from '@acx-ui/formatter'
+import {
+  StatefulAclRule,
+  defaultSort,
+  sortProp,
+  FirewallACLRuleStatisticModel,
+  transformDisplayText
+} from '@acx-ui/rc/utils'
 
-import { StatefulACLRulesTable, useDefaultColumns } from '..'
-
-export interface StatefulAclRuleStatisticModel extends StatefulAclRule {
-  hits: number;
-  bytes: number;
-}
+import { StatefulACLRulesTable, useDefaultStatefulACLRulesColumns } from '..'
 
 export const RuleStatisticDataTable = ({ dataSource }:
-   { dataSource: StatefulAclRuleStatisticModel[] }) => {
+   { dataSource: FirewallACLRuleStatisticModel[] }) => {
   const { $t } = useIntl()
-  const defaultColumns = useDefaultColumns()
-  const statisticColumns: TableProps<StatefulAclRule | StatefulAclRuleStatisticModel>['columns'] = [
+  const defaultColumns = useDefaultStatefulACLRulesColumns()
+  const statisticColumns: TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Hits' }),
-      key: 'hits',
-      dataIndex: 'hits',
-      sorter: { compare: sortProp('hits', defaultSort) }
+      title: <Space size={3}>
+        <Typography.Text>
+          {$t({ defaultMessage: 'Hits' })}
+        </Typography.Text>
+        <Tooltip
+          placement='topRight'
+          title={
+            $t({ defaultMessage: 'Hit counts would be cleared when the rule has any changes' })
+          }
+        >
+          <QuestionCircleOutlined />
+        </Tooltip>
+      </Space>,
+      key: 'packets',
+      dataIndex: 'packets',
+      sorter: { compare: sortProp('packets', defaultSort) },
+      render: (data, row) => transformDisplayText(
+        (row as FirewallACLRuleStatisticModel).packets?.toString())
     },
     {
-      title: $t({ defaultMessage: 'Bytes' }),
+      title: <Space size={3}>
+        <Typography.Text>
+          {$t({ defaultMessage: 'Bytes' })}
+        </Typography.Text>
+        <Tooltip
+          placement='topRight'
+          title={
+            $t({ defaultMessage: 'Byte counts would be cleared when the rule has any changes' })
+          }
+        >
+          <QuestionCircleOutlined />
+        </Tooltip>
+      </Space>,
       key: 'bytes',
       dataIndex: 'bytes',
-      sorter: { compare: sortProp('bytes', defaultSort) }
+      sorter: { compare: sortProp('bytes', defaultSort) },
+      render: (data, row) => {
+        const val = (row as FirewallACLRuleStatisticModel).bytes
+        return transformDisplayText(val
+          ? formatter('bytesFormat')(Number(val))
+          : val?.toString())
+      }
     }
   ]
 
@@ -33,6 +69,9 @@ export const RuleStatisticDataTable = ({ dataSource }:
     <StatefulACLRulesTable
       columns={defaultColumns.concat(statisticColumns)}
       dataSource={dataSource}
+      locale={{
+        emptyText: <Empty description={$t({ defaultMessage: 'No data' })} />
+      }}
     />
   )
 }

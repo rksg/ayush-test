@@ -5,6 +5,10 @@ import {
   useLocation
 }         from 'react-router-dom'
 
+import { get } from '@acx-ui/config'
+
+import { MLISA_BASE_PATH } from '.'
+
 import type { Path, To } from 'react-router-dom'
 
 export type TenantType = 't' | 'v'
@@ -22,5 +26,5 @@ export function useTenantLink (to: To, tenantType: TenantType = 't') {
     search.set(name, value)
   }
   path.search = search.toString()
-  return resolvePath(path, `/${tenantId}/${tenantType}`)
+  return resolvePath(path, get('IS_MLISA_SA') ? MLISA_BASE_PATH : `/${tenantId}/${tenantType}`)
 }
