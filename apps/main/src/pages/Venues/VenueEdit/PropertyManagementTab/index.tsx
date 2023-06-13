@@ -114,17 +114,17 @@ export function PropertyManagementTab () {
     } else {
       enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
       formRef?.current.setFieldsValue(propertyConfigsQuery.data)
+
+      const groupId = propertyConfigsQuery.data?.personaGroupId
+      if (groupId) {
+        setSelectedGroupId(groupId)
+        getPersonaGroupById({ params: { groupId } })
+          .then(result => {
+            setGroupData({ id: groupId, name: result.data?.name })
+          })
+      }
     }
     formRef?.current.setFieldValue('isPropertyEnable', enabled)
-
-    const groupId = propertyConfigsQuery.data?.personaGroupId
-    if (groupId) {
-      setSelectedGroupId(groupId)
-      getPersonaGroupById({ params: { groupId } })
-        .then(result => {
-          setGroupData({ id: groupId, name: result.data?.name })
-        })
-    }
   }, [propertyConfigsQuery.data, formRef])
 
   const registerMessageTemplates = async () => {
@@ -266,7 +266,7 @@ export function PropertyManagementTab () {
                     name={['unitConfig', 'guestAllowed']}
                     rules={[{ required: true }]}
                     valuePropName={'checked'}
-                    children={<Switch />}
+                    children={<Switch disabled={hasUnits} />}
                   />
                 </StepsFormLegacy.FieldLabel>
                 {!residentPortalHasBound &&

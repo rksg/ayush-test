@@ -305,7 +305,8 @@ export const MenuIcon = styled.span`
 
 export const Content = styled.div`
   margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
-  min-width: calc(${modifyVars['@screen-xl']}
+  min-width: calc(
+    ${modifyVars['@screen-xl']}
     - var(--acx-sider-width)
     - var(--acx-content-horizontal-space) * 2
   );

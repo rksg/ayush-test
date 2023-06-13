@@ -34,6 +34,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, tenantId, setVisible, setSelected } = props
+  const [isLoaded, setIsLoaded] = useState(false)
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
@@ -56,21 +57,23 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   useEffect(() => {
     if (queryResults?.data && delegatedAdmins?.data) {
-      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
-      setSelectedKeys(getSelectedKeys(queryResults?.data as MspAdministrator[], admins))
-      const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
-      setSelectedRows(selRows)
       const selRoles = delegatedAdmins?.data?.map((admin) => {
         return { id: admin.msp_admin_id, role: admin.msp_admin_role }
       })
       setSelectedRoles(selRoles)
+      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
+      setSelectedKeys(getSelectedKeys(queryResults?.data as MspAdministrator[], admins))
+      const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
+      setSelectedRows(selRows)
     }
+    setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
   }, [queryResults?.data, delegatedAdmins?.data])
 
   const onClose = () => {
     setVisible(false)
     setSelectedRows([])
     setSelectedRoles([])
+    setSelectedKeys([])
   }
 
   const resetFields = () => {
@@ -153,7 +156,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
-    return <Select defaultValue={role}
+    return isLoaded && <Select defaultValue={role}
       style={{ width: '200px' }}
       onChange={value => handleRoleChange(id, value)}>
       {

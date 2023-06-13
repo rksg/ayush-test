@@ -65,7 +65,8 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       render: (data, row) => {
         return <Switch
           checked={state.networkIds.includes(row.id)}
-          onClick={() => {
+          onClick={(_, e) => {
+            e.stopPropagation()
             state.networkIds.includes(row.id)
               ? deactivateNetwork([row])
               : activateNetwork([row])

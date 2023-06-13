@@ -9,7 +9,12 @@ import {
   transferNewResToTableResult,
   EdgeFirewallUrls,
   EdgeFirewallSetting,
-  EdgeFirewallViewData
+  EdgeFirewallViewData,
+  EdgeFirewallDDoSStatsViewData,
+  EdgeFirewallDDoSStats,
+  EdgeFirewallACLStatsViewData,
+  EdgeFirewallBaseStatsPayload,
+  EdgeFirewallACLStatsPayload
 } from '@acx-ui/rc/utils'
 import { baseEdgeFirewallApi } from '@acx-ui/store'
 
@@ -116,7 +121,34 @@ export const edgeFirewallApi = baseEdgeFirewallApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'EdgeFirewall', id: 'LIST' }]
-    })
+    }),
+    getEdgeFirewallDDoSStats: build.query<EdgeFirewallDDoSStats[],
+      RequestPayload<EdgeFirewallBaseStatsPayload>>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeFirewallUrls.getEdgeFirewallDDoSStats)
+          return {
+            ...req,
+            body: payload
+          }
+        },
+        providesTags: [{ type: 'EdgeFirewall', id: 'STATS' }],
+        transformResponse: (result: EdgeFirewallDDoSStatsViewData) => {
+          return result.ddosStatsList
+        }
+      }),
+    getEdgeFirewallACLStats: build.query<EdgeFirewallACLStatsViewData,
+      RequestPayload<EdgeFirewallACLStatsPayload>>({
+        query: ({ payload }) => {
+          const req = createHttpRequest(EdgeFirewallUrls.getEdgeFirewallACLStats)
+
+          return {
+            ...req,
+            body: payload
+          }
+        },
+        providesTags: [{ type: 'EdgeFirewall', id: 'STATS' }]
+      })
+
   })
 })
 
@@ -126,5 +158,7 @@ export const {
   useGetEdgeFirewallListQuery,
   useGetEdgeFirewallQuery,
   useGetEdgeFirewallViewDataListQuery,
-  useDeleteEdgeFirewallMutation
+  useDeleteEdgeFirewallMutation,
+  useGetEdgeFirewallDDoSStatsQuery,
+  useGetEdgeFirewallACLStatsQuery
 } = edgeFirewallApi

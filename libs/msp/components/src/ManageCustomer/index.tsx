@@ -435,7 +435,7 @@ export function ManageCustomer () {
         admin_delegations: delegations,
         licenses: assignLicense
       }
-      if (!optionalEcAdmin) {
+      if (ecFormData.admin_email) {
         customer.admin_email = ecFormData.admin_email
         customer.admin_firstname = ecFormData.admin_firstname
         customer.admin_lastname = ecFormData.admin_lastname
