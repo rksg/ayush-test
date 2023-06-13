@@ -123,7 +123,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
     }
   }, {
-    skip: !!!tunnelProfileId,
+    skip: !!!tunnelProfileId || !!!isEdgeEnabled,
     selectFromResult: ({ data }) => {
       return {
         nsgId: data?.data[0]?.id
