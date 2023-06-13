@@ -24,7 +24,6 @@ export function SwitchUpgradeNotification (props: {
     stackUnitsMinLimitaion?: number,
     isDisplay: boolean,
     isDisplayHeader: boolean,
-    isFromSwitchForm: boolean,
     type: SWITCH_UPGRADE_NOTIFICATION_TYPE,
     validateModel: string[]
 }) {
@@ -36,7 +35,6 @@ export function SwitchUpgradeNotification (props: {
     type,
     validateModel,
     stackUnitsMinLimitaion,
-    isFromSwitchForm,
     switchModel } = props
 
   const targetVersion = '09.0.10f'
@@ -74,7 +72,7 @@ export function SwitchUpgradeNotification (props: {
   const content = upgradeDescription[type][descriptionIndex]
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
-  const isRodanModel = switchModel?.includes('8200') || validateModel[0]?.includes('8200')
+  const isRodanModel = switchModel?.includes('8200') || (validateModel[0]?.includes('8200') && isDisplayHeader)
   if (isRodanModel) {
     if ((enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel))) {
       return <UI.Wrapper>
@@ -87,7 +85,7 @@ export function SwitchUpgradeNotification (props: {
           </div>
         </UI.Content>
       </UI.Wrapper>
-    } else if(isFromSwitchForm) {
+    } else if(isDisplayHeader) {
       return <UI.Wrapper style={{ padding: '8px', marginBottom: '8px' }}>
         {$t({ defaultMessage: 'Switch Model:' })} {icon}
         <UI.ValidateModel>{validateModel[0]}</UI.ValidateModel>
