@@ -323,7 +323,11 @@ export function AccessSwitchDrawer (props: {
           {
             Object.keys(defaultTemplateData).map(name=>{
               const item = defaultTemplateData[name as keyof typeof defaultTemplateData]
-              return (<Form.Item name={name} label={$t(item.label)} key={name}>
+              return (<Form.Item name={name}
+                label={$t(item.label)}
+                validateTrigger='onBlur'
+                rules={[{ pattern: /^[\w\s,.!\-\[\]]*$/, message: 'Accept only word characters.' }]}
+                key={name}>
                 <Input.TextArea autoSize
                   disabled={!webAuthPageOverwrite}
                   placeholder={$t(item.defaultMessage, {

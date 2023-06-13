@@ -24,7 +24,7 @@ export const defaultTemplateData = {
     defaultMessage:
       defineMessage({ defaultMessage: `This network is restricted to authorized users only.
       Violators may be subjected to legal prosecution.
-      Acitvity on this network is monitored and may be used as evidence in a court of law.
-      \u00A9 {year} CommScope, Inc. All Rights Reserved.` })
+      Activity on this network is monitored and may be used as evidence in a court of law.
+      Copyright {year} CommScope, Inc. All Rights Reserved.` })
   }
 }

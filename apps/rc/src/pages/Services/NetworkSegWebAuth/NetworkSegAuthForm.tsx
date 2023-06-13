@@ -73,7 +73,10 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
     return (
       <UI.TextAreaWithReset label={label}>
         <Space size='middle'>
-          <Form.Item name={name} children={<Input.TextArea autoSize />} />
+          <Form.Item name={name}
+            validateTrigger='onBlur'
+            rules={[{ pattern: /^[\w\s,.!\-\[\]]*$/, message: 'Accept only word characters.' }]}
+            children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{
               formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name].defaultMessage, {
