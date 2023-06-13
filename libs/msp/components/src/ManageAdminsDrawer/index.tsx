@@ -56,7 +56,6 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
   useEffect(() => {
-    setIsLoaded(isSkip)
     if (queryResults?.data && delegatedAdmins?.data) {
       const selRoles = delegatedAdmins?.data?.map((admin) => {
         return { id: admin.msp_admin_id, role: admin.msp_admin_role }
@@ -66,8 +65,8 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       setSelectedKeys(getSelectedKeys(queryResults?.data as MspAdministrator[], admins))
       const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
       setSelectedRows(selRows)
-      setIsLoaded(true)
     }
+    setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
   }, [queryResults?.data, delegatedAdmins?.data])
 
   const onClose = () => {
