@@ -13,10 +13,12 @@ import {
   StepsFormLegacyInstance,
   Tooltip,
   Tabs,
-  Alert
+  Alert,
+  showToast
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  switchApi,
   useGetSwitchQuery,
   useVenuesListQuery,
   useAddSwitchMutation,
@@ -37,7 +39,8 @@ import {
   SwitchStatusEnum,
   isOperationalSwitch,
   redirectPreviousPage,
-  LocationExtended
+  LocationExtended,
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -45,6 +48,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { store } from '@acx-ui/store'
 
 import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
@@ -106,6 +110,7 @@ export function SwitchForm () {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
   const [previousPath, setPreviousPath] = useState('')
+  const isSupportIcx8200 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
   const switchListPayload = {
     searchString: '',
@@ -256,7 +261,32 @@ export function SwitchForm () {
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
-      await updateSwitch({ params: { tenantId, switchId } , payload }).unwrap()
+      await updateSwitch({ params: { tenantId, switchId } , payload })
+        .unwrap()
+        .then(() => {
+          const updatedFields = checkUpdateFields(values)
+          const noChange = updatedFields.length === 0
+          // TODO: should disable apply button while no changes
+          const onlyChangeDescription
+            = updatedFields.includes('description') && updatedFields.length === 1
+
+          // These cases won't trigger activity service: UpdateSwitch
+          if (noChange || onlyChangeDescription) {
+            store.dispatch(
+              switchApi.util.invalidateTags([
+                { type: 'Switch', id: 'DETAIL' },
+                { type: 'Switch', id: 'SWITCH' }
+              ])
+            )
+            showToast({
+              type: 'success',
+              content: $t(
+                { defaultMessage: 'Update switch {switchName} configuration success' },
+                { switchName: payload?.name }
+              )
+            })
+          }
+        })
 
       dataFetchedRef.current = false
 
@@ -266,6 +296,19 @@ export function SwitchForm () {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const checkUpdateFields = function (values: Switch) {
+    const fields = Object.keys(values ?? {})
+    const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
+    const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+
+    return Object.keys(originalValues ?? {}).reduce((result: string[], key) => {
+      if ((originalValues[key as keyof Switch]) !== currentValues[key as keyof Switch]) {
+        return [ ...result, key ]
+      }
+      return result
+    }, [])
   }
 
   const setFirmwareType = function (value: string) {
@@ -281,7 +324,8 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = new RegExp(SWITCH_SERIAL_PATTERN)
+    const re = isSupportIcx8200 ? new RegExp(SWITCH_SERIAL_PATTERN_SUPPORT_RODAN)
+      : new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
@@ -302,6 +346,16 @@ export function SwitchForm () {
 
   const onTabChange = (tab: string) => {
     setCurrentTab(tab)
+  }
+
+  const handleChangeSerialNumber = (name: string) => {
+    const serialNumber = formRef.current?.getFieldValue(name)?.toUpperCase()
+    if(serialNumber) {
+      formRef.current?.setFieldValue(name, serialNumber)
+      formRef.current?.validateFields([name]).catch(()=>{
+        setSwitchModel('')
+      })
+    }
   }
 
   return <>
@@ -377,10 +431,16 @@ export function SwitchForm () {
                   ]}
                   validateTrigger={['onKeyUp', 'onBlur']}
                   validateFirst
-                  children={<Input disabled={readOnly || editMode} />}
+                  children={
+                    <Input
+                      disabled={readOnly || editMode}
+                      style={{ textTransform: 'uppercase' }}
+                      onBlur={() => handleChangeSerialNumber(editMode ? 'serialNumber' : 'id')}
+                    />
+                  }
                 />
 
-                {!editMode &&
+                {!editMode && !isRodanModel &&
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
@@ -407,6 +467,7 @@ export function SwitchForm () {
                   initialValue={MEMEBER_TYPE.STANDALONE}
                 >
                   <Radio.Group
+                    value={switchRole}
                     onChange={(e: RadioChangeEvent) => {
                       return setSwitchRole(e.target.value)
                     }}

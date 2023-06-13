@@ -47,27 +47,22 @@ const FirewallDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'DDoS Rate-limiting' }),
-      content: () => (
-        $t(
-          { defaultMessage: '{status} ({rulesCount} rules)' },
+      content: () => (edgeFirewallData.ddosEnabled
+        ? $t(
+          { defaultMessage: 'ON ({rulesCount} rules)' },
           {
-            status: edgeFirewallData.ddosEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
             rulesCount: Object.keys(edgeFirewallData?.ddosRateLimitingRules || []).length
           }
         )
+        : $t({ defaultMessage: 'OFF' })
       )
     },
     {
       title: $t({ defaultMessage: 'Stateful ACL' }),
-      content: () => (
-        $t(
-          { defaultMessage: '{status} (IN: {inCount} rules, OUT: {outCount} rules)' },
+      content: () => (edgeFirewallData.statefulAclEnabled
+        ? $t(
+          { defaultMessage: 'ON (IN: {inCount} rules, OUT: {outCount} rules)' },
           {
-            status: edgeFirewallData.statefulAclEnabled ?
-              $t({ defaultMessage: 'ON' }):
-              $t({ defaultMessage: 'OFF' }),
             inCount: edgeFirewallData.statefulAcls?.filter(item =>
               item.aclDirection === ACLDirection.INBOUND
             )[0]?.aclRuleNum || 0,
@@ -76,6 +71,7 @@ const FirewallDetail = () => {
             )[0]?.aclRuleNum || 0
           }
         )
+        : $t({ defaultMessage: 'OFF' })
       )
     }
   ]

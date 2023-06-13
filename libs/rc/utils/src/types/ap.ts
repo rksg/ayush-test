@@ -64,7 +64,8 @@ export interface AP {
   apDownRssi?: number,
   apUpRssi?: number,
   poePort?: string,
-  healthStatus?: string
+  healthStatus?: string,
+  downLinkCount?: number
 }
 
 export interface ApViewModel extends AP {
@@ -264,49 +265,50 @@ export interface Uplink{
 }
 
 export interface LanPort {
-	defaultType: string
-	id: string
-	isPoeOutPort: boolean
-	isPoePort: boolean
-	supportDisable: boolean
-	trunkPortOnly: boolean
-	untagId: number
-	vlanMembers: string,
-	enabled?: boolean,
-	portId?: string,
-	type?: 'ACCESS' | 'GENERAL' | 'TRUNK'
+  defaultType: string
+  id: string
+  isPoeOutPort: boolean
+  isPoePort: boolean
+  supportDisable: boolean
+  trunkPortOnly: boolean
+  untagId: number
+  vlanMembers: string,
+  enabled?: boolean,
+  portId?: string,
+  type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
+  vni: number
 }
 
 export interface ApModel {
-	allowDfsCountry: string[],
-	canSupportCellular: boolean,
-	canSupportLacp: boolean,
-	canSupportPoeMode: boolean,
-	canSupportPoeOut: boolean,
-	capabilityScore: number,
-	has160MHzChannelBandwidth: boolean,
-	isOutdoor: boolean,
-	lanPortPictureDownloadUrl: string,
-	lanPorts: LanPort[],
-	ledOn: boolean,
-	lldpAdInterval: number,
-	lldpEnable: boolean,
-	lldpHoldTime: number,
-	lldpMgmtEnable: boolean,
-	model: string,
-	pictureDownloadUrl: string,
-	poeModeCapabilities?: string[],
-	trunkPortOnly?: boolean,
-	requireOneEnabledTrunkPort: boolean,
-	simCardPrimaryEnabled: boolean,
-	simCardPrimaryRoaming: boolean,
-	simCardSecondaryEnabled: boolean,
-	simCardSecondaryRoaming: boolean,
-	supportChannel144: boolean,
-	supportDual5gMode: boolean,
-	supportTriRadio: boolean,
-	maxChannelization5G?: number,
-	maxChannelization6G?: number
+  allowDfsCountry: string[],
+  canSupportCellular: boolean,
+  canSupportLacp: boolean,
+  canSupportPoeMode: boolean,
+  canSupportPoeOut: boolean,
+  capabilityScore: number,
+  has160MHzChannelBandwidth: boolean,
+  isOutdoor: boolean,
+  lanPortPictureDownloadUrl: string,
+  lanPorts: LanPort[],
+  ledOn: boolean,
+  lldpAdInterval: number,
+  lldpEnable: boolean,
+  lldpHoldTime: number,
+  lldpMgmtEnable: boolean,
+  model: string,
+  pictureDownloadUrl: string,
+  poeModeCapabilities?: string[],
+  trunkPortOnly?: boolean,
+  requireOneEnabledTrunkPort: boolean,
+  simCardPrimaryEnabled: boolean,
+  simCardPrimaryRoaming: boolean,
+  simCardSecondaryEnabled: boolean,
+  simCardSecondaryRoaming: boolean,
+  supportChannel144: boolean,
+  supportDual5gMode: boolean,
+  supportTriRadio: boolean,
+  maxChannelization5G?: number,
+  maxChannelization6G?: number
 }
 
 export interface PingAp {
@@ -360,10 +362,13 @@ export interface APPhoto {
   imageUrl: string,
   updatedDate: string
 }
-export interface DhcpAp {
+
+export type DhcpApResponse = {
   requestId: string,
   response?: DhcpApInfo[]
 }
+
+export type DhcpAp = DhcpApResponse | DhcpApInfo[]
 
 export interface PacketCaptureState {
   status: ApPacketCaptureStateEnum,
@@ -440,4 +445,36 @@ export type ImportErrorRes = {
   downloadUrl?: string
   txId: string
   fileErrorsCount: number
+}
+
+export enum MeshModeEnum {
+  AUTO ='AUTO',
+  ROOT ='ROOT',
+  MESH ='MESH',
+  DISABLED = 'DISABLED'
+}
+
+export enum UplinkModeEnum {
+  MANUAL = 'MANUAL',
+  SMART = 'SMART'
+}
+
+export type APMeshSettings = {
+  venueMeshEnabled?: boolean, //read-only (get method only)
+  meshMode: MeshModeEnum,
+  uplinkMode?: UplinkModeEnum,
+  uplinkMacAddresses?: string[]
+}
+
+export type MeshApNeighbor = {
+  rssi: number,
+  mac: string,
+  apName: string
+}
+
+export type MeshUplinkAp = {
+  name: string,
+  deviceStatus: string,
+  healthStatus: string,
+  neighbors: MeshApNeighbor[]
 }

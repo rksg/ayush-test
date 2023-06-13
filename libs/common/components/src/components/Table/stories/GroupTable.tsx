@@ -852,16 +852,22 @@ export function GroupTable (props: TableProps<APExtended | APExtendedGroupedResp
     deviceStatus: cleanResponse(deviceStatusResponse),
     model: cleanResponse(modelResponse)
   }
+  const rowSelection = {
+    defaultSelectedRowKeys: [],
+    ...(props.rowSelection && props.rowSelection)
+  }
+  const tableData = sources[grouping || ''] || flatData.map((row, i) => ({ ...row, id: i }))
   return <>
     with groupby:
     <Table<APExtendedGroupedResponse | APExtended>
       {...props}
       columns={groupByColumns}
-      dataSource={sources[grouping || ''] || flatData.map((row, i) => ({ ...row, id: i }))}
+      dataSource={tableData}
+      getAllPagesData={() => tableData}
       rowKey='id' // need to set unique entry per record to ensure proper behaviour
       indentSize={6}
       columnEmptyText='-'
-      rowSelection={{ defaultSelectedRowKeys: [] }}
+      rowSelection={rowSelection}
       onFilterChange={(_filter, _search, groupBy) => setGrouping(groupBy)}
     />
   </>

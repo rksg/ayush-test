@@ -58,6 +58,10 @@ describe('ResidentPortal', () => {
 
     const helpInput = await screen.findByRole('textbox', { name: /Help Text/ })
     expect(helpInput).toHaveValue(mockedResidentPortal.uiConfiguration?.text.helpText)
+
+    const checkbox = await screen.findByRole('switch',
+      { name: /Allow Residents to Set Passphrase/ })
+    expect(checkbox).toBeChecked()
   })
 
   it('should validate the service name', async () => {

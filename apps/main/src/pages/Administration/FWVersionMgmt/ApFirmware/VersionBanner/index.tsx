@@ -14,7 +14,6 @@ import {
 
 import * as UI from '../../styledComponents'
 
-const transform = firmwareTypeTrans()
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
@@ -22,6 +21,8 @@ export const VersionBanner = () => {
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions[0]
+
+  const transform = firmwareTypeTrans($t)
 
   if (!firmware) return null
   return (

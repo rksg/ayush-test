@@ -29,8 +29,9 @@ import { hasRoles }                                            from '@acx-ui/use
 
 export function useMenuConfig () {
   const { $t } = useIntl()
-  const showSV = useIsTierAllowed('ANLT-ADV')
+  const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
+  const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
@@ -62,7 +63,11 @@ export function useMenuConfig () {
             {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
-            }
+            },
+            ...(isNavbarEnhanced && isAnltAdvTier && showConfigChange ? [{
+              uri: '/analytics/configChange',
+              label: $t({ defaultMessage: 'Config Change' })
+            }] : [])
           ]
         },
         {
@@ -73,11 +78,11 @@ export function useMenuConfig () {
               uri: '/analytics/health',
               label: $t({ defaultMessage: 'Health' })
             },
-            ...(showSV ? [{
+            ...(isAnltAdvTier ? [{
               uri: '/analytics/serviceValidation',
               label: $t({ defaultMessage: 'Service Validation' })
             }] : []),
-            ...(showSV && showVideoCallQoe ? [{
+            ...(isAnltAdvTier && showVideoCallQoe ? [{
               uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
@@ -293,7 +298,7 @@ export function useMenuConfig () {
         },
         {
           type: 'group' as const,
-          label: 'Account Management',
+          label: $t({ defaultMessage: 'Account Management' }),
           children: [
             {
               uri: '/administration/accountSettings',
@@ -313,7 +318,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/administration/fwVersionMgmt',
-              label: $t({ defaultMessage: 'Firmware Version Management' })
+              label: $t({ defaultMessage: 'Version Management' })
             },
             ...(isCloudMoteEnabled ? [{
               uri: '/administration/onpremMigration',

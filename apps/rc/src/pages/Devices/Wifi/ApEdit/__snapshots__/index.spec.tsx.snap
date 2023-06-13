@@ -325,6 +325,20 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
             </div>
           </div>
           <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-mesh"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-mesh"
+              role="tab"
+              tabindex="0"
+            >
+              Mesh
+            </div>
+          </div>
+          <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
             style="left: 0px; width: 1280px;"
           />
@@ -402,7 +416,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
             class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
             <section
-              class="styledComponents__Wrapper-sc-71wmpn-2 jUXjyR"
+              class="styledComponents__Wrapper-sc-71wmpn-1 hSJEDD"
             >
               <div
                 class="ant-pro-steps-form"
@@ -416,7 +430,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                     style="padding-left: 12px; padding-right: 12px;"
                   >
                     <div
-                      class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
+                      class="styledComponents__StepsContainer-sc-71wmpn-0 edTeUT"
                     >
                       <div
                         class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -974,6 +988,32 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                               </div>
                                             </div>
                                           </div>
+                                          <div
+                                            class="ant-form-item ant-form-item-hidden"
+                                          >
+                                            <div
+                                              class="ant-row ant-form-item-row"
+                                            >
+                                              <div
+                                                class="ant-col ant-form-item-control"
+                                              >
+                                                <div
+                                                  class="ant-form-item-control-input"
+                                                >
+                                                  <div
+                                                    class="ant-form-item-control-input-content"
+                                                  >
+                                                    <input
+                                                      class="ant-input"
+                                                      id="0_lan_0_vni"
+                                                      type="text"
+                                                      value=""
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -1309,6 +1349,32 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                               </div>
                                             </div>
                                           </div>
+                                          <div
+                                            class="ant-form-item ant-form-item-hidden"
+                                          >
+                                            <div
+                                              class="ant-row ant-form-item-row"
+                                            >
+                                              <div
+                                                class="ant-col ant-form-item-control"
+                                              >
+                                                <div
+                                                  class="ant-form-item-control-input"
+                                                >
+                                                  <div
+                                                    class="ant-form-item-control-input-content"
+                                                  >
+                                                    <input
+                                                      class="ant-input"
+                                                      id="0_lan_1_vni"
+                                                      type="text"
+                                                      value=""
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
@@ -1350,7 +1416,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
+                  class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1409,6 +1475,15 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-multicast"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-multicast"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-mesh"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-mesh"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"

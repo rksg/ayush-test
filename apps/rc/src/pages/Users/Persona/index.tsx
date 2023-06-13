@@ -17,6 +17,10 @@ export const PersonaGroupContext = createContext({} as {
 export const PersonasContext = createContext({} as {
   setPersonasCount: (data: number) => void
 })
+enum PersonaTabKey {
+  PERSONA = 'persona',
+  PERSONA_GROUP = 'persona-group'
+}
 
 function PersonaPageHeader () {
   const { $t } = useIntl()
@@ -54,49 +58,50 @@ function PersonaPageHeader () {
       pathname: `${basePath.pathname}/${tab}`
     })
 
+  const getTabComp = (activeTab?: PersonaTabKey) => {
+    if (activeTab === PersonaTabKey.PERSONA) {
+      return <PersonasContext.Provider value={{ setPersonasCount }}>
+          <PersonaTable />
+        </PersonasContext.Provider>
+    }
+
+    return <PersonaGroupContext.Provider value={{ setPersonaGroupCount }}>
+      <PersonaGroupTable />
+    </PersonaGroupContext.Provider>
+  }
+
   return (
-    <PageHeader
-      title={$t({ defaultMessage: 'Persona Management' })}
-      breadcrumb={[{
-        text: isNavbarEnhanced
-          ? $t({ defaultMessage: 'Clients' })
-          : $t({ defaultMessage: 'Users' }),
-        link: isNavbarEnhanced ? '' : '/users'
-      }]}
-      footer={
-        <PersonaGroupContext.Provider value={{ setPersonaGroupCount }}>
-          <PersonasContext.Provider value={{ setPersonasCount }}>
-            <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-              <Tabs.TabPane
-                key={'persona-group'}
-                tab={isNavbarEnhanced
-                  ? $t({ defaultMessage: 'Persona Groups ({personaGroupCount})' },
-                    { personaGroupCount })
-                  : $t({ defaultMessage: 'Persona Group' })
-                }
-                children={
-                  <PersonaGroupContext.Provider value={{ setPersonaGroupCount }}>
-                    <PersonaGroupTable />
-                  </PersonaGroupContext.Provider>
-                }
-              />
-              <Tabs.TabPane
-                key={'persona'}
-                tab={isNavbarEnhanced
-                  ? $t({ defaultMessage: 'Personas ({personasCount})' }, { personasCount })
-                  : $t({ defaultMessage: 'Persona' })
-                }
-                children={
-                  <PersonasContext.Provider value={{ setPersonasCount }}>
-                    <PersonaTable />
-                  </PersonasContext.Provider>
-                }
-              />
-            </Tabs>
-          </PersonasContext.Provider>
-        </PersonaGroupContext.Provider>
-      }
-    />
+    <>
+      <PageHeader
+        title={$t({ defaultMessage: 'Persona Management' })}
+        breadcrumb={[{
+          text: isNavbarEnhanced
+            ? $t({ defaultMessage: 'Clients' })
+            : $t({ defaultMessage: 'Users' }),
+          link: isNavbarEnhanced ? '' : '/users'
+        }]}
+        footer={
+          <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+            <Tabs.TabPane
+              key={PersonaTabKey.PERSONA_GROUP}
+              tab={isNavbarEnhanced
+                ? $t({ defaultMessage: 'Persona Groups ({personaGroupCount})' },
+                  { personaGroupCount })
+                : $t({ defaultMessage: 'Persona Group' })
+              }
+            />
+            <Tabs.TabPane
+              key={PersonaTabKey.PERSONA}
+              tab={isNavbarEnhanced
+                ? $t({ defaultMessage: 'Personas ({personasCount})' }, { personasCount })
+                : $t({ defaultMessage: 'Persona' })
+              }
+            />
+          </Tabs>
+        }
+      />
+      { getTabComp(params.activeTab as PersonaTabKey) }
+    </>
   )
 }
 

@@ -45,6 +45,7 @@ const EditNetworkSegmentation = () => {
       form.setFieldValue('networkIds', nsgData.networkIds)
       form.setFieldValue('distributionSwitchInfos', nsgData.distributionSwitchInfos)
       form.setFieldValue('accessSwitchInfos', nsgData.accessSwitchInfos)
+      form.setFieldValue('originalDistributionSwitchInfos', nsgData.distributionSwitchInfos)
       form.setFieldValue('originalAccessSwitchInfos', nsgData.accessSwitchInfos)
     }
   }, [nsgData])

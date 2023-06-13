@@ -102,37 +102,38 @@ export function ClientsTable (props: {
             return row.clientType || '--'
         }
       }
-    }, {
+    },
+    ...(params.switchId || params.venueId ? [] : [{
       key: 'venueName',
       title: intl.$t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       sorter: true,
-      show: !params.switchId,
       searchable: searchable,
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
-      render: (data, row) => {
+      render: (data: React.ReactNode, row: SwitchClient) => {
         const name = data ? data : '--'
         // eslint-disable-next-line max-len
         return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>
       }
-    }, {
+    }]),
+    ...(params.switchId ? [] : [{
       key: 'switchName',
       title: intl.$t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
       sorter: true,
-      show: !params.switchId,
       searchable: searchable,
       filterKey: 'switchId',
       filterable: filterableKeys ? filterableKeys['switchId'] : false,
-      render: (data, row) => {
+      render: (data: React.ReactNode, row: SwitchClient) => {
         const name = data ? data : '--'
         const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
         return (row.switchId && data) ?
           <TenantLink to={link}>{name}</TenantLink> :
           <span>{name}</span>
       }
-    }, {
+    }]),
+    {
       key: 'switchPort',
       title: intl.$t({ defaultMessage: 'Port' }),
       dataIndex: 'switchPortFormatted',

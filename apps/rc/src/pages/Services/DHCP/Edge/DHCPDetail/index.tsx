@@ -25,7 +25,6 @@ const EdgeDHCPDetail = () => {
       'serviceName',
       'dhcpRelay',
       'dhcpPoolNum',
-      'dhcpPoolNum',
       'leaseTime'
     ],
     filters: { id: [params.serviceId] }

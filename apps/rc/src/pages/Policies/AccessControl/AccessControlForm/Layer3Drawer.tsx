@@ -40,7 +40,6 @@ import { filterByAccess } from '@acx-ui/user'
 import { layer3ProtocolLabelMapping }      from '../../contentsMap'
 import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
 
-import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
@@ -757,7 +756,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
     <DndProvider backend={HTML5Backend} >
-      {isOnlyViewMode ? <Table
+      {isOnlyViewMode && !editMode.isEdit ? <Table
         columns={basicColumns}
         dataSource={layer3RuleList as Layer3Rule[]}
       /> : <Table
@@ -775,6 +774,20 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       />}
     </DndProvider>
   </Form>
+
+  const portRangeValidator = (value: string) => {
+    const validationList: string[] = value.split('-')
+    if (value.includes('-')) {
+      if (validationList[1] === '' || Number(validationList[0]) >= Number(validationList[1])) {
+        return Promise.reject($t({
+          defaultMessage: 'Please enter another valid number between {number} and 65535'
+        }, {
+          number: Number(validationList[0]) + 1
+        }))
+      }
+    }
+    return Promise.all(validationList.map(value => portRegExp(value)))
+  }
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
     <DrawerFormItem
@@ -872,7 +885,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { validator: (_, value) => portRegExp(value) }
+          { validator: (_, value) => portRangeValidator(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
@@ -958,7 +971,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { validator: (_, value) => portRegExp(value) }
+          { validator: (_, value) => portRangeValidator(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
@@ -1039,9 +1052,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
         zIndex={10}
-        onClose={() => !isViewMode()
-          ? showUnsavedConfirmModal(handleLayer3DrawerClose)
-          : handleLayer3DrawerClose()
+        onClose={() => handleLayer3DrawerClose()
         }
         destroyOnClose={true}
         children={content}

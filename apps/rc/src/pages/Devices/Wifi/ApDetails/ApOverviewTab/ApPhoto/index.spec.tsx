@@ -59,7 +59,7 @@ describe('ApPhoto', () => {
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        WifiUrlsInfo.getWifiCapabilities.url,
+        WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(wifiCapabilities))
       ),
       rest.get(

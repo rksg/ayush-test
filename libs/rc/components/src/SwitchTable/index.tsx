@@ -10,7 +10,8 @@ import {
   TableProps,
   Loader,
   deviceStatusColors,
-  ColumnType
+  ColumnType,
+  showToast
 } from '@acx-ui/components'
 import {
   Features,
@@ -123,7 +124,9 @@ export function SwitchTable (props : SwitchTableProps) {
     search: {
       searchTargetFields: defaultSwitchPayload.searchTargetFields
     },
-    option: { skip: Boolean(props.tableQuery) }
+    option: { skip: Boolean(props.tableQuery) },
+    enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig' ]
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
@@ -191,7 +194,7 @@ export function SwitchTable (props : SwitchTableProps) {
       fixed: 'left',
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
-      groupable: getGroupableConfig()?.deviceStatusGroupableOptions,
+      groupable: filterableKeys && getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (data, row) => <SwitchStatus row={row}/>
     }, {
       key: 'model',
@@ -200,7 +203,7 @@ export function SwitchTable (props : SwitchTableProps) {
       filterable: filterableKeys ? filterableKeys['model'] : false,
       sorter: true,
       searchable: searchable,
-      groupable: getGroupableConfig()?.modelGroupableOptions
+      groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions
     }, {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -227,17 +230,17 @@ export function SwitchTable (props : SwitchTableProps) {
     //   title: $t({ defaultMessage: 'Incidents' }),
     //   dataIndex: 'incidents',
     // },
-    {
+    ...(params.venueId ? [] : [{
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
       sorter: true,
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
-      render: (data, row) => (
+      render: (data: React.ReactNode, row: SwitchRow) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       )
-    }, {
+    }]), {
       key: 'uptime',
       title: $t({ defaultMessage: 'Up Time' }),
       dataIndex: 'uptime',
@@ -332,7 +335,14 @@ export function SwitchTable (props : SwitchTableProps) {
     },
     onClick: async (rows, clearSelection) => {
       const switchId = rows[0].id ? rows[0].id : rows[0].serialNumber
-      switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, clearSelection)
+      const callback = () => {
+        clearSelection?.()
+        showToast({
+          type: 'success',
+          content: $t({ defaultMessage: 'Start firmware upgrade retry' })
+        })
+      }
+      switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
@@ -354,13 +364,16 @@ export function SwitchTable (props : SwitchTableProps) {
       settingsId='switch-table'
       columns={columns}
       dataSource={tableData}
+      getAllPagesData={tableQuery.getAllPagesData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={handleFilterChange}
       enableApiFilter={true}
+      searchableWidth={220}
+      filterableWidth={140}
       rowKey={(record)=> record.isGroup || record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{
+      rowSelection={searchable !== false ? {
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record.isFirstLevel
@@ -370,7 +383,7 @@ export function SwitchTable (props : SwitchTableProps) {
         getCheckboxProps: (record) => ({
           disabled: !record.isFirstLevel
         })
-      }}
+      } : undefined}
       actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
         onClick: () => {

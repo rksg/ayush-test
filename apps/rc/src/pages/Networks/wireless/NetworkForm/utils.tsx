@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { AuthRadiusEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, DpskWlanAdvancedCustomization } from '@acx-ui/rc/utils'
 
 export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
   if (!data) return false
@@ -21,19 +21,20 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
       return wlanData?.isCloudpathEnabled
 
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      const { guestPortal } = data
+      const { guestPortal, enableAccountingService } = data
       if (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath) {
         return true
       }
 
       if  (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
-        /*
         // keep this for next feature ( authservice is 'always accept')
         const wisprPage = wlanData?.guestPortal?.wisprPage
-        if (wisprPage?.customExternalProvider === true) { // other provider
-          return true
+        if (wisprPage?.customExternalProvider === true) { // custom provider
+          if (enableAccountingService !== true &&
+              wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT) {
+            return false
+          }
         }
-        */
         return true
       }
       return false
@@ -66,3 +67,12 @@ export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any)
   return enableAccountingService === true
 }
 
+export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
+  if (!data) return false
+
+  const wlanAdvaced = (data?.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)
+  if (wlanAdvaced?.tunnelProfileId) {
+    return true
+  }
+  return false
+}

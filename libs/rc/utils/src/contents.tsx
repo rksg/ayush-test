@@ -183,6 +183,9 @@ export const EditPortMessages = {
   }),
   TAGGED_VLAN_TOOLTIP: defineMessage({
     defaultMessage: 'Cannot set tagged VLANs when IPSG is activated on the port'
+  }),
+  PORT_SPEED_TOOLTIP: defineMessage({
+    defaultMessage: 'Not support on this port'
   })
 }
 

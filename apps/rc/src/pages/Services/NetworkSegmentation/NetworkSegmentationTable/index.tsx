@@ -29,7 +29,9 @@ const getNetworkSegmentationPayload = {
     'tags',
     'networkIds',
     'venueInfos',
-    'edgeInfos'
+    'edgeInfos',
+    'distributionSwitchInfos',
+    'accessSwitchInfos'
   ]
 }
 
@@ -116,7 +118,9 @@ const NetworkSegmentationTable = () => {
       key: 'switches',
       dataIndex: 'switches',
       align: 'center',
-      sorter: true
+      render: (data, row) => {
+        return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
+      }
     },
     {
       title: $t({ defaultMessage: 'Health' }),

@@ -33,7 +33,6 @@ import { filterByAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_LAYER2_POLICY } from '../constants'
 
-import { showUnsavedConfirmModal }     from './AccessControlComponent'
 import { AddModeProps, editModeProps } from './AccessControlForm'
 
 const { useWatch } = Form
@@ -614,9 +613,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
-        onClose={() => !isViewMode()
-          ? showUnsavedConfirmModal(handleLayer2DrawerClose)
-          : handleLayer2DrawerClose()
+        onClose={() => handleLayer2DrawerClose()
         }
         destroyOnClose={true}
         children={content}

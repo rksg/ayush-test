@@ -114,17 +114,17 @@ export function PropertyManagementTab () {
     } else {
       enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
       formRef?.current.setFieldsValue(propertyConfigsQuery.data)
+
+      const groupId = propertyConfigsQuery.data?.personaGroupId
+      if (groupId) {
+        setSelectedGroupId(groupId)
+        getPersonaGroupById({ params: { groupId } })
+          .then(result => {
+            setGroupData({ id: groupId, name: result.data?.name })
+          })
+      }
     }
     formRef?.current.setFieldValue('isPropertyEnable', enabled)
-
-    const groupId = propertyConfigsQuery.data?.personaGroupId
-    if (groupId) {
-      setSelectedGroupId(groupId)
-      getPersonaGroupById({ params: { groupId } })
-        .then(result => {
-          setGroupData({ id: groupId, name: result.data?.name })
-        })
-    }
   }, [propertyConfigsQuery.data, formRef])
 
   const registerMessageTemplates = async () => {
@@ -132,7 +132,7 @@ export function PropertyManagementTab () {
       .map(scopeId => {
         let selectedOption = formRef?.current?.getFieldValue(scopeId)
 
-        if(selectedOption && selectedOption.value !== '') {
+        if(selectedOption && selectedOption !== '') {
           return updateRegistration({
             params: {
               templateScopeId: scopeId,
@@ -140,7 +140,7 @@ export function PropertyManagementTab () {
             },
             payload: {
               id: scopeId,
-              templateId: selectedOption.value,
+              templateId: selectedOption,
               usageLocalizationKey: 'venue.property.management',
               usageDescriptionFieldOne: venueData?.name ?? venueId,
               usageDescriptionFieldTwo: venueId
