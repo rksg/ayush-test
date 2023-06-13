@@ -25,6 +25,7 @@ import {
   WebAuthTemplate,
   defaultTemplateData,
   getServiceListRoutePath,
+  getWebAuthLabelValidator,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -75,7 +76,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
         <Space size='middle'>
           <Form.Item name={name}
             validateTrigger='onBlur'
-            rules={[{ pattern: /^[\w\s,.!\-\[\]]*$/, message: 'Accept only word characters.' }]}
+            rules={[getWebAuthLabelValidator()]}
             children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{

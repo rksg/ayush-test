@@ -28,7 +28,8 @@ import {
   validateVlanName,
   UplinkInfo,
   WebAuthTemplate,
-  defaultTemplateData
+  defaultTemplateData,
+  getWebAuthLabelValidator
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
@@ -108,8 +109,7 @@ export function AccessSwitchDrawer (props: {
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
     payload: {
-      fields: ['name', 'id', 'webAuthPasswordLabel', 'webAuthCustomTitle',
-        'webAuthCustomTop', 'webAuthCustomLoginButton', 'webAuthCustomBottom']
+      fields: ['name', 'id']
     }
   })
   const templateList = templateListResult?.data as WebAuthTemplate[]
@@ -326,7 +326,7 @@ export function AccessSwitchDrawer (props: {
               return (<Form.Item name={name}
                 label={$t(item.label)}
                 validateTrigger='onBlur'
-                rules={[{ pattern: /^[\w\s,.!\-\[\]]*$/, message: 'Accept only word characters.' }]}
+                rules={[getWebAuthLabelValidator()]}
                 key={name}>
                 <Input.TextArea autoSize
                   disabled={!webAuthPageOverwrite}

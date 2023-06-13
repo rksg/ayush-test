@@ -1,4 +1,7 @@
+import { Rule }          from 'antd/lib/form'
 import { defineMessage } from 'react-intl'
+
+import { getIntl } from '@acx-ui/utils'
 
 export const defaultTemplateData = {
   webAuthCustomTop: {
@@ -26,5 +29,13 @@ export const defaultTemplateData = {
       Violators may be subjected to legal prosecution.
       Activity on this network is monitored and may be used as evidence in a court of law.
       Copyright {year} CommScope, Inc. All Rights Reserved.` })
+  }
+}
+
+export const getWebAuthLabelValidator = (): Rule => {
+  const { $t } = getIntl()
+  return {
+    pattern: /^[\w\s,.!\-\[\]]*$/,
+    message: $t({ defaultMessage: 'Accept only word characters.' })
   }
 }
