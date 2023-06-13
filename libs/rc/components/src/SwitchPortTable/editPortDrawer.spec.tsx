@@ -3,10 +3,9 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import * as CommonComponent from '@acx-ui/components'
-import { switchApi }        from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider, store }  from '@acx-ui/store'
+import { switchApi }       from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -42,8 +41,6 @@ const params = {
   switchId: 'switch-id',
   serialNumber: 'serial-number'
 }
-
-const mockedShowActionModal = jest.fn()
 
 const editPortVlans = async (inputTagged, inputUntagged, currentStatus?) => {
   fireEvent.click(await screen.findByRole('button', {
@@ -246,10 +243,6 @@ describe('EditPortDrawer', () => {
         )
       )
 
-      jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
-        mockedShowActionModal
-      )
-
       const selected = [{
         ...selectedPorts?.[0],
         revert: true,
@@ -287,7 +280,16 @@ describe('EditPortDrawer', () => {
       // fireEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
 
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-      expect(mockedShowActionModal).toBeCalledTimes(1)
+
+      await screen.findByText('Modify Uplink Port?')
+      const dialog = await screen.findAllByRole('dialog')
+      expect(dialog).toHaveLength(2)
+      const modal = dialog[1]
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
+      await waitFor(()=>{
+        expect(modal).not.toBeVisible()
+      })
     })
 
     it('should handle tagged vlans by venue correctly', async () => {
