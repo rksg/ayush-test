@@ -25,6 +25,7 @@ export default function ClientList () {
     setEndDate
   }
 
+
   return activeTab === 'clients'
     ? <>
       <PageHeader dateFilter={dateFilter}/>
@@ -32,6 +33,7 @@ export default function ClientList () {
     </>
     : <>
       <PageHeader dateFilter={dateFilter}/>
+
       <GuestsTab dateFilter={dateFilter}/>
     </>
 }

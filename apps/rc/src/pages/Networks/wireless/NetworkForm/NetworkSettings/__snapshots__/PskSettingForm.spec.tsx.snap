@@ -414,7 +414,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                             />
                                           </span>
                                           <span>
-                                            Pre-Shared Key (PSK)
+                                            Passphrase (PSK/SAE)
                                             <div
                                               class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                             >

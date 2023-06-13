@@ -86,12 +86,12 @@ export function OnDemandCliTab () {
     ]}>
       <Notification>
         { // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Update the CLI templates to reflect the CLI changes in FastIron 09.0.10e release. After upgrading to FastIron 09.0.10e release, using CLI templates with deprecated commands would result in configuration failures. Refer to the ' })
+          $t({ defaultMessage: 'Update the CLI templates to reflect the CLI changes in FastIron 09.0.10f release. After upgrading to FastIron 09.0.10f release, using CLI templates with deprecated commands would result in configuration failures. Refer to the ' })
         }
         <a target='_blank'
           // eslint-disable-next-line max-len
-          href={'https://support.ruckuswireless.com/documents/4392-ruckus-icx-fastiron-09-0-10e-ga-release-notes'}
-          rel='noreferrer'> {$t({ defaultMessage: 'FastIron 09.0.10e release notes' })} </a>
+          href={'https://support.ruckuswireless.com/documents/4486-ruckus-icx-fastiron-09-0-10f-ga-release-notes'}
+          rel='noreferrer'> {$t({ defaultMessage: 'FastIron 09.0.10f release notes' })} </a>
         {
           $t({ defaultMessage: ' for a list of deprecated CLI commands.' })
         }
