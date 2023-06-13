@@ -31,7 +31,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   NetworkVenue,
-  Network
+  Network,
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -243,7 +244,8 @@ export default function NetworkForm (props:{
         saveRadiusData?.authRadius)
       || !_.isEqual(radiusData?.accountingRadius, saveRadiusData?.accountingRadius)
       const radiusValidate = !radiusData.cloudpathServerId && radiusChanged
-      && saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr
+      && !(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+        && saveState.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT)
         ? await checkIpsValues(radiusData) : false
       const hasRadiusError = radiusValidate
         ? await checkRadiusError(radiusData, radiusValidate) : false
