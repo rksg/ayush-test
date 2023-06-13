@@ -33,13 +33,10 @@ jest.mock('./pages/VideoCallQoe', () => ({
 
 jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
+  IncidentDetails: () => <div data-testid='incidentDetails' />,
   IncidentListPage: () => <div data-testid='incidentListPage' />,
   IncidentListPageLegacy: () => <div data-testid='incidentListPageLegacy' />
 }))
-
-jest.mock('./pages/IncidentDetails', () => () => {
-  return <div data-testid='incidentDetails' />
-})
 
 jest.mock('./pages/NetworkAssurance', () => ({
   ...jest.requireActual('./pages/NetworkAssurance'),

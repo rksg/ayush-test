@@ -1,3 +1,5 @@
+import React from 'react'
+
 /* eslint-env jest */
 import { jest } from '@jest/globals'
 

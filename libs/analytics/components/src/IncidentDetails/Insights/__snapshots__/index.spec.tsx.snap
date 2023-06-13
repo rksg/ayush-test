@@ -43,7 +43,7 @@ exports[`Insights Component should render correctly 1`] = `
         class="ant-card-body"
       >
         <section
-          class="styledComponents__Wrapper-sc-117mefi-3 ggPtaU"
+          class="styledComponents__Wrapper-sc-1t8f1ur-3 iGKJsl"
         >
           <div
             class="ant-space ant-space-horizontal ant-space-align-start"
@@ -53,7 +53,7 @@ exports[`Insights Component should render correctly 1`] = `
               style="margin-right: 6px;"
             >
               <svg
-                class="styledComponents__BulbOutlinedIcon-sc-117mefi-0 glgoAW"
+                class="styledComponents__BulbOutlinedIcon-sc-1t8f1ur-0 euNaoT"
                 data-testid="BulbOutlined"
               />
             </div>
@@ -61,7 +61,7 @@ exports[`Insights Component should render correctly 1`] = `
               class="ant-space-item"
             >
               <h2
-                class="ant-typography styledComponents__Title-sc-117mefi-1"
+                class="ant-typography styledComponents__Title-sc-1t8f1ur-1"
               >
                 Insights
               </h2>
@@ -79,7 +79,7 @@ exports[`Insights Component should render correctly 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-117mefi-2 hYNJuf looZqI"
+                  class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
                 >
                   Root Cause Analysis
                 </div>
@@ -112,7 +112,7 @@ exports[`Insights Component should render correctly 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-117mefi-2 hYNJuf looZqI"
+                  class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
                 >
                   Recommended Action
                 </div>

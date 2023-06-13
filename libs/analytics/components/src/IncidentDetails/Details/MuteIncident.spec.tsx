@@ -10,8 +10,8 @@ import MuteIncident from './MuteIncident'
 
 const mockedUseMuteIncidentsMutation = useMuteIncidentsMutation as jest.Mock
 const mockedMuteIncident = jest.fn()
-jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
+jest.mock('../../IncidentTable/services', () => ({
+  ...jest.requireActual('../../IncidentTable/services'),
   useMuteIncidentsMutation: jest.fn()
 }))
 
