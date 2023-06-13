@@ -61,7 +61,7 @@ export function WISPrForm () {
   // eslint-disable-next-line
   const actionRunner = (currentState: WISPrAuthAccServerState, incomingState: WISPrAuthAccServerState) => {
     if (incomingState.action === WISPrAuthAccServerAction.AllAcceptChecked) {
-      form.setFieldValue(['authRadiusId'], undefined)
+      form.setFieldValue(['authRadiusId'], '')
       form.setFieldValue(['authRadius'], undefined)
       form.setFieldValue(['wlan','bypassCPUsingMacAddressAuthentication'], false)
     }

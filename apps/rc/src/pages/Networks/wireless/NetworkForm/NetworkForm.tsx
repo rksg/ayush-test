@@ -126,10 +126,7 @@ export default function NetworkForm (props:{
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
     }
-    if(saveState.guestPortal?.wisprPage?.authRadius &&
-      saveState.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT){
-      delete saveState.guestPortal?.wisprPage?.authRadius
-    }
+
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -277,17 +274,28 @@ export default function NetworkForm (props:{
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath &&
-      saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr
-    ){
+    if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath){
       delete data.authRadius
       delete data.accountingRadius
       delete data.enableAccountingService
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
-
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    // eslint-disable-next-line
+    let radiusUncheckedData = { ...data, ...saveState, ...tmpGuestPageState } as Partial<NetworkSaveData>
+    if (radiusUncheckedData.guestPortal?.wisprPage?.authType &&
+      radiusUncheckedData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+      radiusUncheckedData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      delete radiusUncheckedData.authRadius
+      delete radiusUncheckedData.accountingRadius
+      delete radiusUncheckedData.enableAccountingService
+      delete radiusUncheckedData.accountingRadiusId
+      delete radiusUncheckedData.authRadiusId
+      delete radiusUncheckedData.guestPortal?.wisprPage?.authRadius
+      // eslint-disable-next-line
+      radiusUncheckedData = _.omit(radiusUncheckedData, ['guestPortal.wisprPage.authRadiusId']) as Partial<NetworkSaveData>
+    }
+    updateSaveData(radiusUncheckedData)
     return true
   }
 
