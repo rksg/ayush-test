@@ -126,9 +126,9 @@ export default function NetworkForm (props:{
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
     }
-    if(saveData.guestPortal?.wisprPage?.authRadius &&
-      saveData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT){
-      delete saveData.guestPortal?.wisprPage?.authRadius
+    if(saveState.guestPortal?.wisprPage?.authRadius &&
+      saveState.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT){
+      delete saveState.guestPortal?.wisprPage?.authRadius
     }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
