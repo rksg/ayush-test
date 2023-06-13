@@ -23,13 +23,12 @@ import { ApRadioTypeEnum,
   SingleRadioSettings }                               from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
-  useGetVenueCapabilitiesQuery,
   useGetDefaultRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
-  useUpdateVenueTripleBandRadioSettingsMutation
+  useUpdateVenueTripleBandRadioSettingsMutation, useGetVenueApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -107,7 +106,7 @@ export function RadioSettings () {
   const [triBandApModels, setTriBandApModels] = useState<string[]>([])
   const [hasTriBandAps, setHasTriBandAps] = useState(false)
 
-  const { data: venueCaps } = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
+  const { data: venueCaps } = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
 
   const { data: tripleBandRadioSettingsData } =
     useGetVenueTripleBandRadioSettingsQuery({ params: { tenantId, venueId } })
@@ -530,7 +529,7 @@ export function RadioSettings () {
                     </Radio>
 
                     <Radio value={false}>
-                      {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
+                      {$t({ defaultMessage: 'Use 5 and 6 GHz bands' })}
                     </Radio>
                   </Radio.Group>
                 </Form.Item>

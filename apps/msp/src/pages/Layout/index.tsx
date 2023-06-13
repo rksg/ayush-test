@@ -21,9 +21,9 @@ import {
   useGetTenantDetailQuery,
   useMspEntitlementListQuery
 } from '@acx-ui/rc/services'
-import { Outlet, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                     from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }               from '@acx-ui/user'
+import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                    from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -41,6 +41,7 @@ function Layout () {
   const companyName = userProfile?.companyName
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
 
   useEffect(() => {
@@ -67,7 +68,7 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={<Logo />}
+      logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
       menuConfig={useMenuConfig(tenantType, hasLicense)}
       content={
         <>

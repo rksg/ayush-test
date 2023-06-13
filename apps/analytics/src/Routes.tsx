@@ -12,13 +12,14 @@ import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-d
 import { Provider }                                 from '@acx-ui/store'
 import { hasAccess }                                from '@acx-ui/user'
 
+import { AIAnalytics, AIAnalyticsTabEnum }              from './pages/AIAnalytics'
 import IncidentDetailsPage                              from './pages/IncidentDetails'
 import { NetworkAssurance, NetworkAssuranceTabEnum }    from './pages/NetworkAssurance'
-import { useServiceGuard }                              from './pages/ServiceGuard'
+import { ServiceGuard }                                 from './pages/ServiceGuard'
 import ServiceGuardDetails                              from './pages/ServiceGuard/ServiceGuardDetails'
 import ServiceGuardForm                                 from './pages/ServiceGuard/ServiceGuardForm'
 import { ServiceGuardSpecGuard, ServiceGuardTestGuard } from './pages/ServiceGuard/ServiceGuardGuard'
-import { useVideoCallQoe }                              from './pages/VideoCallQoe'
+import { VideoCallQoe }                                 from './pages/VideoCallQoe'
 import { VideoCallQoeForm }                             from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
 import { VideoCallQoeDetails }                          from './pages/VideoCallQoeDetails'
 
@@ -27,8 +28,7 @@ export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
-  const videoCallQoePage = useVideoCallQoe().component
-  const serviceGuardPage = useServiceGuard().component
+  const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (!hasAccess()) return <React.Fragment />
@@ -37,7 +37,11 @@ export default function AnalyticsRoutes () {
     <Route path=':tenantId/t'>
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
-        element={isNavbarEnhanced ? <IncidentListPage /> : <IncidentListPageLegacy />}
+        element={isNavbarEnhanced
+          ? (!canUseAnltAdv
+            ? <IncidentListPage />
+            : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)
+          : <IncidentListPageLegacy />}
       />
       {!isNavbarEnhanced &&
         <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPageLegacy />} />}
@@ -56,14 +60,15 @@ export default function AnalyticsRoutes () {
             ? <HealthPage/>
             : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
           : <HealthPage/>} />
-      <Route path='analytics/configChange'
-        element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
+      {isNavbarEnhanced && canUseAnltAdv && isConfigChangeEnabled &&
+        <Route path='analytics/configChange'
+          element={<AIAnalytics tab={AIAnalyticsTabEnum.CONFIG_CHANGE} />} />}
       {canUseAnltAdv && <Route>
         <Route path='analytics/serviceValidation/*' >
           <Route index
             element={isNavbarEnhanced
               ? <NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />
-              : serviceGuardPage} />
+              : <ServiceGuard/>} />
           <Route path='add' element={<ServiceGuardForm />} />
           <Route path=':specId'>
             <Route
@@ -86,7 +91,7 @@ export default function AnalyticsRoutes () {
           <Route index
             element={isNavbarEnhanced
               ? <NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />
-              : videoCallQoePage} />
+              : <VideoCallQoe/>} />
           <Route path=':testId' element={<VideoCallQoeDetails/>} />
           <Route path='add' element={<VideoCallQoeForm />} />
         </Route>}

@@ -15,6 +15,8 @@ import {
   ClientIsolationVenue
 } from '@acx-ui/rc/utils'
 
+import { hasVxLanTunnelProfile } from './utils'
+
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
@@ -326,8 +328,13 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
   }
 
+  if (hasVxLanTunnelProfile(data) && data.type === NetworkTypeEnum.DPSK) {
+    (advancedCustomization as DpskWlanAdvancedCustomization).enableAaaVlanOverride = false
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
+    ...data,
     wlan: {
       ...originalData?.wlan,
       vlanId,
@@ -361,8 +368,9 @@ export function transferVenuesToSave (data: NetworkSaveData, originalData: Netwo
 
 function cleanClientIsolationAllowlistId (venues: NetworkVenue[]): NetworkVenue[] {
   const incomingVenues = [...venues!]
-  incomingVenues.forEach((v: NetworkVenue) => {
-    v.clientIsolationAllowlistId = undefined
+
+  incomingVenues.map((v) => {
+    return { ...v, clientIsolationAllowlistId: undefined }
   })
 
   return incomingVenues

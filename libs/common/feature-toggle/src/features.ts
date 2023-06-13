@@ -56,6 +56,9 @@ export enum Features {
   EOL_AP_2022_12_PHASE_2_TOGGLE='eol-ap-2022-12-phase-2-toggle',
   NAVBAR_ENHANCEMENT = 'acx-ui-navbar-enhancement-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
+  NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
   SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation',
-  MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional'
+  CONFIG_CHANGE = 'acx-ui-config-change-toggle',
+  MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
+  MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion'
 }
