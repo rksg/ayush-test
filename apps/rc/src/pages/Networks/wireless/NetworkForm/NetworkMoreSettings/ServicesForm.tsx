@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsTierAllowed }                                                       from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { useGetTunnelProfileViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import {
@@ -92,6 +93,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
   }
 
   const showTunnelProfile = hasVxLanTunnelProfile(data)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const tunnelProfileDefaultPayload = {
     fields: ['name', 'id'],
@@ -103,6 +105,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
   const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
+    skip: !!!isEdgeEnabled,
     selectFromResult: ({ data, isLoading }) => {
       return {
         tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
@@ -120,7 +123,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
     }
   }, {
-    skip: !!!tunnelProfileId,
+    skip: !!!tunnelProfileId || !!!isEdgeEnabled,
     selectFromResult: ({ data }) => {
       return {
         nsgId: data?.data[0]?.id
