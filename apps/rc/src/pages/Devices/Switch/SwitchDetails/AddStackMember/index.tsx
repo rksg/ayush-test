@@ -234,7 +234,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
         ]
       }
       await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
-      window.location.reload()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
