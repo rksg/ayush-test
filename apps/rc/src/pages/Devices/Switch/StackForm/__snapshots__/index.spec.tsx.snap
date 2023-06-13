@@ -62,7 +62,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-71wmpn-2 jUXjyR"
+    class="styledComponents__Wrapper-sc-71wmpn-1 hSJEDD"
   >
     <div
       class="ant-pro-steps-form"
@@ -76,7 +76,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
           style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
+            class="styledComponents__StepsContainer-sc-71wmpn-0 edTeUT"
           >
             <div
               class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -492,7 +492,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                           </div>
                         </div>
                         <h3
-                          class="ant-typography styledComponents__Title-sc-71wmpn-3 styledComponents__StepFormTitle-sc-wgbcob-3 koemyr ezBzXN"
+                          class="ant-typography styledComponents__Title-sc-1ibvcih-4 styledComponents__StepFormTitle-sc-wgbcob-3 QAroY ezBzXN"
                         >
                           Stack Member
                           <span
@@ -902,7 +902,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"

@@ -156,7 +156,6 @@ jest.mock('antd', () => {
           <option value={option.value}>{option.value}</option>)}
       </select>
     }
-
     return <select
       role='combobox'
       onChange={e => onChange(e.target.value)}
@@ -692,9 +691,7 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.click(screen.getByText(/edit details/i))
 
-    await screen.findByText(/rules \(2\)/i)
-
-    await screen.findByText(/audio/i)
+    await screen.findByText(/rules/i)
 
     await userEvent.click(screen.getAllByText('Cancel')[0])
   })

@@ -4,9 +4,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 
-import { StepsFormLegacy } from '@acx-ui/components'
-import { Provider }        from '@acx-ui/store'
-import { render, screen }  from '@acx-ui/test-utils'
+import { StepsForm }      from '@acx-ui/components'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import {
   mockGuestMoreData,
@@ -28,18 +28,18 @@ describe('UserConnectionForm', () => {
         value={{
           editMode: true, cloneMode: true, data: mockGuestMoreData
         }}>
-        <StepsFormLegacy><StepsFormLegacy.StepForm>
-          <UserConnectionForm /></StepsFormLegacy.StepForm>
-        </StepsFormLegacy></NetworkFormContext.Provider>
+        <StepsForm><StepsForm.StepForm>
+          <UserConnectionForm /></StepsForm.StepForm>
+        </StepsForm></NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       })
     expect(await screen.findByText(/User Connection Settings/i)).toBeVisible()
     const spins = await screen.findAllByRole('spinbutton')
-    await userEvent.click((await screen.findAllByTitle('Hours'))[0])
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
     await userEvent.click((await screen.findAllByTitle('Days'))[0])
     await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click((await screen.findAllByTitle('Days'))[0])
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
     await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
     await userEvent.type(spins[0], '440')
     await userEvent.click(await screen.findByText('Finish'))
@@ -53,14 +53,14 @@ describe('UserConnectionForm', () => {
         value={{
           editMode: true, cloneMode: true, data: mockGuestMoreDataMinutes
         }}>
-        <StepsFormLegacy><StepsFormLegacy.StepForm>
-          <UserConnectionForm /></StepsFormLegacy.StepForm>
-        </StepsFormLegacy></NetworkFormContext.Provider>
+        <StepsForm><StepsForm.StepForm>
+          <UserConnectionForm /></StepsForm.StepForm>
+        </StepsForm></NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       })
     const spins = await screen.findAllByRole('spinbutton')
-    await userEvent.click((await screen.findAllByTitle('Minutes'))[0])
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.type(spins[0], '4')
@@ -74,21 +74,21 @@ describe('UserConnectionForm', () => {
         value={{
           editMode: true, cloneMode: true, data: mockGuestMoreDataDays
         }}>
-        <StepsFormLegacy><StepsFormLegacy.StepForm>
-          <UserConnectionForm /></StepsFormLegacy.StepForm>
-        </StepsFormLegacy></NetworkFormContext.Provider>
+        <StepsForm><StepsForm.StepForm>
+          <UserConnectionForm /></StepsForm.StepForm>
+        </StepsForm></NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
       })
     const spins = await screen.findAllByRole('spinbutton')
     await userEvent.type(spins[0], '4')
-    await userEvent.click((await screen.findAllByTitle('Days'))[0])
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
     await userEvent.click((await screen.findAllByTitle('Hours'))[0])
     await userEvent.type(spins[0], '4')
-    await userEvent.click((await screen.findAllByTitle('Minutes'))[2])
+    await userEvent.click((await screen.findAllByRole('combobox'))[1])
     await userEvent.click((await screen.findAllByTitle('Hours'))[2])
     await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click((await screen.findAllByTitle('Hours'))[0])
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
     await userEvent.click((await screen.findAllByTitle('Days'))[0])
     const buttons = await screen.findAllByRole('button')
     await userEvent.click(buttons[0])

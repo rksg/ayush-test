@@ -21,9 +21,9 @@ import { RadiusOptionsForm }                                                    
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                                    from '@acx-ui/utils'
 
-import NetworkFormContext                     from '../NetworkFormContext'
-import { hasAccountingRadius, hasAuthRadius } from '../utils'
-import VLANPoolInstance                       from '../VLANPoolInstance'
+import NetworkFormContext                                            from '../NetworkFormContext'
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile } from '../utils'
+import VLANPoolInstance                                              from '../VLANPoolInstance'
 
 import { AccessControlForm }  from './AccessControlForm'
 import { LoadControlForm }    from './LoadControlForm'
@@ -180,6 +180,8 @@ export function MoreSettingsForm (props: {
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
 
+  const enableVxLan = hasVxLanTunnelProfile(wlanData)
+
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
       form.setFieldsValue({
@@ -222,7 +224,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch disabled={!useIsSplitOn(Features.POLICIES)}/>}
+              children={<Switch disabled={!useIsSplitOn(Features.POLICIES) || enableVxLan}/>}
             />
           </UI.FieldLabel>
 
@@ -237,7 +239,8 @@ export function MoreSettingsForm (props: {
                   message: $t(validationMessages.vlanRange)
                 }]}
               style={{ marginBottom: '15px' }}
-              children={<InputNumber style={{ width: '80px' }} disabled={isPortalDefaultVLANId}/>}
+              children={<InputNumber style={{ width: '80px' }}
+                disabled={isPortalDefaultVLANId || enableVxLan}/>}
             />
 
             {showDynamicWlan &&
@@ -248,13 +251,29 @@ export function MoreSettingsForm (props: {
                   valuePropName='checked'
                   initialValue={true}
                   children={
-                    <Checkbox children={$t({ defaultMessage: 'Dynamic VLAN' })} />
+                    <Checkbox disabled={enableVxLan}
+                      children={$t({ defaultMessage: 'Dynamic VLAN' })} />
                   }
                 />
               </UI.FieldLabel>
             }
 
           </div>}
+
+          {enableVxLan &&
+            <Space size={1}>
+              <UI.InfoIcon />
+              <UI.Description>
+                {
+                  $t({
+                    defaultMessage: `Not able to modify when the network 
+                    enables network segmentation service`
+                  })
+                }
+              </UI.Description>
+            </Space>
+          }
+
           {enableVlanPooling &&
         <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
           <VLANPoolInstance/>
@@ -268,7 +287,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch />}
+              children={<Switch disabled={enableVxLan}/>}
             />
           </UI.FieldLabel>
         </>
