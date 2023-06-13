@@ -1021,7 +1021,7 @@ describe('Table component', () => {
       fireEvent.click(clearBtn)
     })
 
-    it.skip('should render select data from all pages option correctly', async () => {
+    it('should render select data from all pages option correctly', async () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox'
       }} />)
