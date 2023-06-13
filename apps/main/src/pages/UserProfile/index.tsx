@@ -33,7 +33,7 @@ interface fromLoc {
 
 export function UserProfile () {
   const { $t } = useIntl()
-  const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
+  const isI18n = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
   const { Paragraph } = Typography
   const { tenantId } = useParams()

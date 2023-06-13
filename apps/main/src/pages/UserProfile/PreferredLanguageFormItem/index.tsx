@@ -5,16 +5,8 @@ import styled           from 'styled-components'
 import { useUserProfileContext } from '@acx-ui/user'
 import { DEFAULT_SYS_LANG }      from '@acx-ui/utils'
 
-/* eslint-disable-next-line */
-// export interface PreferredLanguageFormItemProps {}
-
-const StyledIndex = styled.div`
-  color: pink;
-`
-
 export function PreferredLanguageFormItem () {
   const { $t } = useIntl()
-  // const { Option } = Select
   const { data: userProfile } = useUserProfileContext()
 
   const generateLangLabel = (val: string): string | undefined => {
@@ -22,10 +14,7 @@ export function PreferredLanguageFormItem () {
     const languageNames = new Intl.DisplayNames([val], { type: 'language' })
     const currLangDisplay = new Intl.DisplayNames([lang], { type: 'language' })
     if (lang === val) return currLangDisplay.of(val)
-    return $t({ defaultMessage: '{language} ({localLanguage})' }, {
-      language: currLangDisplay.of(val),
-      localLanguage: languageNames.of(val)
-    })
+    return languageNames.of(val)
   }
 
   const supportedLangs = [DEFAULT_SYS_LANG,
@@ -35,7 +24,6 @@ export function PreferredLanguageFormItem () {
   }))
 
   return (
-    <StyledIndex>
       <Form.Item
         name='preferredLanguage'
         label={$t({ defaultMessage: 'Preferred Language' })}
@@ -44,13 +32,17 @@ export function PreferredLanguageFormItem () {
         <Select
           value={userProfile?.preferredLanguage || DEFAULT_SYS_LANG}
           optionFilterProp='children'
+          style={{ textTransform: 'capitalize' }}
         >
           {supportedLangs.map(({ label, value }) =>
-            (<Select.Option value={value} key={value} children={label}/>)
+            (<Select.Option
+              style={{ textTransform: 'capitalize' }}
+              value={value}
+              key={value}
+              children={label}/>)
           )}
         </Select>
       </Form.Item>
-    </StyledIndex>
   )
 }
 
