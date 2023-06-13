@@ -136,8 +136,7 @@ export const EdgeDetailsPageHeader = () => {
               pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
             })
           }
-        >{$t({ defaultMessage: 'Configure' })}</Button>,
-        <EdgeBulb key='bulbCount' count={0} />
+        >{$t({ defaultMessage: 'Configure' })}</Button>
       ])}
       footer={<EdgeDetailsTabs />}
     />

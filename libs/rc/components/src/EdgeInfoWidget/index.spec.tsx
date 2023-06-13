@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { Alarm }     from '@acx-ui/rc/utils'
 import { Provider  } from '@acx-ui/store'
 import { render,
   screen,
@@ -6,9 +7,9 @@ import { render,
 } from '@acx-ui/test-utils'
 
 
-import { tenantID, currentEdge, edgePortsSetting } from './__tests__/fixtures'
+import { tenantID, currentEdge, edgePortsSetting, alarmList, edgeDnsServers } from './__tests__/fixtures'
 
-import { EdgeInfoWidget } from '.'
+import { EdgeInfoWidget, getChartData } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -58,5 +59,28 @@ describe('Edge Information Widget', () => {
       })
 
     expect(await screen.findAllByRole('img', { name: 'loader' })).toBeTruthy()
+  })
+
+  it('should return correct formatted data', async () => {
+    expect(getChartData(alarmList.data)).toEqual([{
+      color: '#ED1C24',
+      name: 'Critical',
+      value: 1
+    },{
+      color: '#FF9D49',
+      name: 'Major',
+      value: 1
+    }])
+
+    // Filter Major
+    expect(getChartData(alarmList.data.filter(
+      alarm => alarm.severity === 'Critical'))).toEqual([{
+      color: '#ED1C24',
+      name: 'Critical',
+      value: 1
+    }])
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getChartData(null as unknown as Alarm[])).toEqual([])
   })
 })
