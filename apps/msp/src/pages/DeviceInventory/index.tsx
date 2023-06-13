@@ -83,7 +83,7 @@ export function DeviceInventory () {
   const isIntegrator =
     (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
      tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
-  const parentTenantid = tenantDetailsData.data?.mspEc?.parentMspId
+  const parentTenantId = tenantDetailsData.data?.mspEc?.parentMspId
 
   const filterPayload = {
     searchString: '',
@@ -110,7 +110,7 @@ export function DeviceInventory () {
 
   const filterResults = useTableQuery({
     useQuery: useDeviceInventoryListQuery,
-    apiParams: { tenantId: isIntegrator ? (parentTenantid as string) : (tenantId as string) },
+    apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
     pagination: {
       pageSize: 10000
     },
@@ -243,7 +243,7 @@ export function DeviceInventory () {
   const DeviceTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
-      apiParams: { tenantId: isIntegrator ? (parentTenantid as string) : (tenantId as string) },
+      apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
