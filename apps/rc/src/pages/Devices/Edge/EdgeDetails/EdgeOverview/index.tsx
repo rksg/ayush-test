@@ -78,13 +78,10 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'startTime',
       'severity',
       'message',
-      'entity_id',
       'id',
       'serialNumber',
       'entityType',
-      'entityId',
-      'entity_type',
-      'venueName'
+      'entityId'
     ]
   }
 
