@@ -137,6 +137,10 @@ export default function NetworkForm (props:{
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
     }
+    if(saveData.guestPortal?.wisprPage?.authRadius &&
+      saveData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT){
+      delete saveData.guestPortal?.wisprPage?.authRadius
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -244,8 +248,8 @@ export default function NetworkForm (props:{
         saveRadiusData?.authRadius)
       || !_.isEqual(radiusData?.accountingRadius, saveRadiusData?.accountingRadius)
       const radiusValidate = !radiusData.cloudpathServerId && radiusChanged
-      && !(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
-        && saveState.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT)
+      && !(radiusData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+        && radiusData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT)
         ? await checkIpsValues(radiusData) : false
       const hasRadiusError = radiusValidate
         ? await checkRadiusError(radiusData, radiusValidate) : false
