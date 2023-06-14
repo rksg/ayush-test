@@ -4,12 +4,12 @@ import { Col, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space } f
 import { useForm }                                                             from 'antd/lib/form/Form'
 import { useIntl }                                                             from 'react-intl'
 
-import { Button, Modal }                                              from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
-import { SelectConnectedClientsTable }                                from '@acx-ui/rc/components'
-import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { ClientList, MacAddressFilterRegExp, MacRegistrationPool }    from '@acx-ui/rc/utils'
-import { noDataDisplay }                                              from '@acx-ui/utils'
+import { Button, Modal }                                                from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                           from '@acx-ui/icons'
+import { SelectConnectedClientsTable }                                  from '@acx-ui/rc/components'
+import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery }   from '@acx-ui/rc/services'
+import { ClientList, MacRegistrationFilterRegExp, MacRegistrationPool } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import { PersonaDeviceItem } from './PersonaDevicesForm'
 
@@ -63,6 +63,8 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
             // console.log('Current dialog fields value = ', values)
             onSubmit(values.devices ?? [])
             onModalCancel()
+          }).catch(error => {
+            console.log(error) // eslint-disable-line no-console
           })
         break
       case DevicesImportMode.FromClientDevices:
@@ -148,10 +150,8 @@ const ImportManuallyForm = (props: { form: FormInstance }) => {
                 name={[name, 'macAddress']}
                 label={$t({ defaultMessage: 'MAC Address' })}
                 rules={[
-                  {
-                    required: true,
-                    validator: (_, value) => MacAddressFilterRegExp(value)
-                  }
+                  { required: true },
+                  { validator: (_, value) => MacRegistrationFilterRegExp(value) }
                 ]}
               >
                 <Row align={'middle'} gutter={10}>
