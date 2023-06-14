@@ -155,17 +155,17 @@ export function WISPrForm () {
       }
       if ([
         (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
-        (!data?.wlan?.bypassCNA)
+        (!data?.wlan?.bypassCPUsingMacAddressAuthentication)
       ].every(Boolean)) {dispatch(statesCollection.useAllAccept)}
 
       if ([
         (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
-        (data?.wlan?.bypassCNA)
+        (data?.wlan?.bypassCPUsingMacAddressAuthentication)
       ].every(Boolean)) {dispatch(statesCollection.useBypassCNAAndAuth)}
 
       if ([
         (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
-        (!data?.wlan?.bypassCNA)
+        (!data?.wlan?.bypassCPUsingMacAddressAuthentication)
       ].every(Boolean)) {dispatch(statesCollection.useOnlyAuth)}
     }
   },[providerData.data,data,isMspEc])

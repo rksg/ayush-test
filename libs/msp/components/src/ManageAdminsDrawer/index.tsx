@@ -34,6 +34,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const { $t } = useIntl()
 
   const { visible, tenantId, setVisible, setSelected } = props
+  const [isLoaded, setIsLoaded] = useState(false)
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
@@ -65,6 +66,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
       setSelectedRows(selRows)
     }
+    setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
   }, [queryResults?.data, delegatedAdmins?.data])
 
   const onClose = () => {
@@ -154,7 +156,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
       ?? initialRole
-    return <Select value={role}
+    return isLoaded && <Select defaultValue={role}
       style={{ width: '200px' }}
       onChange={value => handleRoleChange(id, value)}>
       {
