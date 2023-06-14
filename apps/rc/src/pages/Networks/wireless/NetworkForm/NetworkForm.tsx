@@ -160,12 +160,11 @@ export default function NetworkForm (props:{
   }, [])
 
   const handleDetails = async (data: NetworkSaveData) => {
-    const networkType = createType || data.type
     const detailsSaveData = transferDetailToSave(data)
-    if(modalMode&&networkType){
-      detailsSaveData.type = networkType
+    if(modalMode&&createType){
+      detailsSaveData.type = createType
     }
-    if(networkType === NetworkTypeEnum.CAPTIVEPORTAL){
+    if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
       updateSaveData({ ...detailsSaveData,
         guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass } })
     }
@@ -206,6 +205,9 @@ export default function NetworkForm (props:{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOnboarding = async (data: any) => {
     delete data.walledGardensString
+    if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
+      delete data.guestPortal.wisprPage
+    }
     const dataMore = handleGuestMoreSetting(data)
     handlePortalWebPage(dataMore)
     return true
@@ -221,7 +223,27 @@ export default function NetworkForm (props:{
 
   const handleGuestMoreSetting = (data:GuestMore)=>{
     if(data.guestPortal){
-      if(data.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+      if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit)
+        data.guestPortal={
+          ...data.guestPortal,
+          userSessionTimeout: data.guestPortal.userSessionTimeout*
+          minutesMapping[data.userSessionTimeoutUnit]
+        }
+      if(data.lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
+        data.guestPortal={
+          ...data.guestPortal,
+          lockoutPeriod: data.guestPortal.lockoutPeriod*
+          minutesMapping[data.lockoutPeriodUnit]
+        }
+      }
+      if(data.macCredentialsDurationUnit&&data.guestPortal.macCredentialsDuration){
+        data.guestPortal={
+          ...data.guestPortal,
+          macCredentialsDuration: data.guestPortal.macCredentialsDuration*
+          minutesMapping[data.macCredentialsDurationUnit]
+        }
+      }
+      if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
         &&data.guestPortal.wisprPage?.customExternalProvider){
         data.guestPortal = {
           ...data.guestPortal,
@@ -232,6 +254,7 @@ export default function NetworkForm (props:{
         }
       }
     }
+    console.log(data)
     return data
   }
 
@@ -282,21 +305,7 @@ export default function NetworkForm (props:{
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
-    // eslint-disable-next-line
-    let radiusUncheckedData = { ...data, ...saveState, ...tmpGuestPageState } as Partial<NetworkSaveData>
-    if (radiusUncheckedData.guestPortal?.wisprPage?.authType &&
-      radiusUncheckedData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
-      radiusUncheckedData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
-      delete radiusUncheckedData.authRadius
-      delete radiusUncheckedData.accountingRadius
-      delete radiusUncheckedData.enableAccountingService
-      delete radiusUncheckedData.accountingRadiusId
-      delete radiusUncheckedData.authRadiusId
-      delete radiusUncheckedData.guestPortal?.wisprPage?.authRadius
-      // eslint-disable-next-line
-      radiusUncheckedData = _.omit(radiusUncheckedData, ['guestPortal.wisprPage.authRadiusId']) as Partial<NetworkSaveData>
-    }
-    updateSaveData(radiusUncheckedData)
+    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 
