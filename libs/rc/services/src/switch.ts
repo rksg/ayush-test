@@ -639,7 +639,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [
         { type: 'Switch', id: 'LIST' },
         { type: 'Switch', id: 'DETAIL' },
-        { type: 'Switch', id: 'SWITCH' }
+        { type: 'Switch', id: 'SWITCH' },
+        { type: 'Switch', id: 'StackMemberList' }
       ]
     }),
     getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({

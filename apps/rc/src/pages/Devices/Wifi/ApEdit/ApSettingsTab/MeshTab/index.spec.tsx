@@ -198,6 +198,43 @@ describe('ApMeshTab', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     await screen.findByText(/No uplink APs detected/)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+
+  it('Show error message when uplinkType is manul without uplink ap', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getApMeshSettings.url,
+        (_, res, ctx) => res(ctx.json(mockApMeshSettings1))
+      )
+    )
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            hasError: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn()
+        }}>
+          <ApMesh />
+        </ApEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    await userEvent.click(await screen.findByRole('radio', { name: /Root AP/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Mesh AP/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Select Uplink AP Manually/ }))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
 })

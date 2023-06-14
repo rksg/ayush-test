@@ -72,10 +72,10 @@ export function SwitchUpgradeNotification (props: {
   const content = upgradeDescription[type][descriptionIndex]
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
-  const isRodanModel = switchModel?.includes('8200')
+  const isRodanModel = switchModel?.includes('8200') || (validateModel[0]?.includes('8200') && isDisplayHeader)
   if (isRodanModel) {
-    return (enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel)) ?
-      <UI.Wrapper>
+    if ((enableStackUnitLimitationFlag && Number.isInteger(stackUnitsMinLimitaion) && !_.isEmpty(switchModel))) {
+      return <UI.Wrapper>
         <UI.Content style={{ padding: '4px 8px 4px' }}>
           <div>
             {$t({ defaultMessage: 'For the {model} series, a stack may hold up to' }, { model: switchModel?.split('-')[0] })}
@@ -85,7 +85,14 @@ export function SwitchUpgradeNotification (props: {
           </div>
         </UI.Content>
       </UI.Wrapper>
-      : <></>
+    } else if(isDisplayHeader) {
+      return <UI.Wrapper style={{ padding: '8px', marginBottom: '8px' }}>
+        {$t({ defaultMessage: 'Switch Model:' })} {icon}
+        <UI.ValidateModel>{validateModel[0]}</UI.ValidateModel>
+      </UI.Wrapper>
+    } else {
+      return <></>
+    }
   }
 
   return isDisplay ? <UI.UpgradeNotification >
