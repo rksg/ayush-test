@@ -7,8 +7,8 @@ import * as UI from './styledComponents'
 
 interface BasicInfoProps {
   data: {
-    title: string | Function | JSX.Element
-    content: undefined | number | string | Function | JSX.Element
+    title?: unknown
+    content?: unknown
     visible?: boolean
     colSpan?: number
   }[]
@@ -20,7 +20,7 @@ interface BasicInfoProps {
 export const ServiceInfo = styled((props: BasicInfoProps) => {
   const{ disabledMargin } = props
   return (
-    <Card type='solid-bg'>
+    <Card>
       {
         disabledMargin ?
           <Content {...props} />
@@ -40,12 +40,16 @@ const Content = ({ data, colPerRow = 8, className }: BasicInfoProps) => (
           visible &&
             <GridCol col={{ span: item?.colSpan || 24/colPerRow }} key={index}>
               <Space direction='vertical' size={10}>
-                <Typography.Text>
-                  {typeof item.title === 'function' ? item.title() : item.title}
-                </Typography.Text>
-                <Typography.Text className='text-color text-wrap'>
-                  {typeof item.content === 'function' ? item.content() : item.content}
-                </Typography.Text>
+                {
+                  Boolean(item.title) && <Typography.Text className='text-color'>
+                    {typeof item.title === 'function' ? item.title() : item.title}
+                  </Typography.Text>
+                }
+                {
+                  Boolean(item.content) && <Typography.Text className='text-wrap'>
+                    {typeof item.content === 'function' ? item.content() : item.content}
+                  </Typography.Text>
+                }
               </Space>
             </GridCol>
         )
