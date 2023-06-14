@@ -19,7 +19,7 @@ const StaticRoutes = () => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const linkToEdgeList = useTenantLink('/devices/edge')
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [routesData, setRoutesData] = useState<EdgeStaticRoute[]>([])
   const [currentEditData, setCurrentEditData] = useState<EdgeStaticRoute>()

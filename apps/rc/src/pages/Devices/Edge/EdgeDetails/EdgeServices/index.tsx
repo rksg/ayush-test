@@ -16,10 +16,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { ServiceDetailDrawer } from './ServiceDetailDrawer'
+import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
+import { getEdgeServiceTypeString } from './utils'
 
 export const EdgeServices = () => {
-
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
@@ -68,7 +68,8 @@ export const EdgeServices = () => {
       title: $t({ defaultMessage: 'Service Type' }),
       key: 'serviceType',
       dataIndex: 'serviceType',
-      sorter: true
+      sorter: true,
+      render: (_, row) => getEdgeServiceTypeString($t, row.serviceType)
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -87,7 +88,7 @@ export const EdgeServices = () => {
       key: 'targetVersion',
       dataIndex: 'targetVersion',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         if(row.targetVersion && row.currentVersion !== row.targetVersion) {
           return $t({ defaultMessage: 'Yes' })
         }

@@ -19,3 +19,14 @@ export interface ConnectionMetering {
     venueCount?: number
     personas?: Persona[]
 }
+
+export interface QosStats {
+  vni: number
+  nsgId: string
+  personaId: string
+  uploadPackets: number
+  downloadPackets: number
+  uploadBytes: number
+  downloadBytes: number
+  billingStartEpoch?: number
+}

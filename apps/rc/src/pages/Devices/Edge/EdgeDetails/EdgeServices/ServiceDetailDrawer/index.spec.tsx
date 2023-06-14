@@ -1,16 +1,27 @@
 import { rest } from 'msw'
 
-import { EdgeDhcpUrls } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeDhcpUrls, EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData as currentEdge, mockDhcpStatsData, mockedEdgeServiceList } from '../../../__tests__/fixtures'
+import {
+  mockEdgeData as currentEdge,
+  mockEdgeList,
+  mockDhcpStatsData,
+  mockedEdgeServiceList,
+  mockFirewallData } from '../../../__tests__/fixtures'
 
 import { ServiceDetailDrawer } from '.'
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />
+}))
 
 const mockedSetVisible = jest.fn()
 
@@ -23,6 +34,14 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
         (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
+      rest.get(
+        EdgeFirewallUrls.getEdgeFirewall.url,
+        (req, res, ctx) => res(ctx.json(mockFirewallData))
       )
     )
   })
@@ -77,7 +96,11 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         route: { params }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Firewall Details')).toBeVisible()
+    // firewall name
+    expect(screen.queryByRole('link', { name: 'FIREWALL-1' })).toBeVisible()
+    await screen.findByTestId('rc-EdgeFirewallGroupedStatsTables')
   })
 
   it('should render nsg detail successfully', async () => {

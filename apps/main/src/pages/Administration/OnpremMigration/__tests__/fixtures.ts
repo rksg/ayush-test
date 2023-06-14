@@ -141,3 +141,24 @@ export const migrationResult = {
     }
   ]
 }
+
+export const configurationResult = {
+  data: [{
+    migrationTaskList: [{
+      taskId: '7746d00b-e515-4cf1-b5c6-f09b3047c1a1',
+      createTime: 1683625888858,
+      state: 'Qualified',
+      tenantId: '523227343adc42a7be6f93a45a45285d',
+      fileName: 'ruckus_db_042823_18_16.bak',
+      apImportResultList: [
+        {
+          serial: '0',
+          apName: 'ap-0',
+          description: 'description',
+          state: 'Completed',
+          validationErrors: ['']
+        }
+      ]
+    }]
+  }]
+}

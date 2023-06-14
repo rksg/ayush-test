@@ -93,7 +93,7 @@ describe('EditEdge general settings', () => {
       })
     await user.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge`,
       hash: '',
       search: ''
     })

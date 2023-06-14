@@ -85,7 +85,8 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         enableSlot4: selectedEnable4.enable,
         selectedOptionOfSlot2: selectedEnable2.option,
         selectedOptionOfSlot3: selectedEnable3.option,
-        selectedOptionOfSlot4: selectedEnable4.option
+        selectedOptionOfSlot4: selectedEnable4.option,
+        trustedPorts: editRecord
       })
       setFamily(selectedFamily)
       setModel(selectedModel)
