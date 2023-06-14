@@ -178,5 +178,17 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/services/query',
     oldUrl: '/edges/services/query',
     newApi: true
+  },
+  getEdgesTopTraffic: {
+    method: 'post',
+    url: '/edges/topTraffic',
+    oldUrl: '/edges/topTraffic',
+    newApi: true
+  },
+  getEdgesTopResources: {
+    method: 'post',
+    url: '/edges/topResources',
+    oldUrl: '/edges/topResources',
+    newApi: true
   }
 }
