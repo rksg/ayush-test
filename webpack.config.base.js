@@ -1,6 +1,5 @@
 const withModuleFederation = require('@nrwl/react/module-federation')
 const { merge } = require('webpack-merge')
-
 const modifyVars = require('./libs/common/components/src/theme/modify-vars')
 
 /**
@@ -10,18 +9,18 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
   moduleFederationConfig,
   additionalWebpackConfig = {}
 ) {
-  const doModuleFederation = await withModuleFederation({
-    ...moduleFederationConfig,
-  })
+  const doModuleFederation = await withModuleFederation(moduleFederationConfig)
   return function (config) {
-    config = merge(doModuleFederation(config), {
-      ...additionalWebpackConfig
-    })
-
+    config = merge(doModuleFederation(config), additionalWebpackConfig)
     if (process.env.NODE_ENV === 'production') {
       config.devtool = 'hidden-source-map'
       config.mode = 'production'
       config.optimization.minimize = true
+    } else {
+      config.cache = true
+      config.watchOptions = {
+        ignored: /node_modules/
+      }
     }
 
     config.module.rules = config.module.rules.map(rule => {
