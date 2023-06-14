@@ -4,9 +4,9 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps }                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
+import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useAdaptivePolicySetListQuery,

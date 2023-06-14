@@ -93,7 +93,9 @@ export default function useSwitchesTable () {
   })
 
   const title = defineMessage({
-    defaultMessage: 'Switch List {count, select, null {} other {({count})}}' })
+    defaultMessage: 'Switch List {count, select, null {} other {({count})}}',
+    description: 'Translation strings - Switch List'
+  })
 
   const extra = [
     <Dropdown overlay={addMenu}>{() =>

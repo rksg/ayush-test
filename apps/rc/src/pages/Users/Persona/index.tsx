@@ -61,8 +61,8 @@ function PersonaPageHeader () {
   const getTabComp = (activeTab?: PersonaTabKey) => {
     if (activeTab === PersonaTabKey.PERSONA) {
       return <PersonasContext.Provider value={{ setPersonasCount }}>
-          <PersonaTable />
-        </PersonasContext.Provider>
+        <PersonaTable />
+      </PersonasContext.Provider>
     }
 
     return <PersonaGroupContext.Provider value={{ setPersonaGroupCount }}>

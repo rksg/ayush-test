@@ -21,7 +21,9 @@ export default function useNetworksTable () {
   }, [tableQuery.data])
 
   const title = defineMessage({
-    defaultMessage: 'Network List {count, select, null {} other {({count})}}' })
+    defaultMessage: 'Network List {count, select, null {} other {({count})}}',
+    description: 'Translation strings - Network List'
+  })
 
   const extra = [
     <TenantLink to='/networks/wireless/add'>

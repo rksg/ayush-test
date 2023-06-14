@@ -63,14 +63,20 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       { hasAdministratorTab &&
       ( <Tabs.TabPane
         tab={isNavbarEnhanced
-          ? $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })
+          ? $t({
+            defaultMessage: 'Administrators ({adminCount})',
+            description: 'Translation strings - Administrators'
+          }, { adminCount })
           : $t({ defaultMessage: 'Administrators' })
         }
         key='administrators' /> )
       }
       <Tabs.TabPane
         tab={isNavbarEnhanced
-          ? $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })
+          ? $t({
+            defaultMessage: 'Notifications ({notificationCount})',
+            description: 'Translation strings - Notifications'
+          }, { notificationCount })
           : $t({ defaultMessage: 'Notifications' })
         }
         key='notifications'

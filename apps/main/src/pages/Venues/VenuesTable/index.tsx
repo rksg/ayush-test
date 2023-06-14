@@ -313,7 +313,10 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={isNavbarEnhanced
-          ? $t({ defaultMessage: 'Venues ({count})' }, { count })
+          ? $t({
+            defaultMessage: 'Venues ({count})',
+            description: 'Translation strings - Venues'
+          }, { count })
           : $t({ defaultMessage: 'Venues' })
         }
         extra={filterByAccess([

@@ -134,7 +134,9 @@ export default function useApsTable () {
   />
 
   const title = defineMessage({
-    defaultMessage: 'AP List {count, select, null {} other {({count})}}' })
+    defaultMessage: 'AP List {count, select, null {} other {({count})}}',
+    description: 'Translation strings - AP List'
+  })
 
   const extra = [
     <Dropdown overlay={addMenu}>{() =>
