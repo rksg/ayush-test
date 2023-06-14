@@ -5,10 +5,19 @@ import { useIntl } from 'react-intl'
 // import AutoSizer   from 'react-virtualized-auto-sizer'
 import styled from 'styled-components'
 
-import type { DonutChartData, DonutChartProps }                                                             from '@acx-ui/components'
-import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onChartClick }                 from '@acx-ui/components'
-import { EdgeDnsServers, EdgePortAdminStatusEnum, EdgePortStatus, EdgeResourceUtilizationEnum, EdgeStatus } from '@acx-ui/rc/utils'
+import type { DonutChartData, DonutChartProps }                                             from '@acx-ui/components'
+import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onChartClick } from '@acx-ui/components'
+import {
+  Alarm,
+  EdgeDnsServers,
+  EdgePortAdminStatusEnum,
+  EdgePortStatus,
+  EdgeResourceUtilizationEnum,
+  EdgeStatus,
+  EventSeverityEnum
+} from '@acx-ui/rc/utils'
 
+import { AlarmsDrawer } from '../AlarmsDrawer'
 import { SpaceWrapper } from '../SpaceWrapper/index'
 
 import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
@@ -22,6 +31,14 @@ interface EdgeInfoWidgetProps {
   dnsServers: EdgeDnsServers | undefined
   isEdgeStatusLoading: boolean
   isPortListLoading: boolean
+  isAlarmListLoading: boolean
+  alarmList: Alarm[]
+}
+
+interface EdgeAlarmWidgetProps {
+  isLoading: boolean
+  serialNumber: string,
+  alarmList: Alarm[]
 }
 
 interface EdgePortsWidgetProps {
@@ -29,10 +46,14 @@ interface EdgePortsWidgetProps {
   edgePortsSetting: EdgePortStatus[] | undefined
 }
 
-function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, onClick }:
-   { title:string, data: Array<DonutChartData>,
-    isLoading: boolean, chartDataTransformer?:Function, onClick?: DonutChartProps['onClick'] }) {
-  const { $t } = useIntl()
+function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, emptyMessage, onClick }:
+   {
+    title:string,
+    data: Array<DonutChartData>,
+    isLoading: boolean,
+    chartDataTransformer?:Function,
+    emptyMessage: string,
+    onClick?: DonutChartProps['onClick'] }) {
   if (chartDataTransformer)
     data = chartDataTransformer(data)
 
@@ -48,23 +69,69 @@ function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer
             data={data}
             onClick={onClick}
           />
-          : <NoActiveData text={$t({ defaultMessage: 'No data' })}/>
+          : <NoActiveData text={emptyMessage}/>
         }
       </SpaceWrapper>
     </Loader>
   )
 }
 
-const EdgeAlarmWidget = () => {
+const EdgeAlarmWidget = ({ isLoading, serialNumber, alarmList }: EdgeAlarmWidgetProps) => {
   const { $t } = useIntl()
+  const [alarmDrawerVisible, setAlarmDrawerVisible] = React.useState(false)
+  const handleDonutClick = () => {
+    setAlarmDrawerVisible(true)
+  }
 
-  // TODO: Alarms list query by API
-  const chartData: DonutChartData[] = []
+  const chartData = getChartData(alarmList)
 
-  return (<EdgeOverviewDonutWidget title={$t({ defaultMessage: 'Alarms' })} data={chartData} isLoading={false} chartDataTransformer={() => {}} />)
+  return (<>
+    <EdgeOverviewDonutWidget
+      title={$t({ defaultMessage: 'Alarms' })}
+      data={chartData}
+      isLoading={isLoading}
+      emptyMessage={$t({ defaultMessage: 'No active alarms' })}
+      onClick={onChartClick(handleDonutClick)} />
+    <AlarmsDrawer
+      visible={alarmDrawerVisible}
+      setVisible={setAlarmDrawerVisible}
+      serialNumber={serialNumber}
+    />
+  </>)
 }
 
 type ReduceReturnType = Record<string, number>
+
+export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
+  const seriesMapping = [
+    { key: EventSeverityEnum.CRITICAL,
+      name: 'Critical',
+      color: cssStr('--acx-semantics-red-50') },
+    { key: EventSeverityEnum.MAJOR,
+      name: 'Major',
+      color: cssStr('--acx-accents-orange-30') }
+  ] as Array<{ key: string, name: string, color: string }>
+  const chartData: DonutChartData[] = []
+
+  if (alarms && alarms.length > 0) {
+    const alarmsSummary = alarms.reduce<ReduceReturnType>((acc, { severity }) => {
+      acc[severity] = (acc[severity] || 0) + 1
+      return acc
+    }, {})
+
+    seriesMapping.forEach(({ key, name, color }) => {
+      if (alarmsSummary[key]) {
+        chartData.push({
+          name,
+          value: alarmsSummary[key],
+          color
+        })
+      }
+    })
+  }
+
+  return chartData
+}
 
 export const getPortsAdminStatusChartData = (ports: EdgePortStatus[] | undefined): DonutChartData[] => {
   const seriesMapping = [
@@ -108,7 +175,13 @@ const EdgePortsWidget = ({ isLoading, edgePortsSetting }: EdgePortsWidgetProps) 
   const chartData = getPortsAdminStatusChartData(edgePortsSetting)
 
   return (<>
-    <EdgeOverviewDonutWidget title={$t({ defaultMessage: 'Ports' })} data={chartData} isLoading={isLoading} onClick={onChartClick(handleDonutClick)}/>
+    <EdgeOverviewDonutWidget
+      title={$t({ defaultMessage: 'Ports' })}
+      data={chartData}
+      isLoading={isLoading}
+      emptyMessage={$t({ defaultMessage: 'No data' })}
+      onClick={onChartClick(handleDonutClick)}
+    />
     <EdgePortsListDrawer
       visible={visible}
       setVisible={setVisible}
@@ -123,7 +196,9 @@ export const EdgeInfoWidget = styled(({
   edgePortsSetting,
   dnsServers,
   isEdgeStatusLoading,
-  isPortListLoading }: EdgeInfoWidgetProps) => {
+  isPortListLoading,
+  isAlarmListLoading,
+  alarmList }: EdgeInfoWidgetProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const moreDetailsHandler = () => {
@@ -133,7 +208,7 @@ export const EdgeInfoWidget = styled(({
   return (
     <GridRow className={className}>
       <GridCol col={{ span: 4 }}>
-        <EdgeAlarmWidget />
+        <EdgeAlarmWidget isLoading={isAlarmListLoading} serialNumber={currentEdge?.serialNumber!} alarmList={alarmList} />
       </GridCol>
       <GridCol col={{ span: 4 }}>
         <EdgePortsWidget isLoading={isPortListLoading} edgePortsSetting={edgePortsSetting} />
@@ -143,8 +218,8 @@ export const EdgeInfoWidget = styled(({
           isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.STORAGE}
           title={$t({ defaultMessage: 'Storage Usage' })}
-          value={currentEdge?.diskUsedKb}
-          totalVal={currentEdge?.diskTotalKb}
+          value={currentEdge?.diskUsed}
+          totalVal={currentEdge?.diskTotal}
         />
       </GridCol>
       <GridCol col={{ span: 4 }}>
@@ -152,8 +227,8 @@ export const EdgeInfoWidget = styled(({
           isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.MEMORY}
           title={$t({ defaultMessage: 'Memory Usage' })}
-          value={currentEdge?.memoryUsedKb}
-          totalVal={currentEdge?.memoryTotalKb}
+          value={currentEdge?.memoryUsed}
+          totalVal={currentEdge?.memoryTotal}
         />
       </GridCol>
       <GridCol col={{ span: 4 }}>

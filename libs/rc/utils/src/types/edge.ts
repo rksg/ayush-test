@@ -19,6 +19,10 @@ export interface EdgeResourceUtilization {
   memoryTotalKb? :number,
   diskUsedKb? :number,
   diskTotalKb? :number,
+  memoryUsed? :number,   // Bytes
+  memoryTotal? :number,  // Bytes
+  diskUsed? :number,     // Bytes
+  diskTotal? :number     // Bytes
 }
 export interface Edge extends EdgeResourceUtilization {
   name: string

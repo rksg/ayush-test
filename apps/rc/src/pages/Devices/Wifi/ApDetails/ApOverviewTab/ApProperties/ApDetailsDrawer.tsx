@@ -243,7 +243,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 label={$t({ defaultMessage: 'Mesh Role' })}
                 children={
                   currentAP?.meshRole ?
-                    currentAP.meshRole + $t({ defaultMessage: ' ({hops} hop)' }, { hops: currentAP.hops }) :
+                    (currentAP.meshRole === 'DISABLED' || currentAP.meshRole === 'DOWN') ? currentAP.meshRole :
+                      currentAP.meshRole + $t({ defaultMessage: ' ({hops} hop)' }, { hops: currentAP.hops }) :
                     $t({ defaultMessage: 'AP' })
                 }
               />

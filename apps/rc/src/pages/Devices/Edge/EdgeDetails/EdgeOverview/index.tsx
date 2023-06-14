@@ -11,8 +11,12 @@ import {
   EdgeUpTimeWidget
 } from '@acx-ui/rc/components'
 import {
+  useAlarmsListQuery,
   useEdgeBySerialNumberQuery, useGetDnsServersQuery, useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+
+import { wrapperStyle } from './styledComponents'
 
 export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const params = useParams()
@@ -68,6 +72,38 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
     params, payload: edgePortStatusPayload
   })
 
+  const alarmListPayload = {
+    url: CommonUrlsInfo.getAlarmsList.url,
+    fields: [
+      'startTime',
+      'severity',
+      'message',
+      'id',
+      'serialNumber',
+      'entityType',
+      'entityId'
+    ]
+  }
+
+  const { data: alarmList, isLoading: isAlarmListLoading } = useTableQuery({
+    useQuery: useAlarmsListQuery,
+    defaultPayload: {
+      ...alarmListPayload,
+      filters: {
+        serialNumber: [params.serialNumber]
+      }
+    },
+    sorter: {
+      sortField: 'startTime',
+      sortOrder: 'DESC'
+    },
+    pagination: {
+      pageSize: 10000,
+      page: 1,
+      total: 0
+    }
+  })
+
   return (
     <GridRow className={className}>
       <GridCol col={{ span: 24 }}>
@@ -77,6 +113,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
           dnsServers={dnsServers}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
+          isAlarmListLoading={isAlarmListLoading}
+          alarmList={alarmList?.data || []}
         />
       </GridCol>
       <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
@@ -93,12 +131,4 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       </GridCol>
     </GridRow>
   )
-})`
-div.statistic {
-    height: 280px;
-
-    &.upTimeWidget {
-      height: 100px;
-    }
-}
-`
+})`${wrapperStyle}`

@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { apApi, venueApi }              from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -183,6 +183,9 @@ describe('ApEdit', () => {
     })
 
     it('should handle error occurred', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff !== Features.WIFI_EDA_READY_TOGGLE
+      )
       mockServer.use(
         rest.put(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => {

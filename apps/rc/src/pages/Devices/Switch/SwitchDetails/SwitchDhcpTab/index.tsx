@@ -129,7 +129,8 @@ export function SwitchDhcpLeaseTable () {
       <Table
         columns={columns}
         dataSource={leaseData}
-        rowKey='clientId' />
+        rowKey='id'
+      />
     </Loader>
   )
 }

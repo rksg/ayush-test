@@ -1,4 +1,4 @@
-import { ApVenueStatusEnum, EdgeDnsServers, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -16,10 +16,14 @@ export const currentEdge:EdgeStatus = {
   firmwareVersion: '1.1.1.1',
   cpuCores: 2,
   cpuUsedPercentage: 65,
-  memoryUsedKb: 120 * Math.pow(1024, 2),
-  memoryTotalKb: 50 * Math.pow(1024, 2),
-  diskUsedKb: 250 * Math.pow(1024, 3),
-  diskTotalKb: 162 * Math.pow(1024, 3)
+  memoryUsedKb: 120 * Math.pow(1024, 1),
+  memoryTotalKb: 50 * Math.pow(1024, 1),
+  diskUsedKb: 250 * Math.pow(1024, 2),
+  diskTotalKb: 162 * Math.pow(1024, 2),
+  memoryUsed: 120 * Math.pow(1024, 2),
+  memoryTotal: 50 * Math.pow(1024, 2),
+  diskUsed: 250 * Math.pow(1024, 3),
+  diskTotal: 162 * Math.pow(1024, 3)
 }
 
 export const edgePortsSetting:EdgePortStatus[] = [{
@@ -50,4 +54,29 @@ export const edgePortsSetting:EdgePortStatus[] = [{
 export const edgeDnsServers: EdgeDnsServers = {
   primary: '1.1.1.1',
   secondary: '2.2.2.2'
+}
+
+export const alarmList = {
+  data: [
+    {
+      severity: 'Critical',
+      serialNumber: '968187CFD8005011EE95B1000C290112B0',
+      entityType: 'EDGE',
+      startTime: 1685606265000,
+      entityId: '968187CFD8005011EE95B1000C290112B0',
+      id: '968187CFD8005011EE95B1000C290112B0_edge_status',
+      message:
+      '{"message_template": "SmartEdge @@serialNumber: CPU usage has reached 90.00% of the total."}'
+    },
+    {
+      severity: 'Major',
+      serialNumber: '968187CFD8005011EE95B1000C290112B0',
+      entityType: 'EDGE',
+      startTime: 1685606266000,
+      entityId: '968187CFD8005011EE95B1000C290112B0',
+      id: '968187CFD8005011EE95B1000C290112B0_edge_status',
+      message:
+      '{"message_template": "SmartEdge @@serialNumber firmware update failed."}'
+    }
+  ] as Alarm[]
 }

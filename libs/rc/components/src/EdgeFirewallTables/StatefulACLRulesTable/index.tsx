@@ -3,27 +3,27 @@ import { useIntl } from 'react-intl'
 
 import { Table, TableProps } from '@acx-ui/components'
 import {
+  FirewallACLRuleStatisticModel,
   getAccessActionString,
   getProtocolTypeString,
   ProtocolType,
   StatefulAclRule
 } from '@acx-ui/rc/utils'
 
-import { StatefulAclRuleStatisticModel } from './RuleStatisticDataTable'
-import { getRuleSrcDstString }           from './utils'
+import { getRuleSrcDstString } from './utils'
 
 
 interface StatefulACLRulesTableProps
-  extends Omit<TableProps<StatefulAclRule | StatefulAclRuleStatisticModel>,
-  'rowKey' | 'locale' | 'columns'> {
+  extends Omit<TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>,
+  'rowKey' | 'columns'> {
     // custom column is optional
-    columns?: TableProps<StatefulAclRule | StatefulAclRuleStatisticModel>['columns']
+    columns?: TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>['columns']
   }
 
-export const useDefaultColumns = () => {
+export const useDefaultStatefulACLRulesColumns = () => {
   const { $t } = useIntl()
 
-  const columns: TableProps<StatefulAclRule | StatefulAclRuleStatisticModel>['columns'] = [
+  const columns: TableProps<StatefulAclRule | FirewallACLRuleStatisticModel>['columns'] = [
     {
       title: $t({ defaultMessage: 'Priority' }),
       key: 'priority',
@@ -85,7 +85,7 @@ export const useDefaultColumns = () => {
 
 export const StatefulACLRulesTable = (props: StatefulACLRulesTableProps) => {
   const { $t } = useIntl()
-  const defaultColumns = useDefaultColumns()
+  const defaultColumns = useDefaultStatefulACLRulesColumns()
   const { dataSource, columns, ...otherProps } = props
 
   return (

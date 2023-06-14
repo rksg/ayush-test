@@ -57,9 +57,6 @@ function AaaServerFields ({ serverType, data }: {
     <Form.Item
       label={$t({ defaultMessage: 'Proxy Service:' })}
       children={$t(enableProxy ? contents.states.enabled : contents.states.disabled)} />
-    <Form.Item
-      label={$t({ defaultMessage: 'TLS Encryption:' })}
-      children={$t(contents.states.disabled)} />
   </>)
 }
 function AaaServerData ({ order, data, serverType }: {

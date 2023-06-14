@@ -564,7 +564,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/1234567890/details/overview"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
                                 >
                                   AP-Group-Issue
                                 </a>
@@ -573,7 +573,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/tenant-id/t/devices/wifi/1234567890/details/overview"
+                                  href="/tenant-id/t/devices/wifi/F0:3E:90:36:D3:00/details/overview"
                                 >
                                   F0:3E:90:36:D3:00
                                 </a>
@@ -581,11 +581,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  CIOT
-                                </a>
+                                CIOT
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5512,11 +5508,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  Divya_unlimited
-                                </a>
+                                Divya_unlimited
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5617,11 +5609,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  CIOT
-                                </a>
+                                CIOT
                               </td>
                               <td
                                 class="ant-table-cell"

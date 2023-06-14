@@ -4,11 +4,11 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }     from '@acx-ui/rc/components'
 import {
-  useDelL3AclPolicyMutation,
-  useGetAccessControlProfileListQuery,
+  doProfileDelete,
+  useDelL3AclPoliciesMutation,
   useGetEnhancedL3AclProfileListQuery,
   useNetworkListQuery
 } from '@acx-ui/rc/services'
@@ -45,7 +45,7 @@ const Layer3Component = () => {
 
   const form = Form.useFormInstance()
 
-  const [ delL3AclPolicy ] = useDelL3AclPolicyMutation()
+  const [ deleteFn ] = useDelL3AclPoliciesMutation()
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
@@ -56,16 +56,6 @@ const Layer3Component = () => {
       ...defaultNetworkPayload,
       filters: {
         id: [...networkIds]
-      }
-    }
-  })
-
-  const { data: accessControlList } = useGetAccessControlProfileListQuery({
-    params: params
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        data: data?.map(accessControl => accessControl?.l3AclPolicy?.id)
       }
     }
   })
@@ -117,32 +107,21 @@ const Layer3Component = () => {
     }
   }]
 
+  const doDelete = (selectedRows: L3AclPolicy[], callback: () => void) => {
+    doProfileDelete(
+      selectedRows,
+      $t({ defaultMessage: 'Policy' }),
+      selectedRows[0].name,
+      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+    )
+  }
+
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networkIds }], clearSelection) => {
-        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
-          showActionModal({
-            type: 'error',
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
-            })
-          })
-          clearSelection()
-        } else {
-          showActionModal({
-            type: 'confirm',
-            customContent: {
-              action: 'DELETE',
-              entityName: $t({ defaultMessage: 'Policy' }),
-              entityValue: name
-            },
-            onOk: () => {
-              delL3AclPolicy({ params: { ...params, l3AclPolicyId: id } }).then(clearSelection)
-            }
-          })
-        }
+      onClick: (rows, clearSelection) => {
+        doDelete(rows, clearSelection)
       }
     },
     {
@@ -169,7 +148,7 @@ const Layer3Component = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={{ type: 'checkbox' }}
       />
     </Form>
   </Loader>

@@ -32,7 +32,6 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../../constants'
-import { showUnsavedConfirmModal }              from '../AccessControlComponent'
 import { AddModeProps, editModeProps }          from '../AccessControlForm'
 
 import {
@@ -187,7 +186,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const [ updateAppPolicy ] = useUpdateAppPolicyMutation()
 
-  const { appSelectOptions, appList } = useAppPolicyListQuery({
+  const { appSelectOptions, appList, appIdList } = useAppPolicyListQuery({
     params: { ...params, requestId: requestId }
   }, {
     selectFromResult ({ data }) {
@@ -196,7 +195,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           item => {
             return <Option key={item.id}>{item.name}</Option>
           }) : [],
-        appList: data ? data.map(item => item.name) : []
+        appList: data ? data.map(item => item.name) : [],
+        appIdList: data ? data.map(item => item.id) : []
       }
     }
   })
@@ -208,7 +208,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
       }
     },
-    { skip: skipFetch }
+    { skip: skipFetch ||
+        (applicationPolicyId !== undefined
+          && !appIdList.some(appId => appId === applicationPolicyId)) }
   )
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
@@ -543,7 +545,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         { validator: () => ruleValidator() }
       ]}
     />
-    {isOnlyViewMode ? <Table
+    {isOnlyViewMode && !editMode.isEdit ? <Table
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
     /> : <Table
@@ -628,9 +630,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
         zIndex={10}
-        onClose={() => !isViewMode()
-          ? showUnsavedConfirmModal(handleApplicationsDrawerClose)
-          : handleApplicationsDrawerClose()
+        onClose={() => handleApplicationsDrawerClose()
         }
         destroyOnClose={true}
         children={content}

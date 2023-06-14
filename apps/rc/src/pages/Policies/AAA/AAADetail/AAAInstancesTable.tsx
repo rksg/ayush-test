@@ -43,6 +43,7 @@ export default function AAAInstancesTable (){
       key: 'Type',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'networkType',
+      sorter: true,
       render: (data, row) => {
         const message = networkTypes[row.networkType.toLowerCase() as NetworkTypeEnum]
         return data === 'GUEST'
