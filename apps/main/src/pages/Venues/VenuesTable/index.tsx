@@ -250,7 +250,8 @@ export const VenueTable = (
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Venues' }),
+          entityName: rows.length === 1? $t({ defaultMessage: 'Venue' })
+            : $t({ defaultMessage: 'Venues' }),
           entityValue: rows.length === 1 ? rows[0].name : undefined,
           numOfEntities: rows.length,
           confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
