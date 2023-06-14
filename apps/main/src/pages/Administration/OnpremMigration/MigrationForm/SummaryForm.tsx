@@ -15,7 +15,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  useLazyGetMigrationResultQuery
+  useLazyGetZdConfigurationQuery
 } from '@acx-ui/rc/services'
 import {
   MigrationResultType
@@ -33,19 +33,21 @@ const SummaryForm = (props: SummaryFormProps) => {
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
   // eslint-disable-next-line max-len
-  const [ getMigrationResult, { data: migrateResult }] = useLazyGetMigrationResultQuery()
+  const [ getZdConfiguration, { data: migrateResult }] = useLazyGetZdConfigurationQuery()
 
   useEffect(() => {
     const interval = setInterval(() => {
-      getMigrationResult({ params: { ...params, id: taskId } })
+      getZdConfiguration({ params: { ...params, id: taskId } })
       // console.log('This will run every second!')
     }, 3000)
     return () => clearInterval(interval)
   }, [])
 
   useEffect(()=>{
-    if (migrateResult) {
-      setValidateZdApsResult(migrateResult?.apImportResults)
+    // eslint-disable-next-line max-len
+    if (migrateResult && migrateResult.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0) {
+      // eslint-disable-next-line max-len
+      setValidateZdApsResult(migrateResult.data[0].migrationTaskList[0].apImportResultList ? migrateResult.data[0].migrationTaskList[0].apImportResultList : [])
     }
   },[migrateResult])
 
@@ -100,26 +102,29 @@ const SummaryForm = (props: SummaryFormProps) => {
   return (
     <Loader states={[
       { isLoading: false,
-        isFetching: !migrateResult?.state
+        // eslint-disable-next-line max-len
+        isFetching: !(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].state)
       }
     ]}>
       <Row>
         <Col span={12}>
           <Subtitle level={4}>
-            {$t({ defaultMessage: 'Summary State' })}: {migrateResult?.state ?? '--'}
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Summary State' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].state) ?? '--'}
           </Subtitle>
         </Col>
       </Row>
       <Row>
         <Col span={3}>
           <Subtitle level={5}>
-            {$t({ defaultMessage: 'Total' })}: {migrateResult?.apImportResults?.length ?? '--'}
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Total' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].apImportResultList?.length) ?? '--'}
           </Subtitle>
         </Col>
         <Col span={3}>
           <Subtitle level={5}>
-            {$t({ defaultMessage: 'Completed' })}: {
-              migrateResult?.apImportResults?.filter(callbackfn).length ?? '--'}
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Completed' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(callbackfn).length) ?? '--'}
           </Subtitle>
         </Col>
       </Row>
