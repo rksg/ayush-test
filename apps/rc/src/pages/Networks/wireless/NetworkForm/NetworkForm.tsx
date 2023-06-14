@@ -448,7 +448,23 @@ export default function NetworkForm (props:{
       handlePortalWebPage(data)
     }
 
-    saveContextRef.current = { ...saveState, ...data }
+    if (data.guestPortal?.wisprPage?.authType &&
+      data.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+      data.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      saveContextRef.current = _.omit({ ...saveState, ...data },
+        ['authRadius',
+          'accountingRadius',
+          'enableAccountingService',
+          'accountingRadiusId',
+          'authRadiusId',
+          'guestPortal.wisprPage.authRadius',
+          'guestPortal.wisprPage.authRadiusId'
+        ]
+      )
+    }
+    else {
+      saveContextRef.current = { ...saveState, ...data }
+    }
   }
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
