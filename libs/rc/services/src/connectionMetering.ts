@@ -9,7 +9,8 @@ import {
   ConnectionMeteringUrls,
   TableChangePayload,
   NewTableResult,
-  transferToTableResult
+  transferToTableResult,
+  QosStats
 } from '@acx-ui/rc/utils'
 import { baseConnectionMeteringApi } from '@acx-ui/store'
 
@@ -89,6 +90,15 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
         return transferToTableResult<ConnectionMetering>(result)
       },
       providesTags: [{ type: 'ConnectionMetering', id: 'LIST' }]
+    }),
+    getQosStats: build.query<{ data: QosStats[] }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ConnectionMeteringUrls.getQosStats, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -102,5 +112,6 @@ export const {
   useLazyGetConnectionMeteringByIdQuery,
   useUpdateConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
-  useLazySearchConnectionMeteringListQuery
+  useLazySearchConnectionMeteringListQuery,
+  useLazyGetQosStatsQuery
 } = connectionMeteringApi
