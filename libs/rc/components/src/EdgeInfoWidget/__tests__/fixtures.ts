@@ -1,4 +1,4 @@
-import { ApVenueStatusEnum, EdgeDnsServers, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -54,4 +54,29 @@ export const edgePortsSetting:EdgePortStatus[] = [{
 export const edgeDnsServers: EdgeDnsServers = {
   primary: '1.1.1.1',
   secondary: '2.2.2.2'
+}
+
+export const alarmList = {
+  data: [
+    {
+      severity: 'Critical',
+      serialNumber: '968187CFD8005011EE95B1000C290112B0',
+      entityType: 'EDGE',
+      startTime: 1685606265000,
+      entityId: '968187CFD8005011EE95B1000C290112B0',
+      id: '968187CFD8005011EE95B1000C290112B0_edge_status',
+      message:
+      '{"message_template": "SmartEdge @@serialNumber: CPU usage has reached 90.00% of the total."}'
+    },
+    {
+      severity: 'Major',
+      serialNumber: '968187CFD8005011EE95B1000C290112B0',
+      entityType: 'EDGE',
+      startTime: 1685606266000,
+      entityId: '968187CFD8005011EE95B1000C290112B0',
+      id: '968187CFD8005011EE95B1000C290112B0_edge_status',
+      message:
+      '{"message_template": "SmartEdge @@serialNumber firmware update failed."}'
+    }
+  ] as Alarm[]
 }
