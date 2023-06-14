@@ -1,38 +1,27 @@
-import { useState } from 'react'
+import { Space, Typography } from 'antd'
+import { useIntl }           from 'react-intl'
 
-import { Select, Space, Typography } from 'antd'
-import moment                        from 'moment'
-import { useIntl }                   from 'react-intl'
-import styled                        from 'styled-components/macro'
-
-import { Card, DateRangeType, GridCol, GridRow, Loader, RangePicker, Tabs } from '@acx-ui/components'
-import { useGetEdgeFirewallQuery }                                          from '@acx-ui/rc/services'
+import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { EdgeFirewallGroupedStatsTables } from '@acx-ui/rc/components'
+import { useGetEdgeFirewallQuery }        from '@acx-ui/rc/services'
 import {
   ACLDirection,
   EdgeStatus,
-  getACLDirectionOptions,
   getServiceDetailsLink,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
-import { DDoSRulesTable }        from './DDoSRulesTable'
-import { StatefulACLRulesTable } from './StatefulACLRulesTable'
-import * as UI                   from './styledComponents'
+import * as UI from './styledComponents'
 
 interface EdgeFirewallServiceProps {
   className?: string;
   edgeData: EdgeStatus;
 }
 
-const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) => {
+const EdgeFirewall = ({ className, edgeData }: EdgeFirewallServiceProps) => {
   const { $t } = useIntl()
-  const { startDate, endDate, range, setDateFilter } = useDateFilter()
-  const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
-  const directionOpts = getACLDirectionOptions($t)
   const serviceId = edgeData.firewallId
 
   // get firewall by firewallId
@@ -92,21 +81,10 @@ const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) 
     }
   ] : []
 
-  const handleACLDirectionChange = (val:ACLDirection) => {
-    setACLDirection(val)
-  }
-
-  const filterPeriod:DateRangeType = {
-    startDate: moment(startDate),
-    endDate: moment(endDate)
-  }
-
-  return (<Loader states={[
-    {
-      isFetching: false,
-      isLoading: isFWInfoLoading
-    }
-  ]}>
+  return (<Loader states={[{
+    isFetching: false,
+    isLoading: isFWInfoLoading
+  }]}>
     <Space direction='vertical' size={30} className={className}>
       <Card type='solid-bg'>
         <UI.InfoMargin>
@@ -126,69 +104,12 @@ const EdgeFirewall = styled(({ className, edgeData }: EdgeFirewallServiceProps) 
           </GridRow>
         </UI.InfoMargin>
       </Card>
-      <Tabs type='third'>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'DDoS' })}
-          key='ddos'
-        >
-          <UI.ActionsContainer>
-            {filterByAccess([
-              <RangePicker
-                key='date-filter'
-                selectedRange={filterPeriod}
-                selectionType={range}
-                onDateApply={setDateFilter as CallableFunction}
-                showTimePicker
-              />])
-            }
-          </UI.ActionsContainer>
-          <DDoSRulesTable
-            firewallData={edgeFirewallData}
-            dateFilter={{
-              startDate,
-              endDate
-            }}
-            edgeId={edgeData.serialNumber}
-            venueId={edgeData.venueId}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Stateful ACL' })}
-          key='acl'
-        >
-          <UI.ActionsContainer>
-            <Select
-              value={aclDirection}
-              onChange={handleACLDirectionChange}
-            >
-              {directionOpts.map(({ label, value }) =>
-                (<Select.Option value={value} key={value} children={label} />)
-              )}
-            </Select>
-            {filterByAccess([
-              <RangePicker
-                key='date-filter'
-                selectedRange={filterPeriod}
-                selectionType={range}
-                onDateApply={setDateFilter as CallableFunction}
-                showTimePicker
-              />])
-            }
-          </UI.ActionsContainer>
-          <StatefulACLRulesTable
-            firewallData={edgeFirewallData}
-            direction={aclDirection}
-            dateFilter={{
-              startDate,
-              endDate
-            }}
-            edgeId={edgeData.serialNumber}
-            venueId={edgeData.venueId}
-          />
-        </Tabs.TabPane>
-      </Tabs>
+      <EdgeFirewallGroupedStatsTables
+        edgeData={edgeData}
+        edgeFirewallData={edgeFirewallData!}
+      />
     </Space>
   </Loader>)
-})`${UI.WrapperStyle}`
+}
 
 export default EdgeFirewall

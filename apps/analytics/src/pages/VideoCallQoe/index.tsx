@@ -30,7 +30,8 @@ export function useVideoCallQoe () {
   useEffect(()=> setCount(queryResults.data?.getAllCallQoeTests.length || 0),[queryResults])
 
   const title = defineMessage({
-    defaultMessage: 'Video Call QoE {count, select, null {} other {({count})}}'
+    defaultMessage: 'Video Call QoE {count, select, null {} other {({count})}}',
+    description: 'Translation string - Video Call QoE'
   })
 
   const isCallNotStarted = queryResults.data?.getAllCallQoeTests

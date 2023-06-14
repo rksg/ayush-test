@@ -20,7 +20,8 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   venuelist,
-  migrationResult
+  migrationResult,
+  configurationResult
 } from '../__tests__/fixtures'
 import MigrationContext from '../MigrationContext'
 
@@ -99,6 +100,11 @@ describe('MigrationForm', () => {
       MigrationUrlsInfo.getMigrationResult.url,
       (_, res, ctx) => res(
         ctx.json(migrationResult)
+      )
+    ), rest.get(
+      MigrationUrlsInfo.getZdConfiguration.url,
+      (_, res, ctx) => res(
+        ctx.json(configurationResult)
       )
     ))
 

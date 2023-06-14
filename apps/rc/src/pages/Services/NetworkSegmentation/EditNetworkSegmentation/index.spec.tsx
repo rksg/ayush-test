@@ -80,19 +80,19 @@ describe('Update NetworkSegmentation', () => {
       })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await user.click(await screen.findByText('SmartEdge'))
     // step 2
     await screen.findByTestId('SmartEdgeForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await user.click(await screen.findByText('Wireless Network'))
     // step 3
     await screen.findByTestId('WirelessNetworkForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await user.click(await screen.findByText('Dist. Switch'))
     // step 4
     await screen.findByTestId('DistributionSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await user.click((await screen.findAllByText('Access Switch'))[0])
     // step 5
     await screen.findByTestId('AccessSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await user.click(await screen.findByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,

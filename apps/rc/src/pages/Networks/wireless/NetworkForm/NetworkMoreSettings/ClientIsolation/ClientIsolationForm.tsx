@@ -5,8 +5,9 @@ import { useIntl }              from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import NetworkFormContext from '../../NetworkFormContext'
-import * as UI            from '../styledComponents'
+import NetworkFormContext        from '../../NetworkFormContext'
+import { hasVxLanTunnelProfile } from '../../utils'
+import * as UI                   from '../styledComponents'
 
 import ClientIsolationAllowListEditor from './ClientIsolationAllowListEditor'
 
@@ -29,6 +30,7 @@ export default function ClientIsolationForm () {
   const clientIsolationAllowlistEnabled = useWatch<boolean>(['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled'])
   // eslint-disable-next-line max-len
   const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
+  const enableVxLan = hasVxLanTunnelProfile(data)
 
   return (<>
     <UI.FieldLabel width='125px'>
@@ -39,7 +41,7 @@ export default function ClientIsolationForm () {
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={false}
-        children={<Switch />}
+        children={<Switch disabled={enableVxLan}/>}
       />
     </UI.FieldLabel>
 

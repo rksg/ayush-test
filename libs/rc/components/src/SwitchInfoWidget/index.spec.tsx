@@ -76,6 +76,13 @@ const filters:AnalyticsFilter = {
   range: DateRange.last24Hours
 }
 describe('Switch Information Widget', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getDashboardOverview.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
 
   it('should render alarms chart correctly', async () => {
     mockServer.use(

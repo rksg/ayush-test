@@ -4,7 +4,7 @@ import { Form, Input, Row, Col } from 'antd'
 
 import { Button }           from '../../Button'
 import { Modal, ModalType } from '../../Modal'
-import { StepsFormLegacy }  from '../../StepsFormLegacy'
+import { StepsForm }        from '../../StepsForm'
 import { showToast }        from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
@@ -22,7 +22,7 @@ export function SingleStepsFormModal () {
         visible={visible}
         type={ModalType.ModalStepsForm}
       >
-        <StepsFormLegacy
+        <StepsForm
           onCancel={() => {
             showToast({ type: 'info', content: 'Cancel' })
             setVisible(false)
@@ -34,7 +34,7 @@ export function SingleStepsFormModal () {
           }}
           buttonLabel={{ submit: 'Add' }}
         >
-          <StepsFormLegacy.StepForm>
+          <StepsForm.StepForm>
             <Row gutter={20}>
               <Col span={8}>
                 <Form.Item name='field1' label='Field 1'>
@@ -60,8 +60,8 @@ export function SingleStepsFormModal () {
                 </Form.Item>
               </Col>
             </Row>
-          </StepsFormLegacy.StepForm>
-        </StepsFormLegacy>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Modal>
     </>
   )

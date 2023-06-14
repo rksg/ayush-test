@@ -581,11 +581,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  CIOT
-                                </a>
+                                CIOT
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5512,11 +5508,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  Divya_unlimited
-                                </a>
+                                Divya_unlimited
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5617,11 +5609,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/tenant-id/t/networks/wireless"
-                                >
-                                  CIOT
-                                </a>
+                                CIOT
                               </td>
                               <td
                                 class="ant-table-cell"

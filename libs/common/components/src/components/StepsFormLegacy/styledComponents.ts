@@ -1,7 +1,14 @@
-import { Typography }                     from 'antd'
-import styled, { css, createGlobalStyle } from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
-import { Subtitle } from '../Subtitle'
+import modifyVars from '../../theme/modify-vars'
+
+export {
+  Title,
+  SectionTitle,
+  FieldLabel,
+  MultiSelect,
+  ActionsContainer
+} from '../StepsForm/styledComponents'
 
 const stepCompletedStyle = css`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
@@ -15,70 +22,23 @@ const stepCompletedStyle = css`
 
 export const StepsContainer = styled.div`
   position: fixed;
+  // col span=4/24, gutter=20px
+  width: calc((
+    (100% + 20px)
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  ) * 4 / 24 - 20px);
+  min-width: calc((
+    (${modifyVars['@screen-xl']} + 20px)
+    - var(--acx-sider-width)
+    - var(--acx-content-horizontal-space) * 2
+  ) * 4 / 24 - 20px);
   padding-top: calc(
     var(--acx-steps-form-form-title-line-height) +
     var(--acx-steps-form-form-title-margin-bottom) +
     3px
   );
   z-index: 1;
-`
-export const StepsContainerGlobalOverride = createGlobalStyle`
-  .ant-pro-basicLayout {
-    ${StepsContainer} {
-      // col span=4/24, gutter=20px
-      width: calc((
-        100% - var(--acx-sider-width) -
-        var(--acx-content-horizontal-space) * 2
-      ) * 4 / 24 - 20px);
-    }
-  }
-  .ant-pro-basicLayout.sider-collapsed {
-    ${StepsContainer} {
-      // col span=4/24, gutter=20px
-      width: calc((
-        100% - var(--acx-sider-collapsed-width) -
-        var(--acx-content-horizontal-space) * 2
-      ) * 4 / 24 - 20px);
-    }
-  }
-`
-
-export const ActionsContainer = styled.div`
-  position: fixed;
-  bottom: 0;
-  padding: var(--acx-steps-form-actions-vertical-space) 0;
-  background-color: var(--acx-neutrals-10);
-  z-index: 3;
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0 -100% 0 -100%;
-    background-color: var(--acx-neutrals-10);
-  }
-  .ant-space-item .ant-space {
-    position: absolute;
-    left: 50%;
-    bottom: var(--acx-steps-form-actions-vertical-space);
-    transform: translate(-50%, 0);
-  }
-`
-export const ActionsContainerGlobalOverride = createGlobalStyle`
-  .ant-pro-basicLayout {
-    ${ActionsContainer} {
-      width: calc(
-        100% - var(--acx-sider-width) -
-        var(--acx-content-horizontal-space) * 2
-      );
-    }
-  }
-  .ant-pro-basicLayout.sider-collapsed {
-    ${ActionsContainer} {
-      width: calc(
-        100% - var(--acx-sider-collapsed-width) -
-        var(--acx-content-horizontal-space) * 2
-      );
-    }
-  }
 `
 
 export const Wrapper = styled.section<{
@@ -206,73 +166,14 @@ export const Wrapper = styled.section<{
 
   .ant-pro-steps-form-container {
     margin: unset;
-    // col span=4/24
-    margin-left: ${props => props.singleStep ? '0;' : '16.66666667%;'}
+    ${props => !props.singleStep && `
+      // col span=4/24, gutter=20px
+      margin-left: calc((100% + 20px) * 4 / 24);
+    `}
     // button height=32px
     margin-bottom: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
     width: unset;
     min-width: unset;
     flex: 1;
-  }
-`
-
-export const Title = styled(Typography.Title).attrs({ level: 3 })`
-  font-size: var(--acx-steps-form-form-title-font-size);
-  line-height: var(--acx-steps-form-form-title-line-height);
-  font-weight: var(--acx-steps-form-form-title-font-weight);
-  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-`
-
-export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
-  &.ant-typography {
-    padding-bottom: 4px;
-    border-bottom: 1px solid var(--acx-neutrals-30);
-    margin-bottom: 32px;
-  }
-`
-
-export const FieldLabel = styled.label<{ width: string }>`
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  grid-template-columns: ${props => props.width} 1fr;
-  align-items: baseline;
-`
-
-
-export const MultiSelect = styled.div`
-  div.ant-checkbox-group {
-    display: flex;
-    > label.ant-checkbox-wrapper {
-      font-size: 12px;
-      align-items: center;
-      margin: 0 3px;
-      width: auto;
-      padding: 4px 12px;
-      border: 1px solid var(--acx-primary-black);
-      border-radius: 4px;
-      background-color: white;
-
-      > span:first-child {
-        display: none;
-      }
-    }
-
-    > label.ant-checkbox-wrapper-checked {
-      border: 1px solid var(--acx-primary-black);
-      border-radius: 4px;
-      background-color: var(--acx-primary-black);
-      color: white;
-    }
-
-    > label.ant-checkbox-wrapper:last-child {
-      border-right-width: 1px;
-    }
   }
 `
