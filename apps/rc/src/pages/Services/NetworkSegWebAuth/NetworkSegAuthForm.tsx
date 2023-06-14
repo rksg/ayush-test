@@ -129,6 +129,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
               .map(name=>{
                 const item = defaultTemplateData[name]
                 return (<WebAuthFormItem name={name}
+                  key={name}
                   label={$t(item.label)} />)
               })
           }
