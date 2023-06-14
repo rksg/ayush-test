@@ -15,7 +15,8 @@ import {
 
 import {
   migrations,
-  migrationResult
+  migrationResult,
+  configurationResult
 } from '../__tests__/fixtures'
 
 import MigrationSummary from './summary'
@@ -32,6 +33,11 @@ describe('Migration Summary', () => {
         MigrationUrlsInfo.getMigrationResult.url,
         (_, res, ctx) => res(
           ctx.json(migrationResult)
+        )
+      ), rest.get(
+        MigrationUrlsInfo.getZdConfiguration.url,
+        (_, res, ctx) => res(
+          ctx.json(configurationResult)
         )
       )
     )
