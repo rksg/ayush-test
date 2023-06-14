@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import {
+  showActionModal,
   PageHeader,
   StepsFormLegacy,
   StepsFormLegacyInstance
@@ -13,6 +14,7 @@ import {
   useAddZdMigrationMutation
 } from '@acx-ui/rc/services'
 import {
+  CatchErrorResponse,
   MigrationActionTypes,
   MigrationContextType,
   TaskContextType
@@ -74,6 +76,18 @@ const MigrationForm = () => {
     return isMigrate ? $t({ defaultMessage: 'Migrate' }) : $t({ defaultMessage: 'Validate' })
   }
 
+  const handleError = async (error: CatchErrorResponse) => {
+    showActionModal({
+      type: 'warning',
+      title: $t({ defaultMessage: 'Warning' }),
+      content: $t({ defaultMessage: 'Error occurred while validating ZD configurations' }),
+      customContent: {
+        action: 'SHOW_ERRORS',
+        errorDetails: error
+      }
+    })
+  }
+
 
   return (
     <MigrationContext.Provider value={{ state, dispatch }}>
@@ -107,7 +121,11 @@ const MigrationForm = () => {
             const file = state.file as File
             const formData = new FormData()
             formData.append('backupFile', file, file.name)
-            validateZdAps({ params: {}, payload: formData })
+            try {
+              await validateZdAps({ params: {}, payload: formData }).unwrap()
+            } catch (err) {
+              handleError(err as CatchErrorResponse)
+            }
             dispatch({
               type: MigrationActionTypes.ERRORMSG,
               payload: {

@@ -6,7 +6,7 @@ import { Card, DonutChart,
   getDeviceConnectionStatusColorsv2,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
 import type { DonutChartData }           from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }    from '@acx-ui/feature-toggle'
 import { ChartData }                     from '@acx-ui/rc/utils'
 import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
 import { filterByAccess }                from '@acx-ui/user'
@@ -24,7 +24,7 @@ export function DevicesWidget (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
-  const edgeSupported = useIsSplitOn(Features.EDGES)
+  const edgeSupported = useIsTierAllowed(Features.EDGES)
 
   let numDonut = 2
   if (edgeSupported) {
