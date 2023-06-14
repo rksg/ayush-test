@@ -266,7 +266,7 @@ export function PropertyManagementTab () {
                     name={['unitConfig', 'guestAllowed']}
                     rules={[{ required: true }]}
                     valuePropName={'checked'}
-                    children={<Switch />}
+                    children={<Switch disabled={hasUnits} />}
                   />
                 </StepsFormLegacy.FieldLabel>
                 {!residentPortalHasBound &&
