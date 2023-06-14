@@ -189,6 +189,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    integratorDeviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const deviceInventoryListReq =
+          createHttpRequest(MspUrlsInfo.getIntegratorDeviceInventory, params)
+        return {
+          ...deviceInventoryListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     mspAdminList: build.query<MspAdministrator[], RequestPayload>({
       query: ({ params }) => {
         const mspAdminListReq =
@@ -658,6 +669,7 @@ export const {
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
   useDeviceInventoryListQuery,
+  useIntegratorDeviceInventoryListQuery,
   useMspAdminListQuery,
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
