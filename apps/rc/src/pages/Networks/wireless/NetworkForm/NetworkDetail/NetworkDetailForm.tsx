@@ -61,9 +61,6 @@ export function NetworkDetailForm () {
         setDifferentSSID(data?.wlan?.ssid !== data?.name)
       }
     }
-    if (cloneMode && data?.wlan?.ssid) {
-      form.setFieldValue(['wlan', 'ssid'], data?.name)
-    }
   }, [data, editMode])
 
   const networkListPayload = {
@@ -170,7 +167,7 @@ export function NetworkDetailForm () {
             type='link'
             style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
-              if (differentSSID) {
+              if (!differentSSID) {
                 const name = form.getFieldValue('name')
                 form.setFieldValue(['wlan', 'ssid'], name)
               }
