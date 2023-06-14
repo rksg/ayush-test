@@ -16,7 +16,6 @@ COPY .eslintignore \
   jest.config.ts \
   jest.preset.ts \
   jest.setup.js \
-  modulefederation.config.base.js \
   nx.json \
   webpack.config.base.js \
   tsconfig.base.json \

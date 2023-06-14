@@ -347,6 +347,16 @@ export function SwitchForm () {
     setCurrentTab(tab)
   }
 
+  const handleChangeSerialNumber = (name: string) => {
+    const serialNumber = formRef.current?.getFieldValue(name)?.toUpperCase()
+    if(serialNumber) {
+      formRef.current?.setFieldValue(name, serialNumber)
+      formRef.current?.validateFields([name]).catch(()=>{
+        setSwitchModel('')
+      })
+    }
+  }
+
   return <>
     <PageHeader
       title={editMode ?
@@ -416,10 +426,16 @@ export function SwitchForm () {
                   ]}
                   validateTrigger={['onKeyUp', 'onBlur']}
                   validateFirst
-                  children={<Input disabled={readOnly || editMode} />}
+                  children={
+                    <Input
+                      disabled={readOnly || editMode}
+                      style={{ textTransform: 'uppercase' }}
+                      onBlur={() => handleChangeSerialNumber(editMode ? 'serialNumber' : 'id')}
+                    />
+                  }
                 />
 
-                {!editMode && !isRodanModel &&
+                {!editMode &&
                   <SwitchUpgradeNotification
                     isDisplay={!_.isEmpty(switchModel)}
                     isDisplayHeader={true}
@@ -446,6 +462,7 @@ export function SwitchForm () {
                   initialValue={MEMEBER_TYPE.STANDALONE}
                 >
                   <Radio.Group
+                    value={switchRole}
                     onChange={(e: RadioChangeEvent) => {
                       return setSwitchRole(e.target.value)
                     }}

@@ -205,7 +205,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     const dataRows = [...tableData]
     const serialNumber = form.getFieldValue(
       `serialNumber${row.key}`
-    )
+    )?.toUpperCase()
     dataRows[index].id = serialNumber
     dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
     setTableData(dataRows)
