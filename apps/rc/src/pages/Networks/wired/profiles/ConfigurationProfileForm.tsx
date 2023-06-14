@@ -133,12 +133,13 @@ export function ConfigurationProfileForm () {
     return true
   }
 
-  const handleEditProfile = async () => {
+  const handleEditProfile = async (formData: SwitchConfigurationProfile) => {
     try {
-      if(checkTrustedPortEmpty(currentData)){
+      if(checkTrustedPortEmpty(formData)){
         return false
       }
-      await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
+      await updateSwitchConfigProfile({
+        params, payload: proceedData(formData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
       return true

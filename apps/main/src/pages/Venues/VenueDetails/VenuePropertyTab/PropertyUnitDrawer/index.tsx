@@ -7,9 +7,9 @@ import _                                                                       f
 import moment                                                                  from 'moment-timezone'
 import { useIntl }                                                             from 'react-intl'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                    from '@acx-ui/rc/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }   from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -717,7 +717,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             </Form.Item>
 
             {enableGuestUnit &&
-              <StepsFormLegacy.FieldLabel width={'160px'}>
+              <StepsForm.FieldLabel width={'160px'}>
                 {$t({ defaultMessage: 'Separate VLAN for guests' })}
                 <Form.Item
                   style={{ marginBottom: '10px' }}
@@ -725,7 +725,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   valuePropName={'checked'}
                   children={<Switch />}
                 />
-              </StepsFormLegacy.FieldLabel>
+              </StepsForm.FieldLabel>
             }
 
             {enableGuestUnit && enableGuestVlan &&

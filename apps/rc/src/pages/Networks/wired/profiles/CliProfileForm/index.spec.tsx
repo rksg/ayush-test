@@ -254,7 +254,7 @@ describe('Cli Profile Form - Edit', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
   it('should handle error occurred', async () => {
@@ -274,7 +274,7 @@ describe('Cli Profile Form - Edit', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     // await screen.findByText('Server Error')
   })
 

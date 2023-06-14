@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 
+import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsForm
 } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
@@ -25,7 +25,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   NetworkVenue,
-  Network
+  Network,
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -106,10 +107,9 @@ export default function NetworkForm (props:{
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
-  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
-
-  const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
+  const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const form = Form.useFormInstance()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
@@ -117,12 +117,16 @@ export default function NetworkForm (props:{
     isCloudpathEnabled: false,
     venues: []
   })
+
+  const saveContextRef = useRef<NetworkSaveData>()
+
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
     }
+
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -131,45 +135,92 @@ export default function NetworkForm (props:{
   const { data } = useGetNetworkQuery({ params })
 
   useEffect(() => {
-    if(data){
-      formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue(data)
+    if(data && saveState.name === ''){
+      form?.resetFields()
+      form?.setFieldsValue(data)
+      let name = data.name
       if (cloneMode) {
-        formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
+        name = data.name + ' - copy'
       }
-      updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
+      updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
         enableAccountingService: (data.accountingRadius||
           data.guestPortal?.wisprPage?.accountingRadius)?true:false })
     }
-  }, [data])
+
+    if(saveState){
+      saveContextRef.current = saveState
+    }
+  }, [data, saveState])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
   }, [])
 
+  const handleDetails = async (data: NetworkSaveData) => {
+    const detailsSaveData = transferDetailToSave(data)
+    if(modalMode&&createType){
+      detailsSaveData.type = createType
+    }
+    if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
+      updateSaveData({ ...detailsSaveData,
+        guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass } })
+    }
+    else updateSaveData(detailsSaveData)
+    return true
+  }
+
+  const handleSettings = async (data: NetworkSaveData) => {
+    if (data.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
+      const settingData = {
+        ...{ type: data.type },
+        ...data
+      }
+
+      let settingSaveData = tranferSettingsToSave(settingData, editMode)
+      if (!editMode) {
+        settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+      }
+      updateSaveData(settingSaveData)
+      return true
+    }else {
+      if(!(editMode||cloneMode)){
+        const settingCaptiveData = {
+          ...{ type: data.type },
+          ...data
+        }
+        let settingCaptiveSaveData = tranferSettingsToSave(settingCaptiveData, editMode)
+        if (!editMode) {
+          settingCaptiveSaveData =
+            transferMoreSettingsToSave(data, settingCaptiveSaveData)
+        }
+        updateSaveData(settingCaptiveSaveData)
+      }
+      return true
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleOnboarding = async (data: any) => {
+    delete data.walledGardensString
+    if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
+      delete data.guestPortal.wisprPage
+    }
+    // const dataMore = handleGuestMoreSetting(data)
+    handlePortalWebPage(data)
+    return true
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMoreSettings = async (data: any) => {
+    const dataMore = handleGuestMoreSetting(data)
+    const settingSaveData = transferMoreSettingsToSave(dataMore, saveState)
+    updateSaveData(settingSaveData)
+    return true
+  }
+
   const handleGuestMoreSetting = (data:GuestMore)=>{
     if(data.guestPortal){
-      if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit)
-        data.guestPortal={
-          ...data.guestPortal,
-          userSessionTimeout: data.guestPortal.userSessionTimeout*
-          minutesMapping[data.userSessionTimeoutUnit]
-        }
-      if(data.lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
-        data.guestPortal={
-          ...data.guestPortal,
-          lockoutPeriod: data.guestPortal.lockoutPeriod*
-          minutesMapping[data.lockoutPeriodUnit]
-        }
-      }
-      if(data.macCredentialsDurationUnit&&data.guestPortal.macCredentialsDuration){
-        data.guestPortal={
-          ...data.guestPortal,
-          macCredentialsDuration: data.guestPortal.macCredentialsDuration*
-          minutesMapping[data.macCredentialsDurationUnit]
-        }
-      }
-      if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+      if(data.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
         &&data.guestPortal.wisprPage?.customExternalProvider){
         data.guestPortal = {
           ...data.guestPortal,
@@ -230,7 +281,41 @@ export default function NetworkForm (props:{
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    // eslint-disable-next-line
+    let radiusUncheckedData = { ...data, ...saveState, ...tmpGuestPageState } as Partial<NetworkSaveData>
+    if (radiusUncheckedData.guestPortal?.wisprPage?.authType &&
+      radiusUncheckedData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+      radiusUncheckedData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      delete radiusUncheckedData.authRadius
+      delete radiusUncheckedData.accountingRadius
+      delete radiusUncheckedData.enableAccountingService
+      delete radiusUncheckedData.accountingRadiusId
+      delete radiusUncheckedData.authRadiusId
+      delete radiusUncheckedData.guestPortal?.wisprPage?.authRadius
+      // eslint-disable-next-line
+      radiusUncheckedData = _.omit(radiusUncheckedData, ['guestPortal.wisprPage.authRadiusId']) as Partial<NetworkSaveData>
+    }
+    updateSaveData(radiusUncheckedData)
+    return true
+  }
+
+  const handleVenues = async (data: NetworkSaveData) => {
+    let venueData = data
+    if (cloneMode) {
+      venueData = {
+        venues: data.venues?.map(v => {
+          if (v.apGroups) {
+            v.apGroups.map((ag: { id?: string }) => {
+              delete ag.id
+              return ag
+            })
+          }
+          return v
+        }) || []
+      }
+    }
+    const settingSaveData = transferVenuesToSave(venueData, saveState)
+    updateSaveData(settingSaveData)
     return true
   }
 
@@ -246,7 +331,7 @@ export default function NetworkForm (props:{
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
-        if (_.isUndefined(networkVenue.id)) {
+        if (_.isUndefined(networkVenue.id) || _.isNull(networkVenue.id)) {
           networkVenue.networkId = networkId
           added.push(networkVenue)
         } else {
@@ -320,10 +405,72 @@ export default function NetworkForm (props:{
     }
   }
 
+  const processData = function (data: NetworkSaveData) {
+    deleteUnnecessaryFields()
+    handleSettings(data)
+
+    if(data?.type === NetworkTypeEnum.CAPTIVEPORTAL){
+      handleOnboarding(data)
+    }
+
+    if(data.guestPortal){
+      const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
+      if(data.guestPortal.userSessionTimeout&&userSessionTimeoutUnit){
+        data.guestPortal={
+          ...data.guestPortal,
+          userSessionTimeout: data.guestPortal.userSessionTimeout*
+          minutesMapping[userSessionTimeoutUnit]
+        }
+      }
+
+      const lockoutPeriodUnit = _.get(data, 'lockoutPeriodUnit')
+      if(lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
+        data.guestPortal={
+          ...data.guestPortal,
+          lockoutPeriod: data.guestPortal.lockoutPeriod*
+          minutesMapping[lockoutPeriodUnit]
+        }
+      }
+
+      const macCredentialsDurationUnit = _.get(data, 'macCredentialsDurationUnit')
+      if(macCredentialsDurationUnit&&data.guestPortal.macCredentialsDuration){
+        data.guestPortal={
+          ...data.guestPortal,
+          macCredentialsDuration: data.guestPortal.macCredentialsDuration*
+          minutesMapping[macCredentialsDurationUnit]
+        }
+      }
+    }
+
+    handleGuestMoreSetting(data)
+
+    if(isPortalWebRender(data)){
+      handlePortalWebPage(data)
+    }
+
+    if (data.guestPortal?.wisprPage?.authType &&
+      data.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+      data.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      saveContextRef.current = _.omit({ ...saveState, ...data },
+        ['authRadius',
+          'accountingRadius',
+          'enableAccountingService',
+          'accountingRadiusId',
+          'authRadiusId',
+          'guestPortal.wisprPage.authRadius',
+          'guestPortal.wisprPage.authRadiusId'
+        ]
+      )
+    }
+    else {
+      saveContextRef.current = { ...saveState, ...data }
+    }
+  }
+
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
-      deleteUnnecessaryFields()
-      const payload = updateClientIsolationAllowlist({ ...saveState, venues: formData.venues })
+      processData(formData)
+      const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetwork({ params, payload }).unwrap()
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
@@ -353,8 +500,7 @@ export default function NetworkForm (props:{
         data: saveState,
         setData: updateSaveState
       }}>
-        <StepsFormLegacy<NetworkSaveData>
-          formRef={formRef}
+        <StepsForm<NetworkSaveData>
           editMode={editMode}
           onCancel={() => modalMode
             ? modalCallBack?.()
@@ -362,55 +508,18 @@ export default function NetworkForm (props:{
           }
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
-          <StepsFormLegacy.StepForm
+          <StepsForm.StepForm
             name='details'
             title={intl.$t({ defaultMessage: 'Network Details' })}
-            onFinish={async (data) => {
-              const detailsSaveData = transferDetailToSave(data)
-              if(modalMode&&createType){
-                detailsSaveData.type = createType
-              }
-              if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
-                updateSaveData({ ...detailsSaveData,
-                  guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass } })
-              }
-              else updateSaveData(detailsSaveData)
-              return true
-            }}
+            onFinish={handleDetails}
           >
             <NetworkDetailForm />
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormLegacy.StepForm
+          <StepsForm.StepForm
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
-            onFinish={async (data) => {
-              if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
-                const settingData = {
-                  ...{ type: saveState.type },
-                  ...data
-                }
-                let settingSaveData = tranferSettingsToSave(settingData, editMode)
-                if (!editMode) {
-                  settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
-                }
-                updateSaveData(settingSaveData)
-              }else {
-                if(!(editMode||cloneMode)){
-                  const settingCaptiveData = {
-                    ...{ type: saveState.type },
-                    ...data
-                  }
-                  let settingCaptiveSaveData = tranferSettingsToSave(settingCaptiveData, editMode)
-                  if (!editMode) {
-                    settingCaptiveSaveData =
-                      transferMoreSettingsToSave(data, settingCaptiveSaveData)
-                  }
-                  updateSaveData(settingCaptiveSaveData)
-                }
-              }
-              return true
-            }}
+            onFinish={handleSettings}
           >
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
@@ -418,78 +527,46 @@ export default function NetworkForm (props:{
             {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
 
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-              <StepsFormLegacy.StepForm
+              <StepsForm.StepForm
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
-                onFinish={async (data) => {
-                  delete data.walledGardensString
-                  if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
-                    delete data.guestPortal.wisprPage
-                  }
-                  const dataMore = handleGuestMoreSetting(data)
-                  handlePortalWebPage(dataMore)
-                  return true
-                }}
+                onFinish={handleOnboarding}
               >
                 {pickOneCaptivePortalForm(saveState)}
-              </StepsFormLegacy.StepForm>
+              </StepsForm.StepForm>
           }
           {editMode &&
-            <StepsFormLegacy.StepForm
+            <StepsForm.StepForm
               name='moreSettings'
               title={intl.$t({ defaultMessage: 'More Settings' })}
-              onFinish={async (data) => {
-                const dataMore = handleGuestMoreSetting(data)
-                const settingSaveData = transferMoreSettingsToSave(dataMore, saveState)
-
-                updateSaveData(settingSaveData)
-                return true
-              }}>
+              onFinish={handleMoreSettings}>
 
               <NetworkMoreSettingsForm wlanData={saveState} />
 
-            </StepsFormLegacy.StepForm>}
-          { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
+            </StepsForm.StepForm>}
+          { isPortalWebRender(saveState) &&<StepsForm.StepForm
             name='portalweb'
             title={intl.$t({ defaultMessage: 'Portal Web Page' })}
             onFinish={handlePortalWebPage}
           >
             <PortalInstance updatePortalData={(data)=>setPortalDemo(data)}/>
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
           }
-          <StepsFormLegacy.StepForm
+          <StepsForm.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
-            onFinish={async (data) => {
-              let venueData = data
-              if (cloneMode) {
-                venueData = {
-                  venues: data.venues.map((v: { apGroups: { id?: string }[] }) => {
-                    if (v.apGroups) {
-                      v.apGroups.map((ag: { id?: string }) => {
-                        delete ag.id
-                        return ag
-                      })
-                    }
-                    return v
-                  })
-                }
-              }
-              const settingSaveData = transferVenuesToSave(venueData, saveState)
-              updateSaveData(settingSaveData)
-              return true
-            }}
+            onFinish={handleVenues}
           >
             <Venues />
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
           {!editMode &&
-            <StepsFormLegacy.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
+            <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
               <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-            </StepsFormLegacy.StepForm>
+            </StepsForm.StepForm>
           }
-        </StepsFormLegacy>
+        </StepsForm>
       </NetworkFormContext.Provider>
     </>
   )
@@ -533,4 +610,3 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       return <OnboardingForm />
   }
 }
-

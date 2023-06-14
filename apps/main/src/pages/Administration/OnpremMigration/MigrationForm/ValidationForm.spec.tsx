@@ -14,7 +14,8 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  migrationResult
+  migrationResult,
+  configurationResult
 } from '../__tests__/fixtures'
 
 import ValidationForm from './ValidationForm'
@@ -32,6 +33,11 @@ describe('ValidationForm', () => {
       rest.get(
         MigrationUrlsInfo.getMigrationResult.url,
         (req, res, ctx) => res(ctx.json(migrationResult))
+      ), rest.get(
+        MigrationUrlsInfo.getZdConfiguration.url,
+        (_, res, ctx) => res(
+          ctx.json(configurationResult)
+        )
       )
     )
     params = {

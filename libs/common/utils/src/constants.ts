@@ -6,5 +6,6 @@ export const directedMulticastInfo = defineMessage({
 })
 
 export const TABLE_DEFAULT_PAGE_SIZE = 10
+export const TABLE_MAX_PAGE_SIZE = 10000 // RC API limit (Elasticsearch setting)
 
 export const noDataDisplay = '--' as const
