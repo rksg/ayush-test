@@ -164,8 +164,8 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
+    // expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Apply' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
   })
   it('domain form item should load correctly for add', async () => {
@@ -228,7 +228,7 @@ describe('PortalSettings', () => {
 
     userEvent.setup()
     await userEvent.clear(formItem)
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     await waitFor(async () => {
       expect(await screen.findByRole('alert')).toBeVisible()
@@ -261,7 +261,7 @@ describe('PortalSettings', () => {
     userEvent.setup()
     await userEvent.clear(formItem)
     await userEvent.type(formItem, '!')
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     await waitFor(async () => {
       expect(await screen.findByRole('alert')).toBeVisible()
@@ -293,13 +293,13 @@ describe('PortalSettings', () => {
     expect(formItem).toBeVisible()
     expect(formItem).toHaveValue('demo-msp')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => {
       expect(screen.queryByRole('alert')).toBeNull()
     })
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
-    })
+    // await waitFor(() => {
+    //   expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
+    // })
   })
   it('logo form item should load correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
