@@ -46,10 +46,14 @@ interface EdgePortsWidgetProps {
   edgePortsSetting: EdgePortStatus[] | undefined
 }
 
-function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, onClick }:
-   { title:string, data: Array<DonutChartData>,
-    isLoading: boolean, chartDataTransformer?:Function, onClick?: DonutChartProps['onClick'] }) {
-  const { $t } = useIntl()
+function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, emptyMessage, onClick }:
+   {
+    title:string,
+    data: Array<DonutChartData>,
+    isLoading: boolean,
+    chartDataTransformer?:Function,
+    emptyMessage: string,
+    onClick?: DonutChartProps['onClick'] }) {
   if (chartDataTransformer)
     data = chartDataTransformer(data)
 
@@ -65,7 +69,7 @@ function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer
             data={data}
             onClick={onClick}
           />
-          : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
+          : <NoActiveData text={emptyMessage}/>
         }
       </SpaceWrapper>
     </Loader>
@@ -86,6 +90,7 @@ const EdgeAlarmWidget = ({ isLoading, serialNumber, alarmList }: EdgeAlarmWidget
       title={$t({ defaultMessage: 'Alarms' })}
       data={chartData}
       isLoading={isLoading}
+      emptyMessage={$t({ defaultMessage: 'No active alarms' })}
       onClick={onChartClick(handleDonutClick)} />
     <AlarmsDrawer
       visible={alarmDrawerVisible}
@@ -170,7 +175,13 @@ const EdgePortsWidget = ({ isLoading, edgePortsSetting }: EdgePortsWidgetProps) 
   const chartData = getPortsAdminStatusChartData(edgePortsSetting)
 
   return (<>
-    <EdgeOverviewDonutWidget title={$t({ defaultMessage: 'Ports' })} data={chartData} isLoading={isLoading} onClick={onChartClick(handleDonutClick)}/>
+    <EdgeOverviewDonutWidget
+      title={$t({ defaultMessage: 'Ports' })}
+      data={chartData}
+      isLoading={isLoading}
+      emptyMessage={$t({ defaultMessage: 'No data' })}
+      onClick={onChartClick(handleDonutClick)}
+    />
     <EdgePortsListDrawer
       visible={visible}
       setVisible={setVisible}
