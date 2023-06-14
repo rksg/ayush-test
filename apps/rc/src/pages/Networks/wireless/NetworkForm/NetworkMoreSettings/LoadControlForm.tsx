@@ -4,7 +4,7 @@ import {
   Checkbox,
   Form,
   Select,
-  Slider
+  Slider, Switch
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
 import { get }                 from 'lodash'
@@ -85,23 +85,28 @@ export function LoadControlForm () {
         />
       </Form.Item>
 
-      <UI.FormItemNoLabel
-        name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
-        valuePropName='checked'
-        initialValue={true}
-        children={
-          <Checkbox
-            children={$t({ defaultMessage: 'Enable load balancing between all radios' })} />
-        }
-      />
-      <UI.FormItemNoLabel
-        name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
-        valuePropName='checked'
-        initialValue={true}
-        children={
-          <Checkbox children={$t({ defaultMessage: 'Enable load balancing between APs' })} />
-        }
-      />
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Enable load balancing between all radios' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={true}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Enable load balancing between APs' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={true}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+
     </>
   )
 }
