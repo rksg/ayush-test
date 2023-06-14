@@ -15,7 +15,7 @@ export default function VLANPoolInstancesTable (){
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolVenuesQuery,
     defaultPayload: {
-      fields: ['venueId', 'venueName', 'apGroupData'],
+      fields: ['venueId', 'venueName', 'venueApCount', 'apGroupData'],
       pageSize: 10000
     },
     sorter: {
@@ -38,16 +38,18 @@ export default function VLANPoolInstancesTable (){
 
     },
     {
-      key: 'apGroupData',
+      key: 'venueApCount',
       title: $t({ defaultMessage: 'APs' }),
-      dataIndex: 'apGroupData',
-      render: (groups) => _.sumBy(groups as VLANPoolAPGroup[], (o)=> o.apCount )
+      dataIndex: 'venueApCount',
+      align: 'center',
+      sorter: true
     },
     {
-      key: 'DeploymentScope',
+      key: 'apGroupData',
       title: $t({ defaultMessage: 'Deployment Scope' }),
       dataIndex: 'apGroupData',
       searchable: true,
+      sorter: true,
       render: (groups) => {
         const isAllAP = _.some(groups as VLANPoolAPGroup[], { apGroupName: 'ALL_APS' })
         return isAllAP ? $t({ defaultMessage: 'All APs' }):(groups as VLANPoolAPGroup[]).length

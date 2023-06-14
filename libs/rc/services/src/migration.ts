@@ -8,6 +8,7 @@ import {
   RequestPayload,
   RequestFormData,
   TaskContextType,
+  ZdConfigurationType,
   MigrationResultType
 } from '@acx-ui/rc/utils'
 import { baseMigrationApi } from '@acx-ui/store'
@@ -108,6 +109,38 @@ export const migrationApi = baseMigrationApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Migration', id: 'LIST' }]
+    }),
+    getZdConfigurationList: build.query<TableResult<TaskContextType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MigrationUrlsInfo.getZdConfigurationList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Migration', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddZdMigration',
+            'UpdateZdMigration',
+            'DeleteZdMigration',
+            'DeleteZdMigrations'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(migrationApi.util.invalidateTags([{ type: 'Migration', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getZdConfiguration: build.query<ZdConfigurationType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MigrationUrlsInfo.getZdConfiguration, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Migration', id: 'LIST' }]
     })
   })
 })
@@ -119,5 +152,8 @@ export const {
   useGetMigrationResultQuery,
   useLazyGetMigrationResultQuery,
   useGetPollingMigrationResultQuery,
-  useDeleteMigrationMutation
+  useDeleteMigrationMutation,
+  useGetZdConfigurationListQuery,
+  useGetZdConfigurationQuery,
+  useLazyGetZdConfigurationQuery
 } = migrationApi
