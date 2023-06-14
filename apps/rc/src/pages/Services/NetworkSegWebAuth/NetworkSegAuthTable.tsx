@@ -65,11 +65,17 @@ export default function NetworkSegAuthTable () {
     }, {
       title: $t({ defaultMessage: 'Access Switches' }),
       key: 'switchCount',
-      dataIndex: 'switchCount'
+      dataIndex: 'switchCount',
+      render: (data) => {
+        return data || 0
+      }
     }, {
       title: $t({ defaultMessage: 'Venues' }),
       key: 'venueCount',
-      dataIndex: 'venueCount'
+      dataIndex: 'venueCount',
+      render: (data) => {
+        return data || 0
+      }
     }, {
       title: $t({ defaultMessage: 'Update Available' }),
       key: 'updateAvailable',
