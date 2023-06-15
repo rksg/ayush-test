@@ -79,7 +79,7 @@ export interface MigrationResultType {
   model? : string,
   description?: string,
   state: string,
-  validationErrors?: string[]
+  validationErrors?: string
 }
 
 export interface TaskContextType {
@@ -95,3 +95,19 @@ export interface TaskContextType {
   apImportResults: MigrationResultType[]
 }
 
+export interface MigrationTaskType {
+  taskId: string,
+  createTime: number,
+  completedTime?: number,
+  state: string,
+  tenantId: string,
+  fileName: string,
+  venueName?: string,
+  description?: string,
+  error?: ValidationErrorType
+  apImportResultList: MigrationResultType[]
+}
+
+export interface ZdConfigurationType {
+  data?: { migrationTaskList: MigrationTaskType[] }[]
+}
