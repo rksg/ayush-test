@@ -66,13 +66,6 @@ export interface DhcpStats {
   updateAvailable?: boolean
   serviceVersion?: string
   tags?: string[]
-  edgeName?: string
-  edgeId?: string
-  venueName?: string
-  venueId?: string
-  successfulAllocations?: number
-  remainingIps?: number
-  droppedPackets?: number
 }
 
 export interface DhcpHostStats {
@@ -83,4 +76,14 @@ export interface DhcpHostStats {
   hostExpireDate: Date
   hostRemainingTime: number
   edgeId: string
+}
+
+export interface DhcpUeSummaryStats {
+  edgeName?: string
+  edgeId?: string
+  venueId?: string
+  venueName?: string
+  successfulAllocation?: number
+  remainsIps?: number
+  droppedPackets?: number
 }
