@@ -14,6 +14,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseEdgeDhcpApi } from '@acx-ui/store'
 
+import { edgeApi } from './edge'
+
 export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
     addEdgeDhcpService: build.mutation<EdgeDhcpSetting, RequestPayload>({
@@ -109,6 +111,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SERVICE' }]))
           })
         })
       }
