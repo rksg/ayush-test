@@ -38,7 +38,7 @@ describe('VenueClientsTab', () => {
     render(<Provider><VenueClientsTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/clients/wifi' }
     })
-    const wifiTab = await screen.findByRole('tab', { name: 'Wi-Fi' })
+    const wifiTab = await screen.findByRole('tab', { name: 'Wireless' })
     expect(wifiTab.getAttribute('aria-selected')).toBeTruthy()
 
     const switchTab = await screen.findByRole('tab', { name: 'Switch' })
@@ -49,5 +49,19 @@ describe('VenueClientsTab', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render correct title when feature toggle is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    const params = {
+      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+      venueId: '7482d2efe90f48d0a898c96d42d2d0e7'
+    }
+    render(<Provider><VenueClientsTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/clients/wifi' }
+    })
+    const wifiTab = await screen.findByRole('tab', { name: 'Wi-Fi' })
+    expect(wifiTab.getAttribute('aria-selected')).toBeTruthy()
   })
 })

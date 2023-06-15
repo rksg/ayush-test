@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   RadiusAttributeGroupUrlsInfo,
   RulesManagementUrlsInfo
@@ -58,6 +59,44 @@ describe('AdaptivePolicyForm', () => {
         }
       }
     )
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <AdaptivePolicyForm/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenant-id' },
+          path: '/:tenantId'
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /adaptive policy/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <AdaptivePolicyForm/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenant-id' },
+          path: '/:tenantId'
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByText(/policies & proflies/i)).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /adaptive policy/i
+    })).toBeTruthy()
   })
 
   it('should submit list successfully', async () => {

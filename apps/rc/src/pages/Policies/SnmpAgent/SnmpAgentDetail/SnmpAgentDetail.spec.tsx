@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { ApSnmpUrls, getPolicyDetailsLink, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { mockServer, render, screen }                                                        from '@acx-ui/test-utils'
@@ -75,6 +76,42 @@ describe('SnmpAgentForm', () => {
     expect(venueLink).toBeVisible()
 
     userEvent.click(venueLink)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <SnmpAgentDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+    expect(screen.getByRole('link', {
+      name: /snmp agent/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <SnmpAgentDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /snmp agent/i
+    })).toBeTruthy()
   })
 
   it('should navigate to the edit page', async () => {

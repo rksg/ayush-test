@@ -259,4 +259,25 @@ describe('Administration page', () => {
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
+
+  it('should render administrator title with count', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    params.activeTab = 'administrators'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const adminTab = screen.getByRole('tab', { name: 'Administrators (0)' })
+    expect(adminTab.getAttribute('aria-selected')).toBeTruthy()
+    const notificationTab = screen.getByRole('tab', { name: 'Notifications (0)' })
+    expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
+  })
 })

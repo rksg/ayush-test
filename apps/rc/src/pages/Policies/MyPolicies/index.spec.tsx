@@ -1,6 +1,7 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getSelectPolicyRoutePath,
@@ -64,5 +65,29 @@ describe('MyPolicies', () => {
     expect(await screen.findByText(rogueApTitle)).toBeVisible()
 
     expect(await screen.findByText('Client Isolation (0)')).toBeVisible()
+  })
+
+  it('should not render breadcrumb when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
   })
 })

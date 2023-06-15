@@ -2,6 +2,7 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
+import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
@@ -202,6 +203,40 @@ describe('SnmpAgentForm', () => {
 
 
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <SnmpAgentForm editMode={false}/>
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+    expect(screen.getByRole('link', {
+      name: /snmp agent/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <SnmpAgentForm editMode={false}/>
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      })
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /snmp agent/i
+    })).toBeTruthy()
   })
 
   it('should edit SNMP Agent successfully', async () => {

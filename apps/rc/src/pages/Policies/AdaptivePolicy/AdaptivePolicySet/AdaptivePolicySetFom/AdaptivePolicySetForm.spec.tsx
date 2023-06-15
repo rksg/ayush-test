@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -78,6 +79,46 @@ describe('AdaptivePolicySetForm', () => {
     await screen.findByText('Add Adaptive Policy Set')
     await screen.findByRole('button', { name: 'Apply' })
     await screen.findByRole('button', { name: 'Cancel' })
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <AdaptivePolicySetForm/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenant-id' },
+          path: createPath
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+    expect(screen.getByRole('link', {
+      name: /adaptive set policy/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <AdaptivePolicySetForm/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenant-id' },
+          path: createPath
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /adaptive policy sets/i
+    })).toBeTruthy()
   })
 
   it('should create set successfully', async () => {

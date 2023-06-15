@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
@@ -61,6 +62,32 @@ describe('RadiusAttributeGroupDetail', () => {
     await screen.findByText(mockGroup.attributeAssignments[1].attributeValue)
     await screen.findByText('Instance (' + policyList.content.length + ')')
     await screen.findByRole('row', { name: new RegExp('ap2') })
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
+      route: { params, path }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+    expect(screen.getByRole('link', {
+      name: /radius attribute groups/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><RadiusAttributeGroupDetail /></Provider>, {
+      route: { params, path }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /radius attribute groups/i
+    })).toBeTruthy()
   })
 
   it('should navigate to edit page', async () => {

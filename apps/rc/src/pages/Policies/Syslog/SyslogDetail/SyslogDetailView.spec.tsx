@@ -3,6 +3,7 @@ import React from 'react'
 import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { policyApi }                  from '@acx-ui/rc/services'
 import { SyslogUrls }                 from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
@@ -120,6 +121,44 @@ describe('SyslogDetailView', () => {
       }
     )
 
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <SyslogDetailView />
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /syslog/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <SyslogDetailView />
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /syslog/i
+    })).toBeTruthy()
   })
 
   it('should render empty SyslogDetailView successfully', async () => {

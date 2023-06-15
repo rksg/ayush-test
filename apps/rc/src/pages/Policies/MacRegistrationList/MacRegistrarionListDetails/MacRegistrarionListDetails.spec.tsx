@@ -106,6 +106,48 @@ describe('MacRegistrationListDetails', () => {
     expect(await screen.findByText(networkList.data[0].name)).toBeVisible()
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'overview'
+    }
+
+    render(<Provider><MacRegistrationListDetails /></Provider>, {
+      // eslint-disable-next-line max-len
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
+    })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+    expect(screen.getByRole('link', {
+      name: /mac registration lists/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'overview'
+    }
+
+    render(<Provider><MacRegistrationListDetails /></Provider>, {
+      // eslint-disable-next-line max-len
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
+    })
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /mac registration lists/i
+    })).toBeTruthy()
+  })
+
   it('should not have active tab if it does not exist', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',

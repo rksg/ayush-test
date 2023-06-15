@@ -138,6 +138,46 @@ describe('MacRegistrationListForm', () => {
     )
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <MacRegistrationListForm />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId },
+          path: createPath
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+    expect(screen.getByRole('link', {
+      name: /mac registration lists/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <MacRegistrationListForm />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId },
+          path: createPath
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /mac registration lists/i
+    })).toBeTruthy()
+  })
+
   it('should create list successfully', async () => {
     render(
       <Provider>

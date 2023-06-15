@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -80,6 +81,46 @@ describe('AccessControlForm Component', () => {
     await userEvent.click(screen.getByRole('button', {
       name: 'Cancel'
     }))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <Form>
+          <AccessControlForm editMode={false}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /access control/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <Form>
+          <AccessControlForm editMode={false}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /access control/i
+    })).toBeTruthy()
   })
 
   it('Render AccessControlForm component successfully (create)', async () => {

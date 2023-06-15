@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, DpskUrls, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { mockServer, render, screen }                                            from '@acx-ui/test-utils'
@@ -51,5 +52,33 @@ describe('AdaptivePolicySetDetail', () => {
     expect(names).toHaveLength(2)
     expect(names[0]).toBeVisible()
     expect(names[1]).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><AdaptivePolicySetDetail /></Provider>, {
+      route: { params, path: '/:tenantId/:policyId' }
+    })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+    expect(screen.getByRole('link', {
+      name: /adaptive set policy/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><AdaptivePolicySetDetail /></Provider>, {
+      route: { params, path: '/:tenantId/:policyId' }
+    })
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /adaptive policy sets/i
+    })).toBeTruthy()
   })
 })

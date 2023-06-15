@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -75,6 +76,34 @@ describe('TunnelProfileList', () => {
       })
     const row = await screen.findAllByRole('row', { name: /tunnelProfile/i })
     expect(row.length).toBe(2)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <TunnelProfileTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <TunnelProfileTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
   })
 
   it('TunnelProfile detail page link should be correct', async () => {

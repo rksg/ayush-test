@@ -2,6 +2,7 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { TunnelProfileUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -53,6 +54,36 @@ describe('EditTunnelProfile', () => {
       hash: '',
       search: ''
     }))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EditTunnelProfile />
+      </Provider>
+      , { route: { path: editViewPath, params } }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /tunnel profile/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <EditTunnelProfile />
+      </Provider>
+      , { route: { path: editViewPath, params } }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /tunnel profile/i
+    })).toBeTruthy()
   })
 
   it('Click cancel button and go back to list page', async () => {

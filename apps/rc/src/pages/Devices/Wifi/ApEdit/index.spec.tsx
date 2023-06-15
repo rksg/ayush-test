@@ -288,6 +288,32 @@ describe('ApEdit', () => {
       await fireEvent.click(await screen.findByRole('button', { name: 'My-Venue' }))
     })
 
+    it('should render breadcrumb correctly when feature flag is off', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByRole('link', {
+        name: /access points/i
+      })).toBeTruthy()
+    })
+
+    it('should render breadcrumb correctly when feature flag is on', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText('Wi-Fi')).toBeVisible()
+      expect(await screen.findByText('Access Points')).toBeVisible()
+      expect(screen.getByRole('link', {
+        name: /ap list/i
+      })).toBeTruthy()
+    })
+
     it('should handle customized setting updated', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
