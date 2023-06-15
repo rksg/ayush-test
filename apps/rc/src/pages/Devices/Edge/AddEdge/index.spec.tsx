@@ -125,7 +125,7 @@ describe('AddEdge', () => {
     fireEvent.change(serialNumberInput, { target: { value: '96123456789' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge`,
       hash: '',
       search: ''
     }, { replace: true }))
@@ -141,7 +141,7 @@ describe('AddEdge', () => {
       })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/list`,
+      pathname: `/${params.tenantId}/t/devices/edge`,
       hash: '',
       search: ''
     })

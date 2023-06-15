@@ -49,7 +49,8 @@ describe('Edge Ports List', () => {
     fireEvent.click(await screen.findByText('Configure Port Settings'))
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports`,
+      // eslint-disable-next-line max-len
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
       hash: '',
       search: ''
     })
