@@ -47,13 +47,12 @@ export function useStepsForm <T> ({
   ...config
 }: UseStepsFormParam<T>) {
   const { $t } = useIntl()
-  const total = steps.length
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const formConfig = useStepsFormAnt({
     ...config,
     submit: onFinish,
-    total,
+    total: steps.length,
     isBackValidate: Boolean(editMode)
   } as UseStepsFormConfig)
   const form = formConfig.form as FormInstance<T>
@@ -208,7 +207,8 @@ export function useStepsForm <T> ({
 
   const buttonEls = <UI.ActionsContainer data-testid='steps-form-actions'>
     <UI.ActionsButtons
-      editMode={editMode}
+      editMode={!!editMode}
+      multipleSteps={steps.length > 1}
       children={buttonsLayout}
     />
   </UI.ActionsContainer>
