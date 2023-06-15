@@ -164,7 +164,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
-    // expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Apply' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
   })
@@ -297,9 +296,6 @@ describe('PortalSettings', () => {
     await waitFor(() => {
       expect(screen.queryByRole('alert')).toBeNull()
     })
-    // await waitFor(() => {
-    //   expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
-    // })
   })
   it('logo form item should load correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
