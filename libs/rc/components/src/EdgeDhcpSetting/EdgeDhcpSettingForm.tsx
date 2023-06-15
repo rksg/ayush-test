@@ -74,54 +74,60 @@ export const EdgeDhcpSettingForm = () => {
               showIcon />
             </>
           }
-          <Form.Item
-            name='domainName'
-            label={$t({ defaultMessage: 'Domain Name' })}
-            children={<Input />}
-          />
-          <Form.Item
-            name='primaryDnsIp'
-            label={$t({ defaultMessage: 'Primary DNS Server' })}
-            children={<Input />}
-          />
-          <Form.Item noStyle name='enableSecondaryDNSServer'>
-            <ToggleButton
-              enableText={$t({ defaultMessage: 'Remove Secondary DNS Server' })}
-              disableText={$t({ defaultMessage: 'Add Secondary DNS Server' })}
-            />
-          </Form.Item>
-          {enableSecondaryDNSServer &&
+          {
+            !dhcpRelay &&
+            <>
               <Form.Item
-                name='secondaryDnsIp'
-                label={$t({ defaultMessage: 'Secondary DNS Server' })}
+                name='domainName'
+                label={$t({ defaultMessage: 'Domain Name' })}
                 children={<Input />}
               />
+              <Form.Item
+                name='primaryDnsIp'
+                label={$t({ defaultMessage: 'Primary DNS Server' })}
+                children={<Input />}
+              />
+              <Form.Item noStyle name='enableSecondaryDNSServer'>
+                <ToggleButton
+                  enableText={$t({ defaultMessage: 'Remove Secondary DNS Server' })}
+                  disableText={$t({ defaultMessage: 'Add Secondary DNS Server' })}
+                />
+              </Form.Item>
+              {
+                enableSecondaryDNSServer &&
+                <Form.Item
+                  name='secondaryDnsIp'
+                  label={$t({ defaultMessage: 'Secondary DNS Server' })}
+                  children={<Input />}
+                />
+              }
+              <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
+                <Space align='start'>
+                  <Form.Item
+                    noStyle
+                    name='leaseTime'
+                    label={$t({ defaultMessage: 'Lease Time' })}
+                    rules={[
+                      { required: true }
+                    ]}
+                    initialValue={initDhcpData.leaseTime}
+                  >
+                    <InputNumber min={1} max={1440} style={{ width: '100%' }} />
+                  </Form.Item>
+                  <Form.Item
+                    noStyle
+                    name='leaseTimeUnit'
+                    initialValue={initDhcpData.leaseTimeUnit}>
+                    <Select >
+                      <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
+                      <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                      <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                    </Select>
+                  </Form.Item>
+                </Space>
+              </Form.Item>
+            </>
           }
-          <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
-            <Space align='start'>
-              <Form.Item
-                noStyle
-                name='leaseTime'
-                label={$t({ defaultMessage: 'Lease Time' })}
-                rules={[
-                  { required: true }
-                ]}
-                initialValue={initDhcpData.leaseTime}
-              >
-                <InputNumber min={1} max={1440} style={{ width: '100%' }} />
-              </Form.Item>
-              <Form.Item
-                noStyle
-                name='leaseTimeUnit'
-                initialValue={initDhcpData.leaseTimeUnit}>
-                <Select >
-                  <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
-                  <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                  <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
-                </Select>
-              </Form.Item>
-            </Space>
-          </Form.Item>
         </Col>
       </Row>
 
@@ -143,33 +149,38 @@ export const EdgeDhcpSettingForm = () => {
           </Col>
         </Row>
 
-        <Row gutter={20}>
-          <Col span={24}>
-            <Subtitle level={3}>
-              { $t({ defaultMessage: 'DHCP Option' }) }
-            </Subtitle>
-          </Col>
-          <Col span={15}>
-            <Form.Item
-              name='dhcpOptions'
-              children={<DHCPOptionTable />}
-            />
-          </Col>
-        </Row>
+        {
+          !dhcpRelay &&
+          <>
+            <Row gutter={20}>
+              <Col span={24}>
+                <Subtitle level={3}>
+                  { $t({ defaultMessage: 'DHCP Option' }) }
+                </Subtitle>
+              </Col>
+              <Col span={15}>
+                <Form.Item
+                  name='dhcpOptions'
+                  children={<DHCPOptionTable />}
+                />
+              </Col>
+            </Row>
 
-        <Row gutter={20}>
-          <Col span={24}>
-            <Subtitle level={3}>
-              { $t({ defaultMessage: 'Host' }) }
-            </Subtitle>
-          </Col>
-          <Col span={15}>
-            <Form.Item
-              name='hosts'
-              children={<DHCPHostTable />}
-            />
-          </Col>
-        </Row>
+            <Row gutter={20}>
+              <Col span={24}>
+                <Subtitle level={3}>
+                  { $t({ defaultMessage: 'Host' }) }
+                </Subtitle>
+              </Col>
+              <Col span={15}>
+                <Form.Item
+                  name='hosts'
+                  children={<DHCPHostTable />}
+                />
+              </Col>
+            </Row>
+          </>
+        }
       </SpaceWrapper>
     </>
   )
