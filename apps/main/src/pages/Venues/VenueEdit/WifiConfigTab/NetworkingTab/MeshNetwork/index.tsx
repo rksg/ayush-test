@@ -139,10 +139,14 @@ export function MeshNetwork () {
     let errorMsg = ''
     if (!v || v.length === 0) {
       errorMsg = $t({ defaultMessage: 'Please enter the Mesh Network Name' })
-    } else if (v.length < 2 || v.length > 32) {
-      errorMsg = $t({ defaultMessage: 'The Mesh Network Name must be between 2 and 32 characters' })
+    } else if (v.length < 1 || v.length > 32) {
+      errorMsg = $t({ defaultMessage: 'The Mesh Network Name must be between 1 and 32 characters' })
+    } else if (v.includes('`') || v.includes('$(')) {
+      errorMsg = $t(validationMessages.hasGraveAccentAndDollarSign)
+    } else if (v.endsWith(' ') || v.startsWith(' ')) {
+      errorMsg = $t(validationMessages.leadingTrailingWhitespace)
     } else {
-      const re = new RegExp('[a-zA-z0-9_\\-]{2,32}')
+      const re = new RegExp('(^[!-~]([ -~]){0,30}[!-~]$)|(^[!-~]$)')
       if (!re.test(v)) {
         errorMsg = $t({ defaultMessage: 'The Mesh Network Name is invalid' })
       }
@@ -185,13 +189,12 @@ export function MeshNetwork () {
     let errorMsg = ''
     if (!v || v.length === 0) {
       errorMsg = $t({ defaultMessage: 'Please enter Mesh PSK' })
-    } else if (v.length < 8 || v.length > 63) {
-      errorMsg = $t({ defaultMessage: 'PSK must be between 8 and 63 characters' })
+    } else if (v.length < 8 || v.length > 64) {
+      errorMsg = $t({ defaultMessage: 'PSK must be between 8 and 63 characters or 64 hexadecimal number' })
     } else if (v.endsWith(' ') || v.startsWith(' ')) {
       errorMsg = $t(validationMessages.leadingTrailingWhitespace)
     } else {
-      //const re = new RegExp('^[!-_a-~]((?!\\$\\()[ !-_a-~]){6,61}[!-_a-~]$')
-      const re = new RegExp('^[a-zA-Z0-9]{8,63}$')
+      const re = new RegExp('(^[!-~]([ -~]){6,61}[!-~]$)|(^([0-9a-fA-F]){64}$)')
       if (!re.test(v)) {
         errorMsg = $t({ defaultMessage: 'The PSK is invalid' })
       }
@@ -369,7 +372,7 @@ export function MeshNetwork () {
         <Form.Item children={
           <Input.TextArea
             rows={3}
-            maxLength={63}
+            maxLength={64}
             bordered={isPassphraseEditMode}
             value={meshPassphrase}
             onChange={handlePassphraseChanged}

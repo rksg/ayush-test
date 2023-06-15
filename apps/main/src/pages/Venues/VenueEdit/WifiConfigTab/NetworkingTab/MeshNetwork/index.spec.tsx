@@ -91,7 +91,7 @@ describe('MeshNetwork', () => {
 
   })
 
-  it('Mesh enhancement: enable mesh and set onther settings', async () => {
+  it('Mesh enhancement: enable mesh and set other settings', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(rest.get(
       CommonUrlsInfo.getVenueSettings.url,
@@ -114,8 +114,20 @@ describe('MeshNetwork', () => {
     const [ssidInputElm, passphraseInputElm] = await screen.findAllByRole('textbox')
     await userEvent.clear(ssidInputElm)
     await screen.findByText('Please enter the Mesh Network Name')
-    await userEvent.type(ssidInputElm, '1')
-    await screen.findByText('The Mesh Network Name must be between 2 and 32 characters')
+    await userEvent.type(ssidInputElm, '2345678 ')
+    await screen.findByText('No leading or trailing spaces allowed')
+
+    await userEvent.clear(ssidInputElm)
+    await userEvent.type(ssidInputElm, '`')
+    await screen.findByText('"`" and "$(" are not allowed')
+
+    await userEvent.clear(ssidInputElm)
+    await userEvent.type(ssidInputElm, '$(')
+    await screen.findByText('"`" and "$(" are not allowed')
+
+    await userEvent.clear(ssidInputElm)
+    await userEvent.type(ssidInputElm, '1234567890123456789012345678901234567890')
+    await screen.findByText('The Mesh Network Name must be between 1 and 32 characters')
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
 
     await userEvent.click(passphraseChangeBtn)
@@ -124,7 +136,7 @@ describe('MeshNetwork', () => {
     await userEvent.clear(passphraseInputElm)
     await screen.findByText('Please enter Mesh PSK')
     await userEvent.type(passphraseInputElm, '1')
-    await screen.findByText('PSK must be between 8 and 63 characters')
+    await screen.findByText('PSK must be between 8 and 63 characters or 64 hexadecimal number')
     await userEvent.type(passphraseInputElm, '2345678 ')
     await screen.findByText('No leading or trailing spaces allowed')
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
