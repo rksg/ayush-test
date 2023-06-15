@@ -22,9 +22,7 @@ module.exports = webpackConfigWithModuleFederation({
    *   ['app2', '//example.com/path/to/app2/remoteEntry.js'],
    * ]
    */
-  remotes: [
-    ['analytics', '/analytics/next/analytics']
-  ]
+  remotes: []
 }, {
   devServer: {
     setupMiddlewares (md, server) {

@@ -1,9 +1,7 @@
-import React from 'react'
-
-import AnalyticsRoutes from '@analytics/Routes'
-import MspRoutes       from '@msp/Routes'
-import RcRoutes        from '@rc/Routes'
-import ReportsRoutes   from '@reports/Routes'
+import AnalyticsRoutes from '@analytics/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
+import MspRoutes       from '@msp/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
+import RcRoutes        from '@rc/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
+import ReportsRoutes   from '@reports/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
 
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
