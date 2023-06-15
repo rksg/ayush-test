@@ -22,7 +22,7 @@ const AddEdge = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const linkToEdgeList = useTenantLink('/devices/edge')
   const [addEdge] = useAddEdgeMutation()
 
   const handleAddEdge = async (data: EdgeGeneralSetting) => {
@@ -42,7 +42,7 @@ const AddEdge = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Add SmartEdge' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
+          { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
         ]}
       />
       <StepsForm

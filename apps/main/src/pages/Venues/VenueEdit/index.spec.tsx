@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { venueApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { render, screen, fireEvent, mockServer } from '@acx-ui/test-utils'
 
@@ -32,7 +32,7 @@ describe('VenueEdit', () => {
         CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json(venueData))),
       rest.get(
-        CommonUrlsInfo.getVenueCapabilities.url,
+        WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(venueLed))),

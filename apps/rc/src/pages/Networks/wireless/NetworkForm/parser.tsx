@@ -15,6 +15,8 @@ import {
   ClientIsolationVenue
 } from '@acx-ui/rc/utils'
 
+import { hasVxLanTunnelProfile } from './utils'
+
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
@@ -126,29 +128,24 @@ const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
 }
 
 const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
-  let saveData
-  if (editMode) {
-    saveData = {
-      ...data,
-      ...{
-        wlan: {
-          wlanSecurity: data.dpskWlanSecurity
-        }
-      }
-    }
-  } else {
-    saveData = {
-      ...data,
-      ...{
-        wlan: {
-          wlanSecurity: data.dpskWlanSecurity,
+  const saveData = {
+    ...data,
+    ...{
+      wlan: {
+        wlanSecurity: data.dpskWlanSecurity,
+        ...(editMode ? {} : {
           enable: true,
           vlanId: 1,
           advancedCustomization: new DpskWlanAdvancedCustomization()
-        }
+        })
       }
     }
   }
+
+  if (data.dpskServiceProfileId === '') {
+    delete saveData.dpskServiceProfileId
+  }
+
   return saveData
 }
 
@@ -326,6 +323,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
   }
 
+  if (hasVxLanTunnelProfile(data) && data.type === NetworkTypeEnum.DPSK) {
+    (advancedCustomization as DpskWlanAdvancedCustomization).enableAaaVlanOverride = false
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     ...data,
@@ -335,6 +336,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       advancedCustomization
     }
   }
+
   if(data.guestPortal){
     saveData = {
       ...saveData,
@@ -344,6 +346,11 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       }
     }
   }
+
+  if (saveData.dpskServiceProfileId === '') {
+    delete saveData.dpskServiceProfileId
+  }
+
   return saveData
 }
 

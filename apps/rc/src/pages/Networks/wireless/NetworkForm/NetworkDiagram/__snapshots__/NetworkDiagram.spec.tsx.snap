@@ -473,7 +473,7 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfu
         class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
-          alt="Pre-Shared Key (PSK)"
+          alt="Passphrase (PSK/SAE)"
           src="psk.png"
         />
       </div>
