@@ -47,7 +47,6 @@ describe('AddEdgeDhcp', () => {
 
   it('should render breadcrumb correctly when feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const user = userEvent.setup()
     render(
       <Provider>
         <AddDhcp/>
@@ -63,7 +62,6 @@ describe('AddEdgeDhcp', () => {
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const user = userEvent.setup()
     render(
       <Provider>
         <AddDhcp/>
