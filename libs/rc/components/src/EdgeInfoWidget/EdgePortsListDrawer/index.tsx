@@ -86,7 +86,7 @@ const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
   const handlePortSettingClick = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${params.serialNumber}/edit/ports`
+      pathname: `${basePath.pathname}/${params.serialNumber}/edit/ports/ports-general`
     })
   }
 

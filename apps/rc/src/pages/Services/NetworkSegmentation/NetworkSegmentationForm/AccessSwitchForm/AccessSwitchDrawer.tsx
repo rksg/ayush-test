@@ -180,8 +180,10 @@ export function AccessSwitchDrawer (props: {
             noStyle>
             { isMultipleEdit && (!options || options.length === 0) ?
               <Input disabled={!uplinkInfoOverwrite}
+                data-testid={radioValue}
                 style={{ width: '180px' }} /> :
               <Select options={options}
+                data-testid={radioValue}
                 disabled={!uplinkInfoOverwrite}
                 placeholder={$t({ defaultMessage: 'Select ...' })}
                 style={{ width: '180px' }} />
