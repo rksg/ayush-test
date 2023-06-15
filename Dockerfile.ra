@@ -70,8 +70,6 @@ COPY tools/docker/nginx/nginx.conf \
 COPY --from=build /app/dist/apps ./
 
 RUN \
-  # Move all other apps into main
-  ls | grep -v ra | xargs mv -t ra && \
   # Create structure to match deployment need
   mkdir -p analytics/next && \
   # Move all files into it
