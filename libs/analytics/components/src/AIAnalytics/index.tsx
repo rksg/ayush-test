@@ -7,6 +7,7 @@ import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
 import { filterByAccess }                     from '@acx-ui/user'
 
 import { ConfigChange } from '../ConfigChange'
+import { get } from '@acx-ui/config'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
@@ -36,7 +37,7 @@ const useTabs = () : Tab[] => {
   }
   return [
     incidentsTab,
-    ...(useIsSplitOn(Features.CONFIG_CHANGE) ? [configChangeTab] : [])
+    ...(get('IS_MLISA_SA') || useIsSplitOn(Features.CONFIG_CHANGE) ? [configChangeTab] : [])
   ]
 }
 

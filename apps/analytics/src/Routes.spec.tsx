@@ -32,6 +32,8 @@ jest.mock('./pages/VideoCallQoe', () => ({
 }))
 
 jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  AIAnalytics: () => <div data-testid='aiAnalytics' />,
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentDetails: () => <div data-testid='incidentDetails' />,
   IncidentListPage: () => <div data-testid='incidentListPage' />,
@@ -41,11 +43,6 @@ jest.mock('@acx-ui/analytics/components', () => ({
 jest.mock('./pages/NetworkAssurance', () => ({
   ...jest.requireActual('./pages/NetworkAssurance'),
   NetworkAssurance: () => <div data-testid='networkAssurance' />
-}))
-
-jest.mock('./pages/AIAnalytics', () => ({
-  ...jest.requireActual('./pages/AIAnalytics'),
-  AIAnalytics: () => <div data-testid='aiAnalytics' />
 }))
 
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))

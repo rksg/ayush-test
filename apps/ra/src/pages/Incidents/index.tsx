@@ -1,7 +1,7 @@
-import { IncidentListPageLegacy } from '@acx-ui/analytics/components'
+import { AIAnalytics, AIAnalyticsTabEnum } from '@acx-ui/analytics/components'
 
-function Analytics () {
-  return <IncidentListPageLegacy />
+function Incidents () {
+  return <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />
 }
 
-export default Analytics
+export default Incidents

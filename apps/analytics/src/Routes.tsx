@@ -3,6 +3,8 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import {
+  AIAnalytics,
+  AIAnalyticsTabEnum,
   HealthPage,
   IncidentDetails,
   IncidentListPage,
@@ -13,7 +15,6 @@ import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-d
 import { Provider }                                 from '@acx-ui/store'
 import { hasAccess }                                from '@acx-ui/user'
 
-import { AIAnalytics, AIAnalyticsTabEnum }              from './pages/AIAnalytics'
 import { NetworkAssurance, NetworkAssuranceTabEnum }    from './pages/NetworkAssurance'
 import { ServiceGuard }                                 from './pages/ServiceGuard'
 import ServiceGuardDetails                              from './pages/ServiceGuard/ServiceGuardDetails'
