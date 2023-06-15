@@ -3,11 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls, WifiUrlsInfo }                                                  from '@acx-ui/rc/utils'
+import { ApSnmpUrls }                                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 
+import { ApDataContext }           from '..'
 import { ApEditContext }           from '../..'
 import {
   resultOfGetApSnmpAgentSettings,
@@ -29,9 +30,6 @@ describe('Ap Snmp', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''), (req, res, ctx) => {
-        return res(ctx.json(apDetails))
-      }),
       rest.get(ApSnmpUrls.getApSnmpPolicyList.url, (req, res, ctx) => {
         return res(ctx.json(resultOfGetApSnmpAgentProfiles))
       }),
@@ -49,7 +47,9 @@ describe('Ap Snmp', () => {
   it('Should Retrive Initial Data From Server and Render', async () => {
     render(
       <Provider>
-        <ApSnmp />
+        <ApDataContext.Provider value={{ apData: apDetails }}>
+          <ApSnmp />
+        </ApDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/snmp' }
       })
@@ -73,7 +73,9 @@ describe('Ap Snmp', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApSnmp />
+          <ApDataContext.Provider value={{ apData: apDetails }}>
+            <ApSnmp />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/snmp' }
@@ -109,7 +111,9 @@ describe('Ap Snmp', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApSnmp />
+          <ApDataContext.Provider value={{ apData: apDetails }}>
+            <ApSnmp />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/snmp' }

@@ -74,6 +74,12 @@ export class CapabilitiesApModel {
 
   support11AX?: boolean
 
+  maxChannelization5G?: number
+
+  maxChannelization6G?: number
+
+  supportMesh?: boolean
+
   constructor () {
     this.externalAntenna = new ExternalAntenna()
 

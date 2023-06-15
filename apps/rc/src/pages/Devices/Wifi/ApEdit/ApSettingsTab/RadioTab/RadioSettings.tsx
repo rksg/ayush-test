@@ -14,11 +14,9 @@ import {
   channelBandwidth6GOptions,
   SelectItemOption } from '@acx-ui/rc/components'
 import {
-  useGetApQuery,
   useGetApRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
   useDeleteApRadioCustomizationMutation,
-  useGetApCapabilitiesQuery,
   useGetApValidChannelQuery,
   useLazyGetVenueQuery,
   useLazyGetVenueRadioCustomizationQuery
@@ -32,6 +30,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { ApDataContext } from '..'
 import { ApEditContext } from '../..'
 
 import { ApSingleRadioSettings } from './ApSingleRadioSettings'
@@ -48,9 +47,9 @@ export function RadioSettings () {
     setEditContextData
   } = useContext(ApEditContext)
 
+  const { apData, apCapabilities } = useContext(ApDataContext)
+
   const { tenantId, serialNumber } = useParams()
-  const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
-  const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
   const getApAvailableChannels = useGetApValidChannelQuery({ params: { tenantId, serialNumber } })
 
   const formRef = useRef<StepsFormLegacyInstance<ApRadioCustomization>>()
@@ -66,8 +65,7 @@ export function RadioSettings () {
 
   const [apModelType, setApModelType] = useState('indoor')
   const [venue, setVenue] = useState({} as VenueExtended)
-  //const [currentRadioData, setCurrentRadioData] = useState<ApRadioCustomization>()
-  //const [venueRadioData, setVenueRadioData] = useState<ApRadioCustomization>()
+
   const [isSupportTriBandRadioAp, setIsSupportTriBandRadioAp] = useState(false)
   const [isSupportDual5GAp, setIsSupportDual5GAp] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(false)
@@ -126,14 +124,10 @@ export function RadioSettings () {
   }
 
   useEffect(() => {
-    const ap = getAp.data
-    const capabilities = getApCapabilities.data
     const availableChannels = getApAvailableChannels.data
 
-    if (!apDataLoaded && ap && capabilities && availableChannels) {
+    if (!apDataLoaded && apData && apCapabilities && availableChannels) {
       const setData = async () => {
-
-        const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
         const { has160MHzChannelBandwidth = false,
           maxChannelization5G = 160,
           maxChannelization6G = 160,
@@ -187,7 +181,7 @@ export function RadioSettings () {
         setBandwidth6GOptions(bandwidth6g)
 
         const venue = (await getVenue({
-          params: { tenantId, venueId: ap?.venueId } }, true).unwrap())
+          params: { tenantId, venueId: apData?.venueId } }, true).unwrap())
 
         setVenue(venue)
         setApDataLoaded(true)
@@ -195,7 +189,7 @@ export function RadioSettings () {
 
       setData()
     }
-  }, [getAp, getApCapabilities, getApAvailableChannels, apDataLoaded])
+  }, [apData, apCapabilities, getApAvailableChannels, apDataLoaded])
 
   useEffect(() => {
     if (isEmpty(venue)) {
