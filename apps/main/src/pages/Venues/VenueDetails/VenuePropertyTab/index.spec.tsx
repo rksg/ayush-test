@@ -66,7 +66,7 @@ describe('Property Unit Page', () => {
       ),
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+        (_, res, ctx) => res(ctx.json({ data: [{ name: 'switchName' }], totalCount: 0 }))
       ),
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringDetail.url,

@@ -29,6 +29,10 @@ describe('Edge Detail Services Tab', () => {
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
         (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
+      rest.delete(
+        EdgeUrlsInfo.deleteService.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -58,5 +62,39 @@ describe('Edge Detail Services Tab', () => {
     const dhcpName = within(row).getByRole('button', { name: 'DHCP-1' })
     await user.click(dhcpName)
     expect(await screen.findByRole('dialog')).toBeVisible()
+  })
+
+  it('should delete selected row', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeServices />
+      </Provider>, {
+        route: { params }
+      })
+    const row = await screen.findByRole('row', { name: /DHCP-1/i })
+    await user.click(within(row).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Remove' }))
+    const removeDialog = await screen.findByRole('dialog')
+    within(removeDialog).getByText('Remove "DHCP-1"?')
+    await user.click(within(removeDialog).getByRole('button', { name: 'Remove' }))
+  })
+
+  it('should delete selected rows', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgeServices />
+      </Provider>, {
+        route: { params }
+      })
+    const row1 = await screen.findByRole('row', { name: /DHCP-1/i })
+    await user.click(within(row1).getByRole('checkbox'))
+    const row2 = await screen.findByRole('row', { name: /NSG-1/i })
+    await user.click(within(row2).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Remove' }))
+    const removeDialog = await screen.findByRole('dialog')
+    within(removeDialog).getByText('Remove "2 Services"?')
+    await user.click(within(removeDialog).getByRole('button', { name: 'Remove' }))
   })
 })

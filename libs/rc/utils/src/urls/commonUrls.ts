@@ -277,11 +277,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/cloudpaths/:cloudpathServerId/floorPositions',
     newApi: true
   },
-  getVenueCapabilities: {
-    // [New API] private api
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
-  },
   getVenueApModels: {
     method: 'get',
     url: '/venues/:venueId/apModels',

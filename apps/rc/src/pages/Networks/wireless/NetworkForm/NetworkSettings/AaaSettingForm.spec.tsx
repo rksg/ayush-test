@@ -133,4 +133,3 @@ describe('NetworkForm', () => {
     expect(diagram[1].src).toContain('aaa.png')
   })
 })
-

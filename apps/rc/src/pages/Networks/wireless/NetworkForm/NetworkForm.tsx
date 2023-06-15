@@ -25,7 +25,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   NetworkVenue,
-  Network
+  Network,
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -230,7 +231,21 @@ export default function NetworkForm (props:{
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    // eslint-disable-next-line
+    let radiusUncheckedData = { ...data, ...saveState, ...tmpGuestPageState } as Partial<NetworkSaveData>
+    if (radiusUncheckedData.guestPortal?.wisprPage?.authType &&
+       radiusUncheckedData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+       radiusUncheckedData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      delete radiusUncheckedData.authRadius
+      delete radiusUncheckedData.accountingRadius
+      delete radiusUncheckedData.enableAccountingService
+      delete radiusUncheckedData.accountingRadiusId
+      delete radiusUncheckedData.authRadiusId
+      delete radiusUncheckedData.guestPortal?.wisprPage?.authRadius
+      // eslint-disable-next-line
+       radiusUncheckedData = _.omit(radiusUncheckedData, ['guestPortal.wisprPage.authRadiusId']) as Partial<NetworkSaveData>
+    }
+    updateSaveData(radiusUncheckedData)
     return true
   }
 
@@ -323,6 +338,15 @@ export default function NetworkForm (props:{
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       deleteUnnecessaryFields()
+      if (saveState.guestPortal?.wisprPage?.authType &&
+        saveState.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+        saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+        delete saveState.authRadius
+        delete saveState.accountingRadius
+        delete saveState.enableAccountingService
+        delete saveState.accountingRadiusId
+        delete saveState.guestPortal.wisprPage.authRadius
+      }
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: formData.venues })
       await updateNetwork({ params, payload }).unwrap()
       if (payload.id && (payload.venues || data?.venues)) {
@@ -533,4 +557,3 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       return <OnboardingForm />
   }
 }
-

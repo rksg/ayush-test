@@ -11,7 +11,7 @@ function MockLayout (props: React.PropsWithChildren) {
   return <div className='ant-pro-basicLayout'>{props.children}</div>
 }
 
-storiesOf('StepsFormNew', module)
+storiesOf('StepsForm', module)
   .add('Basic', () => <MockLayout><BasicMultiSteps /></MockLayout>)
   .add('With Async Validation', () => <MockLayout><AsyncValidation /></MockLayout>)
   .add('Edit Mode', () => <MockLayout><EditMode /></MockLayout>)

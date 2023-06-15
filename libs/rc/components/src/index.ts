@@ -85,6 +85,8 @@ export {
   useDefaultDDoSRulesColumns } from './EdgeFirewallTables/DDoSRulesTable'
 export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
   from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
+export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
+  from './EdgeFirewallTables/GroupedStatsTables'
 
 
 export { TunnelProfileForm } from './TunnelProfileForm'

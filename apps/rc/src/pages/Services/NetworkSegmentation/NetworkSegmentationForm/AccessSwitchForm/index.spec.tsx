@@ -3,11 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                        from '@acx-ui/components'
-import {
-  NetworkSegmentationUrls, SwitchUrlsInfo
-} from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { StepsForm }               from '@acx-ui/components'
+import { NetworkSegmentationUrls } from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -19,9 +17,6 @@ import {
 
 import {
   mockNsgSwitchInfoData,
-  switchLagList,
-  switchPortList,
-  switchVlanUnion,
   webAuthList
 } from '../../__tests__/fixtures'
 
@@ -29,24 +24,21 @@ import { AccessSwitchForm } from './'
 
 const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
 
-type MockSelectProps = React.PropsWithChildren<{
-  onChange?: (value: string) => void
-  options?: Array<{ label: string, value: unknown }>
+type MockDrawerProps = React.PropsWithChildren<{
+  open: boolean
+  onSave: () => void
+  onClose: () => void
 }>
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({ children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={undefined}></option>{children}</> : null}
-      {options?.map((option, index) => (
-        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
-      ))}
-    </select>
-  )
-  Select.Option = 'option'
-  return { ...components, Select }
-})
+jest.mock('./AccessSwitchDrawer', () => ({
+  AccessSwitchDrawer: ({ onSave, onClose, open }: MockDrawerProps) =>
+    open && <div data-testid={'AccessSwitchDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onSave()
+      }}>Save</button>
+      <button onClick={()=>onClose()}>Cancel</button>
+    </div>
+}))
 
 describe('AccessSwitchForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -58,28 +50,8 @@ describe('AccessSwitchForm', () => {
 
     mockServer.use(
       rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json({ data: switchPortList }))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (req, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(switchLagList))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplate.url,
-        (req, res, ctx) => res(ctx.json({ ...webAuthList[0] }))
-      ),
-      rest.post(
         NetworkSegmentationUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data: webAuthList }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.validateAccessSwitchInfo.url,
-        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
       )
     )
   })
@@ -110,7 +82,7 @@ describe('AccessSwitchForm', () => {
     const alert = await screen.findByRole('alert')
     await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
 
-    const dialog = await screen.findByRole('dialog')
+    const dialog = await screen.findByTestId('AccessSwitchDrawer')
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())

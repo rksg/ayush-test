@@ -18,12 +18,13 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/msps/:tenantId/ecInventories/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
-    newApi: false
+    newApi: true
   },
   getIntegratorDeviceInventory: {
     method: 'post',
-    // url: '/msps/:mspTenantId/ecInventories/query',
-    url: '/api/viewmodel/tenant/:mspTenantId/ec-inventory'
+    url: '/msps/:mspTenantId/ecInventories/query',
+    oldUrl: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
+    newApi: true
   },
   getVarDelegations: {
     method: 'post',
