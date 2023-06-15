@@ -94,8 +94,7 @@ const ValidationForm = (props: ValidationFormProps) => {
       key: 'validationErrors',
       dataIndex: 'validationErrors',
       render: (_, row) => {
-        // eslint-disable-next-line max-len
-        return row.validationErrors && row.validationErrors.length > 0 ? row.validationErrors.join(',') : '--'
+        return row.validationErrors ?? '--'
       }
     }
   ]

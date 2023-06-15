@@ -99,7 +99,7 @@ const MigrationTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Start Date' }),
+      title: $t({ defaultMessage: 'Start Time' }),
       key: 'startTime',
       dataIndex: 'startTime',
       render: (_, row) => {
@@ -107,7 +107,7 @@ const MigrationTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'End Date' }),
+      title: $t({ defaultMessage: 'End Time' }),
       key: 'endTime',
       dataIndex: 'endTime',
       render: (_, row) => {
