@@ -634,7 +634,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   return (
     <Drawer
       destroyOnClose
-      width={'400px'}
+      width={'480px'}
       visible={visible}
       title={isEdit
         ? $t({ defaultMessage: 'Edit Unit' })
