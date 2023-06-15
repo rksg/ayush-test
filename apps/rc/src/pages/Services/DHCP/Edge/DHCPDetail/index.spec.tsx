@@ -4,7 +4,7 @@ import { EdgeDhcpUrls, getServiceRoutePath, ServiceOperation, ServiceType } from
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen }                                       from '@acx-ui/test-utils'
 
-import { mockDhcpStatsData } from '../__tests__/fixtures'
+import { mockDhcpStatsData, mockDhcpUeSummaryStatsData } from '../__tests__/fixtures'
 
 import EdgeDHCPDetail from '.'
 
@@ -25,6 +25,10 @@ describe('EdgeDhcpDetail', () => {
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
         (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpUeSummaryStats.url,
+        (req, res, ctx) => res(ctx.json(mockDhcpUeSummaryStatsData))
       )
     )
   })
@@ -40,31 +44,33 @@ describe('EdgeDhcpDetail', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  // it('edge detail page link should be correct', async () => {
-  //   render(
-  //     <Provider>
-  //       <EdgeDHCPDetail />
-  //     </Provider>, {
-  //       route: { params, path: detailPath }
-  //     })
-  //   const edgeDetailLink = await screen.findByRole('link',
-  //     { name: 'Edge-1' }) as HTMLAnchorElement
-  //   expect(edgeDetailLink.href)
-  //     .toContain(`/t/${params.tenantId}/devices/edge/1/details/overview`)
-  // })
+  it('edge detail page link should be correct', async () => {
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
 
-  // it('venue detail page link should be correct', async () => {
-  //   render(
-  //     <Provider>
-  //       <EdgeDHCPDetail />
-  //     </Provider>, {
-  //       route: { params, path: detailPath }
-  //     })
-  //   const venueDetailLinks = await screen.findAllByRole('link',
-  //     { name: 'Venue A' }) as HTMLAnchorElement[]
-  //   expect(venueDetailLinks[0].href)
-  //     .toContain(`/t/${params.tenantId}/venues/1/venue-details/overview`)
-  // })
+    const edgeDetailLink = await screen.findByRole('link',
+      { name: 'Edge-dhcp-1' }) as HTMLAnchorElement
+
+    expect(edgeDetailLink.href)
+      .toContain(`${params.tenantId}/t/devices/edge/1/details/overview`)
+  })
+
+  it('venue detail page link should be correct', async () => {
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    const venueDetailLinks = await screen.findAllByRole('link',
+      { name: 'Edge-venue-1' }) as HTMLAnchorElement[]
+    expect(venueDetailLinks[0].href)
+      .toContain(`/${params.tenantId}/t/venues/1/venue-details/overview`)
+  })
 
   // it('restart service', async () => {
   //   const user = userEvent.setup()
