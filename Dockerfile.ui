@@ -125,6 +125,7 @@ COPY --from=acx-ui-group2-test /app/coverage /app/coverage
 COPY --from=acx-ui-group3-test /app/coverage /app/coverage
 COPY --from=acx-ui-group4-test /app/coverage /app/coverage
 COPY --from=acx-ui-group5-test /app/coverage /app/coverage
+WORKDIR /app
 RUN touch tests-done
 
 ###############################################################
