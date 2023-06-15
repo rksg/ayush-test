@@ -49,7 +49,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg,
-            ['AddNetwork', 'AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
+            ['AddNetwork', 'UpdateNetwork', 'DeleteNetwork'], () => {
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
             })
         })
