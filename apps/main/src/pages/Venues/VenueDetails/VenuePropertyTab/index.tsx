@@ -172,7 +172,7 @@ export function VenuePropertyTab () {
       params: { venueId },
       payload: {
         ...queryUnitList.payload,
-        pageSize: 100,
+        pageSize: 2147483647,
         page: 1
       }
     }).unwrap().catch((error) => {
