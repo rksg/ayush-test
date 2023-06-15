@@ -109,8 +109,6 @@ COPY tools/docker/nginx/nginx.conf \
 
 COPY --from=acx-ui-tests /app/dist/apps ./
 RUN \
-  # Move all other apps into main
-  ls | grep -v main | xargs mv -t main && \
   # Create structure to match deployment need
   mkdir -p tenant/t && \
   # Move all files into it
