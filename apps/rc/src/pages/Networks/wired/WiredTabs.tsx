@@ -28,20 +28,14 @@ function WiredTabs (props: { profileCount: number, cliCount: number }) {
     >
       <Tabs.TabPane
         tab={isNavbarEnhanced
-          ? $t({
-            defaultMessage: 'Configuration Profiles ({profileCount})',
-            description: 'Translation strings - Configuration Profiles'
-          }, { profileCount })
+          ? $t({ defaultMessage: 'Configuration Profiles ({profileCount})' }, { profileCount })
           : $t({ defaultMessage: 'Configuration Profiles' })
         }
         key='profiles'
       />
       <Tabs.TabPane
         tab={isNavbarEnhanced
-          ? $t({
-            defaultMessage: 'On-Demand CLI Configuration ({cliCount})',
-            description: 'Translation strings - On-Demand CLI Configuration'
-          }, { cliCount })
+          ? $t({ defaultMessage: 'On-Demand CLI Configuration ({cliCount})' }, { cliCount })
           : $t({ defaultMessage: 'On-Demand CLI Configuration' })
         }
         key='onDemandCli'

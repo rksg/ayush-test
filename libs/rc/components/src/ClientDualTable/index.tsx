@@ -63,21 +63,15 @@ export function ClientDualTable () {
       </SearchBarDiv>
       <SearchCountDiv>
         {searchValue.length >= 2 &&
-          $t({
-            defaultMessage: 'Search Results: {connectedClientCount} Connected clients | ',
-            description: 'Translation strings - Search Results: Connected clients'
-          },
-          { connectedClientCount })
+          $t({ defaultMessage: 'Search Results: {connectedClientCount} Connected clients | ' },
+            { connectedClientCount })
         }
         {searchValue.length >= 2 &&
           <Anchor onClick={(e) => scrollToTarget(e, 'ClientsTable')}>
             <ClientLink
               data-testid='historicalLink'
-              title={$t({
-                defaultMessage: '{historicalClientCount} Historical clients',
-                description: 'Translation strings - Historical clients'
-              },
-              { historicalClientCount })} />
+              title={$t({ defaultMessage: '{historicalClientCount} Historical clients' },
+                { historicalClientCount })} />
           </Anchor>}
       </SearchCountDiv>
       <ConnectedClientsTable
