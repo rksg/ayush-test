@@ -1,5 +1,10 @@
 import React from 'react'
 
+import AnalyticsRoutes from '@analytics/Routes'
+import MspRoutes       from '@msp/Routes'
+import RcRoutes        from '@rc/Routes'
+import ReportsRoutes   from '@reports/Routes'
+
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
@@ -24,11 +29,6 @@ import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
 import { VenuesForm }   from './pages/Venues/VenuesForm'
 import { VenuesTable }  from './pages/Venues/VenuesTable'
-
-const RcRoutes = React.lazy(() => import('rc/Routes'))
-const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
-const ReportsRoutes = React.lazy(() => import('reports/Routes'))
-const MspRoutes = React.lazy(() => import('msp/Routes'))
 
 function AllRoutes () {
   useStreamActivityMessagesQuery({})
