@@ -50,7 +50,7 @@ COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
 
 RUN echo NX_GIT_SHA=$CIRCLE_SHA1 >> .env
 RUN echo NX_GIT_DATE=$(date -R) >> .env
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra,analytics
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra
 
 ###############################################################
 FROM nginx:1.21.6-alpine
