@@ -74,4 +74,70 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toHaveLength(0)
   })
+  it('should not return analytics related menu', () => {
+    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockPermissions = {
+      'view-analytics': false,
+      'view-report-controller-inventory': true,
+      'view-data-explorer': true,
+      'manage-service-guard': true,
+      'manage-call-manager': true,
+      'manage-mlisa': true,
+      'manage-occupancy': true,
+      'manage-label': true,
+      'manage-tenant-settings': true,
+      'manage-config-recommendation': true
+    }
+    const mockUserProfile = {
+      data: {
+        accountId: 'accountId',
+        tenants: [
+          {
+            id: 'accountId',
+            permissions: mockPermissions
+          },
+          {
+            id: 'accountId2',
+            permissions: []
+          }
+        ]
+      }
+    }
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    const { result } = renderHook(() => useMenuConfig())
+    expect(result.current).toHaveLength(2)
+  })
+  it('should not return config recommendation, Service Validation & videoCallQoe', () => {
+    const mockUseUserProfileContext = useUserProfileContext as jest.Mock
+    const mockPermissions = {
+      'view-analytics': true,
+      'view-report-controller-inventory': true,
+      'view-data-explorer': true,
+      'manage-service-guard': false,
+      'manage-call-manager': false,
+      'manage-mlisa': true,
+      'manage-occupancy': true,
+      'manage-label': true,
+      'manage-tenant-settings': true,
+      'manage-config-recommendation': false
+    }
+    const mockUserProfile = {
+      data: {
+        accountId: 'accountId',
+        tenants: [
+          {
+            id: 'accountId',
+            permissions: mockPermissions
+          },
+          {
+            id: 'accountId2',
+            permissions: []
+          }
+        ]
+      }
+    }
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    const { result } = renderHook(() => useMenuConfig())
+    expect(result.current).toHaveLength(4)
+  })
 })

@@ -40,7 +40,6 @@ export function useMenuConfig () {
   const hasManageMlisaPermission = currentAccountPermissions?.[PERMISSION_MANAGE_MLISA]
   const hasViewDataExplorerPermission = currentAccountPermissions?.[PERMISSION_VIEW_DATA_EXPLORER]
 
-
   const config: LayoutProps['menuConfig'] = [
     ...(hasViewAnalyticsPermissions
       ? [
@@ -63,14 +62,10 @@ export function useMenuConfig () {
               type: 'group' as const,
               label: $t({ defaultMessage: 'AI Analytics' }),
               children: [
-                ...(hasViewAnalyticsPermissions
-                  ? [
-                    {
-                      uri: '/incidents',
-                      label: $t({ defaultMessage: 'Incidents' })
-                    }
-                  ]
-                  : []),
+                {
+                  uri: '/incidents',
+                  label: $t({ defaultMessage: 'Incidents' })
+                },
                 ...(hasManageRecommendationPermission
                   ? [
                     {
@@ -79,28 +74,20 @@ export function useMenuConfig () {
                     }
                   ]
                   : []),
-                ...(hasViewAnalyticsPermissions
-                  ? [
-                    {
-                      uri: '/configChange',
-                      label: $t({ defaultMessage: 'Config Change' })
-                    }
-                  ]
-                  : [])
+                {
+                  uri: '/configChange',
+                  label: $t({ defaultMessage: 'Config Change' })
+                }
               ]
             },
             {
               type: 'group' as const,
               label: $t({ defaultMessage: 'Network Assurance' }),
               children: [
-                ...(hasViewAnalyticsPermissions
-                  ? [
-                    {
-                      uri: '/health',
-                      label: $t({ defaultMessage: 'Health' })
-                    }
-                  ]
-                  : []),
+                {
+                  uri: '/health',
+                  label: $t({ defaultMessage: 'Health' })
+                },
                 ...(hasManageServiceGuardPermission
                   ? [
                     {
@@ -117,14 +104,10 @@ export function useMenuConfig () {
                     }
                   ]
                   : []),
-                ...(hasViewAnalyticsPermissions
-                  ? [
-                    {
-                      uri: '/occupancy',
-                      label: $t({ defaultMessage: 'Occupancy' })
-                    }
-                  ]
-                  : [])
+                {
+                  uri: '/occupancy',
+                  label: $t({ defaultMessage: 'Occupancy' })
+                }
               ]
             }
           ]
@@ -158,35 +141,32 @@ export function useMenuConfig () {
               type: 'group' as const,
               label: $t({ defaultMessage: 'Account Management' }),
               children: [
-                ...(hasManageMlisaPermission
-                  ? [
-                    {
-                      uri: '/admin/onboardedSystems',
-                      label: $t({ defaultMessage: 'Onboarded Systems' })
-                    },
-                    {
-                      uri: '/admin/users',
-                      label: $t({ defaultMessage: 'Users' })
-                    },
-                    {
-                      uri: '/admin/resourceGroups',
-                      label: $t({ defaultMessage: 'Resource Groups' })
-                    },
-                    {
-                      uri: '/admin/support',
-                      label: $t({ defaultMessage: 'Support' })
-                    },
-                    {
-                      uri: '/admin/license',
-                      label: $t({ defaultMessage: 'Licenses' })
-                    }
-                  ]
-                  : []),
+                {
+                  uri: '/admin/onboardedSystems',
+                  label: $t({ defaultMessage: 'Onboarded Systems' })
+                },
+                {
+                  uri: '/admin/users',
+                  label: $t({ defaultMessage: 'Users' })
+                },
+                {
+                  uri: '/admin/resourceGroups',
+                  label: $t({ defaultMessage: 'Resource Groups' })
+                },
+                {
+                  uri: '/admin/support',
+                  label: $t({ defaultMessage: 'Support' })
+                },
+                {
+                  uri: '/admin/license',
+                  label: $t({ defaultMessage: 'Licenses' })
+                },
+
                 {
                   uri: '/admin/schedules',
                   label: $t({ defaultMessage: 'Schedules' })
                 },
-                ...(hasManageMlisaPermission && hasViewAnalyticsPermissions
+                ...(hasViewAnalyticsPermissions
                   ? [
                     {
                       uri: '/admin/webhooks',
