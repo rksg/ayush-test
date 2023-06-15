@@ -272,15 +272,7 @@ describe('EditPortDrawer', () => {
       // TODO: check voice vlan value
       // expect(await screen.findByTestId('voice-vlan-select')).toHaveValue('')
 
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      // await act(async () => {
-      //   fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-      // })
-      // await screen.findByText('Modify Uplink Port?')
-      // fireEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
-
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-
       await screen.findByText('Modify Uplink Port?')
       const dialog = await screen.findAllByRole('dialog')
       expect(dialog).toHaveLength(2)
