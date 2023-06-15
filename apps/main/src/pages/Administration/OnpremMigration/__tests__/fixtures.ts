@@ -117,9 +117,7 @@ export const migrations = [
         serial: '0',
         apName: 'ap-0',
         state: 'Valid',
-        validationErrors: [
-          ''
-        ]
+        validationErrors: ''
       }
     ]
   }
@@ -137,7 +135,7 @@ export const migrationResult = {
       apName: 'ap-0',
       description: 'description',
       state: 'Completed',
-      validationErrors: ['']
+      validationErrors: ''
     }
   ]
 }
@@ -156,7 +154,7 @@ export const configurationResult = {
           apName: 'ap-0',
           description: 'description',
           state: 'Completed',
-          validationErrors: ['']
+          validationErrors: ''
         }
       ]
     }]
