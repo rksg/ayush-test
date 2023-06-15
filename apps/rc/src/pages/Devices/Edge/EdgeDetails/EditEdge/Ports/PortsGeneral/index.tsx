@@ -30,7 +30,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const linkToEdgeList = useTenantLink('/devices/edge')
   const [currentTab, setCurrentTab] = useState<string>('0')
   const formRef = useRef<StepsFormLegacyInstance<PortConfigFormType>>()
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()

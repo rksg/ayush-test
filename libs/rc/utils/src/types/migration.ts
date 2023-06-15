@@ -79,7 +79,7 @@ export interface MigrationResultType {
   model? : string,
   description?: string,
   state: string,
-  validationErrors?: string[]
+  validationErrors?: string
 }
 
 export interface TaskContextType {
