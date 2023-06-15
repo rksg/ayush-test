@@ -418,7 +418,7 @@ export function ApForm () {
                       )).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
                         $t({ defaultMessage: 'AP Name' }), 'value',
-                        $t({ defaultMessage: 'in this Venue' })
+                        $t({ defaultMessage: ' in this Venue' })
                       )
                     }
                   }
