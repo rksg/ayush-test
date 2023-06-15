@@ -254,7 +254,6 @@ export default function NetworkForm (props:{
         }
       }
     }
-    console.log(data)
     return data
   }
 
@@ -510,7 +509,7 @@ export default function NetworkForm (props:{
           cloneMode,
           data: saveState,
           setData: updateSaveState
-        }}>legacy
+        }}>
           <StepsFormLegacy<NetworkSaveData>
             formRef={formRef}
             editMode={editMode}
