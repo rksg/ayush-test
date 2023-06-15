@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen }                                       from '@acx-ui/test-utils'
@@ -38,6 +39,36 @@ describe('EdgeDhcpDetail', () => {
       })
     await screen.findByText('TestDHCP-1')
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'DHCP for SmartEdge'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <EdgeDHCPDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DHCP for SmartEdge'
+    })).toBeVisible()
   })
 
   // it('edge detail page link should be correct', async () => {

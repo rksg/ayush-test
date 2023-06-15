@@ -85,6 +85,56 @@ describe('DpskDetails', () => {
     expect(targetTab).toBeInTheDocument()
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const passphraseTabParams = {
+      ...paramsForOverviewTab,
+      activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+    }
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: {
+          params: passphraseTabParams,
+          path: detailPath
+        }
+      }
+    )
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const passphraseTabParams = {
+      ...paramsForOverviewTab,
+      activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+    }
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: {
+          params: passphraseTabParams,
+          path: detailPath
+        }
+      }
+    )
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DPSK'
+    })).toBeVisible()
+  })
+
   it('should navigate to the Passphrase Management tab', async () => {
     const { result: passphraseTabPath } = renderHook(() => {
       return useTenantLink(getServiceDetailsLink({
