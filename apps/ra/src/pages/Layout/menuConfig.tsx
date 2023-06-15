@@ -24,20 +24,25 @@ import {
 export function useMenuConfig () {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
+
   const currentAccountPermissions = userProfile?.tenants?.filter(
     // Hardcoded to current account for now
     (tenent : Tenant) => tenent.id === userProfile?.accountId
   )[0].permissions
-  const hasAnalyticsPermissions = currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
+
+  const hasViewAnalyticsPermissions = currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
   const hasManageRecommendationPermission =
     currentAccountPermissions?.[PERMISSION_MANAGE_CONFIG_RECOMMENDATION]
   const hasManageServiceGuardPermission =
     currentAccountPermissions?.[PERMISSION_MANAGE_SERVICE_GUARD]
   const hasManageCallManagerPermissions =
     currentAccountPermissions?.[PERMISSION_MANAGE_CALL_MANAGER]
+  const hasManageMlisaPermission = currentAccountPermissions?.[PERMISSION_MANAGE_MLISA]
+  const hasViewDataExplorerPermission = currentAccountPermissions?.[PERMISSION_VIEW_DATA_EXPLORER]
+
 
   const config: LayoutProps['menuConfig'] = [
-    ...(hasAnalyticsPermissions
+    ...(hasViewAnalyticsPermissions
       ? [
         {
           uri: '/dashboard',
@@ -47,7 +52,7 @@ export function useMenuConfig () {
         }
       ]
       : []),
-    ...(hasAnalyticsPermissions
+    ...(hasViewAnalyticsPermissions
       ? [
         {
           label: $t({ defaultMessage: 'AI Assurance' }),
@@ -58,7 +63,7 @@ export function useMenuConfig () {
               type: 'group' as const,
               label: $t({ defaultMessage: 'AI Analytics' }),
               children: [
-                ...(hasAnalyticsPermissions
+                ...(hasViewAnalyticsPermissions
                   ? [
                     {
                       uri: '/incidents',
@@ -74,7 +79,7 @@ export function useMenuConfig () {
                     }
                   ]
                   : []),
-                ...(hasAnalyticsPermissions
+                ...(hasViewAnalyticsPermissions
                   ? [
                     {
                       uri: '/configChange',
@@ -88,7 +93,7 @@ export function useMenuConfig () {
               type: 'group' as const,
               label: $t({ defaultMessage: 'Network Assurance' }),
               children: [
-                ...(hasAnalyticsPermissions
+                ...(hasViewAnalyticsPermissions
                   ? [
                     {
                       uri: '/health',
@@ -112,7 +117,7 @@ export function useMenuConfig () {
                     }
                   ]
                   : []),
-                ...(hasAnalyticsPermissions
+                ...(hasViewAnalyticsPermissions
                   ? [
                     {
                       uri: '/occupancy',
@@ -126,7 +131,7 @@ export function useMenuConfig () {
         }
       ]
       : []),
-    ...(currentAccountPermissions?.[PERMISSION_VIEW_DATA_EXPLORER]
+    ...(hasViewDataExplorerPermission
       ? [
         {
           label: $t({ defaultMessage: 'Business Insights' }),
@@ -142,7 +147,7 @@ export function useMenuConfig () {
         }
       ]
       : []),
-    ...(currentAccountPermissions?.[PERMISSION_MANAGE_MLISA]
+    ...(hasManageMlisaPermission
       ? [
         {
           label: $t({ defaultMessage: 'Administration' }),
@@ -153,8 +158,7 @@ export function useMenuConfig () {
               type: 'group' as const,
               label: $t({ defaultMessage: 'Account Management' }),
               children: [
-                ...(currentAccountPermissions?.[PERMISSION_MANAGE_MLISA] &&
-                  hasAnalyticsPermissions
+                ...(hasManageMlisaPermission
                   ? [
                     {
                       uri: '/admin/onboardedSystems',
@@ -174,7 +178,7 @@ export function useMenuConfig () {
                     },
                     {
                       uri: '/admin/license',
-                      label: $t({ defaultMessage: 'License' })
+                      label: $t({ defaultMessage: 'Licenses' })
                     }
                   ]
                   : []),
@@ -182,7 +186,7 @@ export function useMenuConfig () {
                   uri: '/admin/schedules',
                   label: $t({ defaultMessage: 'Schedules' })
                 },
-                ...(currentAccountPermissions?.[PERMISSION_MANAGE_MLISA]
+                ...(hasManageMlisaPermission && hasViewAnalyticsPermissions
                   ? [
                     {
                       uri: '/admin/webhooks',
