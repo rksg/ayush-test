@@ -47,7 +47,7 @@ describe('Connection drill down api', () => {
     expect(error).not.toBe(undefined)
   })
   it('should return correct data for ttc DrillDown', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockTtcDrillDown })
+    mockGraphqlQuery(dataApiURL, 'TTCDrilldown', { data: mockTtcDrillDown })
     const { status, data, error } = await store.dispatch(
       api.endpoints.ttcDrilldown.initiate(payload)
     )
@@ -56,7 +56,7 @@ describe('Connection drill down api', () => {
     expect(error).toBe(undefined)
   })
   it('should return error for ttc DrillDown', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', {
+    mockGraphqlQuery(dataApiURL, 'TTCDrilldown', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(

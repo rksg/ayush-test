@@ -6,6 +6,7 @@ import { dataApi }                       from '@acx-ui/store'
 import { getPathFromFilter, PathFilter } from '@acx-ui/utils'
 
 export interface ConnectionDrilldown {
+  network: {
     connectionDrilldown: {
         assocSuccessAndAttemptCount: [[number,number]],
         authSuccessAndAttemptCount: [[number,number]],
@@ -13,6 +14,7 @@ export interface ConnectionDrilldown {
         radiusSuccessAndAttemptCount: [[number,number]],
         dhcpSuccessAndAttemptCount: [[number,number]],
     }
+  }
 }
 
 export interface TtcDrilldown {
@@ -105,18 +107,19 @@ export const api = dataApi.injectEndpoints({
             $granularity: String
             $filter: FilterInput
           ) {
-            connectionDrilldown: timeSeries(
-              path: $path
-              start: $start
-              end: $end
-              granularity: $granularity
-              filter: $filter
-            ) {
-              assocSuccessAndAttemptCount
-              authSuccessAndAttemptCount
-              eapSuccessAndAttemptCount
-              radiusSuccessAndAttemptCount
-              dhcpSuccessAndAttemptCount
+            network(start: $start, end: $end, filter: $filter) {
+              connectionDrilldown: timeSeries(
+                path: $path
+                start: $start
+                end: $end
+                granularity: $granularity
+              ) {
+                assocSuccessAndAttemptCount
+                authSuccessAndAttemptCount
+                eapSuccessAndAttemptCount
+                radiusSuccessAndAttemptCount
+                dhcpSuccessAndAttemptCount
+              }
             }
           }
         `,
@@ -130,7 +133,7 @@ export const api = dataApi.injectEndpoints({
     ttcDrilldown: build.query<TtcDrilldown, RequestPayload>({
       query: (payload) => ({
         document: gql`
-          query ConnectionDrilldown(
+          query TTCDrilldown(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
