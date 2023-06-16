@@ -250,7 +250,7 @@ export function MeshNetwork () {
     try {
       let meshData: Mesh = { enabled: meshEnabled }
 
-      if (supportMeshEnhancement) {
+      if (meshEnabled && supportMeshEnhancement) {
         meshData = { ...meshData,
           ssid: meshSsid,
           passphrase: meshPassphrase,
