@@ -158,7 +158,8 @@ export const VenueFirmwareTable = (
   { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params })
+  // eslint-disable-next-line max-len
+  const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params }, { refetchOnMountOrArgChange: false })
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateVenueSchedulesMutation()
   const [updateNow] = useUpdateNowMutation()
@@ -257,6 +258,40 @@ export const VenueFirmwareTable = (
     setEolApFirmwareList(uniqueEolApFirmwares)
   }
 
+  const processAvailableApFirmwares = (selectedRows: FirmwareVenue[]) => {
+    if (!availableVersions) {
+      setUpgradeVersions([])
+      return
+    }
+
+    let filterVersions: FirmwareVersion[]
+
+    if (selectedRows.length === 1) {
+      const version = getApVersion(selectedRows[0])
+      // eslint-disable-next-line max-len
+      filterVersions = availableVersions.filter((availVersion: FirmwareVersion) => compareVersions(availVersion.id, version) > 0)
+    } else {
+      let selectedMaxVersion: string | undefined
+      let isSameVersion = true
+
+      selectedRows.forEach((row: FirmwareVenue) => {
+        const version = getApVersion(row)
+        if (selectedMaxVersion && compareVersions(version, selectedMaxVersion) !== 0) {
+          isSameVersion = false
+        }
+        if (!selectedMaxVersion || compareVersions(version, selectedMaxVersion) > 0) {
+          selectedMaxVersion = version
+        }
+      })
+
+      filterVersions = availableVersions.filter((availVersion: FirmwareVersion) => {
+        const result = compareVersions(availVersion.id, selectedMaxVersion)
+        return result > 0 || (result === 0 && !isSameVersion)
+      })
+    }
+    setUpgradeVersions(filterVersions)
+  }
+
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
     visible: (selectedRows) => {
       let eolAp = false
@@ -318,39 +353,7 @@ export const VenueFirmwareTable = (
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       processEolApFirmwares(selectedRows)
-
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version as string) > 0) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      } else {
-        let minVersion = ''
-        let isSameVersion = true
-        selectedRows.forEach((row: FirmwareVenue) => {
-          const version = getApVersion(row)
-          if (minVersion && compareVersions(version as string, minVersion) !== 0) {
-            isSameVersion = false
-          }
-          if (!minVersion || compareVersions(version as string, minVersion) > 0) {
-            minVersion = version as string
-          }
-        })
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            // eslint-disable-next-line max-len
-            if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-      }
-      setUpgradeVersions(filterVersions)
+      processAvailableApFirmwares(selectedRows)
       setUpdateModelVisible(true)
     }
   },
