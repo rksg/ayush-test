@@ -127,7 +127,7 @@ const EditEdge = () => {
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'SmartEdge' }),
-            link: '/devices/edge/list'
+            link: '/devices/edge'
           }
         ]}
         extra={filterByAccess([

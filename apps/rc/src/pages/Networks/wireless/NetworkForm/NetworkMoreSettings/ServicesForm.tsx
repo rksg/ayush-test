@@ -275,6 +275,28 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
       }
 
+      <UI.FieldLabel width='125px'>
+        {$t({ defaultMessage: 'Force DHCP' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch disabled={enableAntiSpoofing} />}
+        />
+      </UI.FieldLabel>
+
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
+        <Form.Item
+          name={['wlan','advancedCustomization','enableSyslog']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
         valuePropName='checked'
@@ -282,6 +304,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           <Checkbox disabled={enableAntiSpoofing}
             children={$t({ defaultMessage: 'Force DHCP' })} />}
       />
+
       <UI.FormItemNoLabel
         name={['wlan','advancedCustomization','enableSyslog']}
         valuePropName='checked'
