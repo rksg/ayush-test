@@ -298,14 +298,6 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       </UI.FieldLabel>
 
       <UI.FormItemNoLabel
-        name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
-        valuePropName='checked'
-        children={
-          <Checkbox disabled={enableAntiSpoofing}
-            children={$t({ defaultMessage: 'Force DHCP' })} />}
-      />
-
-      <UI.FormItemNoLabel
         name={['wlan','advancedCustomization','enableSyslog']}
         valuePropName='checked'
         children={
