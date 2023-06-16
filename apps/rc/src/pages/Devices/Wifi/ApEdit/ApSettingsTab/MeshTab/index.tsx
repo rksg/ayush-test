@@ -4,11 +4,12 @@ import { Form, Radio, RadioChangeEvent, Space }     from 'antd'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import { useNavigate, useParams }                   from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal }                                                             from '@acx-ui/components'
-import { useGetApMeshSettingsQuery, useGetApQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
-import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended, redirectPreviousPage }                             from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal }                                              from '@acx-ui/components'
+import { useGetApMeshSettingsQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
+import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended, redirectPreviousPage }              from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                                      from '@acx-ui/react-router-dom'
 
+import { ApDataContext } from '..'
 import { ApEditContext } from '../..'
 
 import { MeshUplinkApsTable }                                        from './MeshUplinkApsTable'
@@ -51,8 +52,8 @@ export function ApMesh () {
   const basePath = useTenantLink('/devices/')
 
   const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
+  const { apData: apDetails } = useContext(ApDataContext)
 
-  const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
   const getApMesh = useGetApMeshSettingsQuery({ params: { serialNumber } })
   const [updateApMesh, { isLoading: isUpdateingApMesh } ] = useUpdateApMeshSettingsMutation()
   const [getVenue] = useLazyGetVenueQuery()
