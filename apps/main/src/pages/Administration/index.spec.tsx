@@ -95,7 +95,8 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Account Settings' })
+    await screen.logTestingPlaygroundURL()
+    const tab = screen.getByRole('tab', { name: 'Settings' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -127,7 +128,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('Notifications'))
+    fireEvent.click(screen.getByText('Notifications (0)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/administration/notifications`,
       hash: '',
@@ -149,7 +150,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Notifications' })
+    const tab = screen.getByRole('tab', { name: 'Notifications (0)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -167,7 +168,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Administrators' })
+    const tab = screen.getByRole('tab', { name: 'Administrators (0)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
