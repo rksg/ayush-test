@@ -17,6 +17,7 @@ import {
   useIsSplitOn
 }                                from '@acx-ui/feature-toggle'
 import {
+  DownloadOutlined,
   WarningTriangleSolid
 } from '@acx-ui/icons'
 import {
@@ -315,10 +316,6 @@ export function VenuePropertyTab () {
       label: $t({ defaultMessage: 'Import From File' }),
       disabled: !hasAssociation,
       onClick: () => setUploadCsvDrawerVisible(true)
-    },
-    {
-      label: $t({ defaultMessage: 'Export To CSV' }),
-      onClick: downloadUnit
     }
   ]
 
@@ -529,6 +526,10 @@ export function VenuePropertyTab () {
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
+        iconButton={{
+          icon: <DownloadOutlined data-testid={'export-unit'} />,
+          onClick: downloadUnit
+        }}
       />
       {venueId &&
         <PropertyUnitDrawer
