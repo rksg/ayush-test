@@ -8,7 +8,6 @@ import { useNavigate, useParams }                   from 'react-router-dom'
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useGetApDirectedMulticastQuery,
-  useGetApQuery,
   useLazyGetVenueDirectedMulticastQuery,
   useLazyGetVenueQuery,
   useResetApDirectedMulticastMutation,
@@ -22,6 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { ApDataContext } from '..'
 import { ApEditContext } from '../../../ApEdit/index'
 import { FieldLabel }    from '../styledComponents'
 
@@ -32,8 +32,8 @@ export function DirectedMulticast () {
   const basePath = useTenantLink('/devices/')
 
   const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
+  const { apData: apDetails } = useContext(ApDataContext)
 
-  const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
   const directedMulticast = useGetApDirectedMulticastQuery({ params: { serialNumber } })
   const [updateApDirectedMulticast, { isLoading: isUpdatingApDirectedMulticast }] =
     useUpdateApDirectedMulticastMutation()
