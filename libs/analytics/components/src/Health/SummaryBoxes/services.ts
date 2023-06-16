@@ -1,7 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }         from '@acx-ui/store'
-import type { PathFilter } from '@acx-ui/utils'
+import { getFilterPayload } from '@acx-ui/analytics/utils'
+import { dataApi }          from '@acx-ui/store'
+import type { PathFilter }  from '@acx-ui/utils'
 
 export interface SummaryData {
   timeSeries: {
@@ -29,8 +30,8 @@ export const api = dataApi.injectEndpoints({
         document: gql`
           query HealthSummary(
           $path: [HierarchyNodeInput],
-          $start: DateTime, 
-          $end: DateTime, 
+          $start: DateTime,
+          $end: DateTime,
           $granularity: String,
           $filter: FilterInput
           ) {
@@ -49,7 +50,7 @@ export const api = dataApi.injectEndpoints({
           }`,
         variables: {
           ...payload,
-          path: [{ type: 'network', name: 'Network' }],
+          ...getFilterPayload(payload),
           granularity: 'all'
         }
       })

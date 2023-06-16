@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, calculateGranularity, kpiConfig } from '@acx-ui/analytics/utils'
-import { dataApi }                                          from '@acx-ui/store'
-import { getPathFromFilter, NetworkPath, PathFilter }       from '@acx-ui/utils'
+import { getFilterPayload, AnalyticsFilter, calculateGranularity, kpiConfig } from '@acx-ui/analytics/utils'
+import { dataApi }                                                            from '@acx-ui/store'
+import { getPathFromFilter, NetworkPath, PathFilter }                         from '@acx-ui/utils'
 
 export interface KpiThresholdType {
   timeToConnect: number;
@@ -132,12 +132,11 @@ export const healthApi = dataApi.injectEndpoints({
         }
       `,
           variables: {
-            path: [{ type: 'network', name: 'Network' }],
             start: payload.startDate,
             end: payload.endDate,
             granularity: payload.granularity ||
-           getGranularity(payload.startDate, payload.endDate, payload.kpi),
-            filter: payload.filter
+            getGranularity(payload.startDate, payload.endDate, payload.kpi),
+            ...getFilterPayload(payload)
           }
         }),
         providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
@@ -152,10 +151,9 @@ export const healthApi = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`${getHistogramQuery(payload.kpi)}`,
         variables: {
-          path: [{ type: 'network', name: 'Network' }],
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'HISTOGRAM_PILL' }],

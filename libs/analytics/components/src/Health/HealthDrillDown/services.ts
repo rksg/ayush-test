@@ -1,6 +1,7 @@
 import { gql }  from 'graphql-request'
 import { find } from 'lodash'
 
+import { getFilterPayload }              from '@acx-ui/analytics/utils'
 import { dataApi }                       from '@acx-ui/store'
 import { getPathFromFilter, PathFilter } from '@acx-ui/utils'
 
@@ -102,12 +103,14 @@ export const api = dataApi.injectEndpoints({
             $start: DateTime
             $end: DateTime
             $granularity: String
+            $filter: FilterInput
           ) {
             connectionDrilldown: timeSeries(
               path: $path
               start: $start
               end: $end
               granularity: $granularity
+              filter: $filter
             ) {
               assocSuccessAndAttemptCount
               authSuccessAndAttemptCount
@@ -119,6 +122,7 @@ export const api = dataApi.injectEndpoints({
         `,
         variables: {
           ...payload,
+          ...getFilterPayload(payload),
           granularity: 'all'
         }
       })
@@ -131,8 +135,9 @@ export const api = dataApi.injectEndpoints({
             $start: DateTime
             $end: DateTime
             $granularity: String
+            $filter: FilterInput
           ) {
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
                 ttcDrilldown: timeSeries(granularity: $granularity) {
                   ttcByFailureTypes {
@@ -149,7 +154,7 @@ export const api = dataApi.injectEndpoints({
         `,
         variables: {
           ...payload,
-          path: getPathFromFilter(payload.filter),
+          ...getFilterPayload(payload),
           granularity: 'all'
         }
       })
@@ -170,20 +175,27 @@ export const api = dataApi.injectEndpoints({
                 username
               }`
         }
-        return { document: gql`
-          query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
-            network(start: $start, end: $end) {
-              hierarchyNode(path: $path) {
-                ${impactedClientQuery(payload.field, payload.stage)}
+        return {
+          document: gql`
+            query Network(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $filter: FilterInput
+            ) {
+              network(start: $start, end: $end, filter: $filter) {
+                hierarchyNode(path: $path) {
+                  ${impactedClientQuery(payload.field, payload.stage)}
                 }
+              }
             }
+          `,
+          variables: {
+            ...payload,
+            ...getFilterPayload(payload)
           }
-        `,
-        variables: {
-          ...payload,
-          path: getPathFromFilter(payload.filter)
         }
-        }}
+      }
     }),
 
     pieChart: build.query<ImpactedNodesAndWlans, PieChartPayload>({
@@ -192,19 +204,23 @@ export const api = dataApi.injectEndpoints({
         const innerQuery = pieChartQuery(filter, queryType, queryFilter)
         return ({
           document: gql`
-            query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
-              network(start: $start, end: $end) {
+            query Network(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $filter: FilterInput
+            ) {
+              network(start: $start, end: $end, filter: $filter) {
                 hierarchyNode(path: $path) {
                   ${innerQuery}
-                    }
-                  }
                 }
+              }
+            }
           `,
           variables: {
+            ...getFilterPayload(payload),
             start: payload.start,
-            end: payload.end,
-            filter: payload.filter,
-            path: getPathFromFilter(payload.filter)
+            end: payload.end
           }
         })
       }

@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                               from '@acx-ui/store'
+import { getFilterPayload, AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                                 from '@acx-ui/store'
 
 export type Ports = {
   name: string
@@ -49,10 +49,9 @@ export const api = dataApi.injectEndpoints({
           n: 10,
           by: payload.by,
           direction: null,
-          path: [{ type: 'network', name: 'Network' }],
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter,
+          ...getFilterPayload(payload),
           granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M')
         }
       }),

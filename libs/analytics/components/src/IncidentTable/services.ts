@@ -3,6 +3,7 @@ import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
 import {
+  getFilterPayload,
   IncidentFilter,
   incidentCodes,
   Incident,
@@ -13,9 +14,9 @@ import {
   impactedArea,
   calculateSeverity
 } from '@acx-ui/analytics/utils'
-import type { RecordWithChildren }    from '@acx-ui/components'
-import { dataApi }                    from '@acx-ui/store'
-import { getIntl, getPathFromFilter } from '@acx-ui/utils'
+import type { RecordWithChildren } from '@acx-ui/components'
+import { dataApi }                 from '@acx-ui/store'
+import { getIntl }                 from '@acx-ui/utils'
 
 const durationValue = (start: string, end: string) => moment(end).diff(moment(start))
 
@@ -172,13 +173,12 @@ export const api = dataApi.injectEndpoints({
           }
         `,
         variables: {
-          path: getPathFromFilter(payload.filter),
           start: payload.startDate,
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
           includeMuted: payload.includeMuted ?? true,
           severity: [{ gt: 0, lte: 1 }],
-          filter: payload?.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {

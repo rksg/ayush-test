@@ -80,3 +80,13 @@ export function useAnalyticsFilter () {
     }
   }, [dateFilter, pathname, read, write])
 }
+
+export const getFilterPayload = (
+  { filter }: { filter: PathFilter }
+): { path: NetworkPath, filter: PathFilter } => {
+  return {
+    path: [{ type: 'network', name: 'Network' }],
+    filter
+  }
+}
+
