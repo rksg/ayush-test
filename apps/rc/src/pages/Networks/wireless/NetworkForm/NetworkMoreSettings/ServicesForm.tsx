@@ -262,7 +262,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
             <Checkbox
               children={
                 <>
-                  {$t({ defaultMessage: 'Single session ID Accounting' })}
+                  {$t({ defaultMessage: 'Single Session ID Accounting' })}
                   <Tooltip
                     // eslint-disable-next-line max-len
                     title={$t({ defaultMessage: 'APs will maintain one accounting session for client roaming' })}

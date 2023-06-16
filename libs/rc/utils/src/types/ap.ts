@@ -298,7 +298,6 @@ export interface ApModel {
   model: string,
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
-  trunkPortOnly?: boolean,
   requireOneEnabledTrunkPort: boolean,
   simCardPrimaryEnabled: boolean,
   simCardPrimaryRoaming: boolean,
@@ -308,7 +307,10 @@ export interface ApModel {
   supportDual5gMode: boolean,
   supportTriRadio: boolean,
   maxChannelization5G?: number,
-  maxChannelization6G?: number
+  maxChannelization6G?: number,
+  externalAntenna?: ExternalAntenna,
+  supportMesh?: boolean,
+  version?: string,
 }
 
 export interface PingAp {
