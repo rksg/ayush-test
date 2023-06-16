@@ -4,7 +4,8 @@ import { useIntl }                                                   from 'react
 import { Alert, StepsFormLegacy, Subtitle } from '@acx-ui/components'
 import {
   EdgeDhcpSetting,
-  LeaseTimeUnit
+  LeaseTimeUnit,
+  networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
 
 import { SpaceWrapper } from '../SpaceWrapper'
@@ -86,6 +87,9 @@ export const EdgeDhcpSettingForm = () => {
                 name='primaryDnsIp'
                 label={$t({ defaultMessage: 'Primary DNS Server' })}
                 children={<Input />}
+                rules={[
+                  { validator: (_, value) => networkWifiIpRegExp(value) }
+                ]}
               />
               <Form.Item noStyle name='enableSecondaryDNSServer'>
                 <ToggleButton
@@ -99,6 +103,9 @@ export const EdgeDhcpSettingForm = () => {
                   name='secondaryDnsIp'
                   label={$t({ defaultMessage: 'Secondary DNS Server' })}
                   children={<Input />}
+                  rules={[
+                    { validator: (_, value) => networkWifiIpRegExp(value) }
+                  ]}
                 />
               }
               <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
