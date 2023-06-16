@@ -88,7 +88,7 @@ export const venue = [
       {
         name: 'eol-ap-2021-05',
         currentEolVersion: '6.1.0.10.433',
-        latestEolVersion: '6.1.0.10.433',
+        latestEolVersion: '6.1.0.10.453',
         apCount: 1,
         apModels: ['R300', 'R500', 'R550']
       },

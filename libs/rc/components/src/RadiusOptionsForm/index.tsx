@@ -214,7 +214,7 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
       {showSingleSessionIdAccounting &&
         <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr' }} >
           <Space>
-            {$t({ defaultMessage: 'Single session ID Accounting' })}
+            {$t({ defaultMessage: 'Single Session ID Accounting' })}
             <Tooltip
             // eslint-disable-next-line max-len
               title={$t({ defaultMessage: 'Enabling this feature allows the APs to maintain one accounting session for a client roaming between APs. If the client roams from one AP to another, the accounting session ID and statistics will be carried while roaming from one AP to the other.' })}
