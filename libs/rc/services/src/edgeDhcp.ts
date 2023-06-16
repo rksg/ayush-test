@@ -4,6 +4,7 @@ import {
   DhcpHostStats,
   DhcpPoolStats,
   DhcpStats,
+  DhcpUeSummaryStats,
   EdgeDhcpSetting,
   EdgeDhcpUrls,
   onActivityMessageReceived,
@@ -13,6 +14,8 @@ import {
   TableResult
 } from '@acx-ui/rc/utils'
 import { baseEdgeDhcpApi } from '@acx-ui/store'
+
+import { edgeApi } from './edge'
 
 export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
@@ -109,6 +112,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SERVICE' }]))
           })
         })
       }
@@ -144,6 +148,16 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+    }),
+    getDhcpUeSummaryStats: build.query<TableResult<DhcpUeSummaryStats>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpUeSummaryStats, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
     })
   })
 })
@@ -158,5 +172,6 @@ export const {
   useGetDhcpByEdgeIdQuery,
   useGetDhcpPoolStatsQuery,
   useGetDhcpStatsQuery,
-  useGetDhcpHostStatsQuery
+  useGetDhcpHostStatsQuery,
+  useGetDhcpUeSummaryStatsQuery
 } = edgeDhcpApi

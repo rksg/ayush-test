@@ -33,7 +33,7 @@ const tabs : {
   },
   {
     key: 'sessions',
-    title: defineMessage({ defaultMessage: 'Sessions' }),
+    title: defineMessage({ defaultMessage: 'Completed Sessions' }),
     component: SessionTable
   }
 ]

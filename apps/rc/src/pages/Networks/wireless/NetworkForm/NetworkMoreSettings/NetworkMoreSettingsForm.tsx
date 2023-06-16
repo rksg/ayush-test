@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 
 import {
   Checkbox,
@@ -11,9 +11,8 @@ import {
   Switch,
   Space
 } from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { get }                 from 'lodash'
-import { useIntl }             from 'react-intl'
+import { get }     from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { Button, Tooltip }                                                                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
@@ -91,7 +90,20 @@ export function NetworkMoreSettingsForm (props: {
     }
   }, [data, editMode, cloneMode])
   const { $t } = useIntl()
-  const [enableMoreSettings, setEnabled] = useState(false)
+
+  /* Please be advised that why we use clone mode as state here
+   * usually edit mode will show more setting in step form seperately
+   * and clone mode just like usual adding network.
+   * But when MoreSettingForm is not rendered (user didn't click
+   * the show more button), the copied value in more setting will be
+   * ignored.
+   * In cause this scenario happen, MoreSettingsForm will auto expand
+   * under clone mode, user can collapse manually, it will force React
+   * to render MoreSettingsForm.
+   * There should be no side effect when adding/editing a network.
+   */
+  const [enableMoreSettings, setEnabled] = useState(cloneMode)
+
   if (data && editMode) {
     return <MoreSettingsForm wlanData={wlanData} />
   } else {
@@ -195,8 +207,8 @@ export function MoreSettingsForm (props: {
     }
   }
 
-  const onOfdmChange = function (e: CheckboxChangeEvent) {
-    if (e.target.checked) {
+  const onOfdmChange = function (checked: boolean) {
+    if (checked) {
       if (!(bssMinimumPhyRate === BssMinRateEnum.VALUE_12 ||
         bssMinimumPhyRate === BssMinRateEnum.VALUE_24)) {
         form.setFieldsValue({
@@ -207,6 +219,7 @@ export function MoreSettingsForm (props: {
     }
 
   }
+
   return (
     <UI.CollapsePanel
       defaultActiveKey={['1', '2', '3', '4', '5']}
@@ -300,14 +313,16 @@ export function MoreSettingsForm (props: {
       </Panel>
 
       <Panel header='Radio' key='3' >
-        <UI.FormItemNoLabel
-          name={['wlan','advancedCustomization','hideSsid']}
-          initialValue={false}
-          valuePropName='checked'
-          children={
-            <Checkbox children={$t({ defaultMessage: 'Hide SSID' })} />
-          }
-        />
+        <UI.FieldLabel width='125px'>
+          {$t({ defaultMessage: 'Hide SSID' })}
+          <Form.Item
+            name={['wlan','advancedCustomization','hideSsid']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
 
         <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
         <LoadControlForm />
@@ -315,18 +330,16 @@ export function MoreSettingsForm (props: {
 
         <AccessControlForm/>
 
-
-        <UI.FormItemNoLabel
-          name='enableOfdmOnly'
-          style={{ marginBottom: '15px' }}
-          valuePropName='checked'
-          initialValue={true}
-          children={
-            <Checkbox
-              onChange={onOfdmChange}
-              children={$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })} />
-          }
-        />
+        <UI.FieldLabel width='250px'>
+          {$t({ defaultMessage: 'Enable OFDM only (disable 802.11b)' })}
+          <Form.Item
+            name={['enableOfdmOnly']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={true}
+            children={<Switch onChange={onOfdmChange}></Switch>}
+          />
+        </UI.FieldLabel>
 
         <UI.Subtitle>
           {$t({ defaultMessage: 'Data Rate Control (2.4 GHz & 5 GHz)' })}
@@ -414,28 +427,29 @@ export function MoreSettingsForm (props: {
             } />
         </div>
 
-        <UI.FormItemNoLabel
-          name={['wlan','advancedCustomization','enableNeighborReport']}
-          style={{ marginBottom: '15px' }}
-          valuePropName='checked'
-          initialValue={true}
-          children={
-            <Checkbox children={$t({ defaultMessage: 'Enable 802.11k neighbor reports' })} />
-          }
-        />
-
-        {isFastBssVisible &&
-          <UI.FormItemNoLabel
-            data-testid='enableFastRoaming-full-block'
-            name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
+        <UI.FieldLabel width='250px'>
+          {$t({ defaultMessage: 'Enable 802.11k neighbor reports' })}
+          <Form.Item
+            name={['wlan','advancedCustomization','enableNeighborReport']}
             style={{ marginBottom: '15px' }}
             valuePropName='checked'
-            initialValue={false}
-            children={
-              <Checkbox data-testid='enableFastRoaming'
-                children={$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })} />
-            }
+            initialValue={true}
+            children={<Switch />}
           />
+        </UI.FieldLabel>
+
+        {isFastBssVisible &&
+          <UI.FieldLabel width='125px'>
+            {$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })}
+            <Form.Item
+              data-testid='enableFastRoaming-full-block'
+              name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
+              style={{ marginBottom: '15px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch data-testid='enableFastRoaming' />}
+            />
+          </UI.FieldLabel>
         }
 
         {enableFastRoaming &&
