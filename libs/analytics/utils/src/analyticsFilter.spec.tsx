@@ -75,6 +75,29 @@ describe('useAnalyticsFilter', () => {
     </MemoryRouter>)
     expect(asFragment()).toMatchSnapshot()
   })
+  it('does not throw error with old filter values from search parameters', () => {
+    const path = fixedEncodeURIComponent(JSON.stringify({
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'zone', name: 'A-T-Venue' },
+        { type: 'AP', name: 'D8:38:FC:36:78:D0' }
+      ],
+      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    }))
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/incidents',
+        search: `?analyticsNetworkFilter=${path}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
   it('gets initial value from search parameters', () => {
     function Component () {
       const { filters } = useAnalyticsFilter()

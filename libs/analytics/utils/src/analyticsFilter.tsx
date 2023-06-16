@@ -40,7 +40,10 @@ export function useAnalyticsFilter () {
   return useMemo(() => {
     const isHealthPage = pathname.includes('/analytics/health')
     const getNetworkFilter = () => {
-      let networkFilter = read() || { filter: generatePathFilter(defaultNetworkPath), raw: [] }
+      const existingFilter = read()
+      let networkFilter = existingFilter?.filter
+        ? existingFilter
+        : { filter: generatePathFilter(defaultNetworkPath), raw: [] }
       const { filter: currentFilter, raw: rawVal } = networkFilter
       let filter, raw
       if (isHealthPage) {
