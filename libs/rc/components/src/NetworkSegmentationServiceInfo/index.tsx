@@ -1,13 +1,19 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
-import { Loader, Tooltip }                                                                                                                                                                            from '@acx-ui/components'
-import { useApListQuery, useGetEdgeDhcpServiceQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery, useGetPersonaGroupByIdQuery, useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink }                                                                                    from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                                                                                      from '@acx-ui/react-router-dom'
+import { Loader, Tooltip, SummaryCard } from '@acx-ui/components'
+import {
+  useApListQuery,
+  useGetEdgeDhcpServiceQuery,
+  useGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationViewDataListQuery,
+  useGetPersonaGroupByIdQuery,
+  useGetTunnelProfileByIdQuery
+} from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                                   from '@acx-ui/react-router-dom'
 
 import { defaultApPayload } from '../NetworkSegmentationDetailTableGroup/ApsTable'
-import { ServiceInfo }      from '../ServiceInfo'
 
 import * as UI from './styledComponents'
 
@@ -211,7 +217,7 @@ export const NetworkSegmentationServiceInfo = styled((
       isDhcpLoading || isTunnelLoading || isPersonaGroupLoading,
       isLoading: false
     }]}>
-      <ServiceInfo className={props.className} data={nsgInfo} />
+      <SummaryCard className={props.className} data={nsgInfo} />
     </Loader>
   )
 })`${UI.textAlign}`

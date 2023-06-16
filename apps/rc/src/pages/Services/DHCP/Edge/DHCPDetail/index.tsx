@@ -2,8 +2,7 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps }                                                           from '@acx-ui/components'
-import { ServiceInfo }                                                                                                   from '@acx-ui/rc/components'
+import { Button, Card, Loader, PageHeader, Table, TableProps, SummaryCard }                                              from '@acx-ui/components'
 import { useGetDhcpStatsQuery }                                                                                          from '@acx-ui/rc/services'
 import { DhcpStats, ServiceOperation, ServiceType, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                         from '@acx-ui/react-router-dom'
@@ -154,7 +153,7 @@ const EdgeDHCPDetail = () => {
         { isFetching: isLoading, isLoading: false }
       ]}>
         <Space direction='vertical' size={30}>
-          <ServiceInfo data={dhcpInfo} />
+          <SummaryCard data={dhcpInfo} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>

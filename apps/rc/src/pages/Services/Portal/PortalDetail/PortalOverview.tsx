@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { ServiceInfo }              from '@acx-ui/rc/components'
+import { SummaryCard }              from '@acx-ui/components'
 import { useGetPortalLangMutation } from '@acx-ui/rc/services'
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
@@ -64,5 +64,5 @@ export default function PortalOverview (props: { demoValue: Demo }) {
     }
   ]
 
-  return <ServiceInfo data={portalInfo} />
+  return <SummaryCard data={portalInfo} />
 }

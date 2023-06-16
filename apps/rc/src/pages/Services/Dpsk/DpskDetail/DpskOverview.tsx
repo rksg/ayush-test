@@ -1,7 +1,6 @@
 
-import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ServiceInfo }            from '@acx-ui/rc/components'
+import { Card, GridCol, GridRow, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
@@ -59,7 +58,7 @@ export default function DpskOverview (props: DpskOverviewProps) {
   return (
     <GridRow>
       <GridCol col={{ span: 24 }}>
-        <ServiceInfo data={dpskInfo} />
+        <SummaryCard data={dpskInfo} />
       </GridCol>
       <GridCol col={{ span: 24 }}>
         <Card>

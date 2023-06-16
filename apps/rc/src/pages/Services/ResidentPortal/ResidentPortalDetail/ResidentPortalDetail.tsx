@@ -4,9 +4,8 @@ import { Image, Space } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { ServiceInfo }                                        from '@acx-ui/rc/components'
-import { useGetResidentPortalQuery }                          from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { useGetResidentPortalQuery }                                       from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
@@ -176,7 +175,7 @@ export default function ResidentPortalDetail () {
       ]}>
         <GridRow>
           <GridCol col={{ span: 24 }}>
-            <ServiceInfo data={residentPortalInfo} colPerRow={4} />
+            <SummaryCard data={residentPortalInfo} colPerRow={4} />
           </GridCol>
           <GridCol col={{ span: 24 }}>
             <Card>

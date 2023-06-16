@@ -1,7 +1,7 @@
 
 import { useIntl } from 'react-intl'
 
-import { ServiceInfo }                                from '@acx-ui/rc/components'
+import { SummaryCard }                                from '@acx-ui/components'
 import { DHCPConfigTypeEnum, DHCPConfigTypeMessages } from '@acx-ui/rc/utils'
 
 export default function DHCPOverView (props: { poolNumber:number | undefined,
@@ -19,6 +19,6 @@ export default function DHCPOverView (props: { poolNumber:number | undefined,
     }
   ]
 
-  return <ServiceInfo data={dhcpInfo} />
+  return <SummaryCard data={dhcpInfo} />
 }
 

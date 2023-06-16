@@ -2,8 +2,7 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader }                        from '@acx-ui/components'
-import { ServiceInfo }                   from '@acx-ui/rc/components'
+import { Loader, SummaryCard }           from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import { QosPriorityEnum }               from '@acx-ui/rc/utils'
 
@@ -41,7 +40,7 @@ const WifiCallingDetailContent = () => {
   ]
 
   return <Loader states={[{ isLoading }]}>
-    <ServiceInfo data={wifiCallingInfo} colPerRow={6} />
+    <SummaryCard data={wifiCallingInfo} colPerRow={6} />
   </Loader>
 }
 

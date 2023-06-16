@@ -2,9 +2,8 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Card, PageHeader, Table } from '@acx-ui/components'
-import { ServiceInfo }                     from '@acx-ui/rc/components'
-import { useGetWebAuthTemplateQuery }      from '@acx-ui/rc/services'
+import { Button, Card, PageHeader, Table, SummaryCard } from '@acx-ui/components'
+import { useGetWebAuthTemplateQuery }                   from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
@@ -52,7 +51,7 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
     }
   ]
 
-  return <ServiceInfo data={networkSegAuthInfo} colPerRow={4} />
+  return <SummaryCard data={networkSegAuthInfo} colPerRow={4} />
 }
 
 export default function NetworkSegAuthDetail () {

@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { ServiceInfo }       from '@acx-ui/rc/components'
+import { SummaryCard }       from '@acx-ui/components'
 import { MdnsProxyFormData } from '@acx-ui/rc/utils'
 
 export interface MdnsProxyOverviewProps {
@@ -18,5 +18,5 @@ export function MdnsProxyOverview (props: MdnsProxyOverviewProps) {
     }
   ]
 
-  return <ServiceInfo data={mdnsProxyInfo} />
+  return <SummaryCard data={mdnsProxyInfo} />
 }

@@ -17,7 +17,7 @@ interface BasicInfoProps {
   className?: string
 }
 
-export const ServiceInfo = styled((props: BasicInfoProps) => {
+export const SummaryCard = styled((props: BasicInfoProps) => {
   const{ disabledMargin } = props
   return (
     <Card>

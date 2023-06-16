@@ -1,9 +1,8 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader }    from '@acx-ui/components'
-import { ServiceInfo }                         from '@acx-ui/rc/components'
-import { useGetEdgeFirewallViewDataListQuery } from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { useGetEdgeFirewallViewDataListQuery }           from '@acx-ui/rc/services'
 import {
   ACLDirection,
   EdgeFirewallViewData,
@@ -111,7 +110,7 @@ const FirewallDetail = () => {
         }
       ]}>
         <Space direction='vertical' size={30}>
-          <ServiceInfo data={firewallInfo} />
+          <SummaryCard data={firewallInfo} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>
