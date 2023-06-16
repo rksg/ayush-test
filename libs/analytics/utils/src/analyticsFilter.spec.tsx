@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { resetRanges, fixedEncodeURIComponent, generatePathFilter } from '@acx-ui/utils'
+import { resetRanges, fixedEncodeURIComponent, generatePathFilter, NodeType } from '@acx-ui/utils'
 
-import { useAnalyticsFilter } from './analyticsFilter'
+import { useAnalyticsFilter, getFilterPayload } from './analyticsFilter'
 
 const original = Date.now
 describe('useAnalyticsFilter', () => {
@@ -280,5 +280,17 @@ describe('useAnalyticsFilter', () => {
       </MemoryRouter>
     )
     expect(asFragment()).toMatchSnapshot()
+  })
+})
+describe('getFilterPayload', () => {
+  it('returns default path', () => {
+    const filter = {
+      networkNodes: [[{ type: 'zoneName' as NodeType, name: 'Zone' }]],
+      switchNodes: [[{ type: 'switchGroup' as NodeType, name: 'Switches' }]]
+    }
+    expect(getFilterPayload({ filter })).toEqual({
+      filter,
+      path: [{ type: 'network', name: 'Network' }]
+    })
   })
 })
