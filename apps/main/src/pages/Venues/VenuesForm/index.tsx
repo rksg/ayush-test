@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEventHandler, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 
 import { Row, Col, Form, Input, Select } from 'antd'
 import _                                 from 'lodash'
@@ -11,10 +11,14 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { get }                                   from '@acx-ui/config'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { SearchOutlined }                        from '@acx-ui/icons'
-import { countryCodes, GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
+import {
+  countryCodes,
+  GoogleMapWithPreference,
+  usePlacesAutocomplete
+} from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -222,33 +226,31 @@ export function VenuesForm () {
     return Promise.resolve()
   }
 
-  const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
-    updateAddress({})
-    const autocomplete = new google.maps.places.Autocomplete(event.target)
-    autocomplete.addListener('place_changed', async () => {
-      const place = autocomplete.getPlace()
-      const { latlng, address } = await addressParser(place)
-      const isSameCountry = (data && (data?.address.country === address.country)) || false
-      setSameCountry(isSameCountry)
-      let errorList = []
+  const addressOnChange = async (place: google.maps.places.PlaceResult) => {
+    const { latlng, address } = await addressParser(place)
+    const isSameCountry = (data && (data?.address.country === address.country)) || false
+    setSameCountry(isSameCountry)
+    let errorList = []
 
-      if (action === 'edit' && !isSameCountry) {
-        errorList.push(
-          `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
-      }
+    if (action === 'edit' && !isSameCountry) {
+      errorList.push(
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
+    }
 
-      formRef.current?.setFields([{
-        name: ['address', 'addressLine'],
-        value: place.formatted_address,
-        errors: errorList
-      }])
+    formRef.current?.setFields([{
+      name: ['address', 'addressLine'],
+      value: place.formatted_address,
+      errors: errorList
+    }])
 
-      setMarker(latlng)
-      setCenter(latlng.toJSON())
-      updateAddress(address)
-      setZoom(16)
-    })
+    setMarker(latlng)
+    setCenter(latlng.toJSON())
+    updateAddress(address)
+    setZoom(16)
   }
+  const { ref: placeInputRef } = usePlacesAutocomplete({
+    onPlaceSelected: addressOnChange
+  })
 
   const handleAddVenue = async (values: VenueExtended) => {
     try {
@@ -351,8 +353,8 @@ export function VenuesForm () {
                     allowClear
                     placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                     prefix={<SearchOutlined />}
-                    onChange={addressOnChange}
                     data-testid='address-input'
+                    ref={placeInputRef}
                     disabled={!isMapEnabled}
                     value={address.addressLine}
                   />
