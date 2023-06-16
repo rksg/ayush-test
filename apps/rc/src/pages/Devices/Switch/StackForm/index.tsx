@@ -275,7 +275,7 @@ export function StackForm () {
       const dataRows = [...tableData]
       const serialNumber = formRef.current?.getFieldValue(
         `serialNumber${row.key}`
-      )
+      )?.toUpperCase()
       dataRows[index].id = serialNumber
       dataRows[index].model = serialNumber && getSwitchModelWithRodan(serialNumber)
       setTableData(dataRows)

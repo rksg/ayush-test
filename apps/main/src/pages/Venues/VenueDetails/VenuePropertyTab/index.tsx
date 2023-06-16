@@ -437,8 +437,11 @@ export function VenuePropertyTab () {
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
         const apMac = persona?.ethernetPorts?.[0]?.macAddress ?? ''
-        return (apMap.get(apMac) as APExtended)?.name
-        ?? persona?.ethernetPorts?.[0]?.name
+        const apName = (apMap.get(apMac) as APExtended)?.name
+          ?? persona?.ethernetPorts?.[0]?.name
+        return apName
+          ? `${apName} ${persona?.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')}`
+          : undefined
       }
     },
     {
@@ -447,9 +450,18 @@ export function VenuePropertyTab () {
       title: $t({ defaultMessage: 'Switch Ports' }),
       dataIndex: 'switchPorts',
       render: (_, row) => {
-        const persona = personaMap.get(row.personaId)
-        const switchMac = persona?.switches?.[0]?.macAddress ?? ''
-        return (switchMap.get(switchMac) as SwitchViewModel)?.name
+        const switchList: string[] = []
+
+        personaMap.get(row.personaId)?.switches?.forEach(s => {
+          const switchMac = s.macAddress
+          const switchName = (switchMap.get(switchMac) as SwitchViewModel)?.name
+
+          if (switchName) {
+            switchList.push(`${switchName} ${s.portId}`)
+          }
+        })
+
+        return switchList.map(s => <div>{s}</div>)
       }
     },
     {
