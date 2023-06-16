@@ -19,6 +19,10 @@ export interface EdgeResourceUtilization {
   memoryTotalKb? :number,
   diskUsedKb? :number,
   diskTotalKb? :number,
+  memoryUsed? :number,   // Bytes
+  memoryTotal? :number,  // Bytes
+  diskUsed? :number,     // Bytes
+  diskTotal? :number     // Bytes
 }
 export interface Edge extends EdgeResourceUtilization {
   name: string
@@ -194,4 +198,33 @@ export interface EdgeService {
   status: string
   currentVersion: string
   targetVersion: string
+}
+
+export interface EdgesTopTraffic {
+  topTraffic: {
+      name: string
+      serial: string
+      rxBytes: number
+      txBytes: number
+  } []
+}
+
+export interface EdgesTopResources {
+  cpu: {
+      name: string
+      serial: string
+      percentage: number
+  } [],
+  memory: {
+    name: string
+    serial: string
+    percentage: number
+    usedBytes: number
+  } [],
+  disk: {
+    name: string
+    serial: string
+    percentage: number
+    usedBytes: number
+  } []
 }

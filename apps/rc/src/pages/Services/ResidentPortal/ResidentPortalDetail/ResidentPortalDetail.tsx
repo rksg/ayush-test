@@ -111,6 +111,11 @@ export default function ResidentPortalDetail () {
       content: residentPortalData?.uiConfiguration?.text.helpText
     },
     {
+      title: $t({ defaultMessage: 'Allow Residents to Set Passphrase' }),
+      content: residentPortalData?.uiConfiguration?.access?.tenantSetDpsk ?
+        $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+    },
+    {
       title: $t({ defaultMessage: 'Color Scheme' }),
       content: <Space>
         <ColorBoxIcon style={{ color: mainColor }} />

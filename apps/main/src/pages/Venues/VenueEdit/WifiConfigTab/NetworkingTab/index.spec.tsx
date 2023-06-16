@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
@@ -46,7 +45,7 @@ describe('NetworkingTab', () => {
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
-        CommonUrlsInfo.getVenueCapabilities.url,
+        WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,
@@ -75,7 +74,6 @@ describe('NetworkingTab', () => {
       )
     )
   })
-  afterEach(() => Modal.destroyAll())
 
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><NetworkingTab /></Provider>, { route: { params } })

@@ -49,14 +49,13 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg,
-            ['AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
+            ['AddNetwork', 'UpdateNetwork', 'DeleteNetwork'], () => {
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
             })
         })
       }
     }),
-    addNetwork: build.mutation<Network, RequestPayload>({
-    //addNetwork: build.mutation<CommonResult, RequestPayload>({
+    addNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params, RKS_NEW_UI)
         return {
@@ -66,8 +65,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
-    updateNetwork: build.mutation<Network, RequestPayload>({
-    //updateNetwork: build.mutation<CommonResult, RequestPayload>({
+    updateNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params, RKS_NEW_UI)
         return {

@@ -4,14 +4,7 @@ import { rest }  from 'msw'
 
 import {
   CatchErrorResponse,
-  CommonUrlsInfo,
-  DpskUrls,
-  EdgeDhcpUrls,
-  EdgeUrlsInfo,
-  NetworkSegmentationUrls,
-  PersonaUrls,
-  PropertyUrlsInfo,
-  SwitchUrlsInfo
+  NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -22,50 +15,34 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockDpsk,
-  mockEdgeData,
-  mockEdgeDhcpDataList,
-  mockNetworkGroup,
   mockNsgData,
-  mockNsgSwitchInfoData,
-  mockPersonaGroup,
-  mockPropertyConfigs,
-  mockVenueData,
-  mockVenueNetworkData,
-  switchLagList,
-  switchPortList,
-  switchVlanUnion,
-  webAuthList
+  mockNsgSwitchInfoData
 } from '../__tests__/fixtures'
 import { afterSubmitMessage } from '../NetworkSegmentationForm'
 
 import EditNetworkSegmentation from '.'
+
+jest.mock('../NetworkSegmentationForm/GeneralSettingsForm', () => ({
+  GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
+}))
+jest.mock('../NetworkSegmentationForm/SmartEdgeForm', () => ({
+  SmartEdgeForm: () => <div data-testid='SmartEdgeForm' />
+}))
+jest.mock('../NetworkSegmentationForm/WirelessNetworkForm', () => ({
+  WirelessNetworkForm: () => <div data-testid='WirelessNetworkForm' />
+}))
+jest.mock('../NetworkSegmentationForm/DistributionSwitchForm', () => ({
+  DistributionSwitchForm: () => <div data-testid='DistributionSwitchForm' />
+}))
+jest.mock('../NetworkSegmentationForm/AccessSwitchForm', () => ({
+  AccessSwitchForm: () => <div data-testid='AccessSwitchForm' />
+}))
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-
-type MockSelectProps = React.PropsWithChildren<{
-  onChange?: (value: string) => void
-  options?: Array<{ label: string, value: unknown }>
-  loading?: boolean
-}>
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={undefined}></option>{children}</> : null}
-      {options?.map((option, index) => (
-        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
-      ))}
-    </select>
-  )
-  Select.Option = 'option'
-  return { ...components, Select }
-})
 
 const updateNsgPath = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
 
@@ -82,85 +59,9 @@ describe('Update NetworkSegmentation', () => {
         NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
         (req, res, ctx) => res(ctx.json(mockNsgData))
       ),
-      rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
-      ),
-      rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpByEdgeId.url,
-        (req, res, ctx) => res(ctx.status(404))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueNetworkData))
-      ),
-      rest.post(
-        CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json(mockNetworkGroup))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.status(200))
-      ),
-      rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json({ data: switchPortList }))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (req, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(switchLagList))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getWebAuthTemplate.url,
-        (req, res, ctx) => res(ctx.json({ ...webAuthList[0] }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.getWebAuthTemplateList.url,
-        (req, res, ctx) => res(ctx.json({ data: webAuthList }))
-      ),
       rest.put(
         NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getAvailableSwitches.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.distributionSwitches }))
-      ),
-      rest.get(
-        NetworkSegmentationUrls.getAccessSwitchesByDS.url,
-        (req, res, ctx) => res(ctx.json({ switchViewList: mockNsgSwitchInfoData.accessSwitches }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
-        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
-      ),
-      rest.post(
-        NetworkSegmentationUrls.validateAccessSwitchInfo.url,
-        (req, res, ctx) => res(ctx.json({ response: { valid: true } }))
-      ),
-      rest.get(
-        PropertyUrlsInfo.getPropertyConfigs.url,
-        (req, res, ctx) => res(ctx.json(mockPropertyConfigs))
-      ),
-      rest.get(
-        PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
-      ),
-      rest.get(
-        DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json(mockDpsk))
       ),
       rest.get(
         NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
@@ -178,19 +79,20 @@ describe('Update NetworkSegmentation', () => {
         route: { params, path: updateNsgPath }
       })
     // step 1
-    expect(await screen.findByRole('table')).toBeVisible()
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await screen.findByTestId('GeneralSettingsForm')
+    await user.click(await screen.findByText('SmartEdge'))
     // step 2
-    expect(await screen.findByRole('table')).toBeVisible()
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await screen.findByTestId('SmartEdgeForm')
+    await user.click(await screen.findByText('Wireless Network'))
     // step 3
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await screen.findByTestId('WirelessNetworkForm')
+    await user.click(await screen.findByText('Dist. Switch'))
     // step 4
-    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await screen.findByTestId('DistributionSwitchForm')
+    await user.click((await screen.findAllByText('Access Switch'))[0])
     // step 5
-    await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+    await screen.findByTestId('AccessSwitchForm')
+    await user.click(await screen.findByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -212,7 +114,9 @@ describe('Update NetworkSegmentation', () => {
       search: ''
     })
   })
+})
 
+describe('Test afterSubmitMessage', () => {
   it('afterSubmitMessage', async () => {
     const resError = [
       { message: `

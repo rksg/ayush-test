@@ -355,7 +355,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                   Instances (0)
                 </h2>
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 kskPjC"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 jUkPXI"
                 >
                   <div
                     class="ant-pro-table"
@@ -394,9 +394,6 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                     >
                                       <colgroup>
                                         <col
-                                          class="ant-table-selection-col"
-                                        />
-                                        <col
                                           style="width: 200px;"
                                         />
                                         <col />
@@ -412,38 +409,6 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                         class="ant-table-thead"
                                       >
                                         <tr>
-                                          <th
-                                            class="ant-table-cell ant-table-selection-column ant-table-cell-fix-left react-resizable"
-                                            style="position: sticky; left: 0px;"
-                                          >
-                                            <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                            />
-                                            <div
-                                              class="ant-table-selection"
-                                            >
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
-                                              >
-                                                <span
-                                                  class="ant-checkbox ant-checkbox-disabled"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    disabled=""
-                                                    type="checkbox"
-                                                    value=""
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                              </label>
-                                            </div>
-                                            <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                            />
-                                          </th>
                                           <th
                                             aria-sort="ascending"
                                             class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters react-resizable"
@@ -654,22 +619,13 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                                
                                             </div>
                                           </td>
-                                          <td
-                                            style="padding: 0px; border: 0px; height: 0px;"
-                                          >
-                                            <div
-                                              style="height: 0px; overflow: hidden;"
-                                            >
-                                               
-                                            </div>
-                                          </td>
                                         </tr>
                                         <tr
                                           class="ant-table-placeholder"
                                         >
                                           <td
                                             class="ant-table-cell"
-                                            colspan="8"
+                                            colspan="7"
                                           >
                                             <div
                                               class="ant-table-expanded-row-fixed"

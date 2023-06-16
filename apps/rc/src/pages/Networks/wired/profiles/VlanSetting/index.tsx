@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, Key } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
@@ -30,6 +30,7 @@ export function VlanSetting () {
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ vlanDrawerVisible, setVlanDrawerVisible ] = useState(false)
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
+  const [selectedRows, setSelectedRows] = useState<Key[]>([])
 
   useEffect(() => {
     if(currentData.vlans){
@@ -139,6 +140,7 @@ export function VlanSetting () {
     }
     setDrawerEditMode(false)
     setDrawerFormRule(undefined)
+    setSelectedRows([])
     return true
   }
 
@@ -202,6 +204,7 @@ export function VlanSetting () {
             dataSource={vlanTable}
             rowSelection={{
               type: 'radio',
+              selectedRowKeys: selectedRows,
               onChange: (keys: React.Key[]) => {
                 setDrawerFormRule(
                   vlanTable?.find((i: { vlanId: number }) => i.vlanId === keys[0])

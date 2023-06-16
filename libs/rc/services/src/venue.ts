@@ -183,6 +183,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      providesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateMeshOptions'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'WIFI_SETTINGS' }]))
+          })
+        })
       }
     }),
     updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
@@ -192,7 +203,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }]
     }),
     updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -377,7 +389,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
         return{
           ...req
         }
@@ -1059,7 +1071,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'ADD_UNIT',
             'UPDATE_UNIT',
-            'DELETE_UNITS',
+            'DELETE_UNIT',
             'UpdatePersona'
           ]
           onActivityMessageReceived(msg, activities, () => {
@@ -1211,6 +1223,7 @@ export const {
   useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueExternalAntennaQuery,
+  useLazyGetVenueExternalAntennaQuery,
   useGetVenueApCapabilitiesQuery,
   useUpdateVenueExternalAntennaMutation,
   useGetAvailableLteBandsQuery,

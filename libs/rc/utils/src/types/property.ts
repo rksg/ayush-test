@@ -58,7 +58,7 @@ export enum PropertyDpskType {
   GUEST = 'GUEST'
 }
 
-interface PropertyDpskSetting {
+export interface PropertyDpskSetting {
   type: PropertyDpskType,
   // TODO: Check this field meaning
   status?: 'CREATED' | 'ASSIGNED' | 'UNASSIGNED' | 'FAILED'
@@ -100,8 +100,8 @@ export interface PropertyUnit {
     }
   },
   trafficControl?: {
-    qosProfileId: string
-    qosExpiryTime: number
+    meteringProfileId: string,
+    profileExpiry: string
   }
 }
 
@@ -110,7 +110,7 @@ export interface UnitPersonaConfig {
   dpskPassphrase?: string,
   ethernetPorts?: PersonaEthernetPort[], // FIXME: not integrate with Persona
   meteringProfileId?: string | null,
-  expirationEpoch?: number | null
+  expirationDate?: string | null
 }
 
 export interface PropertyUnitFormFields extends PropertyUnit {
@@ -140,6 +140,9 @@ interface uiConfiguration {
     announcements: string,
     helpText: string
   },
+  access?: {
+    tenantSetDpsk: boolean
+  },
   color?: {
     mainColor: string,
     accentColor: string,
@@ -147,7 +150,7 @@ interface uiConfiguration {
     textColor: string
   },
   files?: {
-    logoFileName: string,
-    favIconFileName: string
+    logoFileName?: string,
+    favIconFileName?: string
   }
 }

@@ -149,10 +149,10 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
                   <Radio value={ScheduleMode.Automatically}>
                     {$t({ defaultMessage: 'Schedule Automatically' })}
                     { // eslint-disable-next-line max-len
-                      <div>Upgrade preference saved for each venue based on venue’s local time-zone</div>}
+                      <div>{$t({ defaultMessage: 'Upgrade preference saved for each venue based on venue’s local time-zone' })}</div>}
                     <UI.PreferencesSection>
                       { // eslint-disable-next-line max-len
-                        <div style={{ fontWeight: 600, marginLeft: 8, paddingTop: 8 }}>Preferred update slot(s):</div>}
+                        <div style={{ fontWeight: 600, marginLeft: 8, paddingTop: 8 }}>{$t({ defaultMessage: 'Preferred update slot(s):' })}</div>}
                       <div style={{ marginTop: 4, marginLeft: 8 }}>{valueDays.join(', ')}</div>
                       <div style={{ marginLeft: 8, paddingBottom: 8 }}>{valueTimes.join(', ')}</div>
                     </UI.PreferencesSection>
@@ -162,7 +162,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
                   </Radio>
                   <Radio value={ScheduleMode.Manually}>
                     {$t({ defaultMessage: 'Schedule Manually' })}
-                    <div>Manually update firmware per venue</div>
+                    <div>{$t({ defaultMessage: 'Manually update firmware per venue' })}</div>
                   </Radio>
                 </Space>
               </Radio.Group>

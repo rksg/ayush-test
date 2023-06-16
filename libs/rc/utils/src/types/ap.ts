@@ -64,7 +64,8 @@ export interface AP {
   apDownRssi?: number,
   apUpRssi?: number,
   poePort?: string,
-  healthStatus?: string
+  healthStatus?: string,
+  downLinkCount?: number
 }
 
 export interface ApViewModel extends AP {
@@ -297,7 +298,6 @@ export interface ApModel {
   model: string,
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
-  trunkPortOnly?: boolean,
   requireOneEnabledTrunkPort: boolean,
   simCardPrimaryEnabled: boolean,
   simCardPrimaryRoaming: boolean,
@@ -307,7 +307,10 @@ export interface ApModel {
   supportDual5gMode: boolean,
   supportTriRadio: boolean,
   maxChannelization5G?: number,
-  maxChannelization6G?: number
+  maxChannelization6G?: number,
+  externalAntenna?: ExternalAntenna,
+  supportMesh?: boolean,
+  version?: string,
 }
 
 export interface PingAp {
@@ -361,10 +364,13 @@ export interface APPhoto {
   imageUrl: string,
   updatedDate: string
 }
-export interface DhcpAp {
+
+export type DhcpApResponse = {
   requestId: string,
   response?: DhcpApInfo[]
 }
+
+export type DhcpAp = DhcpApResponse | DhcpApInfo[]
 
 export interface PacketCaptureState {
   status: ApPacketCaptureStateEnum,
@@ -441,4 +447,36 @@ export type ImportErrorRes = {
   downloadUrl?: string
   txId: string
   fileErrorsCount: number
+}
+
+export enum MeshModeEnum {
+  AUTO ='AUTO',
+  ROOT ='ROOT',
+  MESH ='MESH',
+  DISABLED = 'DISABLED'
+}
+
+export enum UplinkModeEnum {
+  MANUAL = 'MANUAL',
+  SMART = 'SMART'
+}
+
+export type APMeshSettings = {
+  venueMeshEnabled?: boolean, //read-only (get method only)
+  meshMode: MeshModeEnum,
+  uplinkMode?: UplinkModeEnum,
+  uplinkMacAddresses?: string[]
+}
+
+export type MeshApNeighbor = {
+  rssi: number,
+  mac: string,
+  apName: string
+}
+
+export type MeshUplinkAp = {
+  name: string,
+  deviceStatus: string,
+  healthStatus: string,
+  neighbors: MeshApNeighbor[]
 }

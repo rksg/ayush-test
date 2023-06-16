@@ -72,24 +72,24 @@ path:nth-child(3) {
 function ConnectionMeteringLink (props:{
   id: string,
   name: string,
-  expirationEpoch?: number | null }
+  expirationDate?: string | null }
 ) {
   const { $t } = useIntl()
-  const { id, name, expirationEpoch } = props
+  const { id, name, expirationDate } = props
   let expired = false
   let tooltip = ''
   let showWarning = false
-  if (expirationEpoch) {
-    const now = new Date().getTime() / 1000
-    if (expirationEpoch <= now) {
+  if (expirationDate) {
+    const now = moment.now()
+    const expirationTime = moment(expirationDate)
+    if (expirationTime.diff(now) < 0) {
       expired = true
       showWarning = true
-    } else if ((expirationEpoch - now) / (60 * 60 * 24) < 7) {
+    } else if (expirationTime.diff(now, 'days') < 7) {
       showWarning = true
       expired = false
-      const expireDate = moment(new Date(0).setUTCSeconds(expirationEpoch)).format('yyyy/MM/DD')
       tooltip = $t({ defaultMessage: 'The Consumption data is due to expire on {expireDate}' }
-        , { expireDate })
+        , { expireDate: expirationTime.format('YYYY/MM/DD') })
     }
   }
   return (
@@ -437,8 +437,11 @@ export function VenuePropertyTab () {
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
         const apMac = persona?.ethernetPorts?.[0]?.macAddress ?? ''
-        return (apMap.get(apMac) as APExtended)?.name
-        ?? persona?.ethernetPorts?.[0]?.name
+        const apName = (apMap.get(apMac) as APExtended)?.name
+          ?? persona?.ethernetPorts?.[0]?.name
+        return apName
+          ? `${apName} ${persona?.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')}`
+          : undefined
       }
     },
     {
@@ -447,9 +450,18 @@ export function VenuePropertyTab () {
       title: $t({ defaultMessage: 'Switch Ports' }),
       dataIndex: 'switchPorts',
       render: (_, row) => {
-        const persona = personaMap.get(row.personaId)
-        const switchMac = persona?.switches?.[0]?.macAddress ?? ''
-        return (switchMap.get(switchMac) as SwitchViewModel)?.name
+        const switchList: string[] = []
+
+        personaMap.get(row.personaId)?.switches?.forEach(s => {
+          const switchMac = s.macAddress
+          const switchName = (switchMap.get(switchMac) as SwitchViewModel)?.name
+
+          if (switchName) {
+            switchList.push(`${switchName} ${s.portId}`)
+          }
+        })
+
+        return switchList.map(s => <div>{s}</div>)
       }
     },
     {
@@ -464,7 +476,7 @@ export function VenuePropertyTab () {
         const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
         if (persona && connectionMetering) {
           // eslint-disable-next-line max-len
-          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationEpoch={persona.expirationEpoch}/>
+          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationDate={persona.expirationDate}/>
         }
         return ''
       }

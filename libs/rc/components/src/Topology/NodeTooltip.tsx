@@ -43,7 +43,8 @@ tooltipNode: Node,
       'apStatusData',
       'apStatusData.cellularInfo',
       'healthStatus',
-      'clients'
+      'clients',
+      'downLinkCount'
     ]
   }
 

@@ -7,9 +7,9 @@ import _                                                                       f
 import moment                                                                  from 'moment-timezone'
 import { useIntl }                                                             from 'react-intl'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                    from '@acx-ui/rc/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }   from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -37,7 +37,8 @@ import {
   UnitPersonaConfig,
   VenueLanPorts,
   BillingCycleType,
-  ConnectionMetering
+  ConnectionMetering,
+  PropertyDpskSetting
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
@@ -190,7 +191,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 label={$t({ defaultMessage: 'Expiration Date of Data Consumption' })}
                 required
                 rules={[{ required: true }]}
-                getValueFromEvent={(onChange) => moment(onChange)}
+                getValueFromEvent={(onChange) => onChange ? moment(onChange): undefined}
                 getValueProps={(i) => ({ value: i ? moment(i) : undefined })}
                 initialValue={form.getFieldValue('expirationDate')}
               >
@@ -352,6 +353,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { $t } = useIntl()
   const { isEdit, visible, onClose, venueId, unitId } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
+  const [rawFormValues, setRawFormValues]
+    = useState<PropertyUnitFormFields>({} as PropertyUnitFormFields)
   const [withNsg, setWithNsg] = useState(false)
   const [connectionMeteringList, setConnectionMeteringList] = useState<ConnectionMetering[]>([])
   const [qosSetting, setQosSetting] = useState<QosSetting>()
@@ -430,7 +433,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         form.setFieldsValue(data ?? {})
         if (personaResult?.data) {
           const {
-            vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationEpoch
+            vlan, dpskPassphrase, ethernetPorts, vni, meteringProfileId, expirationDate
           } = personaResult.data as Persona
           if (withNsg) {
             const apName = ethernetPorts?.[0]?.name
@@ -445,11 +448,11 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
           if (isConnectionMeteringEnabled) {
             form.setFieldValue('meteringProfileId', meteringProfileId)
-            form.setFieldValue('expirationDate', expirationEpoch ?
-              moment.unix(expirationEpoch) : undefined)
+            form.setFieldValue('expirationDate', expirationDate ?
+              moment(expirationDate) : undefined)
             setQosSetting({
               profileId: meteringProfileId,
-              expirationDate: expirationEpoch ? moment.unix(expirationEpoch): undefined
+              expirationDate: expirationDate ? moment(expirationDate): undefined
             })
           }
 
@@ -464,6 +467,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
           // if no timeout would not render exactly
           setTimeout(() => {
             form.setFieldValue(['guestPersona', 'vlan'], vlan)
+            setRawFormValues(form.getFieldsValue)
           }, 10)
           form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
         }
@@ -477,57 +481,71 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const handleEditUnit = async (formValues: PropertyUnitFormFields) => {
     // TODO: handle exception for more detail information
-    const { name, resident, personaId, guestPersonaId, unitPersona, guestPersona,
+    const { name, resident, personaId, unitPersona, guestPersona,
       ports, accessAp, apName, meteringProfileId, expirationDate } = formValues
-    // console.log('Edit action :: ', formValues)
+    const { name: rawName, resident: rawResident, unitPersona: rawUnitPersona,
+      guestPersona: rawGuestPersona } = rawFormValues
 
-    // update Unit
-    const unitUpdateResult = await updateUnitMutation({
-      params: { venueId, unitId },
-      payload: { name, resident }
-    }).unwrap()
+    const diffName = name !== rawName && name
+    const diffResident = _.omitBy(resident, (value, key) =>
+      _.isEqual(value, rawResident?.hasOwnProperty(key)
+        ? rawResident[key as keyof typeof resident] : {}))
+    const diffUnitPersona = _.omitBy(unitPersona, (value, key) =>
+      _.isEqual(value, rawUnitPersona?.hasOwnProperty(key)
+        ? rawUnitPersona[key as keyof typeof unitPersona] : {}))
+    const diffGuestPersona = _.omitBy(guestPersona, (value, key) =>
+      _.isEqual(value, rawGuestPersona?.hasOwnProperty(key)
+        ? rawGuestPersona[key as keyof typeof guestPersona] : {}))
+
+    const dpsks: PropertyDpskSetting[] = [
+      {
+        type: PropertyDpskType.UNIT,
+        passphrase: diffUnitPersona?.dpskPassphrase,
+        vlan: diffUnitPersona?.vlan ?? unitPersona?.vlan
+      },
+      {
+        type: PropertyDpskType.GUEST,
+        passphrase: diffGuestPersona?.dpskPassphrase,
+        vlan: diffGuestPersona?.vlan ?? guestPersona?.vlan ?? unitPersona?.vlan
+      }
+    ]
 
     const profileId = isConnectionMeteringEnabled ?
       meteringProfileId !== qosSetting?.profileId ? meteringProfileId ?? null : undefined
       : undefined
 
-    let expirationEpoch = isConnectionMeteringEnabled ?
+    let newExpirationDate = isConnectionMeteringEnabled ?
       meteringProfileId ?
-        expirationDate && expirationDate !== qosSetting?.expirationDate ?
-          expirationDate.unix() : undefined
+        expirationDate && expirationDate.startOf('day') !== qosSetting?.expirationDate ?
+          expirationDate.startOf('day').toISOString() : undefined
         : qosSetting?.profileId ? null : undefined
       : undefined
 
-    if (expirationEpoch) {
-      expirationEpoch = expirationEpoch - expirationDate!!.unix() % 86400
-    }
+    // Update Unit
+    const unitUpdateResult = await updateUnitMutation({
+      params: { venueId, unitId },
+      payload: {
+        ...(diffName && { name: diffName }),
+        ...(!_.isEmpty(diffResident) && { resident: diffResident }),
+        dpsks
+      }
+    })
 
-    // update UnitPersona
-    const personaUpdateResult = withNsg
-      ? await patchPersona(personaId, {
-        ...unitPersona,
+    // Update UnitPersona only when AP data or Qos profile changes
+    const personaUpdateResult = await patchPersona(personaId, {
+      ...(withNsg && {
         ethernetPorts: ports?.map(p => ({
           personaId,
           macAddress: accessAp,
           portIndex: p,
           name: apName
-        } as PersonaEthernetPort)) ?? [],
-        meteringProfileId: profileId,
-        expirationEpoch: expirationEpoch
-      })
-      : await patchPersona(personaId, unitPersona)
+        } as PersonaEthernetPort)) ?? []
+      }),
+      meteringProfileId: profileId,
+      expirationDate: newExpirationDate
+    })
 
-    // update GuestPersona
-    const guestUpdateResult = await patchPersona(
-      guestPersonaId,
-      { ...guestPersona,
-        vlan: guestPersona?.vlan ?? unitPersona?.vlan,
-        meteringProfileId: undefined,
-        expirationEpoch: undefined
-      }
-    )
-
-    return Promise.all([unitUpdateResult, personaUpdateResult, guestUpdateResult])
+    return Promise.all([unitUpdateResult, personaUpdateResult])
   }
 
   const patchPersona = async (id?: string, payload?: UnitPersonaConfig) => {
@@ -552,8 +570,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     const trafficControl = isConnectionMeteringEnabled && meteringProfileId && expirationDate ?
       {
-        qosProfileId: meteringProfileId,
-        qosExpiryTime: expirationDate.unix() - expirationDate.unix() % 86400
+        meteringProfileId: meteringProfileId,
+        profileExpiry: expirationDate.startOf('day').toISOString()
       } : undefined
 
     return {
@@ -699,7 +717,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             </Form.Item>
 
             {enableGuestUnit &&
-              <StepsFormLegacy.FieldLabel width={'160px'}>
+              <StepsForm.FieldLabel width={'160px'}>
                 {$t({ defaultMessage: 'Separate VLAN for guests' })}
                 <Form.Item
                   style={{ marginBottom: '10px' }}
@@ -707,7 +725,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                   valuePropName={'checked'}
                   children={<Switch />}
                 />
-              </StepsFormLegacy.FieldLabel>
+              </StepsForm.FieldLabel>
             }
 
             {enableGuestUnit && enableGuestVlan &&
