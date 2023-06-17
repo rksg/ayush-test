@@ -297,15 +297,6 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         />
       </UI.FieldLabel>
 
-      <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','enableSyslog']}
-        valuePropName='checked'
-        children={
-          <Checkbox children={
-            $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
-        }
-      />
-
       { showTunnelProfile &&
       <Form.Item
         name={['wlan','advancedCustomization','tunnelProfileId']}
