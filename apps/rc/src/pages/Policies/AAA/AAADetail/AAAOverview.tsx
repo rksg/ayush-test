@@ -1,9 +1,8 @@
 
-import { Typography }                                from 'antd'
-import { useIntl, MessageDescriptor, defineMessage } from 'react-intl'
+import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow, SummaryCard } from '@acx-ui/components'
-import { AAAPolicyType }                       from '@acx-ui/rc/utils'
+import { SummaryCard }   from '@acx-ui/components'
+import { AAAPolicyType } from '@acx-ui/rc/utils'
 const typeDescription: Record<string, MessageDescriptor> = {
   AUTHENTICATION: defineMessage({ defaultMessage: 'Authentication' }),
   ACCOUNTING: defineMessage({ defaultMessage: 'Accounting' })

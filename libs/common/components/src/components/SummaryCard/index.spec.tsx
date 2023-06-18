@@ -1,6 +1,6 @@
 import { render, screen } from '@acx-ui/test-utils'
 
-import { ServiceInfo } from '.'
+import { SummaryCard } from '.'
 
 const data = [
   {
@@ -17,10 +17,10 @@ const data = [
   }
 ]
 
-describe('ServiceInfo', () => {
-  it('Should render ServiceInfo successfully', async () => {
+describe('SummaryCard', () => {
+  it('Should render SummaryCard successfully', async () => {
     render(
-      <ServiceInfo data={data} />
+      <SummaryCard data={data} />
     )
     expect(await screen.findByText('title1')).toBeVisible()
     expect(await screen.findByText('content1')).toBeVisible()
