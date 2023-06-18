@@ -180,7 +180,7 @@ export default function ResidentPortalDetail () {
       ]}>
         <GridRow>
           <GridCol col={{ span: 24 }}>
-            <SummaryCard data={residentPortalInfo} colPerRow={4} />
+            <SummaryCard data={residentPortalInfo} colPerRow={3} />
           </GridCol>
           <GridCol col={{ span: 24 }}>
             <Card>

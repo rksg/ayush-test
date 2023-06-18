@@ -96,7 +96,7 @@ const TunnelProfileDetail = () => {
         }
       ]}>
         <Space direction='vertical' size={30}>
-          <SummaryCard data={tunnelInfo} />
+          <SummaryCard data={tunnelInfo} colPerRow={6} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>

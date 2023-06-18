@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Space, Typography } from 'antd'
 import moment                                from 'moment'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader } from '@acx-ui/components'
+import { Button, PageHeader, SummaryCard } from '@acx-ui/components'
 import {
   useGetAdaptivePolicyQuery,
   useGetConditionsInPolicyQuery,
@@ -14,11 +14,11 @@ import {
 import {
   AccessCondition,
   CriteriaOption,
+  PolicyOperation,
+  PolicyType,
   getAdaptivePolicyDetailLink,
   getPolicyListRoutePath,
-  getPolicyRoutePath,
-  PolicyOperation,
-  PolicyType
+  getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -57,10 +57,12 @@ export default function AdaptivePolicyDetail () {
         : condition.evaluationRule.regexStringCriteria
       return (
         <Col span={6} key={condition.id}>
-          <Form.Item
-            //eslint-disable-next-line max-len
-            label={condition.templateAttribute?.attributeType === 'DATE_RANGE' ? condition.templateAttribute?.name : $t({ defaultMessage: '{name} (Regex)' }, { name: condition.templateAttribute?.name })}>
-            <Paragraph>{criteria}</Paragraph>
+          <Form.Item>
+            <SummaryCard.Item
+              //eslint-disable-next-line max-len
+              title={condition.templateAttribute?.attributeType === 'DATE_RANGE' ? condition.templateAttribute?.name : $t({ defaultMessage: '{name} (Regex)' }, { name: condition.templateAttribute?.name })}
+              content={criteria}
+            />
           </Form.Item>
         </Col>
       )
@@ -92,7 +94,45 @@ export default function AdaptivePolicyDetail () {
         ])}
       />
       <Space direction={'vertical'}>
-        <Card>
+        <SummaryCard isLoading={isGetAdaptivePolicyLoading || isGetConditionsLoading}>
+          <Form>
+            <Row>
+              <Col span={6}>
+                <Form.Item>
+                  <SummaryCard.Item
+                    title={$t({ defaultMessage: 'Policy Name' })}
+                    content={policyData?.name}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item>
+                  <SummaryCard.Item
+                    title={$t({ defaultMessage: 'Access Policy Type' })}
+                    content='Advanced Policy Engine'
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Paragraph>{$t({ defaultMessage: 'Access Conditions' })}</Paragraph>
+              </Col>
+              {getConditions(conditionsData?.data)}
+            </Row>
+            <Row>
+              <Col span={6}>
+                <Form.Item>
+                  <SummaryCard.Item
+                    title={$t({ defaultMessage: 'RADIUS Attributes Group' })}
+                    content={attributeGroupName}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </SummaryCard>
+        {/* <Card>
           <Loader states={[
             { isLoading: isGetAdaptivePolicyLoading || isGetConditionsLoading }
           ]}>
@@ -124,7 +164,7 @@ export default function AdaptivePolicyDetail () {
               </Row>
             </Form>
           </Loader>
-        </Card>
+        </Card> */}
       </Space>
     </>
   )

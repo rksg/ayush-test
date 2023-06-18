@@ -59,7 +59,6 @@ export default function PortalOverview (props: { demoValue: Demo }) {
     },
     {
       title: <PortalPreviewModal demoValue={newDemo} portalLang={portalLang}/>,
-      content: '',
       colSpan: 1
     }
   ]

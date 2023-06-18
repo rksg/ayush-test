@@ -1,11 +1,13 @@
 import styled, { css } from 'styled-components'
 
 export const textStyle = css`
-  .text-color {
-    color: var(--acx-neutrals-60)
+  .title {
+    color: var(--acx-neutrals-60);
+    font-size: var(--acx-body-4-font-size);
   }
-  .text-wrap {
-    overflow-wrap: anywhere
+  .content {
+    overflow-wrap: anywhere;
+    font-size: var(--acx-body-3-font-size);
   }
 `
 
