@@ -28,7 +28,8 @@ import {
   validateVlanName,
   UplinkInfo,
   WebAuthTemplate,
-  defaultTemplateData
+  defaultTemplateData,
+  getWebAuthLabelValidator
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
@@ -108,8 +109,7 @@ export function AccessSwitchDrawer (props: {
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
     payload: {
-      fields: ['name', 'id', 'webAuthPasswordLabel', 'webAuthCustomTitle',
-        'webAuthCustomTop', 'webAuthCustomLoginButton', 'webAuthCustomBottom']
+      fields: ['name', 'id']
     }
   })
   const templateList = templateListResult?.data as WebAuthTemplate[]
@@ -180,8 +180,10 @@ export function AccessSwitchDrawer (props: {
             noStyle>
             { isMultipleEdit && (!options || options.length === 0) ?
               <Input disabled={!uplinkInfoOverwrite}
+                data-testid={radioValue}
                 style={{ width: '180px' }} /> :
               <Select options={options}
+                data-testid={radioValue}
                 disabled={!uplinkInfoOverwrite}
                 placeholder={$t({ defaultMessage: 'Select ...' })}
                 style={{ width: '180px' }} />
@@ -323,7 +325,11 @@ export function AccessSwitchDrawer (props: {
           {
             Object.keys(defaultTemplateData).map(name=>{
               const item = defaultTemplateData[name as keyof typeof defaultTemplateData]
-              return (<Form.Item name={name} label={$t(item.label)} key={name}>
+              return (<Form.Item name={name}
+                label={$t(item.label)}
+                validateTrigger='onBlur'
+                rules={[getWebAuthLabelValidator()]}
+                key={name}>
                 <Input.TextArea autoSize
                   disabled={!webAuthPageOverwrite}
                   placeholder={$t(item.defaultMessage, {

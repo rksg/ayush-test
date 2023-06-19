@@ -5,7 +5,7 @@ const ConnectionMeteringBaseUrl = ''
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 type ConnectionMeteringUrlType = 'searchConnectionMeteringList' | 'getConnectionMeteringDetail'
   | 'createConnectionMetering' | 'updateConnectionMetering' | 'deleteConnectionMetering'
-  | 'getConnectionMeteringList'
+  | 'getConnectionMeteringList' | 'getQosStats'
 
 export const ConnectionMeteringUrls: { [key in ConnectionMeteringUrlType]: ApiInfo } = {
   searchConnectionMeteringList: {
@@ -36,6 +36,11 @@ export const ConnectionMeteringUrls: { [key in ConnectionMeteringUrlType]: ApiIn
   getConnectionMeteringList: {
     method: 'get',
     url: `${ConnectionMeteringBaseUrl}/connectionMeteringProfiles${paginationParams}`,
+    newApi: true
+  },
+  getQosStats: {
+    method: 'post',
+    url: '/qos/stats/query',
     newApi: true
   }
 }

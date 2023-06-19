@@ -86,7 +86,7 @@ export const NetworkSegmentationServiceInfo = styled((
     profile under this Network Segmentation.`
     },
     {
-      tunnelNumber: nsgViewData?.tunnelNumber,
+      tunnelNumber: nsgViewData?.tunnelNumber || 0,
       tunnelName: tunnelData?.id === tenantId ? $t({ defaultMessage: 'Default' }): tunnelData?.name
     }
   )
@@ -94,7 +94,7 @@ export const NetworkSegmentationServiceInfo = styled((
   const nsgInfo = [
     {
       title: $t({ defaultMessage: 'Service Status' }),
-      content: () => (nsgViewData?.serviceStatus)
+      content: () => (nsgViewData?.serviceStatus || $t({ defaultMessage: 'Down' }))
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
@@ -182,7 +182,7 @@ export const NetworkSegmentationServiceInfo = styled((
           })}>
             {
               `${tunnelData.id === tenantId ? $t({ defaultMessage: 'Default' }): tunnelData.name}
-              (${nsgViewData?.tunnelNumber})`
+              (${nsgViewData?.tunnelNumber || 0})`
             }
           </TenantLink>
       )

@@ -99,7 +99,7 @@ describe('Edge Detail Page Header', () => {
     await screen.findByText(`Delete "${currentEdge.name}"?`)
     await userEvent.click(screen.getByRole('button', { name: 'Delete SmartEdge' }))
     await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/edge/list`)
+      expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/edge`)
     })
   })
 

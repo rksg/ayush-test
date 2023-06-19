@@ -65,5 +65,10 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeDhcpServices/dhcpHosts/query',
     newApi: true
+  },
+  getDhcpUeSummaryStats: {
+    method: 'post',
+    url: '/edgeDhcpServices/dhcpUeSummary/query',
+    newApi: true
   }
 }

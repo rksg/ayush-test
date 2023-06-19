@@ -17,6 +17,11 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/webAuthPageTemplates/:serviceId'
   },
+  getWebAuthTemplateSwitches: {
+    method: 'get',
+    newApi: true,
+    url: '/webAuthPageTemplates/:serviceId/switches'
+  },
   getWebAuthTemplateList: {
     method: 'post',
     newApi: true,

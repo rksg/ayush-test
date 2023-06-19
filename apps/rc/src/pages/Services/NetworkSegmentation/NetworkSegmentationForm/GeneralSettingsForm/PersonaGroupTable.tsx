@@ -43,16 +43,18 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
   )
 
   useEffect(() => {
-    setTableData([
-      {
-        personaGroupName: personaGroupData?.name,
-        personaGroupId: personaGroupData?.id,
-        personaCount: personaGroupData?.personas?.length || 0,
-        dpskName: dpskData?.name,
-        dpskId: dpskData?.id,
-        dpskNetworkCount: dpskData?.networkIds?.length
-      }
-    ])
+    if (personaGroupData) {
+      setTableData([
+        {
+          personaGroupName: personaGroupData?.name,
+          personaGroupId: personaGroupData?.id,
+          personaCount: personaGroupData?.personas?.length || 0,
+          dpskName: dpskData?.name,
+          dpskId: dpskData?.id,
+          dpskNetworkCount: dpskData?.networkIds?.length
+        }
+      ])
+    }
   }, [personaGroupData, dpskData])
 
   const columns: TableProps<TableDataType>['columns'] = [

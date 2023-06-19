@@ -32,6 +32,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
 
   const { visible, setVisible, isEditMode, serverType, editData } = props
   const [resetField, setResetField] = useState(false)
+  const [isAdminUser, setIsAdminUser] = useState(false)
   const params = useParams()
   const [form] = Form.useForm()
   const [ addAAAServer ] = useAddAAAServerMutation()
@@ -41,6 +42,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   useEffect(()=>{
     if (editData && visible) {
       form.setFieldsValue(editData)
+      setIsAdminUser(editData?.name === 'admin' || editData?.username === 'admin')
     }
   }, [editData, visible])
 
@@ -222,7 +224,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { max: 48 },
         { validator: (_, value) => excludeQuoteRegExp(value) },
         { validator: (_, value) => excludeSpaceRegExp(value) },
-        { validator: (_, value) => validateUsername(value) }
+        { validator: (_, value) => !isAdminUser ? validateUsername(value) : Promise.resolve() }
       ]}
       children={<Input disabled={(editData as LocalUser).username === 'admin'}/>}
     />
