@@ -337,7 +337,7 @@ export function MoreSettingsForm (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={true}
-            children={<Switch onChange={onOfdmChange}></Switch>}
+            children={<Switch data-testid='enableOfdmOnly' onChange={onOfdmChange}></Switch>}
           />
         </UI.FieldLabel>
 
