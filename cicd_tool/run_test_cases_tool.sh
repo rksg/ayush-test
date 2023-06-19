@@ -15,7 +15,9 @@ do
     cmd="${RUN_COMMAND} ${nx_param}"
     echo $cmd
     bash -c $cmd
-    if [ ! "$?" -eq 0 ]; then
+    ret=$?
+    echo "ret: $ret"
+    if [ ! "$ret" -eq 0 ]; then
         echo "$cmd"
         echo "[Fail] Test case is failure."
         exit 1
