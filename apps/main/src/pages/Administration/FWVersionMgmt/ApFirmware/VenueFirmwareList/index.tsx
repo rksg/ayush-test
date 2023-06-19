@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
 import { Tooltip } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -37,8 +36,7 @@ import {
   useTableQuery,
   sortProp,
   defaultSort,
-  dateSort,
-  EolApFirmware
+  dateSort
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -58,6 +56,7 @@ import { AdvancedUpdateNowDialog } from './AdvancedUpdateNowDialog'
 import { ChangeScheduleDialog }    from './ChangeScheduleDialog'
 import { RevertDialog }            from './RevertDialog'
 import { UpdateNowDialog }         from './UpdateNowDialog'
+import { useApEolFirmware }        from './useApEolFirmware'
 
 
 function useColumns (
@@ -169,9 +168,9 @@ export const VenueFirmwareTable = (
   const [revertModelVisible, setRevertModelVisible] = useState(false)
   const [venues, setVenues] = useState<FirmwareVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
-  const [eolApFirmwareList, setEolApFirmwareList] = useState<EolApFirmware[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const { canUpdateEolApFirmware } = useApEolFirmware()
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -238,30 +237,9 @@ export const VenueFirmwareTable = (
     }
   }
 
-  const processEolApFirmwares = (selectedRows: FirmwareVenue[]) => {
-    const selectedEolApFirmwares = _.compact(selectedRows.map(row => row.eolApFirmwares)).flat()
-    // eslint-disable-next-line max-len
-    const uniqueEolApFirmwares = selectedEolApFirmwares.reduce((acc: EolApFirmware[], cur: EolApFirmware) => {
-      if (cur.currentEolVersion === cur.latestEolVersion) return acc //ACX-33594 Ignore the EOL firmware if it is already upgraded to the latest one
-
-      let currentEol = { ...cur }
-      const foundIndex = acc.findIndex(eol => eol.name === currentEol.name)
-      if (foundIndex === -1) {
-        acc.push(currentEol)
-      } else {
-        acc[foundIndex].apModels = _.uniq(acc[foundIndex].apModels.concat(currentEol.apModels))
-      }
-
-      return acc
-    }, [])
-
-    setEolApFirmwareList(uniqueEolApFirmwares)
-  }
-
-  const processAvailableApFirmwares = (selectedRows: FirmwareVenue[]) => {
+  const extractAvailableApFirmwares = (selectedRows: FirmwareVenue[]): FirmwareVersion[] => {
     if (!availableVersions) {
-      setUpgradeVersions([])
-      return
+      return []
     }
 
     let filterVersions: FirmwareVersion[]
@@ -289,71 +267,21 @@ export const VenueFirmwareTable = (
         return result > 0 || (result === 0 && !isSameVersion)
       })
     }
-    setUpgradeVersions(filterVersions)
+
+    return filterVersions
   }
 
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
     visible: (selectedRows) => {
-      let eolAp = false
-      let allEolFwlatest = true
-      for (let v of selectedRows) {
-        if (v['eolApFirmwares']) {
-          eolAp = true
-          if (allEolFwlatest) {
-            // eslint-disable-next-line max-len
-            allEolFwlatest = compareVersions(v['eolApFirmwares'][0].latestEolVersion, v['eolApFirmwares'][0].currentEolVersion) === 0 ? true : false
-          }
-        }
-      }
+      const eolAvailable = canUpdateEolApFirmware(selectedRows)
+      const activeApFirmwares = extractAvailableApFirmwares(selectedRows)
 
-      let filterVersions: FirmwareVersion[] = []
-      if (selectedRows.length === 1) {
-        const version = getApVersion(selectedRows[0])
-        if (!version) {
-          return false
-        }
-        if (availableVersions) {
-          for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version) > 0) {
-              filterVersions.push(availableVersions[i])
-            }
-          }
-        }
-        return filterVersions.length > 0 || (eolAp && !allEolFwlatest)
-      }
-
-      let minVersion = ''
-      let isSameVersion = true
-      const ok = selectedRows.every((row: FirmwareVenue) => {
-        const version = getApVersion(row)
-        if (!version) {
-          return false
-        }
-        if (minVersion && compareVersions(version, minVersion) !== 0) {
-          isSameVersion = false
-        }
-
-        if (!minVersion || compareVersions(version, minVersion) > 0) {
-          minVersion = version
-        }
-        return true
-      })
-      if (!ok) return false
-      if (availableVersions) {
-        for (let i = 0; i < availableVersions.length; i++) {
-          // eslint-disable-next-line max-len
-          if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
-            filterVersions.push(availableVersions[i])
-          }
-        }
-      }
-      return filterVersions.length > 0 || (eolAp && !allEolFwlatest)
+      return eolAvailable || activeApFirmwares.length > 0
     },
     label: $t({ defaultMessage: 'Update Now' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
-      processEolApFirmwares(selectedRows)
-      processAvailableApFirmwares(selectedRows)
+      setUpgradeVersions(extractAvailableApFirmwares(selectedRows))
       setUpdateModelVisible(true)
     }
   },
@@ -536,7 +464,6 @@ export const VenueFirmwareTable = (
         visible={updateModelVisible}
         data={venues}
         availableVersions={upgradeVersions}
-        eolApFirmwares={eolApFirmwareList}
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />
@@ -610,16 +537,13 @@ interface UpdateNowDialogSwitcherProps {
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
-  availableVersions?: FirmwareVersion[],
-  eolApFirmwares?: EolApFirmware[]
+  availableVersions?: FirmwareVersion[]
 }
 
 function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
   const isEolApPhase2Enabled = useIsSplitOn(Features.EOL_AP_2022_12_PHASE_2_TOGGLE)
-  const {
-    eolApFirmwares = [],
-    ...rest
-  } = props
+  const { getAvailableEolApFirmwares } = useApEolFirmware()
+  const eolApFirmwares = getAvailableEolApFirmwares(props.data)
 
   const eolApFirmware = eolApFirmwares.length > 0
     ? {
@@ -632,5 +556,5 @@ function UpdateNowDialogSwitcher (props: UpdateNowDialogSwitcherProps) {
 
   return isEolApPhase2Enabled
     ? <AdvancedUpdateNowDialog {...props} />
-    : <UpdateNowDialog {...({ ...rest, ...eolApFirmware })} />
+    : <UpdateNowDialog {...({ ...props, ...eolApFirmware })} />
 }

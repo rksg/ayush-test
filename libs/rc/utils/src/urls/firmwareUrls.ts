@@ -41,6 +41,12 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release',
     newApi: true
   },
+  getAvailableABFList: {
+    method: 'get',
+    url: '/apFirmwares?status=release&abf=all',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release/all',
+    newApi: true
+  },
   getFirmwareVersionIdList: {
     method: 'get',
     url: '/apFirmwares',
