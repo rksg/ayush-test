@@ -7,3 +7,12 @@ export const FieldLabel = styled.div<{ width: string }>`
   grid-template-columns: ${props => props.width} 1fr;
   align-items: baseline;
 `
+export const DisabledDiv = styled.div`
+  width: 800px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  background-color: var(--acx-neutrals-30);
+`

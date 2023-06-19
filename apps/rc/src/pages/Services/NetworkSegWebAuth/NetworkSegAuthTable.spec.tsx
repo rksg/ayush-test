@@ -9,6 +9,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -35,10 +36,6 @@ describe( 'NetworkSegAuthTable', () => {
       rest.post(
         NetworkSegmentationUrls.getWebAuthTemplateList.url,
         (req, res, ctx) => res(ctx.json({ data, page: 1, totalCount: 1, totalPages: 1 }))
-      ),
-      rest.delete(
-        NetworkSegmentationUrls.deleteWebAuthTemplate.url,
-        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -54,10 +51,18 @@ describe( 'NetworkSegAuthTable', () => {
     const row = await screen.findByRole('row', { name: /Mock Template name/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
+
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledTimes(1))
   })
 
   it( 'should delete selected row', async () => {
     const user = userEvent.setup()
+    mockServer.use(
+      rest.delete(
+        NetworkSegmentationUrls.deleteWebAuthTemplate.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
     render(
       <Provider>
         <NetworkSegAuthTable />
@@ -66,8 +71,12 @@ describe( 'NetworkSegAuthTable', () => {
     const row = await screen.findByRole('row', { name: /Mock Template name/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "Mock Template name"?')
-    await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
+
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText('Delete "Mock Template name"?')
+    await user.click((await within(dialog).findByRole('button', { name: 'Delete' })))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it( 'should update selected row', async () => {
@@ -80,7 +89,11 @@ describe( 'NetworkSegAuthTable', () => {
     const row = await screen.findByRole('row', { name: /Mock Template name/i })
     await user.click(within(row).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Update Now' }))
-    await screen.findByText('Service Update')
-    await user.click((await screen.findByRole('button', { name: 'Update' })))
+
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText('Service Update')
+    await user.click((await within(dialog).findByRole('button', { name: 'Update' })))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 })
