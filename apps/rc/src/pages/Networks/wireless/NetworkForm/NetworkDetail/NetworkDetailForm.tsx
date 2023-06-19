@@ -43,26 +43,17 @@ export function NetworkDetailForm () {
   const [differentSSID, setDifferentSSID] = useState(false)
   const form = Form.useFormInstance()
   const onChange = (e: RadioChangeEvent) => {
-    setData && setData({
-      ...data,
-      name: form.getFieldValue('name'),
-      type: e.target.value as NetworkTypeEnum,
+    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
       enableAccountingProxy: false,
       enableAuthProxy: e.target.value === NetworkTypeEnum.DPSK, // to set default value as true for DPSK while adding new network
       enableAccountingService: false })
   }
 
   useEffect(() => {
-    if(data){
-      form.setFieldsValue(data)
-    }
     if (editMode && data?.wlan?.ssid) {
       if (!differentSSID) {
         setDifferentSSID(data?.wlan?.ssid !== data?.name)
       }
-    }
-    if (cloneMode && data?.wlan?.ssid) {
-      form.setFieldValue(['wlan', 'ssid'], data?.name)
     }
   }, [data, editMode])
 
@@ -170,7 +161,7 @@ export function NetworkDetailForm () {
             type='link'
             style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
-              if (differentSSID) {
+              if (!differentSSID) {
                 const name = form.getFieldValue('name')
                 form.setFieldValue(['wlan', 'ssid'], name)
               }
