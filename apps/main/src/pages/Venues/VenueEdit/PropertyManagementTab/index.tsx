@@ -269,17 +269,16 @@ export function PropertyManagementTab () {
                     children={<Switch disabled={hasUnits} />}
                   />
                 </StepsFormLegacy.FieldLabel>
-                {!residentPortalHasBound &&
-                  <StepsFormLegacy.FieldLabel width={'190px'}>
-                    {$t({ defaultMessage: 'Enable Resident Portal' })}
-                    <Form.Item
-                      name={['unitConfig', 'residentPortalAllowed']}
-                      rules={[{ required: true }]}
-                      valuePropName={'checked'}
-                      children={<Switch />}
-                    />
-                  </StepsFormLegacy.FieldLabel>
-                }
+                <StepsFormLegacy.FieldLabel width={'190px'} hidden={residentPortalHasBound}>
+                  {$t({ defaultMessage: 'Enable Resident Portal' })}
+                  <Form.Item
+                    hidden={residentPortalHasBound}
+                    name={['unitConfig', 'residentPortalAllowed']}
+                    rules={[{ required: true }]}
+                    valuePropName={'checked'}
+                    children={<Switch />}
+                  />
+                </StepsFormLegacy.FieldLabel>
                 {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
                     <Form.Item
                       name='residentPortalId'
