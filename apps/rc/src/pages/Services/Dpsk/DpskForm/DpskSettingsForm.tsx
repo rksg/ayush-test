@@ -142,6 +142,7 @@ function CloudpathFormItems () {
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
   const isPolicyManagementEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policySetId = Form.useWatch<string>('policySetId', form)
 
   const { policySetOptions } = useAdaptivePolicySetListQuery(
     { payload: { page: 1, pageSize: '2147483647' } },
@@ -202,36 +203,41 @@ function CloudpathFormItems () {
           }
         />
         {isPolicyManagementEnabled &&
-          <Form.Item
-            name='policySetId'
-            label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-            rules={[{ required: false }]}
-          >
-            <Select style={{ width: 200 }}
-              placeholder={$t({ defaultMessage: 'Select...' })}
-              allowClear
-              options={policySetOptions}
-            />
-          </Form.Item>
+          <>
+            <Form.Item
+              name='policySetId'
+              label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+              rules={[{ required: false }]}
+            >
+              <Select style={{ width: 200 }}
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                allowClear
+                options={policySetOptions}
+              />
+            </Form.Item>
+            {policySetId &&
+              <Form.Item
+                name='policyDefaultAccess'
+                label={$t({ defaultMessage: 'Default Access' })}
+                initialValue={PolicyDefaultAccess.ACCEPT}
+                rules={[{ required: true }]}
+              >
+                <SelectionControl
+                  options={[
+                    {
+                      value: PolicyDefaultAccess.ACCEPT,
+                      label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.ACCEPT])
+                    },
+                    {
+                      value: PolicyDefaultAccess.REJECT,
+                      label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.REJECT])
+                    }
+                  ]}
+                />
+              </Form.Item>
+            }
+          </>
         }
-        <Form.Item name='policyDefaultAccess'
-          label={$t({ defaultMessage: 'Default Access' })}
-          initialValue={PolicyDefaultAccess.ACCEPT}
-          rules={[{ required: true }]}
-        >
-          <SelectionControl
-            options={[
-              {
-                value: PolicyDefaultAccess.ACCEPT,
-                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.ACCEPT])
-              },
-              {
-                value: PolicyDefaultAccess.REJECT,
-                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.REJECT])
-              }
-            ]}
-          />
-        </Form.Item>
       </GridCol>
     </GridRow>
   )

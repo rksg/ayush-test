@@ -73,10 +73,12 @@ describe('DpskSettingsForm', () => {
       </Provider>
     )
 
-    expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
-    expect(await screen.findByRole('radio', { name: /Unlimited/ })).toBeVisible()
-
     await userEvent.click(await screen.findByRole('combobox', { name: /Adaptive Policy Set/ }))
-    expect(await screen.findByText(mockedPolicySet.content[0].name)).toBeInTheDocument()
+
+    const policySetOption = await screen.findByText(mockedPolicySet.content[0].name)
+    expect(policySetOption).toBeInTheDocument()
+
+    await userEvent.click(policySetOption)
+    expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
   })
 })
