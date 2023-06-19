@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsTierAllowed }                                                       from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { useGetTunnelProfileViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import {
@@ -92,6 +93,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
   }
 
   const showTunnelProfile = hasVxLanTunnelProfile(data)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const tunnelProfileDefaultPayload = {
     fields: ['name', 'id'],
@@ -103,6 +105,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
   const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
+    skip: !!!isEdgeEnabled,
     selectFromResult: ({ data, isLoading }) => {
       return {
         tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
@@ -120,7 +123,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       filters: { vxlanTunnelProfileId: [ tunnelProfileId ] }
     }
   }, {
-    skip: !!!tunnelProfileId,
+    skip: !!!tunnelProfileId || !!!isEdgeEnabled,
     selectFromResult: ({ data }) => {
       return {
         nsgId: data?.data[0]?.id
@@ -259,7 +262,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
             <Checkbox
               children={
                 <>
-                  {$t({ defaultMessage: 'Single session ID Accounting' })}
+                  {$t({ defaultMessage: 'Single Session ID Accounting' })}
                   <Tooltip
                     // eslint-disable-next-line max-len
                     title={$t({ defaultMessage: 'APs will maintain one accounting session for client roaming' })}
@@ -272,21 +275,27 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
       }
 
-      <UI.FormItemNoLabel
-        name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
-        valuePropName='checked'
-        children={
-          <Checkbox disabled={enableAntiSpoofing}
-            children={$t({ defaultMessage: 'Force DHCP' })} />}
-      />
-      <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','enableSyslog']}
-        valuePropName='checked'
-        children={
-          <Checkbox children={
-            $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
-        }
-      />
+      <UI.FieldLabel width='125px'>
+        {$t({ defaultMessage: 'Force DHCP' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch disabled={enableAntiSpoofing} />}
+        />
+      </UI.FieldLabel>
+
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
+        <Form.Item
+          name={['wlan','advancedCustomization','enableSyslog']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
 
       { showTunnelProfile &&
       <Form.Item
@@ -308,7 +317,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           <UI.Description>
             {
               $t({
-                defaultMessage: `All networks under the same Network Segmentation 
+                defaultMessage: `All networks under the same Network Segmentation
                 share the same tunnel profile. Go `
               })
             }

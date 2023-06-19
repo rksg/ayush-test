@@ -1403,6 +1403,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                       <img
                                         alt="AP LAN port image - R650"
                                         class="ant-image-img"
+                                        src="https://storage.googleapis.com/"
                                       />
                                     </div>
                                   </div>

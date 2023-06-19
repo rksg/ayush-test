@@ -3,13 +3,13 @@ import { ApiInfo } from '../apiService'
 export const MigrationUrlsInfo: { [key: string]: ApiInfo } = {
   uploadZdConfig: {
     method: 'post',
-    url: '/zd/migration/upload',
+    url: '/zdConfigurations',
     oldUrl: '/zd/migration/upload',
     newApi: true
   },
   addZdMigration: {
     method: 'post',
-    url: '/zd/migration/:id',
+    url: '/zdConfigurations/:id',
     oldUrl: '/zd/migration/:id',
     newApi: true
   },
@@ -21,14 +21,32 @@ export const MigrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMigrationResult: {
     method: 'get',
-    url: '/zd/migration/:id',
-    oldUrl: '/venues/aps/importResults',
-    newApi: true
+    url: '/zdConfigurations/:id',
+    oldUrl: '/zd/migration/:id',
+    newApi: false
   },
   deleteMigration: {
     method: 'delete',
-    url: '/zd/migration/:id',
-    oldUrl: '/api/tenant/:tenantId/zd/migration/:id',
+    url: '/zdConfigurations/:id',
+    oldUrl: '/zd/migration/:id',
+    newApi: true
+  },
+  getZdConfigurationList: {
+    method: 'post',
+    url: '/zdConfigurations/query',
+    oldUrl: '/zdConfigurations/query',
+    newApi: true
+  },
+  getZdConfiguration: {
+    method: 'get',
+    url: '/zdConfigurations/:id/query',
+    oldUrl: '/zdConfigurations/:id/query',
+    newApi: true
+  },
+  getZdConfigurationResult: {
+    method: 'post',
+    url: '/zdConfigurations/:id/results/query',
+    oldUrl: '/zdConfigurations/:id/results/query',
     newApi: true
   }
 }

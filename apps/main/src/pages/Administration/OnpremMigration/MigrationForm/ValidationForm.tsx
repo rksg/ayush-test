@@ -15,7 +15,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  useGetMigrationResultQuery
+  useGetZdConfigurationQuery
 } from '@acx-ui/rc/services'
 import {
   MigrationActionTypes,
@@ -38,10 +38,11 @@ const ValidationForm = (props: ValidationFormProps) => {
   } = useContext(MigrationContext)
 
   // eslint-disable-next-line max-len
-  const { data: validateResult } = useGetMigrationResultQuery({ params: { ...params, id: taskId } })
+  const { data: validateResult } = useGetZdConfigurationQuery({ params: { ...params, id: taskId } })
 
   useEffect(()=>{
-    if (validateResult?.state && validateResult?.state === 'Qualified') {
+    // eslint-disable-next-line max-len
+    if (validateResult?.data && validateResult.data.length > 0 && validateResult.data[0].migrationTaskList && validateResult.data[0].migrationTaskList.length > 0 && validateResult.data[0].migrationTaskList[0].state === 'Qualified') {
       dispatch({
         type: MigrationActionTypes.ERRORMSG,
         payload: {
@@ -93,8 +94,7 @@ const ValidationForm = (props: ValidationFormProps) => {
       key: 'validationErrors',
       dataIndex: 'validationErrors',
       render: (_, row) => {
-        // eslint-disable-next-line max-len
-        return row.validationErrors && row.validationErrors.length > 0 ? row.validationErrors.join(',') : '--'
+        return row.validationErrors ?? '--'
       }
     }
   ]
@@ -102,32 +102,36 @@ const ValidationForm = (props: ValidationFormProps) => {
   return (
     <Loader states={[
       { isLoading: false,
-        isFetching: !validateResult?.state
+        // eslint-disable-next-line max-len
+        isFetching: !(validateResult?.data && validateResult.data.length > 0 && validateResult.data[0].migrationTaskList && validateResult.data[0].migrationTaskList.length > 0 && validateResult.data[0].migrationTaskList[0].state)
       }
     ]}>
       <Row>
         <Col span={12}>
           <Subtitle level={4}>
-            {$t({ defaultMessage: 'Validation State' })}: {validateResult?.state ?? '--'}
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Validation State' })}: {(validateResult?.data && validateResult.data.length > 0 && validateResult.data[0].migrationTaskList && validateResult.data[0].migrationTaskList.length > 0 && validateResult.data[0].migrationTaskList[0].state) ?? '--'}
           </Subtitle>
         </Col>
       </Row>
       <Row>
         <Col span={3}>
           <Subtitle level={5}>
-            {$t({ defaultMessage: 'Total' })}: {validateResult?.apImportResults?.length ?? '--'}
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Total' })}: {(validateResult?.data && validateResult.data.length > 0 && validateResult.data[0].migrationTaskList && validateResult.data[0].migrationTaskList.length > 0 && validateResult.data[0].migrationTaskList[0].apImportResultList?.length) ?? '--'}
           </Subtitle>
         </Col>
         <Col span={3}>
           <Subtitle level={5}>
-            {$t({ defaultMessage: 'Valid' })}: {
-              validateResult?.apImportResults?.filter(callbackfn).length ?? '--'}
+            {// eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Valid' })}: {(validateResult?.data && validateResult.data.length > 0 && validateResult.data[0].migrationTaskList && validateResult.data[0].migrationTaskList.length > 0 && validateResult.data[0].migrationTaskList[0].apImportResultList?.filter(callbackfn).length) ?? '--'}
           </Subtitle>
         </Col>
       </Row>
       <Table
         columns={columns}
-        dataSource={validateResult?.apImportResults}
+        // eslint-disable-next-line max-len
+        dataSource={(validateResult?.data && validateResult.data.length > 0 && validateResult.data[0].migrationTaskList && validateResult.data[0].migrationTaskList.length > 0 && validateResult.data[0].migrationTaskList[0].apImportResultList) as MigrationResultType[]}
         rowKey='serial'
         locale={{
           // eslint-disable-next-line max-len

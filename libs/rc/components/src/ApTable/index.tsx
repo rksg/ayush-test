@@ -81,9 +81,6 @@ const transformMeshRole = (value: APMeshRole) => {
     case APMeshRole.EMAP:
       meshRole = 'eMAP'
       break
-    case APMeshRole.DISABLED:
-      meshRole = ''
-      break
     default:
       meshRole = value
       break

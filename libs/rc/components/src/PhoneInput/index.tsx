@@ -35,11 +35,11 @@ export function PhoneInput ({ callback, name, onTop }: PhoneInputProps) {
       inputRef.current.input.addEventListener('change', handleChange)
       inputRef.current.input.addEventListener('keyup', handleChange)
 
-      if(form?.getFieldValue(name)) {
-        iti.setNumber(form.getFieldValue(name))
+      if(form.getFieldValue(name)) {
+        iti.getNumber()
       }
     }
-  }, [])
+  }, [name])
 
   return (
     <Form.Item name={name}>

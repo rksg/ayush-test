@@ -79,6 +79,7 @@ export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
 export { usePreference, countryCodes } from './usePreference'
 export type { updatePreferenceProps } from './usePreference'
+export { usePlacesAutocomplete } from './usePlacesAutocomplete'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
 export {

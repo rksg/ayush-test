@@ -2,13 +2,13 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { ServiceInfo }                                                                          from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery }                                                                 from '@acx-ui/rc/services'
-import { DhcpStats, ServiceOperation, ServiceType, getServiceDetailsLink, getServiceRoutePath } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                       from '@acx-ui/user'
+import { Button, Card, Loader, PageHeader, Table, TableProps }                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
+import { ServiceInfo }                                                                                   from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                           from '@acx-ui/rc/services'
+import { DhcpUeSummaryStats, ServiceOperation, ServiceType, getServiceDetailsLink, getServiceRoutePath } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                         from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                from '@acx-ui/user'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
@@ -29,38 +29,55 @@ const EdgeDHCPDetail = () => {
     ],
     filters: { id: [params.serviceId] }
   }
-  const { data: dhcpStats, isLoading } = useGetDhcpStatsQuery({
+  const getDhcpUeSummaryStatsPayload = {
+    fields: [
+      'edgeId',
+      'edgeName',
+      'venueId',
+      'venueName',
+      'successfulAllocation',
+      'remainsIps',
+      'droppedPackets'
+    ],
+    filters: { dhcpId: [params.serviceId] }
+  }
+  const { data: dhcpStats, isLoading: isDhcpStatsLoading } = useGetDhcpStatsQuery({
     params,
     payload: getDhcpStatsPayload
   })
+  const { data: dhcpUeSummaryStats, isLoading: isDhcpUeSummaryStatsLoading } =
+  useGetDhcpUeSummaryStatsQuery({
+    params,
+    payload: getDhcpUeSummaryStatsPayload
+  })
 
-  const columns: TableProps<DhcpStats>['columns'] = [
+  const columns: TableProps<DhcpUeSummaryStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       key: 'edgeId',
       dataIndex: 'edgeId',
       sorter: true,
       defaultSortOrder: 'ascend',
-      fixed: 'left'
-      // render: function (data, row) {
-      //   return (
-      //     <TenantLink to={`/devices/edge/${row.edgeId}/details/overview`}>
-      //       {row.edgeName}
-      //     </TenantLink>
-      //   )
-      // }
+      fixed: 'left',
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/devices/edge/${row.edgeId}/details/overview`}>
+            {row.edgeName}
+          </TenantLink>
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venueId',
-      dataIndex: 'venueId'
-      // render: function (data, row) {
-      //   return (
-      //     <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-      //       {row.venueName}
-      //     </TenantLink>
-      //   )
-      // }
+      dataIndex: 'venueId',
+      render: function (data, row) {
+        return (
+          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+            {row.venueName}
+          </TenantLink>
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
@@ -73,23 +90,23 @@ const EdgeDHCPDetail = () => {
     {
       title: $t({ defaultMessage: '# of successful allocations' }),
       align: 'center',
-      key: 'successfulAllocations',
-      dataIndex: 'successfulAllocations'
+      key: 'successfulAllocation',
+      dataIndex: 'successfulAllocation'
     },
     {
       title: $t({ defaultMessage: '# of remaining IPs' }),
       align: 'center',
-      key: 'remainingIps',
-      dataIndex: 'remainingIps'
+      key: 'remainsIps',
+      dataIndex: 'remainsIps'
     },
     {
       title: $t({ defaultMessage: 'Dropped packets' }),
       align: 'center',
       key: 'droppedPackets',
-      dataIndex: 'droppedPackets'
-      // render (data) {
-      //   return `${data}%`
-      // }
+      dataIndex: 'droppedPackets',
+      render (data, row) {
+        return `${row.droppedPackets}%`
+      }
     }
   ]
 
@@ -162,7 +179,7 @@ const EdgeDHCPDetail = () => {
         ])}
       />
       <Loader states={[
-        { isFetching: isLoading, isLoading: false }
+        { isFetching: isDhcpStatsLoading && isDhcpUeSummaryStatsLoading, isLoading: false }
       ]}>
         <Space direction='vertical' size={30}>
           <ServiceInfo data={dhcpInfo} />
@@ -170,13 +187,12 @@ const EdgeDHCPDetail = () => {
             <UI.InstancesMargin>
               <Typography.Title level={2}>
                 {$t({ defaultMessage: 'Instances ({count})' },
-                  { count: 0 })}
+                  { count: dhcpUeSummaryStats?.totalCount || 0 })}
               </Typography.Title>
               <Table
                 columns={columns}
-                rowKey='id'
-                // rowActions={filterByAccess(rowActions)}
-                rowSelection={{ type: 'checkbox' }}
+                dataSource={dhcpUeSummaryStats?.data}
+                rowKey='edgeId'
               />
             </UI.InstancesMargin>
           </Card>
