@@ -135,7 +135,7 @@ const useTabs = () : WirelessTab[] => {
       reportName={ReportType.CLIENT}
       hideHeader={false}
     />,
-    headerExtra: ReportHeader(ReportType.CLIENT)
+    headerExtra: <ReportHeader type={ReportType.CLIENT} />
   }
   return [
     clientsTab,

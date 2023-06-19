@@ -1,3 +1,4 @@
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -16,6 +17,17 @@ describe('Report Header', () => {
       <ReportHeader name={'Some Report'} mode='none'/>
     </Provider>, { route: { params } })
     expect(await screen.findByText('Some Report')).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <ReportHeader name={'Some Report'} mode='none'/>
+    </Provider>, { route: { params } })
+    expect(await screen.findByText('Business Insights')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Reports'
+    })).toBeVisible()
   })
 
   it('should render the report header with footer', async () => {

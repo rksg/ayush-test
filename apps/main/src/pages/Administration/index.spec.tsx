@@ -95,7 +95,6 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    await screen.logTestingPlaygroundURL()
     const tab = screen.getByRole('tab', { name: 'Settings' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })

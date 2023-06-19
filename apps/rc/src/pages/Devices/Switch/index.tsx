@@ -41,7 +41,7 @@ const useTabs = () : SwitchTab[] => {
       reportName={ReportType.WIRED}
       hideHeader={false}
     />,
-    headerExtra: ReportHeader(ReportType.WIRED)
+    headerExtra: <ReportHeader type={ReportType.WIRED} />
   }
   return [
     listTab,

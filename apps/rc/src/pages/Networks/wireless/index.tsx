@@ -43,7 +43,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.WLAN}
       hideHeader={false}
     />,
-    headerExtra: ReportHeader(ReportType.WLAN)
+    headerExtra: <ReportHeader type={ReportType.WLAN} />
   }
   const applicationsReportTab = {
     key: NetworkTabsEnum.APPLICATIONS_REPORT,
@@ -52,7 +52,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.APPLICATION}
       hideHeader={false}
     />,
-    headerExtra: ReportHeader(ReportType.APPLICATION)
+    headerExtra: <ReportHeader type={ReportType.APPLICATION} />
   }
   const wirelessReportTab = {
     key: NetworkTabsEnum.WIRELESS_REPORT,
@@ -61,7 +61,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.WIRELESS}
       hideHeader={false}
     />,
-    headerExtra: ReportHeader(ReportType.WIRELESS)
+    headerExtra: <ReportHeader type={ReportType.WIRELESS} />
   }
   return [
     listTab,

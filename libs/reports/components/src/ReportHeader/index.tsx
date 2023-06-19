@@ -10,9 +10,9 @@ import { useDateFilter }    from '@acx-ui/utils'
 
 import { ReportType, reportModeMapping } from '../mapping/reportsMapping'
 
-export function ReportHeader (type: ReportType) {
+export function ReportHeader (props: { type: ReportType }) {
   const { $t } = useIntl()
-
+  const { type } = props
   const mode = reportModeMapping[type] || 'both'
   const isRadioBandDisabled = [
     ReportType.APPLICATION,

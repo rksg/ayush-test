@@ -42,7 +42,7 @@ const useTabs = () : WifiTab[] => {
       reportName={ReportType.ACCESS_POINT}
       hideHeader={false}
     />,
-    headerExtra: ReportHeader(ReportType.ACCESS_POINT)
+    headerExtra: <ReportHeader type={ReportType.ACCESS_POINT} />
   }
   const airtimeReportTab = {
     key: WifiTabsEnum.AIRTIME_REPORT,
@@ -51,7 +51,7 @@ const useTabs = () : WifiTab[] => {
       reportName={ReportType.AIRTIME_UTILIZATION}
       hideHeader={false}
     />,
-    headerExtra: ReportHeader(ReportType.AIRTIME_UTILIZATION)
+    headerExtra: <ReportHeader type={ReportType.AIRTIME_UTILIZATION} />
   }
   return [
     listTab,
