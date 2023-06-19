@@ -15,6 +15,9 @@ do
     cmd="${RUN_COMMAND} ${nx_param}"
     echo $cmd
     bash -c $cmd
+    if [ ! "$?" -eq 0 ]; then
+        exit 1
+    fi
 done
 
 bash -c "mkdir -p /app/coverage"
