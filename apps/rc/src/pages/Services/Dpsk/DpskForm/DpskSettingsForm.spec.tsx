@@ -53,8 +53,8 @@ describe('DpskSettingsForm', () => {
     await userEvent.type(nameInput, mockedDpskList.content[0].name)
     nameInput.blur()
 
-    const errorMessageElem = await screen.findByRole('alert')
-    expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('alert')).toHaveTextContent('DPSK service with that name already exists')
   })
 
   it('should render the cloudpath form items', async () => {
@@ -76,7 +76,7 @@ describe('DpskSettingsForm', () => {
     expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
     expect(await screen.findByRole('radio', { name: /Unlimited/ })).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('combobox', { name: /Access Policy Set/ }))
+    await userEvent.click(await screen.findByRole('combobox', { name: /Adaptive Policy Set/ }))
     expect(await screen.findByText(mockedPolicySet.content[0].name)).toBeInTheDocument()
   })
 })

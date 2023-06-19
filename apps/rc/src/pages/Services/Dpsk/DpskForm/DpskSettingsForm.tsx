@@ -204,7 +204,7 @@ function CloudpathFormItems () {
         {isPolicyManagementEnabled &&
           <Form.Item
             name='policySetId'
-            label={$t({ defaultMessage: 'Access Policy Set' })}
+            label={$t({ defaultMessage: 'Adaptive Policy Set' })}
             rules={[{ required: false }]}
           >
             <Select style={{ width: 200 }}
