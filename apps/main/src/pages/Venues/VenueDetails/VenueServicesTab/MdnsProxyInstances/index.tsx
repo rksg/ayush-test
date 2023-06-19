@@ -12,11 +12,11 @@ import {
   getServiceDetailsLink,
   MdnsProxyAp,
   ServiceOperation,
-  ServiceType,
-  useTableQuery
+  ServiceType
 }   from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
+import { useTableQuery }         from '@acx-ui/utils'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'

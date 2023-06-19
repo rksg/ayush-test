@@ -17,9 +17,9 @@ import {
   useLazyGetAssignedMspEcToIntegratorQuery
 } from '@acx-ui/rc/services'
 import {
-  MspEc,
-  useTableQuery
+  MspEc
 } from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 import {
   AccountType
 } from '@acx-ui/utils'

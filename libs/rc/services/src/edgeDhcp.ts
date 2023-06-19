@@ -8,12 +8,11 @@ import {
   EdgeDhcpUrls,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  PaginationQueryResult,
-  TableResult
+  PaginationQueryResult
 } from '@acx-ui/rc/utils'
-import { baseEdgeDhcpApi }   from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseEdgeDhcpApi }                from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 import { edgeApi } from './edge'
 

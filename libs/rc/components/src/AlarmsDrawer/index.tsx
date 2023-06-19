@@ -22,9 +22,10 @@ import {
   eventAlarmApi,
   networkApi
 }  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { store }                                                                  from '@acx-ui/store'
+import { Alarm, CommonUrlsInfo, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                   from '@acx-ui/react-router-dom'
+import { store }                                                   from '@acx-ui/store'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

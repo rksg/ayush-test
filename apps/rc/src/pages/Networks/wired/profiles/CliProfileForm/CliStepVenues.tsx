@@ -6,8 +6,9 @@ import { useIntl }                           from 'react-intl'
 
 import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { useVenuesListQuery, useGetCliFamilyModelsQuery }                            from '@acx-ui/rc/services'
-import { CliConfiguration, Venue, useTableQuery }                                    from '@acx-ui/rc/utils'
+import { CliConfiguration, Venue }                                                   from '@acx-ui/rc/utils'
 import { useParams }                                                                 from '@acx-ui/react-router-dom'
+import { useTableQuery }                                                             from '@acx-ui/utils'
 
 import { cliFormMessages } from './'
 

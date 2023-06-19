@@ -8,10 +8,10 @@ import { useVenueRoguePolicyQuery }                      from '@acx-ui/rc/servic
 import {
   RogueAPDetectionActionPayload,
   RogueAPDetectionActionTypes,
-  useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { VENUE_IN_PROFILE_MAX_COUNT } from '../contentsMap'
 import RogueAPDetectionContext        from '../RogueAPDetectionContext'

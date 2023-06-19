@@ -9,8 +9,9 @@ import {
   Loader,
   Drawer
 } from '@acx-ui/components'
-import { useGetSwitchAclsQuery }                  from '@acx-ui/rc/services'
-import { Acl, transformTitleCase, useTableQuery } from '@acx-ui/rc/utils'
+import { useGetSwitchAclsQuery }   from '@acx-ui/rc/services'
+import { Acl, transformTitleCase } from '@acx-ui/rc/utils'
+import { useTableQuery }           from '@acx-ui/utils'
 
 import { AclDetail } from './aclDetail'
 

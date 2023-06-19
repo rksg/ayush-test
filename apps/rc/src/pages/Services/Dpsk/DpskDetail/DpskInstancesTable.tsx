@@ -2,10 +2,11 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Card }                      from '@acx-ui/components'
-import { useNetworkListQuery }                                  from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                           from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps, Card }       from '@acx-ui/components'
+import { useNetworkListQuery }                   from '@acx-ui/rc/services'
+import { Network, NetworkType, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { useTableQuery }                         from '@acx-ui/utils'
 
 export default function DpskInstancesTable (props: { networkIds?: string[] }) {
   const { $t } = useIntl()

@@ -24,12 +24,12 @@ import {
   Guest,
   GuestClient,
   GuestStatusEnum,
-  transformDisplayText,
-  useTableQuery
+  transformDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }             from '@acx-ui/types'
 import { hasRoles }              from '@acx-ui/user'
+import { useTableQuery }         from '@acx-ui/utils'
 
 import {
   renderAllowedNetwork,

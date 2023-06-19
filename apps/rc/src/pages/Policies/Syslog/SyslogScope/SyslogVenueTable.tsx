@@ -8,10 +8,10 @@ import { useGetVenueSyslogListQuery }   from '@acx-ui/rc/services'
 import {
   SyslogActionPayload,
   SyslogActionTypes,
-  useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import SyslogContext from '../SyslogContext'
 

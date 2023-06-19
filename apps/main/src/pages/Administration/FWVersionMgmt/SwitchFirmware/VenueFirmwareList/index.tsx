@@ -27,13 +27,12 @@ import {
   FirmwareSwitchVenue,
   FirmwareVersion,
   UpdateScheduleRequest,
-  TableQuery,
-  useTableQuery,
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { RequestPayload } from '@acx-ui/types'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { RequestPayload }            from '@acx-ui/types'
+import { TableQuery, useTableQuery } from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,

@@ -8,11 +8,11 @@ import { Table, TableProps }                                  from '@acx-ui/comp
 import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   Network, NetworkTypeEnum, networkTypes,
-  useTableQuery,
   WifiCallingActionPayload,
   WifiCallingActionTypes
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 

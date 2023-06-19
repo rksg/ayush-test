@@ -15,9 +15,10 @@ import {
   ApViewModel,
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { WrapIfAccessible }              from '@acx-ui/user'
+import { CommonUrlsInfo }   from '@acx-ui/rc/utils'
+import { useParams }        from '@acx-ui/react-router-dom'
+import { WrapIfAccessible } from '@acx-ui/user'
+import { useTableQuery }    from '@acx-ui/utils'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 

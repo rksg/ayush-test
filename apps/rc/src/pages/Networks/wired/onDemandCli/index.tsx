@@ -2,10 +2,11 @@ import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
 import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
-import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
+import { SwitchCliTemplateModel }                                 from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useNavigate }                                            from '@acx-ui/react-router-dom'
 import { filterByAccess }                                         from '@acx-ui/user'
+import { usePollingTableQuery }                                   from '@acx-ui/utils'
 
 import { Notification  } from './styledComponents'
 

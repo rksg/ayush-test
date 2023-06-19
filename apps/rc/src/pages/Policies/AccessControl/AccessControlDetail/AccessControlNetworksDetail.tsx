@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                                                      from '@acx-ui/components'
-import { useNetworkListQuery }                                                          from '@acx-ui/rc/services'
-import { AccessControlInfoType, Network, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { Card, Table, TableProps }                                       from '@acx-ui/components'
+import { useNetworkListQuery }                                           from '@acx-ui/rc/services'
+import { AccessControlInfoType, Network, NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
+import { useTableQuery }                                                 from '@acx-ui/utils'
 
 const defaultPayload = {
   searchString: '',

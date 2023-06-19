@@ -8,7 +8,6 @@ import { useDeletePortalMutation, useGetEnhancedPortalProfileListQuery, useNetwo
 import { useGetPortalLangMutation }                                                           from '@acx-ui/rc/services'
 import {
   ServiceType,
-  useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
@@ -20,6 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
+import { useTableQuery }                                           from '@acx-ui/utils'
 import { loadImageWithJWT }                                        from '@acx-ui/utils'
 
 import Photo                 from '../../../../assets/images/portal-demo/PortalPhoto.svg'

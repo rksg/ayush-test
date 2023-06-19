@@ -3,16 +3,20 @@ import { rest } from 'msw'
 import {
   CommonUrlsInfo,
   ConnectionMeteringUrls,
-  getPolicyRoutePath, NewTablePageable,
-  NewTableResult,
+  getPolicyRoutePath,
   Persona,
   PersonaGroup,
   PersonaUrls,
   PolicyOperation,
-  PolicyType, PropertyUnit, PropertyUrlsInfo, QosStats, TableResult, Venue
+  PolicyType, PropertyUnit, PropertyUrlsInfo, QosStats, Venue
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
+import {
+  NewTablePageable,
+  NewTableResult,
+  TableResult
+} from '@acx-ui/utils'
 
 import { ConnectionMeteringInstanceTable } from './ConnectionMeteringInstanceTable'
 

@@ -11,8 +11,9 @@ import {
   Dashboard,
   AlaramSeverity
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
+import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useTableQuery }                         from '@acx-ui/utils'
 import { useDashboardFilter, NetworkNodePath }   from '@acx-ui/utils'
 
 import { AlarmList } from './AlarmList'

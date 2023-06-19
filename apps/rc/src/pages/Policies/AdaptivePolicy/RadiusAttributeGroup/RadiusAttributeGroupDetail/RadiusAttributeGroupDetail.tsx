@@ -19,9 +19,10 @@ import {
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, useTableQuery
+  PolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 
 export default function RadiusAttributeGroupDetail () {

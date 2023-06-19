@@ -1,5 +1,4 @@
-import { TableResult }                                  from '@acx-ui/rc/utils'
-import { ApiInfo, DateRangeFilter, computeRangeFilter } from '@acx-ui/utils'
+import { ApiInfo, DateRangeFilter, computeRangeFilter, TableResult } from '@acx-ui/utils'
 
 type MetaBase = { id: string }
 

@@ -9,12 +9,11 @@ import { DownloadOutlined }                                          from '@acx-
 import { useEdgeExportCsv }                                          from '@acx-ui/rc/components'
 import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import {
-  EdgeService,
-  TableQuery,
-  useTableQuery
+  EdgeService
 } from '@acx-ui/rc/utils'
-import { RequestPayload } from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { RequestPayload }            from '@acx-ui/types'
+import { filterByAccess }            from '@acx-ui/user'
+import { TableQuery, useTableQuery } from '@acx-ui/utils'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
 import { getEdgeServiceTypeString } from './utils'

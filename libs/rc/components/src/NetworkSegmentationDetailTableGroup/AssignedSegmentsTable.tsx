@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   DistributionSwitch,
-  Persona,
-  TableQuery
+  Persona
 } from '@acx-ui/rc/utils'
+import { TableQuery } from '@acx-ui/utils'
 
 export interface PersonaTableProps extends Omit<TableProps<Persona>, 'columns'>{
   tableQuery: TableQuery<Persona,

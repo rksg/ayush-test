@@ -10,7 +10,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
   getPolicyListRoutePath,
@@ -21,6 +20,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 
 

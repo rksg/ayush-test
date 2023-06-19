@@ -11,8 +11,7 @@ import { SpaceWrapper }     from '@acx-ui/rc/components'
 import {
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery
-} from '@acx-ui/rc/utils'
+import { useTableQuery } from '@acx-ui/utils'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',

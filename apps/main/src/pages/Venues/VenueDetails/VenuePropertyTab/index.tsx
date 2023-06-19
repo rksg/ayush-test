@@ -41,20 +41,22 @@ import {
 import {
   APExtended,
   ConnectionMetering,
-  FILTER,
+  getPolicyDetailsLink,
   Persona,
+  PolicyOperation,
+  PolicyType,
   PropertyUnit,
   PropertyUnitStatus,
-  SEARCH,
-  SwitchViewModel,
-  useTableQuery
-} from '@acx-ui/rc/utils'
-import {
-  getPolicyDetailsLink, PolicyOperation, PolicyType
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
+import {
+  FILTER,
+  SEARCH,
+  useTableQuery
+} from '@acx-ui/utils'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 

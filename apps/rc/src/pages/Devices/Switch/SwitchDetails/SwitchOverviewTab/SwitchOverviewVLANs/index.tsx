@@ -9,8 +9,9 @@ import {
   Drawer,
   Table
 } from '@acx-ui/components'
-import { useGetVlanListBySwitchLevelQuery }                                                         from '@acx-ui/rc/services'
-import { Vlan, transformTitleCase, useTableQuery, transformDisplayOnOff, SpanningTreeProtocolName } from '@acx-ui/rc/utils'
+import { useGetVlanListBySwitchLevelQuery }                                          from '@acx-ui/rc/services'
+import { Vlan, transformTitleCase, transformDisplayOnOff, SpanningTreeProtocolName } from '@acx-ui/rc/utils'
+import { useTableQuery }                                                             from '@acx-ui/utils'
 
 import { VlanDetail } from './vlanDetail'
 

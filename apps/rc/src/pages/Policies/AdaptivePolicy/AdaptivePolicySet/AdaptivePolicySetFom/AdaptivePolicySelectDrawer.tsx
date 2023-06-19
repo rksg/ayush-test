@@ -12,12 +12,12 @@ import {
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicy, FILTER,
+  AdaptivePolicy,
   getAdaptivePolicyDetailLink,
-  PolicyOperation, SEARCH,
-  useTableQuery
+  PolicyOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }                    from '@acx-ui/react-router-dom'
+import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
 
 import { AdaptivePolicyFormDrawer } from './AdaptivePolicyFormDrawer'
 

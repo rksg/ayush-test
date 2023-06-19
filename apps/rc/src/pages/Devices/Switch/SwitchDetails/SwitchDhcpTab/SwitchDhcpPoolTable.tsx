@@ -11,12 +11,12 @@ import {
   useCreateDhcpServerMutation
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   SwitchDhcp,
   isOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 

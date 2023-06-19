@@ -12,15 +12,12 @@ import {
   EdgePortStatus,
   EdgeUrlsInfo,
   PaginationQueryResult,
-  TableResult,
   LatestEdgeFirmwareVersion,
   EdgeVenueFirmware,
   EdgeFirmwareVersion,
   onSocketActivityChanged,
   onActivityMessageReceived,
   downloadFile,
-  SEARCH,
-  SORTER,
   EdgeTotalUpDownTime,
   EdgeTopTraffic,
   EdgeResourceUtilizationData,
@@ -31,9 +28,14 @@ import {
   EdgesTopResources,
   EdgePasswordDetail
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi }       from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseEdgeApi }    from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+import {
+  createHttpRequest,
+  SEARCH,
+  SORTER,
+  TableResult
+} from '@acx-ui/utils'
 
 export type EdgesExportPayload = {
   filters: Filter

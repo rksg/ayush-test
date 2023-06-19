@@ -13,9 +13,10 @@ import {
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery, ApplicationPolicy, AclOptionType, Network
+  ApplicationPolicy, AclOptionType, Network
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { AddModeProps }                         from '../AccessControlForm/AccessControlForm'
 import ApplicationDrawer                        from '../AccessControlForm/ApplicationDrawer'

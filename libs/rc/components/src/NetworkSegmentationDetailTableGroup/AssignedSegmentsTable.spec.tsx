@@ -1,11 +1,11 @@
 import { rest } from 'msw'
 
 import { useSearchPersonaListQuery }                               from '@acx-ui/rc/services'
-import { Persona, PersonaUrls, useTableQuery }                     from '@acx-ui/rc/utils'
+import { Persona, PersonaUrls }                                    from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 import { RequestPayload }                                          from '@acx-ui/types'
-
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { mockedNsgData, mockedPersonaList, replacePagination } from './__tests__/fixtures'
 import { AssignedSegmentsTable }                               from './AssignedSegmentsTable'

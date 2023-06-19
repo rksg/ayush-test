@@ -19,8 +19,9 @@ import {
   useMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                              from '@acx-ui/user'
+import { PersonaGroup }                  from '@acx-ui/rc/utils'
+import { filterByAccess }                from '@acx-ui/user'
+import { FILTER, useTableQuery, SEARCH } from '@acx-ui/utils'
 
 import {
   DpskPoolLink,

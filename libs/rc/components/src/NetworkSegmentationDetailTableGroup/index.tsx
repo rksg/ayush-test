@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Tabs }                                                                                                                   from '@acx-ui/components'
 import { useApListQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery, useSearchPersonaListQuery } from '@acx-ui/rc/services'
-import { useTableQuery }                                                                                                                  from '@acx-ui/rc/utils'
+import { useTableQuery }                                                                                                                  from '@acx-ui/utils'
 
 import { AccessSwitchTable, AccessSwitchTableDataType } from './AccessSwitchTable'
 import { defaultApPayload }                             from './ApsTable'

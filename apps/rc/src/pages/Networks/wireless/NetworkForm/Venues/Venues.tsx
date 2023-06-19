@@ -25,7 +25,6 @@ import {
   aggregateApGroupPayload,
   NetworkSaveData,
   NetworkVenue,
-  useTableQuery,
   Venue,
   useScheduleSlotIndexMap,
   generateDefaultNetworkVenue,
@@ -34,6 +33,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 

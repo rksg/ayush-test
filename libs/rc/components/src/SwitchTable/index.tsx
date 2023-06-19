@@ -30,20 +30,22 @@ import {
   getSwitchName,
   DeviceConnectionStatus,
   getStackMemberStatus,
-  usePollingTableQuery,
   getFilters,
-  TableQuery,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
-  transformSwitchUnitStatus,
-  FILTER,
-  SEARCH,
-  GROUPBY
+  transformSwitchUnitStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import {
+  FILTER,
+  SEARCH,
+  GROUPBY,
+  getIntl,
+  TableQuery,
+  usePollingTableQuery
+}                                           from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'

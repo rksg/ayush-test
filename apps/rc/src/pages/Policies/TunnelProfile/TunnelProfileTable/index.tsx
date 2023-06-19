@@ -7,9 +7,10 @@ import {
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                   from '@acx-ui/user'
+import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                      from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                                    from '@acx-ui/user'
+import { useTableQuery }                                                                                                                     from '@acx-ui/utils'
 
 const defaultTunnelProfileTablePayload = {}
 

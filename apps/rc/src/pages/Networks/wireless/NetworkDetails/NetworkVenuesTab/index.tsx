@@ -30,7 +30,6 @@ import {
   useNetworkVenueListQuery
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   NetworkSaveData,
   NetworkVenue,
   Venue,
@@ -42,6 +41,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { useGetNetwork } from '../services'
 

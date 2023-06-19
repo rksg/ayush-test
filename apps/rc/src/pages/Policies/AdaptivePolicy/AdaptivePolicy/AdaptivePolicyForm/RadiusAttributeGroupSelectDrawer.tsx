@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { Form, FormInstance } from 'antd'
 import {  useIntl }           from 'react-intl'
 
-import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
-import { useRadiusAttributeGroupListQuery }                         from '@acx-ui/rc/services'
-import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                           from '@acx-ui/user'
+import { Card, Descriptions, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { useRadiusAttributeGroupListQuery }                      from '@acx-ui/rc/services'
+import { AttributeAssignment, RadiusAttributeGroup }             from '@acx-ui/rc/utils'
+import { filterByAccess }                                        from '@acx-ui/user'
+import { useTableQuery }                                         from '@acx-ui/utils'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 

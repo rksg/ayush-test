@@ -6,9 +6,13 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
 import {
+  Alert,
   Button,
+  cssStr,
+  Drawer,
+  Modal,
+  ModalType,
   Table,
   TableProps,
   Loader
@@ -22,22 +26,19 @@ import {
   useImportGuestPassMutation
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   Guest,
   GuestTypesEnum,
   transformDisplayText,
   GuestStatusEnum,
   Network,
   NetworkTypeEnum,
-  GuestNetworkTypeEnum,
-  FILTER,
-  SEARCH
+  GuestNetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { RolesEnum }                                         from '@acx-ui/types'
-import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
-import { DateRange, getIntl  }                               from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload }                                     from '@acx-ui/types'
+import { RolesEnum }                                          from '@acx-ui/types'
+import { GuestErrorRes, hasAccess, hasRoles }                 from '@acx-ui/user'
+import { DateRange, FILTER, getIntl, SEARCH, useTableQuery  } from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { GuestDateFilter }                   from '../../PageHeader'

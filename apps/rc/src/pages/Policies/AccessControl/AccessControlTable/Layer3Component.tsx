@@ -15,10 +15,10 @@ import {
 import {
   AclOptionType,
   L3AclPolicy,
-  Network,
-  useTableQuery
+  Network
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
 import Layer3Drawer                        from '../AccessControlForm/Layer3Drawer'

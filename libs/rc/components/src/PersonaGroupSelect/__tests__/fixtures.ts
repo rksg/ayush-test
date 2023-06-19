@@ -1,4 +1,8 @@
-import { NewTablePageable, NewTableResult, PersonaGroup } from '@acx-ui/rc/utils'
+import { PersonaGroup } from '@acx-ui/rc/utils'
+import {
+  NewTablePageable,
+  NewTableResult
+} from '@acx-ui/utils'
 
 const defaultPageable: NewTablePageable = {
   offset: 0,

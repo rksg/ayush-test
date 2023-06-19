@@ -9,17 +9,20 @@ import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
   Activity,
-  TableQuery,
   getActivityDescription,
   productMapping,
   severityMapping,
   statusMapping,
-  CommonUrlsInfo,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
-  useTableQuery
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RequestPayload }               from '@acx-ui/types'
-import { useDateFilter, noDataDisplay } from '@acx-ui/utils'
+import { RequestPayload } from '@acx-ui/types'
+import {
+  noDataDisplay,
+  TableQuery,
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  useDateFilter,
+  useTableQuery
+} from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 

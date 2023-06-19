@@ -14,11 +14,11 @@ import {
   useGetCliFamilyModelsQuery,
   useVenuesListQuery } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 

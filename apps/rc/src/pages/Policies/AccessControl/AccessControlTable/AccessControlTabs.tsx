@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                                        from '@acx-ui/components'
 import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
-import { useTableQuery }                               from '@acx-ui/rc/utils'
+import { useTableQuery }                               from '@acx-ui/utils'
 
 import AccessControlSet           from './AccessControlSet'
 import ApplicationPolicyComponent from './ApplicationPolicyComponent'

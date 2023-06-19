@@ -7,7 +7,6 @@ import {
   NetworkSaveData,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  TableResult,
   Dashboard,
   Network,
   Venue,
@@ -19,9 +18,9 @@ import {
   ExternalProviders,
   enableNewApi
 } from '@acx-ui/rc/utils'
-import { baseNetworkApi }    from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseNetworkApi }                 from '@acx-ui/store'
+import { RequestPayload }                 from '@acx-ui/types'
+import { createHttpRequest, TableResult } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true

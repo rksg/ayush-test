@@ -16,8 +16,9 @@ import { useIntl }      from 'react-intl'
 
 import { Loader, Fieldset }                                        from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
-import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE }       from '@acx-ui/rc/utils'
+import { AAAServerTypeEnum, AAA_SERVER_TYPE }                      from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { AAADraggableItem } from './AAADraggableItem'
 

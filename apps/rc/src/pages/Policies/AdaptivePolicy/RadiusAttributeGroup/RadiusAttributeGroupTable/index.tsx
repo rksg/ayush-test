@@ -11,14 +11,15 @@ import {
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER,
-  getPolicyDetailsLink, getPolicyRoutePath,
+  getPolicyDetailsLink,
+  getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, RadiusAttributeGroup, SEARCH,
-  useTableQuery
+  PolicyType,
+  RadiusAttributeGroup
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
+import { FILTER, SEARCH, useTableQuery }                from '@acx-ui/utils'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()

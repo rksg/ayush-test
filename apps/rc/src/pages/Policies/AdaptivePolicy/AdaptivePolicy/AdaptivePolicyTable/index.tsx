@@ -13,14 +13,15 @@ import {
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicy, FILTER,
+  AdaptivePolicy,
   getAdaptivePolicyDetailLink,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType, SEARCH, useTableQuery
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
+import { FILTER, SEARCH, useTableQuery }                from '@acx-ui/utils'
 
 
 export default function AdaptivePolicyTable () {

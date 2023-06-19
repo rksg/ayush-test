@@ -12,7 +12,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
-  useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
   getPolicyListRoutePath,
@@ -23,6 +22,7 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                          from '@acx-ui/types'
 import { filterByAccess }                                          from '@acx-ui/user'
+import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { SimpleListTooltip } from '../../SimpleListTooltip'
 import { PROFILE_MAX_COUNT } from '../contentsMap'

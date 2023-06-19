@@ -27,11 +27,11 @@ import {
   NetworkTypeEnum,
   NewDpskPassphrase,
   transformAdvancedDpskExpirationText,
-  unlimitedNumberOfDeviceLabel,
-  useTableQuery
+  unlimitedNumberOfDeviceLabel
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { useTableQuery }  from '@acx-ui/utils'
 import { getIntl }        from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
