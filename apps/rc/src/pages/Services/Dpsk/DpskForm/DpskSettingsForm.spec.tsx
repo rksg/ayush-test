@@ -54,7 +54,7 @@ describe('DpskSettingsForm', () => {
     nameInput.blur()
 
     const errorMessageElem = await screen.findByRole('alert')
-    expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists')
+    expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists ')
   })
 
   it('should render the cloudpath form items', async () => {
