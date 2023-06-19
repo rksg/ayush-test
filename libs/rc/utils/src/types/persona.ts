@@ -41,7 +41,7 @@ export interface Persona {
 
 export interface PersonaSwitch {
   macAddress: string,
-  portId: number,
+  portId: string,
   personaId: string
 }
 
