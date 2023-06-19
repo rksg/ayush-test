@@ -99,14 +99,16 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
           <Typography style={{ fontWeight: 700 }}>
             {intl.$t({ defaultMessage: 'Choose which version to update the venue to:' })}
           </Typography>
-          <ABFSelector
-            categoryId={'active'}
-            abfLabel={intl.$t({ defaultMessage: 'Active Device' })}
-            defaultVersionId={defaultActiveVersion.id}
-            defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
-            otherVersions={otherActiveVersionOptions}
-            update={updateSelectedABF}
-          />
+          <UI.Section>
+            <ABFSelector
+              categoryId={'active'}
+              abfLabel={intl.$t({ defaultMessage: 'Active Device' })}
+              defaultVersionId={defaultActiveVersion.id}
+              defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
+              otherVersions={otherActiveVersionOptions}
+              update={updateSelectedABF}
+            />
+          </UI.Section>
         </div>
       }
       { eolApFirmwares.length > 0
