@@ -8,6 +8,7 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { getUrlForTest }                                         from '@acx-ui/utils'
 
+import { ApDataContext }     from '..'
 import { ApEditContext }     from '../..'
 import { r760Ap, venueData } from '../../../../__tests__/fixtures'
 
@@ -74,9 +75,6 @@ describe('ApMeshTab', () => {
 
     mockServer.use(
       rest.get(
-        getUrlForTest(WifiUrlsInfo.getAp).replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(r760Ap))),
-      rest.get(
         getUrlForTest(CommonUrlsInfo.getVenue),
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(
@@ -106,7 +104,9 @@ describe('ApMeshTab', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApMesh />
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApMesh />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
@@ -142,7 +142,9 @@ describe('ApMeshTab', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApMesh />
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApMesh />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
@@ -173,7 +175,11 @@ describe('ApMeshTab', () => {
       )
     )
 
-    render(<Provider><ApMesh /></Provider>, {
+    render(<Provider>
+      <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApMesh />
+      </ApDataContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
     })
 
@@ -191,7 +197,11 @@ describe('ApMeshTab', () => {
         (_, res, ctx) => res(ctx.json(mockNoMeshUplinkAps)))
     )
 
-    render(<Provider><ApMesh /></Provider>, {
+    render(<Provider>
+      <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApMesh />
+      </ApDataContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
     })
 
@@ -222,7 +232,9 @@ describe('ApMeshTab', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApMesh />
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApMesh />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
