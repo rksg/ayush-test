@@ -321,7 +321,58 @@ export const venueCaps = {
       wanConnection: 'ETH_WITH_CELLULAR_FAILOVER'
     },
     {
-      model: 'R650'
+      model: 'R650',lanPorts: [
+        {
+          id: '1',
+          defaultType: 'TRUNK',
+          untagId: 1,
+          vlanMembers: '1-4094',
+          trunkPortOnly: false,
+          supportDisable: true,
+          isPoePort: false,
+          isPoeOutPort: false
+        },
+        {
+          id: '2',
+          defaultType: 'TRUNK',
+          untagId: 1,
+          vlanMembers: '1-4094',
+          trunkPortOnly: false,
+          supportDisable: false,
+          isPoePort: true,
+          isPoeOutPort: false
+        }
+      ],
+      allowDfsCountry: ['US', 'SG'],
+      allowCbandCountry: ['GB'],
+      lldpEnable: true,
+      lldpAdInterval: 30,
+      lldpHoldTime: 120,
+      lldpMgmtEnable: true,
+      ledOn: true,
+      isOutdoor: false,
+      has160MHzChannelBandwidth: true,
+      canSupportPoeOut: false,
+      canSupportPoeMode: true,
+      canSupportLacp: true,
+      requireOneEnabledTrunkPort: true,
+      poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
+      lanPortPictureDownloadUrl: 'https://storage.googleapis.com/',
+      pictureDownloadUrl:
+        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/',
+      canSupportCellular: false,
+      simCardPrimaryEnabled: true,
+      simCardPrimaryRoaming: true,
+      simCardSecondaryEnabled: true,
+      simCardSecondaryRoaming: true,
+      capabilityScore: 140,
+      supportTriRadio: true,
+      supportDual5gMode: true,
+      supportChannel144: true,
+      support11AX: true,
+      maxChannelization24G: 40,
+      maxChannelization5G: 160,
+      supportMesh: true
     }
   ],
   version: '6.0.0.x.xxx'
@@ -597,7 +648,8 @@ export const r650Cap = {
       supportChannel144: true,
       support11AX: true,
       maxChannelization24G: 40,
-      maxChannelization5G: 160
+      maxChannelization5G: 160,
+      supportMesh: true
     }
   ]
 }
@@ -719,7 +771,6 @@ export const r560Ap = {
 }
 
 export const triBandApCap = {
-  version: '6.2.0.99.1486',
   apModels: [
     { model: 'R560',
       allowCbandCountry: ['GB'],
@@ -772,9 +823,12 @@ export const triBandApCap = {
       simCardSecondaryEnabled: true,
       simCardSecondaryRoaming: true,
       support11AX: true,
+      support11BE: false,
       supportChannel144: true,
       supportDual5gMode: false,
-      supportTriRadio: true
+      supportTriRadio: true,
+      supportMesh: true,
+      version: '6.2.1.103.2554'
     },
     { model: 'R760',
       allowCbandCountry: ['GB'],
@@ -828,7 +882,9 @@ export const triBandApCap = {
       support11AX: true,
       supportChannel144: true,
       supportDual5gMode: true,
-      supportTriRadio: true
+      supportTriRadio: true,
+      supportMesh: true,
+      version: '6.2.1.103.2554'
     }
   ]
 }

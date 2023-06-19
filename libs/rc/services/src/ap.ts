@@ -482,7 +482,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
     getApLanPorts: build.query<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
@@ -500,6 +499,25 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    resetApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApLanPorts, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    getApCustomization: build.query<WifiApSetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApApCustomization, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     updateApCustomization: build.mutation<WifiApSetting, RequestPayload>({
@@ -512,17 +530,6 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
-
-    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-
     resetApCustomization: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApCustomization, params)
@@ -531,6 +538,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params }) => {
@@ -726,8 +742,10 @@ export const {
   useStartPacketCaptureMutation,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
+  useResetApLanPortsMutation,
   useGetApCapabilitiesQuery,
   useLazyGetApCapabilitiesQuery,
+  useGetApCustomizationQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
   useGetApValidChannelQuery,
