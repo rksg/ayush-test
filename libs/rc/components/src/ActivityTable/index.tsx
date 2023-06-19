@@ -9,7 +9,6 @@ import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
   Activity,
-  RequestPayload,
   TableQuery,
   getActivityDescription,
   productMapping,
@@ -19,6 +18,7 @@ import {
   TABLE_QUERY_LONG_POLLING_INTERVAL,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { RequestPayload }               from '@acx-ui/types'
 import { useDateFilter, noDataDisplay } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'

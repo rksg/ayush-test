@@ -4,10 +4,8 @@ import {
   DHCPUrls,
   WifiUrlsInfo,
   SwitchUrlsInfo,
-  createHttpRequest,
   FloorPlanDto,
   onSocketActivityChanged,
-  RequestPayload,
   onActivityMessageReceived,
   TableResult,
   Venue,
@@ -64,7 +62,9 @@ import {
   ApMeshTopologyData,
   FloorPlanMeshAP
 } from '@acx-ui/rc/utils'
-import { baseVenueApi } from '@acx-ui/store'
+import { baseVenueApi }      from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true

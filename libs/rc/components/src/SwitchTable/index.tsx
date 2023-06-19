@@ -33,7 +33,6 @@ import {
   usePollingTableQuery,
   getFilters,
   TableQuery,
-  RequestPayload,
   SwitchStatusEnum,
   isStrictOperationalSwitch,
   transformSwitchUnitStatus,
@@ -42,6 +41,7 @@ import {
   GROUPBY
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
 import { getIntl }                                           from '@acx-ui/utils'
 

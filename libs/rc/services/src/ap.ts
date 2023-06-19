@@ -13,10 +13,8 @@ import {
   ApGroup,
   ApRadioBands,
   CommonUrlsInfo,
-  createHttpRequest,
   DhcpAp,
   onSocketActivityChanged,
-  RequestPayload,
   RequestFormData,
   onActivityMessageReceived,
   TableResult,
@@ -27,7 +25,6 @@ import {
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
-  ApiInfo,
   AddApGroup,
   CommonResult,
   ImportErrorRes,
@@ -47,7 +44,9 @@ import {
   APMeshSettings,
   MeshUplinkAp
 } from '@acx-ui/rc/utils'
-import { baseApApi } from '@acx-ui/store'
+import { baseApApi }                  from '@acx-ui/store'
+import { RequestPayload }             from '@acx-ui/types'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 export type ApsExportPayload = {
   filters: Filter

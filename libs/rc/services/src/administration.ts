@@ -1,7 +1,5 @@
 import {
   CommonResult,
-  createHttpRequest,
-  RequestPayload,
   AdministrationUrlsInfo,
   AccountDetails,
   TenantDelegation,
@@ -14,7 +12,6 @@ import {
   Delegation,
   VARTenantDetail,
   RegisteredUserSelectOption,
-  ApiInfo,
   NotificationRecipientUIModel,
   NotificationRecipientResponse,
   NotificationEndpointType,
@@ -27,7 +24,9 @@ import {
   Entitlement,
   NewEntitlementSummary
 } from '@acx-ui/rc/utils'
-import { baseAdministrationApi } from '@acx-ui/store'
+import { baseAdministrationApi }      from '@acx-ui/store'
+import { RequestPayload }             from '@acx-ui/types'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({

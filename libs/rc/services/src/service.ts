@@ -9,8 +9,6 @@ import { Params } from 'react-router-dom'
 import {
   CommonUrlsInfo,
   DHCPUrls,
-  createHttpRequest,
-  RequestPayload,
   TableResult,
   Service,
   CommonResult,
@@ -54,7 +52,9 @@ import {
   ApplicationPolicy,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
-import { baseServiceApi } from '@acx-ui/store'
+import { baseServiceApi }    from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',

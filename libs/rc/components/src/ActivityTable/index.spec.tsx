@@ -2,9 +2,11 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Activity, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
-import { render, screen }                       from '@acx-ui/test-utils'
+
+import { Activity, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }             from '@acx-ui/store'
+import { render, screen }       from '@acx-ui/test-utils'
+import { RequestPayload }       from '@acx-ui/types'
 
 import { activities } from './__tests__/fixtures'
 

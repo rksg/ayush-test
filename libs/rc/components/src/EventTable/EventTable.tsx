@@ -7,7 +7,8 @@ import { Loader, Table, TableProps, Button } from '@acx-ui/components'
 import { Features, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { DownloadOutlined }                  from '@acx-ui/icons'
-import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { Event, TableQuery }                 from '@acx-ui/rc/utils'
+import { RequestPayload }                    from '@acx-ui/types'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 

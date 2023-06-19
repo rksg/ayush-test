@@ -3,15 +3,15 @@ import {
   onActivityMessageReceived,
   TableResult,
   MigrationUrlsInfo,
-  createHttpRequest,
   CommonResult,
-  RequestPayload,
   RequestFormData,
   TaskContextType,
   ZdConfigurationType,
   MigrationResultType
 } from '@acx-ui/rc/utils'
-import { baseMigrationApi } from '@acx-ui/store'
+import { baseMigrationApi }  from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 export const migrationApi = baseMigrationApi.injectEndpoints({
   endpoints: (build) => ({

@@ -1,9 +1,9 @@
 import {
-  RequestPayload,
   onSocketActivityChanged,
   showActivityToast
 } from '@acx-ui/rc/utils'
-import { baseCommonApi } from '@acx-ui/store'
+import { baseCommonApi }  from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
 
 export const commonApi = baseCommonApi.injectEndpoints({
   endpoints: (build) => ({

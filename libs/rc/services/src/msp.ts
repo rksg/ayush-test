@@ -9,8 +9,6 @@ import {
   AssignedEc,
   BaseUrl,
   MspUrlsInfo,
-  createHttpRequest,
-  RequestPayload,
   TableResult,
   CommonResult,
   MspAdministrator,
@@ -33,9 +31,10 @@ import {
   downloadFile,
   ParentLogoUrl
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                from '@acx-ui/store'
-import { UserUrlsInfo, UserProfile } from '@acx-ui/user'
-import { PverName }                  from '@acx-ui/utils'
+import { baseMspApi }                  from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }   from '@acx-ui/user'
+import { createHttpRequest, PverName } from '@acx-ui/utils'
 
 export function useCheckDelegateAdmin () {
   const { $t } = useIntl()

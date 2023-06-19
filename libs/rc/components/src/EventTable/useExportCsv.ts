@@ -3,7 +3,8 @@ import moment from 'moment-timezone'
 
 import { Filter }                                           from '@acx-ui/components'
 import { useDownloadEventsCSVMutation }                     from '@acx-ui/rc/services'
-import { RequestPayload, TableQuery }                       from '@acx-ui/rc/utils'
+import { TableQuery }                                       from '@acx-ui/rc/utils'
+import { RequestPayload }                                   from '@acx-ui/types'
 import { useUserProfileContext }                            from '@acx-ui/user'
 import { DateRangeFilter, computeRangeFilter, useTenantId } from '@acx-ui/utils'
 

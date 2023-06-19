@@ -4,9 +4,7 @@ import _                       from 'lodash'
 import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  createHttpRequest,
   RequestFormData,
-  RequestPayload,
   SaveSwitchProfile,
   SwitchUrlsInfo,
   SwitchViewModel,
@@ -60,7 +58,9 @@ import {
   SEARCH,
   SORTER
 } from '@acx-ui/rc/utils'
-import { baseSwitchApi } from '@acx-ui/store'
+import { baseSwitchApi }     from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 export type SwitchsExportPayload = {
   filters: Filter

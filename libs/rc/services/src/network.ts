@@ -3,11 +3,9 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/
 
 import {
   CommonUrlsInfo,
-  createHttpRequest,
   NetworkVenue,
   NetworkSaveData,
   onSocketActivityChanged,
-  RequestPayload,
   onActivityMessageReceived,
   TableResult,
   Dashboard,
@@ -21,7 +19,9 @@ import {
   ExternalProviders,
   enableNewApi
 } from '@acx-ui/rc/utils'
-import { baseNetworkApi } from '@acx-ui/store'
+import { baseNetworkApi }    from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true

@@ -4,9 +4,10 @@ import { useEffect } from 'react'
 import { Progress } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps }                                from '@acx-ui/components'
-import { useGetDhcpPoolStatsQuery }                                 from '@acx-ui/rc/services'
-import { DhcpPoolStats, RequestPayload, TableQuery, useTableQuery } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps }                from '@acx-ui/components'
+import { useGetDhcpPoolStatsQuery }                 from '@acx-ui/rc/services'
+import { DhcpPoolStats, TableQuery, useTableQuery } from '@acx-ui/rc/utils'
+import { RequestPayload }                           from '@acx-ui/types'
 
 interface EdgeDhcpPoolTableProps {
   edgeId?: string

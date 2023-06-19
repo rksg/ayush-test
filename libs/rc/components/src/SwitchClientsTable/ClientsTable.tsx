@@ -6,10 +6,10 @@ import {
   SwitchClient,
   usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
-  TableQuery,
-  RequestPayload
+  TableQuery
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload }        from '@acx-ui/types'
 
 export const defaultSwitchClientPayload = {
   searchString: '',

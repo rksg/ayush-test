@@ -33,12 +33,12 @@ import {
   transformDisplayNumber,
   transformDisplayText,
   TableQuery,
-  RequestPayload,
   usePollingTableQuery,
   APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesMappingAP }           from '../DevicesWidget/helper'

@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { ApiInfo, createHttpRequest, RequestPayload } from '@acx-ui/rc/utils'
+import { RequestPayload }             from '@acx-ui/types'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 export const BASE_RELATIVE_URL = '/api/a4rc/explorer'
 

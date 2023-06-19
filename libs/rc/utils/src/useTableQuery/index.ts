@@ -11,14 +11,17 @@ import {
   UseQueryResult,
   UseQueryOptions
 } from '@acx-ui/types'
-import { TABLE_DEFAULT_PAGE_SIZE, TABLE_MAX_PAGE_SIZE } from '@acx-ui/utils'
-
-import { ApiInfo, createHttpRequest } from '../apiService'
+import {
+  ApiInfo,
+  createHttpRequest,
+  TABLE_DEFAULT_PAGE_SIZE,
+  TABLE_MAX_PAGE_SIZE
+} from '@acx-ui/utils'
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
-export { RequestPayload }
+// export { RequestPayload }
 
 export interface RequestFormData <FormData = unknown> {
   params?: Params<string>

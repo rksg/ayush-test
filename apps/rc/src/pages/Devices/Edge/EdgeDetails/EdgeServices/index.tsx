@@ -10,10 +10,10 @@ import { useEdgeExportCsv }                                          from '@acx-
 import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import {
   EdgeService,
-  RequestPayload,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { RequestPayload } from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'

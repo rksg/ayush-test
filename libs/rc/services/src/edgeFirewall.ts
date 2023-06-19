@@ -1,6 +1,4 @@
 import {
-  createHttpRequest,
-  RequestPayload,
   TableResult,
   CommonResult,
   onSocketActivityChanged,
@@ -17,6 +15,8 @@ import {
   EdgeFirewallACLStatsPayload
 } from '@acx-ui/rc/utils'
 import { baseEdgeFirewallApi } from '@acx-ui/store'
+import { RequestPayload }      from '@acx-ui/types'
+import { createHttpRequest }   from '@acx-ui/utils'
 
 import { serviceApi } from './service'
 

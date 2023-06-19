@@ -1,8 +1,9 @@
 import moment from 'moment-timezone'
 
-import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { renderHook }                        from '@acx-ui/test-utils'
-import { DateRange }                         from '@acx-ui/utils'
+import { Event, TableQuery } from '@acx-ui/rc/utils'
+import { renderHook }        from '@acx-ui/test-utils'
+import { RequestPayload }    from '@acx-ui/types'
+import { DateRange }         from '@acx-ui/utils'
 
 import { useExportCsv } from './useExportCsv'
 

@@ -18,10 +18,10 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   EnhancedRoguePolicyType,
-  Venue,
-  RequestPayload
+  Venue
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload }                                          from '@acx-ui/types'
 import { filterByAccess }                                          from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../../SimpleListTooltip'

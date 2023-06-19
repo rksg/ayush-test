@@ -4,14 +4,14 @@ import {
   Alarm,
   AlarmBase,
   AlarmMeta,
-  createHttpRequest,
   CommonUrlsInfo,
   TableResult,
-  RequestPayload,
   CommonResult,
   Dashboard
 } from '@acx-ui/rc/utils'
 import { baseEventAlarmApi } from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 import { getMetaList } from './utils'
 

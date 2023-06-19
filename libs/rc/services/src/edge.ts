@@ -3,7 +3,6 @@ import {
 } from '@acx-ui/components'
 import {
   CommonResult,
-  createHttpRequest,
   EdgeDnsServers,
   EdgeGeneralSetting,
   EdgePortConfig,
@@ -13,7 +12,6 @@ import {
   EdgePortStatus,
   EdgeUrlsInfo,
   PaginationQueryResult,
-  RequestPayload,
   TableResult,
   LatestEdgeFirmwareVersion,
   EdgeVenueFirmware,
@@ -33,7 +31,9 @@ import {
   EdgesTopResources,
   EdgePasswordDetail
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi } from '@acx-ui/store'
+import { baseEdgeApi }       from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 export type EdgesExportPayload = {
   filters: Filter

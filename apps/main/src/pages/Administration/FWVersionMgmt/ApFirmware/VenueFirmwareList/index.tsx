@@ -32,7 +32,6 @@ import {
   UpdateNowRequest,
   UpdateScheduleRequest,
   TableQuery,
-  RequestPayload,
   firmwareTypeTrans,
   useTableQuery,
   sortProp,
@@ -41,6 +40,7 @@ import {
   EolApFirmware
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
+import { RequestPayload } from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import {

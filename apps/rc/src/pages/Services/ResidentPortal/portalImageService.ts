@@ -1,10 +1,10 @@
 import { Params } from 'react-router-dom'
 
 import {
-  ApiInfo,
-  createHttpRequest,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+
 
 export async function loadResidentPortalLogo (params:Params) {
   return loadResidentPortalImage(PropertyUrlsInfo.getResidentPortalLogo, params)

@@ -1,6 +1,5 @@
 import {
   CommonResult,
-  createHttpRequest,
   DhcpHostStats,
   DhcpPoolStats,
   DhcpStats,
@@ -10,10 +9,11 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   PaginationQueryResult,
-  RequestPayload,
   TableResult
 } from '@acx-ui/rc/utils'
-import { baseEdgeDhcpApi } from '@acx-ui/store'
+import { baseEdgeDhcpApi }   from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 import { edgeApi } from './edge'
 

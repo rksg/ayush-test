@@ -9,11 +9,11 @@ import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
 import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
 import {
   Client,
-  RequestPayload,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { RequestPayload }                         from '@acx-ui/types'
 import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {

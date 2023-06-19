@@ -1,6 +1,7 @@
-import { CommonResult, onActivityMessageReceived, onSocketActivityChanged, RequestPayload, TableResult, TunnelProfile, TunnelProfileUrls, TunnelProfileViewData } from '@acx-ui/rc/utils'
-import { baseTunnelProfileApi }                                                                                                                                   from '@acx-ui/store'
-import { createHttpRequest }                                                                                                                                      from '@acx-ui/utils'
+import { CommonResult, onActivityMessageReceived, onSocketActivityChanged, TableResult, TunnelProfile, TunnelProfileUrls, TunnelProfileViewData } from '@acx-ui/rc/utils'
+import { baseTunnelProfileApi }                                                                                                                   from '@acx-ui/store'
+import { RequestPayload }                                                                                                                         from '@acx-ui/types'
+import { createHttpRequest }                                                                                                                      from '@acx-ui/utils'
 
 export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
   endpoints: (build) => ({

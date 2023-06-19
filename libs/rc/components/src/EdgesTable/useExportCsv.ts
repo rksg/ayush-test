@@ -2,7 +2,8 @@ import _ from 'lodash'
 
 import { Filter }                      from '@acx-ui/components'
 import { useDownloadEdgesCSVMutation } from '@acx-ui/rc/services'
-import { RequestPayload, TableQuery }  from '@acx-ui/rc/utils'
+import { TableQuery }                  from '@acx-ui/rc/utils'
+import { RequestPayload }              from '@acx-ui/types'
 import { useTenantId }                 from '@acx-ui/utils'
 
 export function useExportCsv<T> (

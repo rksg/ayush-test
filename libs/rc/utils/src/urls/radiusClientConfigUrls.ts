@@ -1,4 +1,4 @@
-import { ApiInfo } from '../apiService'
+import { ApiInfo } from '@acx-ui/utils'
 
 const newApiUrl = '/radiusClient'
 const apiUrl = '/api/radiusClient'

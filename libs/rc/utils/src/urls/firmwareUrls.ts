@@ -1,4 +1,4 @@
-import { ApiInfo } from '../apiService'
+import { ApiInfo } from '@acx-ui/utils'
 
 const venueVersionParams = '?firmware_version=:version&firmware_type=:type&search=:search'
 

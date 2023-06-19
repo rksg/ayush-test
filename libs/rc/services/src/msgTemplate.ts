@@ -1,14 +1,14 @@
 import {
   MsgTemplateUrls,
-  createHttpRequest,
   TemplateScope,
-  RequestPayload,
   Pageable,
   Template,
   Registration,
   TemplateSelectionContent
 } from '@acx-ui/rc/utils'
 import { baseMsgTemplateApi } from '@acx-ui/store'
+import { RequestPayload }     from '@acx-ui/types'
+import { createHttpRequest }  from '@acx-ui/utils'
 
 
 export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({

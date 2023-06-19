@@ -1,11 +1,11 @@
 import {
   LicenseUrlsInfo,
   Entitlement,
-  EntitlementBanner,
-  createHttpRequest,
-  RequestPayload
+  EntitlementBanner
 } from '@acx-ui/rc/utils'
-import { baseLicenseApi } from '@acx-ui/store'
+import { baseLicenseApi }    from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 export const licenseApi = baseLicenseApi.injectEndpoints({
   endpoints: (build) => ({

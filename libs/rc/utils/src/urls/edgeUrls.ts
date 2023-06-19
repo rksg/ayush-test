@@ -1,4 +1,4 @@
-import { ApiInfo } from '../apiService'
+import { ApiInfo } from '@acx-ui/utils'
 
 export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   addEdge: {

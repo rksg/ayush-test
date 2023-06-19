@@ -4,10 +4,11 @@ import { useEffect } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip, Table, TableProps, Loader  }                                                  from '@acx-ui/components'
-import { useGetClientListQuery, useVenuesListQuery, useApListQuery }                                      from '@acx-ui/rc/services'
-import { ClientList, getDeviceTypeIcon, getOsTypeIcon, RequestPayload, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                          from '@acx-ui/react-router-dom'
+import { Subtitle, Tooltip, Table, TableProps, Loader  }                                  from '@acx-ui/components'
+import { useGetClientListQuery, useVenuesListQuery, useApListQuery }                      from '@acx-ui/rc/services'
+import { ClientList, getDeviceTypeIcon, getOsTypeIcon, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                          from '@acx-ui/react-router-dom'
+import { RequestPayload }                                                                 from '@acx-ui/types'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 

@@ -1,12 +1,10 @@
 import { Params } from 'react-router-dom'
 
 import {
-  createHttpRequest,
   MacRegistration,
   MacRegistrationPool,
   MacRegListUrlsInfo,
   CommonUrlsInfo,
-  RequestPayload,
   Policy,
   RogueApUrls,
   RogueAPDetectionContextType,
@@ -65,7 +63,9 @@ import {
   Assignment,
   NewAPITableResult, transferNewResToTableResult, transferToNewTablePaginationParams
 } from '@acx-ui/rc/utils'
-import { basePolicyApi } from '@acx-ui/store'
+import { basePolicyApi }     from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 
 const RKS_NEW_UI = {
