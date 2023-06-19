@@ -16,6 +16,8 @@ do
     echo $cmd
     bash -c $cmd
     if [ ! "$?" -eq 0 ]; then
+        echo "$cmd"
+        echo "[Fail] Test case is failure."
         exit 1
     fi
 done
