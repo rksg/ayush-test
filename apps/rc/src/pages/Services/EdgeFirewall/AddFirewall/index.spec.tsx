@@ -158,7 +158,7 @@ describe('Add edge firewall service', () => {
     cleanup()
   }, 30000)
 
-  it.skip('should correctly create with stateful ACL rule', async () => {
+  it('should correctly create with stateful ACL rule', async () => {
     render(<AddFirewall />, {
       wrapper: Provider,
       route: { params: { tenantId: 't-id' } }
