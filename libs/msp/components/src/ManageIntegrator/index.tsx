@@ -1,4 +1,4 @@
-import { useState, useRef, ChangeEventHandler, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import {
   Col,
@@ -22,10 +22,10 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
-import { SearchOutlined }                from '@acx-ui/icons'
-import { GoogleMapWithPreference }       from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                         from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }                      from '@acx-ui/formatter'
+import { SearchOutlined }                                 from '@acx-ui/icons'
+import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -307,27 +307,27 @@ export function ManageIntegrator () {
     return Promise.resolve()
   }
 
-  const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
+  const addressOnChange = async (place: google.maps.places.PlaceResult) => {
     updateAddress({})
-    const autocomplete = new google.maps.places.Autocomplete(event.target)
-    autocomplete.addListener('place_changed', async () => {
-      const place = autocomplete.getPlace()
-      const { address } = await addressParser(place)
-      const isSameCountry = true//data && (data?.address.country === address.country) || false
-      setSameCountry(isSameCountry)
-      let errorList = []
-      if (isEditMode && !isSameCountry) {
-        errorList.push(
-          `${intl.$t({ defaultMessage: 'Address must be in ' })} `)
-      }
-      formRef.current?.setFields([{
-        name: ['address', 'addressLine'],
-        value: place.formatted_address,
-        errors: errorList
-      }])
-      updateAddress(address)
-    })
+    const { address } = await addressParser(place)
+    const isSameCountry = true
+    setSameCountry(isSameCountry)
+    let errorList = []
+    if (isEditMode && !isSameCountry) {
+      errorList.push(
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} `)
+    }
+    formRef.current?.setFields([{
+      name: ['address', 'addressLine'],
+      value: place.formatted_address,
+      errors: errorList
+    }])
+    updateAddress(address)
   }
+
+  const { ref: placeInputRef } = usePlacesAutocomplete({
+    onPlaceSelected: addressOnChange
+  })
 
   const handleAddIntegrator = async (values: EcFormData) => {
     try {
@@ -932,8 +932,8 @@ export function ManageIntegrator () {
               allowClear
               placeholder={intl.$t({ defaultMessage: 'Set address here' })}
               prefix={<SearchOutlined />}
-              onChange={addressOnChange}
               data-testid='address-input'
+              ref={placeInputRef}
               disabled={!isMapEnabled}
               value={address.addressLine}
             />
@@ -988,8 +988,8 @@ export function ManageIntegrator () {
                 allowClear
                 placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                 prefix={<SearchOutlined />}
-                onChange={addressOnChange}
                 data-testid='address-input'
+                ref={placeInputRef}
                 disabled={!isMapEnabled}
                 value={address.addressLine}
               />
