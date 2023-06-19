@@ -520,6 +520,88 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 zFFEs"
+                width="125px"
+              >
+                Force DHCP
+                <div
+                  class="ant-form-item"
+                  style="margin-bottom: 10px;"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <button
+                            aria-checked="false"
+                            class="ant-switch"
+                            id="wlan_advancedCustomization_forceMobileDeviceDhcp"
+                            role="switch"
+                            type="button"
+                          >
+                            <div
+                              class="ant-switch-handle"
+                            />
+                            <span
+                              class="ant-switch-inner"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+                width="250px"
+              >
+                Enable logging client data to external syslog
+                <div
+                  class="ant-form-item"
+                  style="margin-bottom: 10px;"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <button
+                            aria-checked="false"
+                            class="ant-switch"
+                            id="wlan_advancedCustomization_enableSyslog"
+                            role="switch"
+                            type="button"
+                          >
+                            <div
+                              class="ant-switch-handle"
+                            />
+                            <span
+                              class="ant-switch-inner"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
                 class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
               >
                 <div
@@ -648,40 +730,41 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               class="ant-collapse-content-box"
             >
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 zFFEs"
+                width="125px"
               >
+                Hide SSID
                 <div
-                  class="ant-row ant-form-item-row"
+                  class="ant-form-item"
+                  style="margin-bottom: 10px;"
                 >
                   <div
-                    class="ant-col ant-form-item-control"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-form-item-control-input"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        class="ant-form-item-control-input-content"
+                        class="ant-form-item-control-input"
                       >
-                        <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                        <div
+                          class="ant-form-item-control-input-content"
                         >
-                          <span
-                            class="ant-checkbox"
+                          <button
+                            aria-checked="false"
+                            class="ant-switch"
+                            id="wlan_advancedCustomization_hideSsid"
+                            role="switch"
+                            type="button"
                           >
-                            <input
-                              class="ant-checkbox-input"
-                              id="wlan_advancedCustomization_hideSsid"
-                              type="checkbox"
-                              value=""
+                            <div
+                              class="ant-switch-handle"
                             />
                             <span
-                              class="ant-checkbox-inner"
+                              class="ant-switch-inner"
                             />
-                          </span>
-                          <span>
-                            Hide SSID
-                          </span>
-                        </label>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -866,82 +949,82 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+                width="250px"
               >
+                Enable load balancing between all radios
                 <div
-                  class="ant-row ant-form-item-row"
+                  class="ant-form-item"
+                  style="margin-bottom: 10px;"
                 >
                   <div
-                    class="ant-col ant-form-item-control"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-form-item-control-input"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        class="ant-form-item-control-input-content"
+                        class="ant-form-item-control-input"
                       >
-                        <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                        <div
+                          class="ant-form-item-control-input-content"
                         >
-                          <span
-                            class="ant-checkbox ant-checkbox-checked"
+                          <button
+                            aria-checked="true"
+                            class="ant-switch ant-switch-checked"
+                            id="wlan_advancedCustomization_enableBandBalancing"
+                            role="switch"
+                            type="button"
                           >
-                            <input
-                              checked=""
-                              class="ant-checkbox-input"
-                              id="wlan_advancedCustomization_enableBandBalancing"
-                              type="checkbox"
-                              value=""
+                            <div
+                              class="ant-switch-handle"
                             />
                             <span
-                              class="ant-checkbox-inner"
+                              class="ant-switch-inner"
                             />
-                          </span>
-                          <span>
-                            Enable load balancing between all radios
-                          </span>
-                        </label>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+                width="250px"
               >
+                Enable load balancing between APs
                 <div
-                  class="ant-row ant-form-item-row"
+                  class="ant-form-item"
+                  style="margin-bottom: 10px;"
                 >
                   <div
-                    class="ant-col ant-form-item-control"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-form-item-control-input"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        class="ant-form-item-control-input-content"
+                        class="ant-form-item-control-input"
                       >
-                        <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                        <div
+                          class="ant-form-item-control-input-content"
                         >
-                          <span
-                            class="ant-checkbox ant-checkbox-checked"
+                          <button
+                            aria-checked="true"
+                            class="ant-switch ant-switch-checked"
+                            id="wlan_advancedCustomization_clientLoadBalancingEnable"
+                            role="switch"
+                            type="button"
                           >
-                            <input
-                              checked=""
-                              class="ant-checkbox-input"
-                              id="wlan_advancedCustomization_clientLoadBalancingEnable"
-                              type="checkbox"
-                              value=""
+                            <div
+                              class="ant-switch-handle"
                             />
                             <span
-                              class="ant-checkbox-inner"
+                              class="ant-switch-inner"
                             />
-                          </span>
-                          <span>
-                            Enable load balancing between APs
-                          </span>
-                        </label>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1198,42 +1281,42 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
-                style="margin-bottom: 15px;"
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+                width="250px"
               >
+                Enable OFDM only (disable 802.11b)
                 <div
-                  class="ant-row ant-form-item-row"
+                  class="ant-form-item"
+                  style="margin-bottom: 10px;"
                 >
                   <div
-                    class="ant-col ant-form-item-control"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-form-item-control-input"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        class="ant-form-item-control-input-content"
+                        class="ant-form-item-control-input"
                       >
-                        <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                        <div
+                          class="ant-form-item-control-input-content"
                         >
-                          <span
-                            class="ant-checkbox ant-checkbox-checked"
+                          <button
+                            aria-checked="true"
+                            class="ant-switch ant-switch-checked"
+                            data-testid="enableOfdmOnly"
+                            id="enableOfdmOnly"
+                            role="switch"
+                            type="button"
                           >
-                            <input
-                              checked=""
-                              class="ant-checkbox-input"
-                              id="enableOfdmOnly"
-                              type="checkbox"
-                              value=""
+                            <div
+                              class="ant-switch-handle"
                             />
                             <span
-                              class="ant-checkbox-inner"
+                              class="ant-switch-inner"
                             />
-                          </span>
-                          <span>
-                            Enable OFDM only (disable 802.11b)
-                          </span>
-                        </label>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1438,42 +1521,41 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
-                style="margin-bottom: 15px;"
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+                width="250px"
               >
+                Enable 802.11k neighbor reports
                 <div
-                  class="ant-row ant-form-item-row"
+                  class="ant-form-item"
+                  style="margin-bottom: 15px;"
                 >
                   <div
-                    class="ant-col ant-form-item-control"
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      class="ant-form-item-control-input"
+                      class="ant-col ant-form-item-control"
                     >
                       <div
-                        class="ant-form-item-control-input-content"
+                        class="ant-form-item-control-input"
                       >
-                        <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+                        <div
+                          class="ant-form-item-control-input-content"
                         >
-                          <span
-                            class="ant-checkbox ant-checkbox-checked"
+                          <button
+                            aria-checked="true"
+                            class="ant-switch ant-switch-checked"
+                            id="wlan_advancedCustomization_enableNeighborReport"
+                            role="switch"
+                            type="button"
                           >
-                            <input
-                              checked=""
-                              class="ant-checkbox-input"
-                              id="wlan_advancedCustomization_enableNeighborReport"
-                              type="checkbox"
-                              value=""
+                            <div
+                              class="ant-switch-handle"
                             />
                             <span
-                              class="ant-checkbox-inner"
+                              class="ant-switch-inner"
                             />
-                          </span>
-                          <span>
-                            Enable 802.11k neighbor reports
-                          </span>
-                        </label>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
