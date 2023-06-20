@@ -27,6 +27,7 @@ describe('PhoneInput', () => {
           <Form.Item
             name='test'
             label='Test'
+            initialValue={'+12015554321'}
           >
             <PhoneInput name='test' callback={jest.fn()} onTop={true} />
           </Form.Item>
