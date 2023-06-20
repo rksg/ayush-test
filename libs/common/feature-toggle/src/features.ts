@@ -60,5 +60,6 @@ export enum Features {
   SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
-  MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion'
+  MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
+  MLISA_TEST = 'mlisa-test'
 }

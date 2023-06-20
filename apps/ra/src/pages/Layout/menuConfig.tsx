@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps } from '@acx-ui/components'
+import { LayoutProps }            from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -17,6 +18,7 @@ import {
 } from '@acx-ui/icons'
 
 export function useMenuConfig () {
+  const showMlisaTest = useIsSplitOn(Features.MLISA_TEST)
   const { $t } = useIntl()
   // const permissions = {}
   const config: LayoutProps['menuConfig'] = [
@@ -56,12 +58,12 @@ export function useMenuConfig () {
         }
       ]
     },
-    {
+    ...(showMlisaTest ?[{
       label: $t({ defaultMessage: 'Reports' }),
       inactiveIcon: ReportsOutlined,
       activeIcon: ReportsSolid,
       uri: '/reports'
-    },
+    }] : []),
     {
       label: $t({ defaultMessage: 'Data Studio' }),
       inactiveIcon: DataStudioOutlined,
