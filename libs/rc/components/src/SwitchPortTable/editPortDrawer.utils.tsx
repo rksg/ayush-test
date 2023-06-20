@@ -6,6 +6,7 @@ import { defineMessage }       from 'react-intl'
 import {
   cssStr
 } from '@acx-ui/components'
+import { switchApi } from '@acx-ui/rc/services'
 import {
   AclUnion,
   getPortSpeedOptions,
@@ -13,11 +14,13 @@ import {
   LldpQosModel,
   SwitchPortViewModel,
   SwitchDefaultVlan,
+  SwitchVlan,
   SwitchVlanUnion,
   PortSettingModel,
   PortsSetting,
   Vlan
 } from '@acx-ui/rc/utils'
+import { store }   from '@acx-ui/store'
 import { getIntl } from '@acx-ui/utils'
 
 export interface PortVlan {
@@ -120,6 +123,24 @@ export const getVlanOptions = (vlans: SwitchVlanUnion, defaultVlan: string, extr
 export const getAllSwitchVlans = (vlans: SwitchVlanUnion) => {
   const allVlans = _.pickBy(vlans, (value, key) => key !== 'switchDefaultVlan')
   return Object.values(allVlans).flat()
+}
+
+export const updateSwitchVlans = (
+  vlan: Vlan,
+  switchVlans: SwitchVlanUnion,
+  setSwitchVlans: (switchVlans: SwitchVlanUnion) => void
+) => {
+  store.dispatch(switchApi.util.invalidateTags([
+    { type: 'SwitchVlan', id: 'LIST' }
+  ]))
+
+  const profileVlan = [
+    ...switchVlans.profileVlan, {
+      profileLevel: true, defaultVlan: false, vlanId: vlan.vlanId,
+      ...(vlan?.vlanName ? { vlanConfigName: vlan?.vlanName } : {})
+    }] as SwitchVlan[]
+
+  setSwitchVlans({ ...switchVlans, profileVlan })
 }
 
 export const checkVlanOptions = (

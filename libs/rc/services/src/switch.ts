@@ -396,7 +396,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlans: build.query<Vlan[], RequestPayload>({
       query: ({ params }) => {
@@ -404,7 +406,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchesVlan: build.query<SwitchVlanUnion, RequestPayload>({
       query: ({ params, payload }) => {
@@ -662,6 +666,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addAcl: build.mutation<Acl, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addAcl, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addVlan: build.mutation<Vlan, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addVlan, params)
         return {
           ...req,
           body: payload
@@ -1329,6 +1342,7 @@ export const {
   useUpdateCliTemplateMutation,
   useGetCliConfigExamplesQuery,
   useAddAclMutation,
+  useAddVlanMutation,
   useGetSwitchConfigProfileQuery,
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,

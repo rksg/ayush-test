@@ -69,7 +69,8 @@ import {
   sortOptions,
   PortVlan,
   MultipleText,
-  getPoeClass
+  getPoeClass,
+  updateSwitchVlans
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -255,7 +256,7 @@ export function EditPortDrawer ({
     const switchVlans = (await getEachSwitchVlans())?.flat()
 
     return switchVlans?.filter((v) =>
-      v.vlanName !== defaultVlanName && v.vlanId === Number(profileDefaultVlan)
+      v?.vlanName !== defaultVlanName && v?.vlanId === Number(profileDefaultVlan)
     )?.length > 0
   }
 
@@ -282,7 +283,7 @@ export function EditPortDrawer ({
         : []
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
-        ?.find((item) => item.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
+        ?.find((item) => item?.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
 
       setDefaultVlan(defaultVlan)
@@ -1308,6 +1309,11 @@ export function EditPortDrawer ({
         taggedVlans={taggedVlans}
         untaggedVlan={untaggedVlan}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+        hasSwitchProfile={hasSwitchProfile}
+        profileId={switchConfigurationProfileId}
+        updateSwitchVlans={
+          async (values: Vlan) => updateSwitchVlans(values, switchVlans, setSwitchVlans)
+        }
       />}
 
       {lldpModalvisible && <EditLldpModal
