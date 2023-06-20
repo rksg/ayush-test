@@ -94,7 +94,6 @@ describe('AdaptivePolicyForm', () => {
         }
       }
     )
-    await screen.logTestingPlaygroundURL()
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'

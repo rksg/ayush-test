@@ -8,17 +8,13 @@ import { RangePicker }      from '@acx-ui/components'
 import { useReportsFilter } from '@acx-ui/reports/utils'
 import { useDateFilter }    from '@acx-ui/utils'
 
-import { ReportType, reportModeMapping } from '../mapping/reportsMapping'
+import { ReportType, reportModeMapping, bandDisabledReports } from '../mapping/reportsMapping'
 
 export function ReportHeader (props: { type: ReportType }) {
   const { $t } = useIntl()
   const { type } = props
   const mode = reportModeMapping[type] || 'both'
-  const isRadioBandDisabled = [
-    ReportType.APPLICATION,
-    ReportType.ACCESS_POINT,
-    ReportType.AIRTIME_UTILIZATION
-  ].includes(type) || false
+  const isRadioBandDisabled = bandDisabledReports.includes(type) || false
   let radioBandDisabledReason = isRadioBandDisabled ?
     $t({ defaultMessage: 'Radio Band is not available for this report.' }) : ''
 
