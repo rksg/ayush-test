@@ -134,6 +134,7 @@ export function RadioSettings () {
   const [ apList ] = useLazyApListQuery()
 
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const getSupportBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
     const bandwidthList = Object.keys(availableChannels)
@@ -510,8 +511,15 @@ export function RadioSettings () {
                   style={{ marginLeft: '20px' }}
                 />
                 <Tooltip.Question
-                // eslint-disable-next-line max-len
-                  title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
+                  title={$t(
+                    { defaultMessage:
+                      Wifi7_320Mhz_FeatureFlag ?
+                        // eslint-disable-next-line max-len
+                        'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' :
+                        // eslint-disable-next-line max-len
+                        'These settings apply only to AP models that support tri-band, such as R760 and R560'
+                    }
+                  )}
                   placement='bottom'
                 />
               </>
