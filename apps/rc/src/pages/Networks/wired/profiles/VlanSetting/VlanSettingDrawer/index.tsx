@@ -138,7 +138,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'untaggedPorts',
       width: 180,
       render: (data) => {
-        const untaggedPorts = data?.toString().replace('false', '-').substring(0, 20)
+        const untaggedPorts = data?.toString() === '' ? '-' :
+          data?.toString().replace('false', '-').substring(0, 20)
         return untaggedPorts + (untaggedPorts?.length === 20 ? '...' : '')
       }
     },
@@ -148,7 +149,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'taggedPorts',
       width: 180,
       render: (data) => {
-        const taggedPorts = data?.toString().replace('false', '-').substring(0, 20) || '-'
+        const taggedPorts = data?.toString() === '' ? '-' :
+          data?.toString().replace('false', '-').substring(0, 20)
         return taggedPorts + (taggedPorts?.length === 20 ? '...' : '')
       }
     }

@@ -52,5 +52,30 @@ describe('IpPortSecretForm', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+
+  it('should checking unique IP Port Secrect successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(
+      <Provider>
+        <Form>
+          <IpPortSecretForm serverType={AaaServerTypeEnum.AUTHENTICATION}
+            order={AaaServerOrderEnum.PRIMARY}/>
+          <IpPortSecretForm serverType={AaaServerTypeEnum.AUTHENTICATION}
+            order={AaaServerOrderEnum.SECONDARY}/>
+        </Form>
+      </Provider>, {
+        route: { params }
+      })
+
+
+    const ipTextbox = await screen.findAllByLabelText('IP Address')
+    fireEvent.change(ipTextbox[0], { target: { value: '192.168.1.1' } })
+    fireEvent.change(ipTextbox[1], { target: { value: '192.168.1.1' } })
+
+    const alertMsg = await screen.findAllByRole('alert')
+    expect(alertMsg[1]).toBeVisible()
+  })
+
 })
 

@@ -3,8 +3,11 @@ import React from 'react'
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Card, PageHeader, Subtitle, Table } from '@acx-ui/components'
-import { useGetWebAuthTemplateQuery }                from '@acx-ui/rc/services'
+import { Button, Card, PageHeader, Subtitle, Table, TableProps } from '@acx-ui/components'
+import {
+  useGetWebAuthTemplateQuery,
+  useGetWebAuthTemplateSwitchesQuery
+} from '@acx-ui/rc/services'
 import {
   ServiceType,
   WebAuthTemplate,
@@ -57,23 +60,25 @@ export default function NetworkSegAuthDetail () {
   const location = useLocation()
 
   const { data } = useGetWebAuthTemplateQuery({ params })
+  const { data: switches } = useGetWebAuthTemplateSwitchesQuery({ params })
 
-  const columns = React.useMemo(() => {
+  const columns: TableProps<{}>['columns'] = React.useMemo(() => {
     return [{
-      key: 'as',
+      key: 'switchName',
       title: $t({ defaultMessage: 'Access Switches' }),
-      dataIndex: 'as',
+      dataIndex: 'switchName',
       sorter: true,
-      fixed: 'left' as const
+      width: 360,
+      fixed: 'left'
     }, {
-      key: 'model',
+      key: 'switchModel',
       title: $t({ defaultMessage: 'Model' }),
-      dataIndex: 'model',
+      dataIndex: 'switchModel',
       sorter: true
     }, {
-      key: 'venue',
+      key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venue',
+      dataIndex: 'venueName',
       sorter: true
     }]
   }, [$t])
@@ -111,12 +116,13 @@ export default function NetworkSegAuthDetail () {
       </Card>
       <br /><br />
 
-      <Card title={$t({ defaultMessage: 'Instances ({count})' }, { count: 0 })}>
+      <Card title={$t({ defaultMessage: 'Instances ({count})' },
+        { count: switches?.switchVenueInfos?.length || 0 })}>
         <Table
           columns={columns}
-          dataSource={[]} // TODO
+          dataSource={switches?.switchVenueInfos}
           type='form'
-          rowKey='id' />
+          rowKey='switchId' />
       </Card>
     </>
   )
