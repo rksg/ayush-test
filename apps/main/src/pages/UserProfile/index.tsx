@@ -20,7 +20,6 @@ import {
   useUpdateUserProfileMutation,
   roleStringMap
 } from '@acx-ui/user'
-
 import { LangKey, useLocaleContext } from '@acx-ui/utils'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
@@ -58,8 +57,6 @@ export function UserProfile () {
 
   const handlePreferredLangChange = async (langCode: string) => {
     if (!langCode) return
-    console.log(`wip preferred lang: ${langCode}`)
-
     const code = langCode as LangKey
     locale.setLang(code)
 

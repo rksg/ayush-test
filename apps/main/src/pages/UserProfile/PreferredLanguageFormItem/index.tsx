@@ -1,10 +1,8 @@
 import { Form, Select } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { useUserProfileContext } from '@acx-ui/user'
-import { DEFAULT_SYS_LANG }      from '@acx-ui/utils'
-
-
+import { useUserProfileContext }     from '@acx-ui/user'
+import { DEFAULT_SYS_LANG }          from '@acx-ui/utils'
 import { LangKey, useLocaleContext } from '@acx-ui/utils'
 export function PreferredLanguageFormItem () {
   const { $t } = useIntl()
@@ -27,12 +25,6 @@ export function PreferredLanguageFormItem () {
     label: generateLangLabel(val.slice(0, 2)),
     value: val
   }))
-
-  const handlePreferredLangChange = async (lang: string) => {
-    if (!lang) return
-        const code = lang as LangKey
-        locale.setLang(code)
-  }
 
   return (
     <Form.Item

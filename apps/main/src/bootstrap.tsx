@@ -8,11 +8,11 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }                    from '@acx-ui/config'
-import { useGetPreferencesQuery } from '@acx-ui/rc/services'
-import { useGetUserProfileQuery } from '@acx-ui/user'
-import { BrowserRouter, useParams }          from '@acx-ui/react-router-dom'
-import { Provider }               from '@acx-ui/store'
+import { get }                      from '@acx-ui/config'
+import { useGetPreferencesQuery }   from '@acx-ui/rc/services'
+import { BrowserRouter, useParams } from '@acx-ui/react-router-dom'
+import { Provider }                 from '@acx-ui/store'
+import { useGetUserProfileQuery }   from '@acx-ui/user'
 import {
   UserProfileProvider,
   useUserProfileContext,
