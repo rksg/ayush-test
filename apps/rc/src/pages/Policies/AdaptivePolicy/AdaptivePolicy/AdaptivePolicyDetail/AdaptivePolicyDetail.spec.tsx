@@ -53,17 +53,19 @@ describe('AdaptivePolicyDetail', () => {
     await screen.findByText('rag9')
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<Provider><AdaptivePolicyDetail /></Provider>, {
       route: { params, path }
     })
 
     expect(screen.queryByText('Network Control')).toBeNull()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /adaptive policy/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Adaptive Policy'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -73,9 +75,11 @@ describe('AdaptivePolicyDetail', () => {
     })
 
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByText(/policies & proflies/i)).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /adaptive policy/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Adaptive Policy'
+    })).toBeVisible()
   })
 })

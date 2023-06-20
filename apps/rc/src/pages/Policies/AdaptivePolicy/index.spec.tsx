@@ -21,8 +21,8 @@ describe('AdaptivePolicyList', () =>{
 
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
     expect(await screen.findByRole('link', {
       name: 'Policies & Profiles' })).toHaveAttribute('href', policiesPath)
   })
@@ -38,8 +38,8 @@ describe('AdaptivePolicyList', () =>{
 
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
     expect(await screen.findByRole('link', {
       name: 'Policies & Profiles' })).toHaveAttribute('href', policiesPath)
   })

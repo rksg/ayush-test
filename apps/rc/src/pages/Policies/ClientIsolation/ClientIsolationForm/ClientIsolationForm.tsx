@@ -19,7 +19,8 @@ import {
   getPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  ClientIsolationSaveData
+  ClientIsolationSaveData,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -78,7 +79,10 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
         }
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }

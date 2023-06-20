@@ -78,7 +78,7 @@ describe('SnmpAgentForm', () => {
     userEvent.click(venueLink)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -90,12 +90,13 @@ describe('SnmpAgentForm', () => {
 
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /snmp agent/i
-    })).toBeTruthy()
+      name: 'SNMP Agent'
+    })).toBeVisible()
   })
+
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -108,10 +109,12 @@ describe('SnmpAgentForm', () => {
     )
 
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /snmp agent/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'SNMP Agent'
+    })).toBeVisible()
   })
 
   it('should navigate to the edit page', async () => {

@@ -16,9 +16,8 @@ import Subscriptions     from './Subscriptions'
 
 const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
   const { $t } = useIntl()
-  const { activeTab } = useParams()
-  const { tenantId, venueId, serialNumber } = useParams()
   const params = useParams()
+  const { activeTab, tenantId, venueId, serialNumber } = useParams()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)

@@ -132,7 +132,10 @@ export default function RadiusAttributeGroupDetail () {
         title={data?.name || ''}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
             link: tablePath }

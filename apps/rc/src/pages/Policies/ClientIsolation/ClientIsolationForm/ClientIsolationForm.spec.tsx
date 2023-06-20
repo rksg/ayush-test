@@ -168,7 +168,7 @@ describe('ClientIsolationForm', () => {
     })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -180,8 +180,8 @@ describe('ClientIsolationForm', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /client isolation/i
-    })).toBeTruthy()
+      name: 'Client Isolation'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -194,10 +194,12 @@ describe('ClientIsolationForm', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /client isolation/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Client Isolation'
+    })).toBeVisible()
   })
 
   it('should create a Client Isolation policy with connected client', async () => {

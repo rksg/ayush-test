@@ -61,7 +61,7 @@ describe('AdaptivePolicyForm', () => {
     )
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -74,10 +74,12 @@ describe('AdaptivePolicyForm', () => {
       }
     )
     expect(screen.queryByText('Network Control')).toBeNull()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /adaptive policy/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Adaptive Policy'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -92,11 +94,14 @@ describe('AdaptivePolicyForm', () => {
         }
       }
     )
+    await screen.logTestingPlaygroundURL()
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByText(/policies & proflies/i)).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /adaptive policy/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Adaptive Policy'
+    })).toBeVisible()
   })
 
   it('should submit list successfully', async () => {

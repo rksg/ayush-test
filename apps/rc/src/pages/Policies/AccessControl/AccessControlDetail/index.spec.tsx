@@ -79,7 +79,7 @@ describe('Access Control Detail Page', () => {
     await screen.findByText('test-psk')
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -93,8 +93,8 @@ describe('Access Control Detail Page', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies/i
-    })).toBeTruthy()
+      name: 'Policies'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -111,7 +111,10 @@ describe('Access Control Detail Page', () => {
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /access control/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Access Control'
+    })).toBeVisible()
   })
 })

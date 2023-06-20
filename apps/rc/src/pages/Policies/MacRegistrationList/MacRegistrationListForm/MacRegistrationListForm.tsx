@@ -126,7 +126,10 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: intl.$t({ defaultMessage: 'Network Control' }) },
-          { text: intl.$t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: intl.$t({ defaultMessage: 'MAC Registration Lists' }),
             link: tablePath }
         ] : [{

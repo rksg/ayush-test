@@ -81,7 +81,7 @@ describe('AdaptivePolicySetForm', () => {
     await screen.findByRole('button', { name: 'Cancel' })
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -95,11 +95,11 @@ describe('AdaptivePolicySetForm', () => {
     )
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /adaptive set policy/i
-    })).toBeTruthy()
+      name: 'Adaptive Set Policy'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -115,10 +115,12 @@ describe('AdaptivePolicySetForm', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /adaptive policy sets/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Adaptive Policy Sets'
+    })).toBeVisible()
   })
 
   it('should create set successfully', async () => {

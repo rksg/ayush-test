@@ -88,7 +88,7 @@ describe('AAAForm', () => {
     await userEvent.click(await screen.findByText('Finish'))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
       route: { params }
@@ -96,8 +96,8 @@ describe('AAAForm', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /radius server/i
-    })).toBeTruthy()
+      name: 'RADIUS Server'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -106,10 +106,12 @@ describe('AAAForm', () => {
       route: { params }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /radius server/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Server'
+    })).toBeVisible()
   })
 
   it('should edit AAA successfully', async () => {

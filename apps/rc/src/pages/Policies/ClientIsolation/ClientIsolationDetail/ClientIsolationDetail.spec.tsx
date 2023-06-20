@@ -58,7 +58,7 @@ describe('ClientIsolationDetail', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetVenue.venueName) })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -70,8 +70,8 @@ describe('ClientIsolationDetail', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /client isolation/i
-    })).toBeTruthy()
+      name: 'Client Isolation'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -84,10 +84,12 @@ describe('ClientIsolationDetail', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /client isolation/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Client Isolation'
+    })).toBeVisible()
   })
 
   it('should navigate to the edit page', async () => {

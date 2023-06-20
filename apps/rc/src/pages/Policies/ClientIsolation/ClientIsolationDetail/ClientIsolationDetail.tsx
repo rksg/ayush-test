@@ -9,7 +9,8 @@ import {
   PolicyType,
   PolicyOperation,
   ClientIsolationSaveData,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
@@ -31,7 +32,10 @@ export default function ClientIsolationDetail () {
         title={data?.name}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'Client Isolation' }),
             link: tablePath

@@ -18,7 +18,7 @@ import {
   AccessControlProfile,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, AccessControlFormFields
+  PolicyOperation, AccessControlFormFields, getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -174,7 +174,10 @@ const AccessControlForm = (props: AccessControlFormProps) => {
           : $t({ defaultMessage: 'Add Access Control Policy' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }

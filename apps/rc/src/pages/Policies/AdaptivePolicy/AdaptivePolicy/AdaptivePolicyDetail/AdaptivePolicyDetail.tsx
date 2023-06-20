@@ -77,7 +77,10 @@ export default function AdaptivePolicyDetail () {
         title={policyData?.name || ''}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Proflies' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Adaptive Policy' }),
             link: tablePath }
         ] : [

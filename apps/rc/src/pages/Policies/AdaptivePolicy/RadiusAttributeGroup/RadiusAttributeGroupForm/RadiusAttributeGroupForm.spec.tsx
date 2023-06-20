@@ -148,11 +148,11 @@ describe('RadiusAttributeGroupForm', () => {
     )
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /radius attribute groups/i
-    })).toBeTruthy()
+      name: 'RADIUS Attribute Groups'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -176,10 +176,12 @@ describe('RadiusAttributeGroupForm', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /radius attribute groups/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Attribute Groups'
+    })).toBeVisible()
   })
 
   it('should edit group successfully', async () => {

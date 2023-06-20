@@ -11,6 +11,7 @@ import { Features, useIsSplitOn }                                               
 import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -85,7 +86,10 @@ const AAAForm = (props: AAAFormProps) => {
           : $t({ defaultMessage: 'Add RADIUS Server' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'RADIUS Server' }), link: tablePath }

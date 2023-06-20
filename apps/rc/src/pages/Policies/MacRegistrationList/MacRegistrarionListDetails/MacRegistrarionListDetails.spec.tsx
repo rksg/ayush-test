@@ -106,7 +106,7 @@ describe('MacRegistrationListDetails', () => {
     expect(await screen.findByText(networkList.data[0].name)).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -121,11 +121,11 @@ describe('MacRegistrationListDetails', () => {
 
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /mac registration lists/i
-    })).toBeTruthy()
+      name: 'MAC Registration Lists'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -142,10 +142,12 @@ describe('MacRegistrationListDetails', () => {
     })
 
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /mac registration lists/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'MAC Registration Lists'
+    })).toBeVisible()
   })
 
   it('should not have active tab if it does not exist', async () => {

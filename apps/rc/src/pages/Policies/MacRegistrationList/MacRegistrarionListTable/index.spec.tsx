@@ -134,8 +134,8 @@ describe('MacRegistrationListsTable', () => {
 
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -150,8 +150,8 @@ describe('MacRegistrationListsTable', () => {
 
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
   })
 
   it('should delete selected row', async () => {
