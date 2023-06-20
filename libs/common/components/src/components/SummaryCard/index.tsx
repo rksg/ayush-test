@@ -12,12 +12,11 @@ interface SummaryCardoProps {
   data?: {
     title?: unknown
     content?: unknown
-    custom?: unknown
+    custom?: unknown // custom is for custom item. If there is custom property, the title and content will not work.
     visible?: boolean
-    colSpan?: number
+    colSpan?: number // Have to line up with the antd grid system.
   }[]
-  colPerRow?: number
-  disabledMargin?: boolean
+  colPerRow?: 1|2|3|4|6|8|12|24
   className?: string
   isLoading?: boolean
   isFetching?: boolean
@@ -28,16 +27,11 @@ export const SummaryCard = (props: React.PropsWithChildren<SummaryCardoProps>) =
 }
 
 const SummaryCardBase = (props: React.PropsWithChildren<SummaryCardoProps>) => {
-  const{ disabledMargin, isLoading = false, isFetching = false } = props
+  const{ isLoading = false, isFetching = false } = props
   return (
     <Card>
       <Loader states={[{ isLoading, isFetching }]} >
-        {
-          disabledMargin ?
-            <SummaryCardContent {...props} />
-            :
-            <UI.InfoMargin children={<SummaryCardContent {...props} />} />
-        }
+        <UI.InfoMargin children={<SummaryCardContent {...props} />} />
       </Loader>
     </Card>
   )

@@ -1,5 +1,7 @@
 import { render, screen } from '@acx-ui/test-utils'
 
+import { Button } from '../Button'
+
 import { SummaryCard } from '.'
 
 const data = [
@@ -14,6 +16,9 @@ const data = [
   {
     title: () => (<>title3</>),
     content: () => ('content3')
+  },
+  {
+    custom: <Button type='link'>Button</Button>
   }
 ]
 
@@ -28,5 +33,6 @@ describe('SummaryCard', () => {
     expect(await screen.findByText('content2')).toBeVisible()
     expect(await screen.findByText('title3')).toBeVisible()
     expect(await screen.findByText('content3')).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Button' })).toBeVisible()
   })
 })

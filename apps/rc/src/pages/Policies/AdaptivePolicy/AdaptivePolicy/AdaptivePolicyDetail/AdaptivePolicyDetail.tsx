@@ -132,39 +132,6 @@ export default function AdaptivePolicyDetail () {
             </Row>
           </Form>
         </SummaryCard>
-        {/* <Card>
-          <Loader states={[
-            { isLoading: isGetAdaptivePolicyLoading || isGetConditionsLoading }
-          ]}>
-            <Form layout={'vertical'}>
-              <Row>
-                <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
-                    <Paragraph>{policyData?.name}</Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'Access Policy Type' })}>
-                    <Paragraph>Advanced Policy Engine</Paragraph>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <Paragraph>{$t({ defaultMessage: 'Access Conditions' })}</Paragraph>
-                </Col>
-                {getConditions(conditionsData?.data)}
-              </Row>
-              <Row>
-                <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'RADIUS Attributes Group' })}>
-                    {attributeGroupName}
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </Loader>
-        </Card> */}
       </Space>
     </>
   )
