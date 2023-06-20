@@ -9,7 +9,8 @@ import {
   getPolicyDetailsLink,
   PolicyType,
   PolicyOperation,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  getPolicyListRoutePath
 }   from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -30,7 +31,10 @@ export default function VLANPoolDetail () {
         title={queryResults.data?.name}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }

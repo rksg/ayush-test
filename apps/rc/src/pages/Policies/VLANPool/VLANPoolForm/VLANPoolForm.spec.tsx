@@ -71,7 +71,7 @@ describe('VLANPoolForm', () => {
     await userEvent.click(await screen.findByText('Finish'))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const params = {
       networkId: 'UNKNOWN-NETWORK-ID',
@@ -85,8 +85,8 @@ describe('VLANPoolForm', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /vlan pools/i
-    })).toBeTruthy()
+      name: 'VLAN Pools'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -101,10 +101,12 @@ describe('VLANPoolForm', () => {
       route: { params }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /vlan pools/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'VLAN Pools'
+    })).toBeVisible()
   })
 
   it('should edit vlan successfully', async () => {

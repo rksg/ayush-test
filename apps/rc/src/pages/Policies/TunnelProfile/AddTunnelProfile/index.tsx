@@ -7,6 +7,7 @@ import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle
 import { TunnelProfileForm, TunnelProfileFormType } from '@acx-ui/rc/components'
 import { useCreateTunnelProfileMutation }           from '@acx-ui/rc/services'
 import {
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   LocationExtended,
   MtuTypeEnum,
@@ -50,7 +51,10 @@ const AddTunnelProfile = () => {
         title={$t({ defaultMessage: 'Add Tunnel Profile' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath

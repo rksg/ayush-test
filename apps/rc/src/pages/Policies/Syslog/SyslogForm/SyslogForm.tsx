@@ -18,7 +18,8 @@ import {
   PriorityEnum,
   ProtocolEnum,
   SyslogVenue,
-  SyslogContextType
+  SyslogContextType,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -135,7 +136,10 @@ const SyslogForm = (props: SyslogFormProps) => {
           : $t({ defaultMessage: 'Add Syslog Server' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'Syslog' }),
             link: tablePath

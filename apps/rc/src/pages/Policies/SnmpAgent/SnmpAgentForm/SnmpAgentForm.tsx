@@ -99,7 +99,10 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
           : $t({ defaultMessage: 'Add SNMP Agent' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath() },

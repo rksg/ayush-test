@@ -9,11 +9,11 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink, PolicyOperation }                                   from '@acx-ui/rc/utils'
-import { TenantLink }                                                              from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                          from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { getPolicyListRoutePath, getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink, PolicyOperation }                                                           from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                      from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                  from '@acx-ui/user'
 
 import SyslogDetailContent from './SyslogDetailContent'
 import SyslogVenueDetail   from './SyslogVenueDetail'
@@ -35,7 +35,10 @@ const SyslogDetailView = () => {
         title={policyName}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'Syslog' }),
             link: tablePath

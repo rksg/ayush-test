@@ -81,7 +81,7 @@ describe('VLAN Pool Detail Page', () => {
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(2))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<Provider><VLANPoolDetail /></Provider>, {
       route: { params, path: '/:tenantId/t/policies/vlanPool/:policyId/detail' }
@@ -89,8 +89,8 @@ describe('VLAN Pool Detail Page', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /vlan pools/i
-    })).toBeTruthy()
+      name: 'VLAN Pools'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -99,9 +99,11 @@ describe('VLAN Pool Detail Page', () => {
       route: { params, path: '/:tenantId/t/policies/vlanPool/:policyId/detail' }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /vlan pools/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'VLAN Pools'
+    })).toBeVisible()
   })
 })

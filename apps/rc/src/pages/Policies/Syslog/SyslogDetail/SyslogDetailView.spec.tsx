@@ -123,7 +123,7 @@ describe('SyslogDetailView', () => {
 
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <SyslogDetailView />
@@ -138,8 +138,8 @@ describe('SyslogDetailView', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /syslog/i
-    })).toBeTruthy()
+      name: 'Syslog'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -155,10 +155,12 @@ describe('SyslogDetailView', () => {
     )
 
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /syslog/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Syslog'
+    })).toBeVisible()
   })
 
   it('should render empty SyslogDetailView successfully', async () => {

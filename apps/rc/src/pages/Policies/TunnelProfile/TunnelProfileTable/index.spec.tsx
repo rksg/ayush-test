@@ -78,7 +78,7 @@ describe('TunnelProfileList', () => {
     expect(row.length).toBe(2)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -88,8 +88,8 @@ describe('TunnelProfileList', () => {
       })
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -102,8 +102,8 @@ describe('TunnelProfileList', () => {
       })
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
   })
 
   it('TunnelProfile detail page link should be correct', async () => {

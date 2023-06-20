@@ -56,7 +56,7 @@ describe('EditTunnelProfile', () => {
     }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -67,8 +67,8 @@ describe('EditTunnelProfile', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /tunnel profile/i
-    })).toBeTruthy()
+      name: 'Tunnel Profile'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -80,10 +80,12 @@ describe('EditTunnelProfile', () => {
       , { route: { path: editViewPath, params } }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /tunnel profile/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Tunnel Profile'
+    })).toBeVisible()
   })
 
   it('Click cancel button and go back to list page', async () => {

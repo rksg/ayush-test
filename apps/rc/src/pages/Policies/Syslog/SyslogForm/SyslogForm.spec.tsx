@@ -229,7 +229,7 @@ describe('SyslogForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <SyslogContext.Provider value={{
@@ -248,8 +248,8 @@ describe('SyslogForm', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('Policies & Profiles')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /syslog/i
-    })).toBeTruthy()
+      name: 'Syslog'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -269,10 +269,12 @@ describe('SyslogForm', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /syslog/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Syslog'
+    })).toBeVisible()
   })
 
   it('should render SyslogForm with editMode successfully', async () => {

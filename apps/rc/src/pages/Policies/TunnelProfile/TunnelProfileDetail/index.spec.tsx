@@ -48,7 +48,7 @@ describe('TunnelProfileDetail', () => {
     expect(row.length).toBe(2)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -58,11 +58,11 @@ describe('TunnelProfileDetail', () => {
       })
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.getByRole('link', {
-      name: /policies & profiles/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /tunnel profile/i
-    })).toBeTruthy()
+      name: 'Tunnel Profile'
+    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -74,9 +74,11 @@ describe('TunnelProfileDetail', () => {
         route: { params, path: detailPath }
       })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
     expect(screen.getByRole('link', {
-      name: /tunnel profile/i
-    })).toBeTruthy()
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Tunnel Profile'
+    })).toBeVisible()
   })
 })

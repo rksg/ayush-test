@@ -64,7 +64,10 @@ const TunnelProfileDetail = () => {
         title={tunnelProfileData.name}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath

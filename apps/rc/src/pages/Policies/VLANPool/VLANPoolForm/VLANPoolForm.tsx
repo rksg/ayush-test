@@ -13,7 +13,8 @@ import {
   VLANPoolPolicyType,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -75,7 +76,10 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
           : $t({ defaultMessage: 'Add VLAN Pool' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }

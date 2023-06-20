@@ -10,6 +10,7 @@ import { TunnelProfileForm, TunnelProfileFormType }                     from '@a
 import { useGetTunnelProfileByIdQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   LocationExtended,
   MtuTypeEnum,
@@ -78,7 +79,10 @@ const EditTunnelProfile = () => {
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath
