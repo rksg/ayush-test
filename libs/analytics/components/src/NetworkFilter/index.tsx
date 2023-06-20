@@ -9,10 +9,10 @@ import {
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
-import { Cascader, Loader, RadioBand }              from '@acx-ui/components'
-import type { CascaderOption }                      from '@acx-ui/components'
-import { useReportsFilter }                         from '@acx-ui/reports/utils'
-import { NetworkPath, getIntl, generatePathFilter } from '@acx-ui/utils'
+import { Cascader, Loader, RadioBand } from '@acx-ui/components'
+import type { CascaderOption }         from '@acx-ui/components'
+import { useReportsFilter }            from '@acx-ui/reports/utils'
+import { NetworkPath, getIntl }        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -189,8 +189,7 @@ export const onApply = (
   const path = !value || value.length === 0
     ? defaultNetworkPath
     : JSON.parse(value?.slice(-1)[0] as string)
-  const filter = generatePathFilter(path)
-  setNetworkPath(filter, value || [])
+  setNetworkPath(path, value || [])
 }
 
 export { ConnectedNetworkFilter as NetworkFilter }

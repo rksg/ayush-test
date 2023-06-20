@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { AnalyticsFilter, defaultNetworkPath }                   from '@acx-ui/analytics/utils'
+import { defaultNetworkPath }                                    from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                           from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent, waitFor  } from '@acx-ui/test-utils'
-import { DateRange, generatePathFilter, NetworkPath }            from '@acx-ui/utils'
+import { DateRange }                                             from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
@@ -109,11 +109,11 @@ const mockIncidents = [
   }
 ]
 const mockSetNetworkPath = jest.fn()
-const filters: AnalyticsFilter = {
+const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
-  range: DateRange.last24Hours,
-  filter: {}
+  path: [{ type: 'network', name: 'Network' }],
+  range: DateRange.last24Hours
 }
 const mockUseAnalyticsFilter = {
   filters,
@@ -147,7 +147,9 @@ jest.mock('@acx-ui/reports/utils', () => ({
 }))
 
 describe('Network Filter', () => {
+
   beforeEach(() => {
+
     store.dispatch(api.util.resetApiState())
     store.dispatch(incidentApi.util.resetApiState())
     jest.clearAllMocks()
@@ -188,14 +190,13 @@ describe('Network Filter', () => {
     await userEvent.click(screen.getByRole('combobox'))
     fireEvent.click(screen.getByText('venue1'))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    const path: NetworkPath = [
+    const path = [
       { type: 'network', name: 'Network' },
       { type: 'zone', name: 'id3' }
     ]
-    const filter = generatePathFilter(path)
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
-    expect(mockSetNetworkPath).toHaveBeenCalledWith(filter, raw)
+    expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
     await userEvent.click(screen.getByRole('combobox'))
   })
   it('should select network node and bands', async () => {
@@ -336,22 +337,22 @@ describe('Network Filter', () => {
     await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
     await userEvent.click(results[0])
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    const path: NetworkPath = [
+    const path = [
       { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'id4' }
     ]
-    const filter = generatePathFilter(path)
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
-    expect(mockSetNetworkPath).toHaveBeenCalledWith(filter, raw)
+    expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
+
   })
   it('should correctly call setNetworkPath', () => {
     const setNetworkPath = jest.fn()
     onApply(undefined, setNetworkPath)
-    expect(setNetworkPath).toBeCalledWith({}, [])
+    expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, [])
     const path = [JSON.stringify(defaultNetworkPath)]
     onApply(path, setNetworkPath)
-    expect(setNetworkPath).toBeCalledWith({}, [])
+    expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, path)
   })
 
   it('should search node for reports', async () => {
@@ -368,14 +369,13 @@ describe('Network Filter', () => {
     await waitFor(() => {expect(results.length).toBeGreaterThan(0)})
     await userEvent.click(results[0])
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    const path: NetworkPath = [
+    const path = [
       { type: 'network', name: 'Network' },
       { type: 'switchGroup', name: 'id4' }
     ]
     const raw = [JSON.stringify(path)]
-    const filter = generatePathFilter(path)
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
-    expect(mockSetNetworkPath).toHaveBeenCalledWith(filter, raw)
+    expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
   })
 })
 describe('Network Filter with incident severity', () => {

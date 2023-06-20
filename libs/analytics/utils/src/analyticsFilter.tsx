@@ -2,17 +2,12 @@ import { useMemo } from 'react'
 
 import { useLocation } from '@acx-ui/react-router-dom'
 import {
-  generateVenueFilter,
-  useDateFilter,
-  useEncodedParameter,
-  generatePathFilter,
-  getPathFromFilter
-} from '@acx-ui/utils'
-import type {
   DateFilter,
   PathFilter,
   SSIDFilter,
   NetworkPath,
+  useDateFilter,
+  useEncodedParameter,
   NodeType
 } from '@acx-ui/utils'
 
@@ -20,7 +15,7 @@ export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Networ
 
 export type AnalyticsFilter = DateFilter & { filter : PathFilter & SSIDFilter } & { mac?: string }
 
-type NetworkFilter = { filter: PathFilter, raw: object }
+type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
@@ -33,42 +28,21 @@ export function useAnalyticsFilter () {
   if (!read() && venuesFilter?.nodes.length === 1) {
     const [ name ] = venuesFilter.nodes[0]
     const path = [...defaultNetworkPath, { type: 'zone' as NodeType, name }]
-    const filter = generatePathFilter(path)
-    write({ filter, raw: [JSON.stringify(path)] })
+    write({ path, raw: [JSON.stringify(path)] })
   }
 
   return useMemo(() => {
     const isHealthPage = pathname.includes('/analytics/health')
     const getNetworkFilter = () => {
-      const existingFilter = read()
-      let networkFilter = existingFilter?.filter
-        ? existingFilter
-        : { filter: generatePathFilter(defaultNetworkPath), raw: [] }
-      const { filter: currentFilter, raw: rawVal } = networkFilter
-      let filter, raw
-      if (isHealthPage) {
-        const path = getPathFromFilter(currentFilter)
-        if (path.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
-          filter = generatePathFilter(defaultNetworkPath)
-          raw = []
-        } else {
-          filter = currentFilter
-          raw = rawVal
-        }
-      } else { // incident page, ...
-        const path = getPathFromFilter(currentFilter)
-        if (path.length === 2) { // venues
-          filter = generateVenueFilter([path[1].name])
-        } else {
-          filter = currentFilter
-        }
-        raw = rawVal
-      }
-      return { networkFilter: { filter }, raw }
+      let networkFilter = read() || { path: defaultNetworkPath, raw: [] }
+      const { path, raw } = networkFilter
+      return isHealthPage && path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
+        ? { networkFilter: { filter: {} }, raw: [] }
+        : { networkFilter: { filter: pathToFilter(path) }, raw }
     }
 
-    const setNetworkPath = (filter: AnalyticsFilter['filter'], raw: object) => {
-      write({ raw, filter })
+    const setNetworkPath = (path: NetworkPath, raw: object) => {
+      write({ raw, path })
     }
 
     const { networkFilter, raw } = getNetworkFilter()
@@ -93,3 +67,7 @@ export const getFilterPayload = (
   }
 }
 
+export const pathToFilter = (path: NetworkPath): PathFilter => ({
+  networkNodes: [path],
+  switchNodes: [path]
+})

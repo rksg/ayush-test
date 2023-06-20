@@ -1,13 +1,18 @@
-import { AnalyticsTabs }      from '@acx-ui/analytics/components'
-import { AnalyticsFilter }    from '@acx-ui/analytics/utils'
-import { useApContext }       from '@acx-ui/rc/utils'
-import { generatePathFilter } from '@acx-ui/utils'
+import { AnalyticsTabs }                                     from '@acx-ui/analytics/components'
+import { AnalyticsFilter, useAnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
+import { useApContext }                                      from '@acx-ui/rc/utils'
+import { NodeType }                                          from '@acx-ui/utils'
 
 export function ApAnalyticsTab () {
-  const { serialNumber, apMac } = useApContext()
+  const { serialNumber, apMac, venueId } = useApContext()
+  const { filters } = useAnalyticsFilter()
   const filter = {
-    filter: generatePathFilter([{ type: 'AP', name: apMac! }])
-  } as unknown as AnalyticsFilter
+    ...filters,
+    filter: pathToFilter([
+      { type: 'zone' as NodeType, name: venueId as string },
+      { type: 'AP' as NodeType, name: apMac as string }
+    ])
+  } as AnalyticsFilter
   return <AnalyticsTabs
     incidentFilter={filter}
     healthFilter={filter}

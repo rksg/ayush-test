@@ -6,7 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
-import { useDateFilter, NodeType, getPathFromFilter }                         from '@acx-ui/utils'
+import { useDateFilter, NodeType, defaultNetworkPath }                        from '@acx-ui/utils'
 
 import { NetworkFilter }                from '../NetworkFilter'
 import { useNetworkFilterQuery, Child } from '../NetworkFilter/services'

@@ -14,9 +14,7 @@ import {
   AnalyticsFilter,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader }                           from '@acx-ui/components'
-import { useApContext }                                       from '@acx-ui/rc/utils'
-import { generatePathFilter, getPathFromFilter, NetworkPath } from '@acx-ui/utils'
+import { GridCol, GridRow, Loader } from '@acx-ui/components'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -35,19 +33,12 @@ export const defaultThreshold: KpiThresholdType = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
 }
 
-
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { kpis } = kpisForTab[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  let { filter } = filters
-  const currPath = getPathFromFilter(filter)
-  const apContext = useApContext()
-  const path: NetworkPath = apContext?.venueId
-    ? [{ type: 'zone', name: apContext.venueId as string }, currPath[0]]
-    : currPath
-  filter = generatePathFilter(path)
+  const { filter } = filters
   const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery
