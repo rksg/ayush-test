@@ -91,6 +91,7 @@ export interface TaskContextType {
   fileName: string,
   venueName?: string,
   description?: string,
+  countryCode?: string,
   error?: ValidationErrorType
   apImportResults: MigrationResultType[]
 }
