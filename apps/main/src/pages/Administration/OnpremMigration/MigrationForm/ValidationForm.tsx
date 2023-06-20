@@ -94,7 +94,7 @@ const ValidationForm = (props: ValidationFormProps) => {
       key: 'validationErrors',
       dataIndex: 'validationErrors',
       render: (_, row) => {
-        return row.validationErrors ?? '--'
+        return row.validationErrors ? row.validationErrors.split(';').join(' ') : '--'
       }
     }
   ]
