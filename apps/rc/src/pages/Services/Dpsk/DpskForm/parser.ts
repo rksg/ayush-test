@@ -17,7 +17,9 @@ export function transferFormFieldsToSaveData (data: CreateDpskFormFields): DpskS
   return {
     ...rest,
     ...(transferExpirationDateEntityToSaveData(expiration)),
-    policyDefaultAccess: policyDefaultAccess === PolicyDefaultAccess.REJECT ? false : true
+    ...(rest.policySetId ? {
+      policyDefaultAccess: policyDefaultAccess === PolicyDefaultAccess.REJECT ? false : true
+    } : {})
   }
 }
 
@@ -40,7 +42,7 @@ export function transferSaveDataToFormFields (data: DpskSaveData): CreateDpskFor
   return {
     ...rest,
     // eslint-disable-next-line max-len
-    policyDefaultAccess: policyDefaultAccess ? PolicyDefaultAccess.ACCEPT : PolicyDefaultAccess.REJECT,
+    ...(rest.policySetId ? { policyDefaultAccess: policyDefaultAccess ? PolicyDefaultAccess.ACCEPT : PolicyDefaultAccess.REJECT } : {}),
     deviceCountLimit,
     deviceNumberType: deviceCountLimit ? DeviceNumberType.LIMITED : DeviceNumberType.UNLIMITED,
     expiration
