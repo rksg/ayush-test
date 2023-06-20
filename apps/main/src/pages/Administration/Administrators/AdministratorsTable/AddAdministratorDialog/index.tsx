@@ -26,6 +26,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import AuthenticationSelector                             from './AuthenticationSelector'
 import MspCustomerSelector, { ECCustomerRadioButtonEnum } from './MspCustomersSelector'
 import RoleSelector                                       from './RoleSelector'
 
@@ -45,6 +46,7 @@ interface AddAdministratorDataModel {
   externalId?: string;
   delegateToAllECs?: boolean;
   delegatedECs?: string[];
+  authenticationId?: string;
 }
 
 const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
@@ -142,6 +144,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
       if (userType === 'new') {
         payload.email = formValues.newEmail
+        payload.authenticationId = '76c223d990794fe1a6d5ffe9ba6489f4'
       } else {
         payload.email = formValues.email
         payload.externalId = _.find(registerUsersList, { email: formValues.email })?.externalId
@@ -188,80 +191,117 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
     >
       <Form
         form={form}
-        layout='horizontal'
+        layout='vertical'
         onFinish={handleSubmit}
       >
         <Space direction='vertical' style={{ width: '100%' }} >
+          <AuthenticationSelector />
+
           <Form.Item name='userType' initialValue='new'>
             <Radio.Group style={{ width: '100%' }}>
               <Space direction='vertical' size='large' style={{ width: '100%' }} >
                 {isMspEc === false && (
                   <Row justify='space-between'>
-                    <Col span={8}>
-                      <Radio
-                        value='existing'
-                        disabled={isRegisterUsersListLoading || isNoExistingUser}
-                      >
-                        {$t({ defaultMessage: 'Registered user' })}
-                        <Tooltip
-                          placement='topRight'
-                          // eslint-disable-next-line max-len
-                          title={$t({ defaultMessage: 'Select a registered user. Registered user is a user which has a Ruckus Support Account' })}
-                        >
-                          <QuestionCircleOutlined />
-                        </Tooltip>
-                      </Radio>
-                    </Col>
-                    <Col span={15}>
-                      <Form.Item
-                        name='email'
-                        noStyle
-                        rules={[
-                          { required: userType === 'existing' }
-                        ]}
-                      >
-                        <Select
-                          options={registerUsersSelectOpts}
-                          disabled={isNoExistingUser}
-                          placeholder={$t({ defaultMessage: 'Select admin...' })}
-                        />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                )}
-
-                <Row justify='space-between'>
-                  <Col span={8}>
-                    <Radio value='new'>
-                      {$t({ defaultMessage: 'Invite new user' })}
+                    <Radio
+                      value='existing'
+                      disabled={isRegisterUsersListLoading || isNoExistingUser}
+                    >
+                      {$t({ defaultMessage: 'Registered user' })}
                       <Tooltip
                         placement='topRight'
                         // eslint-disable-next-line max-len
-                        title={$t({ defaultMessage: 'Email invitation will be sent to this Email address for registration.\n Once registered with this email, the invited user will become an administrator.' })}
+                        title={$t({ defaultMessage: 'Select a registered user. Registered user is a user which has a Ruckus Support Account' })}
                       >
                         <QuestionCircleOutlined />
                       </Tooltip>
                     </Radio>
-                  </Col>
-                  <Col span={15}>
                     <Form.Item
-                      name='newEmail'
+                      name='email'
+                      noStyle
+                      rules={[
+                        { required: userType === 'existing' }
+                      ]}
+                    >
+                      <Select
+                        style={{ marginTop: '5px', marginBottom: '10px' }}
+                        options={registerUsersSelectOpts}
+                        disabled={isNoExistingUser}
+                        placeholder={$t({ defaultMessage: 'Select admin...' })}
+                      />
+                    </Form.Item>
+                  </Row>
+                )}
+
+                <Row justify='space-between'>
+                  <Radio value='new'>
+                    {$t({ defaultMessage: 'Invite new user' })}
+                    <Tooltip
+                      placement='topRight'
+                      // eslint-disable-next-line max-len
+                      title={$t({ defaultMessage: 'Email invitation will be sent to this Email address for registration.\n Once registered with this email, the invited user will become an administrator.' })}
+                    >
+                      <QuestionCircleOutlined />
+                    </Tooltip>
+                  </Radio>
+                  <Form.Item
+                    name='newEmail'
+                    rules={[
+                      {
+                        required: userType === 'new',
+                        message: $t({ defaultMessage: 'Please enter email' })
+                      },
+                      { validator: (_, value) => emailRegExp(value) }
+                    ]}
+                    noStyle
+                    initialValue=''
+                  >
+                    <Input
+                      style={{ marginTop: '5px', marginBottom: '10px' }}
+                      placeholder={$t({ defaultMessage: 'Enter email address' })}
+                    />
+                  </Form.Item>
+                </Row>
+
+                <Row justify='space-between'>
+                  <Col span={24}>
+                    <Form.Item
+                      name='firstName'
+                      label={$t({ defaultMessage: 'First Name' })}
                       rules={[
                         {
-                          required: userType === 'new',
-                          message: $t({ defaultMessage: 'Please enter email' })
+                          message: $t({ defaultMessage: 'Please enter first name' })
                         },
                         { validator: (_, value) => emailRegExp(value) }
                       ]}
-                      noStyle
                       initialValue=''
                     >
                       <Input
-                        placeholder={$t({ defaultMessage: 'Enter email address' })}
+                        placeholder={$t({ defaultMessage: 'Enter first name' })}
                       />
                     </Form.Item>
                   </Col>
                 </Row>
+
+                <Row justify='space-between'>
+                  <Col span={24}>
+                    <Form.Item
+                      name='familyName'
+                      label={$t({ defaultMessage: 'Family Name' })}
+                      rules={[
+                        {
+                          message: $t({ defaultMessage: 'Please enter family name' })
+                        },
+                        { validator: (_, value) => emailRegExp(value) }
+                      ]}
+                      initialValue=''
+                    >
+                      <Input
+                        placeholder={$t({ defaultMessage: 'Enter family name' })}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
               </Space>
             </Radio.Group>
           </Form.Item>

@@ -1,5 +1,5 @@
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Divider, Form, Input } from 'antd'
+import { useIntl }              from 'react-intl'
 
 import { Button, Drawer, PasswordInput } from '@acx-ui/components'
 import {
@@ -29,6 +29,10 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   const onSubmit = async () => {
   }
 
+  const handleClickCopy = (copyString: string) => {
+    navigator.clipboard.writeText(copyString)
+  }
+
   const formContent = <Form layout='vertical'form={form} onFinish={onSubmit}>
     <Form.Item
       name='name'
@@ -42,14 +46,20 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       children={<Input />}
     />
     <Form.Item
-      name='ip'
+      name='clientId'
       label={$t({ defaultMessage: 'Client ID' })}
-      initialValue={generateHexKey(32)}
-      // rules={[
-      //   { required: true },
-      //   { validator: (_, value) => excludeExclamationRegExp(value) }
-      // ]}
-      children={<Input disabled={true} />}
+      // initialValue={generateHexKey(32)}
+      children={<>
+        <label>{generateHexKey(32)}</label>
+        <Button
+          style={{ marginLeft: '20px' }}
+          type='link'
+          onClick={() => {
+            handleClickCopy(form.getFieldValue('clientId'))
+          }}>
+          {$t({ defaultMessage: 'Copy' })}
+        </Button></>
+      }
     />
     <Form.Item
       name='secret'
@@ -64,13 +74,20 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       children={<PasswordInput />}
     />
     <Button
-      // style={{ marginLeft: '300px', marginTop: '17px' }}
       type='link'
       onClick={() => {
         const sec = generateHexKey(30)
         form.setFieldValue('secret', sec)
       }}>
       {$t({ defaultMessage: 'Generate Secret' })}
+    </Button>
+    <Divider type='vertical'/>
+    <Button
+      type='link'
+      onClick={() => {
+        handleClickCopy(form.getFieldValue('secret'))
+      }}>
+      {$t({ defaultMessage: 'Copy' })}
     </Button>
 
   </Form>

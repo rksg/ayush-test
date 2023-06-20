@@ -42,6 +42,11 @@ export enum TenantAuthenticationType {
   ldap = 'LDAP',
 }
 
+export enum ApplicationAuthenticationStatus {
+  REVOKE = 'REVOKE',
+  ACTIVE = 'ACTIVE'
+}
+
 export interface TenantDelegation {
   id: string
   type: TenantDelegationType
@@ -83,6 +88,7 @@ export interface Administrator {
   detailLevel?: string;
   roleDsc?: string;
   fullName?: string;
+  authenticationId?: string;
 }
 
 export interface TenantMspEc {

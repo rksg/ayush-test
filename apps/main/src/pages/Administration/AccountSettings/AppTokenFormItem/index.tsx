@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Col, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, Card, PasswordInput, Table, TableProps }   from '@acx-ui/components'
-import {  TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { Button, Card, PasswordInput, showActionModal, Table, TableProps }                   from '@acx-ui/components'
+import {  TenantAuthentications, TenantAuthenticationType, ApplicationAuthenticationStatus } from '@acx-ui/rc/utils'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
@@ -17,14 +17,21 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   const { $t } = useIntl()
   const { tenantAuthenticationData } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [isEditMode, setEditMode] = useState(false)
+  const [hasAppTokenConfigured, setAppToken] = useState(false)
 
-  const onAddAppToekn = () => {
+  const onAddAppToken = () => {
+    setEditMode(false)
     setDrawerVisible(true)
   }
 
   const appTokenData = tenantAuthenticationData?.filter(n =>
     n.authenticationType === TenantAuthenticationType.ldap)
-  const hasAppTokenConfigured = appTokenData && appTokenData.length > 0
+  useEffect(() => {
+    if (appTokenData && appTokenData.length > 0) {
+      setAppToken(true)
+    }
+  }, [appTokenData])
 
   const AddAppLink = () => {
     return (
@@ -36,7 +43,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
                 style={{ marginLeft: '300px', marginTop: '17px' }}
                 type='link'
                 key='viewxml'
-                onClick={() => {onAddAppToekn()}}>
+                onClick={() => {onAddAppToken()}}>
                 {$t({ defaultMessage: 'Add Application Token' })}
               </Button>
             }
@@ -82,7 +89,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     const actions: TableProps<TenantAuthentications>['actions'] = [
       {
         label: $t({ defaultMessage: 'Add Token' }),
-        onClick: () => {onAddAppToekn()
+        onClick: () => {onAddAppToken()
         }
       }
     ]
@@ -91,18 +98,93 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         label: $t({ defaultMessage: 'Edit' }),
         onClick: () => {
+          setEditMode(true)
+          setDrawerVisible(true)
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Revoke' }),
+        visible: (selectedRows) => {
+          if(selectedRows[0] &&
+            (selectedRows[0].clientIDStatus === ApplicationAuthenticationStatus.ACTIVE )) {
+            return true
+          }
+          return false
+        },
+        onClick: ([{ name, id }], clearSelection) => {
+          const title = $t(
+            { defaultMessage: 'Revoke application "{formattedName}"?' },
+            { formattedName: name }
+          )
+          showActionModal({
+            type: 'confirm',
+            title: title,
+            content: $t({
+              defaultMessage: `
+              Revoke "{formattedName}" will suspend all its services,
+                are you sure you want to proceed?
+              `
+            }, { formattedName: name }),
+            okText: $t({ defaultMessage: 'Revoke' }),
+            onOk: () => {
+              // deactivateMspEc({ params: { mspEcTenantId: id } })
+              // .then(clearSelection)
+            }
+          })
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Activate' }),
+        visible: (selectedRows) => {
+          if(selectedRows[0] &&
+            (selectedRows[0].clientIDStatus === ApplicationAuthenticationStatus.REVOKE)) {
+            return true
+          }
+          return false
+        },
+        onClick: ([{ name, id }], clearSelection) => {
+          const title = $t(
+            { defaultMessage: 'Activate application "{formattedName}"?' },
+            { formattedName: name }
+          )
+
+          showActionModal({
+            type: 'confirm',
+            title: title,
+            content: $t(
+              { defaultMessage: 'Activate this application "{formattedName}"?' },
+              { formattedName: name }
+            ),
+            okText: $t({ defaultMessage: 'Activate' }),
+            onOk: () => {
+              // reactivateMspEc({ params: { mspEcTenantId: id } })
+              // .then(clearSelection)
+            }
+          })
         }
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
-        onClick: () => {
+        onClick: (rows) => {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Application' }),
+              entityValue: rows[0].name
+            },
+            onOk: () => {
+              // deleteAdmin({ params: { ...params, adminId: rows[0].id } })
+              //   .then(clearSelection) :
+            }
+          })
+
         }
       }
     ]
 
     return (
       <Table
-        settingsId='msp-subscription-table'
         columns={columns}
         actions={actions}
         dataSource={appTokenData}
@@ -117,7 +199,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     <Row gutter={24} style={{ marginBottom: '25px' }}>
       <Col span={10}>
         <Form.Item
-          style={{ marginBottom: '-20px' }}
+          style={hasAppTokenConfigured ? { marginBottom: '-20px' } : { marginBottom: '10px' }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'Application Tokens' })}
@@ -129,7 +211,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
     {drawerVisible && <AddApplicationDrawer
       visible={drawerVisible}
-      isEditMode={false}
+      isEditMode={isEditMode}
       setVisible={setDrawerVisible}
     />}
   </>

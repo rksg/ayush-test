@@ -29,4 +29,8 @@ export const ButtonWrapper = styled(Space)`
   .ant-space-item button {
     font-size: var(--acx-body-4-font-size);
   }
+  .ant-divider-vertical {
+    margin: 0 4px;
+    background: var(--acx-primary-black);
+  }
 `

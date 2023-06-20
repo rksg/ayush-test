@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Col, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
@@ -30,6 +30,8 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [isEditMode, setEditMode] = useState(false)
+  const [hasSsoConfigured, setSsoConfigured] = useState(false)
+  const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const navigate = useNavigate()
   const linkToAdministrators = useTenantLink('/administration/administrators')
 
@@ -44,8 +46,12 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
 
   const ssoData = tenantAuthenticationData?.filter(n =>
     n.authenticationType === TenantAuthenticationType.saml)
-  const hasSsoConfigured = ssoData && ssoData?.length > 0
-  const authenticationId = hasSsoConfigured ? ssoData[0].id : ''
+  useEffect(() => {
+    if (ssoData && ssoData.length > 0) {
+      setSsoConfigured(true)
+      setAuthenticationData(ssoData[0])
+    }
+  }, [ssoData])
 
   return ( <>
     <Row gutter={24} style={{ marginBottom: '25px' }}>
@@ -75,7 +81,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                 </Button>
                 <Button type='link'
                   key='deletesso'
-                  onClick={() => {
+                  onClick={(setSsoConfigured) => {
                     showActionModal({
                       title: $t({ defaultMessage: 'Delete Azure AD SSO Service' }),
                       type: 'confirm',
@@ -86,7 +92,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                         confirmationText: $t({ defaultMessage: 'Delete' })
                       },
                       onOk: () =>
-                        deleteTenantAuthentications({ params: { authenticationId: authenticationId } })
+                        deleteTenantAuthentications({ params: { authenticationId: authenticationData?.id } })
                           .then() })
 
                   }}>
@@ -134,7 +140,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
       }
       visible={drawerVisible}
       isEditMode={isEditMode}
-      editData={hasSsoConfigured ? ssoData[0] : {} as TenantAuthentications}
+      editData={hasSsoConfigured ? authenticationData : {} as TenantAuthentications}
       setVisible={setDrawerVisible}
       maxSize={CsvSize['5MB']}
       maxEntries={512}
