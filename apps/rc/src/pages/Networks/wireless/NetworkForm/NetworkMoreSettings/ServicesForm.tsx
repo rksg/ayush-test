@@ -262,7 +262,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
             <Checkbox
               children={
                 <>
-                  {$t({ defaultMessage: 'Single session ID Accounting' })}
+                  {$t({ defaultMessage: 'Single Session ID Accounting' })}
                   <Tooltip
                     // eslint-disable-next-line max-len
                     title={$t({ defaultMessage: 'APs will maintain one accounting session for client roaming' })}
@@ -296,23 +296,6 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           children={<Switch />}
         />
       </UI.FieldLabel>
-
-      <UI.FormItemNoLabel
-        name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
-        valuePropName='checked'
-        children={
-          <Checkbox disabled={enableAntiSpoofing}
-            children={$t({ defaultMessage: 'Force DHCP' })} />}
-      />
-
-      <UI.FormItemNoLabel
-        name={['wlan','advancedCustomization','enableSyslog']}
-        valuePropName='checked'
-        children={
-          <Checkbox children={
-            $t({ defaultMessage: 'Enable logging client data to external syslog' })} />
-        }
-      />
 
       { showTunnelProfile &&
       <Form.Item

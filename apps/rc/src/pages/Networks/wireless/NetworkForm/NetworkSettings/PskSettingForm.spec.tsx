@@ -87,8 +87,8 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = await screen.findByLabelText('Passphrase')
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText('Passphrase')
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
 
     await fillInAfterSettings(async () => {
       expect(await screen.findByText('PSK network test')).toBeVisible()
@@ -100,8 +100,8 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = await screen.findByLabelText(/Passphrase/)
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText(/Passphrase/)
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
     await userEvent.click(await screen.findByRole('switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])
     // await userEvent.click((await screen.findAllByTitle('test1'))[0])
@@ -120,8 +120,8 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = await screen.findByLabelText(/Passphrase/)
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText(/Passphrase/)
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
     await userEvent.click(await screen.findByRole('switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])
     // await userEvent.click((await screen.findAllByTitle('test1'))[0])
@@ -159,8 +159,8 @@ describe('NetworkForm', () => {
 
     await userEvent.click(option)
 
-    const passphraseTextbox = await screen.findByLabelText('Passphrase')
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText('Passphrase')
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
 
     await userEvent.click(await screen.findByRole('switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])

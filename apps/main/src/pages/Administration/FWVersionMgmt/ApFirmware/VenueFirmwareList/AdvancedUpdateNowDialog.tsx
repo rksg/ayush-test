@@ -5,7 +5,7 @@ import { CheckboxChangeEvent }                                          from 'an
 import { DefaultOptionType }                                            from 'antd/lib/select'
 import { useIntl }                                                      from 'react-intl'
 
-import { Modal }      from '@acx-ui/components'
+import { Modal }     from '@acx-ui/components'
 import {
   EolApFirmware,
   FirmwareCategory,
