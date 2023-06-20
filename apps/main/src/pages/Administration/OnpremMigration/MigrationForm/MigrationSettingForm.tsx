@@ -1,4 +1,4 @@
-import React, { useState, ChangeEventHandler, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import {
   Col,
@@ -16,10 +16,13 @@ import {
   GoogleMapMarker,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { SearchOutlined }          from '@acx-ui/icons'
-import { GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
+import {
+  GoogleMapWithPreference,
+  usePlacesAutocomplete
+} from '@acx-ui/rc/components'
 import {
   useLazyVenuesListQuery,
   useGetVenueQuery
@@ -184,23 +187,20 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
     return Promise.resolve()
   }
 
-  const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
-    updateAddress({})
-    dispatchAddress({})
-    const autocomplete = new google.maps.places.Autocomplete(event.target)
-    autocomplete.addListener('place_changed', async () => {
-      const place = autocomplete.getPlace()
-      const { latlng, address } = await addressParser(place)
+  const addressOnChange = async (place: google.maps.places.PlaceResult) => {
+    const { latlng, address } = await addressParser(place)
 
-      form.setFieldValue(['address', 'addressLine'], place.formatted_address)
+    form.setFieldValue(['address', 'addressLine'], place.formatted_address)
 
-      setMarker(latlng)
-      setCenter(latlng.toJSON())
-      updateAddress(address)
-      dispatchAddress(address)
-      setZoom(16)
-    })
+    setMarker(latlng)
+    setCenter(latlng.toJSON())
+    updateAddress(address)
+    dispatchAddress(address)
+    setZoom(16)
   }
+  const { ref: placeInputRef } = usePlacesAutocomplete({
+    onPlaceSelected: addressOnChange
+  })
 
   const handleVenueName = (venueName: string) => {
     dispatch({
@@ -310,8 +310,8 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
                 allowClear
                 placeholder={$t({ defaultMessage: 'Set address here' })}
                 prefix={<SearchOutlined />}
-                onChange={addressOnChange}
                 data-testid='address-input'
+                ref={placeInputRef}
                 disabled={!isMapEnabled}
                 value={address.addressLine}
               />
