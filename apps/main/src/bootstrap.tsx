@@ -10,7 +10,8 @@ import {
 } from '@acx-ui/components'
 import { get }                    from '@acx-ui/config'
 import { useGetPreferencesQuery } from '@acx-ui/rc/services'
-import { BrowserRouter }          from '@acx-ui/react-router-dom'
+import { useGetUserProfileQuery } from '@acx-ui/user'
+import { BrowserRouter, useParams }          from '@acx-ui/react-router-dom'
 import { Provider }               from '@acx-ui/store'
 import {
   UserProfileProvider,
@@ -116,8 +117,13 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
+  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  const lang = String(request.data?.global?.defaultLanguage)
+
+  console.log(`userProfile: ${userProfile?.preferredLanguage}`)
+  const lang = userProfile ? String(userProfile?.preferredLanguage) :
+    String(request.data?.global?.defaultLanguage)
+  console.log(`lang: ${lang}`)
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
