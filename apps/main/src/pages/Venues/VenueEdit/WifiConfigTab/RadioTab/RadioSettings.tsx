@@ -73,6 +73,8 @@ const RadioLegends = styled.div`
 
 export function RadioSettings () {
   const { $t } = useIntl()
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const {
     editContextData,
@@ -133,9 +135,6 @@ export function RadioSettings () {
 
   const [ apList ] = useLazyApListQuery()
 
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
-  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
-
   const getSupportBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
     const bandwidthList = Object.keys(availableChannels)
     return bandwidthOptions.filter((option: SelectItemOption) => {
@@ -155,6 +154,12 @@ export function RadioSettings () {
       return includes(indoorBandwidthList, bandwidth) || includes(outdoorBandwidthList, bandwidth)
     })
   }
+
+  const supportedApModelTooltip = Wifi7_320Mhz_FeatureFlag ?
+    // eslint-disable-next-line max-len
+    $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' }) :
+    // eslint-disable-next-line max-len
+    $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })
 
   useEffect(() => {
     if (supportChannelsData) {
@@ -511,15 +516,7 @@ export function RadioSettings () {
                   style={{ marginLeft: '20px' }}
                 />
                 <Tooltip.Question
-                  title={$t(
-                    { defaultMessage:
-                      Wifi7_320Mhz_FeatureFlag ?
-                        // eslint-disable-next-line max-len
-                        'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' :
-                        // eslint-disable-next-line max-len
-                        'These settings apply only to AP models that support tri-band, such as R760 and R560'
-                    }
-                  )}
+                  title={supportedApModelTooltip}
                   placement='bottom'
                 />
               </>
