@@ -112,8 +112,8 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
         style="margin-bottom: 30px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-          type="solid-bg"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+          type="default"
         >
           <div
             class="ant-card"
@@ -152,147 +152,151 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
               class="ant-card-body"
             >
               <div
-                class="sc-olbas jQkydB"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="ant-row Grid__GridRow-sc-5irhjd-2 sc-hiMGwR jIQpLv"
-                  style="margin: -10px -10px -10px -10px;"
+                  class="sc-jSMfEi huMdos"
                 >
                   <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
+                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    style="margin: -10px -10px -10px -10px;"
                   >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical sc-gKXOVf bONkcb"
                         >
-                          <span
-                            class="ant-typography"
-                          >
-                            Service Health
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
                             <span
-                              class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+                              class="ant-typography title"
+                            >
+                              Service Health
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
+                          >
+                            <span
+                              class="ant-typography content"
                             >
                               <span
-                                class="ant-badge-status-dot"
-                              />
-                              <span
-                                class="ant-badge-status-text"
+                                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
                               >
-                                Good
+                                <span
+                                  class="ant-badge-status-dot"
+                                />
+                                <span
+                                  class="ant-badge-status-text"
+                                >
+                                  Good
+                                </span>
                               </span>
                             </span>
-                          </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical sc-gKXOVf bONkcb"
                         >
-                          <span
-                            class="ant-typography"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
-                            DHCP Relay
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                            <span
+                              class="ant-typography title"
+                            >
+                              DHCP Relay
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
                           >
-                            ON
-                          </span>
+                            <span
+                              class="ant-typography content"
+                            >
+                              ON
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical sc-gKXOVf bONkcb"
                         >
-                          <span
-                            class="ant-typography"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
-                            DHCP Pools
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                            <span
+                              class="ant-typography title"
+                            >
+                              DHCP Pools
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
                           >
-                            3
-                          </span>
+                            <span
+                              class="ant-typography content"
+                            >
+                              3
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical sc-gKXOVf bONkcb"
                         >
-                          <span
-                            class="ant-typography"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
-                            Lease Time
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                            <span
+                              class="ant-typography title"
+                            >
+                              Lease Time
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
                           >
-                            24 hours
-                          </span>
+                            <span
+                              class="ant-typography content"
+                            >
+                              24 hours
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>

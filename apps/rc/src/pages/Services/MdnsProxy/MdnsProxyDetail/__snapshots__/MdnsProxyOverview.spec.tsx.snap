@@ -43,14 +43,39 @@ exports[`MdnsProxyOverview should render table 1`] = `
         class="ant-card-body"
       >
         <div
-          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
         >
-          Forwarding Rules
-        </div>
-        <div
-          class="ant-typography"
-        >
-          0
+          <div
+            class="sc-jSMfEi huMdos"
+          >
+            <div
+              class="ant-row Grid__GridRow-sc-5irhjd-2"
+              style="margin: -10px -10px -10px -10px;"
+            >
+              <div
+                class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                style="padding: 10px 10px 10px 10px;"
+              >
+                <div
+                  class="Grid__Container-sc-5irhjd-1 zzbxI"
+                >
+                  <div
+                    class="ant-space ant-space-vertical sc-gKXOVf bONkcb"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <span
+                        class="ant-typography title"
+                      >
+                        Forwarding Rules
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
