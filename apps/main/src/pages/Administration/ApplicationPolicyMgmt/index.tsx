@@ -27,8 +27,6 @@ const ApplicationPolicyMgmt = ()=>{
     removed,
     renamed,
     updateAvailable,
-    confirmationType,
-    rulesCount,
     isFetching,
     isLoading
   } = useSigPackDetails()
@@ -102,8 +100,7 @@ const ApplicationPolicyMgmt = ()=>{
             'the below updates under this tenant' })}
         </div>}
         {updateAvailable&&<div style={{ marginTop: 10 }}>
-          <UpdateConfirms rulesCount={rulesCount}
-            confirmationType={confirmationType}/>
+          <UpdateConfirms />
         </div>}
       </UI.BannerVersion>
     )
