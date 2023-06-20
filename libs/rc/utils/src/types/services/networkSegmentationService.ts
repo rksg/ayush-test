@@ -50,6 +50,11 @@ export interface WebAuthTemplate {
   tag?: string
 }
 
+export interface WebAuthTemplateTableData extends WebAuthTemplate{
+  switchCount?: number
+  venueCount?: number
+}
+
 export type UplinkInfo = {
   uplinkType: 'PORT' | 'LAG'
   uplinkId: string

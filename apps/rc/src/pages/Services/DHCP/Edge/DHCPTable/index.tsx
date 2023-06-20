@@ -23,8 +23,8 @@ const EdgeDhcpTable = () => {
       'edgeNum',
       'venueNum',
       'health',
-      'updateAvailable',
-      'serviceVersion',
+      'targetVersion',
+      'currentVersion',
       'tags'
     ]
   }
@@ -113,18 +113,21 @@ const EdgeDhcpTable = () => {
     {
       title: $t({ defaultMessage: 'Update Available' }),
       align: 'center',
-      key: 'updateAvailable',
-      dataIndex: 'updateAvailable',
+      key: 'targetVersion',
+      dataIndex: 'targetVersion',
       sorter: true,
       render (data, row) {
-        return row.updateAvailable ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' })
+        if(row.targetVersion && row.currentVersion !== row.targetVersion) {
+          return $t({ defaultMessage: 'Yes' })
+        }
+        return $t({ defaultMessage: 'No' })
       }
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
       align: 'center',
-      key: 'serviceVersion',
-      dataIndex: 'serviceVersion',
+      key: 'currentVersion',
+      dataIndex: 'currentVersion',
       sorter: true
     },
     {
