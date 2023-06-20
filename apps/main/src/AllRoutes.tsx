@@ -1,7 +1,4 @@
-import AnalyticsRoutes from '@analytics/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
-import MspRoutes       from '@msp/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
-import RcRoutes        from '@rc/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
-import ReportsRoutes   from '@reports/Routes' // eslint-disable-line @nrwl/nx/enforce-module-boundaries
+import React from 'react'
 
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
@@ -27,6 +24,10 @@ import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
 import { VenuesForm }   from './pages/Venues/VenuesForm'
 import { VenuesTable }  from './pages/Venues/VenuesTable'
+const AnalyticsRoutes = React.lazy(() => import('@analytics/Routes'))
+const MspRoutes = React.lazy(() => import('@msp/Routes'))
+const RcRoutes = React.lazy(() => import('@rc/Routes'))
+const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function AllRoutes () {
   useStreamActivityMessagesQuery({})
