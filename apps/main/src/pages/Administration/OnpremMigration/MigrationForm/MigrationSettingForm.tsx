@@ -124,13 +124,14 @@ export const defaultAddress: Address = {
 }
 
 type MigrationSettingFormProps = {
-  className?: string
+  className?: string,
+  countryCode?: string
 }
 
 const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const { className } = props
+  const { className, countryCode } = props
   const params = useParams()
 
   const [zoom, setZoom] = useState(1)
@@ -276,6 +277,15 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
         </Col>
       </Row>
       <Row gutter={20}>
+        <Col span={12}>
+          <Typography.Text>
+            {countryCode ?
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Wi-Fi country code will set to {countryCode}.' }, { countryCode }) :
+              $t({ defaultMessage: 'Wi-Fi country code will converted from selected address.' })
+            }
+          </Typography.Text>
+        </Col>
         <Col span={14}>
           <GoogleMap.FormItem
             label={$t({ defaultMessage: 'Address' })}
