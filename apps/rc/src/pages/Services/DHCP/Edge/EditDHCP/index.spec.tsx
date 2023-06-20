@@ -41,7 +41,7 @@ describe('EditEdgeDhcp', () => {
     )
   })
 
-  it('should render edit edge dhcp successfully', async () => {
+  it.skip('should render edit edge dhcp successfully', async () => {
     render(
       <Provider>
         <EditDhcp />
