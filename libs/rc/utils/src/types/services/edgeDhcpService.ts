@@ -63,8 +63,8 @@ export interface DhcpStats {
   venueNum?: number
   leaseTime?: string
   health?: string
-  updateAvailable?: boolean
-  serviceVersion?: string
+  targetVersion?: string
+  currentVersion?: string
   tags?: string[]
 }
 
