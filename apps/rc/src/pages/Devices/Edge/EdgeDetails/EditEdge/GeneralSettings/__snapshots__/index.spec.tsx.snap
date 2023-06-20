@@ -319,7 +319,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
         data-testid="steps-form-actions"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-start styledComponents__ActionsButtons-sc-1ibvcih-3 SCAWF"
+          class="ant-space ant-space-horizontal ant-space-align-start styledComponents__ActionsButtons-sc-1ibvcih-3"
         >
           <div
             class="ant-space-item"
