@@ -52,7 +52,6 @@ export function useAnalyticsFilter () {
         ...networkFilter
       } as AnalyticsFilter,
       setNetworkPath,
-      getNetworkFilter,
       raw
     }
   }, [dateFilter, pathname, read, write])
@@ -71,3 +70,8 @@ export const pathToFilter = (path: NetworkPath): PathFilter => ({
   networkNodes: [path],
   switchNodes: [path]
 })
+
+export const getSelectedNodePath = (filter: PathFilter) => {
+  const { networkNodes, switchNodes } = filter
+  return (networkNodes?.[0] || switchNodes?.[0] || defaultNetworkPath)
+}

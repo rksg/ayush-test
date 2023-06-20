@@ -1,8 +1,14 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, AnalyticsFilter, calculateGranularity, kpiConfig } from '@acx-ui/analytics/utils'
-import { dataApi }                                                            from '@acx-ui/store'
-import { getPathFromFilter, NetworkPath, PathFilter }                         from '@acx-ui/utils'
+import {
+  getSelectedNodePath,
+  getFilterPayload,
+  AnalyticsFilter,
+  calculateGranularity,
+  kpiConfig
+} from '@acx-ui/analytics/utils'
+import { dataApi }                 from '@acx-ui/store'
+import { NetworkPath, PathFilter } from '@acx-ui/utils'
 
 export interface KpiThresholdType {
   timeToConnect: number;
@@ -178,7 +184,7 @@ export const healthApi = dataApi.injectEndpoints({
           }
           `,
           variables: {
-            path: getPathFromFilter(payload.filter)
+            path: getSelectedNodePath(payload.filter)
           }
         }
       },
@@ -195,7 +201,7 @@ export const healthApi = dataApi.injectEndpoints({
           }
           `,
         variables: {
-          path: getPathFromFilter(payload.filter)
+          path: getSelectedNodePath(payload.filter)
         }
       })
     }),
@@ -216,7 +222,7 @@ export const healthApi = dataApi.injectEndpoints({
             }
           `,
         variables: {
-          networkPath: getPathFromFilter(payload.filter),
+          networkPath: getSelectedNodePath(payload.filter),
           name: payload.name,
           value: payload.value
         }

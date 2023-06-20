@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { resetRanges, fixedEncodeURIComponent, generatePathFilter, NodeType } from '@acx-ui/utils'
+import { resetRanges, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 
-import { useAnalyticsFilter, getFilterPayload } from './analyticsFilter'
+import { useAnalyticsFilter, getFilterPayload, pathToFilter } from './analyticsFilter'
 
 const original = Date.now
 describe('useAnalyticsFilter', () => {
@@ -62,7 +62,7 @@ describe('useAnalyticsFilter', () => {
     function Component () {
       const { filters, raw, setNetworkPath } = useAnalyticsFilter()
       useEffect(() => {
-        setNetworkPath(generatePathFilter([{ type: 'network', name: 'Network' }]), raw)
+        setNetworkPath(pathToFilter([]), raw)
       // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
       return <div>{JSON.stringify(filters)}</div>

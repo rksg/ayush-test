@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 import AutoSizer                                     from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, getSelectedNodePath } from '@acx-ui/analytics/utils'
 import {
   ContentSwitcher,
   ContentSwitcherProps,
@@ -12,8 +12,8 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
-import { formatter }                     from '@acx-ui/formatter'
-import { getPathFromFilter, PathFilter } from '@acx-ui/utils'
+import { formatter }  from '@acx-ui/formatter'
+import { PathFilter } from '@acx-ui/utils'
 
 import {
   Stages,
@@ -61,7 +61,7 @@ const transformData = (
 }
 
 export function pieNodeMap (filter: PathFilter): MessageDescriptor {
-  const node = getPathFromFilter(filter)
+  const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
     case 'zone':
       return defineMessage({ defaultMessage: `{ count, plural,

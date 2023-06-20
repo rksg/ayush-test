@@ -17,12 +17,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   useAnalyticsFilter: () => ({
     filters: {
       filter: { networkNodes: [[{ type: 'zone', name: 'v1' }]] }
-    },
-    getNetworkFilter: jest
-      .fn()
-      .mockReturnValue({
-        networkFilter: { filter: {} }
-      })
+    }
   })
 }))
 describe('Analytics legacy header', () => {

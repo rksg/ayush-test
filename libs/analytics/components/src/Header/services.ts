@@ -1,9 +1,9 @@
 import { gql } from 'graphql-request'
 
-import { normalizeNodeType }                                     from '@acx-ui/analytics/utils'
-import type { AnalyticsFilter }                                  from '@acx-ui/analytics/utils'
-import { dataApi }                                               from '@acx-ui/store'
-import {  getPathFromFilter, NetworkPath, NodeType, PathFilter } from '@acx-ui/utils'
+import { getSelectedNodePath, normalizeNodeType } from '@acx-ui/analytics/utils'
+import type { AnalyticsFilter }                   from '@acx-ui/analytics/utils'
+import { dataApi }                                from '@acx-ui/store'
+import { NetworkPath, NodeType, PathFilter }      from '@acx-ui/utils'
 
 import { HeaderData, SubTitle } from '.'
 
@@ -63,7 +63,7 @@ const getAttributesByNodeType = (nodeType: NodeType) => {
 }
 
 const getQuery = (filter: PathFilter) : string => {
-  const path = getPathFromFilter(filter)
+  const path = getSelectedNodePath(filter)
   const [{ type }] = path.slice(-1)
   switch (type) {
     case 'AP': return gql`

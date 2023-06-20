@@ -1,9 +1,9 @@
 import { gql }  from 'graphql-request'
 import { find } from 'lodash'
 
-import { getFilterPayload }              from '@acx-ui/analytics/utils'
-import { dataApi }                       from '@acx-ui/store'
-import { getPathFromFilter, PathFilter } from '@acx-ui/utils'
+import { getFilterPayload, getSelectedNodePath } from '@acx-ui/analytics/utils'
+import { dataApi }                               from '@acx-ui/store'
+import { PathFilter }                            from '@acx-ui/utils'
 
 export interface ConnectionDrilldown {
   network: {
@@ -74,7 +74,7 @@ export const pieChartQuery = (
   type: string,
   stageFilter: string
 ) => {
-  const path = getPathFromFilter(filter)
+  const path = getSelectedNodePath(filter)
   const apNode = find(path, { type: 'AP' })
   switch (type) {
     case 'connectionFailure': {

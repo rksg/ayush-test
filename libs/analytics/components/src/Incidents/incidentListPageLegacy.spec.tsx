@@ -12,12 +12,7 @@ import { IncidentListPageLegacy as Incidents, IncidentTabContentLegacy } from '.
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
-    filters: { filter: {} },
-    getNetworkFilter: jest
-      .fn()
-      .mockReturnValue({
-        networkFilter: { filter: {} }
-      })
+    filters: { filter: {} }
   })
 }))
 jest.mock('../NetworkHistory', () => ({ NetworkHistory: () => <div>Network</div> }))

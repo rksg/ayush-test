@@ -1,7 +1,7 @@
-import { AnalyticsFilter }                            from '@acx-ui/analytics/utils'
-import { dataApiURL, store }                          from '@acx-ui/store'
-import { mockGraphqlQuery }                           from '@acx-ui/test-utils'
-import { DateRange, generatePathFilter, NetworkPath } from '@acx-ui/utils'
+import { AnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
+import { dataApiURL, store }             from '@acx-ui/store'
+import { mockGraphqlQuery }              from '@acx-ui/test-utils'
+import { DateRange, NetworkPath }        from '@acx-ui/utils'
 
 import * as fixtures from './__tests__/fixtures'
 import { api }       from './services'
@@ -33,7 +33,7 @@ describe('NetworkNodeInfo', () => {
       })
       const { status, data, error } = await store.dispatch(
         api.endpoints.networkNodeInfo.initiate({
-          ...props, filter: generatePathFilter(path as NetworkPath) })
+          ...props, filter: pathToFilter(path as NetworkPath) })
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(transformedResult)

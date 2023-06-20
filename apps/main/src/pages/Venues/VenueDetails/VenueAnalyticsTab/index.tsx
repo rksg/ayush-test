@@ -1,13 +1,12 @@
-import { AnalyticsTabs }       from '@acx-ui/analytics/components'
-import { AnalyticsFilter }     from '@acx-ui/analytics/utils'
-import { useParams }           from '@acx-ui/react-router-dom'
-import { generatePathFilter }  from '@acx-ui/utils'
-import { generateVenueFilter } from '@acx-ui/utils'
+import { AnalyticsTabs }                 from '@acx-ui/analytics/components'
+import { AnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { generateVenueFilter }           from '@acx-ui/utils'
 
 export function VenueAnalyticsTab () {
   const { venueId } = useParams()
   const healthFilter = {
-    filter: generatePathFilter([{ type: 'zone', name: venueId! }])
+    filter: pathToFilter([{ type: 'zone', name: venueId! }])
   } as AnalyticsFilter
   const incidentFilter = {
     filter: generateVenueFilter([venueId as string])

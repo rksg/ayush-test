@@ -1,9 +1,9 @@
 import { configureStore, SerializedError } from '@reduxjs/toolkit'
 
-import { AnalyticsFilter }                            from '@acx-ui/analytics/utils'
-import { dataApi, dataApiURL }                        from '@acx-ui/store'
-import { mockGraphqlMutation, mockGraphqlQuery }      from '@acx-ui/test-utils'
-import { DateRange, generatePathFilter, NetworkPath } from '@acx-ui/utils'
+import { AnalyticsFilter }                       from '@acx-ui/analytics/utils'
+import { dataApi, dataApiURL }                   from '@acx-ui/store'
+import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange, pathToFilter, NetworkPath }  from '@acx-ui/utils'
 
 import { healthApi } from '.'
 
@@ -65,7 +65,7 @@ describe('Services for health kpis', () => {
 
     it('should return correct data for fetchThresholdPermission query', async () => {
       const path: NetworkPath = [{ name: 'Network', type: 'network' }]
-      const filter = generatePathFilter(path)
+      const filter = pathToFilter(path)
       const validData = {
         ThresholdMutationAllowed: true
       }
@@ -85,7 +85,7 @@ describe('Services for health kpis', () => {
 
     it('should return error for fetchThresholdPermission query', async () => {
       const path: NetworkPath = [{ name: 'Network', type: 'network' }]
-      const filter = generatePathFilter(path)
+      const filter = pathToFilter(path)
       const invalidData = undefined
       const mockedError = 'unexpected permission fetch error'
       mockGraphqlQuery(dataApiURL, 'KPI', {
@@ -106,7 +106,7 @@ describe('Services for health kpis', () => {
 
     it('should return correct data for saveThreshold mutation', async () => {
       const path: NetworkPath = [{ name: 'Network', type: 'network' }]
-      const filter = generatePathFilter(path)
+      const filter = pathToFilter(path)
       const validData = {
         mutationAllowed: true
       }
@@ -126,7 +126,7 @@ describe('Services for health kpis', () => {
 
     it('should return error for saveThreshold mutation', async () => {
       const path: NetworkPath = [{ name: 'Network', type: 'network' }]
-      const filter = generatePathFilter(path)
+      const filter = pathToFilter(path)
       const invalidData = undefined
       const mockedError = 'unexpected permission fetch error'
       mockGraphqlMutation(dataApiURL, 'SaveThreshold', {

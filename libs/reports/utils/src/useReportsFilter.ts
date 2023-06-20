@@ -35,7 +35,6 @@ export function useReportsFilter () {
         ...networkFilter
       } as ReportsFilter,
       setNetworkPath,
-      getNetworkFilter,
       raw
     }
   }, [read, write])

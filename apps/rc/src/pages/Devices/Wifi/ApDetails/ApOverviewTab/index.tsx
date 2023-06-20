@@ -8,7 +8,7 @@ import {
   TopSSIDsByTraffic,
   TrafficByVolume
 } from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                                                                                        from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, pathToFilter }                                                                                          from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                                                                                                       from '@acx-ui/components'
 import { ApInfoWidget, TopologyFloorPlanWidget }                                                                                  from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                                                                                 from '@acx-ui/rc/services'
@@ -47,9 +47,7 @@ export function ApOverviewTab () {
       setCurrentApDevice(_currentApDevice)
       setApFilter({
         ...dateFilter,
-        filter: {
-          networkNodes: [[{ type: 'AP', name: currentAP.apMac as string }]]
-        }
+        filter: pathToFilter([{ type: 'AP', name: currentAP.apMac as string }])
       })
     }
   }, [currentAP, dateFilter])

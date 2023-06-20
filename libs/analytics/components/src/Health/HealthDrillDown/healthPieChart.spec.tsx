@@ -1,10 +1,10 @@
 import { MessageFormatElement } from 'react-intl'
 
-import { AnalyticsFilter }                                                                 from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, pathToFilter }                                                   from '@acx-ui/analytics/utils'
 import { formatter }                                                                       from '@acx-ui/formatter'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup } from '@acx-ui/test-utils'
-import { DateRange, generatePathFilter }                                                   from '@acx-ui/utils'
+import { DateRange }                                                                       from '@acx-ui/utils'
 
 import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnlyWlansResponse } from './__tests__/fixtures'
 import { HealthPieChart, pieNodeMap, tooltipFormatter }                                          from './healthPieChart'
@@ -147,12 +147,12 @@ describe('HealthPieChart', () => {
   })
   describe('pieNodeMap', () => {
     it('should return correct venue title', () => {
-      const zone = pieNodeMap(generatePathFilter([{ type: 'zone', name: 'Zone' }]))
+      const zone = pieNodeMap(pathToFilter([{ type: 'zone', name: 'Zone' }]))
       expect(zone.defaultMessage).toHaveLength(1)
       let msg = (zone.defaultMessage as MessageFormatElement[])[0]
       expect(msg).toBeDefined()
 
-      const ap = pieNodeMap(generatePathFilter([{ type: 'ap', name: 'AP' }]))
+      const ap = pieNodeMap(pathToFilter([{ type: 'ap', name: 'AP' }]))
       expect(ap.defaultMessage).toHaveLength(1)
       msg = (ap.defaultMessage as MessageFormatElement[])[0]
       expect(msg).toBeDefined()
