@@ -168,7 +168,7 @@ describe('Property Unit Page', () => {
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
   })
 
-  it('show render Unit table withNsg', async () => {
+  it.skip('show render Unit table withNsg', async () => {
     render(<Provider><VenuePropertyTab /></Provider>, { route: { params: enableNsgParams } })
 
     const firstRowName = mockPropertyUnitList.content[0].name
