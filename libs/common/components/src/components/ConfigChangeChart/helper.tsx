@@ -23,7 +23,8 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
   data: ConfigChange[]
   chartBoundary: [ number, number],
   selectedData?: number,
-  onDotClick?: (params: unknown) => void
+  onDotClick?: (params: unknown) => void,
+  onBrushPositionsChange?: (params: number[][]) => void
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
@@ -98,7 +99,7 @@ export const adjuestDrawPosition = (
   return newPosition
 }
 
-export const getDrawPosition = (
+export const getDrawDragPosition = (
   xPosition: number,
   brushWidth: number,
   boundary: { min: number, max: number },
@@ -166,10 +167,10 @@ export const draw = (
                   draggable: width <= 0 ? false : 'horizontal',
                   ondrag: function () {
                     const [xPosition] = echartInstance.convertFromPixel('grid', [this.x])
-                    const newAreas = getDrawPosition(
+                    const newAreas = getDrawDragPosition(
                       xPosition, brushWidth, boundary, areas.actual, index)
-                    draw(eChartsRef, chartLayoutConfig, newAreas, boundary, setBrushPositions)
                     setBrushPositions(newAreas)
+                    draw(eChartsRef, chartLayoutConfig, newAreas, boundary, setBrushPositions)
                   }
                 },
                 {
@@ -364,7 +365,8 @@ export const useBoundaryChange = (
   eChartsRef: RefObject<ReactECharts>,
   chartLayoutConfig: Record<string, number>,
   chartBoundary: ConfigChangeChartProps['chartBoundary'],
-  brushWidth: number
+  brushWidth: number,
+  onBrushPositionsChange?: (params: number[][]) => void
 ) => {
   const [boundary, setBoundary] = useState(getInitBoundary(chartBoundary))
   const [brushPositions, setBrushPositions] =
@@ -387,6 +389,9 @@ export const useBoundaryChange = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boundary])
 
+  useEffect(() => {
+    onBrushPositionsChange?.(brushPositions.actual)
+  }, [onBrushPositionsChange, brushPositions])
   return { boundary, brushPositions, setBoundary, setBrushPositions }
 }
 

@@ -12,7 +12,7 @@ import {
   getInitBrushPositions,
   adjuestDrawPosition,
   adjustAfterBoundaryChanged,
-  getDrawPosition,
+  getDrawDragPosition,
   draw,
   useDataZoom,
   useDotClick,
@@ -102,11 +102,11 @@ describe('adjustAfterBoundaryChanged', () => {
   })
 })
 
-describe('getDrawPosition',() => {
+describe('getDrawDragPosition',() => {
   it('should return correct position', () => {
     const boundary = { min: 0, max: 100 }
     const actualArea = [[10,20],[80,90]]
-    expect(getDrawPosition(50, 10, boundary, actualArea, 0))
+    expect(getDrawDragPosition(50, 10, boundary, actualArea, 0))
       .toEqual({ actual: [[50,60],[80,90]], show: [[50,60],[80,90]] })
   })
 })

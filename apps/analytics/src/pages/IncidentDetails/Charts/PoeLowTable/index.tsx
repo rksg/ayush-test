@@ -41,7 +41,7 @@ export const PoeLowTable: React.FC<ChartProps> = (props) => {
 
   const columnHeaders: TableProps<ImpactedAP>['columns'] = useMemo(() => [
     {
-      title: $t(defineMessage({ defaultMessage: 'AP Name' })),
+      title: $t(({ defaultMessage: 'AP Name' })),
       dataIndex: 'name',
       key: 'name',
       render: (_, { mac, name }, __, highlightFn) =>

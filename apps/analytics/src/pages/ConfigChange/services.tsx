@@ -1,11 +1,9 @@
-import { gql } from 'graphql-request'
+import { gql }  from 'graphql-request'
+import { omit } from 'lodash'
 
 import type { ConfigChange } from '@acx-ui/components'
 import { dataApi }           from '@acx-ui/store'
 import { PathNode }          from '@acx-ui/utils'
-
-interface ConfigChangeResponse { configChanges: ConfigChange[] }
-interface Response<T> { network: { hierarchyNode: T } }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
@@ -31,10 +29,63 @@ export const api = dataApi.injectEndpoints({
           }
         `
       }),
-      transformResponse: (response: Response<ConfigChangeResponse> ) =>
+      transformResponse: (
+        response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
         response.network.hierarchyNode.configChanges.map((value, id)=>({ ...value, id }))
+    }),
+    configChangeKpiChanges: build.query<
+      { before: Record<string, number>, after: Record<string, number> },
+      {
+        kpis: string[],
+        path: PathNode[],
+        beforeStart: string,
+        beforeEnd: string,
+        afterStart: string,
+        afterEnd: string
+      }
+    >({
+      query: (variables) => ({
+        variables: omit(variables, ['kpis']),
+        document: gql`
+          query ConfigChange(
+            $path: [HierarchyNodeInput],
+            $beforeStart: DateTime, $beforeEnd: DateTime,
+            $afterStart: DateTime, $afterEnd: DateTime
+          ) {
+              before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
+                ${variables.kpis.join('\n')}
+              }
+              after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
+                ${variables.kpis.join('\n')}
+              }
+          }
+        `
+      })
     })
   })
 })
 
-export const { useConfigChangeQuery } = api
+const {
+  useConfigChangeQuery,
+  useConfigChangeKpiChangesQuery
+} = api
+
+interface KpiChangesParams {
+  kpis: string[],
+  path: PathNode[],
+  beforeStart: string,
+  beforeEnd: string,
+  afterStart: string,
+  afterEnd: string
+}
+
+function useKpiChangesQuery (params: KpiChangesParams) {
+  return useConfigChangeKpiChangesQuery(params,
+    { skip: Object.keys(params).some(key=>!params[key as keyof KpiChangesParams]) }
+  )
+}
+
+export {
+  useConfigChangeQuery,
+  useKpiChangesQuery
+}
