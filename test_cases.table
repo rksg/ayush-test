@@ -1,10 +1,13 @@
 Group1=(
-"run rc:test --coverage --maxWorkers=50%"
-"run analytics:test --coverage --maxWorkers=50%"
-"run rc-components:test --coverage --maxWorkers=50%"
-"run-many --target=test --all --exclude=rc,analytics,rc-components --coverage --runInBand --verbose --parallel"
+"run rc:test --coverage --maxWorkers=25%"
 )
-Group2=()
-Group3=()
-Group4=()
+Group2=(
+  "run-many --target=test --all --exclude=rc,analytics,rc-components --coverage --runInBand --verbose --parallel --maxWorkers=25%"
+)
+Group3=(
+  "run analytics:test --coverage --maxWorkers=25%"
+)
+Group4=(
+  "run rc-components:test --coverage --maxWorkers=25%"
+)
 Group5=()
