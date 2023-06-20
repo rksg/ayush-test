@@ -120,8 +120,19 @@ export const mockedPersonaList = {
       vni: 3000,
       devices: null,
       deviceCount: 0,
-      ethernetPorts: [],
-      switches: null,
+      ethernetPorts: [
+        {
+          name: 'testAp',
+          portIndex: 1
+        }
+      ],
+      switches: [
+        {
+          macAddress: 'd4:c1:9e:1f:8b:5d',
+          portId: 1,
+          personaId: 'be5359c4-0fc6-4386-a41d-d1834e75694f'
+        }
+      ],
       primary: true
     },
     {

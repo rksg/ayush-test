@@ -626,7 +626,8 @@ export interface AAASetting {
 export interface RadiusServer {
   serverType: AAAServerTypeEnum,
   id: string,
-  name: string,
+	name: string,
+	username?: string,
   ip: string,
   authPort: number,
   acctPort: number,
@@ -636,7 +637,8 @@ export interface RadiusServer {
 export interface TacacsServer {
   serverType: AAAServerTypeEnum,
   id: string,
-  name: string,
+	name: string,
+	username?: string,
   ip: string,
   authPort: number,
   purpose: string,

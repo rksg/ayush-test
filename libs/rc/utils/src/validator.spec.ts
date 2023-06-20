@@ -89,9 +89,9 @@ describe('validator', () => {
     })
     it('Should return false when object exists', async () => {
       const result1 = checkObjectNotExists(mockdata, 'test01', 'Network')
-      await expect(result1).rejects.toEqual('Network with that name already exists')
+      await expect(result1).rejects.toEqual('Network with that name already exists ')
       const result2 = checkObjectNotExists(mockdata, 'test01', 'Network', 'pname')
-      await expect(result2).rejects.toEqual('Network with that value already exists')
+      await expect(result2).rejects.toEqual('Network with that value already exists ')
     })
   })
 

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEventHandler, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import {
   Col,
@@ -16,10 +16,13 @@ import {
   GoogleMapMarker,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { SearchOutlined }          from '@acx-ui/icons'
-import { GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
+import {
+  GoogleMapWithPreference,
+  usePlacesAutocomplete
+} from '@acx-ui/rc/components'
 import {
   useLazyVenuesListQuery,
   useGetVenueQuery
@@ -124,13 +127,14 @@ export const defaultAddress: Address = {
 }
 
 type MigrationSettingFormProps = {
-  className?: string
+  className?: string,
+  countryCode?: string
 }
 
 const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const { className } = props
+  const { className, countryCode } = props
   const params = useParams()
 
   const [zoom, setZoom] = useState(1)
@@ -183,23 +187,20 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
     return Promise.resolve()
   }
 
-  const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
-    updateAddress({})
-    dispatchAddress({})
-    const autocomplete = new google.maps.places.Autocomplete(event.target)
-    autocomplete.addListener('place_changed', async () => {
-      const place = autocomplete.getPlace()
-      const { latlng, address } = await addressParser(place)
+  const addressOnChange = async (place: google.maps.places.PlaceResult) => {
+    const { latlng, address } = await addressParser(place)
 
-      form.setFieldValue(['address', 'addressLine'], place.formatted_address)
+    form.setFieldValue(['address', 'addressLine'], place.formatted_address)
 
-      setMarker(latlng)
-      setCenter(latlng.toJSON())
-      updateAddress(address)
-      dispatchAddress(address)
-      setZoom(16)
-    })
+    setMarker(latlng)
+    setCenter(latlng.toJSON())
+    updateAddress(address)
+    dispatchAddress(address)
+    setZoom(16)
   }
+  const { ref: placeInputRef } = usePlacesAutocomplete({
+    onPlaceSelected: addressOnChange
+  })
 
   const handleVenueName = (venueName: string) => {
     dispatch({
@@ -244,7 +245,8 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
               { type: 'string' },
               { min: 2 },
               { max: 32 },
-              { pattern: /^\w+$/ },
+              { // eslint-disable-next-line max-len
+                pattern: /^\w+$/, message: $t({ defaultMessage: 'New Venue Name does not match the pattern [a-zA-Z0-9_]' }) },
               {
                 validator: (_, value) => nameValidator(value)
               }
@@ -275,6 +277,15 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
         </Col>
       </Row>
       <Row gutter={20}>
+        <Col span={12}>
+          <Typography.Text>
+            {countryCode ?
+              // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'Wi-Fi country code will set to {countryCode}.' }, { countryCode }) :
+              $t({ defaultMessage: 'Wi-Fi country code will converted from selected address.' })
+            }
+          </Typography.Text>
+        </Col>
         <Col span={14}>
           <GoogleMap.FormItem
             label={$t({ defaultMessage: 'Address' })}
@@ -299,8 +310,8 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
                 allowClear
                 placeholder={$t({ defaultMessage: 'Set address here' })}
                 prefix={<SearchOutlined />}
-                onChange={addressOnChange}
                 data-testid='address-input'
+                ref={placeInputRef}
                 disabled={!isMapEnabled}
                 value={address.addressLine}
               />

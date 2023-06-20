@@ -8,6 +8,7 @@ import { CommonUrlsInfo, getUrlForTest, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import { cleanup, mockServer, render, screen }         from '@acx-ui/test-utils'
 
+import { ApDataContext }    from '..'
 import { ApEditContext }    from '../..'
 import {
   apDeviceRadio,
@@ -26,6 +27,9 @@ import { RadioSettings } from './RadioSettings'
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
 
+const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760')
+const r560Cap = triBandApCap.apModels.find(cap => cap.model === 'R560')
+
 describe('RadioSettingsTab', ()=> {
   describe('RadioSettingsTab with R560 AP', () => {
     beforeEach(() => {
@@ -42,12 +46,12 @@ describe('RadioSettingsTab', ()=> {
         rest.get(
           getUrlForTest(CommonUrlsInfo.getVenue),
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
-        rest.get(
-          WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-          (_, res, ctx) => res(ctx.json(r560Ap))),
-        rest.get(
-          WifiUrlsInfo.getApCapabilities.url,
-          (_, res, ctx) => res(ctx.json(triBandApCap))),
+        //rest.get(
+        //  WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        //  (_, res, ctx) => res(ctx.json(r560Ap))),
+        //rest.get(
+        //  WifiUrlsInfo.getApCapabilities.url,
+        //  (_, res, ctx) => res(ctx.json(triBandApCap))),
         rest.get(
           WifiUrlsInfo.getApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json(apDeviceRadio))),
@@ -81,7 +85,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -111,7 +120,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -140,7 +154,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -177,7 +196,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -212,7 +236,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -240,7 +269,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -270,7 +304,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -304,7 +343,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -331,7 +375,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -356,7 +405,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -381,7 +435,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -407,7 +466,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r560Ap,
+              apCapabilities: r560Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -430,12 +494,12 @@ describe('RadioSettingsTab', ()=> {
         rest.get(
           getUrlForTest(CommonUrlsInfo.getVenue),
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
-        rest.get(
-          WifiUrlsInfo.getAp.url,
-          (_, res, ctx) => res(ctx.json(r760Ap))),
-        rest.get(
-          WifiUrlsInfo.getApCapabilities.url,
-          (_, res, ctx) => res(ctx.json(triBandApCap))),
+        //rest.get(
+        //  WifiUrlsInfo.getAp.url,
+        //  (_, res, ctx) => res(ctx.json(r760Ap))),
+        //rest.get(
+        //  WifiUrlsInfo.getApCapabilities.url,
+        //  (_, res, ctx) => res(ctx.json(triBandApCap))),
         rest.get(
           WifiUrlsInfo.getApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json(apR760DeviceRadio))),
@@ -469,7 +533,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r760Ap,
+              apCapabilities: r760Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -498,7 +567,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r760Ap,
+              apCapabilities: r760Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -528,7 +602,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r760Ap,
+              apCapabilities: r760Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
@@ -558,7 +637,12 @@ describe('RadioSettingsTab', ()=> {
             setEditContextData: jest.fn()
           }}
           >
-            <RadioSettings />
+            <ApDataContext.Provider value={{
+              apData: r760Ap,
+              apCapabilities: r760Cap
+            }}>
+              <RadioSettings />
+            </ApDataContext.Provider>
           </ApEditContext.Provider>
         </Provider>, { route: { params } })
 
