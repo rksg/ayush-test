@@ -16,6 +16,28 @@ import StaticRoutes    from './StaticRoutes'
 
 import type { History, Transition } from 'history'
 
+const getTabs = () => {
+  const { $t } = getIntl()
+  return {
+    'general-settings': {
+      title: $t({ defaultMessage: 'General Settings' }),
+      content: <GeneralSettings />
+    },
+    'ports': {
+      title: $t({ defaultMessage: 'Ports' }),
+      content: <Ports />
+    },
+    'dns': {
+      title: $t({ defaultMessage: 'DNS Server' }),
+      content: <DnsServer />
+    },
+    'routes': {
+      title: $t({ defaultMessage: 'Static Routes' }),
+      content: <StaticRoutes />
+    }
+  }
+}
+
 export const EditEdgeTabs = () => {
 
   const navigate = useNavigate()
@@ -26,6 +48,7 @@ export const EditEdgeTabs = () => {
   const unblockRef = useRef<Function>()
   const editEdgeContext = useContext(EdgeEditContext)
   const { formControl } = editEdgeContext
+  const tabs = getTabs()
 
   useEffect(() => {
     if (formControl?.isDirty) {
@@ -72,17 +95,11 @@ export const EditEdgeTabs = () => {
       pathname: `${basePath.pathname}/${activeKey}`
     })
   }
-  const { $t } = getIntl()
-  const tabs = {
-    'general-settings': $t({ defaultMessage: 'General Settings' }),
-    'ports': $t({ defaultMessage: 'Ports' }),
-    'dns': $t({ defaultMessage: 'DNS Server' }),
-    'routes': $t({ defaultMessage: 'Static Routes' })
-  }
+
   return (
     <Tabs onChange={onTabChange} activeKey={activeTab}>
       {Object.keys(tabs)
-        .map((key) => <Tabs.TabPane tab={tabs[key as keyof typeof tabs]} key={key} />)}
+        .map((key) => <Tabs.TabPane tab={tabs[key as keyof typeof tabs].title} key={key} />)}
     </Tabs>
   )
 }
@@ -95,14 +112,10 @@ const EditEdge = () => {
   const [activeTabContent, setActiveTabContent] = useState<ReactNode>()
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
   const [formControl, setFormControl] = useState({} as EditEdgeFormControlType)
-  const tabs = {
-    'general-settings': <GeneralSettings />,
-    'ports': <Ports />,
-    'dns': <DnsServer />,
-    'routes': <StaticRoutes />
-  }
+  const tabs = getTabs()
+
   useEffect(() => {
-    setActiveTabContent(tabs[activeTab as keyof typeof tabs])
+    setActiveTabContent(tabs[activeTab as keyof typeof tabs].content)
   }, [activeTab])
 
   return (
