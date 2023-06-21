@@ -11,7 +11,9 @@ import {
   createNewTableHttpRequest,
   TableChangePayload,
   downloadFile,
-  RequestFormData
+  RequestFormData,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { basePersonaApi } from '@acx-ui/store'
 
@@ -193,6 +195,20 @@ export const personaApi = basePersonaApi.injectEndpoints({
       transformResponse (result: NewTableResult<Persona>) {
         return transferToTableResult<Persona>(result)
       },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ADD_UNIT',
+            'UPDATE_UNIT',
+            'DELETE_UNIT'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(personaApi.util.invalidateTags([
+              { type: 'Persona', id: 'LIST' }
+            ]))
+          })
+        })
+      },
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
     updatePersona: build.mutation<Persona, RequestPayload>({
@@ -267,6 +283,14 @@ export const personaApi = basePersonaApi.injectEndpoints({
           }
         }
       }
+    }),
+    allocatePersonaVni: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(PersonaUrls.allocateVni, params)
+        }
+      },
+      invalidatesTags: [{ type: 'Persona', id: 'ID' }]
     })
   })
 })
@@ -280,7 +304,8 @@ export const {
   useLazyGetPersonaGroupByIdQuery,
   useUpdatePersonaGroupMutation,
   useDeletePersonaGroupMutation,
-  useLazyDownloadPersonaGroupsQuery
+  useLazyDownloadPersonaGroupsQuery,
+  useAllocatePersonaVniMutation
 } = personaApi
 
 export const {

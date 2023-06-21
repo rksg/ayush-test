@@ -392,7 +392,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
             class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
             <section
-              class="styledComponents__Wrapper-sc-71wmpn-2 jUXjyR"
+              class="styledComponents__Wrapper-sc-71wmpn-1 hSJEDD"
             >
               <div
                 class="ant-pro-steps-form"
@@ -406,7 +406,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                     style="padding-left: 12px; padding-right: 12px;"
                   >
                     <div
-                      class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
+                      class="styledComponents__StepsContainer-sc-71wmpn-0 edTeUT"
                     >
                       <div
                         class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -1379,6 +1379,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                       <img
                                         alt="AP LAN port image - R650"
                                         class="ant-image-img"
+                                        src="https://storage.googleapis.com/"
                                       />
                                     </div>
                                   </div>
@@ -1392,7 +1393,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
+                  class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"

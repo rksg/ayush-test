@@ -25,10 +25,11 @@ import {
   SpaceWrapper
 } from '@acx-ui/rc/components'
 import {
-  useGetZdMigrationListQuery,
+  useGetZdConfigurationListQuery,
   useDeleteMigrationMutation
 } from '@acx-ui/rc/services'
 import {
+  useTableQuery,
   TaskContextType
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -37,6 +38,35 @@ import {
   GuestsDetail
 } from '../MigrationDetail'
 
+const defaultPayload = {
+  fields: [
+    'taskId',
+    'createTime',
+    'completedTime',
+    'state',
+    'lastStateUpdateTime',
+    'errorMessage',
+    'fileName',
+    'venueName',
+    'venueId',
+    'address',
+    'city',
+    'country',
+    'timezone',
+    'description',
+    'tenantId'
+  ],
+  searchString: '',
+  filters: {
+    // eslint-disable-next-line max-len
+    state: ['SystemImporting', 'ApImporting', 'WaitingSystemImportRetry', 'Completed', 'WaitingApImportRetry', 'Failed']
+  }
+}
+
+const sorter = {
+  sortField: 'createTime',
+  sortOrder: 'DESC'
+}
 
 const MigrationTable = () => {
   const { $t } = useIntl()
@@ -44,7 +74,11 @@ const MigrationTable = () => {
   const [visible, setVisible] = useState(false)
   const [currentTask, setCurrentTask] = useState({} as TaskContextType)
 
-  const { data: migrationList, isLoading, isFetching }= useGetZdMigrationListQuery({ params })
+  const tableQuery = useTableQuery({
+    useQuery: useGetZdConfigurationListQuery,
+    defaultPayload,
+    sorter
+  })
   const [
     deleteMigration
   ] = useDeleteMigrationMutation()
@@ -59,15 +93,17 @@ const MigrationTable = () => {
       key: 'fileName',
       dataIndex: 'fileName',
       searchable: true,
+      sorter: true,
       render: (_, row) => {
         return row.fileName ?? '--'
       }
     },
     {
       title: $t({ defaultMessage: 'Created Venue' }),
-      key: 'venue',
-      dataIndex: 'venue',
+      key: 'venueName',
+      dataIndex: 'venueName',
       searchable: true,
+      sorter: true,
       render: (_, row) => {
         return row.venueName ?? '--'
       }
@@ -77,6 +113,7 @@ const MigrationTable = () => {
       key: 'state',
       dataIndex: 'state',
       searchable: true,
+      sorter: true,
       render: (data, row) =>
         <Button
           type='link'
@@ -94,22 +131,25 @@ const MigrationTable = () => {
       key: 'description',
       dataIndex: 'description',
       searchable: true,
+      sorter: true,
       render: (_, row) => {
         return row.description ?? '--'
       }
     },
     {
-      title: $t({ defaultMessage: 'Start Date' }),
-      key: 'startTime',
-      dataIndex: 'startTime',
+      title: $t({ defaultMessage: 'Start Time' }),
+      key: 'createTime',
+      dataIndex: 'createTime',
+      sorter: true,
+      // defaultSortOrder: 'descend',
       render: (_, row) => {
         return row.createTime ? formatter(DateFormatEnum.DateTimeFormat)(row.createTime) : '--'
       }
     },
     {
-      title: $t({ defaultMessage: 'End Date' }),
-      key: 'endTime',
-      dataIndex: 'endTime',
+      title: $t({ defaultMessage: 'End Time' }),
+      key: 'completedTime',
+      dataIndex: 'completedTime',
       render: (_, row) => {
         // eslint-disable-next-line max-len
         return row.completedTime ? formatter(DateFormatEnum.DateTimeFormat)(row.completedTime) : '--'
@@ -141,11 +181,7 @@ const MigrationTable = () => {
 
 
   return (
-    <Loader states={[
-      { isLoading: isLoading,
-        isFetching: isFetching
-      }
-    ]}>
+    <Loader states={[tableQuery]}>
       <Row>
         <Col span={12}>
           <Subtitle level={4}>
@@ -163,10 +199,15 @@ const MigrationTable = () => {
 
       <Table
         columns={columns}
-        dataSource={migrationList}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        // dataSource={migrationList}
         rowKey='taskId'
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
         searchableWidth={430}
         locale={{
           // eslint-disable-next-line max-len

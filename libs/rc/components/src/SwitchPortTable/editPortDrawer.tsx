@@ -5,6 +5,7 @@ import { DefaultOptionType }                            from 'antd/lib/select'
 import _                                                from 'lodash'
 
 import {
+  Alert,
   Button,
   cssStr,
   Drawer,
@@ -481,9 +482,12 @@ export function EditPortDrawer ({
 
   const transformData = (data: PortSettingModel) => {
     const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
+    const vlansHasChanged = form?.isFieldTouched('taggedVlans') ||
+      form?.isFieldTouched('untaggedVlan')
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
-      if (overrideFields?.includes('portVlans') && !(hasBreakoutPortAndVenueSettings)) {
+      if ((overrideFields?.includes('portVlans') && vlansHasChanged)
+        && !(hasBreakoutPortAndVenueSettings)) {
         overrideFields.push('taggedVlans', 'untaggedVlan')
       }
       return !isMultipleEdit
@@ -499,7 +503,8 @@ export function EditPortDrawer ({
     const isDirtyPortVlan = isDirtyUntaggedVlan || isDirtyTaggedVlan
     const ignoreFields = [
       ...getInitIgnoreFields(),
-      isMultipleEdit && (!portVlansCheckbox || hasBreakoutPortAndVenueSettings) && 'revert',
+      isMultipleEdit && (!portVlansCheckbox || !vlansHasChanged
+        || hasBreakoutPortAndVenueSettings) && 'revert',
       checkVlanIgnore(
         'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyPortVlan),
       checkVlanIgnore(
@@ -638,7 +643,7 @@ export function EditPortDrawer ({
     const setButtonStatus = () => {
       const isPoeBudgetInvalid = form?.getFieldError('poeBudget').length > 0
       const isVlansInvalid
-        = (!isMultipleEdit || !!portVlansCheckbox) && (!untaggedVlan && !taggedVlans)
+      = (!isMultipleEdit || !!portVlansCheckbox) && (!untaggedVlan && !taggedVlans)
       const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
 
       setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
@@ -731,6 +736,14 @@ export function EditPortDrawer ({
       isLoading: loading,
       isFetching: isPortsSettingUpdating
     }]}>
+      {
+        isCloudPort && <Alert
+          type='info'
+          showIcon
+          // eslint-disable-next-line max-len
+          message={$t({ defaultMessage: 'Modifying the uplink port may result in the switch losing connectivity' })}
+        />
+      }
       <Form layout='vertical'>
         <Form.Item
           label={$t({ defaultMessage: 'Selected Port' })}
@@ -1304,6 +1317,7 @@ export function EditPortDrawer ({
         taggedVlans={taggedVlans}
         untaggedVlan={untaggedVlan}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+        hasSwitchProfile={hasSwitchProfile}
       />}
 
       {lldpModalvisible && <EditLldpModal

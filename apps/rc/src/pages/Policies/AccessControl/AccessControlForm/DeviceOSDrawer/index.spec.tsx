@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -380,6 +381,137 @@ describe('DeviceOSDrawer Component setting II', () => {
     await userEvent.click(screen.getAllByText('Save')[1])
 
     await selectOptionSet('Gaming', 'Xbox360')
+
+  })
+
+  it('Render DeviceOSDrawer component successfully without Gaming & PlayStation', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDevice)
+      )
+    ), rest.post(
+      AccessControlUrls.addDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(deviceResponse)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe' }
+        }
+      }
+    )
+
+    await userEvent.click(screen.getByText(/add new/i))
+
+    await screen.findByText(/device & os access settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'device1-another')
+
+    await userEvent.click(screen.getByText('Add'))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please select the deviceType option/i)
+
+    await screen.findByText(/please select the osVendor option/i)
+
+    await screen.findByRole('option', { name: 'Select...' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[1],
+      screen.getByRole('option', { name: 'Gaming' })
+    )
+
+    await screen.findByRole('option', { name: 'All' })
+
+    expect(screen.queryByRole('option', { name: 'PlayStation' })).toBeNull()
+
+  })
+
+  it.skip('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDevice)
+      )
+    ), rest.post(
+      AccessControlUrls.addDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(deviceResponse)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe' }
+        }
+      }
+    )
+
+    await userEvent.click(screen.getByText(/add new/i))
+
+    await screen.findByText(/device & os access settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'device1-another')
+
+    await userEvent.click(screen.getByText('Add'))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please enter rule name/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText(/please select the deviceType option/i)
+
+    await screen.findByText(/please select the osVendor option/i)
+
+    await selectOptionSet('Gaming', 'PlayStation')
+
+    expect(screen.queryByText(/please select the deviceType option/i)).toBeNull()
+
+    expect(screen.queryByText(/please select the osVendor option/i)).toBeNull()
 
   })
 

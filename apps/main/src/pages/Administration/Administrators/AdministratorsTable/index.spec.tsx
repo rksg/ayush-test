@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import {
@@ -349,5 +350,69 @@ describe('Administrators Table', () => {
     const row = await screen.findByRole('row', { name: /invalidRole@email.com/i })
     const tableCells = within(row).getAllByRole('cell')
     expect((tableCells[tableCells.length - 1] as HTMLElement).textContent).toBe('')
+  })
+})
+
+describe('Administrators table with MSP-EC FF enabled', () => {
+  let params: { tenantId: string }
+
+  beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
+    params = {
+      tenantId: '8c36a0a9ab9d4806b060e112205add6f'
+    }
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getAdministrators.url,
+        (req, res, ctx) => res(ctx.json([
+          {
+            id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+            email: 'efg.cheng@email.com',
+            role: 'PRIME_ADMIN',
+            delegateToAllECs: true,
+            detailLevel: 'debug'
+          }
+        ]))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getRegisteredUsersList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
+  })
+
+  it.skip('should be able to delete all admin when it is MSP-EC user and FF enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.MSPEC_OPTIONAL_ADMIN ? true : false
+    })
+
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{
+            data: fakeUserProfile,
+            isPrimeAdmin
+          } as UserProfileContextProps}
+        >
+          <AdministratorsTable
+            currentUserMail='dog1551@email.com'
+            isPrimeAdminUser={true}
+            isMspEc={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitFor(async () => {
+      expect(await screen.findByRole('row', { name: /efg.cheng@email.com/ })).toBeVisible()
+    })
+
+    const rows = await screen.findAllByRole('row')
+    expect(rows.length).toBe(2)
+    expect(within(rows[1]).getByRole('checkbox')).not.toBeDisabled()
   })
 })

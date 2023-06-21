@@ -133,6 +133,7 @@ export function SingleRadioSettings (props:{
 
   const showChannelBarControlLink = (radioType !== ApRadioTypeEnum.Radio24G &&
                                      radioType !== ApRadioTypeEnum.Radio6G)
+  const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
 
 
   const [
@@ -391,7 +392,7 @@ export function SingleRadioSettings (props:{
         }
         {!hasIndoorBandwidth && !hasOutdoorBandwidth &&
           <Row gutter={20}>
-            <Col span={20}>
+            <Col span={channelColSpan}>
               <RadioSettingsChannels
                 formName={allowedChannelsFieldName}
                 groupSize={groupSize}
@@ -419,7 +420,7 @@ export function SingleRadioSettings (props:{
             }
           </Row>
           <Row gutter={20}>
-            <Col span={20}>
+            <Col span={channelColSpan}>
               <RadioSettingsChannels
                 formName={allowedIndoorChannelsFieldName}
                 groupSize={groupSize}
@@ -448,7 +449,7 @@ export function SingleRadioSettings (props:{
             }
           </Row>
           <Row gutter={20}>
-            <Col span={20}>
+            <Col span={channelColSpan}>
               <RadioSettingsChannels
                 formName={allowedOutdoorChannelsFieldName}
                 groupSize={groupSize}
@@ -477,7 +478,7 @@ export function SingleRadioSettings (props:{
             }
           </Row>
           <Row gutter={20}>
-            <Col span={20}>
+            <Col span={channelColSpan}>
               <RadioSettingsChannels
                 formName={allowedIndoorChannelsFieldName}
                 groupSize={groupSize}

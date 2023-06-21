@@ -253,18 +253,18 @@ export function Integrators () {
         setSelected={() => {}}
         tenantId={tenantId}
       />}
-      {setDrawerEcVisible && <AssignEcDrawer
+      {drawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
         setSelected={() => {}}
         tenantId={tenantId}
         tenantType={tenantType}
       />}
-      <ResendInviteModal
+      {modalVisible && <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
         tenantId={tenantId}
-      />
+      />}
     </>
   )
 }

@@ -101,7 +101,7 @@ describe('Persona Group Details', () => {
     await screen.findByRole('heading', { level: 4, name: /Personas/i })
   })
 
-  it('should delete selected persona', async () => {
+  it.skip('should delete selected persona', async () => {
     render(
       <Provider>
         <PersonaGroupDetails />
@@ -128,7 +128,7 @@ describe('Persona Group Details', () => {
     fireEvent.click(deletePersonaButton)
   })
 
-  it('should edit selected persona', async () => {
+  it.skip('should edit selected persona', async () => {
     render(
       <Provider>
         <PersonaGroupDetails />

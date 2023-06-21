@@ -280,3 +280,35 @@ export const getEdgeDonutChartData: (statistic?: EdgeStatusSeverityStatistic) =>
   }
   return chartData
 }
+export const getEdgeStackedBarChartData =
+(edgeSummary: VenueDetailHeader['edges'] | undefined): ChartData[] => {
+  const series = getEdgeDonutChartData(edgeSummary)
+  const finalSeries=seriesMappingEdge()
+    .filter(status=>status.key!==ApVenueStatusEnum.OFFLINE).map(status=>{
+      const matched=series.filter(item=>item.name===status.name)
+      let value=0
+      if(matched.length) {
+        value=matched[0].value
+      }
+      /*
+      We need to add weightage to maintain the color order on stackbar chart
+      */
+      switch(status.key) {
+        case EdgeStatusSeverityEnum.OPERATIONAL:
+          return { name: `<3>${status.name}`, value }
+        case EdgeStatusSeverityEnum.TRANSIENT_ISSUE:
+          return { name: `<2>${status.name}`, value }
+        case EdgeStatusSeverityEnum.REQUIRES_ATTENTION:
+          return { name: `<1>${status.name}`, value }
+        case EdgeStatusSeverityEnum.IN_SETUP_PHASE:
+          return { name: `<0>${status.name}`, value }
+        default:
+          return { name: `<4>${status.name}`, value }
+      }
+
+    })
+  return [{
+    category: '',
+    series: finalSeries.sort(sortByName)
+  }]
+}

@@ -62,7 +62,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-71wmpn-2 gKDpFD"
+    class="styledComponents__Wrapper-sc-71wmpn-1 freMO"
   >
     <div
       class="ant-pro-steps-form"
@@ -76,7 +76,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
           style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
+            class="styledComponents__StepsContainer-sc-71wmpn-0 edTeUT"
           >
             <div
               class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -241,7 +241,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                     >
                       Network Details
                     </h3>
@@ -432,7 +432,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Pre-Shared Key (PSK)
+                                                  Passphrase (PSK/SAE)
                                                   <div
                                                     class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                   >
@@ -583,7 +583,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                           class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
-                            alt="Pre-Shared Key (PSK)"
+                            alt="Passphrase (PSK/SAE)"
                             src="psk.png"
                           />
                         </div>
@@ -622,7 +622,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                         style="margin-bottom: 16px;"
                       >
                         <h3
-                          class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                          class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                         >
                           Settings
                         </h3>
@@ -988,7 +988,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                           class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
-                            alt="Pre-Shared Key (PSK)"
+                            alt="Passphrase (PSK/SAE)"
                             src="psk.png"
                           />
                         </div>
@@ -1011,7 +1011,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                 >
                   Venues
                 </h3>
@@ -1745,7 +1745,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                 >
                   Summary
                 </h3>
@@ -1878,7 +1878,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                             <div
                               class="ant-form-item-control-input-content"
                             >
-                              Pre-Shared Key (PSK)
+                              Passphrase (PSK/SAE)
                             </div>
                           </div>
                         </div>
@@ -2179,7 +2179,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"
@@ -2300,7 +2300,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
     </div>
   </div>
   <section
-    class="styledComponents__Wrapper-sc-71wmpn-2 gKDpFD"
+    class="styledComponents__Wrapper-sc-71wmpn-1 freMO"
   >
     <div
       class="ant-pro-steps-form"
@@ -2314,7 +2314,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
           style="padding-left: 12px; padding-right: 12px;"
         >
           <div
-            class="styledComponents__StepsContainer-sc-71wmpn-0 blGWyw"
+            class="styledComponents__StepsContainer-sc-71wmpn-0 edTeUT"
           >
             <div
               class="ant-steps ant-steps-vertical ant-steps-dot"
@@ -2479,7 +2479,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                     >
                       Network Details
                     </h3>
@@ -2645,7 +2645,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   />
                                                 </span>
                                                 <span>
-                                                  Pre-Shared Key (PSK)
+                                                  Passphrase (PSK/SAE)
                                                   <div
                                                     class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                   >
@@ -2827,7 +2827,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                     >
                       Open Settings
                     </h3>
@@ -2941,7 +2941,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                 >
                   Venues
                 </h3>
@@ -3019,7 +3019,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-71wmpn-3 koemyr"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
                 >
                   Summary
                 </h3>
@@ -3231,7 +3231,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
       >
         <div
           class="ant-space ant-space-horizontal ant-space-align-center"

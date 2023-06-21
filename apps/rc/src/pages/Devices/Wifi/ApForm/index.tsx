@@ -22,7 +22,7 @@ import { GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
-  useGetApQuery,
+  useGetApOperationalQuery,
   useLazyApGroupListQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
@@ -48,7 +48,7 @@ import {
   WifiNetworkMessages,
   gpsToFixed,
   redirectPreviousPage,
-  validateTags
+  validateTags, DhcpAp, DhcpApResponse
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -76,6 +76,8 @@ const defaultApPayload = {
 export function ApForm () {
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
+  const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
+  const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const { tenantId, action, serialNumber } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -88,7 +90,8 @@ export function ApForm () {
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
   const { data: apDetails, isLoading: isApDetailsLoading }
-    = useGetApQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
+    // eslint-disable-next-line max-len
+    = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
   const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
 
   const [addAp] = useAddApMutation()
@@ -107,6 +110,17 @@ export function ApForm () {
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
 
+  // the payload would different based on the feature flag
+  const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
+    if (wifiEdaflag || wifiEdaGatewayflag) {
+      const result = dhcpApResponse as DhcpApInfo[]
+      return result[0]
+    } else {
+      const result = dhcpApResponse as DhcpApResponse
+      return result.response?.[0]
+    }
+  }
+
   useEffect(() => {
     if (!wifiCapabilities.isLoading) {
       setCellularApModels(wifiCapabilities?.data?.apModels
@@ -122,8 +136,9 @@ export function ApForm () {
           venuesList?.data as unknown as VenueExtended[], apDetails.venueId)
         const venueLatLng = pick(selectVenue, ['latitude', 'longitude'])
         const options = await getApGroupOptions(apDetails.venueId)
-        const dhcpAp = (await getDhcpAp({
-          params: { tenantId }, payload: [serialNumber] }, true).unwrap())?.response?.[0]
+        const dhcpApResponse = await getDhcpAp({
+          params: { tenantId }, payload: [serialNumber] }, true).unwrap()
+        const dhcpAp = retrieveDhcpAp(dhcpApResponse)
 
         setSelectedVenue(selectVenue as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])

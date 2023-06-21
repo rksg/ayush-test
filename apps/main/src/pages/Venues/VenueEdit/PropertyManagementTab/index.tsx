@@ -114,17 +114,17 @@ export function PropertyManagementTab () {
     } else {
       enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
       formRef?.current.setFieldsValue(propertyConfigsQuery.data)
+
+      const groupId = propertyConfigsQuery.data?.personaGroupId
+      if (groupId) {
+        setSelectedGroupId(groupId)
+        getPersonaGroupById({ params: { groupId } })
+          .then(result => {
+            setGroupData({ id: groupId, name: result.data?.name })
+          })
+      }
     }
     formRef?.current.setFieldValue('isPropertyEnable', enabled)
-
-    const groupId = propertyConfigsQuery.data?.personaGroupId
-    if (groupId) {
-      setSelectedGroupId(groupId)
-      getPersonaGroupById({ params: { groupId } })
-        .then(result => {
-          setGroupData({ id: groupId, name: result.data?.name })
-        })
-    }
   }, [propertyConfigsQuery.data, formRef])
 
   const registerMessageTemplates = async () => {
@@ -266,20 +266,19 @@ export function PropertyManagementTab () {
                     name={['unitConfig', 'guestAllowed']}
                     rules={[{ required: true }]}
                     valuePropName={'checked'}
+                    children={<Switch disabled={hasUnits} />}
+                  />
+                </StepsFormLegacy.FieldLabel>
+                <StepsFormLegacy.FieldLabel width={'190px'} hidden={residentPortalHasBound}>
+                  {$t({ defaultMessage: 'Enable Resident Portal' })}
+                  <Form.Item
+                    hidden={residentPortalHasBound}
+                    name={['unitConfig', 'residentPortalAllowed']}
+                    rules={[{ required: true }]}
+                    valuePropName={'checked'}
                     children={<Switch />}
                   />
                 </StepsFormLegacy.FieldLabel>
-                {!residentPortalHasBound &&
-                  <StepsFormLegacy.FieldLabel width={'190px'}>
-                    {$t({ defaultMessage: 'Enable Resident Portal' })}
-                    <Form.Item
-                      name={['unitConfig', 'residentPortalAllowed']}
-                      rules={[{ required: true }]}
-                      valuePropName={'checked'}
-                      children={<Switch />}
-                    />
-                  </StepsFormLegacy.FieldLabel>
-                }
                 {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
                     <Form.Item
                       name='residentPortalId'

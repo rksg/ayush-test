@@ -8,6 +8,7 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { getUrlForTest }                                         from '@acx-ui/utils'
 
+import { ApDataContext }     from '..'
 import { ApEditContext }     from '../..'
 import { r760Ap, venueData } from '../../../../__tests__/fixtures'
 
@@ -74,9 +75,6 @@ describe('ApMeshTab', () => {
 
     mockServer.use(
       rest.get(
-        getUrlForTest(WifiUrlsInfo.getAp).replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(r760Ap))),
-      rest.get(
         getUrlForTest(CommonUrlsInfo.getVenue),
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(
@@ -106,7 +104,9 @@ describe('ApMeshTab', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApMesh />
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApMesh />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
@@ -142,7 +142,9 @@ describe('ApMeshTab', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApMesh />
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApMesh />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
@@ -161,7 +163,7 @@ describe('ApMeshTab', () => {
 
     await userEvent.click(checkboxes[0])
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply Mesh' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
 
@@ -173,7 +175,11 @@ describe('ApMeshTab', () => {
       )
     )
 
-    render(<Provider><ApMesh /></Provider>, {
+    render(<Provider>
+      <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApMesh />
+      </ApDataContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
     })
 
@@ -191,13 +197,56 @@ describe('ApMeshTab', () => {
         (_, res, ctx) => res(ctx.json(mockNoMeshUplinkAps)))
     )
 
-    render(<Provider><ApMesh /></Provider>, {
+    render(<Provider>
+      <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApMesh />
+      </ApDataContext.Provider>
+    </Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
     await screen.findByText(/No uplink APs detected/)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+
+  it('Show error message when uplinkType is manul without uplink ap', async () => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getApMeshSettings.url,
+        (_, res, ctx) => res(ctx.json(mockApMeshSettings1))
+      )
+    )
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            hasError: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn()
+        }}>
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApMesh />
+          </ApDataContext.Provider>
+        </ApEditContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/mesh' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    await userEvent.click(await screen.findByRole('radio', { name: /Root AP/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Mesh AP/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Select Uplink AP Manually/ }))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
 })

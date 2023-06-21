@@ -1,24 +1,33 @@
-import { useContext } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                 from '@acx-ui/utils'
+import { Tabs, Tooltip }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }               from '@acx-ui/icons'
+import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
+import { ApDeep, ApModel }                          from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                    from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
 import { ApSnmp }            from './ApSnmpTab'
 import { DirectedMulticast } from './DirectedMulticast'
-import { IpSettings }        from './General/IpSettings'
-import { LanPorts }          from './LanPorts'
-import { MdnsProxyTab }      from './MdnsProxyTab/MdnsProxyTab'
-import { ApMesh }            from './MeshTab'
-import { RadioSettings }     from './RadioTab/RadioSettings'
+//import { ApExternalAntenna } from './ExternalAntenna/ApExternalAntenna'
+import { IpSettings }    from './General/IpSettings'
+import { LanPorts }      from './LanPorts'
+import { MdnsProxyTab }  from './MdnsProxyTab/MdnsProxyTab'
+import { ApMesh }        from './MeshTab'
+import { RadioSettings } from './RadioTab/RadioSettings'
+
 
 const { TabPane } = Tabs
+
+export const ApDataContext = createContext({} as {
+  apData?: ApDeep,
+  apCapabilities?: ApModel
+})
 
 export function ApSettingsTab () {
   const { $t } = useIntl()
@@ -31,6 +40,33 @@ export function ApSettingsTab () {
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const supportMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+
+  const getAp = useGetApQuery({ params })
+  const getApCapabilities = useGetApCapabilitiesQuery({ params })
+
+  const [apData, setApData] = useState<ApDeep>()
+  const [apCapabilities, setApCapabilities] = useState<ApModel>()
+  const [isSupportMesh, setIsSupportMesh] = useState(false)
+  //const [hasExternalAntenna, setHasExternalAntenna] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    const data = getAp?.data
+    const modelName = data?.model
+    const capabilities = getApCapabilities.data
+
+    if (!isLoaded && modelName && capabilities) {
+      const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
+
+      setApData(data)
+      setApCapabilities(curApCapabilities)
+      //setHasExternalAntenna(!!(curApCapabilities?.externalAntenna))
+      setIsSupportMesh(!!(curApCapabilities?.supportMesh))
+
+      setIsLoaded(true)
+    }
+
+  }, [getAp?.data, getApCapabilities?.data, isLoaded])
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -51,6 +87,7 @@ export function ApSettingsTab () {
     const tabTitle = {
       general: $t({ defaultMessage: 'General' }),
       radio: $t({ defaultMessage: 'Radio' }),
+      extAntenna: $t({ defaultMessage: 'External Antenna' }),
       lanPort: $t({ defaultMessage: 'LAN Port' }),
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
       multicast: $t({ defaultMessage: 'Directed Multicast' }),
@@ -64,34 +101,43 @@ export function ApSettingsTab () {
   }
 
   return (
-    <Tabs
-      onChange={onTabChange}
-      defaultActiveKey={supportStaticIpSettings? 'general' : 'radio'}
-      activeKey={params.activeSubTab}
-      type='card'
-    >
-      {supportStaticIpSettings &&
+    <ApDataContext.Provider value={{
+      apData,
+      apCapabilities
+    }}>
+      <Tabs
+        onChange={onTabChange}
+        defaultActiveKey={supportStaticIpSettings? 'general' : 'radio'}
+        activeKey={params.activeSubTab}
+        type='card'
+      >
+        {supportStaticIpSettings &&
         <TabPane tab={tabTitleMap('general')} key='general'>
           <IpSettings />
         </TabPane>
-      }
-      <TabPane tab={tabTitleMap('radio')} key='radio'>
-        <RadioSettings />
-      </TabPane>
-      <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
-        <LanPorts />
-      </TabPane>
-      {isServicesEnabled ? <TabPane
-        tab={tabTitleMap('proxy')}
-        key='proxy'
-        children={<MdnsProxyTab />}
-      /> : null}
-      {supportApSnmp &&
+        }
+        <TabPane tab={tabTitleMap('radio')} key='radio'>
+          <RadioSettings />
+        </TabPane>
+        {/*hasExternalAntenna &&
+        <TabPane tab={tabTitleMap('extAntenna')} key='extAntenna'>
+          <ApExternalAntenna />
+        </TabPane>*/
+        }
+        <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
+          <LanPorts />
+        </TabPane>
+        {isServicesEnabled ? <TabPane
+          tab={tabTitleMap('proxy')}
+          key='proxy'
+          children={<MdnsProxyTab />}
+        /> : null}
+        {supportApSnmp &&
         <TabPane tab={tabTitleMap('snmp')} key='snmp'>
           <ApSnmp />
         </TabPane>
-      }
-      {supportDirectedMulticast &&
+        }
+        {supportDirectedMulticast &&
         <TabPane tab={<>
           {tabTitleMap('multicast')}
           <Tooltip title={$t(directedMulticastInfo)} placement='right'>
@@ -102,12 +148,13 @@ export function ApSettingsTab () {
         key='multicast'>
           <DirectedMulticast />
         </TabPane>
-      }
-      {supportMeshEnhancement &&
+        }
+        {(supportMeshEnhancement && isSupportMesh) &&
         <TabPane tab={tabTitleMap('mesh')} key='mesh'>
           <ApMesh />
         </TabPane>
-      }
-    </Tabs>
+        }
+      </Tabs>
+    </ApDataContext.Provider>
   )
 }

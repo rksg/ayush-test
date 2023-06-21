@@ -11,7 +11,7 @@ import {
   UseQueryResult,
   UseQueryOptions
 } from '@acx-ui/types'
-import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { TABLE_DEFAULT_PAGE_SIZE, TABLE_MAX_PAGE_SIZE } from '@acx-ui/utils'
 
 import { ApiInfo, createHttpRequest } from '../apiService'
 
@@ -48,6 +48,7 @@ export interface TABLE_QUERY <
   search?: SEARCH
   rowKey?: string
   option?: UseQueryOptions
+  enableSelectAllPagesData?: string[] // query fields for all data
 }
 export type PAGINATION = {
   page: number,
@@ -99,6 +100,7 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
   handleFilterChange: (filters: FILTER, search: SEARCH, groupBy?: GROUPBY) => void
   payload: Payload,
   setPayload: React.Dispatch<React.SetStateAction<Payload>>,
+  getAllPagesData: ()=> ResultType[]
 }
 
 export function usePollingTableQuery <
@@ -158,6 +160,16 @@ export function useTableQuery <
     payload: payload
   }, option.option)
 
+  const getAllDataApi = option.enableSelectAllPagesData && option.useQuery({
+    params: { ...params, ...option.apiParams },
+    payload: {
+      ...payload,
+      fields: option.enableSelectAllPagesData,
+      page: 1,
+      pageSize: TABLE_MAX_PAGE_SIZE
+    }
+  }, option.option)
+
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
       if (data) {
@@ -170,6 +182,10 @@ export function useTableQuery <
     }
     handlePagination(api.data)
   }, [api.data])
+
+  const getAllPagesData = (() => {
+    return getAllDataApi && getAllDataApi.data ? getAllDataApi.data.data : []
+  })
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy? : GROUPBY) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
@@ -227,6 +243,7 @@ export function useTableQuery <
     handleTableChange,
     payload,
     setPayload,
+    getAllPagesData,
     ...api
   } as TableQuery<ResultType, Payload, ResultExtra>
 }

@@ -6,7 +6,6 @@ import { useIntl }                                from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal } from '@acx-ui/components'
 import {
-  useGetApQuery,
   useGetApSnmpPolicyListQuery,
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
@@ -20,12 +19,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { VenueApSnmpSettings, ApSnmpSettings } from '@acx-ui/rc/utils'
 import {
-  TenantLink,
   useParams,
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
+import { ApDataContext } from '..'
 import { ApEditContext } from '../..'
 
 export function ApSnmp () {
@@ -44,8 +43,10 @@ export function ApSnmp () {
   const { tenantId, serialNumber } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const toPolicyPath = useTenantLink('')
 
   const { editContextData, setEditContextData } = useContext(ApEditContext)
+  const { apData: apDetails } = useContext(ApDataContext)
 
   const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
 
@@ -61,14 +62,12 @@ export function ApSnmp () {
   // Controlling UI loading
   const [formInitializing, setFormInitializing] = useState(true)
 
-  // Get AP Details for Venue ID
-  const { data: RetrievedApDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
   // Get current Venue AP SNMP Settings
   const [getVenueApSnmpSettings] = useLazyGetVenueApSnmpSettingsQuery()
   // Get current available AP SNMP policy list
-  const RetrievedApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
+  const retrievedApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
   // Get current AP SNMP settings
-  const RetrievedApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
+  const retrievedApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
 
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
    = useUpdateApSnmpSettingsMutation()
@@ -77,14 +76,14 @@ export function ApSnmp () {
    = useResetApSnmpSettingsMutation()
 
   useEffect(() => {
-    const { data: settingsInDatabase, isLoading } = RetrievedApSnmpSettings || {}
-    if (isLoading === false && settingsInDatabase && RetrievedApDetails) {
+    const { data: settingsInDatabase, isLoading } = retrievedApSnmpSettings || {}
+    if (isLoading === false && settingsInDatabase && apDetails) {
       const setData = async () => {
 
         // Get current Venue AP SNMP settings
         const venueApSnmpSetting = (
           await getVenueApSnmpSettings(
-            { params: { tenantId, venueId: RetrievedApDetails?.venueId } }, true).unwrap()
+            { params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap()
         )
         setStateOfApSnmpSettings({ ...defaultApSnmpSettings, ...settingsInDatabase })
         setStateVenueOfApSnmpSettings(venueApSnmpSetting)
@@ -94,7 +93,7 @@ export function ApSnmp () {
       }
       setData()
     }
-  }, [RetrievedApSnmpSettings])
+  }, [apDetails, retrievedApSnmpSettings])
 
   const handleFormApSnmpChange = () => {
     // To avoid lost field value when switch is off/fields are removed.
@@ -254,23 +253,32 @@ export function ApSnmp () {
                 disabled={stateOfUseVenueSettings}
                 options={[
                   { label: $t({ defaultMessage: 'Select...' }), value: '' },
-                  ...RetrievedApSnmpAgentList?.data?.map(
+                  ...retrievedApSnmpAgentList?.data?.map(
                     item => ({ label: item.policyName, value: item.id })
                   ) ?? []
                 ]}
                 style={{ width: '200px' }}
               />
             </Form.Item>
-            {((RetrievedApSnmpAgentList?.data?.length as number) < 64) &&
-                <TenantLink
-                  to={getPolicyRoutePath({
+            {((retrievedApSnmpAgentList?.data?.length as number) < 64) &&
+              <Button
+                data-testid='use-push'
+                type='link'
+                onClick={async () => {
+                  await setEditContextData({
+                    ...editContextData,
+                    isDirty: false,
+                    hasError: false
+                  })
+                  await navigate(`${toPolicyPath.pathname}/${getPolicyRoutePath({
                     type: PolicyType.SNMP_AGENT,
                     oper: PolicyOperation.CREATE
-                  })}
-                  style={{ marginLeft: '20px' }}
-                >
-                  {$t({ defaultMessage: 'Add' })}
-                </TenantLink>
+                  })}`)
+                }
+                }
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
             }
           </Row>
         </Col>

@@ -79,7 +79,7 @@ export function WISPrAuthAccServer (props : {
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Connections' })}</Subtitle>
+        <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
 
         <Form.Item
           name={['guestPortal','wisprPage','authType']}
@@ -166,14 +166,15 @@ export function WISPrAuthAccServer (props : {
                       target='_blank'
                       href={get('API_DOCUMENTATION_URL')}
                       rel='noreferrer'>
-                      {$t({ defaultMessage: 'WISPr API documentation' })}
+                      {$t({ defaultMessage: 'RUCKUS One WISPr API Reference' })}
                     </a>
                   }}
-                  defaultMessage={`
-                    Additional external configuration is required for this option to function.
+
+                  defaultMessage={
+                    // eslint-disable-next-line
+                    `Additional external configuration is required for this feature to function properly.
                     <br></br>
-                    Please refer to the {link} for more details
-                  `}
+                    For more details, refer to {link}.`}
                 />
               </Description>
             </Space>

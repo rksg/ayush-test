@@ -4,13 +4,12 @@ import { Col, Form, Image, Row, Select, Space } from 'antd'
 import { isEqual, replace }                     from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { Loader, Tabs }            from '@acx-ui/components'
-import { LanPortSettings }         from '@acx-ui/rc/components'
+import { Loader, Tabs }                                            from '@acx-ui/components'
+import { LanPortSettings }                                         from '@acx-ui/rc/components'
 import {
-  useGetVenueCapabilitiesQuery,
   useGetVenueSettingsQuery,
   useGetVenueLanPortsQuery,
-  useUpdateVenueLanPortsMutation
+  useUpdateVenueLanPortsMutation, useGetVenueApCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   ApModel,
@@ -40,7 +39,7 @@ export function LanPorts () {
 
   const venueSettings = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
   const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
-  const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
+  const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
   const [updateVenueLanPorts, {
     isLoading: isUpdatingVenueLanPorts }] = useUpdateVenueLanPortsMutation()
 

@@ -21,5 +21,7 @@ describe('Stateful ACL rules table with statistic data', () => {
 
     const rows = await screen.findAllByRole('row')
     expect(rows.length).toBe(2) // 1 + 1(header row)
+    expect(screen.queryByRole('row',
+      { name: /1 Block Any Any Any 19 300 KB/ })).toBeValid()
   })
 })
