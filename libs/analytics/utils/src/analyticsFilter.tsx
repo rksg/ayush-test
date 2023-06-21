@@ -27,32 +27,22 @@ export function useAnalyticsFilter () {
   const venuesFilter = dashboardFilter.read()
   if (!read() && venuesFilter?.nodes.length === 1) {
     const [ name ] = venuesFilter.nodes[0]
-    const path = [...defaultNetworkPath, { type: 'zone' as NodeType, name }]
+    const path = [{ type: 'zone' as NodeType, name }]
     write({ path, raw: [JSON.stringify(path)] })
   }
 
   return useMemo(() => {
+    const { path, raw: rawPath } = read() || { path: [], raw: [] }
+    // const hasNetwork = path.some(({ type }: { type: NodeType }) => type === 'network') // temp for existing urls, should be removed
+    const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
     const isHealthPage = pathname.includes('/analytics/health')
-    const getNetworkFilter = () => {
-      let networkFilter = read() || { path: defaultNetworkPath, raw: [] }
-      const { path, raw } = networkFilter
-      return isHealthPage && path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
-        ? { networkFilter: { filter: {} }, raw: [] }
-        : { networkFilter: { filter: pathToFilter(path) }, raw }
-    }
-
-    const setNetworkPath = (path: NetworkPath, raw: object) => {
-      write({ raw, path })
-    }
-
-    const { networkFilter, raw } = getNetworkFilter()
+    const { filter, raw } = (isHealthPage && isSwitchPath) // || hasNetwork
+      ? { filter: {}, raw: [] }
+      : { filter: pathToFilter(path), raw: rawPath }
     return {
-      filters: {
-        ...dateFilter,
-        ...networkFilter
-      } as AnalyticsFilter,
-      setNetworkPath,
-      raw
+      raw,
+      filters: { ...dateFilter, filter } as AnalyticsFilter,
+      setNetworkPath: (path: NetworkPath, raw: object) => write({ raw, path })
     }
   }, [dateFilter, pathname, read, write])
 }
@@ -61,15 +51,27 @@ export const getFilterPayload = (
   { filter }: { filter: PathFilter }
 ): { path: NetworkPath, filter: PathFilter } => {
   return {
-    path: [{ type: 'network', name: 'Network' }],
+    path: defaultNetworkPath, // to avoid error from legacy api
     filter
   }
 }
 
-export const pathToFilter = (path: NetworkPath): PathFilter => ({
-  networkNodes: [path],
-  switchNodes: [path]
-})
+export const pathToFilter = (path: NetworkPath): PathFilter => {
+  switch (path.length) {
+    case 0:
+      return {}
+    case 1: // at venue level we want to see both its switches and aps
+      return {
+        networkNodes: [[{ type: 'zone', name: path[0].name }]],
+        switchNodes: [[{ type: 'switchGroup', name: path[0].name }]]
+      }
+    default: // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
+      return {
+        networkNodes: [path],
+        switchNodes: [path]
+      }
+  }
+}
 
 export const getSelectedNodePath = (filter: PathFilter) => {
   const { networkNodes, switchNodes } = filter

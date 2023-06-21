@@ -187,7 +187,7 @@ export const onApply = (
   setNetworkPath: CallableFunction
 ) => {
   const path = !value || value.length === 0
-    ? defaultNetworkPath
+    ? []
     : JSON.parse(value?.slice(-1)[0] as string)
   setNetworkPath(path, value || [])
 }

@@ -8,18 +8,10 @@ exports[`useAnalyticsFilter changes filter value 1`] = `
 </DocumentFragment>
 `;
 
-exports[`useAnalyticsFilter does not throw error with old filter values from search parameters 1`] = `
-<DocumentFragment>
-  <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{}}
-  </div>
-</DocumentFragment>
-`;
-
 exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"network","name":"Network"},{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]],"switchNodes":[[{"type":"network","name":"Network"},{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]]}}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]],"switchNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]]}}
   </div>
 </DocumentFragment>
 `;
@@ -43,7 +35,7 @@ exports[`useAnalyticsFilter should render correctly 1`] = `
 exports[`useAnalyticsFilter should set filter to default when select path does not have switch or AP 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"network","name":"Network"},{"type":"someType","name":"someValue"},{"type":"randomType","name":"randomValue"}]],"switchNodes":[[{"type":"network","name":"Network"},{"type":"someType","name":"someValue"},{"type":"randomType","name":"randomValue"}]]}}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"someType","name":"someValue"},{"type":"randomType","name":"randomValue"}]],"switchNodes":[[{"type":"someType","name":"someValue"},{"type":"randomType","name":"randomValue"}]]}}
   </div>
 </DocumentFragment>
 `;
@@ -59,7 +51,7 @@ exports[`useAnalyticsFilter should set filter with switchGroup & zone 1`] = `
 exports[`useAnalyticsFilter should set filter with switches when search parameters has switches 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"network","name":"Network"},{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]],"switchNodes":[[{"type":"network","name":"Network"},{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]]}}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]]}}
   </div>
 </DocumentFragment>
 `;
@@ -67,7 +59,7 @@ exports[`useAnalyticsFilter should set filter with switches when search paramete
 exports[`useAnalyticsFilter should set filters correctly path is health and selected node is zone 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"network","name":"Network"},{"type":"zone","name":"Zone"}]],"switchNodes":[[{"type":"network","name":"Network"},{"type":"zone","name":"Zone"}]]}}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"Zone"}]],"switchNodes":[[{"type":"switchGroup","name":"Zone"}]]}}
   </div>
 </DocumentFragment>
 `;

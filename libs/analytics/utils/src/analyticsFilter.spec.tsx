@@ -5,7 +5,7 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { resetRanges, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 
-import { useAnalyticsFilter, getFilterPayload, pathToFilter } from './analyticsFilter'
+import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath } from './analyticsFilter'
 
 const original = Date.now
 describe('useAnalyticsFilter', () => {
@@ -20,7 +20,6 @@ describe('useAnalyticsFilter', () => {
     const { result } = renderHook(useAnalyticsFilter, {
       wrapper: ({ children }) => <MemoryRouter>{children}</MemoryRouter>
     })
-    expect(result.current.setNetworkPath).toBeDefined()
     expect(result.current.filters).toEqual({
       filter: {},
       startDate: '2021-12-31T00:00:00+00:00',
@@ -30,19 +29,11 @@ describe('useAnalyticsFilter', () => {
   })
 
   const filter = {
-    filter: {
-      networkNodes: [[
-        { type: 'network', name: 'Network' },
-        { type: 'zone', name: 'A-T-Venue' },
-        { type: 'AP', name: 'D8:38:FC:36:78:D0' }
-      ]],
-      switchNodes: [[
-        { type: 'network', name: 'Network' },
-        { type: 'zone', name: 'A-T-Venue' },
-        { type: 'AP', name: 'D8:38:FC:36:78:D0' }
-      ]]
-    },
-    raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
+    path: [
+      { type: 'zone', name: 'A-T-Venue' },
+      { type: 'AP', name: 'D8:38:FC:36:78:D0' }
+    ],
+    raw: ['[{\\"type\\":\\"zone\\",\\"name\\":\\"A-T-Venue\\"},...]']
   }
   const path = fixedEncodeURIComponent(JSON.stringify(filter))
   it('should render correctly', () => {
@@ -62,7 +53,7 @@ describe('useAnalyticsFilter', () => {
     function Component () {
       const { filters, raw, setNetworkPath } = useAnalyticsFilter()
       useEffect(() => {
-        setNetworkPath(pathToFilter([]), raw)
+        setNetworkPath([], raw)
       // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
       return <div>{JSON.stringify(filters)}</div>
@@ -73,29 +64,6 @@ describe('useAnalyticsFilter', () => {
     }]}>
       <Component />
     </MemoryRouter>)
-    expect(asFragment()).toMatchSnapshot()
-  })
-  it('does not throw error with old filter values from search parameters', () => {
-    const path = fixedEncodeURIComponent(JSON.stringify({
-      path: [
-        { type: 'network', name: 'Network' },
-        { type: 'zone', name: 'A-T-Venue' },
-        { type: 'AP', name: 'D8:38:FC:36:78:D0' }
-      ],
-      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
-    }))
-    function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
-    }
-    const { asFragment } = render(
-      <MemoryRouter initialEntries={[{
-        pathname: '/analytics/incidents',
-        search: `?analyticsNetworkFilter=${path}`
-      }]}>
-        <Component />
-      </MemoryRouter>
-    )
     expect(asFragment()).toMatchSnapshot()
   })
   it('gets initial value from search parameters', () => {
@@ -115,18 +83,10 @@ describe('useAnalyticsFilter', () => {
   })
   it('should set filter with switches when search parameters has switches', () => {
     const filter = {
-      filter: {
-        networkNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'switchGroup', name: 'switchGroup' },
-          { type: 'switch', name: 'D8:38:FC:36:78:D0' }
-        ]],
-        switchNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'switchGroup', name: 'switchGroup' },
-          { type: 'switch', name: 'D8:38:FC:36:78:D0' }
-        ]]
-      },
+      path: [
+        { type: 'switchGroup', name: 'switchGroup' },
+        { type: 'switch', name: 'D8:38:FC:36:78:D0' }
+      ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
@@ -146,16 +106,9 @@ describe('useAnalyticsFilter', () => {
   })
   it('should set filter with switchGroup & zone', () => {
     const filter = {
-      filter: {
-        networkNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'switchGroup', name: 'switchGroup' }
-        ]],
-        switchNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'switchGroup', name: 'switchGroup' }
-        ]]
-      },
+      path: [
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
@@ -176,18 +129,10 @@ describe('useAnalyticsFilter', () => {
 
   it('should set filter to default when select path does not have switch or AP', () => {
     const filter = {
-      filter: {
-        networkNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'someType', name: 'someValue' },
-          { type: 'randomType', name: 'randomValue' }
-        ]],
-        switchNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'someType', name: 'someValue' },
-          { type: 'randomType', name: 'randomValue' }
-        ]]
-      },
+      path: [
+        { type: 'someType', name: 'someValue' },
+        { type: 'randomType', name: 'randomValue' }
+      ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
@@ -207,16 +152,9 @@ describe('useAnalyticsFilter', () => {
   })
   it('should set path to default when path is health and selected node is switch', () => {
     const filter = {
-      filter: {
-        networkNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'switchGroup', name: 'switchGroup' }
-        ]],
-        switchNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'switchGroup', name: 'switchGroup' }
-        ]]
-      },
+      path: [
+        { type: 'switchGroup', name: 'switchGroup' }
+      ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
@@ -236,16 +174,9 @@ describe('useAnalyticsFilter', () => {
   })
   it('should set filters correctly path is health and selected node is zone', () => {
     const filter = {
-      filter: {
-        networkNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'zone', name: 'Zone' }
-        ]],
-        switchNodes: [[
-          { type: 'network', name: 'Network' },
-          { type: 'zone', name: 'Zone' }
-        ]]
-      },
+      path: [
+        { type: 'zone', name: 'Zone' }
+      ],
       raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
     }
     const path = fixedEncodeURIComponent(JSON.stringify(filter))
@@ -292,5 +223,19 @@ describe('getFilterPayload', () => {
       filter,
       path: [{ type: 'network', name: 'Network' }]
     })
+  })
+})
+describe('getSelectedNodePath', () => {
+  it('returns ap, switch or default path', () => {
+    expect(getSelectedNodePath({
+      networkNodes: [[{ type: 'zoneName' as NodeType, name: 'Zone' }]],
+      switchNodes: [[{ type: 'switchGroup' as NodeType, name: 'Switches' }]]
+    })).toEqual([{ type: 'zoneName' as NodeType, name: 'Zone' }])
+    expect(getSelectedNodePath({
+      switchNodes: [[{ type: 'switchGroup' as NodeType, name: 'Switches' }]]
+    })).toEqual([{ type: 'switchGroup' as NodeType, name: 'Switches' }])
+    expect(getSelectedNodePath({
+      // default
+    })).toEqual([{ type: 'network', name: 'Network' }])
   })
 })
