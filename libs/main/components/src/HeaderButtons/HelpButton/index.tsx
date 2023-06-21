@@ -114,7 +114,7 @@ const HelpButton = (props:HelpButtonProps) => {
         key: 'models',
         label: $t({ defaultMessage: 'Supported Device Models' })
       },
-      ...((!isGuestManager || !isDPSKAdmin) ? [{
+      ...(!(isGuestManager || isDPSKAdmin) ? [{
         key: 'firewallACL',
         label: $t({ defaultMessage: 'Firewall ACL Inputs' })
       }] : []),

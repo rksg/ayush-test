@@ -92,7 +92,7 @@ function Layout () {
       </>}
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-        {(!isGuestManager || !isDPSKAdmin) &&
+        {!(isGuestManager || isDPSKAdmin) &&
           <>
             <AlarmsButton/>
             <ActivityButton/>
