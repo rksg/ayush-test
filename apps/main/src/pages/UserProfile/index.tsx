@@ -39,30 +39,27 @@ export function UserProfile () {
   const { Paragraph } = Typography
   const { tenantId } = useParams()
   const navigate = useNavigate()
-  const { data: userProfile } = useUserProfileContext()
+  const { data: userProfile, ...getReqState } = useUserProfileContext()
+  const [ updateUserProfile, updateReqState ] = useUpdateUserProfileMutation()
   const location = useLocation().state as fromLoc
   const locale = useLocaleContext()
-  // const code = userProfile?.preferredLanguage as LangKey
-  // console.log(`lang code preferred ${code}`)
-  // locale.setLang(code)
-  const [updateUserProfile] = useUpdateUserProfileMutation()
+  const isLoading = getReqState.isLoading || getReqState.isFetching
+    || updateReqState.isLoading
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
-    // console.log(`handlePreferredLangChange: ${data?.preferredLanguage}`)
     await updateUserProfile({ payload: data, params: { tenantId } })
-    if (userProfile?.preferredLanguage !== data?.preferredLanguage)
+    if (userProfile?.preferredLanguage !== data?.preferredLanguage) {
       handlePreferredLangChange(String(data?.preferredLanguage))
+    }
     navigate({
       pathname: location.from
     }, { replace: true })
   }
 
   const handlePreferredLangChange = (langCode: string) => {
-    // console.log(`handlePreferredLangChange: ${langCode}`)
     if (!langCode) return
     const code = langCode as LangKey
     locale.setLang(code)
-
   }
   const handleCancel = () => {
     navigate({
@@ -102,6 +99,7 @@ export function UserProfile () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
         onFinish={handleUpdateSettings}
         onCancel={async () => handleCancel()}
+        disabled={isLoading()}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
