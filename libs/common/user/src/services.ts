@@ -176,7 +176,7 @@ export const {
         userProfile.initials = firstName && lastName
           ? `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
           : ' '
-        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        userProfile.fullName = `${firstName} ${lastName}`
         return userProfile
       },
       providesTags: ['UserProfile']
