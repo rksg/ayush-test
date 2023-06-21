@@ -133,7 +133,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
           key: 'authenticationId',
           dataIndex: 'authenticationId',
           sorter: { compare: sortProp('authenticationId', defaultSort) },
-          render: function (_: any, row: Administrator) {
+          render: function (_: unknown, row: Administrator) {
             return row.authenticationId
               ? $t({ defaultMessage: 'SSO with 3rd Party' }) : $t({ defaultMessage: 'RUCKUS' })
           }

@@ -63,7 +63,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     />
     <Form.Item
       name='secret'
-      label={$t({ defaultMessage: 'Clirnt secret' })}
+      label={$t({ defaultMessage: 'Client secret' })}
       // initialValue={secret}
       rules={[
         { required: true },
@@ -97,7 +97,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       title={isEditMode
         ? $t({ defaultMessage: 'Edit API Token' })
         : $t({ defaultMessage: 'Add API Token' })}
-      width={'452'}
+      width={452}
       visible={visible}
       onClose={onClose}
       children={formContent}

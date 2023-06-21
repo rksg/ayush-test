@@ -1,0 +1,170 @@
+import userEvent from '@testing-library/user-event'
+
+// import { ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent
+} from '@acx-ui/test-utils'
+
+import { AddApplicationDrawer } from './AddApplicationDrawer'
+
+describe('Add Application Drawer', () => {
+  let params: { tenantId: string }
+  beforeEach(async () => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+  })
+  it('should render add layout correctly', async () => {
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={jest.fn()} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Add' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+  })
+  it('should render edit layout correctly', async () => {
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={true}
+          setVisible={jest.fn()} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Edit API Token')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+  })
+  it('should close correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedCloseDrawer).toHaveBeenCalledWith(false)
+  })
+  it('should validate application name correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    const input = screen.getByLabelText('Application Name')
+    fireEvent.change(input, { target: { value: 'n' } })
+    expect(await screen.findByText('Application Name must be at least 2 characters')).toBeVisible()
+    fireEvent.change(input, { target: { value: 'name' } })
+    await waitFor(() => {
+      expect(screen.queryByText('Application Name must be at least 2 characters')).toBeNull()
+    })
+    fireEvent.change(input, { target: { value: 'name!' } })
+    /* eslint-disable max-len */
+    expect(await screen.findByText('Cannot contain Exclamation mark(!), double quotes and space')).toBeVisible()
+    fireEvent.change(input, { target: { value: '' } })
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('Please enter Application Name')).toBeVisible()
+    expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
+  })
+  it('should validate client secret correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    const input = screen.getByLabelText('Client secret')
+    fireEvent.change(input, { target: { value: '1' } })
+    expect(await screen.findByText('Cannot be composed of ALL digits, e.g., 12345')).toBeVisible()
+    fireEvent.change(input, { target: { value: '1A' } })
+    await waitFor(() => {
+      expect(screen.queryByText('Cannot be composed of ALL digits, e.g., 12345')).toBeNull()
+    })
+    fireEvent.change(input, { target: { value: '1A ' } })
+    expect(await screen.findByText('Cannot contain space')).toBeVisible()
+    fireEvent.change(input, { target: { value: '' } })
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('Please enter Client secret')).toBeVisible()
+    expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
+  })
+  it('should generate client secret correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    const button = screen.getByRole('button', { name: 'Generate Secret' })
+    await userEvent.click(button)
+    expect(screen.queryByText('Please enter Client secret')).toBeNull()
+    expect(screen.queryByText('Cannot be composed of ALL digits, e.g., 12345')).toBeNull()
+    expect(screen.queryByText('Cannot contain space')).toBeNull()
+  })
+  it('should save correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    const writeText = jest.fn()
+    Object.assign(navigator, {
+      clipboard: {
+        writeText
+      }
+    })
+
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    const input = screen.getByLabelText('Application Name')
+    fireEvent.change(input, { target: { value: 'testname' } })
+    await userEvent.click(screen.getByRole('button', { name: 'Generate Secret' }))
+    const copyButtons = screen.getAllByRole('button', { name: 'Copy' })
+    await userEvent.click(copyButtons[0])
+    await userEvent.click(copyButtons[1])
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(mockedCloseDrawer).toHaveBeenCalledWith(false)
+  })
+})

@@ -26,7 +26,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import AuthenticationSelector                             from './AuthenticationSelector'
+// import AuthenticationSelector                             from './AuthenticationSelector'
 import MspCustomerSelector, { ECCustomerRadioButtonEnum } from './MspCustomersSelector'
 import RoleSelector                                       from './RoleSelector'
 
@@ -46,7 +46,7 @@ interface AddAdministratorDataModel {
   externalId?: string;
   delegateToAllECs?: boolean;
   delegatedECs?: string[];
-  authenticationId?: string;
+  // authenticationId?: string;
 }
 
 const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
@@ -144,7 +144,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
       if (userType === 'new') {
         payload.email = formValues.newEmail
-        payload.authenticationId = '76c223d990794fe1a6d5ffe9ba6489f4'
+        // payload.authenticationId = '76c223d990794fe1a6d5ffe9ba6489f4'
       } else {
         payload.email = formValues.email
         payload.externalId = _.find(registerUsersList, { email: formValues.email })?.externalId
@@ -195,7 +195,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         onFinish={handleSubmit}
       >
         <Space direction='vertical' style={{ width: '100%' }} >
-          <AuthenticationSelector />
+          {/* <AuthenticationSelector /> */}
 
           <Form.Item name='userType' initialValue='new'>
             <Radio.Group style={{ width: '100%' }}>

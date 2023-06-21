@@ -111,7 +111,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
           }
           return false
         },
-        onClick: ([{ name, id }], clearSelection) => {
+        // onClick: ([{ name, id }], clearSelection) => {
+        onClick: ([{ name }]) => {
           const title = $t(
             { defaultMessage: 'Revoke application "{formattedName}"?' },
             { formattedName: name }
@@ -142,7 +143,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
           }
           return false
         },
-        onClick: ([{ name, id }], clearSelection) => {
+        // onClick: ([{ name, id }], clearSelection) => {
+        onClick: ([{ name }]) => {
           const title = $t(
             { defaultMessage: 'Activate application "{formattedName}"?' },
             { formattedName: name }
