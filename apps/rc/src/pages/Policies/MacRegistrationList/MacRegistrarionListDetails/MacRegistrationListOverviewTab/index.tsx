@@ -4,7 +4,7 @@ import { Space }     from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, SummaryCard }       from '@acx-ui/components'
+import { SummaryCard }               from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetMacRegListQuery,
@@ -60,7 +60,7 @@ export function MacRegistrationListOverviewTab () {
       colSpan: 3
     },
     {
-      title: $t({ defaultMessage: 'Access Policy Set' }),
+      title: $t({ defaultMessage: 'Adaptive Policy Set' }),
       content: policySetName,
       colSpan: 3
     }
@@ -68,12 +68,11 @@ export function MacRegistrationListOverviewTab () {
 
   return (
     <Space direction={'vertical'}>
-      <Loader states={[
-        macRegistrationListQuery,
-        { isLoading: false }
-      ]}>
-        <SummaryCard data={macRegistrationInfo} />
-      </Loader>
+      <SummaryCard
+        data={macRegistrationInfo}
+        isLoading={macRegistrationListQuery.isLoading}
+        isFetching={macRegistrationListQuery.isFetching}
+      />
       <NetworkTable networkIds={data?.networkIds}/>
     </Space>
   )

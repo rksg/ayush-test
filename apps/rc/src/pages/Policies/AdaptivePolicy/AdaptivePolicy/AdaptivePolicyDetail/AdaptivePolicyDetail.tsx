@@ -108,7 +108,7 @@ export default function AdaptivePolicyDetail () {
               <Col span={6}>
                 <Form.Item>
                   <SummaryCard.Item
-                    title={$t({ defaultMessage: 'Access Policy Type' })}
+                    title={$t({ defaultMessage: 'Adaptive Policy Type' })}
                     content='Advanced Policy Engine'
                   />
                 </Form.Item>
