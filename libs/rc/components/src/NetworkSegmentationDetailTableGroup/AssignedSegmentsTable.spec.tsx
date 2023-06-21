@@ -6,8 +6,8 @@ import { Provider }                                                from '@acx-ui
 import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
 
-import { mockedPersonaList, replacePagination } from './__tests__/fixtures'
-import { AssignedSegmentsTable }                from './AssignedSegmentsTable'
+import { mockedNsgData, mockedPersonaList, replacePagination } from './__tests__/fixtures'
+import { AssignedSegmentsTable }                               from './AssignedSegmentsTable'
 
 
 describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
@@ -38,7 +38,10 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
     await waitFor(() => expect(result.current.isLoading).toBeFalsy())
     render(
       <Provider>
-        <AssignedSegmentsTable tableQuery={result.current} />
+        <AssignedSegmentsTable
+          switchInfo={mockedNsgData.distributionSwitchInfos}
+          tableQuery={result.current}
+        />
       </Provider>
     )
 
