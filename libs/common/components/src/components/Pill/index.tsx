@@ -10,11 +10,16 @@ import { cssStr } from '../../theme/helper'
 import * as UI from './styledComponents'
 
 
-export type TrendType = 'none' | 'positive' | 'negative'
+export enum TrendTypeEnum {
+  None = 'none',
+  Positive = 'positive',
+  Negative = 'negative'
+}
+
 export type { IncidentSeverities }
 
 interface TrendPillProps {
-  trend: TrendType
+  trend: TrendTypeEnum
   value: string
 }
 

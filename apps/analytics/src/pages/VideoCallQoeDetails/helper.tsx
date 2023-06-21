@@ -2,7 +2,7 @@ import { Space }     from 'antd'
 import { maxBy }     from 'lodash'
 import { IntlShape } from 'react-intl'
 
-import { TrendType } from '@acx-ui/components'
+import { TrendTypeEnum } from '@acx-ui/components'
 
 import { rssGroups }   from '../VideoCallQoe/constants'
 import { WifiMetrics } from '../VideoCallQoe/types'
@@ -102,18 +102,18 @@ export const getConnectionQualityTooltip = (wifiMetrics: WifiMetrics | null,{ $t
         qualityTitle=$t({ defaultMessage: 'Client Throughput' })
         break
     }
-    let [trend,pillValue] = ['none',$t({ defaultMessage: 'None' })]
+    let [trend,pillValue] = [TrendTypeEnum.None,$t({ defaultMessage: 'None' })]
     if(quality === 'bad')
-      [trend,pillValue]=['negative',$t({ defaultMessage: 'Bad' })]
+      [trend,pillValue]=[TrendTypeEnum.Negative,$t({ defaultMessage: 'Bad' })]
     else if(quality === 'good')
-      [trend,pillValue]=['positive',$t({ defaultMessage: 'Good' })]
+      [trend,pillValue]=[TrendTypeEnum.Positive,$t({ defaultMessage: 'Good' })]
     else if(quality === 'average')
-      [trend,pillValue]=['none',$t({ defaultMessage: 'Average' })]
+      [trend,pillValue]=[TrendTypeEnum.None,$t({ defaultMessage: 'Average' })]
 
     tooltipArr.push(
       <div style={{ paddingBottom: '5px' }} title={pillValue}>
         <Space>
-          {quality ? <TrendCircle value='' trend={trend as TrendType} /> : '-'}
+          {quality ? <TrendCircle value='' trend={trend} /> : '-'}
           {qualityTitle}
         </Space>
       </div>)

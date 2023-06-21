@@ -12,7 +12,7 @@ import {
   Loader,
   cssStr,
   TrendPill,
-  TrendType
+  TrendTypeEnum
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
@@ -31,7 +31,9 @@ export const getPillData = (
   const formattedDelta = formatter('countFormat')(delta)
   return {
     delta: delta > 0 ? `+${formattedDelta}` : `${formattedDelta}`,
-    trend: delta > 0 ? 'negative' : delta < 0 ? 'positive' : 'none',
+    trend: delta > 0
+      ? TrendTypeEnum.Negative
+      : delta < 0 ? TrendTypeEnum.Positive : TrendTypeEnum.None,
     total: currTotal
   }
 }
@@ -84,7 +86,7 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
       <UI.Container>
         <UI.Title>
           <UI.IncidentCount>{formatter('countFormat')(pill.total?.toString())}</UI.IncidentCount>
-          <TrendPill value={pill.delta} trend={pill.trend as TrendType} />
+          <TrendPill value={pill.delta} trend={pill.trend as TrendTypeEnum} />
         </UI.Title>
         <AutoSizer>
           {({ width }) => (

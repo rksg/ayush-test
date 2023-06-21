@@ -10,41 +10,59 @@ import {
   kpiConfig,
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { Tabs, TrendPill } from '@acx-ui/components'
-import { noDataDisplay }   from '@acx-ui/utils'
+import { Loader, Tabs, TrendTypeEnum } from '@acx-ui/components'
+import { FormatterType, formatter }    from '@acx-ui/formatter'
+import { noDataDisplay }               from '@acx-ui/utils'
 
 import { useKpiChangesQuery } from '../services'
 
-import { ConfigChangeConfig, hasConfigChange } from './helper'
-import { Statistic }                           from './styledComponents'
+import { kpiDelta }                               from './helper'
+import { Statistic, TransparentTrend, TrendPill } from './styledComponents'
 
-type KPIProps = {
+type ConfigChangeKPIConfig = {
+  text?: MessageDescriptor
+  apiMetric: string
+  format: FormatterType | ((x: number) => string)
+  deltaSign: '+' | '-'
+}
+
+type KPIProps = ConfigChangeKPIConfig & {
   kpiKey: string
-  apiKey: string
   label: MessageDescriptor
-  format?: ConfigChangeConfig['format']
   values: {
     before: Record<string, number>
     after: Record<string, number>
   }
 }
 
-const KPI = ({ kpiKey, label, format, values }: KPIProps) => {
+const KPI = ({ apiMetric, label, format, deltaSign, values }: KPIProps) => {
   const { $t } = useIntl()
-  const formatterFn = format || ((v: number) => v)
+  const formatterFn = format ? formatter(format as FormatterType) : ((v: number) => v)
+  const { trend, value } =
+    kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
   return <Statistic
     title={$t(label)}
     value={$t(
-      { defaultMessage: 'before: {before} | after: {after}' },
+      { defaultMessage: 'Before: {before} | After: {after}' },
       {
-        before: _.isNumber(values?.before[kpiKey])
-          ? formatterFn(values?.before[kpiKey]) : noDataDisplay,
-        after: _.isNumber(values?.after[kpiKey])
-          ? formatterFn(values?.after[kpiKey]) : noDataDisplay
+        before: _.isNumber(values?.before[apiMetric])
+          ? formatterFn(values?.before[apiMetric]) : noDataDisplay,
+        after: _.isNumber(values?.after[apiMetric])
+          ? formatterFn(values?.after[apiMetric]) : noDataDisplay
       }
     )}
-    suffix={<TrendPill value='-123' trend='negative' />}
+    suffix={trend !== 'transparent'
+      ? <TrendPill value={value as string} trend={trend as TrendTypeEnum} />
+      : <TransparentTrend children={value}/>}
   />
+}
+
+export function hasConfigChange <RecordType> (
+  column: RecordType | RecordType & { configChange?: ConfigChangeKPIConfig }
+): column is RecordType & { configChange: ConfigChangeKPIConfig } {
+  return !!(column as RecordType & {
+    configChange: ConfigChangeKPIConfig
+  }).configChange
 }
 
 export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
@@ -56,18 +74,17 @@ export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
     const config = kpiConfig[key as keyof typeof kpiConfig]
     agg[key] = {
       kpiKey: key,
-      apiKey: (hasConfigChange(config) && config.configChange.apiMetric) || key,
-      label: config.text,
-      format: hasConfigChange(config) ? config.configChange.format : undefined
-    }
+      label: (hasConfigChange(config) && config.configChange.text) || config.text ,
+      ...(hasConfigChange(config) ? config.configChange : {})
+    } as Omit<KPIProps, 'values'>
     return agg
   }, {} as Record<string, Omit<KPIProps, 'values'>>)
 
   const { filters: { path } } = useAnalyticsFilter()
   const [beforeStart, beforeEnd, afterStart, afterEnd] =
-    props.kpiTimeRanges.flat().map(time=>moment(time).format())
+    props.kpiTimeRanges.flat().map(time => moment(time).toISOString())
   const queryResults = useKpiChangesQuery({
-    kpis: Object.values(kpis).map(({ apiKey })=>apiKey),
+    kpis: Object.values(kpis).map(({ apiMetric }) => apiMetric),
     path, beforeStart, beforeEnd, afterStart, afterEnd
   })
 
@@ -79,10 +96,12 @@ export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
   >
     {kpiCatergories.map(tab=>
       <Tabs.TabPane tab={$t(tab.label)} key={tab.value}>
-        {queryResults?.data
-          ? Object.keys(kpis)
-            .map(key => <KPI {...kpis[key]} values={queryResults.data!}/>)
-          : undefined}
+        <Loader states={[queryResults]}>
+          {queryResults?.data
+            ? Object.keys(kpis)
+              .map(key => <KPI key={key} {...kpis[key]} values={queryResults.data!}/>)
+            : undefined}
+        </Loader>
       </Tabs.TabPane>)
     }
   </Tabs>

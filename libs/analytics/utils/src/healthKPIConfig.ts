@@ -40,7 +40,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'connectionSuccess',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -71,7 +71,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'timeToConnect',
-      format: formatter('durationFormat'),
+      format: 'durationFormat',
       deltaSign: '-'
     }
   },
@@ -90,9 +90,9 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of association attempts that have completed successfully. An association attempt is deemed successful when the Wifi client receives an Association ID from the AP. It is normal for a single Wifi client to have more than one association attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     },
     configChange: {
-      // textPostFix: 'Success',
+      text: defineMessage({ defaultMessage: 'Association Success' }),
       apiMetric: 'assocSuccess',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -111,9 +111,9 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of 802.11 authentication attempts that has completed successfully. 802.11 authentication is the first step in establishing a Wi-Fi connection, and it requires a Wi-Fi client to establish its identity as a valid 802.11 device with an AP. No data encryption or security is available at this stage, and it is not to be confused with WPA or 802.1X authentication.{br}{br}The bar chart on the right captures the daily percentage over the past 7 days. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the histogram will stay constant based on the selected date range at the top of the page.' })
     },
     configChange: {
-      // textPostFix: 'Success',
+      text: defineMessage({ defaultMessage: '802.11 Authentication Success' }),
       apiMetric: 'authSuccess',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -132,9 +132,9 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of EAP attempts (consisting the 4-way handshake between client and AP) that have completed successfully. An EAP attempt is deemed successful when all the necessary handshakes are completed. Do note that a single Wifi client could have multiple EAP attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     },
     configChange: {
-      // textPostFix: 'Success',
+      text: defineMessage({ defaultMessage: 'EAP Success' }),
       apiMetric: 'eapSuccess',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -154,9 +154,9 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Wifi client has received an IP address from the DHCP server. Do note that a single Wifi client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     },
     configChange: {
-      // textPostFix: 'Success',
+      text: defineMessage({ defaultMessage: 'DHCP Success' }),
       apiMetric: 'dhcpSuccess',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -175,9 +175,9 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of RADIUS authentication attempts that have completed successfully. A RADIUS authentication attempt is deemed successful when all the necessary handshakes in the RADIUS protocol are completed, and the client is either allowed or denied access. Do note that a single Wifi client could have multiple authentication attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     },
     configChange: {
-      // textPostFix: 'Success',
+      text: defineMessage({ defaultMessage: 'RADIUS Success' }),
       apiMetric: 'radiusSuccess',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -197,7 +197,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'roamingSuccess',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -230,7 +230,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'clientRss',
-      format: formatter('decibelMilliWattsFormat'),
+      format: 'decibelMilliWattsFormat',
       deltaSign: '-'
     }
   },
@@ -262,7 +262,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'clientThroughPut',
-      format: formatter('networkSpeedFormat'),
+      format: 'networkSpeedFormat',
       deltaSign: '+'
     }
   },
@@ -328,7 +328,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'apUpTime',
-      format: formatter('percentFormat'),
+      format: 'percentFormat',
       deltaSign: '+'
     }
   },
@@ -360,7 +360,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'apSzLatency',
-      format: formatter('durationFormat'),
+      format: 'durationFormat',
       deltaSign: '-'
     }
   },
@@ -408,9 +408,9 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Online APs measures the percentage of APs which are online and connected to RUCKUS One.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     },
     configChange: {
-      // textPostFix: 'Count',
+      text: defineMessage({ defaultMessage: 'Online APs Count' }),
       apiMetric: 'onlineAPCount',
-      format: formatter('countFormat'),
+      format: 'countFormat',
       deltaSign: '+'
     }
   }

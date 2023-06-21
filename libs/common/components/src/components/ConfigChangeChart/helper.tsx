@@ -1,6 +1,7 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 
 import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
+import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -368,6 +369,9 @@ export const useBoundaryChange = (
   brushWidth: number,
   onBrushPositionsChange?: (params: number[][]) => void
 ) => {
+  const debouncedBrushChange = useRef(debounce((brush)=>{
+    onBrushPositionsChange?.(brush)
+  }, 1000))
   const [boundary, setBoundary] = useState(getInitBoundary(chartBoundary))
   const [brushPositions, setBrushPositions] =
     useState(getInitBrushPositions(chartBoundary, brushWidth))
@@ -390,8 +394,9 @@ export const useBoundaryChange = (
   }, [boundary])
 
   useEffect(() => {
-    onBrushPositionsChange?.(brushPositions.actual)
-  }, [onBrushPositionsChange, brushPositions])
+    debouncedBrushChange.current(brushPositions.actual)
+  }, [debouncedBrushChange, brushPositions])
+
   return { boundary, brushPositions, setBoundary, setBrushPositions }
 }
 

@@ -2,13 +2,13 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 
-import { TrendPill, SeverityPill, ProgressPill } from '.'
+import { TrendPill, SeverityPill, ProgressPill, TrendTypeEnum } from '.'
 
 storiesOf('Pill', module)
   .add('Trend', () => <>
-    <p><TrendPill value='-123' trend='negative' /></p>
-    <p><TrendPill value='123' trend='positive' /></p>
-    <p><TrendPill value='0' trend='none' /></p>
+    <p><TrendPill value='-123' trend={TrendTypeEnum.Negative} /></p>
+    <p><TrendPill value='123' trend={TrendTypeEnum.Positive} /></p>
+    <p><TrendPill value='0' trend={TrendTypeEnum.None} /></p>
   </>)
   .add('Severity', () => <>
     <p><SeverityPill severity='P1' /></p>
