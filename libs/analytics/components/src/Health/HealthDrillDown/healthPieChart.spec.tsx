@@ -1,5 +1,3 @@
-import { MessageFormatElement } from 'react-intl'
-
 import { AnalyticsFilter, pathToFilter }                                                   from '@acx-ui/analytics/utils'
 import { formatter }                                                                       from '@acx-ui/formatter'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'

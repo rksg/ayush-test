@@ -1,9 +1,9 @@
 import { configureStore, SerializedError } from '@reduxjs/toolkit'
 
-import { AnalyticsFilter }                       from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, pathToFilter }         from '@acx-ui/analytics/utils'
 import { dataApi, dataApiURL }                   from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
-import { DateRange, pathToFilter, NetworkPath }  from '@acx-ui/utils'
+import { DateRange, NetworkPath }                from '@acx-ui/utils'
 
 import { healthApi } from '.'
 
