@@ -2809,6 +2809,7 @@ export const mockEnabledNSGPropertyConfig: PropertyConfigs = {
     type: 'unitConfig',
     guestAllowed: false,
     residentPortalAllowed: true,
+    residentApiAllowed: false,
     useMaxUnitCount: false,
     maxUnitCount: 1
   }
@@ -2822,6 +2823,7 @@ export const mockEnabledNoNSGPropertyConfig: PropertyConfigs = {
     type: 'unitConfig',
     guestAllowed: true,
     residentPortalAllowed: true,
+    residentApiAllowed: false,
     useMaxUnitCount: false,
     maxUnitCount: 1
   }
