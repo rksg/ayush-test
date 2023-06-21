@@ -1,5 +1,3 @@
-import { ReactNode } from 'react'
-
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { Provider  }        from '@acx-ui/store'
 import { render,
@@ -7,12 +5,6 @@ import { render,
 } from '@acx-ui/test-utils'
 
 import { DevicesWidget, DevicesWidgetv2 } from '.'
-
-// jest.mock('@acx-ui/react-router-dom', () => ({
-//   ...jest.requireActual('@acx-ui/react-router-dom'),
-//   TenantLink: ({ to, children }: { to:string, children: ReactNode }) =>
-//     <div data-testid='tlink'>{children}{to}</div>
-// }))
 
 describe('Devices widget', () => {
   it('should render loader and then chart', async () => {
@@ -54,8 +46,11 @@ describe('Devices widget V2', () => {
       <Provider>
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
+          edgeStackedData={[]}
           apTotalCount={1}
-          switchTotalCount={1}/>
+          switchTotalCount={1}
+          edgeTotalCount={0}
+        />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -71,8 +66,11 @@ describe('Devices widget V2', () => {
       <Provider>
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
+          edgeStackedData={[]}
           apTotalCount={0}
-          switchTotalCount={0}/>
+          switchTotalCount={0}
+          edgeTotalCount={0}
+        />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -88,8 +86,10 @@ describe('Devices widget V2', () => {
       <Provider>
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
+          edgeStackedData={[]}
           apTotalCount={0}
           switchTotalCount={0}
+          edgeTotalCount={0}
           enableArrowClick
         />
       </Provider>,
