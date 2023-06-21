@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Divider, Space } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Divider, Space }                            from 'antd'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 
 import {  Loader, Tabs }                                         from '@acx-ui/components'
@@ -14,26 +14,27 @@ import { UpdateConfirms }                                                       
 import { ChangedAPPTable, MergedAPPTable, NewAPPTable, RemovedAPPTable, UpdateAPPTable } from './UpdateTables'
 import { useSigPackDetails }                                                             from './useSigPackDetails'
 
+export const changedApplicationTypeTextMap: Record<ApplicationUpdateType, MessageDescriptor> = {
+  [ApplicationUpdateType.APPLICATION_ADDED]: defineMessage({ defaultMessage: 'New Application' }),
+  // eslint-disable-next-line max-len
+  [ApplicationUpdateType.APPLICATION_MERGED]: defineMessage({ defaultMessage: 'Application Merged' }),
+  // eslint-disable-next-line max-len
+  [ApplicationUpdateType.APPLICATION_REMOVED]: defineMessage({ defaultMessage: 'Application Removed' }),
+  // eslint-disable-next-line max-len
+  [ApplicationUpdateType.APPLICATION_RENAMED]: defineMessage({ defaultMessage: 'Application Name Changed' }),
+  [ApplicationUpdateType.CATEGORY_UPDATED]: defineMessage({ defaultMessage: 'Category Update' })
+}
+
 const ApplicationPolicyMgmt = ()=>{
   const { $t } = useIntl()
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
   const [ exportSigPack ] = useExportSigPackMutation()
   const [ type, setType ] = useState(ApplicationUpdateType.APPLICATION_ADDED)
-  const {
-    data,
-    added,
-    updated,
-    merged,
-    removed,
-    renamed,
-    updateAvailable,
-    isFetching,
-    isLoading
-  } = useSigPackDetails()
+  const { data, changedAppsInfoMap, updateAvailable, isFetching, isLoading } = useSigPackDetails()
 
   const showCurrentInfo = ()=>{
     return (
-      <UI.BannerVersion>
+      <div>
         <Space split={<Divider type='vertical' style={{ height: '80px' }} />}>
           {!updateAvailable&&<UI.FwContainer>
             <UI.LatestVersion>
@@ -59,14 +60,14 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'No' })}
               </UI.CurrentValue>
             </UI.CurrentDetail>
-            <Space split={<Divider type='vertical' style={{ height: '15px' }} />}>
-              <UI.CurrentValue style={{ fontWeight: 600 }}>
+            <UI.CurrentDetail>
+              <UI.CurrentLabel style={{ fontWeight: 600 }}>
                 {$t({ defaultMessage: 'Release' })}
-              </UI.CurrentValue>
+              </UI.CurrentLabel>
               <UI.CurrentValue>
                 {formatter(DateFormatEnum.DateFormat)(data?.latestReleasedDate)}
               </UI.CurrentValue>
-            </Space>
+            </UI.CurrentDetail>
           </UI.FwContainer>}
           <UI.FwContainer style={{ backgroundColor: 'var(--acx-primary-white)' }}>
             <UI.CurrentDetail>
@@ -102,10 +103,10 @@ const ApplicationPolicyMgmt = ()=>{
         {updateAvailable&&<div style={{ marginTop: 10 }}>
           <UpdateConfirms />
         </div>}
-      </UI.BannerVersion>
+      </div>
     )
   }
-  const updateDetails = ()=>{
+  const updateDetails = () => {
     const tableActions = []
     tableActions.push({
       label: $t({ defaultMessage: 'Export All' }),
@@ -123,38 +124,51 @@ const ApplicationPolicyMgmt = ()=>{
         })
       }
     })
+
+    const added = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_ADDED]?.data ?? []
+    const updated = changedAppsInfoMap[ApplicationUpdateType.CATEGORY_UPDATED]?.data ?? []
+    const merged = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_MERGED]?.data ?? []
+    const removed = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_REMOVED]?.data ?? []
+    const renamed = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_RENAMED]?.data ?? []
+
+
     const tabs = {
       APPLICATION_ADDED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'New Application ({totalNew})' },
-          { totalNew: added.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_ADDED])}
+          {' (' + added.length + ')'}
         </UI.TabSpan>,
         content: <NewAPPTable actions={tableActions} data={added}/>,
         visible: true
       },
       CATEGORY_UPDATED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Category Update ({totalUpdate})' },
-          { totalUpdate: updated.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.CATEGORY_UPDATED])}
+          {' (' + updated.length + ')'}
         </UI.TabSpan>,
         content: <UpdateAPPTable actions={tableActions} data={updated}/>,
         visible: true
       },
       APPLICATION_MERGED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Application Merged ({totalMerged})' },
-          { totalMerged: merged.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_MERGED])}
+          {' (' + merged.length + ')'}
         </UI.TabSpan>,
         content: <MergedAPPTable actions={tableActions} data={merged}/>,
         visible: true
       },
       APPLICATION_REMOVED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Application Removed ({totalRemoved})' },
-          { totalRemoved: removed.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_REMOVED])}
+          {' (' + removed.length + ')'}
         </UI.TabSpan>,
         content: <RemovedAPPTable actions={tableActions} data={removed}/>,
         visible: true
       },
       APPLICATION_RENAMED: {
-        title: <UI.TabSpan>{$t({ defaultMessage: 'Application Name Changed ({totalChanged})' },
-          { totalChanged: renamed.length })}
+        title: <UI.TabSpan>
+          {$t(changedApplicationTypeTextMap[ApplicationUpdateType.APPLICATION_RENAMED])}
+          {' (' + renamed.length + ')'}
         </UI.TabSpan>,
         content: <ChangedAPPTable actions={tableActions} data={renamed}/>,
         visible: true
@@ -185,7 +199,7 @@ const ApplicationPolicyMgmt = ()=>{
   }
   return <Loader states={[{ isLoading: isLoading || isFetching }]}>
     {showCurrentInfo()}
-    {updateAvailable&&updateDetails()}
+    {updateAvailable && updateDetails()}
   </Loader>
 }
 export default ApplicationPolicyMgmt
