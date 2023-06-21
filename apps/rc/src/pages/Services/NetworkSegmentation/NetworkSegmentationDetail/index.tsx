@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
+  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
@@ -46,7 +47,7 @@ const NetworkSegmentationDetail = () => {
         title={nsgViewData && nsgViewData.name}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Network Segmentation' }),
             link: getServiceRoutePath({

@@ -101,7 +101,7 @@ describe('Update NetworkSegmentation', () => {
     }))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<EditNetworkSegmentation />, {
       wrapper: Provider,
@@ -121,7 +121,9 @@ describe('Update NetworkSegmentation', () => {
       route: { params, path: updateNsgPath }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Network Segmentation'
     })).toBeVisible()

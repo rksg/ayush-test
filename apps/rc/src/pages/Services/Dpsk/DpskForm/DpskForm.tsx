@@ -19,7 +19,8 @@ import {
   getServiceRoutePath,
   ServiceOperation,
   DpskSaveData,
-  DeviceNumberType
+  DeviceNumberType,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -91,7 +92,7 @@ export default function DpskForm (props: DpskFormProps) {
         }
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DPSK' }),
             link: tablePath

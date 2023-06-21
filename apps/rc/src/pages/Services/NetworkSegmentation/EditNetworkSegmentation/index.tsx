@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import { Loader, PageHeader }                                                                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import { useGetNetworkSegmentationGroupByIdQuery, useUpdateNetworkSegmentationGroupMutation } from '@acx-ui/rc/services'
-import { getServiceRoutePath, ServiceOperation, ServiceType }                                 from '@acx-ui/rc/utils'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType }        from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationForm } from '../NetworkSegmentationForm'
 import { AccessSwitchForm }        from '../NetworkSegmentationForm/AccessSwitchForm'
@@ -79,7 +79,7 @@ const EditNetworkSegmentation = () => {
         title={$t({ defaultMessage: 'Edit Network Segmentation Service' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'Network Segmentation' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }

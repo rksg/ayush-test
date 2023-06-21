@@ -2,13 +2,13 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps }                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
-import { ServiceInfo }                                                                                   from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                           from '@acx-ui/rc/services'
-import { DhcpUeSummaryStats, ServiceOperation, ServiceType, getServiceDetailsLink, getServiceRoutePath } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                         from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                from '@acx-ui/user'
+import { Button, Card, Loader, PageHeader, Table, TableProps }                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
+import { ServiceInfo }                                                                                                            from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                    from '@acx-ui/rc/services'
+import { DhcpUeSummaryStats, ServiceOperation, ServiceType, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                                                  from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                         from '@acx-ui/user'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
@@ -150,7 +150,7 @@ const EdgeDHCPDetail = () => {
         title={dhcpStats && dhcpStats.data[0]?.serviceName}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
             link: getServiceRoutePath({

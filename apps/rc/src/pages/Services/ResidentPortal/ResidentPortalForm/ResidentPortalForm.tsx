@@ -162,7 +162,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
         }
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Resident Portals' }),
             link: tablePath

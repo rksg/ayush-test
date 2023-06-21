@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { useAddEdgeFirewallMutation }                         from '@acx-ui/rc/services'
-import { getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { PageHeader }                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useAddEdgeFirewallMutation }                                                  from '@acx-ui/rc/services'
+import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
 import FirewallForm, { filterCustomACLRules, FirewallFormEdge, FirewallFormModel, processFirewallACLPayload } from '../FirewallForm'
 import { ScopeForm }                                                                                          from '../FirewallForm/ScopeForm'
@@ -67,7 +67,7 @@ const AddFirewall = () => {
         title={$t({ defaultMessage: 'Add Firewall Service' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'Firewall' }), link: firewallListRoute }
         ] : [
           { text: $t({ defaultMessage: 'Firewall' }), link: firewallListRoute }

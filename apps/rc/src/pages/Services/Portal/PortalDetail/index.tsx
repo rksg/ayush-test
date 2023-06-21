@@ -7,6 +7,7 @@ import { useGetPortalProfileDetailQuery }               from '@acx-ui/rc/service
 import {
   Demo,
   getServiceDetailsLink,
+  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
@@ -30,7 +31,7 @@ export default function PortalServiceDetail () {
         title={queryResults.data?.serviceName||''}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Guest Portal' }),
             link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })

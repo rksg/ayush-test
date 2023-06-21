@@ -45,7 +45,7 @@ describe('AddEdgeDhcp', () => {
     await screen.findByText('Please create DHCP pools')
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -69,7 +69,9 @@ describe('AddEdgeDhcp', () => {
         route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'DHCP for SmartEdge'
     })).toBeVisible()

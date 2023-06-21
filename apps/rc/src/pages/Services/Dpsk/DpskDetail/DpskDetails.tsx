@@ -9,7 +9,8 @@ import {
   DpskDetailsTabKey,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -58,7 +59,7 @@ export default function DpskDetails () {
         title={data?.name}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DPSK' }),
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })

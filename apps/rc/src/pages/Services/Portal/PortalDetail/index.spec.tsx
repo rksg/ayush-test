@@ -203,7 +203,7 @@ describe('Portal Detail Page', () => {
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockServer.use(
       rest.post(
@@ -251,7 +251,9 @@ describe('Portal Detail Page', () => {
       route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Guest Portal'
     })).toBeVisible()

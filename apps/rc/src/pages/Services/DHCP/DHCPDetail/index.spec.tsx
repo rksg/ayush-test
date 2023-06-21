@@ -81,7 +81,7 @@ describe('DHCP Detail Page', () => {
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -92,7 +92,7 @@ describe('DHCP Detail Page', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('My Services')).toBeNull()
     expect(screen.getByRole('link', {
-      name: 'DHCP'
+      name: 'DHCP Services'
     })).toBeVisible()
   })
 
@@ -105,9 +105,12 @@ describe('DHCP Detail Page', () => {
         route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
       })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'DHCP'
     })).toBeVisible()
+
   })
 })

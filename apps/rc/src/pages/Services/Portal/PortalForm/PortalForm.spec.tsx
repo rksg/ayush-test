@@ -95,7 +95,7 @@ describe('PortalForm', () => {
     await new Promise((r)=>{setTimeout(r, 300)})
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
@@ -161,7 +161,9 @@ describe('PortalForm', () => {
       route: { params }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Guest Portal'
     })).toBeVisible()

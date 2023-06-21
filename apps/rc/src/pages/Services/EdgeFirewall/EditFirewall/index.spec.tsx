@@ -208,7 +208,7 @@ describe('Edit edge firewall service', () => {
     cleanup()
   }, 30000)
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<EditFirewall />, {
       wrapper: Provider,
@@ -228,7 +228,9 @@ describe('Edit edge firewall service', () => {
       route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Firewall'
     })).toBeVisible()

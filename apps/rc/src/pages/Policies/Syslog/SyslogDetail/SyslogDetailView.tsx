@@ -40,7 +40,7 @@ const SyslogDetailView = () => {
             link: getPolicyListRoutePath(true)
           },
           {
-            text: $t({ defaultMessage: 'Syslog' }),
+            text: $t({ defaultMessage: 'Syslog Server' }),
             link: tablePath
           }
         ] : [{

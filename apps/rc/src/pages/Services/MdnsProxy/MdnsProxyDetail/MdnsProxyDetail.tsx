@@ -8,7 +8,8 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   MdnsProxyScopeData,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
@@ -38,7 +39,7 @@ export default function MdnsProxyDetail () {
         title={data?.name}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'mDNS Proxy' }),
             link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })

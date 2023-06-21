@@ -16,7 +16,8 @@ import {
   RogueAPDetailContextType,
   getPolicyRoutePath,
   PolicyOperation,
-  getPolicyDetailsLink
+  getPolicyDetailsLink,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -41,7 +42,10 @@ export const RogueAPDetectionDetailView = () => {
         title={policyName}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }

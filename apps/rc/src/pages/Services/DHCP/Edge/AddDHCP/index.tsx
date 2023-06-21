@@ -12,9 +12,9 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeDhcpSettingForm
 } from '@acx-ui/rc/components'
-import { useAddEdgeDhcpServiceMutation }                                       from '@acx-ui/rc/services'
-import { EdgeDhcpSetting, ServiceOperation, ServiceType, getServiceRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                          from '@acx-ui/react-router-dom'
+import { useAddEdgeDhcpServiceMutation }                                                                from '@acx-ui/rc/services'
+import { EdgeDhcpSetting, ServiceOperation, ServiceType, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                   from '@acx-ui/react-router-dom'
 
 const AddDhcp = () => {
 
@@ -43,7 +43,7 @@ const AddDhcp = () => {
         title={$t({ defaultMessage: 'Add DHCP for SmartEdge Service' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }

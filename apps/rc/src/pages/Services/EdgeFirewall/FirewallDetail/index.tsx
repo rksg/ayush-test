@@ -10,6 +10,7 @@ import {
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
+  getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -82,7 +83,7 @@ const FirewallDetail = () => {
         title={edgeFirewallData.firewallName}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Firewall' }),
             link: getServiceRoutePath({

@@ -48,7 +48,7 @@ describe('NsgDetail', () => {
     expect(await screen.findByTestId('NetworkSegmentationDetailTableGroup')).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<NetworkSegmentationDetail />, {
       wrapper: Provider,
@@ -68,7 +68,9 @@ describe('NsgDetail', () => {
       route: { params, path: detailPath }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Network Segmentation'
     })).toBeVisible()

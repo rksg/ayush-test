@@ -159,7 +159,7 @@ describe('SyslogDetailView', () => {
       name: 'Policies & Profiles'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'Syslog'
+      name: 'Syslog Server'
     })).toBeVisible()
   })
 

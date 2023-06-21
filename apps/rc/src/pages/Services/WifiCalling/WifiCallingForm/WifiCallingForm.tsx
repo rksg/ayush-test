@@ -12,6 +12,7 @@ import { useCreateWifiCallingServiceMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG,
+  getServiceListRoutePath,
   getServiceRoutePath,
   QosPriorityEnum,
   ServiceOperation,
@@ -78,7 +79,7 @@ const WifiCallingForm = () => {
         title={$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Wi-Fi Calling' }),
             link: tablePath

@@ -11,7 +11,8 @@ import {
   ServiceType,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -96,7 +97,7 @@ export default function ResidentPortalDetail () {
         title={residentPortalData?.name}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'Resident Portals' }),
             link: getServiceRoutePath({

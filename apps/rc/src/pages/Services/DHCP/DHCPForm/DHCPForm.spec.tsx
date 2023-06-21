@@ -98,7 +98,7 @@ describe('DHCPForm', () => {
 
   }, 25000)
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
 
@@ -108,7 +108,7 @@ describe('DHCPForm', () => {
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('My Services')).toBeNull()
     expect(screen.getByRole('link', {
-      name: 'DHCP'
+      name: 'DHCP Services'
     })).toBeVisible()
   }, 25000)
 
@@ -120,7 +120,9 @@ describe('DHCPForm', () => {
       route: { params }
     })
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(await screen.findByText('My Services')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'DHCP'
     })).toBeVisible()

@@ -9,6 +9,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
+  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
@@ -42,7 +43,7 @@ export default function DHCPServiceDetail () {
         title={data?.serviceName}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DHCP' }),
             link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })

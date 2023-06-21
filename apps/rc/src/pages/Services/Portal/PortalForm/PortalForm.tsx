@@ -8,11 +8,11 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
-import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation }               from '@acx-ui/rc/services'
-import { defaultAlternativeLang, defaultComDisplay, getServiceRoutePath, Portal, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                                 from '@acx-ui/react-router-dom'
-import { loadImageWithJWT }                                                                                      from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                                                                         from '@acx-ui/feature-toggle'
+import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation }                                        from '@acx-ui/rc/services'
+import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, getServiceRoutePath, Portal, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                                                          from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }                                                                                                               from '@acx-ui/utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -159,7 +159,7 @@ export const PortalForm = (props:{
           :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'Guest Portal' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Portal Services' }), link: tablePath }

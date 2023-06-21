@@ -11,7 +11,7 @@ import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useUpdateWifiCallingServiceMutation }     from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
-  EPDG, getServiceRoutePath,
+  EPDG, getServiceListRoutePath, getServiceRoutePath,
   QosPriorityEnum, ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -77,7 +77,7 @@ const WifiCallingConfigureForm = () => {
         title={$t({ defaultMessage: 'Configure Wi-Fi Calling Service' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           { text: $t({ defaultMessage: 'Wi-Fi Calling' }), link: tablePath }
         ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
