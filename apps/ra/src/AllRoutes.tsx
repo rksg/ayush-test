@@ -1,7 +1,8 @@
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import Incidents from './pages/Incidents'
-import Layout    from './pages/Layout'
+import Incidents             from './pages/Incidents'
+import Layout                from './pages/Layout'
+import RecommendationDetails from './pages/RecommendationDetails'
 
 function AllRoutes () {
   return rootRoutes(<Route element={<Layout />}>
@@ -10,6 +11,10 @@ function AllRoutes () {
       <Route path='' element={<Navigate replace to='incidents' />} />
       <Route path='dashboard' element={<div>dashboard</div>} />
       <Route path='incidents' element={<Incidents />} />
+      <Route path='recommendations'>
+        <Route index={true} element={<div>recommendation list</div>} />
+        <Route index={false} path=':id' element={<RecommendationDetails />} />
+      </Route>
     </Route>
   </Route>)
 }

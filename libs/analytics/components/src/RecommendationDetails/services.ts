@@ -1,0 +1,166 @@
+import { gql }               from 'graphql-request'
+import _, { get, snakeCase } from 'lodash'
+import moment                from 'moment-timezone'
+import { MessageDescriptor } from 'react-intl'
+
+import { dataApiRecommendation } from '@acx-ui/store'
+import { NetworkPath }           from '@acx-ui/utils'
+
+import configData            from './configRecommendationData'
+import configRecommendations from './configRecommendations'
+
+const { states, codes } = configData
+
+type RecommendationsDetailsPayload = {
+  id: string;
+  code?: string;
+}
+
+type RecommendationKpi = Record<string, {
+  current: number;
+  previous: number | null;
+  projected: number
+}>
+
+type RecommendationDetails = {
+  id: string;
+  code: keyof typeof codes;
+  status: keyof typeof states;
+  appliedTime: string;
+  originalValue: Array<{ channelMode: string, channelWidth: string, rao: string }>;
+  currentValue: string;
+  recommendedValue: string;
+  metadata: object;
+  sliceType: string;
+  sliceValue: string;
+  path: NetworkPath;
+  statusTrail: Array<{ status: string, createdAt: string }>;
+} & Partial<RecommendationKpi>
+
+export type EnhancedRecommendation = RecommendationDetails & {
+  priority: MessageDescriptor;
+  summary: MessageDescriptor;
+  category: MessageDescriptor;
+  pathTooltip: string;
+  appliedOnce: boolean;
+  monitoring: null | { until: string };
+  tooltipContent: string;
+}
+
+type RecommendationApPayload = {
+  id: string;
+  search: string;
+}
+
+export type RecommendationAp = {
+  name: string;
+  mac: string;
+  model: string;
+  version: string;
+}
+
+const getRecommendationStatus = (recommendation: RecommendationDetails) => _
+  .chain(recommendation.statusTrail)
+  .filter(item => ['new', 'applied', 'reverted'].includes(item.status))
+  .first()
+  .value()
+  .status
+
+const transformResponse = (details: RecommendationDetails): EnhancedRecommendation => {
+  const {
+    code, statusTrail, status, appliedTime, currentValue, recommendedValue
+  } = details
+  const {
+    priority, category, summary, recommendedValueTooltipContent
+  } = configRecommendations[code]
+  const appliedPlus24h = moment(appliedTime).add(24, 'hours')
+  const monitoring = (
+    status === 'applied' &&
+    appliedTime &&
+    Date.now() < appliedPlus24h.valueOf()
+  )
+    ? { until: appliedPlus24h.toISOString() }
+    : null
+  const tooltipContent = typeof recommendedValueTooltipContent === 'function'
+    ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
+    : recommendedValueTooltipContent
+  return {
+    ...details,
+    monitoring,
+    tooltipContent,
+    priority,
+    category,
+    summary,
+    status: getRecommendationStatus(details),
+    appliedOnce: Boolean(statusTrail.find(t => t.status === 'applied'))
+  } as EnhancedRecommendation
+}
+
+const kpiHelper = ({ code }: { code?: string }) => {
+  if (!code) return ''
+  const data = code in configRecommendations ? configRecommendations[code] : null
+  if (!data) return ''
+  return get(data, ['kpis'])
+    .map(kpi => {
+      const name = `kpi_${snakeCase(kpi.key)}`
+      return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
+              current${kpi.deltaSign === 'none' ? '' : ' previous'}
+              projected
+            }`
+    })
+    .join('\n')
+    .trim()
+}
+
+export const api = dataApiRecommendation.injectEndpoints({
+  endpoints: (build) => ({
+    recommendationDetails: build.query<EnhancedRecommendation, RecommendationsDetailsPayload>({
+      query: (payload) => ({
+        document: gql`
+          query ConfigRecommendationDetails($id: String) {
+            recommendation(id: $id) {
+              id code status appliedTime
+              originalValue currentValue recommendedValue metadata
+              sliceType sliceValue
+              path { type name }
+              statusTrail { status createdAt }
+              ${kpiHelper(payload)}
+            }
+          }
+        `,
+        variables: {
+          id: payload.id
+        }
+      }),
+      transformResponse: (response: { recommendation: RecommendationDetails }) =>
+        transformResponse(response.recommendation),
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+    }),
+    getAps: build.query<RecommendationAp[], RecommendationApPayload>({
+      query: (payload) => ({
+        document: gql`
+          query GetAps($id: String, $n: Int, $search: String, $key: String) {
+            recommendation(id: $id) {
+              APs: APs(n: $n, search: $search, key: $key) {
+                name
+                mac
+                model
+                version
+              }
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          n: 100,
+          search: payload.search,
+          key: 'aps-on-latest-fw-version'
+        }
+      }),
+      transformResponse: (response: { recommendation: { APs: RecommendationAp[] } }) =>
+        response.recommendation.APs
+    })
+  })
+})
+
+export const { useRecommendationDetailsQuery, useGetApsQuery } = api
