@@ -4,7 +4,7 @@ const moduleFederationConfig = require('./module-federation.config')
 const setupProxy = require('./src/setupProxy')
 
 module.exports = webpackConfigWithModuleFederation({
-  ...moduleFederationConfig,
+  ...moduleFederationConfig
   /*
    * Remote overrides for production.
    * Each entry is a pair of an unique name and the URL where it is deployed.
@@ -22,12 +22,6 @@ module.exports = webpackConfigWithModuleFederation({
    *   ['app2', '//example.com/path/to/app2/remoteEntry.js'],
    * ]
    */
-  remotes: [
-    ['rc', '/tenant/t/rc'],
-    ['analytics', '/tenant/t/analytics'],
-    ['msp', '/tenant/t/msp'],
-    ['reports', '/tenant/t/reports']
-  ]
 }, {
   devServer: {
     setupMiddlewares (md, server) {
