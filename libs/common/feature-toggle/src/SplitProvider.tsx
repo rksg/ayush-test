@@ -37,7 +37,9 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
       debug: false // set this value to true for running in debug mode for debugging in local development only
     })
   }
-  return <SplitFactory factory={factory} children={props.children}/>
+  return tenantKey ? (
+    <SplitFactory factory={factory} children={props.children} />
+  ) : null
 }
 
 export { SplitProvider }
