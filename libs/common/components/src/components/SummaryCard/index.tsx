@@ -1,6 +1,7 @@
-import { Space, Typography } from 'antd'
-import toArray               from 'rc-util/lib/Children/toArray'
-import styled                from 'styled-components'
+import { ReactNode } from 'react'
+
+import { Space } from 'antd'
+import toArray   from 'rc-util/lib/Children/toArray'
 
 import { Card }             from '../Card'
 import { GridCol, GridRow } from '../Grid'
@@ -10,8 +11,8 @@ import * as UI from './styledComponents'
 
 interface SummaryCardoProps {
   data?: {
-    title?: unknown
-    content?: unknown
+    title?: string | number | ReactNode | (() => ReactNode)
+    content?: string | number | ReactNode | (() => ReactNode)
     custom?: unknown // custom is for custom item. If there is custom property, the title and content will not work.
     visible?: boolean
     colSpan?: number // Have to line up with the antd grid system.
@@ -65,21 +66,21 @@ const SummaryCardContent = ({
   )
 }
 
-const SummaryCardItem = styled((
+const SummaryCardItem = (
   { title, content, className }: { title?:unknown, content?: unknown, className?: string }
 ) => (
   <Space className={className} direction='vertical' size={6}>
     {
-      Boolean(title) && <Typography.Text className='title'>
+      <UI.Title>
         {typeof title === 'function' ? title() : title}
-      </Typography.Text>
+      </UI.Title>
     }
     {
-      Boolean(content) && <Typography.Text className='content'>
+      <UI.Content>
         {typeof content === 'function' ? content() : content}
-      </Typography.Text>
+      </UI.Content>
     }
   </Space>
-))`${UI.textStyle}`
+)
 
 SummaryCard.Item = SummaryCardItem
