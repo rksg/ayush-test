@@ -128,8 +128,8 @@ describe('UserProfileContext', () => {
 
     const { result } = renderHook(() => useUserProfileContext(), { wrapper, route })
     await waitFor(() => {
-      expect(result.current.data?.initials).toBe('')
+      expect(result.current.data?.fullName).toBe('')
     })
-    expect(result.current.data?.fullName).toBe('')
+    expect(result.current.data?.initials).toBe(undefined)
   })
 })

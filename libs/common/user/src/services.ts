@@ -173,12 +173,12 @@ export const {
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getUserProfile, params),
       transformResponse (userProfile: UserProfile) {
         const { firstName, lastName } = userProfile
-        userProfile.initials = firstName && lastName
-          ? `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
-          : ''
-        userProfile.fullName = firstName && lastName
-          ? `${firstName} ${lastName}`
-          : ''
+        userProfile.fullName = ''
+
+        if (firstName && lastName) {
+          userProfile.initials = `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
+          userProfile.fullName = `${firstName} ${lastName}`
+        }
         return userProfile
       },
       providesTags: ['UserProfile']
