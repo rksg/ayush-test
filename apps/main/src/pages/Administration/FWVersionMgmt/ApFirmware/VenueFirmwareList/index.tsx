@@ -241,11 +241,16 @@ export const VenueFirmwareTable = (
     const selectedEolApFirmwares = _.compact(selectedRows.map(row => row.eolApFirmwares)).flat()
     // eslint-disable-next-line max-len
     const uniqueEolApFirmwares = selectedEolApFirmwares.reduce((acc: EolApFirmware[], cur: EolApFirmware) => {
-      const foundIndex = acc.findIndex(e1 => e1.name === cur.name)
+      if (cur.currentEolVersion === cur.latestEolVersion) return acc //ACX-33594 Ignore the EOL firmware if it is already upgraded to the latest one
+
+      let currentEol = { ...cur }
+      const foundIndex = acc.findIndex(eol => eol.name === currentEol.name)
       if (foundIndex === -1) {
-        return acc.concat([cur])
+        acc.push(currentEol)
+      } else {
+        acc[foundIndex].apModels = _.uniq(acc[foundIndex].apModels.concat(currentEol.apModels))
       }
-      acc[foundIndex].apModels = _.uniq(acc[foundIndex].apModels.concat(cur.apModels))
+
       return acc
     }, [])
 

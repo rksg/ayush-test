@@ -7,7 +7,8 @@ import {
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
-  DpskUrls
+  DpskUrls,
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -47,6 +48,18 @@ describe('DpskPassphraseManagement', () => {
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
+      ),
+      rest.delete(
+        DpskUrls.deletePassphrase.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: {}, totalCount: 0 }))
       )
     )
   })
@@ -80,6 +93,18 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should delete selected passphrase', async () => {
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        DpskUrls.deletePassphrase.url,
+        (req, res, ctx) => {
+          deleteFn()
+          return res(ctx.json({}))
+        }
+      )
+    )
+
     render(
       <Provider>
         <DpskPassphraseManagement />
@@ -98,6 +123,10 @@ describe('DpskPassphraseManagement', () => {
     expect(confirmMsgElem).toBeInTheDocument()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Passphrase/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
   })
 
   it('should not delete selected passphrase when it is mapped to Persona', async () => {

@@ -81,7 +81,8 @@ export default function DpskPassphraseManagement () {
     useQuery: useGetEnhancedDpskPassphraseListQuery,
     sorter: defaultSorter,
     defaultPayload,
-    search: defaultSearch
+    search: defaultSearch,
+    enableSelectAllPagesData: ['id']
   })
 
   const downloadPassphrases = () => {
@@ -334,6 +335,7 @@ export default function DpskPassphraseManagement () {
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        getAllPagesData={tableQuery.getAllPagesData}
         onChange={tableQuery.handleTableChange}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
