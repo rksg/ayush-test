@@ -54,10 +54,9 @@ describe('DpskForm parser', () => {
 
     // Verify cloudpath fatures field
     const saveDataCloudPath: DpskSaveData = transferFormFieldsToSaveData({
-      ...mockedBasicFormFields,
-      policyDefaultAccess: PolicyDefaultAccess.REJECT
+      ...mockedBasicFormFields
     })
-    expect(saveDataCloudPath.policyDefaultAccess).toEqual(false)
+    expect(saveDataCloudPath.policyDefaultAccess).toBeUndefined()
   })
 
   it('should transfer the DPSK saved data to form fields', () => {
@@ -110,6 +109,7 @@ describe('DpskForm parser', () => {
     // Verify cloudpath fatures field
     const formFieldsCloudpath1: CreateDpskFormFields = transferSaveDataToFormFields({
       ...mockedBasicSaveData,
+      policySetId: 'POLICY_SET_ID',
       policyDefaultAccess: true,
       deviceCountLimit: 10
     })
@@ -118,6 +118,7 @@ describe('DpskForm parser', () => {
 
     const formFieldsCloudpath2: CreateDpskFormFields = transferSaveDataToFormFields({
       ...mockedBasicSaveData,
+      policySetId: 'POLICY_SET_ID',
       policyDefaultAccess: false
     })
     expect(formFieldsCloudpath2.policyDefaultAccess).toBe(PolicyDefaultAccess.REJECT)
