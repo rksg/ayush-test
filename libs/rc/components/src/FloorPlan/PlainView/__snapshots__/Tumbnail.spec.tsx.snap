@@ -3,11 +3,11 @@
 exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="sc-kDDrLX fnBzKa"
+    class="sc-crXcEl kjnbsw"
   >
     <div
       active="0"
-      class="ant-card-grid sc-iBkjds fLxaat"
+      class="ant-card-grid sc-papXJ EXhOn"
       data-testid="thumbnailBg"
     >
       <div
@@ -25,7 +25,7 @@ exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="sc-jqUVSM hpiOJJ"
+      class="sc-iqcoie eGMxQj"
     >
       TEST_2
     </div>
