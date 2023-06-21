@@ -46,7 +46,7 @@ exports[`MdnsProxyOverview should render table 1`] = `
           class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
         >
           <div
-            class="sc-jSMfEi huMdos"
+            class="sc-iBkjds gKlYH"
           >
             <div
               class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -60,15 +60,25 @@ exports[`MdnsProxyOverview should render table 1`] = `
                   class="Grid__Container-sc-5irhjd-1 zzbxI"
                 >
                   <div
-                    class="ant-space ant-space-vertical sc-gKXOVf bONkcb"
+                    class="ant-space ant-space-vertical"
                   >
+                    <div
+                      class="ant-space-item"
+                      style="margin-bottom: 6px;"
+                    >
+                      <span
+                        class="ant-typography sc-jSMfEi iSONzx"
+                      >
+                        Forwarding Rules
+                      </span>
+                    </div>
                     <div
                       class="ant-space-item"
                     >
                       <span
-                        class="ant-typography title"
+                        class="ant-typography sc-gKXOVf iOspyK"
                       >
-                        Forwarding Rules
+                        0
                       </span>
                     </div>
                   </div>

@@ -9,10 +9,12 @@ import { Loader }           from '../Loader'
 
 import * as UI from './styledComponents'
 
+type BasicType = string | number | ReactNode | (() => ReactNode)
+
 interface SummaryCardoProps {
   data?: {
-    title?: string | number | ReactNode | (() => ReactNode)
-    content?: string | number | ReactNode | (() => ReactNode)
+    title?: BasicType
+    content?: BasicType
     custom?: unknown // custom is for custom item. If there is custom property, the title and content will not work.
     visible?: boolean
     colSpan?: number // Have to line up with the antd grid system.
@@ -23,16 +25,22 @@ interface SummaryCardoProps {
   isFetching?: boolean
 }
 
+interface SummaryCardItemProps {
+  title?: BasicType
+  content?: BasicType
+  className?: string
+}
+
 export const SummaryCard = (props: React.PropsWithChildren<SummaryCardoProps>) => {
   return <SummaryCardBase {...props} />
 }
 
 const SummaryCardBase = (props: React.PropsWithChildren<SummaryCardoProps>) => {
-  const{ isLoading = false, isFetching = false } = props
+  const{ className, isLoading = false, isFetching = false } = props
   return (
     <Card>
       <Loader states={[{ isLoading, isFetching }]} >
-        <UI.InfoMargin children={<SummaryCardContent {...props} />} />
+        <UI.InfoMargin className={className} children={<SummaryCardContent {...props} />} />
       </Loader>
     </Card>
   )
@@ -67,19 +75,15 @@ const SummaryCardContent = ({
 }
 
 const SummaryCardItem = (
-  { title, content, className }: { title?:unknown, content?: unknown, className?: string }
+  { title, content, className }: SummaryCardItemProps
 ) => (
   <Space className={className} direction='vertical' size={6}>
-    {
-      <UI.Title>
-        {typeof title === 'function' ? title() : title}
-      </UI.Title>
-    }
-    {
-      <UI.Content>
-        {typeof content === 'function' ? content() : content}
-      </UI.Content>
-    }
+    <UI.Title>
+      {typeof title === 'function' ? title() : title}
+    </UI.Title>
+    <UI.Content>
+      {typeof content === 'function' ? content() : content}
+    </UI.Content>
   </Space>
 )
 
