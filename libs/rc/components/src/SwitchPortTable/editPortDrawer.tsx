@@ -5,6 +5,7 @@ import { DefaultOptionType }                            from 'antd/lib/select'
 import _                                                from 'lodash'
 
 import {
+  Alert,
   Button,
   cssStr,
   Drawer,
@@ -736,6 +737,14 @@ export function EditPortDrawer ({
       isLoading: loading,
       isFetching: isPortsSettingUpdating
     }]}>
+      {
+        isCloudPort && <Alert
+          type='info'
+          showIcon
+          // eslint-disable-next-line max-len
+          message={$t({ defaultMessage: 'Modifying the uplink port may result in the switch losing connectivity' })}
+        />
+      }
       <Form layout='vertical'>
         <Form.Item
           label={$t({ defaultMessage: 'Selected Port' })}
