@@ -133,11 +133,11 @@ describe('Edge Detail Page Header', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    const resetBtn = await screen.findByRole('menuitem', { name: 'Factory Reset' })
+    const resetBtn = await screen.findByRole('menuitem', { name: 'Reset and Recover' })
     await userEvent.click(resetBtn)
 
     const resetDialog = await screen.findByRole('dialog')
-    await within(resetDialog).findByText(`Factory reset "${currentEdge.name}"?`)
+    await within(resetDialog).findByText(`Reset and Recover "${currentEdge.name}"?`)
     await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
   })
 
