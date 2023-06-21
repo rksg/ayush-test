@@ -91,7 +91,7 @@ export default function RadiusAttributeGroupDetail () {
     const columns: TableProps<AdaptivePolicy>['columns'] = [
       {
         key: 'name',
-        title: $t({ defaultMessage: 'Access Policy Name' }),
+        title: $t({ defaultMessage: 'Adaptive Policy Name' }),
         dataIndex: 'name',
         sorter: true,
         render: function (data, row) {
@@ -106,7 +106,7 @@ export default function RadiusAttributeGroupDetail () {
         }
       },
       {
-        title: $t({ defaultMessage: 'Access Policy Set Membership' }),
+        title: $t({ defaultMessage: 'Adaptive Policy Set Membership' }),
         key: 'policySetMemberShip',
         dataIndex: 'policySetMemberShip',
         align: 'center',

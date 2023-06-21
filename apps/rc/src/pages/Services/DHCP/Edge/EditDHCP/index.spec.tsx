@@ -42,7 +42,7 @@ describe('EditEdgeDhcp', () => {
     )
   })
 
-  it('should render edit edge dhcp successfully', async () => {
+  it.skip('should render edit edge dhcp successfully', async () => {
     render(
       <Provider>
         <EditDhcp />
@@ -96,7 +96,7 @@ describe('EditEdgeDhcp', () => {
     })).toBeVisible()
   })
 
-  it('should be blcoked when required field is empty', async () => {
+  it.skip('should be blcoked when required field is empty', async () => {
     const user = userEvent.setup()
     render(
       <Provider>

@@ -59,13 +59,25 @@ export function DevicesWidget (props: {
 export function DevicesWidgetv2 (props: {
   apStackedData: ChartData[],
   switchStackedData: ChartData[],
+  edgeStackedData: ChartData[],
   apTotalCount: number,
   switchTotalCount: number,
+  edgeTotalCount: number,
   enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
-  const { apStackedData,switchStackedData,apTotalCount,switchTotalCount } = props
+  const edgeSupported = useIsTierAllowed(Features.EDGES)
+
+  const {
+    apStackedData,
+    switchStackedData,
+    edgeStackedData,
+    apTotalCount,
+    switchTotalCount,
+    edgeTotalCount
+  } = props
+
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
       onArrowClick={props.enableArrowClick ? onArrowClick : undefined}>
@@ -97,7 +109,7 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: height/2 - 30 }}>
-                    {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
+                    {filterByAccess([<TenantLink key='add-wifi' to={'/devices/wifi/add'}>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>])}
                   </UI.LinkContainer>
@@ -129,13 +141,47 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
-                    {filterByAccess([<TenantLink to={'/devices/switch/add'}>
+                    {filterByAccess([<TenantLink key='add-switch' to={'/devices/switch/add'}>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>])}
                   </UI.LinkContainer>
                 }
               </GridCol>
             </GridRow>
+            { edgeSupported &&
+              <GridRow align={'middle'}>
+                <GridCol col={{ span: edgeTotalCount ? 9 : 12 }}>
+                  { edgeTotalCount > 0
+                    ? $t({ defaultMessage: 'SmartEdges' })
+                    : $t({ defaultMessage: 'No SmartEdges' }) }
+                </GridCol>
+                <GridCol col={{ span: edgeTotalCount ? 15 : 12 }}>
+                  { edgeTotalCount > 0
+                    ? <Space>
+                      <StackedBarChart
+                        animation={false}
+                        style={{
+                          height: height/2 - 30,
+                          width: width/2 - 15
+                        }}
+                        data={edgeStackedData}
+                        showLabels={false}
+                        showTotal={false}
+                        total={edgeTotalCount}
+                        barColors={getDeviceConnectionStatusColorsv2()} />
+                      <TenantLink to={'/devices/edge'}>
+                        {edgeTotalCount}
+                      </TenantLink>
+                    </Space>
+                    : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
+                      {filterByAccess([<TenantLink key='add-edge' to={'/devices/edge/add'}>
+                        {$t({ defaultMessage: 'Add SmartEdge' })}
+                      </TenantLink>])}
+                    </UI.LinkContainer>
+                  }
+                </GridCol>
+              </GridRow>
+            }
           </UI.WidgetContainer>
         )}
       </AutoSizer>

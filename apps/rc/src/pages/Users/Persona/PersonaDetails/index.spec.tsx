@@ -9,7 +9,8 @@ import {
   MacRegListUrlsInfo,
   PersonaBaseUrl,
   ClientUrlsInfo,
-  ConnectionMeteringUrls
+  ConnectionMeteringUrls,
+  DPSKDeviceInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
@@ -29,6 +30,16 @@ import {
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 import PersonaDetails from './index'
+
+const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
+  {
+    mac: '11:11:11:11:11:11',
+    lastConnected: '06/15/2023 03:24 AM',
+    lastConnectedNetwork: 'test',
+    devicePassphrase: 'e4269e5a2d5547299714398404d442fb',
+    online: true
+  }
+]
 
 Object.assign(navigator, {
   clipboard: {
@@ -166,7 +177,7 @@ describe('Persona Details', () => {
   it('should add devices', async () => {
     render(
       <Provider>
-        <PersonaDevicesTable persona={mockPersona} title={'Devices'} />
+        <PersonaDevicesTable persona={mockPersona} />
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
@@ -220,9 +231,15 @@ describe('Persona Details', () => {
   })
 
   it('should delete selected devices', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
+      )
+    )
     render(
       <Provider>
-        <PersonaDevicesTable persona={mockPersona} title={'Devices'}/>
+        <PersonaDevicesTable persona={mockPersona} dpskPoolId={mockPersonaGroup.dpskPoolId}/>
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }

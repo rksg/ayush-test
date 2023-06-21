@@ -140,7 +140,7 @@ export default function MacRegistrationListsTable () {
         }
       },
       {
-        title: $t({ defaultMessage: 'Access Policy Set' }),
+        title: $t({ defaultMessage: 'Adaptive Policy Set' }),
         key: 'policySet',
         dataIndex: 'policySetId',
         show: policyEnabled,

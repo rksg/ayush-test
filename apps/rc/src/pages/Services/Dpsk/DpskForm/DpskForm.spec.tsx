@@ -174,6 +174,34 @@ describe('DpskForm', () => {
     expect(nameInput).toBeInTheDocument()
   })
 
+  it('should render Edit form with cloudpath FF enabled', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({
+          ...mockedEditFormData,
+          policySetId: 'a3a8449e-a649-4bf4-8798-d772ee1dbd5f',
+          policyDefaultAccess: false
+        }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <DpskForm editMode={true} />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
+          path: editPath
+        }
+      }
+    )
+
+    expect(await screen.findByRole('radio', { name: /REJECT/ })).toBeChecked()
+  })
+
   it('should show toast when edit service profile failed', async () => {
     mockServer.use(
       rest.patch(

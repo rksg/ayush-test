@@ -26,6 +26,12 @@ import {
 } from './__test__/fixtures'
 import AdaptivePolicyForm from './AdaptivePolicyForm'
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 describe('AdaptivePolicyForm', () => {
   beforeEach(() => {
     mockServer.use(
@@ -59,6 +65,8 @@ describe('AdaptivePolicyForm', () => {
         }
       }
     )
+    await screen.findByText('Add Adaptive Policy')
+    await screen.findByText(templateList?.content[0]?.ruleType)
   })
 
   it('should render breadcrumb correctly when feature flag is off', () => {
@@ -170,6 +178,8 @@ describe('AdaptivePolicyForm', () => {
     await userEvent.click(screen.getByText('Apply'))
 
     await screen.findByText('Policy testPolicy was added')
+
+    expect(mockedUsedNavigate).toBeCalled()
   })
 
   it('should edit giving data successfully', async () => {

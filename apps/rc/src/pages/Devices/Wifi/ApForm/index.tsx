@@ -22,7 +22,7 @@ import { GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
-  useGetApQuery,
+  useGetApOperationalQuery,
   useLazyApGroupListQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
@@ -91,7 +91,8 @@ export function ApForm () {
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
   const { data: apDetails, isLoading: isApDetailsLoading }
-    = useGetApQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
+    // eslint-disable-next-line max-len
+    = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
   const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
 
   const [addAp] = useAddApMutation()

@@ -68,7 +68,7 @@ describe('MdnsProxyDetail', () => {
     expect(await screen.findByText('Instances (0)')).toBeVisible()
   })
 
-  it.skip('should navigate to the edit page', async () => {
+  it('should navigate to the edit page', async () => {
     const editLink = `/${params.tenantId}/t/` + getServiceDetailsLink({
       type: ServiceType.MDNS_PROXY,
       oper: ServiceOperation.EDIT,
