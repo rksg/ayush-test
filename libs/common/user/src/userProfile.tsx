@@ -28,7 +28,7 @@ export function hasAccess (id?: string) {
   const { allowedOperations } = getUserProfile()
 
   // temp measure to permit all undefined id for admins
-  if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
 
   const action = operationMap[id]
 

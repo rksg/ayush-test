@@ -123,7 +123,6 @@ import PersonaGroupDetails        from './pages/Users/Persona/PersonaGroupDetail
 import SwitchClientList           from './pages/Users/Switch/ClientList'
 import WifiClientDetails          from './pages/Users/Wifi/ClientDetails'
 import WifiClientList             from './pages/Users/Wifi/ClientList'
-import DPSKAdminPage              from './pages/Users/Wifi/DPSKAdminPage'
 import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
 
 export default function RcRoutes () {
@@ -704,7 +703,7 @@ function UserRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='users/guestsManager' element={<GuestManagerPage />} />
-      <Route path='users/dpskAdmin' element={<DPSKAdminPage />} />
+      <Route path='users/dpskAdmin' element={<DpskTable />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />

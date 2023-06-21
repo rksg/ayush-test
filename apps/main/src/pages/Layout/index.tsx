@@ -63,7 +63,7 @@ function Layout () {
         pathname: `${basePath.pathname}`
       })
     }
-    if (isDPSKAdmin && params['*'] !== 'dpskAdmin') {
+    if (isDPSKAdmin && !(params['*'] as string).includes('dpsk')) {
       navigate({
         ...dpskBasePath,
         pathname: `${dpskBasePath.pathname}`
@@ -118,7 +118,7 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        {!isGuestManager &&
+        {!(isGuestManager || isDPSKAdmin) &&
           <>
             <AlarmsButton/>
             <ActivityButton/>
