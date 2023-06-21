@@ -35,7 +35,8 @@ export function PageHeaderExtra (type: ReportType) {
     setIsLoaded(true)
   },[])
 
-  return [
+  return <>
+    [
     <NetworkFilter
       key='reports-network-filter'
       shouldQuerySwitch={shouldQuerySwitch}
@@ -53,5 +54,6 @@ export function PageHeaderExtra (type: ReportType) {
       showTimePicker
       selectionType={range}
     />
-  ]
+    ]
+  </>
 }

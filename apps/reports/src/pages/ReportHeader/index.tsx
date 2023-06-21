@@ -20,7 +20,7 @@ export function ReportHeader (props: {
       breadcrumb={isNavbarEnhanced
         ? [
           { text: 'Business Insights' },
-          { text: 'Reportsed', link: '/reports' }
+          { text: 'Reports', link: '/reports' }
         ] : [
           { text: 'Reports', link: '/reports' }
         ]}
