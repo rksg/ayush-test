@@ -1,10 +1,9 @@
 import _                   from 'lodash'
 import { SingleValueType } from 'rc-cascader/lib/Cascader'
 
-import { normalizeNodeType }                      from '@acx-ui/analytics/utils'
+import { normalizeNodeType, defaultNetworkPath }  from '@acx-ui/analytics/utils'
 import { FlattenCascader }                        from '@acx-ui/components'
 import type { BaseCascaderProps, CascaderOption } from '@acx-ui/components'
-import { defaultNetworkPath }                     from '@acx-ui/utils'
 import type { APListNode, PathNode }              from '@acx-ui/utils'
 
 import { isAPListNodes, isNetworkNodes } from '../../../types'

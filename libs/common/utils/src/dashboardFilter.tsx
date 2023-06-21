@@ -4,10 +4,8 @@ import { useDateFilter }       from './dateFilter'
 import { useEncodedParameter } from './encodedParameter'
 import { generateVenueFilter } from './filters'
 
-import type { DateFilter }              from './dateFilter'
-import type { NetworkPath, PathFilter } from './types/networkFilter'
-
-export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
+import type { DateFilter } from './dateFilter'
+import type { PathFilter } from './types/networkFilter'
 
 export type DashboardFilter = DateFilter & { filter : PathFilter }
 
