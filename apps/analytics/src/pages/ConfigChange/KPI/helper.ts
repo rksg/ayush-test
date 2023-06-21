@@ -5,8 +5,8 @@ import { FormatterType, formatter } from '@acx-ui/formatter'
 import { getIntl, noDataDisplay }   from '@acx-ui/utils'
 
 export function kpiDelta (
-  before: number,
-  after: number,
+  before: number | null,
+  after: number | null,
   sign: string,
   format: FormatterType | ((x: number) => string)
 ) {

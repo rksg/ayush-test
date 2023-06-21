@@ -269,4 +269,3 @@ function isDateTimeFormat (name: string): name is keyof typeof dateTimeFormats {
 function isFormat (name: string): name is keyof typeof formats {
   return name in formats
 }
-

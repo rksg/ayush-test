@@ -1,8 +1,11 @@
 import { Provider, dataApiURL }                  from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { configChanges }        from './__tests__/fixtures'
-import { useConfigChangeQuery } from './services'
+import { configChanges, kpiChanges } from './__tests__/fixtures'
+import {
+  useConfigChangeQuery,
+  useKPIChangesQuery
+} from './services'
 
 describe('useConfigChangeQuery', () => {
   afterEach(() => jest.resetAllMocks())
@@ -30,5 +33,40 @@ describe('useConfigChangeQuery', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual([])
   })
+})
 
+describe('useKPIChangesQuery', () => {
+  afterEach(() => jest.resetAllMocks())
+  const kpis= [
+    'connectionSuccess', 'timeToConnect', 'clientThroughPut',
+    'apCapacity', 'apUpTime', 'onlineAPCount'
+  ]
+  it('should return correct data', async () => {
+    const param = {
+      kpis,
+      path: [{ type: 'network' as const, name: 'Network' }],
+      beforeStart: '2023-05-26T09:37:10.758Z',
+      beforeEnd: '2023-05-27T09:37:10.758Z',
+      afterStart: '2023-06-20T08:49:59.000Z',
+      afterEnd: '2023-06-21T08:49:59.000Z'
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: kpiChanges })
+    const { result } = renderHook(() => useKPIChangesQuery(param), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual(kpiChanges)
+  })
+  it('should return empty data', async () => {
+    const param = {
+      kpis,
+      path: [{ type: 'network' as const, name: 'Network' }],
+      beforeStart: '2023-05-26T09:37:10.758Z',
+      beforeEnd: '2023-05-27T09:37:10.758Z',
+      afterStart: '2023-06-19T08:49:59.000Z',
+      afterEnd: '2023-06-20T08:49:59.000Z'
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges',{ data: {} })
+    const { result } = renderHook(() => useKPIChangesQuery(param), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual({})
+  })
 })

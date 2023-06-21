@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { identity }      from 'lodash'
-import moment            from 'moment-timezone'
-import { defineMessage } from 'react-intl'
+import { identity, flow } from 'lodash'
+import moment             from 'moment-timezone'
+import { defineMessage }  from 'react-intl'
 
 import { formatter } from '@acx-ui/formatter'
 
@@ -295,7 +295,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'apCapacity',
-      format: (x : number ) => formatter('networkSpeedFormat')(x * 1024),
+      format: flow([multipleBy1000, formatter('networkSpeedFormat')]),
       deltaSign: '+'
     }
   },

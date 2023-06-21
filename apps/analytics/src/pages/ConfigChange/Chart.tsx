@@ -8,7 +8,7 @@ import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
 
 import { useConfigChangeQuery } from './services'
 
-export function Chart (props: { onBrushPositionsChange: (params: number[][]) => void }){
+function BasicChart (props: { onBrushPositionsChange: (params: number[][]) => void }){
   const { filters: { path, startDate, endDate } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({ path, start: startDate, end: endDate })
 
@@ -32,4 +32,4 @@ export function Chart (props: { onBrushPositionsChange: (params: number[][]) => 
   </Loader>
 }
 
-export const MemoChart = memo(Chart)
+export const Chart = memo(BasicChart)

@@ -33,7 +33,7 @@ export const api = dataApi.injectEndpoints({
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
         response.network.hierarchyNode.configChanges.map((value, id)=>({ ...value, id }))
     }),
-    configChangeKpiChanges: build.query<
+    configChangeKPIChanges: build.query<
       { before: Record<string, number>, after: Record<string, number> },
       {
         kpis: string[],
@@ -47,7 +47,7 @@ export const api = dataApi.injectEndpoints({
       query: (variables) => ({
         variables: omit(variables, ['kpis']),
         document: gql`
-          query ConfigChange(
+          query ConfigChangeKPIChanges(
             $path: [HierarchyNodeInput],
             $beforeStart: DateTime, $beforeEnd: DateTime,
             $afterStart: DateTime, $afterEnd: DateTime
@@ -67,7 +67,7 @@ export const api = dataApi.injectEndpoints({
 
 const {
   useConfigChangeQuery,
-  useConfigChangeKpiChangesQuery
+  useConfigChangeKPIChangesQuery
 } = api
 
 interface KpiChangesParams {
@@ -79,13 +79,13 @@ interface KpiChangesParams {
   afterEnd: string
 }
 
-function useKpiChangesQuery (params: KpiChangesParams) {
-  return useConfigChangeKpiChangesQuery(params,
+function useKPIChangesQuery (params: KpiChangesParams) {
+  return useConfigChangeKPIChangesQuery(params,
     { skip: Object.keys(params).some(key=>!params[key as keyof KpiChangesParams]) }
   )
 }
 
 export {
   useConfigChangeQuery,
-  useKpiChangesQuery
+  useKPIChangesQuery
 }

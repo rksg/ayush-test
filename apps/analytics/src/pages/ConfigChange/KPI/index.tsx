@@ -14,7 +14,7 @@ import { Loader, Tabs, TrendTypeEnum } from '@acx-ui/components'
 import { FormatterType, formatter }    from '@acx-ui/formatter'
 import { noDataDisplay }               from '@acx-ui/utils'
 
-import { useKpiChangesQuery } from '../services'
+import { useKPIChangesQuery } from '../services'
 
 import { kpiDelta }                               from './helper'
 import { Statistic, TransparentTrend, TrendPill } from './styledComponents'
@@ -37,7 +37,10 @@ type KPIProps = ConfigChangeKPIConfig & {
 
 const KPI = ({ apiMetric, label, format, deltaSign, values }: KPIProps) => {
   const { $t } = useIntl()
-  const formatterFn = format ? formatter(format as FormatterType) : ((v: number) => v)
+  const formatterFn = format
+    ? (typeof format === 'string')
+      ? formatter(format as FormatterType) : format as ((x: number) => string)
+    : ((v: number) => v)
   const { trend, value } =
     kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
   return <Statistic
@@ -57,7 +60,7 @@ const KPI = ({ apiMetric, label, format, deltaSign, values }: KPIProps) => {
   />
 }
 
-export function hasConfigChange <RecordType> (
+function hasConfigChange <RecordType> (
   column: RecordType | RecordType & { configChange?: ConfigChangeKPIConfig }
 ): column is RecordType & { configChange: ConfigChangeKPIConfig } {
   return !!(column as RecordType & {
@@ -83,13 +86,13 @@ export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
   const { filters: { path } } = useAnalyticsFilter()
   const [beforeStart, beforeEnd, afterStart, afterEnd] =
     props.kpiTimeRanges.flat().map(time => moment(time).toISOString())
-  const queryResults = useKpiChangesQuery({
+  const queryResults = useKPIChangesQuery({
     kpis: Object.values(kpis).map(({ apiMetric }) => apiMetric),
     path, beforeStart, beforeEnd, afterStart, afterEnd
   })
 
   return <Tabs
-    onChange={(key) => setTabKey(key)}
+    onChange={setTabKey}
     activeKey={tabKey}
     defaultActiveKey='overview'
     type='card'
