@@ -147,15 +147,15 @@ describe('HealthPieChart', () => {
   })
   describe('pieNodeMap', () => {
     it('should return correct venue title', () => {
-      const zone = pieNodeMap(pathToFilter([{ type: 'zone', name: 'Zone' }]))
-      expect(zone.defaultMessage).toHaveLength(1)
-      let msg = (zone.defaultMessage as MessageFormatElement[])[0]
-      expect(msg).toBeDefined()
-
-      const ap = pieNodeMap(pathToFilter([{ type: 'ap', name: 'AP' }]))
-      expect(ap.defaultMessage).toHaveLength(1)
-      msg = (ap.defaultMessage as MessageFormatElement[])[0]
-      expect(msg).toBeDefined()
+      const zone = pieNodeMap(pathToFilter([
+        { type: 'zone', name: 'Zone' }
+      ]))
+      expect(zone.defaultMessage?.[0].options.one.value[0].value).toEqual('AP Group')
+      const ap = pieNodeMap(pathToFilter([
+        { type: 'zone', name: 'Zone' },
+        { type: 'ap', name: 'AP' }
+      ]))
+      expect(ap.defaultMessage?.[0].options.one.value[0].value).toEqual('AP')
     })
   })
 })
