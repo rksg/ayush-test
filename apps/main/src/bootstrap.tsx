@@ -8,11 +8,11 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { get }                      from '@acx-ui/config'
-import { useGetPreferencesQuery }   from '@acx-ui/rc/services'
-import { BrowserRouter, useParams } from '@acx-ui/react-router-dom'
-import { Provider }                 from '@acx-ui/store'
-import { useGetUserProfileQuery }   from '@acx-ui/user'
+import { get }                    from '@acx-ui/config'
+import { useGetPreferencesQuery } from '@acx-ui/rc/services'
+import { BrowserRouter }          from '@acx-ui/react-router-dom'
+import { Provider }               from '@acx-ui/store'
+import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -117,17 +117,23 @@ export async function pendoInitalization (): Promise<void> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  // const queryParams = new URLSearchParams(window.location.search) // url query params
+  // const browserLang = loadMessages(navigator.languages) // browser detection
+  //
+  const result = useGetUserProfileQuery({})
+  const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
+  const userPreflang = String(userProfile?.preferredLanguage)
+  const defaultLang = String(request.data?.global?.defaultLanguage)
 
-  console.log(`userProfile: ${userProfile?.preferredLanguage}`)
-  const lang = userProfile ? String(userProfile?.preferredLanguage) :
-    String(request.data?.global?.defaultLanguage)
+  console.log(`userProfile: ${userPreflang} ${defaultLang}`)
+  const lang = userPreflang? userPreflang : defaultLang
   console.log(`lang: ${lang}`)
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    states={[{ isLoading: request.isLoading || request.isFetching }]}
+    states={[{ isLoading: result.isLoading || result.isFetching
+    || request.isLoading || request.isFetching }]}
     children={<ConfigProvider {...props} lang={loadMessages([lang])} />}
   />
 }

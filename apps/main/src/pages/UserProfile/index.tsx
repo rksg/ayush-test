@@ -48,14 +48,17 @@ export function UserProfile () {
   const [updateUserProfile] = useUpdateUserProfileMutation()
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
+    // console.log(`handlePreferredLangChange: ${data?.preferredLanguage}`)
     await updateUserProfile({ payload: data, params: { tenantId } })
-    handlePreferredLangChange(String(data?.preferredLanguage))
+    if (userProfile?.preferredLanguage !== data?.preferredLanguage)
+      handlePreferredLangChange(String(data?.preferredLanguage))
     navigate({
       pathname: location.from
     }, { replace: true })
   }
 
-  const handlePreferredLangChange = async (langCode: string) => {
+  const handlePreferredLangChange = (langCode: string) => {
+    // console.log(`handlePreferredLangChange: ${langCode}`)
     if (!langCode) return
     const code = langCode as LangKey
     locale.setLang(code)

@@ -1,9 +1,8 @@
 import { Form, Select } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { useUserProfileContext }     from '@acx-ui/user'
-import { DEFAULT_SYS_LANG }          from '@acx-ui/utils'
-import { LangKey, useLocaleContext } from '@acx-ui/utils'
+import { useUserProfileContext }                       from '@acx-ui/user'
+import { LangKey, useLocaleContext, DEFAULT_SYS_LANG } from '@acx-ui/utils'
 export function PreferredLanguageFormItem () {
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
