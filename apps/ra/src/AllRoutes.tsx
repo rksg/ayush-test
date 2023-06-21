@@ -2,6 +2,7 @@ import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-rout
 
 import Incidents from './pages/Incidents'
 import Layout    from './pages/Layout'
+import { Recommendations } from '@acx-ui/analytics/components'
 
 function AllRoutes () {
   return rootRoutes(<Route element={<Layout />}>
@@ -10,6 +11,7 @@ function AllRoutes () {
       <Route path='' element={<Navigate replace to='incidents' />} />
       <Route path='dashboard' element={<div>dashboard</div>} />
       <Route path='incidents' element={<Incidents />} />
+      <Route path='recommendations' element={<Recommendations />} />
     </Route>
   </Route>)
 }

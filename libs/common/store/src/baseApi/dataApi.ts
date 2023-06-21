@@ -10,7 +10,7 @@ export const dataApiSearchURL = `${window.location.origin}/api/a4rc/api/rsa-data
 // please refer to them in source folder under /apps/analytics/src
 export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
-    url: dataApiURL,
+    url:  `${window.location.origin}/analytics/api/rsa-data-api/graphql/analytics`,
     prepareHeaders: (headers) => {
       Object.entries(getJwtHeaders())
         .forEach(([header, value]) => headers.set(header, value))
@@ -18,6 +18,21 @@ export const dataApi = createApi({
     }
   }),
   reducerPath: 'analytics-data-api',
+  refetchOnMountOrArgChange: true,
+  tagTypes: ['Monitoring'],
+  endpoints: () => ({ })
+})
+
+export const recommendationApi = createApi({
+  baseQuery: graphqlRequestBaseQuery({
+    url:  `${window.location.origin}/analytics/api/rsa-data-api/graphql/configRecommendation`,
+    prepareHeaders: (headers) => {
+      Object.entries(getJwtHeaders())
+        .forEach(([header, value]) => headers.set(header, value))
+      return headers
+    }
+  }),
+  reducerPath: 'analytics-data-api-recommendation',
   refetchOnMountOrArgChange: true,
   tagTypes: ['Monitoring'],
   endpoints: () => ({ })
