@@ -19,7 +19,6 @@ const filters = (nodes: PathNode[][]) => ({
 let mockUseDashboardFilter = { filters: filters([]), setNodeFilter }
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  defaultNetworkPath: [{ type: 'network', name: 'Network' }],
   useDashboardFilter: () => mockUseDashboardFilter
 }))
 describe('venue Filter', () => {
