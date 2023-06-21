@@ -152,10 +152,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false',
     newApi: true
   },
-  getApLanPorts: {
+  getApOperational: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port',
+    url: '/venues/aps/:serialNumber?operational=true',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=true',
     newApi: true
   },
   getApValidChannel: {
@@ -362,12 +362,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led',
     newApi: true
   },
-  updateApLanPorts: {
-    method: 'put',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port',
-    newApi: true
-  },
   getApCapabilities: {
     method: 'get',
     url: '/venues/aps/:serialNumber/capabilities',
@@ -378,6 +372,24 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/dpskPassphrasePools/query',
     oldUrl: '/api/tenant/:tenantId/wifi/dpsk-passphrase/query',
+    newApi: true
+  },
+  getApLanPorts: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber/lanPortSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port',
+    newApi: true
+  },
+  updateApLanPorts: {
+    method: 'put',
+    url: '/venues/aps/:serialNumber/lanPortSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port',
+    newApi: true
+  },
+  resetApLanPorts: {
+    method: 'delete',
+    url: '/venues/aps/:serialNumber/lanPortSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port',
     newApi: true
   },
   getApCustomization: {

@@ -15,8 +15,7 @@ describe('NetworkForm parser', () => {
       }
 
       mockedClientIsolationList = [{
-        venueId: '6de6a5239a1441cfb9c7fde93aa613fe',
-        clientIsolationAllowlistId: 'c123'
+        venueId: '6de6a5239a1441cfb9c7fde93aa613fe'
       }]
     })
 

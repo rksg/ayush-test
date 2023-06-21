@@ -176,56 +176,30 @@ export function TaggedPortsStep () {
   const handleCheckboxGroupChange =
     (moduleName: string, checkedValues: string[], setValues: (arg0: string[]) => void) => {
       setValues(checkedValues)
-      let taggedValues: string[] = []
+      let selectedTaggedPorts: string[] = []
       switch(moduleName){
         case 'module1':
-          taggedValues = _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues])
-          form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
-
-          setVlanSettingValues({
-            ...vlanSettingValues,
-            switchFamilyModels: {
-              id: vlanSettingValues.switchFamilyModels?.id,
-              model: vlanSettingValues.switchFamilyModels?.model || '',
-              slots: vlanSettingValues.switchFamilyModels?.slots || [],
-              untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
-              taggedPorts: taggedValues
-            }
-          })
+          selectedTaggedPorts = _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues])
           break
         case 'module2':
-          taggedValues = _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues])
-          form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
-
-          setVlanSettingValues({
-            ...vlanSettingValues,
-            switchFamilyModels: {
-              id: vlanSettingValues.switchFamilyModels?.id,
-              model: vlanSettingValues.switchFamilyModels?.model || '',
-              slots: vlanSettingValues.switchFamilyModels?.slots || [],
-              untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
-              taggedPorts: taggedValues
-            }
-          })
-
+          selectedTaggedPorts = _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues])
           break
         case 'module3':
-          taggedValues = _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues])
-          form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
-
-          setVlanSettingValues({
-            ...vlanSettingValues,
-            switchFamilyModels: {
-              id: vlanSettingValues.switchFamilyModels?.id,
-              model: vlanSettingValues.switchFamilyModels?.model || '',
-              slots: vlanSettingValues.switchFamilyModels?.slots || [],
-              untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
-              taggedPorts: taggedValues
-            }
-          })
-
+          selectedTaggedPorts = _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues])
           break
       }
+
+      form.setFieldValue(['switchFamilyModels', 'taggedPorts'], selectedTaggedPorts)
+      setVlanSettingValues({
+        ...vlanSettingValues,
+        switchFamilyModels: {
+          id: vlanSettingValues.switchFamilyModels?.id,
+          model: vlanSettingValues.switchFamilyModels?.model || '',
+          slots: vlanSettingValues.switchFamilyModels?.slots || [],
+          untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
+          taggedPorts: selectedTaggedPorts
+        }
+      })
     }
 
   const getDisabledPorts = (timeslot: string) => {
