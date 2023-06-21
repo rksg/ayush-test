@@ -67,7 +67,7 @@ export default function VLANPoolInstancesTable (){
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           dataSource={tableQuery.data?.data}
-          rowKey='id'
+          rowKey='venueId'
         />
       </Card>
     </Loader>
