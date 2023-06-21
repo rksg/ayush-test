@@ -16,24 +16,25 @@ import StaticRoutes    from './StaticRoutes'
 
 import type { History, Transition } from 'history'
 
-const { $t } = getIntl()
-
-const tabs = {
-  'general-settings': {
-    title: $t({ defaultMessage: 'General Settings' }),
-    content: <GeneralSettings />
-  },
-  'ports': {
-    title: $t({ defaultMessage: 'Ports' }),
-    content: <Ports />
-  },
-  'dns': {
-    title: $t({ defaultMessage: 'DNS Server' }),
-    content: <DnsServer />
-  },
-  'routes': {
-    title: $t({ defaultMessage: 'Static Routes' }),
-    content: <StaticRoutes />
+const getTabs = () => {
+  const { $t } = getIntl()
+  return {
+    'general-settings': {
+      title: $t({ defaultMessage: 'General Settings' }),
+      content: <GeneralSettings />
+    },
+    'ports': {
+      title: $t({ defaultMessage: 'Ports' }),
+      content: <Ports />
+    },
+    'dns': {
+      title: $t({ defaultMessage: 'DNS Server' }),
+      content: <DnsServer />
+    },
+    'routes': {
+      title: $t({ defaultMessage: 'Static Routes' }),
+      content: <StaticRoutes />
+    }
   }
 }
 
@@ -47,6 +48,7 @@ export const EditEdgeTabs = () => {
   const unblockRef = useRef<Function>()
   const editEdgeContext = useContext(EdgeEditContext)
   const { formControl } = editEdgeContext
+  const tabs = getTabs()
 
   useEffect(() => {
     if (formControl?.isDirty) {
@@ -110,6 +112,7 @@ const EditEdge = () => {
   const [activeTabContent, setActiveTabContent] = useState<ReactNode>()
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
   const [formControl, setFormControl] = useState({} as EditEdgeFormControlType)
+  const tabs = getTabs()
 
   useEffect(() => {
     setActiveTabContent(tabs[activeTab as keyof typeof tabs].content)

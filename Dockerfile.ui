@@ -68,7 +68,7 @@ RUN tools/docker/locales/generate.sh
 
 FROM build-base as build
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --all
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
 
 ###############################################################
 FROM build-base as acx-ui-base-test
@@ -146,8 +146,6 @@ COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 COPY --from=build /app/dist/apps ./
 RUN \
-  # Move all other apps into main
-  ls | grep -v main | xargs mv -t main && \
   # Create structure to match deployment need
   mkdir -p tenant/t && \
   # Move all files into it
