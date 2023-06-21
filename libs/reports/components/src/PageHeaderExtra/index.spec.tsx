@@ -7,7 +7,7 @@ import {
 
 import { ReportType } from '../mapping/reportsMapping'
 
-import { ReportHeader } from '.'
+import { PageHeaderExtra } from '.'
 
 describe('report header component', () => {
   const path = '/:tenantId/t'
@@ -16,7 +16,7 @@ describe('report header component', () => {
   }
   it('should render correctly', () => {
     const { asFragment } = render(<Provider>
-      <ReportHeader type={ReportType.CLIENT}/>
+      {PageHeaderExtra(ReportType.CLIENT)}
     </Provider>, { route: { path, params } })
 
     expect(asFragment()).toMatchSnapshot()

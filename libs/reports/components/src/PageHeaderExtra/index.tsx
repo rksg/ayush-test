@@ -10,9 +10,8 @@ import { useDateFilter }    from '@acx-ui/utils'
 
 import { ReportType, reportModeMapping, bandDisabledReports } from '../mapping/reportsMapping'
 
-export function ReportHeader (props: { type: ReportType }) {
+export function PageHeaderExtra (type: ReportType) {
   const { $t } = useIntl()
-  const { type } = props
   const mode = reportModeMapping[type] || 'both'
   const isRadioBandDisabled = bandDisabledReports.includes(type) || false
   let radioBandDisabledReason = isRadioBandDisabled ?
@@ -36,7 +35,7 @@ export function ReportHeader (props: { type: ReportType }) {
     setIsLoaded(true)
   },[])
 
-  return <>
+  return [
     <NetworkFilter
       key='reports-network-filter'
       shouldQuerySwitch={shouldQuerySwitch}
@@ -46,7 +45,7 @@ export function ReportHeader (props: { type: ReportType }) {
       filterFor={'reports'}
       isRadioBandDisabled={isRadioBandDisabled}
       radioBandDisabledReason={radioBandDisabledReason}
-    />
+    />,
     <RangePicker
       key='range-picker'
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -54,5 +53,5 @@ export function ReportHeader (props: { type: ReportType }) {
       showTimePicker
       selectionType={range}
     />
-  </>
+  ]
 }
