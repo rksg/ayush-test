@@ -52,10 +52,10 @@ export const WirelessNetworkForm = () => {
     }
   })
 
-  const hasDefaultProfile = tunnelProfileList?.data.find(item => item.id === params.tenantId )
+  const hasDefaultProfile = tunnelProfileList?.data.some(item => item.id === params.tenantId )
   const tunnelProfileOptions = tunnelProfileList?.data
     .map(item => ({ label: item.name, value: item.id }))
-  if (!!!hasDefaultProfile) {
+  if (!hasDefaultProfile) {
     tunnelProfileOptions?.unshift({ label: 'Default', value: params.tenantId as string })
   }
 
