@@ -9,8 +9,7 @@ import { EdgePortStatus }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                        from '@acx-ui/user'
 
-
-const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
+export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
   const { $t } = useIntl()
 
   const columns: TableProps<EdgePortStatus>['columns'] = [

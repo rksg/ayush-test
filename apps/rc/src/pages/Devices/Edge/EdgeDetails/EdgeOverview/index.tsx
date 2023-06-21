@@ -1,25 +1,29 @@
+import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-
-import { GridCol, GridRow } from '@acx-ui/components'
+import { GridCol, GridRow, Tabs }  from '@acx-ui/components'
+import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
-  EdgeInfoWidget,
-  EdgePortsByTrafficWidget,
-  EdgeResourceUtilizationWidget,
-  EdgeTrafficByVolumeWidget,
-  EdgeUpTimeWidget
-} from '@acx-ui/rc/components'
-import {
-  useAlarmsListQuery,
-  useEdgeBySerialNumberQuery, useGetDnsServersQuery, useGetEdgePortsStatusListQuery
+  useEdgeBySerialNumberQuery,
+  useGetDnsServersQuery,
+  useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import {  EdgePortStatus } from '@acx-ui/rc/utils'
 
+import { MonitorTab }   from './MonitorTab'
+import { PortsTab }     from './PortsTab'
 import { wrapperStyle } from './styledComponents'
 
+enum OverviewInfoType {
+    MONITOR = 'monitor',
+    PORTS = 'ports',
+    SUB_INTERFACES = 'subInterfaces'
+}
 export const EdgeOverview = styled(({ className }:{ className?: string }) => {
-  const params = useParams()
+  const { $t } = useIntl()
+  const { serialNumber, activeSubTab } = useParams()
+
   const edgeStatusPayload = {
     fields: [
       'name',
@@ -41,13 +45,17 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'diskUsedKb',
       'diskTotalKb'
     ],
-    filters: { serialNumber: [params.serialNumber] } }
+    filters: { serialNumber: [serialNumber] } }
 
-  const { data: currentEdge, isLoading: isLoadingEdgeStatus } = useEdgeBySerialNumberQuery({
-    params, payload: edgeStatusPayload
+  const {
+    data: currentEdge,
+    isLoading: isLoadingEdgeStatus
+  } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: edgeStatusPayload
   })
 
-  const { data: dnsServers } = useGetDnsServersQuery({ params })
+  const { data: dnsServers } = useGetDnsServersQuery({ params: { serialNumber } })
 
   const edgePortStatusPayload = {
     fields: [
@@ -63,45 +71,17 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'duplex',
       'sort_idx'
     ],
-    filters: { serialNumber: [params.serialNumber] },
+    filters: { serialNumber: [serialNumber] },
     sortField: 'sort_idx',
     sortOrder: 'ASC'
   }
 
-  const { data: portStatusList, isLoading: isPortListLoading } = useGetEdgePortsStatusListQuery({
-    params, payload: edgePortStatusPayload
-  })
-
-  const alarmListPayload = {
-    url: CommonUrlsInfo.getAlarmsList.url,
-    fields: [
-      'startTime',
-      'severity',
-      'message',
-      'id',
-      'serialNumber',
-      'entityType',
-      'entityId'
-    ]
-  }
-
-  const { data: alarmList, isLoading: isAlarmListLoading } = useTableQuery({
-    useQuery: useAlarmsListQuery,
-    defaultPayload: {
-      ...alarmListPayload,
-      filters: {
-        serialNumber: [params.serialNumber]
-      }
-    },
-    sorter: {
-      sortField: 'startTime',
-      sortOrder: 'DESC'
-    },
-    pagination: {
-      pageSize: 10000,
-      page: 1,
-      total: 0
-    }
+  const {
+    data: portStatusList,
+    isLoading: isPortListLoading
+  } = useGetEdgePortsStatusListQuery({
+    params: { serialNumber },
+    payload: edgePortStatusPayload
   })
 
   return (
@@ -113,21 +93,32 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
           dnsServers={dnsServers}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
-          isAlarmListLoading={isAlarmListLoading}
-          alarmList={alarmList?.data || []}
         />
       </GridCol>
-      <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
-        <EdgeUpTimeWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeTrafficByVolumeWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeResourceUtilizationWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgePortsByTrafficWidget />
+      <GridCol col={{ span: 24 }}>
+        <Tabs
+          type='card'
+          defaultActiveKey={activeSubTab || OverviewInfoType.MONITOR}
+        >
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Monitor' })}
+            key={OverviewInfoType.MONITOR}
+          >
+            <MonitorTab/>
+          </Tabs.TabPane>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Ports' })}
+            key={OverviewInfoType.PORTS}
+          >
+            <PortsTab data={portStatusList as EdgePortStatus[]}/>
+          </Tabs.TabPane>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Sub-Interfaces' })}
+            key={OverviewInfoType.SUB_INTERFACES}
+          >
+          Sub-Interfaces
+          </Tabs.TabPane>
+        </Tabs>
       </GridCol>
     </GridRow>
   )

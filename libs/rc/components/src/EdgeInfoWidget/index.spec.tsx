@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
-import { Alarm }     from '@acx-ui/rc/utils'
-import { Provider  } from '@acx-ui/store'
+import { rest } from 'msw'
+
+import { Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }             from '@acx-ui/store'
 import { render,
   screen,
-  fireEvent
+  fireEvent,
+  mockServer
 } from '@acx-ui/test-utils'
 
 
@@ -21,6 +24,14 @@ describe('Edge Information Widget', () => {
   let params: { tenantId: string, serialNumber: string } =
   { tenantId: tenantID, serialNumber: currentEdge.serialNumber }
 
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getAlarmsList.url,
+        (req, res, ctx) => res(ctx.json(alarmList))
+      )
+    )
+  })
 
   it('should render ports donut chart correctly', async () => {
     const { asFragment } = render(
