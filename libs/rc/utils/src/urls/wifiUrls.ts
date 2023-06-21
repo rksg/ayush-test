@@ -152,6 +152,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=false',
     newApi: true
   },
+  getApOperational: {
+    method: 'get',
+    url: '/venues/aps/:serialNumber?operational=true',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=true',
+    newApi: true
+  },
   getApValidChannel: {
     method: 'get',
     url: '/venues/aps/:serialNumber/channels',
