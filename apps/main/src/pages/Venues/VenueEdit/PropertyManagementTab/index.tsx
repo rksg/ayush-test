@@ -10,7 +10,7 @@ import { FormFinishInfo }     from 'rc-field-form/lib/FormContext'
 import { useIntl }            from 'react-intl'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Subtitle, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                   from '@acx-ui/feature-toggle'
 import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
@@ -74,7 +74,7 @@ export function PropertyManagementTab () {
   const { $t } = useIntl()
   const basePath = useTenantLink('/venues/')
   const { tenantId, venueId } = useParams()
-  const msgTemplateEnabled = useIsSplitOn(Features.MSG_TEMPLATE)
+  const msgTemplateEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()

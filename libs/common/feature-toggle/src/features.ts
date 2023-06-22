@@ -26,8 +26,6 @@ export enum Features {
   NEW_API='acx-ui-new-api',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
-  MSG_TEMPLATE = 'msgtemplate-service-enabled',
-  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   POLICY_MANAGEMENT = 'policy-management-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',

@@ -38,7 +38,7 @@ export function useMenuConfig () {
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
-  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
+  const isRadiusClientEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isPersonaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
