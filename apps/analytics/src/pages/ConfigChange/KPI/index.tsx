@@ -37,12 +37,11 @@ type KPIProps = ConfigChangeKPIConfig & {
 
 const KPI = ({ apiMetric, label, format, deltaSign, values }: KPIProps) => {
   const { $t } = useIntl()
-  const formatterFn = format
-    ? (typeof format === 'string')
-      ? formatter(format as FormatterType) : format as ((x: number) => string)
-    : ((v: number) => v)
+  const formatterFn = (typeof format === 'string')
+    ? formatter(format as FormatterType)
+    : format as ((x: number) => string)
   const { trend, value } =
-    kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
+    kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, formatterFn)
   return <Statistic
     title={$t(label)}
     value={$t(
@@ -73,15 +72,18 @@ export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
   const [tabKey, setTabKey] = useState('overview')
 
   const { kpis: kpiKeys } = kpisForTab[tabKey as keyof typeof kpisForTab]
-  const kpis = kpiKeys.reduce((agg, key: string) => {
-    const config = kpiConfig[key as keyof typeof kpiConfig]
-    agg[key] = {
-      kpiKey: key,
-      label: (hasConfigChange(config) && config.configChange.text) || config.text ,
-      ...(hasConfigChange(config) ? config.configChange : {})
-    } as Omit<KPIProps, 'values'>
-    return agg
-  }, {} as Record<string, Omit<KPIProps, 'values'>>)
+  const kpis = kpiKeys
+    .filter(key => hasConfigChange(kpiConfig[key as keyof typeof kpiConfig]))
+    .reduce((agg, key: string) => {
+      const config = kpiConfig[key as keyof typeof kpiConfig] as {
+        text: MessageDescriptor, configChange: ConfigChangeKPIConfig }
+      agg[key] = {
+        kpiKey: key,
+        label: config.configChange.text || config.text ,
+        ...(config.configChange)
+      } as Omit<KPIProps, 'values'>
+      return agg
+    }, {} as Record<string, Omit<KPIProps, 'values'>>)
 
   const { filters: { path } } = useAnalyticsFilter()
   const [beforeStart, beforeEnd, afterStart, afterEnd] =

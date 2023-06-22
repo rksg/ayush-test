@@ -29,7 +29,7 @@ describe('KPIs', () => {
 
     expect(await screen.findByText('Connection Success')).toBeVisible()
     expect(await screen.findByText('Before: 74.76% | After: 69.2%')).toBeVisible()
-    expect(await screen.findByText('-5.56%')).toBeVisible()
+    expect(await screen.findByText('-7.44%')).toBeVisible()
 
     expect(await screen.findByText('Time To Connect')).toBeVisible()
     expect(await screen.findByText('Before: 895 ms | After: 26 ms')).toBeVisible()
@@ -37,18 +37,16 @@ describe('KPIs', () => {
 
     expect(await screen.findByText('Client Throughput')).toBeVisible()
     expect(await screen.findByText('Before: 233 Mbps | After: --')).toBeVisible()
-    expect(await screen.findAllByText('--')).toHaveLength(4)
+    expect(await screen.findAllByText('--')).toHaveLength(3)
 
     expect(await screen.findByText('AP Capacity')).toBeVisible()
     expect(await screen.findByText('Before: 10 Mbps | After: --')).toBeVisible()
 
     expect(await screen.findByText('AP-RUCKUS One Connection Uptime')).toBeVisible()
-    expect(await screen.findAllByText('Before: -- | After: --')).toHaveLength(2)
+    expect(await screen.findByText('Before: -- | After: --')).toBeVisible()
 
     expect(await screen.findByText('Online APs Count')).toBeVisible()
     expect(await screen.findByText('Before: 7 | After: 3')).toBeVisible()
     expect(await screen.findByText('-57.14%')).toBeVisible()
-
-    expect(await screen.findByText('PoE Utilization')).toBeVisible()
   })
 })
