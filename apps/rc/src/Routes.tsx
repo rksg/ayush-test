@@ -697,7 +697,7 @@ function PolicyRoutes () {
 }
 
 function UserRoutes () {
-  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
+  const isPersonaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return rootRoutes(

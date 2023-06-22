@@ -13,9 +13,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
   const enabledServices = useIsSplitOn(Features.SERVICES)
-  const enableMacRegistration = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const enablePersona = useIsSplitOn(Features.PERSONA) && enableMacRegistration
-  const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA) && enablePersona
+  const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
     payload: {

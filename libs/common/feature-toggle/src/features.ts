@@ -25,7 +25,6 @@ export enum Features {
   MDNS_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
-  PERSONA = 'persona-service-enabled',
   DPSK_CLOUDPATH_FEATURE = 'acx-ui-dpsk-cloudpath-feature-enabled',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',

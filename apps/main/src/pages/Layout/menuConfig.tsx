@@ -39,7 +39,7 @@ export function useMenuConfig () {
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
-  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
+  const isPersonaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
