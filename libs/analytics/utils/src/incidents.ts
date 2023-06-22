@@ -15,7 +15,6 @@ import type {
   Incident
 } from './types/incidents'
 
-const isMLISA =get('IS_MLISA_SA')
 /**
  * Uses to transform incident record loaded from API and
  * adds incident infomation into it
@@ -75,6 +74,7 @@ export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
 
 export function nodeTypes (nodeType: NodeType): string {
   const { $t } = getIntl()
+  const isMLISA = get('IS_MLISA_SA')
   switch (normalizeNodeType(nodeType)) {
     case 'network':
       return isMLISA
