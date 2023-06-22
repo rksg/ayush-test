@@ -8,9 +8,9 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages }      from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
+import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { WifiNetworkMessages }                      from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -84,7 +84,7 @@ function SettingsForm () {
     form.setFieldsValue(data)
   },[data])
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
-  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (
     <>

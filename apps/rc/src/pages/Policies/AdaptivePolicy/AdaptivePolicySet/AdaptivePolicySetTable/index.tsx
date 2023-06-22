@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListQuery, useAdaptivePolicySetLisByQueryQuery,
@@ -29,7 +29,7 @@ export default function AdaptivePolicySetTable () {
   const [assignedMacPools, setAssignedMacPools] = useState(new Map())
   const [assignedDpsks, setAssignedDpsks] = useState(new Map())
 
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   const tableQuery = useTableQuery({

@@ -28,7 +28,7 @@ export default function SelectPolicyForm () {
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     payload: {

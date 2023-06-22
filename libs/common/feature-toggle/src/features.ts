@@ -25,7 +25,6 @@ export enum Features {
   MDNS_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
-  MAC_REGISTRATION = 'mac-registration-service-enabled',
   PERSONA = 'persona-service-enabled',
   DPSK_CLOUDPATH_FEATURE = 'acx-ui-dpsk-cloudpath-feature-enabled',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
@@ -60,5 +59,6 @@ export enum Features {
   SWITCH_STACK_UNIT_LIMITATION='switch-stack-unit-limitation',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
-  MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion'
+  MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
+  CLOUDPATH_BETA = 'BETA-CP'
 }

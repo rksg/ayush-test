@@ -1,4 +1,4 @@
-import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
 import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -436,7 +436,7 @@ function ServiceRoutes () {
 }
 
 function PolicyRoutes () {
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isAttributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
   // eslint-disable-next-line max-len
@@ -698,7 +698,7 @@ function PolicyRoutes () {
 
 function UserRoutes () {
   const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
