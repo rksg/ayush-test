@@ -1,19 +1,42 @@
 import userEvent from '@testing-library/user-event'
-
 // import { ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { rest } from 'msw'
+
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   render,
   screen,
   waitFor,
-  fireEvent
+  fireEvent,
+  mockServer,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
+
 describe('Add Application Drawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    jest.spyOn(services, 'useAddTenantAuthenticationsMutation')
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.addTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      )
+    )
+    jest.spyOn(services, 'useUpdateTenantAuthenticationsMutation')
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.updateTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -165,6 +188,16 @@ describe('Add Application Drawer', () => {
     await userEvent.click(copyButtons[0])
     await userEvent.click(copyButtons[1])
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    expect(mockedCloseDrawer).toHaveBeenCalledWith(false)
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+    await waitFor(()=>
+      expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
   })
 })

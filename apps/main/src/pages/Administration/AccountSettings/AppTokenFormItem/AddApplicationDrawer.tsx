@@ -1,25 +1,36 @@
 import { Divider, Form, Input } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Drawer, PasswordInput } from '@acx-ui/components'
+import { Button, Drawer, PasswordInput }   from '@acx-ui/components'
+import {
+  useAddTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation
+} from '@acx-ui/rc/services'
 import {
   excludeExclamationRegExp,
   excludeSpaceRegExp,
   notAllDigitsRegExp,
-  generateHexKey
+  generateHexKey,
+  TenantAuthentications,
+  TenantAuthenticationType,
+  ApplicationAuthenticationStatus
 } from '@acx-ui/rc/utils'
 
 interface AddApplicationDrawerProps {
   visible: boolean
   isEditMode: boolean
+  editData?: TenantAuthentications
   setVisible: (visible: boolean) => void
 }
 
 export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, isEditMode } = props
+  const { visible, setVisible, isEditMode, editData } = props
   const [form] = Form.useForm()
+
+  const [addApiToken] = useAddTenantAuthenticationsMutation()
+  const [updateApiToken] = useUpdateTenantAuthenticationsMutation()
 
   const onClose = () => {
     setVisible(false)
@@ -27,16 +38,55 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   }
 
   const onSubmit = async () => {
+    const name = form.getFieldValue('name')
+    const clientId = form.getFieldValue('clientId')
+    const secret = form.getFieldValue('secret')
+    try {
+      await form.validateFields()
+      const apiTokenData: TenantAuthentications = {
+        name: name,
+        clientIDStatus: ApplicationAuthenticationStatus.ACTIVE,
+        clientID: clientId,
+        authenticationType: TenantAuthenticationType.oauth2_client,
+        clientSecret: secret
+      }
+
+      const apiTokenEditData: TenantAuthentications = {
+        name: form.getFieldValue('name'),
+        authenticationType: TenantAuthenticationType.oauth2_client,
+        clientSecret: form.getFieldValue('secret')
+      }
+
+      if(isEditMode) {
+        const id = form.getFieldValue('clientId')
+        const result =
+        await updateApiToken({ params: { authenticationId: id },
+          payload: apiTokenEditData }).unwrap()
+        if (result) {
+        }
+      } else {
+        const result =
+        await addApiToken({ payload: apiTokenData }).unwrap()
+        if (result) {
+        }
+      }
+      onClose()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+    // setVisible(false)
   }
 
   const handleClickCopy = (copyString: string) => {
     navigator.clipboard.writeText(copyString)
   }
 
-  const formContent = <Form layout='vertical'form={form} onFinish={onSubmit}>
+  const initClientId = editData?.clientID || generateHexKey(32)
+  const formContent = <Form layout='vertical'form={form} >
     <Form.Item
       name='name'
       label={$t({ defaultMessage: 'Application Name' })}
+      initialValue={editData?.name || ''}
       rules={[
         { required: true },
         { min: 2 },
@@ -48,9 +98,9 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     <Form.Item
       name='clientId'
       label={$t({ defaultMessage: 'Client ID' })}
-      // initialValue={generateHexKey(32)}
+      initialValue={initClientId}
       children={<>
-        <label>{generateHexKey(32)}</label>
+        <label>{initClientId}</label>
         <Button
           style={{ marginLeft: '20px' }}
           type='link'
@@ -64,7 +114,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     <Form.Item
       name='secret'
       label={$t({ defaultMessage: 'Client secret' })}
-      // initialValue={secret}
+      initialValue={editData?.clientSecret || ''}
       rules={[
         { required: true },
         // { max: 64 },
@@ -109,15 +159,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
               : $t({ defaultMessage: 'Add' })
           }}
           onCancel={onClose}
-          onSave={async () => {
-            try {
-              await form.validateFields()
-              form.submit()
-              onClose()
-            } catch (error) {
-              if (error instanceof Error) throw error
-            }
-          }}
+          onSave={onSubmit}
         />
       }
     />

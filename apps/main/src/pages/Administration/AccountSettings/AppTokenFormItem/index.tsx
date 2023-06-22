@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Col, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, Card, PasswordInput, showActionModal, Table, TableProps }                   from '@acx-ui/components'
+import { Button, Card, PasswordInput, showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  useDeleteTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation
+} from '@acx-ui/rc/services'
 import {  TenantAuthentications, TenantAuthenticationType, ApplicationAuthenticationStatus } from '@acx-ui/rc/utils'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
@@ -19,6 +23,13 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [isEditMode, setEditMode] = useState(false)
   const [hasAppTokenConfigured, setAppToken] = useState(false)
+  const [authenticationsData, setAuthenticationsData] = useState<TenantAuthentications>()
+
+  const [deleteTenantAuthentications]
+  = useDeleteTenantAuthenticationsMutation()
+
+  const [updateTenantAuthentications]
+  = useUpdateTenantAuthenticationsMutation()
 
   const onAddAppToken = () => {
     setEditMode(false)
@@ -26,7 +37,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
   }
 
   const appTokenData = tenantAuthenticationData?.filter(n =>
-    n.authenticationType === TenantAuthenticationType.ldap)
+    n.authenticationType !== TenantAuthenticationType.saml)
   useEffect(() => {
     if (appTokenData && appTokenData.length > 0) {
       setAppToken(true)
@@ -97,7 +108,8 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     const rowActions: TableProps<TenantAuthentications>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
-        onClick: () => {
+        onClick: (rows) => {
+          setAuthenticationsData(rows[0])
           setEditMode(true)
           setDrawerVisible(true)
         }
@@ -112,10 +124,11 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
           return false
         },
         // onClick: ([{ name, id }], clearSelection) => {
-        onClick: ([{ name }]) => {
+        onClick: (rows, clearSelection) => {
+          // onClick: ([{ name }]) => {
           const title = $t(
             { defaultMessage: 'Revoke application "{formattedName}"?' },
-            { formattedName: name }
+            { formattedName: rows[0].name }
           )
           showActionModal({
             type: 'confirm',
@@ -125,11 +138,17 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               Revoke "{formattedName}" will suspend all its services,
                 are you sure you want to proceed?
               `
-            }, { formattedName: name }),
+            }, { formattedName: rows[0].name }),
             okText: $t({ defaultMessage: 'Revoke' }),
             onOk: () => {
-              // deactivateMspEc({ params: { mspEcTenantId: id } })
-              // .then(clearSelection)
+              const payload: TenantAuthentications = {
+                name: rows[0].name,
+                authenticationType: rows[0].authenticationType,
+                clientIDStatus: ApplicationAuthenticationStatus.REVOKE
+              }
+              updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+                payload: payload })
+                .then(clearSelection)
             }
           })
         }
@@ -138,16 +157,15 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         label: $t({ defaultMessage: 'Activate' }),
         visible: (selectedRows) => {
           if(selectedRows[0] &&
-            (selectedRows[0].clientIDStatus === ApplicationAuthenticationStatus.REVOKE)) {
+            (selectedRows[0].clientIDStatus !== ApplicationAuthenticationStatus.ACTIVE)) {
             return true
           }
           return false
         },
-        // onClick: ([{ name, id }], clearSelection) => {
-        onClick: ([{ name }]) => {
+        onClick: (rows, clearSelection) => {
           const title = $t(
             { defaultMessage: 'Activate application "{formattedName}"?' },
-            { formattedName: name }
+            { formattedName: rows[0].name }
           )
 
           showActionModal({
@@ -155,19 +173,25 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             title: title,
             content: $t(
               { defaultMessage: 'Activate this application "{formattedName}"?' },
-              { formattedName: name }
+              { formattedName: rows[0].name }
             ),
             okText: $t({ defaultMessage: 'Activate' }),
             onOk: () => {
-              // reactivateMspEc({ params: { mspEcTenantId: id } })
-              // .then(clearSelection)
+              const payload: TenantAuthentications = {
+                name: rows[0].name,
+                authenticationType: rows[0].authenticationType,
+                clientIDStatus: ApplicationAuthenticationStatus.ACTIVE
+              }
+              updateTenantAuthentications({ params: { authenticationId: rows[0].id },
+                payload: payload })
+                .then(clearSelection)
             }
           })
         }
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
-        onClick: (rows) => {
+        onClick: (rows, clearSelection) => {
           showActionModal({
             type: 'confirm',
             customContent: {
@@ -176,11 +200,10 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               entityValue: rows[0].name
             },
             onOk: () => {
-              // deleteAdmin({ params: { ...params, adminId: rows[0].id } })
-              //   .then(clearSelection) :
+              deleteTenantAuthentications({ params: { authenticationId: rows[0].id } })
+                .then(clearSelection)
             }
           })
-
         }
       }
     ]
@@ -214,6 +237,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     {drawerVisible && <AddApplicationDrawer
       visible={drawerVisible}
       isEditMode={isEditMode}
+      editData={authenticationsData as TenantAuthentications}
       setVisible={setDrawerVisible}
     />}
   </>

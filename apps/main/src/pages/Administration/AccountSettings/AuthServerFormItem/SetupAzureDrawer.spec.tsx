@@ -13,7 +13,7 @@ import { SetupAzureDrawer } from './SetupAzureDrawer'
 const tenantAuthenticationData =
 {
   id: '1',
-  name: 'test123',
+  name: 'test123.xml',
   authenticationType: TenantAuthenticationType.saml,
   clientID: '123',
   clientIDStatus: ApplicationAuthenticationStatus.ACTIVE,
@@ -35,6 +35,7 @@ describe('Setup Azure Drawer', () => {
           title={'Edit SSO with 3rd Party Provider'}
           visible={true}
           isEditMode={true}
+          setEditMode={jest.fn()}
           editData={tenantAuthenticationData}
           setVisible={mockedCloseDrawer}
           maxSize={CsvSize['5MB']}
@@ -49,11 +50,10 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByRole('button', { name: 'Apply' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Browse' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Paste IdP Metadata code instead' }))
-    // const fileButton = await screen.findByRole('button', { name: 'Upload file instead' })
     await userEvent.click(await screen.findByRole('button', { name: 'Upload file instead' }))
-    expect(await screen.findByRole('button', { name: 'Browse' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Change File' })).toBeVisible()
   })
   it('should close drawer when cancel button clicked', async () => {
     const mockedCloseDrawer = jest.fn()
@@ -63,6 +63,7 @@ describe('Setup Azure Drawer', () => {
           title={'Edit SSO with 3rd Party Provider'}
           visible={true}
           isEditMode={true}
+          setEditMode={jest.fn()}
           editData={tenantAuthenticationData}
           setVisible={mockedCloseDrawer}
           maxSize={CsvSize['5MB']}

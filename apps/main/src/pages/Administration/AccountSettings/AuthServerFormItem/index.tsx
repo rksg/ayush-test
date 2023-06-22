@@ -140,6 +140,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
       }
       visible={drawerVisible}
       isEditMode={isEditMode}
+      setEditMode={setEditMode}
       editData={hasSsoConfigured ? authenticationData : {} as TenantAuthentications}
       setVisible={setDrawerVisible}
       maxSize={CsvSize['5MB']}

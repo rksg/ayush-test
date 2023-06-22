@@ -26,7 +26,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-// import AuthenticationSelector                             from './AuthenticationSelector'
+import AuthenticationSelector                             from './AuthenticationSelector'
 import MspCustomerSelector, { ECCustomerRadioButtonEnum } from './MspCustomersSelector'
 import RoleSelector                                       from './RoleSelector'
 
@@ -195,7 +195,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         onFinish={handleSubmit}
       >
         <Space direction='vertical' style={{ width: '100%' }} >
-          {/* <AuthenticationSelector /> */}
+          <AuthenticationSelector />
 
           <Form.Item name='userType' initialValue='new'>
             <Radio.Group style={{ width: '100%' }}>
