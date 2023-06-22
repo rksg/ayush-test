@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { get, pick, snakeCase, isNumber } from 'lodash'
 import { useIntl }                        from 'react-intl'
 
@@ -89,6 +91,16 @@ const getKpis = (details: EnhancedRecommendation) => {
   return { monitoring, kpis }
 }
 
+const KpiCard = ({ children }: { children: ReactNode }) => <RecommendationCardWrapper>
+  <DetailsWrapper>
+    <Card type='solid-bg'>
+      <KpiContentWrapper>
+        {children}
+      </KpiContentWrapper>
+    </Card>
+  </DetailsWrapper>
+</RecommendationCardWrapper>
+
 const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
   const { $t } = useIntl()
   const { tooltipContent, label, value } = kpi
@@ -98,16 +110,10 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
     </Tooltip>
     : null
 
-  return <RecommendationCardWrapper>
-    <DetailsWrapper>
-      <Card type='solid-bg'>
-        <KpiContentWrapper>
-          <KpiTitle>{$t(label)}{infoIcon}</KpiTitle>
-          <KpiLabel>{value}</KpiLabel>
-        </KpiContentWrapper>
-      </Card>
-    </DetailsWrapper>
-  </RecommendationCardWrapper>
+  return <KpiCard>
+    <KpiTitle>{$t(label)}{infoIcon}</KpiTitle>
+    <KpiLabel>{value}</KpiLabel>
+  </KpiCard>
 }
 
 export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
@@ -118,27 +124,15 @@ export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indicators' })}</DetailsHeader>
     {kpis.map((kpi, ind) => <Kpi kpi={kpi} key={ind} />)}
-    {monitoring && <RecommendationCardWrapper>
-      <DetailsWrapper>
-        <Card type='solid-bg'>
-          <KpiContentWrapper>
-            {$t({ defaultMessage: 'Monitoring performance indicators' })}
-            <br />
-            {$t({ defaultMessage: 'until {datetime}' },
-              { datetime: formatter('calendarFormat')(monitoring.until) })}
-          </KpiContentWrapper>
-        </Card>
-      </DetailsWrapper>
-    </RecommendationCardWrapper>}
-    {!kpis.length && <RecommendationCardWrapper>
-      <DetailsWrapper>
-        <Card type='solid-bg'>
-          <KpiContentWrapper>
-            {$t({ defaultMessage: 'No performance indicators' })}
-          </KpiContentWrapper>
-        </Card>
-      </DetailsWrapper>
-    </RecommendationCardWrapper>}
+    {monitoring && <KpiCard>
+      {$t({ defaultMessage: 'Monitoring performance indicators' })}
+      <br />
+      {$t({ defaultMessage: 'until {datetime}' },
+        { datetime: formatter('calendarFormat')(monitoring.until) })}
+    </KpiCard>}
+    {!kpis.length && <KpiCard>
+      {$t({ defaultMessage: 'No performance indicators' })}
+    </KpiCard>}
     <StatusTrail details={details}/>
   </>
 }

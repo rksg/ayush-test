@@ -132,7 +132,7 @@ const configs: Record<string, RecommendationConfig> = {
   'c-bgscan24g-enable': {
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan (2.4 GHz)' }),
-    actionText: defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has \'Auto Channel Selection\' set as \'{metadata.channelSelectionMode}\', however \'Background Scan\' feature is disabled for this Zone. To effectively use \'{metadata.channelSelectionMode}\' as channel selection algorithm, it recommended to enable \'Background Scan\' feature with default scan timer as 20 seconds.' }),
+    actionText: defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
     kpis: []
@@ -140,7 +140,7 @@ const configs: Record<string, RecommendationConfig> = {
   'c-bgscan5g-enable': {
     valueFormatter: formatter('enabledFormat'),
     valueText: defineMessage({ defaultMessage: 'Background Scan (5 GHz)' }),
-    actionText: defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has \'Auto Channel Selection\' set as \'{metadata.channelSelectionMode}\', however \'Background Scan\' feature is disabled for this Zone. To effectively use \'{metadata.channelSelectionMode}\' as channel selection algorithm, it recommended to enable \'Background Scan\' feature with default scan timer as 20 seconds.' }),
+    actionText: defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this Zone. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
     kpis: []

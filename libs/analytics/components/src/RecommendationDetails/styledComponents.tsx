@@ -82,8 +82,6 @@ export const RecommendationApImpacted = styled.div`
 `
 
 export const KpiContentWrapper = styled.div`
-  position: absolute;
-  top: 25%;
-  left: 30%;
+  margin-top: 20px;
   text-align: center;
 `

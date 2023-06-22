@@ -65,15 +65,15 @@ const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: string) => 
   return { before, after }
 }
 
+const translateMetadataValue = (value: string) => {
+  switch (value) {
+    case 'BACKGROUND_SCANNING': return 'Background Scanning'
+    case 'CHANNEL_FLY': return 'ChannelFly'
+    default: return value
+  }
+}
 
 const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
-  const metadata = chain(details.metadata)
-    .toPairs()
-    .map(([key, value]) => [key, typeof value == 'string' ? value : value])
-    .fromPairs()
-    .value()
-  const recommendationInfo = configRecommendations[details.code]
-  const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
   const {
     path,
     sliceType,
@@ -81,8 +81,19 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
     originalValue,
     currentValue,
     recommendedValue,
-    appliedOnce
+    appliedOnce,
+    code
   } = details
+
+  const metadata = chain(details.metadata)
+    .toPairs()
+    .map(([key, value]) => [key, typeof value === 'string' ? translateMetadataValue(value) : value])
+    .fromPairs()
+    .value()
+
+  const recommendationInfo = configRecommendations[code]
+  const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
+
   let parameters: Record<string, string | JSX.Element> = {
     ...metadata,
     scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
@@ -90,7 +101,7 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
     recommendedValue: valueFormatter(recommendedValue),
     br: <br />
   }
-  if (details.code.startsWith('c-crrm')) {
+  if (code.startsWith('c-crrm')) {
     const link = kpiBeforeAfter(details, 'number-of-interfering-links')
     parameters = {
       ...parameters,
