@@ -25,8 +25,7 @@ export interface VlanSettingInterface {
   selectedOptionOfSlot3?: string
   selectedOptionOfSlot4?: string
   switchFamilyModels?: SwitchModelPortData
-  trustedPorts: TrustedPort[],
-  throughSecondStep?: boolean
+  trustedPorts: TrustedPort[]
 }
 
 export function VlanPortsModal (props: {
@@ -46,8 +45,7 @@ export function VlanPortsModal (props: {
     useState<VlanSettingInterface>({
       family: '',
       model: '',
-      trustedPorts: [],
-      throughSecondStep: false
+      trustedPorts: []
     })
 
   useEffect(()=>{
@@ -86,7 +84,6 @@ export function VlanPortsModal (props: {
   const onSaveUntagged = async (data: any) => {
     setVlanSettingValues({
       ...vlanSettingValues,
-      throughSecondStep: true,
       switchFamilyModels: {
         ...vlanSettingValues.switchFamilyModels,
         ...data.switchFamilyModels,
@@ -123,14 +120,8 @@ export function VlanPortsModal (props: {
         enable: slot.enable,
         option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
       }))
-    switchFamilyModelsData.ports = data.switchFamilyModels.untaggedPorts.length +
-      data.switchFamilyModels.taggedPorts.length
-    switchFamilyModelsData.untaggedPorts = vlanSettingValues.throughSecondStep ?
-      data.switchFamilyModels.untaggedPorts.join(',') :
-      vlanSettingValues.switchFamilyModels?.untaggedPorts
-    switchFamilyModelsData.taggedPorts = vlanSettingValues.throughSecondStep ?
-      data.switchFamilyModels.taggedPorts.join(',') :
-      vlanSettingValues.switchFamilyModels?.taggedPorts
+    switchFamilyModelsData.untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
+    switchFamilyModelsData.taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
     onSave(switchFamilyModelsData)
   }
 

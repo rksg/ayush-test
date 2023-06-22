@@ -112,8 +112,11 @@ export const NetworkSegmentationDetailTableGroup = (
     },
     assignedSegments: {
       title: $t({ defaultMessage: 'Assigned Segments ({num})' },
-        { num: personaListTableQuery?.data?.data?.length??0 }),
-      content: <AssignedSegmentsTable tableQuery={personaListTableQuery}/>
+        { num: personaListTableQuery.data?.totalCount??0 }),
+      content: <AssignedSegmentsTable
+        switchInfo={nsgData?.distributionSwitchInfos}
+        tableQuery={personaListTableQuery}
+      />
     }
   }
 

@@ -8,7 +8,8 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 
 export function VenueLink (props: { venueId?: string, name?: string }) {
@@ -59,7 +60,7 @@ export function DpskPoolLink (props: { dpskPoolId?: string, name?: string }) {
       })}>
         {name ?? dpskPoolId}
       </TenantLink>
-      : <></>
+      : <>{noDataDisplay}</>
   )
 }
 
@@ -75,7 +76,7 @@ export function MacRegistrationPoolLink (props: { macRegistrationPoolId?: string
       })}>
         {name ?? macRegistrationPoolId}
       </TenantLink>
-      : <></>
+      : <>{noDataDisplay}</>
   )
 }
 
@@ -90,7 +91,7 @@ export function NetworkSegmentationLink (props: { nsgId?: string, name?: string 
       })}>
         {name ?? nsgId}
       </TenantLink>
-      : <></>
+      : <>{noDataDisplay}</>
   )
 }
 
@@ -103,7 +104,7 @@ export function PropertyUnitLink (props: { venueId?: string, unitId?: string, na
       >
         {name ?? unitId}
       </TenantLink>
-      : <></>
+      : <>{noDataDisplay}</>
   )
 }
 
