@@ -80,7 +80,7 @@ export function MacRegistrationListOverviewTab () {
                   </Col>
                   <Col span={6}>
                     <Form.Item
-                      label={$t({ defaultMessage: 'Access Policy Set' })}
+                      label={$t({ defaultMessage: 'Adaptive Policy Set' })}
                     >
                       <Paragraph>{policySetName}</Paragraph>
                     </Form.Item>

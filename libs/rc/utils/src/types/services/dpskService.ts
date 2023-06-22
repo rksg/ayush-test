@@ -22,6 +22,7 @@ export interface CreateDpskFormFields {
   deviceCountLimit?: number;
   policyDefaultAccess?: PolicyDefaultAccess;
   deviceNumberType?: DeviceNumberType;
+  policySetId?: string;
 }
 export interface DpskSaveData {
   id?: string;

@@ -18,15 +18,12 @@ import {
   getVersionLabel
 } from '../../FirmwareUtils'
 
-import * as UI from './styledComponents'
+import { filteredOtherActiveVersions, getDefaultActiveVersion } from './AdvancedUpdateNowDialog'
+import * as UI                                                  from './styledComponents'
+import { VersionsSelectMode }                                   from './UpdateNowDialog'
 
 import type { DatePickerProps }  from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
-
-enum VersionsSelectMode {
-  Radio,
-  Dropdown
-}
 
 export interface ChangeScheduleDialogProps {
   visible: boolean,
@@ -40,7 +37,6 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const [form] = useForm()
-  // eslint-disable-next-line max-len
   const { visible, onSubmit, onCancel, data, availableVersions } = props
   const [selectMode, setSelectMode] = useState(VersionsSelectMode.Radio)
   const [selectedVersion, setSelectedVersion] = useState('')
@@ -67,22 +63,13 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     }
   }, [selectMode, selectedVersion, selectedDate])
 
-  let versionOptions: FirmwareVersion[] = []
-  let otherVersions: FirmwareVersion[] = []
+  // eslint-disable-next-line max-len
+  const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
+  const otherVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
 
   const isRecommanded = (e: FirmwareVersion) => {
     return e.category === 'RECOMMENDED'
   }
-
-  let copyAvailableVersions = availableVersions ? [...availableVersions] : []
-  let firstIndex = copyAvailableVersions.findIndex(isRecommanded)
-  if (firstIndex > 0) {
-    let removed = copyAvailableVersions.splice(firstIndex, 1)
-    versionOptions = [...removed, ...copyAvailableVersions]
-  } else {
-    versionOptions = [...copyAvailableVersions]
-  }
-  otherVersions = copyAvailableVersions.slice(1)
 
   const onSelectModeChange = (e: RadioChangeEvent) => {
     setSelectMode(e.target.value)
@@ -91,9 +78,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const otherOptions = otherVersions.map((version) => {
     return {
       label: getVersionLabel(intl, version),
-      value: version.name,
-      title: '',
-      style: { fontSize: 12 }
+      value: version.name
     }
   })
 
@@ -101,7 +86,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     setSelectedVersion(value)
   }
 
-  const startDate = dayjs().endOf('day')
+  const startDate = dayjs(Date.now()).endOf('day')
   const endDate = startDate.add(21, 'day')
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
   // Can not select days before today and today
@@ -128,7 +113,6 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     return {
       date: selectedDate,
       time: selectedTime,
-      // eslint-disable-next-line max-len
       venues: (data as FirmwareVenue[]).map((row) => createVenuePayload(row))
     }
   }
@@ -174,9 +158,11 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
               onChange={onSelectModeChange}
               value={selectMode}>
               <Space direction={'vertical'}>
-                <Radio value={VersionsSelectMode.Radio}>
-                  {getVersionLabel(intl, versionOptions[0])}
-                </Radio>
+                {defaultActiveVersion &&
+                  <Radio value={VersionsSelectMode.Radio}>
+                    {getVersionLabel(intl, defaultActiveVersion)}
+                  </Radio>
+                }
                 { otherVersions.length > 0 ?
                   <UI.SelectDiv>
                     <Radio value={VersionsSelectMode.Dropdown}>
@@ -210,8 +196,6 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             <label>{$t({ defaultMessage: 'Update time:' })}</label>
             <Radio.Group
               style={{ margin: 12 }}
-              // eslint-disable-next-line max-len
-              // defaultValue={availableVersions && availableVersions[0] ? availableVersions[0].name : ''}
               onChange={onChangeRegular}
               value={selectedTime}>
               <Space direction={'vertical'}>
