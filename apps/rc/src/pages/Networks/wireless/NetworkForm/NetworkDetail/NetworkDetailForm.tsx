@@ -6,7 +6,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
   apNameRegExp,

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListQuery, useAdaptivePolicySetLisByQueryQuery,

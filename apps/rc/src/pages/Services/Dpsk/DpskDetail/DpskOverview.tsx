@@ -1,6 +1,6 @@
 import { Typography } from 'antd'
 
-import { Card, GridRow, GridCol } from '@acx-ui/components'
+import { Card, GridRow, GridCol }     from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,

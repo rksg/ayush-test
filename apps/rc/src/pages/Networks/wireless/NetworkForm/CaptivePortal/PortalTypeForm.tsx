@@ -9,7 +9,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy }     from '@acx-ui/components'
-import { Features, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }            from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'

@@ -4,7 +4,7 @@ import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
 import { Modal, ModalType, SelectionControl } from '@acx-ui/components'
-import { Features, useIsTierAllowed }             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector }             from '@acx-ui/rc/components'
 import {
   useAdaptivePolicySetListQuery,

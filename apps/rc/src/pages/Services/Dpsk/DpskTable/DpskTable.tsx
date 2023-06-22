@@ -7,7 +7,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {

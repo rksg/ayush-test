@@ -8,9 +8,9 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
+import { StepsFormLegacy, Tooltip }   from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages }                      from '@acx-ui/rc/utils'
+import { WifiNetworkMessages }        from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'

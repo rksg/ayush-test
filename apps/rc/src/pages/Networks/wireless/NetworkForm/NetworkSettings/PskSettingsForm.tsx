@@ -18,7 +18,7 @@ import {
   PasswordInput
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }                         from '@acx-ui/icons'
+import { InformationSolid }           from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,

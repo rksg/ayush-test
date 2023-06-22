@@ -10,7 +10,7 @@ import { FormFinishInfo }     from 'rc-field-form/lib/FormContext'
 import { useIntl }            from 'react-intl'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Subtitle, Tabs } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                               from '@acx-ui/feature-toggle'
 import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,

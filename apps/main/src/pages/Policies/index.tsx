@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader }                 from '@acx-ui/components'
+import { Loader }                     from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { Outlet }                 from '@acx-ui/react-router-dom'
+import { Outlet }                     from '@acx-ui/react-router-dom'
 
 
 function Policies () {

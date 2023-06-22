@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs, PageHeader }                      from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                 from '@acx-ui/user'
+import { Tabs, PageHeader }                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                    from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'

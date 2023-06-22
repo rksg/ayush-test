@@ -11,7 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
 import {

@@ -5,7 +5,7 @@ import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { StepsFormLegacy, Subtitle }                                           from '@acx-ui/components'
-import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
 import { useMacRegListsQuery, useVenuesListQuery }                             from '@acx-ui/rc/services'
 import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'

@@ -3,9 +3,9 @@ import React from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PasswordInput }                            from '@acx-ui/components'
+import { PasswordInput }              from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery }                      from '@acx-ui/rc/services'
+import { useMacRegListsQuery }        from '@acx-ui/rc/services'
 import {
   AaaServerTypeEnum,
   NetworkSaveData,

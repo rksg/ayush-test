@@ -11,7 +11,7 @@ import {
   showToast
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }      from '@acx-ui/rc/components'
+import { SimpleListTooltip }          from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegListMutation,

@@ -13,7 +13,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { useParams }                 from 'react-router-dom'
 
 import { Tooltip, PasswordInput }                     from '@acx-ui/components'
-import { Features, useIsTierAllowed }                     from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector, PhoneInput }         from '@acx-ui/rc/components'
 import { useGetDpskPassphraseQuery, useGetDpskQuery } from '@acx-ui/rc/services'
 import {

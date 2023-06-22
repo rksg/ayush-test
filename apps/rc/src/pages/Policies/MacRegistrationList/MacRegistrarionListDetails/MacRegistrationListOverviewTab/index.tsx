@@ -4,8 +4,8 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Card, Loader }              from '@acx-ui/components'
-import { Features, useIsTierAllowed }    from '@acx-ui/feature-toggle'
+import { Card, Loader }               from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetMacRegListQuery,
   useLazyGetAdaptivePolicySetQuery

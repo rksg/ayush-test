@@ -9,7 +9,7 @@ import {
 import { FormattedMessage } from 'react-intl'
 
 import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'

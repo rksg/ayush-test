@@ -3,7 +3,7 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
 import {
   useGetAdaptivePolicySetQuery,
   useGetDpskListQuery,
