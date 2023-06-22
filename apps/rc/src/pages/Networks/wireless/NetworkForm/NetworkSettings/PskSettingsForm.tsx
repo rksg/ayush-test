@@ -17,7 +17,7 @@ import {
   Tooltip,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { InformationSolid }                         from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
@@ -187,7 +187,7 @@ function SettingsForm () {
     }
   },[data])
 
-  const disablePolicies = !useIsSplitOn(Features.POLICIES)
+  const disablePolicies = !useIsTierAllowed(Features.CLOUDPATH_BETA)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (

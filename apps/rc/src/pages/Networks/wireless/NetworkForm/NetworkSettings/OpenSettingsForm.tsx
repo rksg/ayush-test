@@ -9,7 +9,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { WifiNetworkMessages }                      from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -83,7 +83,7 @@ function SettingsForm () {
   useEffect(()=>{
     form.setFieldsValue(data)
   },[data])
-  const disablePolicies = !useIsSplitOn(Features.POLICIES)
+  const disablePolicies = !useIsTierAllowed(Features.CLOUDPATH_BETA)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (

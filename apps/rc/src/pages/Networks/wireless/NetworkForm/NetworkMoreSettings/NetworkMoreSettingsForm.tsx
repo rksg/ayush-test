@@ -15,7 +15,7 @@ import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Tooltip }                                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                                from '@acx-ui/feature-toggle'
 import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                                    from '@acx-ui/utils'
@@ -237,7 +237,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch disabled={!useIsSplitOn(Features.POLICIES) || enableVxLan}/>}
+              children={<Switch disabled={!useIsTierAllowed(Features.CLOUDPATH_BETA) || enableVxLan}/>}
             />
           </UI.FieldLabel>
 
