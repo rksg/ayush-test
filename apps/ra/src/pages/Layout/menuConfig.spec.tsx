@@ -53,7 +53,7 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig())
     expect(result.current).toHaveLength(4)
   })
-  it('should return an empty array of menu items for empty/no user permission', () => {
+  it('should return only admin schedules array for empty/no user permission', () => {
     const mockUseUserProfileContext = useUserProfileContext as jest.Mock
     const mockUserProfile = {
       data: {
@@ -72,7 +72,7 @@ describe('useMenuConfig', () => {
     }
     mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     const { result } = renderHook(() => useMenuConfig())
-    expect(result.current).toHaveLength(0)
+    expect(result.current).toHaveLength(1)
   })
   it('should not return analytics related menu', () => {
     const mockUseUserProfileContext = useUserProfileContext as jest.Mock

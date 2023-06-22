@@ -29,7 +29,6 @@ export function useMenuConfig () {
     // Hardcoded to current account for now
     (tenent : Tenant) => tenent.id === userProfile?.accountId
   )[0].permissions
-
   const hasViewAnalyticsPermissions = currentAccountPermissions?.[PERMISSION_VIEW_ANALYTICS]
   const hasManageRecommendationPermission =
     currentAccountPermissions?.[PERMISSION_MANAGE_CONFIG_RECOMMENDATION]
@@ -130,17 +129,17 @@ export function useMenuConfig () {
         }
       ]
       : []),
-    ...(hasManageMlisaPermission
-      ? [
+    {
+      label: $t({ defaultMessage: 'Administration' }),
+      inactiveIcon: AdminOutlined,
+      activeIcon: AdminSolid,
+      children: [
         {
-          label: $t({ defaultMessage: 'Administration' }),
-          inactiveIcon: AdminOutlined,
-          activeIcon: AdminSolid,
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Account Management' }),
           children: [
-            {
-              type: 'group' as const,
-              label: $t({ defaultMessage: 'Account Management' }),
-              children: [
+            ...(hasManageMlisaPermission
+              ? [
                 {
                   uri: '/admin/onboardedSystems',
                   label: $t({ defaultMessage: 'Onboarded Systems' })
@@ -160,26 +159,24 @@ export function useMenuConfig () {
                 {
                   uri: '/admin/license',
                   label: $t({ defaultMessage: 'Licenses' })
-                },
+                }]: []),
 
+            {
+              uri: '/admin/schedules',
+              label: $t({ defaultMessage: 'Schedules' })
+            },
+            ...(hasViewAnalyticsPermissions
+              ? [
                 {
-                  uri: '/admin/schedules',
-                  label: $t({ defaultMessage: 'Schedules' })
-                },
-                ...(hasViewAnalyticsPermissions
-                  ? [
-                    {
-                      uri: '/admin/webhooks',
-                      label: $t({ defaultMessage: 'Webhooks' })
-                    }
-                  ]
-                  : [])
+                  uri: '/admin/webhooks',
+                  label: $t({ defaultMessage: 'Webhooks' })
+                }
               ]
-            }
+              : [])
           ]
         }
       ]
-      : [])
+    }
   ]
   return config
 }
