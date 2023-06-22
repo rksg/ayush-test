@@ -10,7 +10,7 @@ import {
   Loader,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -43,7 +43,7 @@ export default function MacRegistrationListsTable () {
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
 
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const filter = {
     filterKey: 'name',

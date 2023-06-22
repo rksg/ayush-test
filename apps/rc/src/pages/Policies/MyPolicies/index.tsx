@@ -97,7 +97,7 @@ function useCardData (): CardDataProps[] {
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const adaptivePolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const attributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
 
   return [

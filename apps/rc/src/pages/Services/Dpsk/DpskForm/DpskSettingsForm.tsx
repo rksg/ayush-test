@@ -9,7 +9,7 @@ import {
 import { FormattedMessage } from 'react-intl'
 
 import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -141,7 +141,7 @@ function CloudpathFormItems () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
-  const isPolicyManagementEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const policySetId = Form.useWatch<string>('policySetId', form)
 
   const { policySetOptions } = useAdaptivePolicySetListQuery(

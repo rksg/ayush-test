@@ -26,7 +26,6 @@ export enum Features {
   NEW_API='acx-ui-new-api',
   WISPR_ENCRYPT_MAC_IP = 'acx-ui-wispr-encrypt-mac-ip-toggle',
   HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
-  POLICY_MANAGEMENT = 'policy-management-service-enabled',
   CONNECTION_METERING = 'connection-metering-enabled',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
   WIFI_EDA_GATEWAY = 'wifi-api-gateway-eda-toggle',

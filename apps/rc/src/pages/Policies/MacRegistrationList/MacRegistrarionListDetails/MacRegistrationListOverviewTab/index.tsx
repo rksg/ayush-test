@@ -5,7 +5,7 @@ import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
 import { Card, Loader }              from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }    from '@acx-ui/feature-toggle'
 import {
   useGetMacRegListQuery,
   useLazyGetAdaptivePolicySetQuery
@@ -25,7 +25,7 @@ export function MacRegistrationListOverviewTab () {
 
   const [ getAdaptivePolicySet ] = useLazyGetAdaptivePolicySetQuery()
 
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   useEffect(() => {
     if(policyEnabled && data?.policySetId) {

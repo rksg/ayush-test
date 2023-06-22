@@ -36,7 +36,7 @@ export default function SelectPolicyForm () {
     }
   }).data?.totalCount || 0
   const attributeGropuEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
-  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const adaptivePolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({

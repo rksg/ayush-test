@@ -440,7 +440,7 @@ function PolicyRoutes () {
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isAttributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
   // eslint-disable-next-line max-len
-  const isAdaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT) && isAttributeGroupEnabled
+  const isAdaptivePolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && isAttributeGroupEnabled
 
   return rootRoutes(
     <Route path=':tenantId/t'>
