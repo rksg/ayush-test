@@ -438,9 +438,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const isAttributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
-  // eslint-disable-next-line max-len
-  const isAdaptivePolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && isAttributeGroupEnabled
+  const isAdaptivePolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return rootRoutes(
     <Route path=':tenantId/t'>

@@ -97,8 +97,7 @@ function useCardData (): CardDataProps[] {
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const adaptivePolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const attributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
+  const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return [
     {
@@ -194,10 +193,10 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.ADAPTIVE_POLICY,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
-      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }, { skip: !adaptivePolicyEnabled || !attributeGroupEnabled }).data?.totalCount,
+      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
-      disabled: !adaptivePolicyEnabled || !attributeGroupEnabled
+      disabled: !cloudpathBetaEnabled
     }
   ]
 }

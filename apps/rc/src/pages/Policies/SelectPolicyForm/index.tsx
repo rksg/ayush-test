@@ -35,8 +35,7 @@ export default function SelectPolicyForm () {
       fields: ['id']
     }
   }).data?.totalCount || 0
-  const attributeGropuEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
-  const adaptivePolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -78,7 +77,7 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
   }
 
-  if(adaptivePolicyEnabled && attributeGropuEnabled) {
+  if(cloudpathBetaEnabled) {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 
