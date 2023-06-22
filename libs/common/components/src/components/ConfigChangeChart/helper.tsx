@@ -5,6 +5,7 @@ import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { TooltipWrapper }    from '../Chart/styledComponents'
@@ -123,6 +124,7 @@ export const draw = (
   boundary: { min: number, max: number },
   setBrushPositions: Dispatch<SetStateAction<{ actual: number[][], show: number[][] }>>
 ) => {
+  const { $t } = getIntl()
   if (!eChartsRef || !eChartsRef.current) return
   const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
 
@@ -185,7 +187,9 @@ export const draw = (
                     slient: true,
                     invisible: width <= 0,
                     style: {
-                      text: index === 0 ? 'BEFORE' : 'AFTER',
+                      text: index === 0
+                        ? $t({ defaultMessage: 'BEFORE' })
+                        : $t({ defaultMessage: 'AFTER' }),
                       fill: cssStr('--acx-accents-blue-50'),
                       fontSize: cssNumber('--acx-body-6-font-size'),
                       fontWeight: cssNumber('--acx-body-font-weight-bold')
