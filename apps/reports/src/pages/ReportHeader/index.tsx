@@ -1,6 +1,6 @@
-import { PageHeader }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
-import { PageHeaderExtra, ReportType } from '@acx-ui/reports/components'
+import { PageHeader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { usePageHeaderExtra, ReportType } from '@acx-ui/reports/components'
 
 export function ReportHeader (props: {
   name: string,
@@ -14,6 +14,7 @@ export function ReportHeader (props: {
   } = props
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
+  const pageHeaderExtra = usePageHeaderExtra(type)
   return (
     <PageHeader
       title={name}
@@ -24,7 +25,7 @@ export function ReportHeader (props: {
         ] : [
           { text: 'Reports', link: '/reports' }
         ]}
-      extra={showFilter && PageHeaderExtra(type)}
+      extra={showFilter && pageHeaderExtra}
       footer={props.footer && props.footer}
       footerSpacer={false}
     />

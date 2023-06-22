@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink }      from '@acx-ui/react-router-dom'
-import { EmbeddedReport, PageHeaderExtra } from '@acx-ui/reports/components'
-import { ReportType }                      from '@acx-ui/reports/components'
-import { filterByAccess }                  from '@acx-ui/user'
+import { PageHeader, Tabs }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
+import { EmbeddedReport, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { ReportType }                         from '@acx-ui/reports/components'
+import { filterByAccess }                     from '@acx-ui/user'
 
 import useSwitchesTable from './SwitchesTable'
 
@@ -41,7 +41,7 @@ const useTabs = () : SwitchTab[] => {
       reportName={ReportType.WIRED}
       hideHeader={false}
     />,
-    headerExtra: PageHeaderExtra(ReportType.WIRED)
+    headerExtra: usePageHeaderExtra(ReportType.WIRED)
   }
   return [
     listTab,

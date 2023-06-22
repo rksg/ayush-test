@@ -9,7 +9,7 @@ import { ClientDualTable, ClientTabContext, defaultClientPayload } from '@acx-ui
 import { useGetClientListQuery, useGetGuestsListQuery }            from '@acx-ui/rc/services'
 import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
-import { EmbeddedReport, PageHeaderExtra }                         from '@acx-ui/reports/components'
+import { EmbeddedReport, usePageHeaderExtra }                      from '@acx-ui/reports/components'
 import { ReportType }                                              from '@acx-ui/reports/components'
 import { filterByAccess }                                          from '@acx-ui/user'
 import { DateRange, getDateRangeFilter }                           from '@acx-ui/utils'
@@ -135,7 +135,7 @@ const useTabs = () : WirelessTab[] => {
       reportName={ReportType.CLIENT}
       hideHeader={false}
     />,
-    headerExtra: PageHeaderExtra(ReportType.CLIENT)
+    headerExtra: usePageHeaderExtra(ReportType.CLIENT)
   }
   return [
     clientsTab,

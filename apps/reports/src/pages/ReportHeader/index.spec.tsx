@@ -1,4 +1,5 @@
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { ReportType }     from '@acx-ui/reports/components'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -14,7 +15,7 @@ describe('Report Header', () => {
 
   it('should render the report header', async () => {
     render(<Provider>
-      <ReportHeader name={'Some Report'} mode='none'/>
+      <ReportHeader name={'Some Report'} type={ReportType.ACCESS_POINT}/>
     </Provider>, { route: { params } })
     expect(await screen.findByText('Some Report')).toBeTruthy()
   })
@@ -22,7 +23,7 @@ describe('Report Header', () => {
   it('should render breadcrumb correctly when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
-      <ReportHeader name={'Some Report'} mode='none'/>
+      <ReportHeader name={'Some Report'} type={ReportType.ACCESS_POINT}/>
     </Provider>, { route: { params } })
     expect(await screen.findByText('Business Insights')).toBeVisible()
     expect(screen.getByRole('link', {
@@ -33,7 +34,7 @@ describe('Report Header', () => {
   it('should render the report header with footer', async () => {
     const footer = <div>Footer component</div>
     render(<Provider>
-      <ReportHeader name={'Some Report'} footer={footer}/>
+      <ReportHeader name={'Some Report'} footer={footer} type={ReportType.ACCESS_POINT}/>
     </Provider>, { route: { params } })
     expect(await screen.findByText('Footer component')).toBeTruthy()
   })

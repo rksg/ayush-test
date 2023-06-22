@@ -10,7 +10,7 @@ import { useDateFilter }    from '@acx-ui/utils'
 
 import { ReportType, reportModeMapping, bandDisabledReports } from '../mapping/reportsMapping'
 
-export function PageHeaderExtra (type: ReportType) {
+export function usePageHeaderExtra (type: ReportType) {
   const { $t } = useIntl()
   const mode = reportModeMapping[type] || 'both'
   const isRadioBandDisabled = bandDisabledReports.includes(type) || false
@@ -35,8 +35,7 @@ export function PageHeaderExtra (type: ReportType) {
     setIsLoaded(true)
   },[])
 
-  return <>
-    [
+  return [
     <NetworkFilter
       key='reports-network-filter'
       shouldQuerySwitch={shouldQuerySwitch}
@@ -54,6 +53,5 @@ export function PageHeaderExtra (type: ReportType) {
       showTimePicker
       selectionType={range}
     />
-    ]
-  </>
+  ]
 }

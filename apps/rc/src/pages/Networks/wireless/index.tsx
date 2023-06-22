@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink }      from '@acx-ui/react-router-dom'
-import { EmbeddedReport, PageHeaderExtra } from '@acx-ui/reports/components'
-import { ReportType }                      from '@acx-ui/reports/components'
-import { filterByAccess }                  from '@acx-ui/user'
+import { PageHeader, Tabs }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
+import { EmbeddedReport, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { ReportType }                         from '@acx-ui/reports/components'
+import { filterByAccess }                     from '@acx-ui/user'
 
 import useNetworksTable from './NetworksTable'
 
@@ -43,7 +43,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.WLAN}
       hideHeader={false}
     />,
-    headerExtra: PageHeaderExtra(ReportType.WLAN)
+    headerExtra: usePageHeaderExtra(ReportType.WLAN)
   }
   const applicationsReportTab = {
     key: NetworkTabsEnum.APPLICATIONS_REPORT,
@@ -52,7 +52,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.APPLICATION}
       hideHeader={false}
     />,
-    headerExtra: PageHeaderExtra(ReportType.APPLICATION)
+    headerExtra: usePageHeaderExtra(ReportType.APPLICATION)
   }
   const wirelessReportTab = {
     key: NetworkTabsEnum.WIRELESS_REPORT,
@@ -61,7 +61,7 @@ const useTabs = () : NetworkTab[] => {
       reportName={ReportType.WIRELESS}
       hideHeader={false}
     />,
-    headerExtra: PageHeaderExtra(ReportType.WIRELESS)
+    headerExtra: usePageHeaderExtra(ReportType.WIRELESS)
   }
   return [
     listTab,

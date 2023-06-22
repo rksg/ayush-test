@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink }      from '@acx-ui/react-router-dom'
-import { EmbeddedReport, PageHeaderExtra } from '@acx-ui/reports/components'
-import { ReportType }                      from '@acx-ui/reports/components'
-import { filterByAccess }                  from '@acx-ui/user'
+import { PageHeader, Tabs }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
+import { EmbeddedReport, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { ReportType }                         from '@acx-ui/reports/components'
+import { filterByAccess }                     from '@acx-ui/user'
 
 import useApsTable from './ApsTable'
 
@@ -42,7 +42,7 @@ const useTabs = () : WifiTab[] => {
       reportName={ReportType.ACCESS_POINT}
       hideHeader={false}
     />,
-    headerExtra: PageHeaderExtra(ReportType.ACCESS_POINT)
+    headerExtra: usePageHeaderExtra(ReportType.ACCESS_POINT)
   }
   const airtimeReportTab = {
     key: WifiTabsEnum.AIRTIME_REPORT,
@@ -51,7 +51,7 @@ const useTabs = () : WifiTab[] => {
       reportName={ReportType.AIRTIME_UTILIZATION}
       hideHeader={false}
     />,
-    headerExtra: PageHeaderExtra(ReportType.AIRTIME_UTILIZATION)
+    headerExtra: usePageHeaderExtra(ReportType.AIRTIME_UTILIZATION)
   }
   return [
     listTab,
