@@ -15,6 +15,10 @@ export const ValueDetails = styled.div`
   font-style: normal;
 `
 
+export const ValueDetailsWithIcon = styled.span`
+  vertical-align: middle;
+`
+
 export const DetailsWrapper = styled.div`
   height: 120px
 `
@@ -32,7 +36,7 @@ export const RecommendationTitle = styled.div`
 `
 
 export const RecommendationCardWrapper = styled.div`
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 `
 
 export const KpiTitle = styled.span`
@@ -42,8 +46,10 @@ export const KpiTitle = styled.span`
   font-size: 12px;
 `
 
-export const KpiInfoIcon = styled(InformationSolid)`
+export const RecommendationInfoIcon = styled(InformationSolid)`
   color: var(--acx-neutrals-30);
+  vertical-align: middle;
+  margin-left: 4px;
 `
 
 export const KpiLabel = styled.div`
@@ -57,8 +63,27 @@ export const StatusTrailDateLabel = styled.span`
   color: var(--acx-neutrals-50)
 `
 
-export const StatusTrailWrapper = styled.div`
+export const StatusTrailItemWrapper = styled.div`
   font-size: 12px;
   font-weight: 400;
-  line-height: 18px
+  line-height: 18px;
+`
+
+export const StatusTrailWrapper = styled.div`
+  height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+`
+
+export const RecommendationApImpacted = styled.div`
+  cursor: pointer;
+  border: none;
+  border-bottom: 1px dotted var(--acx-primary-black);
+`
+
+export const KpiContentWrapper = styled.div`
+  position: absolute;
+  top: 25%;
+  left: 30%;
+  text-align: center;
 `

@@ -11,6 +11,8 @@ import { DescriptionSection } from '@acx-ui/analytics/components'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import configRecommendations from './configRecommendations'
+import { statusTrailMsgs } from './configRecommendationData'
+import { RecommendationApImpacted } from './styledComponents'
 
 
 const getPriorityColor = (val: MessageDescriptor ) => {
@@ -70,7 +72,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     { label: $t({ defaultMessage: 'Date' }), children: formatter('calendarFormat')(moment(createdAt)) },
     { label: $t({ defaultMessage: 'Category' }), children: $t(category) },
     { label: $t({ defaultMessage: 'Venue' }), children: sliceValue },
-    { label: $t({ defaultMessage: 'Status' }), children: capitalize($t({ defaultMessage: '{status}'}, { status })) }
+    { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
   ]
 
   const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)
@@ -78,11 +80,11 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   if (hasAp && impactedApsQuery.data?.length) {
     const impactedApField = {
       label: $t({ defaultMessage: 'AP Impact Count' }),
-      children: <div onClick={() => setVisible(true)}>
+      children: <RecommendationApImpacted onClick={() => setVisible(true)}>
         {$t({ 
           defaultMessage: '{count} of {count} {count, plural, one {AP} other {APs}} ({percent})' }, 
           { count: impactedApsQuery.data.length, percent: formatter('percent')(100) })}
-      </div>
+      </RecommendationApImpacted>
     }
     fields.splice(2, 0, impactedApField)
   }

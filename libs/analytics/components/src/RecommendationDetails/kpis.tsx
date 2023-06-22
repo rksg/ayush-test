@@ -13,8 +13,9 @@ import {
   DetailsWrapper,
   RecommendationCardWrapper,
   KpiTitle,
-  KpiInfoIcon,
-  KpiLabel
+  RecommendationInfoIcon,
+  KpiLabel,
+  KpiContentWrapper
 } from './styledComponents'
 
 const kpiDelta = (
@@ -92,16 +93,18 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
   const { $t } = useIntl()
   const { tooltipContent, label, value } = kpi
   const infoIcon = tooltipContent
-    ? <Tooltip title={$t({ defaultMessage: '{tooltipContent}' }, { tooltipContent })}>
-      <KpiInfoIcon />
+    ? <Tooltip title={$t(tooltipContent, { br: <br /> })}>
+      <RecommendationInfoIcon />
     </Tooltip>
     : null
 
   return <RecommendationCardWrapper>
     <DetailsWrapper>
       <Card type='solid-bg'>
-        <KpiTitle>{label}{infoIcon}</KpiTitle>
-        <KpiLabel>{value}</KpiLabel>
+        <KpiContentWrapper>
+          <KpiTitle>{$t(label)}{infoIcon}</KpiTitle>
+          <KpiLabel>{value}</KpiLabel>
+        </KpiContentWrapper>
       </Card>
     </DetailsWrapper>
   </RecommendationCardWrapper>
@@ -110,10 +113,32 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
 export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const { kpis } = getKpis(details)
+  const { monitoring } = details
 
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indicators' })}</DetailsHeader>
     {kpis.map((kpi, ind) => <Kpi kpi={kpi} key={ind} />)}
+    {monitoring && <RecommendationCardWrapper>
+      <DetailsWrapper>
+        <Card type='solid-bg'>
+          <KpiContentWrapper>
+            {$t({ defaultMessage: 'Monitoring performance indicators' })}
+            <br />
+            {$t({ defaultMessage: 'until {datetime}' },
+              { datetime: formatter('calendarFormat')(monitoring.until) })}
+          </KpiContentWrapper>
+        </Card>
+      </DetailsWrapper>
+    </RecommendationCardWrapper>}
+    {!kpis.length && <RecommendationCardWrapper>
+      <DetailsWrapper>
+        <Card type='solid-bg'>
+          <KpiContentWrapper>
+            {$t({ defaultMessage: 'No performance indicators' })}
+          </KpiContentWrapper>
+        </Card>
+      </DetailsWrapper>
+    </RecommendationCardWrapper>}
     <StatusTrail details={details}/>
   </>
 }

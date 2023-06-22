@@ -4,17 +4,16 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { formatter } from '@acx-ui/formatter'
 
-import { compareVersion }       from './compareVersion'
-import configData, { CodeInfo } from './configRecommendationData'
+import { compareVersion }          from './compareVersion'
+import { states, codes, CodeInfo } from './configRecommendationData'
 
-const { states, codes } = configData
 
 type FormatterReturn = ReturnType<typeof formatter>
 
 type RecommendationKPIConfig = {
   key: string;
-  label: string;
-  tooltipContent?: string;
+  label: MessageDescriptor;
+  tooltipContent?: MessageDescriptor;
   format: FormatterReturn;
   deltaSign: '+' | '-' | 'none';
   displayRatio?: 0.5 | 1;
@@ -43,7 +42,7 @@ const bandbalancingEnable: RecommendationConfig = {
   tradeoffText: defineMessage({ defaultMessage: 'This feature requires Wi-Fi clients to have BTM capability. If there are legacy Wi-Fi clients with incorrect BTM implementation, such clients may have intermittent issues when connecting to Wi-Fi.' }),
   kpis: [{
     key: 'client-ratio',
-    label: 'Percentage of Clients on 2.4 GHz',
+    label: defineMessage({ defaultMessage: 'Percentage of Clients on 2.4 GHz' }),
     format: formatter('percentFormat'),
     deltaSign: '-'
   }]
@@ -58,8 +57,8 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'DFS channels share the spectrum with weather radar and other radar systems. RUCKUS APs have the capability to detect if there is a conflict and automatically move away from the channel if there is a conflict. This move may not be observable to most Wi-Fi end users. However, for users engaged in a live audio/video call or other real-time and low-latency applications, this move may cause temporary disruptions.' }),
     kpis: [{
       key: 'co-channel-interference',
-      label: 'Co-channel Interference',
-      tooltipContent: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
     }]
@@ -72,14 +71,12 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'Disabling DFS Channels will reduce number of available channels for the AP. In a deployment, if there are less available channels and more APs, AP may pick overlapping channels and may cause channel interference and hence inferior user experience.' }),
     kpis: [{
       key: 'avg-dfs-event-count',
-      label: 'Average DFS Events',
-      tooltipContent: '',
+      label: defineMessage({ defaultMessage: 'Average DFS Events' }),
       format: formatter('countFormat'),
       deltaSign: '-'
     }, {
       key: 'max-dfs-event-count',
-      label: 'Max DFS Events',
-      tooltipContent: '',
+      label: defineMessage({ defaultMessage: 'Max DFS Events' }),
       format: formatter('countFormat'),
       deltaSign: '-'
     }]
@@ -92,20 +89,18 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
     kpis: [{
       key: 'avg-ap-channel-change-count',
-      label: 'Average AP Channel Change Count',
-      tooltipContent: '',
+      label: defineMessage({ defaultMessage: 'Average AP Channel Change Count' }),
       format: formatter('countFormat'),
       deltaSign: '-'
     }, {
       key: 'max-ap-channel-change-count',
-      label: 'Max AP Channel Change Count',
-      tooltipContent: '',
+      label: defineMessage({ defaultMessage: 'Max AP Channel Change Count' }),
       format: formatter('countFormat'),
       deltaSign: '-'
     }, {
       key: 'co-channel-interference',
-      label: 'Co-channel Interference',
-      tooltipContent: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
     }]
@@ -118,20 +113,18 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'Though {recommendedValue} is an optimized timer value to scan the radio channels, it may not be needed for Wi-Fi network which is less volatile and has been stabilized over a period of time. However there is no significant overhead or trade-off if the value is kept at {recommendedValue}.' }),
     kpis: [{
       key: 'avg-ap-channel-change-count',
-      label: 'Average AP Channel Change Count',
-      tooltipContent: '',
+      label: defineMessage({ defaultMessage: 'Average AP Channel Change Count' }),
       format: formatter('countFormat'),
       deltaSign: '-'
     }, {
       key: 'max-ap-channel-change-count',
-      label: 'Max AP Channel Change Count',
-      tooltipContent: '',
+      label: defineMessage({ defaultMessage: 'Max AP Channel Change Count' }),
       format: formatter('countFormat'),
       deltaSign: '-'
     }, {
       key: 'co-channel-interference',
-      label: 'Co-channel Interference',
-      tooltipContent: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.',
+      label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+      tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
     }]
@@ -171,13 +164,13 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'Changing AP firmware version for a zone will cause all APs to reboot and there would be a some network downtime, hence it is recommended to take this action during off peak hours.{br}{br}If the zone has older AP models which does not support the the new AP firmware version, then upgrading the zone firmware will make those older APs unusable. Such older APs must be replaced with newer APs to ensure the right security fixes are available in the AP firmware.' }),
     kpis: [{
       key: 'aps-on-latest-fw-version',
-      label: 'APs on Latest Firmware Version',
+      label: defineMessage({ defaultMessage: 'APs on Latest Firmware Version' }),
       valueAccessor: ([x, y]: number[]) => x / y,
       valueFormatter: formatter('percentFormat'),
       deltaSign: '+',
       format: formatter('ratioFormat'),
       displayRatio: 1,
-      tooltipContent: 'Numbers could be delayed by up to 1 hour.',
+      tooltipContent: defineMessage({ defaultMessage: 'Numbers could be delayed by up to 1 hour.' }),
       showAps: true
     }]
   },
@@ -192,15 +185,14 @@ const configs: Record<string, RecommendationConfig> = {
     kpis: [
       {
         key: 'co-channel-interference',
-        label: 'Co-channel Interference',
-        tooltipContent: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.{br}This value is calculated for all radios.',
+        label: defineMessage({ defaultMessage: 'Co-channel Interference' }),
+        tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.{br}This value is calculated for all radios.' }),
         format: formatter('percentFormat'),
         deltaSign: '-'
       },
       {
         key: 'session-time-on-24GHz',
-        label: 'Session time on 2.4 GHz',
-        tooltipContent: '',
+        label: defineMessage({ defaultMessage: 'Session time on 2.4 GHz' }),
         format: formatter('percentFormat'),
         deltaSign: '-'
       }]
@@ -213,12 +205,12 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'Client may not have implemented BTM properly, leading to connectivity issues.' }),
     kpis: [{
       key: 'avg-ap-unique-client-count',
-      label: 'Average AP Unique Clients',
+      label: defineMessage({ defaultMessage: 'Average AP Unique Clients' }),
       format: formatter('countFormat'),
       deltaSign: 'none'
     }, {
       key: 'max-ap-unique-client-count',
-      label: 'Max AP Unique Clients',
+      label: defineMessage({ defaultMessage: 'Max AP Unique Clients' }),
       format: formatter('countFormat'),
       deltaSign: 'none'
     }]
@@ -231,13 +223,13 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'This feature requires Wi-Fi clients to have BTM capability. If there are legacy Wi-Fi clients with incorrect BTM implementation, such clients may have intermittent issues when connecting to Wi-Fi.' }),
     kpis: [{
       key: 'client-ratio',
-      label: 'Percentage of Clients on 2.4 GHz',
+      label: defineMessage({ defaultMessage: 'Percentage of Clients on 2.4 GHz' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
     }]
   },
   'c-crrm-channel24g-auto': {
-    valueFormatter: (val: unknown) => val as string,
+    valueFormatter: formatter('crrmFormat'),
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
@@ -245,14 +237,14 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection mode will be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
-      label: 'Number of Interfering Links',
+      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       displayRatio: 1,
       deltaSign: '-'
     }]
   },
   'c-crrm-channel5g-auto': {
-    valueFormatter: (val: unknown) => val as string,
+    valueFormatter: formatter('crrmFormat'),
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
@@ -260,14 +252,14 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection mode will be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
-      label: 'Number of Interfering Links',
+      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       displayRatio: 1,
       deltaSign: '-'
     }]
   },
   'c-crrm-channel6g-auto': {
-    valueFormatter: (val: unknown) => val as string,
+    valueFormatter: formatter('crrmFormat'),
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
     actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
@@ -275,7 +267,7 @@ const configs: Record<string, RecommendationConfig> = {
     tradeoffText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, and Auto Channel Selection mode will be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' }),
     kpis: [{
       key: 'number-of-interfering-links',
-      label: 'Number of Interfering Links',
+      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       displayRatio: 1,
       deltaSign: '-'

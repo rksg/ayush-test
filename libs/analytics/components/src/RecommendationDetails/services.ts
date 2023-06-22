@@ -1,15 +1,14 @@
-import { gql }               from 'graphql-request'
-import _, { get, snakeCase } from 'lodash'
-import moment                from 'moment-timezone'
-import { MessageDescriptor } from 'react-intl'
+import { gql }                   from 'graphql-request'
+import { chain, get, snakeCase } from 'lodash'
+import moment                    from 'moment-timezone'
+import { MessageDescriptor }     from 'react-intl'
 
 import { dataApiRecommendation } from '@acx-ui/store'
 import { NetworkPath }           from '@acx-ui/utils'
 
-import configData            from './configRecommendationData'
+import { states, codes }     from './configRecommendationData'
 import configRecommendations from './configRecommendations'
 
-const { states, codes } = configData
 
 type RecommendationsDetailsPayload = {
   id: string;
@@ -34,7 +33,7 @@ type RecommendationDetails = {
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
-  statusTrail: Array<{ status: string, createdAt: string }>;
+  statusTrail: Array<{ status: keyof typeof states, createdAt: string }>;
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -59,12 +58,12 @@ export type RecommendationAp = {
   version: string;
 }
 
-const getRecommendationStatus = (recommendation: RecommendationDetails) => _
-  .chain(recommendation.statusTrail)
-  .filter(item => ['new', 'applied', 'reverted'].includes(item.status))
-  .first()
-  .value()
-  .status
+const getRecommendationStatus = (recommendation: RecommendationDetails) =>
+  chain(recommendation.statusTrail)
+    .filter(item => ['new', 'applied', 'reverted'].includes(item.status))
+    .first()
+    .value()
+    .status
 
 const transformResponse = (details: RecommendationDetails): EnhancedRecommendation => {
   const {
@@ -98,7 +97,9 @@ const transformResponse = (details: RecommendationDetails): EnhancedRecommendati
 
 const kpiHelper = ({ code }: { code?: string }) => {
   if (!code) return ''
-  const data = code in configRecommendations ? configRecommendations[code] : null
+  const data = code in configRecommendations
+    ? configRecommendations[code as keyof typeof configRecommendations]
+    : null
   if (!data) return ''
   return get(data, ['kpis'])
     .map(kpi => {

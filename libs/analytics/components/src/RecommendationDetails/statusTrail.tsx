@@ -1,31 +1,32 @@
-import { capitalize } from 'lodash'
-import { useIntl }    from 'react-intl'
+import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { formatter } from '@acx-ui/formatter'
+import { GridCol, GridRow } from '@acx-ui/components'
+import { formatter }        from '@acx-ui/formatter'
 
-import configData                                                  from './configRecommendationData'
-import { EnhancedRecommendation }                                  from './services'
-import { DetailsHeader, StatusTrailDateLabel, StatusTrailWrapper } from './styledComponents'
+import { states, statusTrailMsgs }                                                         from './configRecommendationData'
+import { EnhancedRecommendation }                                                          from './services'
+import { DetailsHeader, StatusTrailDateLabel, StatusTrailItemWrapper, StatusTrailWrapper } from './styledComponents'
 
-const { states } = configData
 
-const trailFormatter = (trail: Array<{ status: string }>, trailIndex: number) => {
+
+
+const trailFormatter = (trail: Array<{ status: keyof typeof states }>, trailIndex: number) => {
   const set = trail.slice(trailIndex, trailIndex + 2)
   const patterns = [
     {
       pattern: [states.applied, states.revertScheduled],
-      replacement: `${states.applied} (Revert Canceled)`
+      replacement: defineMessage({ defaultMessage: 'Applied (Revert Canceled)' })
     },
     {
       pattern: [states.new, states.applyScheduled],
-      replacement: `${states.new} (Apply Canceled)`
+      replacement: defineMessage({ defaultMessage: 'New (Apply Canceled)' })
     }
   ]
   for (const { pattern, replacement } of patterns) {
     const matched = pattern.every((status, index) => status === set[index]?.status)
     if (matched) return replacement
   }
-  return trail[trailIndex].status
+  return statusTrailMsgs[trail[trailIndex].status]
 }
 
 const getStatusTrail = (details: EnhancedRecommendation) => {
@@ -36,12 +37,17 @@ const getStatusTrail = (details: EnhancedRecommendation) => {
   }))
 }
 
-const StatusTrailItem = ({ statusTrail }:
-  { statusTrail: EnhancedRecommendation['statusTrail'][0] }) => {
+const StatusTrailItem = ({ statusTrail, $t }:
+  { statusTrail: { status: MessageDescriptor, createdAt: string }, $t: IntlShape['$t'] }) => {
   const { status, createdAt } = statusTrail
-  return <StatusTrailWrapper>
-    <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel> {capitalize(status)}
-  </StatusTrailWrapper>
+  return <StatusTrailItemWrapper>
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
+        <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel>
+      </GridCol>
+      <GridCol col={{ span: 14 }}>{$t(status)}</GridCol>
+    </GridRow>
+  </StatusTrailItemWrapper>
 }
 
 export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) => {
@@ -49,6 +55,8 @@ export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) =>
   const statusTrail = getStatusTrail(details)
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>
-    {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind} />)}
+    <StatusTrailWrapper>
+      {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind} $t={$t} />)}
+    </StatusTrailWrapper>
   </>
 }

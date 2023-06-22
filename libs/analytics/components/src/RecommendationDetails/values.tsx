@@ -1,9 +1,11 @@
-import { chain }              from 'lodash'
+import { chain, snakeCase }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow } from '@acx-ui/components'
+import { impactedArea, nodeTypes }         from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
+import { NodeType }                        from '@acx-ui/utils'
 
-import configRecommendationsData  from './configRecommendationData'
+import { states }                 from './configRecommendationData'
 import configRecommendations      from './configRecommendations'
 import { EnhancedRecommendation } from './services'
 import {
@@ -12,10 +14,11 @@ import {
   DetailsWrapper,
   RecommendationTitle,
   RecommendationDivider,
-  RecommendationCardWrapper
+  RecommendationCardWrapper,
+  RecommendationInfoIcon,
+  ValueDetailsWithIcon
 } from './styledComponents'
 
-const { states } = configRecommendationsData
 
 const getValues = (details: EnhancedRecommendation) => {
   const {
@@ -41,25 +44,59 @@ const getValues = (details: EnhancedRecommendation) => {
   }
 }
 
+function extractBeforeAfter (value: EnhancedRecommendation['kpis']) {
+  const { current, previous, projected } = value!
+  const [before, after] = [previous, current, projected]
+    .filter(value => value !== null)
+  return [before, after]
+}
+
+const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
+  return configRecommendations[recommendation.code]
+    .kpis
+    .find(kpi => kpi.key === key)
+}
+
+const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: string) => {
+  const config = getKpiConfig(recommendation, key)
+  const prop = `kpi_${snakeCase(key)}`
+  const [before, after] = extractBeforeAfter(recommendation[prop])
+    .map(value => config!.format(value))
+  return { before, after }
+}
+
+
 const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
-  const metadata = chain(details.metadata).value()
+  const metadata = chain(details.metadata)
+    .toPairs()
+    .map(([key, value]) => [key, typeof value == 'string' ? value : value])
+    .fromPairs()
+    .value()
   const recommendationInfo = configRecommendations[details.code]
   const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
   const {
+    path,
+    sliceType,
     sliceValue,
     originalValue,
     currentValue,
     recommendedValue,
     appliedOnce
   } = details
-  let parameters = {
+  let parameters: Record<string, string | JSX.Element> = {
     ...metadata,
-    scope: sliceValue,
+    scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
     currentValue: appliedOnce ? valueFormatter(originalValue) : valueFormatter(currentValue),
     recommendedValue: valueFormatter(recommendedValue),
     br: <br />
   }
-
+  if (details.code.startsWith('c-crrm')) {
+    const link = kpiBeforeAfter(details, 'number-of-interfering-links')
+    parameters = {
+      ...parameters,
+      ...link
+    }
+  }
   return {
     actionText: $t(actionText, parameters),
     reasonText: $t(reasonText, parameters),
@@ -69,7 +106,9 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
 
 export const Values = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const { heading, appliedOnce, status, original, current, recommended } = getValues(details)
+  const {
+    heading, appliedOnce, status, original, current, recommended, tooltipContent
+  } = getValues(details)
   const applied = appliedOnce && status !== states.reverted
   const firstValue = applied ? original : current
   const firstLabel = applied
@@ -80,6 +119,12 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
     ? $t({ defaultMessage: 'Original Configuration' })
     : $t({ defaultMessage: 'Current Configuration' })
   const recommendationText = getRecommendationsText(details, $t)
+  const tooltipText = typeof tooltipContent === 'string'
+    ? tooltipContent
+    : typeof tooltipContent === 'undefined'
+      ? null
+      : $t(tooltipContent)
+
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
     <DetailsWrapper>
@@ -95,7 +140,14 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
             {secondLabel}
           </GridCol>
           <GridCol col={{ span: 12 }}>
-            <ValueDetails>{secondValue}</ValueDetails>
+            <ValueDetails>
+              <ValueDetailsWithIcon>
+                {secondValue}
+                {tooltipText && <Tooltip title={tooltipText}>
+                  <RecommendationInfoIcon />
+                </Tooltip>}
+              </ValueDetailsWithIcon>
+            </ValueDetails>
           </GridCol>
         </GridRow>
       </Card>
