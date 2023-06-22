@@ -258,13 +258,19 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   }
 
   // loadControlForm
-  if(get(data, 'totalUplinkLimited') === false) {
+  if(get(data, 'maxRate') === 'unlimited' ) {
     advancedCustomization.totalUplinkRateLimiting = 0
+    advancedCustomization.totalDownlinkRateLimiting = 0
+  } else {
+    if(get(data, 'totalUplinkLimited') === false) {
+      advancedCustomization.totalUplinkRateLimiting = 0
+    }
+
+    if(get(data, 'totalDownlinkLimited') === false) {
+      advancedCustomization.totalDownlinkRateLimiting = 0
+    }
   }
 
-  if(get(data, 'totalDownlinkLimited') === false) {
-    advancedCustomization.totalDownlinkRateLimiting = 0
-  }
   // accessControlForm
   if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
     advancedCustomization.devicePolicyId = null
