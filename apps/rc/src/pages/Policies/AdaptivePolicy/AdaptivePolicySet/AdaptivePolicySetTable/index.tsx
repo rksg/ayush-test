@@ -30,7 +30,7 @@ export default function AdaptivePolicySetTable () {
   const [assignedDpsks, setAssignedDpsks] = useState(new Map())
 
   const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetLisByQueryQuery,
