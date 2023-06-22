@@ -13,6 +13,7 @@ import {
   waitFor,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { ApDataContext }     from '..'
 import { ApEditContext }     from '../..'
 import { venueData, r760Ap } from '../../../../__tests__/fixtures'
 
@@ -44,9 +45,6 @@ describe('AP Directed Multicast', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        getUrlForTest(WifiUrlsInfo.getAp).replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(r760Ap))),
-      rest.get(
         getUrlForTest(CommonUrlsInfo.getVenue),
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
@@ -61,7 +59,9 @@ describe('AP Directed Multicast', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <DirectedMulticast />
+        <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <DirectedMulticast />
+        </ApDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
       })
@@ -88,7 +88,9 @@ describe('AP Directed Multicast', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <DirectedMulticast />
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <DirectedMulticast />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
@@ -132,7 +134,9 @@ describe('AP Directed Multicast', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <DirectedMulticast />
+          <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <DirectedMulticast />
+          </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
@@ -159,7 +163,9 @@ describe('AP Directed Multicast', () => {
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
     render(
       <Provider>
-        <DirectedMulticast />
+        <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <DirectedMulticast />
+        </ApDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
       })
