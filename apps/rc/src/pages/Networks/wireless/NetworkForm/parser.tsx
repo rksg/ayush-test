@@ -12,7 +12,8 @@ import {
   RfBandUsageEnum,
   PhyTypeConstraintEnum,
   NetworkVenue,
-  ClientIsolationVenue
+  ClientIsolationVenue,
+  ManagementFrameProtectionEnum
 } from '@acx-ui/rc/utils'
 
 import { hasVxLanTunnelProfile } from './utils'
@@ -56,12 +57,17 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     }
   }
 
+  const managementFrameProtection = (data.wlanSecurity === WlanSecurityEnum.WPA3)
+    ? ManagementFrameProtectionEnum.Required
+    : ManagementFrameProtectionEnum.Disabled
+
   if (editMode) {
     saveData = {
       ...saveData,
       ...{
         wlan: {
-          wlanSecurity: data.wlanSecurity
+          wlanSecurity: data.wlanSecurity,
+          managementFrameProtection
         }
       }
     }
@@ -75,7 +81,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
           bypassCNA: false,
           bypassCPUsingMacAddressAuthentication: false,
           enable: true,
-          managementFrameProtection: 'Disabled',
+          managementFrameProtection,
           vlanId: 1
         }
       }
