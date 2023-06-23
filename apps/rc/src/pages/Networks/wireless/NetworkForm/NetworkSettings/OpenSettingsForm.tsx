@@ -83,8 +83,7 @@ function SettingsForm () {
   useEffect(()=>{
     form.setFieldsValue(data)
   },[data])
-  const disablePolicies = !useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (
     <>
@@ -96,7 +95,7 @@ function SettingsForm () {
             <Form.Item noStyle
               name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'>
-              <Switch onChange={onMacAuthChange} disabled={editMode || disablePolicies}/>
+              <Switch onChange={onMacAuthChange} disabled={editMode || !isCloudpathBetaEnabled}/>
             </Form.Item>
             <span>{$t({ defaultMessage: 'MAC Authentication' })}</span>
             <Tooltip.Question
@@ -113,7 +112,7 @@ function SettingsForm () {
           >
             <Radio.Group disabled={editMode} defaultValue={!!isMacRegistrationList}>
               <Space direction='vertical'>
-                <Radio value={true} disabled={!macRegistrationEnabled}>
+                <Radio value={true} disabled={!isCloudpathBetaEnabled}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }
                 </Radio>
                 <Radio value={false}>
