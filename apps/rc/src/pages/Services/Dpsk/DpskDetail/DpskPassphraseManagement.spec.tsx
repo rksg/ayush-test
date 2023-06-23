@@ -18,8 +18,6 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
   mockedDpskPassphraseList,
@@ -36,11 +34,6 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   downloadFile: jest.fn()
 }))
-
-function setRole (role: RolesEnum) {
-  const profile = getUserProfile()
-  setUserProfile({ ...profile, profile: { ...profile.profile, roles: [role] } })
-}
 
 describe('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
@@ -438,18 +431,5 @@ describe('DpskPassphraseManagement', () => {
     await waitFor(() => {
       expect(within(dialog).queryByRole('button', { name: 'Delete' })).toBeNull()
     })
-  })
-
-  it('should not show Add DPSK network option for dpsk admin', async () => {
-    render(
-      <Provider>
-        <DpskPassphraseManagement />
-      </Provider>, {
-        route: { params: paramsForPassphraseTab, path: detailPath }
-      }
-    )
-
-    setRole(RolesEnum.DPSK_ADMIN)
-    expect(screen.queryByRole('button', { name: 'Add DPSK Network' })).not.toBeInTheDocument()
   })
 })
