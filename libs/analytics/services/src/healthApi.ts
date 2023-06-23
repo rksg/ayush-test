@@ -7,8 +7,8 @@ import {
   calculateGranularity,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { dataApi }                 from '@acx-ui/store'
-import { NetworkPath, PathFilter } from '@acx-ui/utils'
+import { dataApi }    from '@acx-ui/store'
+import { PathFilter } from '@acx-ui/utils'
 
 export interface KpiThresholdType {
   timeToConnect: number;
