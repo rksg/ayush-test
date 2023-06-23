@@ -21,10 +21,6 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
         authorizationKey: splitKey,
         key: tenantId
       },
-      urls: {
-        sdk: 'https://splitproxy.int.ruckus.cloud/api',
-        auth: 'https://splitproxy.int.ruckus.cloud/api'
-      },
       storage: {
         type: 'LOCALSTORAGE',
         prefix: 'ACX' + suffix
