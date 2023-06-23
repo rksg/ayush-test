@@ -14,7 +14,6 @@ export function ReportHeader (props: {
   } = props
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
-  const pageHeaderExtra = usePageHeaderExtra(type)
   return (
     <PageHeader
       title={name}
@@ -25,7 +24,7 @@ export function ReportHeader (props: {
         ] : [
           { text: 'Reports', link: '/reports' }
         ]}
-      extra={showFilter && pageHeaderExtra}
+      extra={usePageHeaderExtra(type, showFilter)}
       footer={props.footer && props.footer}
       footerSpacer={false}
     />

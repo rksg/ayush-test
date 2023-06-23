@@ -30,7 +30,7 @@ interface WirelessTab {
   url?: string,
   title: string,
   component: JSX.Element,
-  headerExtra?: JSX.Element | JSX.Element[]
+  headerExtra: JSX.Element[]
 }
 
 function isElementArray (data: JSX.Element | JSX.Element[]

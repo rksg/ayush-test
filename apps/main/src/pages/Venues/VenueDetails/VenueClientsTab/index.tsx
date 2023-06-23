@@ -21,6 +21,7 @@ export function VenueClientsTab () {
   const { activeSubTab, venueId } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
   const [ showIdx, setShowIdx ] = useState(0)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -34,8 +35,11 @@ export function VenueClientsTab () {
       defaultActiveKey='wifi'
       onChange={onTabChange}
       type='card'>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })}
-        key='wifi'>
+      <Tabs.TabPane tab={isNavbarEnhanced
+        ? $t({ defaultMessage: 'Wired' })
+        : $t({ defaultMessage: 'Wi-Fi' })
+      }
+      key='wifi'>
         <IconRadioGroup value={showIdx}
           buttonStyle='solid'
           size='small'
