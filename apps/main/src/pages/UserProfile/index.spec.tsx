@@ -19,7 +19,8 @@ const userProfile = {
   role: RolesEnum.ADMINISTRATOR,
   email: 'dog12@email.com',
   dateFormat: 'yyyy/mm/dd',
-  detailLevel: 'su'
+  detailLevel: 'su',
+  preferredLanguage: 'en-US'
 } as UserProfileInterface
 
 jest.mock('react-router-dom', () => ({

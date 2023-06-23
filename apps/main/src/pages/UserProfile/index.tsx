@@ -34,17 +34,15 @@ interface fromLoc {
 
 export function UserProfile () {
   const { $t } = useIntl()
-  const isI18n = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
+  const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
   const { Paragraph } = Typography
   const { tenantId } = useParams()
   const navigate = useNavigate()
-  const { data: userProfile, ...getReqState } = useUserProfileContext()
-  const [ updateUserProfile, updateReqState ] = useUpdateUserProfileMutation()
+  const { data: userProfile } = useUserProfileContext()
+  const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const location = useLocation().state as fromLoc
   const locale = useLocaleContext()
-  const isLoading = getReqState.isLoading || getReqState.isFetching
-    || updateReqState.isLoading
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
@@ -99,7 +97,6 @@ export function UserProfile () {
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
         onFinish={handleUpdateSettings}
         onCancel={async () => handleCancel()}
-        disabled={isLoading()}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
@@ -136,7 +133,7 @@ export function UserProfile () {
                   </Select>
                 }
               />
-              { isI18n && (
+              { isI18n2 && (
                 <PreferredLanguageFormItem />
               )}
             </Col>

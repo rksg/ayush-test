@@ -16,14 +16,10 @@ export interface UserProfileContextProps {
   hasRole: typeof hasRoles
   isPrimeAdmin: () => boolean
   locale: LocaleContextType
-  isLoading: () => boolean
-  isFetching: () => boolean
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
 const hasRole = hasRoles
-const isLoading = () => false
-const isFetching = () => false
 // eslint-disable-next-line max-len
 export const UserProfileContext = createContext<UserProfileContextProps>({} as UserProfileContextProps)
 export const useUserProfileContext = () => useContext(UserProfileContext)
@@ -44,7 +40,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   return <UserProfileContext.Provider
     value={{ data: profile, allowedOperations: allowedOperations || [], hasRole,
-      isPrimeAdmin, locale, isLoading, isFetching }}
+      isPrimeAdmin, locale }}
     children={props.children}
   />
 }
