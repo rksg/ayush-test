@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                   from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
-import { EmbeddedReport, usePageHeaderExtra } from '@acx-ui/reports/components'
-import { ReportType }                         from '@acx-ui/reports/components'
-import { filterByAccess }                     from '@acx-ui/user'
+import { PageHeader, Tabs }                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink }                     from '@acx-ui/react-router-dom'
+import { EmbeddedReport, ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { filterByAccess }                                 from '@acx-ui/user'
 
 import useNetworksTable from './NetworksTable'
 

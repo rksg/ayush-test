@@ -1,6 +1,6 @@
 import { PageHeader }                     from '@acx-ui/components'
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { usePageHeaderExtra, ReportType } from '@acx-ui/reports/components'
+import { ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 
 export function ReportHeader (props: {
   name: string,
