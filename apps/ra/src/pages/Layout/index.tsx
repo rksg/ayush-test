@@ -7,7 +7,6 @@ import {
   LayoutUI
 } from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
-// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   // HelpButton,
   UserButton,
@@ -22,7 +21,6 @@ import { useMenuConfig } from './menuConfig'
 function Layout () {
   const { $t } = useIntl()
   const params = useParams()
-  // const showMlisaTest = useIsSplitOn(Features.MLISA_TEST)
   const companyName = 'companyName'
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
