@@ -84,6 +84,9 @@ const userProfile =
 
 
 describe('ManageCustomer', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
   let params: { tenantId: string, mspEcTenantId: string }
   beforeEach(async () => {
     mockServer.use(
