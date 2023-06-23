@@ -65,8 +65,8 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
 
   const queryResults = useSummaryQuery(payload, {
     selectFromResult: ({ data, ...rest }) => {
-      const [ averageTtc ] = data?.avgTTC.hierarchyNode.incidentCharts.ttc || [null]
-      const [ successCount, totalCount ] = data?.timeSeries
+      const [ averageTtc ] = data?.network?.avgTTC.incidentCharts.ttc || [null]
+      const [ successCount, totalCount ] = data?.network?.timeSeries
         .connectionSuccessAndAttemptCount[0] || [null, null]
 
       const successPercentage = (

@@ -5,11 +5,11 @@ import { dataApi }          from '@acx-ui/store'
 import type { PathFilter }  from '@acx-ui/utils'
 
 export interface SummaryData {
-  timeSeries: {
-    connectionSuccessAndAttemptCount: [[number, number]]
-  }
-  avgTTC: {
-    hierarchyNode: {
+  network: {
+    timeSeries: {
+      connectionSuccessAndAttemptCount: [[number, number]]
+    }
+    avgTTC: {
       incidentCharts: {
         ttc: [number]
       }
@@ -35,18 +35,19 @@ export const api = dataApi.injectEndpoints({
           $granularity: String,
           $filter: FilterInput
           ) {
-            timeSeries(
-              path: $path,
-              start: $start,
-              end: $end,
-              granularity: $granularity
-            ) { connectionSuccessAndAttemptCount }
-            avgTTC: network(start: $start, end: $end, filter: $filter) {
-            hierarchyNode(path: $path) {
-              incidentCharts: timeSeries(granularity: $granularity) {
-                ttc: timeToConnect
+            network(start: $start, end: $end, filter: $filter) {
+              timeSeries(
+                path: $path,
+                start: $start,
+                end: $end,
+                granularity: $granularity
+              ) { connectionSuccessAndAttemptCount }
+              avgTTC: hierarchyNode(path: $path) {
+                incidentCharts: timeSeries(granularity: $granularity) {
+                  ttc: timeToConnect
+                }
               }
-            }}
+            }
           }`,
         variables: {
           ...payload,
