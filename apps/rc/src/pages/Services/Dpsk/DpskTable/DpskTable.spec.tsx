@@ -17,9 +17,12 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
 import DpskTable                                     from './DpskTable'
+
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -33,6 +36,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUseNavigate,
   useTenantLink: (): Path => mockedTenantPath
 }))
+
+function setRole (role: RolesEnum) {
+  const profile = getUserProfile()
+  setUserProfile({ ...profile, profile: { ...profile.profile, roles: [role] } })
+}
 
 describe('DpskTable', () => {
   const params = {
@@ -152,5 +160,20 @@ describe('DpskTable', () => {
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${dpskEditPath}`
     })
+  })
+
+  it('should render dpsk management title', async () => {
+    render(
+      <Provider>
+        <DpskTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    setRole(RolesEnum.DPSK_ADMIN)
+
+    expect(await screen.findByRole('button', { name: /Add DPSK Service/i })).toBeVisible()
+    expect(await screen.findAllByText('DPSK Management')).toHaveLength(1)
   })
 })
