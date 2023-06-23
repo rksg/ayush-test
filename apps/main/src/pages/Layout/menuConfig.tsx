@@ -36,11 +36,8 @@ export function useMenuConfig () {
 
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
-  const isPolicyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
-  const isRadiusClientEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isPersonaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -131,7 +128,7 @@ export function useMenuConfig () {
             }
           ]
         },
-        ...(isPersonaEnabled && isMacRegistrationEnabled ? [{
+        ...(isCloudpathBetaEnabled ? [{
           type: 'group' as const,
           label: $t({ defaultMessage: 'Persona Management' }),
           children: [
@@ -242,7 +239,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(isServiceEnabled || isPolicyEnabled ? [{
+    ...(isServiceEnabled || isCloudpathBetaEnabled ? [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -258,7 +255,7 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Service Catalog' })
           }
         ] : []),
-        ...(isPolicyEnabled
+        ...(isCloudpathBetaEnabled
           ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
           : [])
       ]
@@ -323,7 +320,7 @@ export function useMenuConfig () {
               uri: '/administration/onpremMigration',
               label: $t({ defaultMessage: 'ZD Migration' })
             }] : []),
-            ...(isRadiusClientEnabled ? [{
+            ...(isCloudpathBetaEnabled ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])

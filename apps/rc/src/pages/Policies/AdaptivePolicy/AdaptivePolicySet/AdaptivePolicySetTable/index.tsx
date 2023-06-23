@@ -29,7 +29,6 @@ export default function AdaptivePolicySetTable () {
   const [assignedMacPools, setAssignedMacPools] = useState(new Map())
   const [assignedDpsks, setAssignedDpsks] = useState(new Map())
 
-  const isMacRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const tableQuery = useTableQuery({
@@ -50,7 +49,7 @@ export default function AdaptivePolicySetTable () {
 
   const { data: macRegList, isLoading: getMacListLoading } = useMacRegListsQuery({
     payload: { pageSize: 10000 }
-  }, { skip: !isMacRegistrationEnabled })
+  }, { skip: !isCloudpathEnabled })
 
   const { data: dpskList, isLoading: getDpsksLoading } = useGetDpskListQuery({
     payload: { pageSize: 10000 }
