@@ -48,7 +48,7 @@ const filters: AnalyticsFilter = {
   filter: {}
 }
 
-describe('Incidents Page', () => {
+describe('Health Page', () => {
   beforeEach(()=>{
     store.dispatch(api.util.resetApiState())
   })
