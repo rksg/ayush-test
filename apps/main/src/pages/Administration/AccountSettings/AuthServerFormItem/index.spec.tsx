@@ -25,7 +25,7 @@ const tenantAuthenticationData = [
     name: 'test456',
     authenticationType: TenantAuthenticationType.saml,
     clientID: '456',
-    clientIDStatus: ApplicationAuthenticationStatus.REVOKE,
+    clientIDStatus: ApplicationAuthenticationStatus.REVOKED,
     clientSecret: 'secret456'
   }
 ]

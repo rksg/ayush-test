@@ -25,7 +25,7 @@ const tenantAuthenticationData = [
     name: 'test456',
     authenticationType: TenantAuthenticationType.ldap,
     clientID: '456',
-    clientIDStatus: ApplicationAuthenticationStatus.REVOKE,
+    clientIDStatus: ApplicationAuthenticationStatus.REVOKED,
     clientSecret: 'secret456'
   }
 ]
@@ -79,7 +79,7 @@ describe('App Token Form Item', () => {
     expect(screen.getByText('ACTIVE')).toBeVisible()
     expect(screen.getByText('123')).toBeVisible()
     expect(screen.getByText('test456')).toBeVisible()
-    expect(screen.getByText('REVOKE')).toBeVisible()
+    expect(screen.getByText('REVOKED')).toBeVisible()
     expect(screen.getByText('456')).toBeVisible()
   })
   it('should revoke active token correctly', async () => {
@@ -126,7 +126,7 @@ describe('App Token Form Item', () => {
       expect(screen.queryByText('Activate application "test456"?')).toBeNull()
     })
     // TODO: uncomment when activate functionality implemented
-    // expect(screen.queryByText('REVOKE')).toBeNull()
+    // expect(screen.queryByText('REVOKED')).toBeNull()
   })
   it('should show drawer when edit button clicked', async () => {
     render(

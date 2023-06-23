@@ -7,10 +7,12 @@ import { useIntl }               from 'react-intl'
 import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
 import { CsvSize }                                from '@acx-ui/rc/components'
 import {
+  useGetAdminListQuery,
   useDeleteTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {  TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
+import { useNavigate, useTenantLink, useParams }            from '@acx-ui/react-router-dom'
+// import { loadImageWithJWT }                                 from '@acx-ui/utils'
 
 import { SetupAzureDrawer } from './SetupAzureDrawer'
 import { ButtonWrapper }    from './styledComponents'
@@ -26,14 +28,18 @@ const sampleXml= '<?xml version=\'1.0\' encoding=\'UTF-8\'?> <md:EntityDescripto
 
 const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const { $t } = useIntl()
+  const params = useParams()
   const { tenantAuthenticationData } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [isEditMode, setEditMode] = useState(false)
+  const [xmlData, setXmlData] = useState('')
   const [hasSsoConfigured, setSsoConfigured] = useState(false)
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const navigate = useNavigate()
   const linkToAdministrators = useTenantLink('/administration/administrators')
+
+  const { data: adminList } = useGetAdminListQuery({ params })
 
   const [deleteTenantAuthentications]
   = useDeleteTenantAuthenticationsMutation()
@@ -82,19 +88,35 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                 <Button type='link'
                   key='deletesso'
                   onClick={() => {
-                    showActionModal({
-                      title: $t({ defaultMessage: 'Delete Azure AD SSO Service' }),
-                      type: 'confirm',
-                      customContent: {
-                        action: 'DELETE',
-                        entityName: $t({ defaultMessage: 'sso' }),
-                        // entityValue: name,
-                        confirmationText: $t({ defaultMessage: 'Delete' })
-                      },
-                      onOk: () =>
-                        deleteTenantAuthentications({ params: { authenticationId: authenticationData?.id } })
-                          .then() })
-
+                    const adminWithSso = adminList?.filter(n =>
+                      n.authenticationId !== undefined)
+                    if (adminWithSso?.length && adminWithSso.length > 0) {
+                      // eslint-disable-next-line max-len
+                      const msg = $t({ defaultMessage: 'You have {br} {numberOfAdmin} {admins} {br} set to authenticate through this 3rd party SSO service. Before you can delete the service, you will need to delete these admins or set them to authenticate through RUCKUS Identity Management.' }, {
+                        br: <b/>,
+                        numberOfAdmin: adminWithSso.length,
+                        admins: adminWithSso.length > 1 ? 'administrators' : 'administrator'
+                      })
+                      showActionModal({
+                        type: 'info',
+                        title: $t({ defaultMessage: 'Action Required' }),
+                        content: msg,
+                        okText: $t({ defaultMessage: 'Ok, I understand' })
+                      })
+                    } else {
+                      showActionModal({
+                        title: $t({ defaultMessage: 'Delete Azure AD SSO Service' }),
+                        type: 'confirm',
+                        customContent: {
+                          action: 'DELETE',
+                          entityName: $t({ defaultMessage: 'sso' }),
+                          // entityValue: name,
+                          confirmationText: $t({ defaultMessage: 'Delete' })
+                        },
+                        onOk: () =>
+                          deleteTenantAuthentications({ params: { authenticationId: authenticationData?.id } })
+                            .then() })
+                    }
                   }}>
                   {$t({ defaultMessage: 'Delete' })}
                 </Button>
@@ -103,15 +125,22 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
           }
         />
 
-        {hasSsoConfigured && <Col span={6}>
-          <Card type='solid-bg'>
+        {hasSsoConfigured && <Col style={{ width: '190px' }}>
+          <Card type='solid-bg' >
             <Form.Item
               colon={false}
               label={$t({ defaultMessage: 'IdP Metadata' })}
             />
             <div style={{ marginTop: '-10px' }}><Button type='link'
               key='viewxml'
-              onClick={() => {
+              onClick={async () => {
+                // const url = await loadImageWithJWT(authenticationData?.samlFileURL as string)
+                // await fetch(url)
+                //   .then((response) => response.text())
+                //   .then((text) => {
+                //     setXmlData(text)
+                //   })
+                setXmlData(sampleXml)
                 setModalVisible(true)
               }}>
               {$t({ defaultMessage: 'View XML code' })}
@@ -149,10 +178,9 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
     />}
     {modalVisible && <ViewXmlModal
       visible={modalVisible}
-      viewText={sampleXml}
+      viewText={xmlData}
       setVisible={setModalVisible}
     />}
-
   </>
   )
 }

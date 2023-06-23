@@ -39,11 +39,16 @@ export enum TenantAuthenticationType {
   saml = 'SAML',
   oauth2_client = 'OAUTH2_CLIENT_CREDENTIALS',
   oauth2_oidc = 'OAUTH2_OIDC',
-  ldap = 'LDAP',
+  ldap = 'LDAP'
+}
+
+export enum SamlFileType {
+  direct_url = 'DIRECT_URL',
+  file = 'FILE'
 }
 
 export enum ApplicationAuthenticationStatus {
-  REVOKE = 'REVOKE',
+  REVOKED = 'REVOKED',
   ACTIVE = 'ACTIVE'
 }
 
@@ -196,6 +201,7 @@ export interface TenantAuthentications {
   clientIDStatus?: string;
   clientSecret?: string;
   tokenURL?: string;
+  samlFileType?: string;
   samlFileURL?: string;
   authorizationURL?: string;
   tenant?: string;

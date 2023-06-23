@@ -4,7 +4,6 @@ import {
   FileTextOutlined,
   WarningOutlined
 } from '@ant-design/icons'
-// import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import {
   Form,
   Space,
@@ -23,28 +22,22 @@ import {
   useGetUploadURLMutation,
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
-import {  TenantAuthentications, TenantAuthenticationType, UploadUrlResponse } from '@acx-ui/rc/utils'
-// import { GuestErrorRes }                                                       from '@acx-ui/user'
+import {
+  TenantAuthentications,
+  TenantAuthenticationType,
+  // SamlFileType,
+  UploadUrlResponse
+} from '@acx-ui/rc/utils'
+// import { loadImageWithJWT } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-// type ImportErrorRes = {
-//   errors: {
-//     code: number
-//     description?: string
-//     message?: string
-//   }[],
-//   downloadUrl?: string
-//   txId: string
-// } | GuestErrorRes
 
 type AcceptableType = 'xml'
 
 interface ImportFileDrawerProps extends DrawerProps {
   maxSize: number
-  maxEntries?: number
+  maxEntries?:number
   isLoading?: boolean
-  // importError?: FetchBaseQueryError
   importRequest?: (formData: FormData, values: object, content?: string)=>void
   readAsText?: boolean,
   formDataName?: string,
@@ -97,6 +90,14 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     setFormData(undefined)
     setFileDescription('')
     setUploadFile(isEditMode)
+    // const fetchMetaData = async () => {
+    //   const url = await loadImageWithJWT(editData?.samlFileURL as string)
+    //   await fetch(url)
+    //     .then((response) => response.text())
+    //     .then((text) => {
+    //       setMetadata(text)
+    //     })
+    // }
     if (isEditMode) {
       const editFile = {
         uid: editData?.samlFileURL,
@@ -108,44 +109,9 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       setFile(editFile)
       setFileDescription(<Typography.Text><FileTextOutlined /> {editData?.name} </Typography.Text>)
       // TODO: setMetadata() to contents of file
+      // fetchMetaData()
     }
   }, [form, props.visible])
-
-  // useEffect(()=>{
-  //   const importErrorData = (importError?.data ?? {}) as object
-  //   if (Object.keys(importErrorData).length) {
-  //     const errorObj = importError?.data as ImportErrorRes
-  //     let errors, downloadUrl
-  //     let description = ''
-
-  //     if ('errors' in errorObj) {
-  //       errors = errorObj.errors
-  //       downloadUrl = errorObj.downloadUrl
-  //       description = errors[0].description || errors[0].message!
-  //     }
-  //     if ('error' in errorObj) { // narrowing to GuestErrorRes
-  //       errors = errorObj.error.rootCauseErrors
-  //       description = errors[0].message
-  //     }
-
-  //     setFormData(undefined)
-  //     setFileDescription(<>
-  //       { errors && <Typography.Text type='danger'><WarningOutlined /> {$t(
-  //         { defaultMessage: `{count, plural,
-  //             one {{description}}
-  //             other {{count} errors found.}
-  //         }` },
-  //         { count: errors.length, description }
-  //       )}</Typography.Text>}
-  //       { downloadUrl && <Typography.Link href={downloadUrl}
-  //         onClick={(e)=>{
-  //           e.stopPropagation()
-  //         }}>
-  //         {$t({ defaultMessage: 'See errors' })}
-  //       </Typography.Link>}
-  //     </>)
-  //   }
-  // }, [$t, importError])
 
   const beforeUpload = (file: File) => {
     let errorMsg = ''
@@ -210,14 +176,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           fileId: file.uid,
           data: uploadUrl.data
         }
-        // onAddEditFloorPlan(floorPlan, isEditMode)
-        // setOpen(false)
       })
-      // return {
-      //   fileName: file.name,
-      //   fileId: file.uid,
-      //   data: uploadUrl.data
-      // }
     }
     else return undefined
   }
@@ -238,6 +197,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         const ssoEditData: TenantAuthentications = {
           name: fileURL.fileName,
           authenticationType: TenantAuthenticationType.saml,
+          // samlFileType: SamlFileType.file,
           samlFileURL: fileURL.data.fileId
         }
         const result =
@@ -247,9 +207,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         }
       } else {
         const ssoData: TenantAuthentications = {
-          name: 'saml_user',
+          name: fileURL.fileName,
           authenticationType: TenantAuthenticationType.saml,
-          samlFileURL: 'my.xml'
+          // samlFileType: SamlFileType.file,
+          samlFileURL: fileURL.data.fileId
         }
         const result =
         await addSso({ payload: ssoData }).unwrap()

@@ -144,7 +144,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               const payload: TenantAuthentications = {
                 name: rows[0].name,
                 authenticationType: rows[0].authenticationType,
-                clientIDStatus: ApplicationAuthenticationStatus.REVOKE
+                clientIDStatus: ApplicationAuthenticationStatus.REVOKED
               }
               updateTenantAuthentications({ params: { authenticationId: rows[0].id },
                 payload: payload })
@@ -222,7 +222,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   return ( <>
     <Row gutter={24} style={{ marginBottom: '25px' }}>
-      <Col span={10}>
+      <Col span={12}>
         <Form.Item
           style={hasAppTokenConfigured ? { marginBottom: '-20px' } : { marginBottom: '10px' }}
           colon={false}

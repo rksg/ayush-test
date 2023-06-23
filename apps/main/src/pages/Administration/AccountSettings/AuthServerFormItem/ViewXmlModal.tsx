@@ -23,7 +23,7 @@ export const ViewXmlModal = (props: ViewXmlModalProps) =>{
     <Subtitle level={3}>{$t({ defaultMessage: 'IdP Metadata' })}</Subtitle>
     <Form.Item
       name='description'
-      children={<Input.TextArea defaultValue={viewText} rows={32} disabled={true}/>}
+      children={<Input.TextArea defaultValue={viewText} rows={32} readOnly/>}
     />
   </Form>
 

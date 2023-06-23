@@ -107,9 +107,6 @@ describe('Add Application Drawer', () => {
     await waitFor(() => {
       expect(screen.queryByText('Application Name must be at least 2 characters')).toBeNull()
     })
-    fireEvent.change(input, { target: { value: 'name!' } })
-    /* eslint-disable max-len */
-    expect(await screen.findByText('Cannot contain Exclamation mark(!), double quotes and space')).toBeVisible()
     fireEvent.change(input, { target: { value: '' } })
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     expect(await screen.findByText('Please enter Application Name')).toBeVisible()

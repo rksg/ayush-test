@@ -7,10 +7,8 @@ import {
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
-  excludeExclamationRegExp,
   excludeSpaceRegExp,
   notAllDigitsRegExp,
-  generateHexKey,
   TenantAuthentications,
   TenantAuthenticationType,
   ApplicationAuthenticationStatus
@@ -21,6 +19,16 @@ interface AddApplicationDrawerProps {
   isEditMode: boolean
   editData?: TenantAuthentications
   setVisible: (visible: boolean) => void
+}
+
+const generateHexKey = (keyLength: number):string => {
+  let hexKey = ''
+  const crypto = window.crypto
+  const array = new Uint32Array(1)
+  while (hexKey.length < keyLength) {
+    hexKey += crypto.getRandomValues(array)[0].toString(16).substring(2)
+  }
+  return hexKey.slice(0, keyLength)
 }
 
 export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
@@ -58,9 +66,8 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       }
 
       if(isEditMode) {
-        const id = form.getFieldValue('clientId')
         const result =
-        await updateApiToken({ params: { authenticationId: id },
+        await updateApiToken({ params: { authenticationId: editData?.id },
           payload: apiTokenEditData }).unwrap()
         if (result) {
         }
@@ -90,8 +97,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       rules={[
         { required: true },
         { min: 2 },
-        { max: 64 },
-        { validator: (_, value) => excludeExclamationRegExp(value) }
+        { max: 64 }
       ]}
       children={<Input />}
     />
@@ -117,7 +123,16 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       initialValue={editData?.clientSecret || ''}
       rules={[
         { required: true },
-        // { max: 64 },
+        { validator: (_, value) =>
+        {
+          if(value.length !== 32) {
+            return Promise.reject(
+              `${$t({ defaultMessage: 'Secret must be 32 characters long' })} `
+            )
+          }
+          return Promise.resolve()
+        }
+        },
         { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => notAllDigitsRegExp(value) }
       ]}
@@ -126,7 +141,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     <Button
       type='link'
       onClick={() => {
-        const sec = generateHexKey(30)
+        const sec = generateHexKey(32)
         form.setFieldValue('secret', sec)
       }}>
       {$t({ defaultMessage: 'Generate Secret' })}
