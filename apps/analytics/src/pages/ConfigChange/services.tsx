@@ -5,6 +5,15 @@ import type { ConfigChange } from '@acx-ui/components'
 import { dataApi }           from '@acx-ui/store'
 import { PathNode }          from '@acx-ui/utils'
 
+interface KpiChangesParams {
+  kpis: string[],
+  path: PathNode[],
+  beforeStart: string,
+  beforeEnd: string,
+  afterStart: string,
+  afterEnd: string
+}
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     configChange: build.query<
@@ -35,14 +44,7 @@ export const api = dataApi.injectEndpoints({
     }),
     configChangeKPIChanges: build.query<
       { before: Record<string, number>, after: Record<string, number> },
-      {
-        kpis: string[],
-        path: PathNode[],
-        beforeStart: string,
-        beforeEnd: string,
-        afterStart: string,
-        afterEnd: string
-      }
+      KpiChangesParams
     >({
       query: (variables) => ({
         variables: omit(variables, ['kpis']),
@@ -69,15 +71,6 @@ const {
   useConfigChangeQuery,
   useConfigChangeKPIChangesQuery
 } = api
-
-interface KpiChangesParams {
-  kpis: string[],
-  path: PathNode[],
-  beforeStart: string,
-  beforeEnd: string,
-  afterStart: string,
-  afterEnd: string
-}
 
 function useKPIChangesQuery (params: KpiChangesParams) {
   return useConfigChangeKPIChangesQuery(params,
