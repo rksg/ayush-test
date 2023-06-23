@@ -94,7 +94,6 @@ export default function MyPolicies () {
 function useCardData (): CardDataProps[] {
   const params = useParams()
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -129,10 +128,10 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.MAC_REGISTRATION_LIST,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
-      totalCount: useMacRegListsQuery({ params }, { skip: !macRegistrationEnabled }).data?.totalCount,
+      totalCount: useMacRegListsQuery({ params }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
-      disabled: !macRegistrationEnabled
+      disabled: !cloudpathBetaEnabled
     },
     {
       type: PolicyType.ROGUE_AP_DETECTION,
