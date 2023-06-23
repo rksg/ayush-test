@@ -78,10 +78,11 @@ export interface TableProps <RecordType>
       groupBy?: string | undefined
     ) => void
     iconButton?: IconButtonProps,
-    filterableWidth?: number
-    searchableWidth?: number
-    onDisplayRowChange?: (displayRows: RecordType[]) => void
-    getAllPagesData?: () => RecordType[]
+    filterableWidth?: number,
+    searchableWidth?: number,
+    onDisplayRowChange?: (displayRows: RecordType[]) => void,
+    getAllPagesData?: () => RecordType[],
+    forceShowHeader?: boolean
   }
 
 export interface TableHighlightFnArgs {
@@ -126,7 +127,7 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  onDisplayRowChange, ...props
+  onDisplayRowChange, forceShowHeader, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth } = props
   const rowKey = (props.rowKey ?? 'key')
@@ -292,6 +293,7 @@ function Table <RecordType extends Record<string, any>> ({
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected &&
     (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
+  const showHeader = hasHeader || forceShowHeader
   const selectAllRowSelection = {
     columnWidth: '45px',
     selections: [
@@ -441,7 +443,7 @@ function Table <RecordType extends Record<string, any>> ({
           : content
       })}
     </Space>}
-    {hasHeader && (
+    {showHeader && (
       <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
         <div>
           <Space size={12}>

@@ -8,8 +8,7 @@ import {
   getEdgeDonutChartData,
   getSwitchDonutChartData,
   getApStackedBarChartData,
-  getSwitchStackedBarChartData,
-  getEdgeStackedBarChartData
+  getSwitchStackedBarChartData
 } from '../DevicesWidget/helper'
 import { DevicesWidget, DevicesWidgetv2 } from '../DevicesWidget/index'
 
@@ -56,10 +55,8 @@ export function DevicesDashboardWidgetV2 () {
       data: {
         apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
         switchStackedData: getSwitchStackedBarChartData(data),
-        edgeStackedData: getEdgeStackedBarChartData(data?.summary?.edges),
         apTotalCount: data?.aps?.totalCount,
-        switchTotalCount: data?.switches?.totalCount,
-        edgeTotalCount: data?.summary?.edges?.totalCount
+        switchTotalCount: data?.switches?.totalCount
       },
       ...rest
     })
@@ -70,10 +67,8 @@ export function DevicesDashboardWidgetV2 () {
       <DevicesWidgetv2
         apStackedData={queryResults.data.apStackedData}
         switchStackedData={queryResults.data.switchStackedData}
-        edgeStackedData={queryResults.data.edgeStackedData}
         apTotalCount={queryResults.data.apTotalCount || 0}
         switchTotalCount={queryResults.data.switchTotalCount || 0}
-        edgeTotalCount={queryResults.data.edgeTotalCount || 0}
         enableArrowClick
       />
     </Loader>

@@ -6,7 +6,6 @@ import {
   Form,
   Input
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Modal }                from '@acx-ui/components'
@@ -111,7 +110,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
   const isLoading = isUpdateAdminUpdating
 
   // only msp ec can edit name
-  const isNameEditable = (isMspEc && isError === false && !_.isEmpty(mspEcAdmin)) ? true : false
+  const isNameEditable = isMspEc && isError === false ? true : false
 
   return (
     <Modal

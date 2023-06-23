@@ -5,9 +5,7 @@ import { store, Provider, userApi } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  renderHook,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -110,26 +108,5 @@ describe('UserProfileContext', () => {
     />, { wrapper, route })
 
     expect(await screen.findByText('false')).toBeVisible()
-  })
-
-  it('user profile undefined firstName/lastName', async () => {
-    const emptyNameProfile = {
-      ...mockedUserProfile,
-      firstName: undefined,
-      lastName: undefined
-    }
-
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(emptyNameProfile))
-      )
-    )
-
-    const { result } = renderHook(() => useUserProfileContext(), { wrapper, route })
-    await waitFor(() => {
-      expect(result.current.data?.fullName).toBe('')
-    })
-    expect(result.current.data?.initials).toBe(undefined)
   })
 })

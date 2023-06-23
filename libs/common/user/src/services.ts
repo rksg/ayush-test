@@ -172,13 +172,9 @@ export const {
     getUserProfile: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getUserProfile, params),
       transformResponse (userProfile: UserProfile) {
-        const { firstName, lastName } = userProfile
-        userProfile.fullName = ''
-
-        if (firstName && lastName) {
-          userProfile.initials = `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
-          userProfile.fullName = `${firstName} ${lastName}`
-        }
+        userProfile.initials =
+          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
         return userProfile
       },
       providesTags: ['UserProfile']

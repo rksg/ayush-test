@@ -2,12 +2,8 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { FetchBaseQueryError }            from '@reduxjs/toolkit/dist/query/react'
 import { Col, Form, Row, Select, Switch } from 'antd'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { PersonaGroupDrawer } from 'apps/rc/src/pages/Users/Persona/PersonaGroupDrawer'
-import { FormFinishInfo }     from 'rc-field-form/lib/FormContext'
-import { useIntl }            from 'react-intl'
+import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
+import { useIntl }                        from 'react-intl'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Subtitle, Tabs } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
@@ -32,8 +28,11 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 // FIXME: move this component to common folder.
-
-import { VenueEditContext } from '../index'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PersonaGroupLink } from '../../../../../../rc/src/pages/Users/Persona/LinkHelper'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PersonaGroupDrawer } from '../../../../../../rc/src/pages/Users/Persona/PersonaGroupDrawer'
+import { VenueEditContext }   from '../index'
 
 
 
