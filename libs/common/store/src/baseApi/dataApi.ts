@@ -1,10 +1,23 @@
 import { createApi }               from '@reduxjs/toolkit/query/react'
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
 
+import { get }           from '@acx-ui/config'
 import { getJwtHeaders } from '@acx-ui/utils'
 
-export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
-export const dataApiSearchURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/search`
+const getApiUrls = () => {
+  const r1ApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
+  const r1ApiSearchURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/search`
+  const raApiURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/analytics`
+  const raApiSearchURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/search`
+
+  const isRa = get('IS_MLISA_SA')
+  return {
+    dataApiURL: isRa ? raApiURL : r1ApiURL,
+    dataApiSearchURL: isRa ? raApiSearchURL : r1ApiSearchURL
+  }
+}
+
+export const { dataApiURL, dataApiSearchURL } = getApiUrls()
 
 // GraphQL queries are place in the context of their respective route/widget,
 // please refer to them in source folder under /apps/analytics/src

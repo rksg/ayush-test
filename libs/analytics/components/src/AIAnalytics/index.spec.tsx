@@ -12,10 +12,14 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
-  IncidentTabContent: () => <div data-testid='Incidents' />,
+jest.mock('../Header', () => ({
+  ...jest.requireActual('../Header'),
   useHeaderExtra: () => [ <div data-testid='HeaderExtra' /> ]
+}))
+
+jest.mock('../Incidents', () => ({
+  ...jest.requireActual('../Incidents'),
+  IncidentTabContent: () => <div data-testid='Incidents' />
 }))
 
 jest.mock('../ConfigChange', () => ({
