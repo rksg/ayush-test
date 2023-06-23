@@ -1069,7 +1069,8 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-12 cvwnRC"
+                              class="styledComponents__Wrapper-sc-1abm7iv-12 gXBDPk"
+                              style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
                             >
                               <div
                                 class="ant-pro-table"

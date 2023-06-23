@@ -355,7 +355,8 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                   Instances (0)
                 </h2>
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 dbQSib"
+                  style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
                 >
                   <div
                     class="ant-pro-table"

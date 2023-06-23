@@ -442,12 +442,25 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                       class="ant-table-container"
                                     >
                                       <div
-                                        class="ant-table-header ant-table-sticky-holder"
-                                        style="overflow: hidden; top: 18px;"
+                                        class="ant-table-content"
+                                        style="overflow-x: auto; overflow-y: hidden;"
                                       >
                                         <table
-                                          style="table-layout: fixed;"
+                                          style="min-width: 100%; table-layout: auto;"
                                         >
+                                          <colgroup>
+                                            <col
+                                              class="ant-table-selection-col"
+                                            />
+                                            <col />
+                                            <col />
+                                            <col />
+                                            <col />
+                                            <col />
+                                            <col
+                                              style="width: 32px;"
+                                            />
+                                          </colgroup>
                                           <thead
                                             class="ant-table-thead"
                                           >
@@ -814,7 +827,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                                 />
                                               </th>
                                               <th
-                                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky react-resizable"
+                                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                 style="position: sticky; right: 0px;"
                                               >
                                                 <div
@@ -826,28 +839,6 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </th>
                                             </tr>
                                           </thead>
-                                        </table>
-                                      </div>
-                                      <div
-                                        class="ant-table-body"
-                                        style="overflow-x: auto; overflow-y: hidden;"
-                                      >
-                                        <table
-                                          style="min-width: 100%; table-layout: auto;"
-                                        >
-                                          <colgroup>
-                                            <col
-                                              class="ant-table-selection-col"
-                                            />
-                                            <col />
-                                            <col />
-                                            <col />
-                                            <col />
-                                            <col />
-                                            <col
-                                              style="width: 32px;"
-                                            />
-                                          </colgroup>
                                           <tbody
                                             class="ant-table-tbody"
                                           >
@@ -1039,12 +1030,22 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                       class="ant-table-container"
                                     >
                                       <div
-                                        class="ant-table-header ant-table-sticky-holder"
-                                        style="overflow: hidden; top: 18px;"
+                                        class="ant-table-content"
+                                        style="overflow-x: auto; overflow-y: hidden;"
                                       >
                                         <table
-                                          style="table-layout: fixed;"
+                                          style="min-width: 100%; table-layout: auto;"
                                         >
+                                          <colgroup>
+                                            <col
+                                              class="ant-table-selection-col"
+                                            />
+                                            <col />
+                                            <col />
+                                            <col
+                                              style="width: 32px;"
+                                            />
+                                          </colgroup>
                                           <thead
                                             class="ant-table-thead"
                                           >
@@ -1214,7 +1215,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                                 />
                                               </th>
                                               <th
-                                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky react-resizable"
+                                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                 style="position: sticky; right: 0px;"
                                               >
                                                 <div
@@ -1226,25 +1227,6 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </th>
                                             </tr>
                                           </thead>
-                                        </table>
-                                      </div>
-                                      <div
-                                        class="ant-table-body"
-                                        style="overflow-x: auto; overflow-y: hidden;"
-                                      >
-                                        <table
-                                          style="min-width: 100%; table-layout: auto;"
-                                        >
-                                          <colgroup>
-                                            <col
-                                              class="ant-table-selection-col"
-                                            />
-                                            <col />
-                                            <col />
-                                            <col
-                                              style="width: 32px;"
-                                            />
-                                          </colgroup>
                                           <tbody
                                             class="ant-table-tbody"
                                           >
@@ -1408,12 +1390,23 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                       class="ant-table-container"
                                     >
                                       <div
-                                        class="ant-table-header ant-table-sticky-holder"
-                                        style="overflow: hidden; top: 18px;"
+                                        class="ant-table-content"
+                                        style="overflow-x: auto; overflow-y: hidden;"
                                       >
                                         <table
-                                          style="table-layout: fixed;"
+                                          style="min-width: 100%; table-layout: auto;"
                                         >
+                                          <colgroup>
+                                            <col
+                                              class="ant-table-selection-col"
+                                            />
+                                            <col />
+                                            <col />
+                                            <col />
+                                            <col
+                                              style="width: 32px;"
+                                            />
+                                          </colgroup>
                                           <thead
                                             class="ant-table-thead"
                                           >
@@ -1648,7 +1641,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                                 />
                                               </th>
                                               <th
-                                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky react-resizable"
+                                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                                 style="position: sticky; right: 0px;"
                                               >
                                                 <div
@@ -1660,26 +1653,6 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </th>
                                             </tr>
                                           </thead>
-                                        </table>
-                                      </div>
-                                      <div
-                                        class="ant-table-body"
-                                        style="overflow-x: auto; overflow-y: hidden;"
-                                      >
-                                        <table
-                                          style="min-width: 100%; table-layout: auto;"
-                                        >
-                                          <colgroup>
-                                            <col
-                                              class="ant-table-selection-col"
-                                            />
-                                            <col />
-                                            <col />
-                                            <col />
-                                            <col
-                                              style="width: 32px;"
-                                            />
-                                          </colgroup>
                                           <tbody
                                             class="ant-table-tbody"
                                           >

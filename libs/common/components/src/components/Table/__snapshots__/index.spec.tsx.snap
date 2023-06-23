@@ -399,13 +399,20 @@ exports[`Table component should render correctly 1`] = `
                     class="ant-table-container"
                   >
                     <div
-                      class="ant-table-header ant-table-sticky-holder"
-                      style="overflow: hidden; top: 0px;"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: fixed; visibility: hidden;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
-                        <colgroup />
+                        <colgroup>
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
+                          />
+                        </colgroup>
                         <thead
                           class="ant-table-thead"
                         >
@@ -446,7 +453,7 @@ exports[`Table component should render correctly 1`] = `
                               Address
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
@@ -456,23 +463,6 @@ exports[`Table component should render correctly 1`] = `
                             </th>
                           </tr>
                         </thead>
-                      </table>
-                    </div>
-                    <div
-                      class="ant-table-body"
-                      style="overflow-x: auto; overflow-y: hidden;"
-                    >
-                      <table
-                        style="min-width: 100%; table-layout: auto;"
-                      >
-                        <colgroup>
-                          <col />
-                          <col />
-                          <col />
-                          <col
-                            style="width: 32px;"
-                          />
-                        </colgroup>
                         <tbody
                           class="ant-table-tbody"
                         >
@@ -640,15 +630,21 @@ exports[`Table component should render multi select table and render action butt
                     class="ant-table-container"
                   >
                     <div
-                      class="ant-table-header ant-table-sticky-holder"
-                      style="overflow: hidden; top: 0px;"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: fixed; visibility: hidden;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
                           />
                         </colgroup>
                         <thead
@@ -719,7 +715,7 @@ exports[`Table component should render multi select table and render action butt
                               Address
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
@@ -729,26 +725,6 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                           </tr>
                         </thead>
-                      </table>
-                    </div>
-                    <div
-                      class="ant-table-body"
-                      style="overflow-x: auto; overflow-y: hidden;"
-                    >
-                      <table
-                        style="min-width: 100%; table-layout: auto;"
-                      >
-                        <colgroup>
-                          <col
-                            class="ant-table-selection-col"
-                          />
-                          <col />
-                          <col />
-                          <col />
-                          <col
-                            style="width: 32px;"
-                          />
-                        </colgroup>
                         <tbody
                           class="ant-table-tbody"
                         >
@@ -1088,15 +1064,21 @@ exports[`Table component should render multi select table and render action butt
                     class="ant-table-container"
                   >
                     <div
-                      class="ant-table-header ant-table-sticky-holder"
-                      style="overflow: hidden; top: 0px;"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: fixed; visibility: hidden;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
                           />
                         </colgroup>
                         <thead
@@ -1168,7 +1150,7 @@ exports[`Table component should render multi select table and render action butt
                               Address
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
@@ -1178,26 +1160,6 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                           </tr>
                         </thead>
-                      </table>
-                    </div>
-                    <div
-                      class="ant-table-body"
-                      style="overflow-x: auto; overflow-y: hidden;"
-                    >
-                      <table
-                        style="min-width: 100%; table-layout: auto;"
-                      >
-                        <colgroup>
-                          <col
-                            class="ant-table-selection-col"
-                          />
-                          <col />
-                          <col />
-                          <col />
-                          <col
-                            style="width: 32px;"
-                          />
-                        </colgroup>
                         <tbody
                           class="ant-table-tbody"
                         >
@@ -1434,15 +1396,21 @@ exports[`Table component should render multi select table and render action butt
                     class="ant-table-container"
                   >
                     <div
-                      class="ant-table-header ant-table-sticky-holder"
-                      style="overflow: hidden; top: 0px;"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: fixed; visibility: hidden;"
+                        style="min-width: 100%; table-layout: auto;"
                       >
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
+                          />
+                          <col />
+                          <col />
+                          <col />
+                          <col
+                            style="width: 32px;"
                           />
                         </colgroup>
                         <thead
@@ -1513,7 +1481,7 @@ exports[`Table component should render multi select table and render action butt
                               Address
                             </th>
                             <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first ant-table-cell-fix-sticky"
+                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                               data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
                             >
@@ -1523,26 +1491,6 @@ exports[`Table component should render multi select table and render action butt
                             </th>
                           </tr>
                         </thead>
-                      </table>
-                    </div>
-                    <div
-                      class="ant-table-body"
-                      style="overflow-x: auto; overflow-y: hidden;"
-                    >
-                      <table
-                        style="min-width: 100%; table-layout: auto;"
-                      >
-                        <colgroup>
-                          <col
-                            class="ant-table-selection-col"
-                          />
-                          <col />
-                          <col />
-                          <col />
-                          <col
-                            style="width: 32px;"
-                          />
-                        </colgroup>
                         <tbody
                           class="ant-table-tbody"
                         >

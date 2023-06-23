@@ -512,6 +512,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                         >
                           <div
                             class="styledComponents__Wrapper-sc-1abm7iv-12 jYwfQs"
+                            style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
                           >
                             <div
                               class="ant-pro-table"
