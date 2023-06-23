@@ -116,17 +116,14 @@ export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold
 
 export const healthApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    kpiTimeseries: build.query<
-      KPITimeseriesResponse, Omit<KpiPayload, 'range'> & { path?: NetworkPath }>({
-        query: (payload) => ({
-          document: gql`
+    kpiTimeseries: build.query<KPITimeseriesResponse, Omit<KpiPayload, 'range'>>({
+      query: (payload) => ({
+        document: gql`
         query timeseriesKPI(
-          $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $granularity: String,
-          $filter: FilterInput
+          $start: DateTime, $end: DateTime, $granularity: String, $filter: FilterInput
         ) {
           network(filter: $filter) {
             timeSeries: timeSeries(
-              path: $path
               start: $start
               end: $end
               granularity: $granularity
@@ -137,19 +134,19 @@ export const healthApi = dataApi.injectEndpoints({
           }
         }
       `,
-          variables: {
-            start: payload.startDate,
-            end: payload.endDate,
-            granularity: payload.granularity ||
-            getGranularity(payload.startDate, payload.endDate, payload.kpi),
-            ...getFilterPayload(payload)
-          }
-        }),
-        providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
-        transformResponse: (
-          response: TimeseriesResponse<KPITimeseriesResponse>
-        ) => response.network.timeSeries
+        variables: {
+          start: payload.startDate,
+          end: payload.endDate,
+          granularity: payload.granularity ||
+          getGranularity(payload.startDate, payload.endDate, payload.kpi),
+          ...getFilterPayload(payload)
+        }
       }),
+      providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
+      transformResponse: (
+        response: TimeseriesResponse<KPITimeseriesResponse>
+      ) => response.network.timeSeries
+    }),
     kpiHistogram: build.query<
       KPIHistogramResponse,
       KpiPayload
