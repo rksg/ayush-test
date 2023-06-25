@@ -585,14 +585,14 @@ describe('RogueAPDetectionForm', () => {
 
     await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
 
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByText('Scope'))
 
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
     await screen.findByText('test-venue2')
 
-    const finishBtn = await screen.findByRole('button', { name: 'Finish' })
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
 
-    await userEvent.click(finishBtn)
+    await userEvent.click(applyBtn)
   })
 })

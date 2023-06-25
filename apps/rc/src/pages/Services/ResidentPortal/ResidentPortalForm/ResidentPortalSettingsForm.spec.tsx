@@ -58,6 +58,10 @@ describe('ResidentPortal', () => {
 
     const helpInput = await screen.findByRole('textbox', { name: /Help Text/ })
     expect(helpInput).toHaveValue(mockedResidentPortal.uiConfiguration?.text.helpText)
+
+    const checkbox = await screen.findByRole('switch',
+      { name: /Allow Residents to Set Passphrase/ })
+    expect(checkbox).toBeChecked()
   })
 
   it('should validate the service name', async () => {
@@ -76,7 +80,7 @@ describe('ResidentPortal', () => {
     nameInput.blur()
 
     const errorMessageElem = await screen.findByRole('alert')
-    expect(errorMessageElem.textContent).toBe('Resident Portal with that name already exists')
+    expect(errorMessageElem.textContent).toBe('Resident Portal with that name already exists ')
   })
 
 })

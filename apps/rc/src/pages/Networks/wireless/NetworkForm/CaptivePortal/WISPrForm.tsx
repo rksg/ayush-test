@@ -39,7 +39,8 @@ export function WISPrForm () {
   const {
     data,
     editMode,
-    cloneMode
+    cloneMode,
+    setData
   } = useContext(NetworkFormContext)
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
@@ -60,10 +61,28 @@ export function WISPrForm () {
 
   // eslint-disable-next-line
   const actionRunner = (currentState: WISPrAuthAccServerState, incomingState: WISPrAuthAccServerState) => {
+    if (incomingState.action === WISPrAuthAccServerAction.BypassCNAAndAuthChecked) {
+      let mutableData = _.cloneDeep(data) ?? {}
+      _.set(mutableData, 'wlan.bypassCPUsingMacAddressAuthentication', true)
+      _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.RADIUS)
+      setData && setData(mutableData)
+    }
+
+    if (incomingState.action === WISPrAuthAccServerAction.OnlyAuthChecked) {
+      let mutableData = _.cloneDeep(data) ?? {}
+      _.set(mutableData, 'wlan.bypassCPUsingMacAddressAuthentication', false)
+      _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.RADIUS)
+      setData && setData(mutableData)
+    }
     if (incomingState.action === WISPrAuthAccServerAction.AllAcceptChecked) {
       form.setFieldValue(['authRadiusId'], '')
       form.setFieldValue(['authRadius'], undefined)
       form.setFieldValue(['wlan','bypassCPUsingMacAddressAuthentication'], false)
+
+      let mutableData = _.cloneDeep(data) ?? {}
+      _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.ALWAYS_ACCEPT)
+      _.unset(mutableData, 'guestPortal.wisprPage.authRadius')
+      setData && setData(mutableData)
     }
     return incomingState
   }
@@ -153,24 +172,24 @@ export function WISPrForm () {
           form.setFieldValue('enableSecondaryAcctServer',true)
         }
       }
-      if ([
-        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
-        (!data?.wlan?.bypassCNA)
-      ].every(Boolean)) {dispatch(statesCollection.useAllAccept)}
-
-      if ([
-        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
-        (data?.wlan?.bypassCNA)
-      ].every(Boolean)) {dispatch(statesCollection.useBypassCNAAndAuth)}
-
-      if ([
-        (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
-        (!data?.wlan?.bypassCNA)
-      ].every(Boolean)) {dispatch(statesCollection.useOnlyAuth)}
     }
   },[providerData.data,data,isMspEc])
   useEffect(()=>{
     form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
+    if ([
+      (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
+      (!data?.wlan?.bypassCPUsingMacAddressAuthentication)
+    ].every(Boolean)) {dispatch(statesCollection.useAllAccept)}
+
+    if ([
+      (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
+      (data?.wlan?.bypassCPUsingMacAddressAuthentication)
+    ].every(Boolean)) {dispatch(statesCollection.useBypassCNAAndAuth)}
+
+    if ([
+      (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.RADIUS),
+      (!data?.wlan?.bypassCPUsingMacAddressAuthentication)
+    ].every(Boolean)) {dispatch(statesCollection.useOnlyAuth)}
   },[])
   const onGenerateHexKey = () => {
     let hexKey = generateHexKey(26)
@@ -435,8 +454,19 @@ export function WISPrForm () {
          (enableWISPRAlwaysAccept ?
            <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
              <WISPrAuthAccServer
-               onClickAuth={() => dispatch(statesCollection.useOnlyAuth)}
-               onClickAllAccept={() => dispatch(statesCollection.useAllAccept)}
+               onClickAuth={() => {
+                 dispatch(statesCollection.useOnlyAuth)
+                 let mutableData = _.cloneDeep(data) ?? {}
+                 _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.RADIUS)
+                 setData && setData(mutableData)
+               }}
+               onClickAllAccept={() => {
+                 dispatch(statesCollection.useAllAccept)
+                 let mutableData = _.cloneDeep(data) ?? {}
+                 _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.ALWAYS_ACCEPT)
+                 _.unset(mutableData, 'guestPortal.wisprPage.authRadius')
+                 setData && setData(mutableData)
+               }}
              />
            </WISPrAuthAccContext.Provider>
            : <AuthAccServerSetting/>)

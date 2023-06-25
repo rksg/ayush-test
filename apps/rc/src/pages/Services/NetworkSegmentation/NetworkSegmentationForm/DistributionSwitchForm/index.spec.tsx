@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 
 import { StepsForm }        from '@acx-ui/components'
 import {
+  DistributionSwitch,
   NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -26,24 +27,25 @@ import { DistributionSwitchForm } from './'
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
 
-type MockSelectProps = React.PropsWithChildren<{
-  onChange?: (value: string) => void
-  options?: Array<{ label: string, value: unknown }>
+type MockDrawerProps = React.PropsWithChildren<{
+  open: boolean
+  onSaveDS: (values: DistributionSwitch) => void
+  onClose: () => void
 }>
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({ children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={undefined}></option>{children}</> : null}
-      {options?.map((option, index) => (
-        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
-      ))}
-    </select>
-  )
-  Select.Option = 'option'
-  return { ...components, Select }
-})
+jest.mock('./DistributionSwitchDrawer', () => ({
+  DistributionSwitchDrawer: ({ onSaveDS, onClose, open }: MockDrawerProps) =>
+    open && <div data-testid={'DistributionSwitchDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onSaveDS(mockNsgSwitchInfoData.distributionSwitches[0])
+      }}>Save</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
+
 
 describe('DistributionSwitchForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -103,8 +105,10 @@ describe('DistributionSwitchForm', () => {
     const alert = await screen.findByRole('alert')
     await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
 
-    const dialog = await screen.findByRole('dialog')
+    const dialog = await screen.findByTestId('DistributionSwitchDrawer')
     await user.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+
     await user.click(await within(alert).findByRole('button', { name: 'Delete' }))
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
@@ -128,26 +132,12 @@ describe('DistributionSwitchForm', () => {
       </Provider>, {
         route: { params, path: createNsgPath }
       })
+    const createBtn = await screen.findByRole('button', { name: 'Add Distribution Switch' })
+    await user.click(createBtn)
 
-    await user.click(await screen.findByRole('button', { name: 'Add Distribution Switch' }))
-    await user.selectOptions(
-      await screen.findByRole('combobox', { name: 'Distribution Switch' }),
-      await screen.findByRole('option', { name: 'FMN4221R00H---DS---3' })
-    )
-    await user.type(await screen.findByRole('textbox', { name: 'VLAN Range' }), '10')
-    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface ID' }), '12')
-    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface IP Address' }), '1.2.3.4')
-    await user.type(await screen.findByRole('textbox', { name: 'Lookback Interface Subnet Mask' }), '255.255.255.0')
+    const dialog = await screen.findByTestId('DistributionSwitchDrawer')
+    await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
-    await user.click(await screen.findByRole('button', { name: 'Select' }))
-    const asTransfer = await screen.findByRole('dialog', { name: /Select Access Switches/i })
-    await user.click(await within(asTransfer).findByText(/FEK3224R09N---AS---3/i))
-    await user.click(await within(asTransfer).findByRole('button', { name: /Add/i }))
-
-    await user.click(await within(asTransfer).findByRole('button', { name: 'Apply' }))
-
-    await user.click(await screen.findByRole('button', { name: 'Save' }))
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 })

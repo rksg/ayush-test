@@ -4,7 +4,8 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
@@ -163,7 +164,7 @@ export interface PersonaTableProps {
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, colProps } = props
-  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const columns = useColumns(colProps, unitPool, venueId)
@@ -255,10 +256,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
     {
       label: $t({ defaultMessage: 'Import From File' }),
       onClick: () => setUploadCsvDrawerVisible(true)
-    },
-    {
-      label: $t({ defaultMessage: 'Export To File' }),
-      onClick: downloadPersona
     }
   ]
 
@@ -364,6 +361,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
+        iconButton={{
+          icon: <DownloadOutlined data-testid={'export-persona'} />,
+          onClick: downloadPersona
+        }}
       />
 
       <PersonaDrawer

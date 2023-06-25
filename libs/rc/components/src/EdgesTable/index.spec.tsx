@@ -60,7 +60,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(row.length).toBe(10)
@@ -71,7 +71,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const smartEdgeLink = await screen.findByRole('link',
       { name: 'Smart Edge 1' }) as HTMLAnchorElement
@@ -84,7 +84,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const venue1List = await screen.findAllByRole('link', { name: 'Venue 1' })
     const venue1Link = venue1List[0] as HTMLAnchorElement
@@ -97,7 +97,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
@@ -115,7 +115,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     await user.click(within(row[0]).getByRole('checkbox'))
@@ -129,7 +129,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
@@ -144,7 +144,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
@@ -158,7 +158,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable filterColumns={['venue']}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
 
     await screen.findByRole('row', { name: /Smart Edge 2/i })
@@ -172,7 +172,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/devices/edge/list' }
+        route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
     const row3 = await screen.findByRole('row', { name: /Smart Edge 3/i })
@@ -189,7 +189,7 @@ describe('Edge Table', () => {
       <Provider>
         <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
+        route: { params, path: '/:tenantId/devices/edge' }
       })
     const row5 = await screen.findByRole('row', { name: /Smart Edge 5/i })
     await user.click(within(row5).getByRole('checkbox'))

@@ -2,14 +2,15 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
   PersonaUrls,
   MacRegListUrlsInfo,
   PersonaBaseUrl,
   ClientUrlsInfo,
-  ConnectionMeteringUrls
+  ConnectionMeteringUrls,
+  DPSKDeviceInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
@@ -30,6 +31,16 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 import PersonaDetails from './index'
 
+const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
+  {
+    mac: '11:11:11:11:11:11',
+    lastConnected: '06/15/2023 03:24 AM',
+    lastConnectedNetwork: 'test',
+    devicePassphrase: 'e4269e5a2d5547299714398404d442fb',
+    online: true
+  }
+]
+
 Object.assign(navigator, {
   clipboard: {
     writeText: () => { }
@@ -37,6 +48,7 @@ Object.assign(navigator, {
 })
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe('Persona Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
@@ -125,7 +137,7 @@ describe('Persona Details', () => {
   it('should add devices', async () => {
     render(
       <Provider>
-        <PersonaDevicesTable persona={mockPersona} title={'Devices'} />
+        <PersonaDevicesTable persona={mockPersona} />
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
@@ -179,9 +191,15 @@ describe('Persona Details', () => {
   })
 
   it('should delete selected devices', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getPassphraseDevices.url,
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
+      )
+    )
     render(
       <Provider>
-        <PersonaDevicesTable persona={mockPersona} title={'Devices'}/>
+        <PersonaDevicesTable persona={mockPersona} dpskPoolId={mockPersonaGroup.dpskPoolId}/>
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
@@ -234,5 +252,31 @@ describe('Persona Details', () => {
     await userEvent.click(confirmButton)
 
     expect(blockedFn).toBeCalledWith({ revoked: true })
+  })
+
+  it('should retry vni', async () => {
+    const retryFn = jest.fn()
+    mockServer.use(
+      rest.delete(
+        PersonaUrls.allocateVni.url,
+        (_, res, ctx) => {
+          retryFn()
+          return res(ctx.json({}))
+        }
+      )
+    )
+    render(
+      <Provider>
+        <PersonaDetails />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
+      }
+    )
+
+    const retryVniButton = await screen.findByRole('button', { name: /Retry/i })
+    await userEvent.click(retryVniButton)
+
+    expect(retryFn).toHaveBeenCalled()
   })
 })

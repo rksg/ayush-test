@@ -26,7 +26,8 @@ export const VenueEdge = () => {
         'serialNumber',
         'ip',
         'ports',
-        'tags'
+        'tags',
+        'firmwareVersion'
       ],
       filters: { venueId: [params.venueId] }
     }

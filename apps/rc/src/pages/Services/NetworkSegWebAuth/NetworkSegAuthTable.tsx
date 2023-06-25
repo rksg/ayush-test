@@ -6,12 +6,12 @@ import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
-  WebAuthTemplate,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
   getServiceListRoutePath,
-  useTableQuery
+  useTableQuery,
+  WebAuthTemplateTableData
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                      from '@acx-ui/user'
@@ -20,7 +20,8 @@ const getNetworkSegAuthPayload = {
   fields: [
     'id',
     'name',
-    'tags'
+    'tags',
+    'summary'
   ],
   sortField: 'name',
   sortOrder: 'ASC'
@@ -41,7 +42,7 @@ export default function NetworkSegAuthTable () {
   ] = useDeleteWebAuthTemplateMutation()
 
 
-  const columns: TableProps<WebAuthTemplate>['columns'] = [
+  const columns: TableProps<WebAuthTemplateTableData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
@@ -63,12 +64,18 @@ export default function NetworkSegAuthTable () {
       }
     }, {
       title: $t({ defaultMessage: 'Access Switches' }),
-      key: 'as',
-      dataIndex: 'as'
+      key: 'switchCount',
+      dataIndex: 'switchCount',
+      render: (data) => {
+        return data || 0
+      }
     }, {
       title: $t({ defaultMessage: 'Venues' }),
-      key: 'venues',
-      dataIndex: 'venues'
+      key: 'venueCount',
+      dataIndex: 'venueCount',
+      render: (data) => {
+        return data || 0
+      }
     }, {
       title: $t({ defaultMessage: 'Update Available' }),
       key: 'updateAvailable',
@@ -84,7 +91,7 @@ export default function NetworkSegAuthTable () {
     }
   ]
 
-  const rowActions: TableProps<WebAuthTemplate>['rowActions'] = [
+  const rowActions: TableProps<WebAuthTemplateTableData>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),

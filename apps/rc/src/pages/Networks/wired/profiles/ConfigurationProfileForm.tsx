@@ -49,19 +49,17 @@ export function ConfigurationProfileForm () {
   }, [data])
 
   const checkTrustedPortEmpty = (data: Partial<SwitchConfigurationProfile>) => {
-    if(ipv4DhcpSnooping || arpInspection){
-      const trustedPortModels = generateTrustedPortsModels(data)
-      const hasEmptyTrustPorts = trustedPortModels.some(port => port.trustPorts.length === 0)
+    const trustedPortModels = generateTrustedPortsModels(data)
+    const hasEmptyTrustPorts = trustedPortModels.some(port => port.trustPorts.length === 0)
 
-      if(hasEmptyTrustPorts){
-        showActionModal({
-          type: 'error',
-          title: $t({ defaultMessage: 'Error' }),
-          content: $t({ defaultMessage:
-            'Please select trusted ports in order to make this configuration profile valid' })
-        })
-        return true
-      }
+    if(hasEmptyTrustPorts){
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Error' }),
+        content: $t({ defaultMessage:
+          'Please select trusted ports in order to make this configuration profile valid' })
+      })
+      return true
     }
     return false
   }
@@ -133,12 +131,13 @@ export function ConfigurationProfileForm () {
     return true
   }
 
-  const handleEditProfile = async () => {
+  const handleEditProfile = async (formData: SwitchConfigurationProfile) => {
     try {
-      if(checkTrustedPortEmpty(currentData)){
+      if(checkTrustedPortEmpty(formData)){
         return false
       }
-      await updateSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
+      await updateSwitchConfigProfile({
+        params, payload: proceedData(formData) }).unwrap()
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
       return true

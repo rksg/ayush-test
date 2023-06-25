@@ -17,7 +17,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/devices/edge/list"
+                href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/devices/edge"
               >
                 SmartEdge
               </a>
@@ -67,13 +67,16 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
   >
     <form
       class="ant-form ant-form-vertical"
+      step="0"
     >
       <div
         class="ant-row"
+        style="margin-left: -10px; margin-right: -10px;"
       >
         <div
           class="ant-col ant-col-24"
           data-testid="steps-form-body"
+          style="padding-left: 10px; padding-right: 10px;"
         >
           <div
             class="ant-row"
@@ -368,11 +371,11 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
         </div>
       </div>
       <div
-        class="styledComponents__ActionsContainer-sc-71wmpn-1 eCCHZw"
+        class="styledComponents__ActionsContainer-sc-1ibvcih-2 hYpYtI"
         data-testid="steps-form-actions"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center"
+          class="ant-space ant-space-horizontal ant-space-align-center styledComponents__ActionsButtons-sc-1ibvcih-3"
         >
           <div
             class="ant-space-item"

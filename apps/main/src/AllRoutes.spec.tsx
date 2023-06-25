@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { Provider }                       from '@acx-ui/store'
 import { render, screen, cleanup }        from '@acx-ui/test-utils'
@@ -40,13 +38,13 @@ jest.mock('@acx-ui/user', () => ({
 jest.mock('./pages/Dashboardv2', () => () => {
   return <div data-testid='dashboard' />
 })
-jest.mock('analytics/Routes', () => () => {
+jest.mock('@analytics/Routes', () => () => {
   return <div data-testid='analytics' />
 }, { virtual: true })
-jest.mock('reports/Routes', () => () => {
+jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
-jest.mock('rc/Routes', () => () => {
+jest.mock('@rc/Routes', () => () => {
   return (
     <>
       <div data-testid='devices' />
@@ -61,7 +59,7 @@ jest.mock('./pages/Venues/VenuesTable', () => ({
     return <div data-testid='venues' />
   }
 }), { virtual: true })
-jest.mock('msp/Routes', () => () => {
+jest.mock('@msp/Routes', () => () => {
   return <div data-testid='msp' />
 }, { virtual: true })
 jest.mock('@acx-ui/utils', () => ({
@@ -155,7 +153,7 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to policies/* if the feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -168,7 +166,7 @@ describe('AllRoutes', () => {
   })
 
   test('should not navigate to policies/* if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {

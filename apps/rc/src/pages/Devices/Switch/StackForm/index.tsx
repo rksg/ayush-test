@@ -219,8 +219,6 @@ export function StackForm () {
             }
           })
 
-        stackMembers.sort((a: { active: boolean }, b: { active: boolean }) =>
-          Number(b.active) - Number(a.active))
         setTableData(stackMembers)
         setRowKey(stackMembers.length)
       }
@@ -273,21 +271,23 @@ export function StackForm () {
   }, [])
 
   const handleChange = (row: SwitchTable, index: number) => {
-    const dataRows = [...tableData]
-    const serialNumber = formRef.current?.getFieldValue(
-      `serialNumber${row.key}`
-    )
-    dataRows[index].id = serialNumber
-    dataRows[index].model = serialNumber && getSwitchModelWithRodan(serialNumber)
-    setTableData(dataRows)
+    formRef.current?.validateFields([`serialNumber${row.key}`]).then(() => {
+      const dataRows = [...tableData]
+      const serialNumber = formRef.current?.getFieldValue(
+        `serialNumber${row.key}`
+      )?.toUpperCase()
+      dataRows[index].id = serialNumber
+      dataRows[index].model = serialNumber && getSwitchModelWithRodan(serialNumber)
+      setTableData(dataRows)
 
-    const modelList = dataRows
-      .filter(
-        row => row.model &&
-          modelNotSupportStack.indexOf(row.model) === -1)
-      .map(row => row.model)
-    setValidateModel(modelList)
-    setVisibleNotification(modelList.length > 0)
+      const modelList = dataRows
+        .filter(
+          row => row.model &&
+            modelNotSupportStack.indexOf(row.model) === -1)
+        .map(row => row.model)
+      setValidateModel(modelList)
+      setVisibleNotification(modelList.length > 0)
+    }, () => {})
   }
 
   const handleAddRow = () => {
@@ -590,7 +590,6 @@ export function StackForm () {
       tempDataSource.splice(oldIndex, 1)
       tempDataSource = [...tempDataSource.slice(0, newIndex),
         ...[movingItem], ...tempDataSource.slice(newIndex, tempDataSource.length)]
-      tempDataSource.sort((a, b) => Number(b.active) - Number(a.active))
       setTableData(tempDataSource)
     }
   }

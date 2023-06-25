@@ -13,7 +13,8 @@ import {
   useGetNetworkQuery,
   useUpdateNetworkMutation,
   useAddNetworkVenuesMutation,
-  useDeleteNetworkVenuesMutation
+  useDeleteNetworkVenuesMutation,
+  useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
@@ -24,7 +25,8 @@ import {
   redirectPreviousPage,
   LocationExtended,
   NetworkVenue,
-  Network
+  Network,
+  AuthRadiusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -106,6 +108,8 @@ export default function NetworkForm (props:{
   const [updateNetwork] = useUpdateNetworkMutation()
   const [addNetworkVenues] = useAddNetworkVenuesMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
+  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
@@ -227,7 +231,21 @@ export default function NetworkForm (props:{
       delete data.accountingRadiusId
       delete data.authRadiusId
     }
-    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    // eslint-disable-next-line
+    let radiusUncheckedData = { ...data, ...saveState, ...tmpGuestPageState } as Partial<NetworkSaveData>
+    if (radiusUncheckedData.guestPortal?.wisprPage?.authType &&
+       radiusUncheckedData.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+       radiusUncheckedData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      delete radiusUncheckedData.authRadius
+      delete radiusUncheckedData.accountingRadius
+      delete radiusUncheckedData.enableAccountingService
+      delete radiusUncheckedData.accountingRadiusId
+      delete radiusUncheckedData.authRadiusId
+      delete radiusUncheckedData.guestPortal?.wisprPage?.authRadius
+      // eslint-disable-next-line
+       radiusUncheckedData = _.omit(radiusUncheckedData, ['guestPortal.wisprPage.authRadiusId']) as Partial<NetworkSaveData>
+    }
+    updateSaveData(radiusUncheckedData)
     return true
   }
 
@@ -239,6 +257,7 @@ export default function NetworkForm (props:{
     let added: NetworkVenue[] = []
     let newIds: string[] = []
     let removed: string[] = []
+    let update: NetworkVenue[] = []
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
@@ -252,8 +271,22 @@ export default function NetworkForm (props:{
     }
     if (oldNetworkVenues?.length) {
       oldNetworkVenues?.forEach(networkVenue => {
-        if (!_.isUndefined(networkVenue.id) && !newIds.includes(networkVenue.id)) {
-          removed.push(networkVenue.id)
+        const networkVenueId = networkVenue.id
+        if (!_.isUndefined(networkVenueId)) {
+          if (!newIds.includes(networkVenueId)) {
+            removed.push(networkVenueId)
+          } else if (newNetworkVenues?.length) {
+            const newNetworkVenue = newNetworkVenues.find(venue => venue.id === networkVenueId)
+            if (newNetworkVenue) {
+              // remove the undeifned or null field
+              const oldNVenue = _.omitBy(networkVenue, _.isNil)
+              const newNVenue = _.omitBy(newNetworkVenue, _.isNil)
+
+              if (!_.isEqual(oldNVenue, newNVenue)) {
+                update.push(newNetworkVenue) // config changed need to update
+              }
+            }
+          }
         }
       })
     }
@@ -263,6 +296,18 @@ export default function NetworkForm (props:{
     }
     if (removed.length) {
       await deleteNetworkVenues({ payload: removed }).unwrap()
+    }
+
+
+    if (update.length) {
+      // ToDo: wait for backend support the updateNetworkVenues API
+      // await updateNetworkVenues({ payload: update }).unwrap()
+
+      update.forEach(networkVenue => {
+        updateNetworkVenue({ params: {
+          networkVenueId: networkVenue.id
+        }, payload: networkVenue }).unwrap()
+      })
     }
   }
 
@@ -293,6 +338,15 @@ export default function NetworkForm (props:{
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       deleteUnnecessaryFields()
+      if (saveState.guestPortal?.wisprPage?.authType &&
+        saveState.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+        saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+        delete saveState.authRadius
+        delete saveState.accountingRadius
+        delete saveState.enableAccountingService
+        delete saveState.accountingRadiusId
+        delete saveState.guestPortal.wisprPage.authRadius
+      }
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: formData.venues })
       await updateNetwork({ params, payload }).unwrap()
       if (payload.id && (payload.venues || data?.venues)) {
@@ -503,4 +557,3 @@ function pickOneCaptivePortalForm (saveState: NetworkSaveData) {
       return <OnboardingForm />
   }
 }
-

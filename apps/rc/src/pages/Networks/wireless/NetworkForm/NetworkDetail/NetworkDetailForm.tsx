@@ -6,9 +6,10 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
+  apNameRegExp,
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
@@ -49,7 +50,7 @@ export function NetworkDetailForm () {
   }
 
   useEffect(() => {
-    if ((editMode) && data?.wlan?.ssid) {
+    if (editMode && data?.wlan?.ssid) {
       if (!differentSSID) {
         setDifferentSSID(data?.wlan?.ssid !== data?.name)
       }
@@ -123,7 +124,7 @@ export function NetworkDetailForm () {
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
-    { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
+    { type: NetworkTypeEnum.AAA, disabled: !useIsTierAllowed(Features.CLOUDPATH_BETA) },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
@@ -147,7 +148,8 @@ export function NetworkDetailForm () {
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value) },
-            { validator: (_, value) => hasGraveAccentAndDollarSign(value) }
+            { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
+            { validator: (_, value) => apNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback
