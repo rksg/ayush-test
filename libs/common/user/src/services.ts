@@ -178,7 +178,6 @@ export const {
           : ' '
 
         userProfile.fullName = `${firstName} ${lastName}`
-        userProfile.roles = [RolesEnum.READ_ONLY]
         return userProfile
       },
       providesTags: ['UserProfile']
