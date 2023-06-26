@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }                                                  from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
@@ -99,7 +99,7 @@ describe('MacRegistrationListForm', () => {
   const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockServer.use(
       rest.get(

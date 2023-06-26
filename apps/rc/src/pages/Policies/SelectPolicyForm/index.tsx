@@ -28,7 +28,7 @@ export default function SelectPolicyForm () {
   const tenantBasePath: Path = useTenantLink('')
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
@@ -36,8 +36,7 @@ export default function SelectPolicyForm () {
       fields: ['id']
     }
   }).data?.totalCount || 0
-  const attributeGropuEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
-  const adaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -79,7 +78,7 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
   }
 
-  if(adaptivePolicyEnabled && attributeGropuEnabled) {
+  if(cloudpathBetaEnabled) {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 

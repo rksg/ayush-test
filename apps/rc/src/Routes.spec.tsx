@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -665,7 +665,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to create RADIUS ATTRIBUTE GROUP page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE }),
@@ -676,7 +676,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to edit RADIUS ATTRIBUTE GROUP page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -689,7 +689,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to detail RADIUS ATTRIBUTE GROUP page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -702,7 +702,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to RADIUS ATTRIBUTE GROUP table', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }),
@@ -713,7 +713,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
@@ -724,7 +724,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to edit MAC_REGISTRATION_LIST page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -928,7 +928,7 @@ describe('RcRoutes: User', () => {
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
   })
   test('should redirect to Persona Portal', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -939,7 +939,7 @@ describe('RcRoutes: User', () => {
     expect(screen.getByTestId('PersonaPortal')).toBeVisible()
   })
   test('should redirect to Persona detail', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -950,7 +950,7 @@ describe('RcRoutes: User', () => {
     expect(screen.getByTestId('PersonaDetails')).toBeVisible()
   })
   test('should redirect to Persona Group detail', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -984,7 +984,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to create Adaptive Policy page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE }),
@@ -995,7 +995,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to edit Adaptive Policy page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)
     path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -1008,7 +1008,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to detail Adaptive Policy page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     let path = getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)
     path = path.replace(':templateId', 'templateId').replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -1021,7 +1021,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to Adaptive Policy table', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }),
@@ -1032,7 +1032,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to create Adaptive Policy Set page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE }),
@@ -1043,7 +1043,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to edit Adaptive Policy Set page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -1056,7 +1056,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to detail Adaptive Policy Set page', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     let path = getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -1069,7 +1069,7 @@ describe('RcRoutes: Timeline', () => {
   })
 
   test('should navigate to Adaptive Policy Set table', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }),

@@ -7,7 +7,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -128,7 +128,7 @@ export default function DpskTable () {
 
 function useColumns () {
   const intl = useIntl()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const params = useParams()
 
   const { networkNameMap } = useNetworkListQuery({

@@ -27,9 +27,9 @@ const AddDhcp = () => {
   const tablePath = getServiceRoutePath(
     { type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })
 
-  const handleAddEdgeDhcp = async (data: EdgeDhcpSetting) => {
+  const handleAddEdgeDhcp = async () => {
     try {
-      const payload = { ...data }
+      const payload = formRef.current?.getFieldsValue(true)
       await addEdgeDhcp({ payload: payload }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {

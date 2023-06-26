@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -186,7 +186,7 @@ describe('DpskDetails', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>

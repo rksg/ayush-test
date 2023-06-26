@@ -26,7 +26,7 @@ export default function SelectServiceForm () {
   const navigate = useNavigate()
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 

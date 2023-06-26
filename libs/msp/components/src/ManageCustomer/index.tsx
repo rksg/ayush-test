@@ -1164,9 +1164,6 @@ export function ManageCustomer () {
               value={address.addressLine}
             />
           </Form.Item >
-          <Form.Item hidden>
-            <GoogleMapWithPreference libraries={['places']} />
-          </Form.Item>
 
           <MspAdminsForm></MspAdminsForm>
           <Subtitle level={3}>

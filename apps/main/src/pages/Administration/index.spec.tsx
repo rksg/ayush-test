@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider  }    from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Provider  }                      from '@acx-ui/store'
 import {
   render,
   screen,
@@ -78,6 +78,7 @@ describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
   beforeEach(() => {
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })

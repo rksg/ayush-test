@@ -38,7 +38,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 function PersonaDetails () {
   const { $t } = useIntl()
-  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()

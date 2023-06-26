@@ -1,4 +1,4 @@
-import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
 import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
@@ -455,11 +455,8 @@ function ServiceRoutes () {
 }
 
 function PolicyRoutes () {
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
-  const isAttributeGroupEnabled = useIsSplitOn(Features.RADIUS_ATTRIBUTE_GROUP_CONFIG)
-  // eslint-disable-next-line max-len
-  const isAdaptivePolicyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT) && isAttributeGroupEnabled
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -522,7 +519,7 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
         element={<SyslogDetailView />}
       />
-      {isMacRegistrationEnabled ? <>
+      {isCloudpathBetaEnabled ? <>
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
@@ -652,7 +649,7 @@ function PolicyRoutes () {
           element={<ConnectionMeteringDetail/>}
         />
       </>}
-      {isAdaptivePolicyEnabled && <>
+      {isCloudpathBetaEnabled && <>
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
@@ -716,8 +713,7 @@ function PolicyRoutes () {
 }
 
 function UserRoutes () {
-  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -741,7 +737,7 @@ function UserRoutes () {
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
       <Route path='users/switch/clients/:clientId' element={<SwitchClientDetailsPage />} />
-      {(isPersonaEnabled && isMacRegistrationEnabled)
+      {(isCloudpathBetaEnabled)
         ? <><Route
           path='users/persona-management'
           element={<TenantNavigate replace to='/users/persona-management/persona-group'/>}/><Route

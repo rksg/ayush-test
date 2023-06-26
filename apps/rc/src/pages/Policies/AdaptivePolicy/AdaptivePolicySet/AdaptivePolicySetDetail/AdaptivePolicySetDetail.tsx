@@ -3,7 +3,7 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import {
   useGetAdaptivePolicySetQuery,
   useGetDpskListQuery,
@@ -28,8 +28,9 @@ export default function AdaptivePolicySetDetail () {
   const { Paragraph } = Typography
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
+
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
 
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })

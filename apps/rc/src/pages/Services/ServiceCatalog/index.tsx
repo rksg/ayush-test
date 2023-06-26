@@ -18,7 +18,7 @@ import * as UI from './styledComponents'
 export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 

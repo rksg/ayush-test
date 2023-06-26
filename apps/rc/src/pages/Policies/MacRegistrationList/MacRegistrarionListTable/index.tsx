@@ -10,8 +10,8 @@ import {
   Loader,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }      from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegListMutation,
@@ -44,7 +44,7 @@ export default function MacRegistrationListsTable () {
   const params = useParams()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const filter = {
     filterKey: 'name',

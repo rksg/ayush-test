@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -31,8 +31,8 @@ export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
-  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+  const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const services = [
