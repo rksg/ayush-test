@@ -3,9 +3,17 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent                     from '@testing-library/user-event'
 import { IntlProvider }              from 'react-intl'
 
-import { VlanPortsModal } from './VlanPortsModal'
+import { StepsForm } from '@acx-ui/components'
+
+import { SelectModelStep }   from './SelectModelStep'
+import { TaggedPortsStep }   from './TaggedPortsStep'
+import { UntaggedPortsStep } from './UntaggedPortsStep'
+import VlanPortsContext      from './VlanPortsContext'
+import { VlanPortsModal }    from './VlanPortsModal'
+
 
 describe('VlanPortsModal', () => {
+  /* eslint-disable max-len */
   const vlans = [{
     arpInspection: false,
     id: '545d08c0e7894501846455233ad60cc5',
@@ -59,6 +67,29 @@ describe('VlanPortsModal', () => {
     vlanConfigName: ''
   }]
 
+  const vlanSettingValues = {
+    enableSlot2: true,
+    enableSlot3: true,
+    enableSlot4: false,
+    family: 'ICX7150',
+    model: '48',
+    selectedOptionOfSlot2: '2X1G',
+    selectedOptionOfSlot3: '4X1/10G',
+    selectedOptionOfSlot4: '',
+    switchFamilyModels: {
+      id: '',
+      model: 'ICX7150-48',
+      slots: [
+        { slotNumber: 1, enable: true, option: '', slotPortInfo: '48X1G', portStatus: Array(48) },
+        { slotNumber: 2, enable: true, option: '2X1G', slotPortInfo: '2X1G', portStatus: Array(2) },
+        { slotNumber: 3, enable: true, option: '4X1/10G', slotPortInfo: '4X1/10G', portStatus: Array(4) }
+      ],
+      taggedPorts: ['1/1/28'],
+      untaggedPorts: ['1/1/21', '1/1/40']
+    }
+  }
+  /* eslint-enable */
+
   afterEach(() => {
     //Modal.destroyAll()
   })
@@ -79,6 +110,13 @@ describe('VlanPortsModal', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByText(/No model selected/i)
+
+    const family = await screen.findByText('ICX-7150')
+    await userEvent.click(family)
+    const model = await screen.findByText('C08P')
+    await userEvent.click(model)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
@@ -256,6 +294,90 @@ describe('VlanPortsModal', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
     fireEvent.mouseOver(await screen.findByTestId('untagged_module1_11'))
     await screen.findByText('Port set as tagged')
+  })
+
+  it('should render select model step correctly', async () => {
+    render(<IntlProvider locale='en'>
+      <VlanPortsContext.Provider
+        value={{
+          vlanSettingValues: vlanSettingValues,
+          setVlanSettingValues: jest.fn(),
+          vlanList: [vlans[1]],
+          editMode: true
+        }}
+      >
+        <StepsForm onFinish={jest.fn()}>
+          <StepsForm.StepForm>
+            <SelectModelStep editMode={true} />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </VlanPortsContext.Provider>
+    </IntlProvider>)
+
+    await screen.findByText(/Family/i)
+    await screen.findByText(/Model/i)
+    await screen.findByText(/Select Modules/i)
+
+    // TODO:
+    // const radio = await screen.findByRole('radio', { name: /ICX-7550/, checked: true })
+  })
+
+  it('should render untagged ports step correctly', async () => {
+    render(<IntlProvider locale='en'>
+      <VlanPortsContext.Provider
+        value={{
+          vlanSettingValues: {
+            ...vlanSettingValues,
+            switchFamilyModels: {
+              ...vlanSettingValues.switchFamilyModels,
+              untaggedPorts: null
+            }
+          },
+          setVlanSettingValues: jest.fn(),
+          vlanList: [vlans[1]],
+          editMode: true
+        }}
+      >
+        <StepsForm onFinish={jest.fn()}>
+          <StepsForm.StepForm>
+            <UntaggedPortsStep />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </VlanPortsContext.Provider>
+    </IntlProvider>)
+
+    await screen.findByText(
+      /Select the untagged ports \(access ports\) for this model \(ICX7150-48\)/i
+    )
+  })
+
+  it('should render tagged ports step correctly', async () => {
+    render(<IntlProvider locale='en'>
+      <VlanPortsContext.Provider
+        value={{
+          vlanSettingValues: {
+            ...vlanSettingValues,
+            switchFamilyModels: {
+              ...vlanSettingValues.switchFamilyModels,
+              taggedPorts: null
+            }
+          },
+          setVlanSettingValues: jest.fn(),
+          vlanList: [vlans[1]],
+          editMode: true
+        }}
+      >
+        <StepsForm onFinish={jest.fn()}>
+          <StepsForm.StepForm>
+            <TaggedPortsStep />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </VlanPortsContext.Provider>
+    </IntlProvider>)
+
+    await screen.findByText(
+      /Select the tagged ports \(access ports\) for this model \(ICX7150-48\)/i
+    )
   })
 
   //TODO: edit mode
