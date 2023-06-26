@@ -71,7 +71,7 @@ const getKpis = (details: EnhancedRecommendation) => {
     const delta = previous !== null && config.deltaSign !== 'none'
       ? kpiDelta(
         valueAccessor ? valueAccessor([previous]) : previous,
-        valueAccessor ? valueAccessor([current]) : current,
+        valueAccessor && typeof current !== 'number' ? valueAccessor(current) : current as number,
         deltaSign,
         valueFormatter || format
       )

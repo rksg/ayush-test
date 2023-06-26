@@ -16,9 +16,9 @@ type RecommendationsDetailsPayload = {
 }
 
 type RecommendationKpi = Record<string, {
-  current: number;
+  current: number | number[];
   previous: number | null;
-  projected: number
+  projected: number | null
 }>
 
 type RecommendationDetails = {
@@ -26,7 +26,7 @@ type RecommendationDetails = {
   code: keyof typeof codes;
   status: keyof typeof states;
   appliedTime: string;
-  originalValue: Array<{ channelMode: string, channelWidth: string, radio: string }>;
+  originalValue: string | Array<{ channelMode: string, channelWidth: string, radio: string }>;
   currentValue: string;
   recommendedValue: string;
   metadata: object;
@@ -43,7 +43,7 @@ export type EnhancedRecommendation = RecommendationDetails & {
   pathTooltip: string;
   appliedOnce: boolean;
   monitoring: null | { until: string };
-  tooltipContent: string;
+  tooltipContent: string | MessageDescriptor;
 }
 
 type RecommendationApPayload = {
