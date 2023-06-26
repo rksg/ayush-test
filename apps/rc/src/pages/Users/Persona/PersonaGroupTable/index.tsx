@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                      from '@acx-ui/icons'
 import {
   useDeletePersonaGroupMutation,
   useGetDpskListQuery,
@@ -238,10 +239,6 @@ export function PersonaGroupTable () {
       onClick: () => {
         setDrawerState({ isEdit: false, visible: true, data: undefined })
       }
-    },
-    {
-      label: $t({ defaultMessage: 'Export To File' }),
-      onClick: downloadPersonaGroups
     }
   ]
 
@@ -319,6 +316,10 @@ export function PersonaGroupTable () {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
+        iconButton={{
+          icon: <DownloadOutlined data-testid={'export-persona-group'} />,
+          onClick: downloadPersonaGroups
+        }}
       />
 
       <PersonaGroupDrawer

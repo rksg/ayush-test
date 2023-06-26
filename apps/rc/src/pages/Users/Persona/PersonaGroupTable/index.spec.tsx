@@ -197,7 +197,7 @@ describe('Persona Group Table', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    await userEvent.click(await screen.findByRole('button', { name: /Export To File/i }))
+    await userEvent.click(await screen.findByTestId('export-persona-group'))
 
     await waitFor(() => expect(exportFn).toHaveBeenCalled())
   })
