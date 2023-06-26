@@ -9,7 +9,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy }     from '@acx-ui/components'
-import { Features, useIsTierAllowed }            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
@@ -59,7 +59,7 @@ function TypesForm () {
       form.setFieldValue(['guestPortal', 'guestNetworkType'], GuestNetworkTypeEnum.GuestPass)
     }
   },[createType])
-  const disableAAA = !useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsFormLegacy.Title>
