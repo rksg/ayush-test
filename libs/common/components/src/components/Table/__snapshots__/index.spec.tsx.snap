@@ -403,12 +403,18 @@ exports[`Table component should render correctly 1`] = `
                       style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="min-width: 100%; table-layout: auto;"
+                        style="width: 392px; min-width: 100%; table-layout: fixed;"
                       >
                         <colgroup>
-                          <col />
-                          <col />
-                          <col />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
                           <col
                             style="width: 32px;"
                           />
@@ -634,15 +640,21 @@ exports[`Table component should render multi select table and render action butt
                       style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="min-width: 100%; table-layout: auto;"
+                        style="width: 392px; min-width: 100%; table-layout: fixed;"
                       >
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
                           />
-                          <col />
-                          <col />
-                          <col />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
                           <col
                             style="width: 32px;"
                           />
@@ -1068,15 +1080,21 @@ exports[`Table component should render multi select table and render action butt
                       style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="min-width: 100%; table-layout: auto;"
+                        style="width: 392px; min-width: 100%; table-layout: fixed;"
                       >
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
                           />
-                          <col />
-                          <col />
-                          <col />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
                           <col
                             style="width: 32px;"
                           />
@@ -1400,15 +1418,21 @@ exports[`Table component should render multi select table and render action butt
                       style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="min-width: 100%; table-layout: auto;"
+                        style="width: 392px; min-width: 100%; table-layout: fixed;"
                       >
                         <colgroup>
                           <col
                             class="ant-table-selection-col"
                           />
-                          <col />
-                          <col />
-                          <col />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
+                          <col
+                            style="width: 120px;"
+                          />
                           <col
                             style="width: 32px;"
                           />

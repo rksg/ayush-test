@@ -7,14 +7,13 @@ import { ResizableHover, ResizableHandle } from './styledComponents'
 
 interface ResizableColumnProps extends React.PropsWithChildren {
   onResize: (width: number) => void
-  hasEllipsisColumn: boolean
   width?: number
   definedWidth?: number
 }
 
 
 export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
-  const { onResize, hasEllipsisColumn, width: columnWidth, definedWidth, ...rest } = props
+  const { onResize, width: columnWidth, definedWidth, ...rest } = props
   const [width, setWidth] = useState(columnWidth)
   const [currentHeaderCell, setCurrentHeaderCell] = useState<HTMLTableHeaderCellElement>()
   const headerCellRef = useRef<HTMLTableHeaderCellElement>(null)
@@ -35,9 +34,7 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
   return <Resizable
     width={width}
     height={0}
-    minConstraints={
-      (hasEllipsisColumn && [Math.min(definedWidth || 99, 90), 0]) || undefined
-    }
+    minConstraints={[Math.min(definedWidth || 99, 90), 0]}
     handle={<ResizableHandle />}
     onResizeStart={() => {
       setCurrentHeaderCell(headerCellRef.current!)

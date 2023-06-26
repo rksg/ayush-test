@@ -13,7 +13,6 @@ describe('ResizableColumn', () => {
     const { asFragment } = render(
       <table><tbody><tr><ResizableColumn
         onResize={jest.fn()}
-        hasEllipsisColumn={false}
       /></tr></tbody></table>)
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div')).toBe(null)
@@ -22,7 +21,6 @@ describe('ResizableColumn', () => {
     const { asFragment } = render(
       <table><tbody><tr><ResizableColumn
         onResize={jest.fn()}
-        hasEllipsisColumn={false}
         width={100}
       /></tr></tbody></table>)
     // eslint-disable-next-line testing-library/no-node-access

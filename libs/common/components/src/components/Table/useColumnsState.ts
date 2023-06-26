@@ -10,6 +10,8 @@ import type {
 } from './types'
 
 export const settingsKey = 'acx-table-settings'
+export const settingsKeyWidth = 32
+export const minColumnWidth = 120
 
 export interface UseColumnsStateOptions <RecordType> {
   settingsId?: string

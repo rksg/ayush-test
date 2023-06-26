@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key, useEffect, useRef } from 'react'
+import React, { useMemo, useState, Key, useEffect, useRef, useDebugValue } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, Space }                                                from 'antd'
@@ -22,11 +22,11 @@ import {
   renderSearch,
   MIN_SEARCH_LENGTH
 } from './filters'
-import { useGroupBy, GroupSelect }      from './groupBy'
-import { IconButton }                   from './IconButton'
-import { ResizableColumn }              from './ResizableColumn'
-import * as UI                          from './styledComponents'
-import { settingsKey, useColumnsState } from './useColumnsState'
+import { useGroupBy, GroupSelect }                                        from './groupBy'
+import { IconButton }                                                     from './IconButton'
+import { ResizableColumn }                                                from './ResizableColumn'
+import * as UI                                                            from './styledComponents'
+import { minColumnWidth, settingsKey, settingsKeyWidth, useColumnsState } from './useColumnsState'
 
 import type {
   TableColumn,
@@ -137,7 +137,17 @@ function Table <RecordType extends Record<string, any>> ({
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
-  const [colWidth, setColWidth] = useState<Record<string, number>>({})
+  const [colWidth, setColWidth] = useState<Record<string, number>>(
+    props.columns.reduce(function colWidthReducer (acc, col) {
+      if (_.has(col, 'children')) return _.get(col, 'children').reduce(colWidthReducer, acc)
+      const num = Number.isFinite(col.width)
+        ? Number(col.width)
+        : minColumnWidth * (Number(col.width === Infinity) * 2 + 1)
+      acc[col.key] = num
+      return acc
+    }, {} as Record<string, number>)
+  )
+  useDebugValue(colWidth)
   const getRowKey = (data: RecordType) => {
     return typeof rowKey === 'function' ? rowKey(data) : data[rowKey] as unknown as Key
   }
@@ -174,7 +184,7 @@ function Table <RecordType extends Record<string, any>> ({
     const settingsColumn = {
       key: settingsKey,
       fixed: 'right' as 'right',
-      width: 32,
+      width: settingsKeyWidth,
       children: []
     }
 
@@ -215,7 +225,6 @@ function Table <RecordType extends Record<string, any>> ({
           onClick={() => {
             columnsState.resetState()
             props.onResetState?.()
-            setColWidth({})
           }}
           children={$t({ defaultMessage: 'Reset to default' })}
         />
@@ -352,8 +361,6 @@ function Table <RecordType extends Record<string, any>> ({
     }
   }
 
-  const hasEllipsisColumn = columns.some(column => column.ellipsis)
-
   const components = _.merge({},
     props.components || {},
     type === 'tall' ? { header: { cell: ResizableColumn } } : {}
@@ -379,7 +386,6 @@ function Table <RecordType extends Record<string, any>> ({
           : colWidth[col.key as keyof typeof colWidth] || col.width,
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
           onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
-          hasEllipsisColumn,
           width: colWidth[column.key],
           definedWidth: col.width
         })
@@ -388,6 +394,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
+    show: columnsState.value[col.key]?.show,
     ...( col.searchable && {
       render: ((dom, entity, index, action, schema) => {
         const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
@@ -522,13 +529,12 @@ function Table <RecordType extends Record<string, any>> ({
       options={{ setting, reload: false, density: false }}
       columnsState={{
         ...columnsState,
-        onChange: (state: TableColumnState) => {
-          columnsState.onChange(state)
-          setColWidth({})
-        }
+        onChange: (state: TableColumnState) => columnsState.onChange(state)
       }}
       sticky={sticky}
-      scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
+      scroll={{
+        x: type !== 'tall' ? '100%' : finalColumns.reduce(scrollXReducer, settingsKeyWidth)
+      }}
       rowSelection={rowSelection}
       pagination={pagination}
       columnEmptyText={false}
@@ -613,3 +619,30 @@ Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
 
 export { Table }
+
+type ScrollXReducerColumn = {
+  key: string
+  width: number
+  show: boolean
+}
+
+/**
+ * Compute scrollX of the table
+ *
+ * @param {number} scrollX - aggregated scrollX
+ * @param {ScrollXReducerColumn & { children?: ScrollXReducerColumn[] }} col - the column being evaluated
+ * @return {number} scrollX of the table
+ */
+function scrollXReducer (
+  scrollX: number,
+  col: ScrollXReducerColumn & { children?: ScrollXReducerColumn[] }
+): number {
+  // `col.show` is true by default
+  if (col.show === false) return scrollX
+  if (col.children) return col.children.reduce(scrollXReducer, scrollX)
+  const width = Number.isFinite(col.width)
+    ? col.width
+    // multiply col with Infinity by 2
+    : minColumnWidth * (Number(col.width === Infinity))
+  return scrollX + width
+}
