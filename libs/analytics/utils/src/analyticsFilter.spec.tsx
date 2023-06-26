@@ -5,7 +5,7 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { resetRanges, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 
-import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath } from './analyticsFilter'
+import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath, pathToFilter } from './analyticsFilter'
 
 const original = Date.now
 describe('useAnalyticsFilter', () => {
@@ -237,5 +237,15 @@ describe('getSelectedNodePath', () => {
     expect(getSelectedNodePath({
       // default
     })).toEqual([{ type: 'network', name: 'Network' }])
+  })
+})
+describe('pathToFilter', () => {
+  it('does not override non venue paths', () => {
+    expect(pathToFilter(
+      [{ type: 'switch' as NodeType, name: 'mac1' }]
+    )).toEqual({
+      networkNodes: [[{ name: 'mac1', type: 'switch' }]],
+      switchNodes: [[{ name: 'mac1', type: 'switch' }]]
+    })
   })
 })

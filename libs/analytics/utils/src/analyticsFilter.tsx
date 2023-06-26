@@ -61,15 +61,17 @@ export const pathToFilter = (path: NetworkPath): PathFilter => {
     case 0:
       return {}
     case 1: // at venue level we want to see both its switches and aps
-      return {
-        networkNodes: [[{ type: 'zone', name: path[0].name }]],
-        switchNodes: [[{ type: 'switchGroup', name: path[0].name }]]
+      const { type, name } = path[0]
+      if (['zone', 'switchGroup'].includes(type)) {
+        return {
+          networkNodes: [[{ type: 'zone', name }]],
+          switchNodes: [[{ type: 'switchGroup', name }]]
+        }
       }
-    default: // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
-      return {
-        networkNodes: [path],
-        switchNodes: [path]
-      }
+  }
+  return { // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
+    networkNodes: [path],
+    switchNodes: [path]
   }
 }
 

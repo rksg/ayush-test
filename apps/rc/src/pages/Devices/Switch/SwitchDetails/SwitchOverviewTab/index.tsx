@@ -61,11 +61,12 @@ export function SwitchOverviewTab () {
       }
       _currentSwitchDevice.position=switchDetail?.position
       setCurrentSwitchDevice(_currentSwitchDevice)
-      const filter = pathToFilter([
-        { type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }])
       setSwitchFilter({
         ...dateFilter,
-        filter
+        filter: pathToFilter([{
+          type: 'switch',
+          name: switchDetail.switchMac?.toUpperCase() as string
+        }])
       })
     }
   }, [switchDetail, dateFilter])
