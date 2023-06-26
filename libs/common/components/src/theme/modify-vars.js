@@ -116,10 +116,10 @@ module.exports = {
   '@table-header-bg': 'var(--acx-primary-white)',
   '@table-header-sort-bg': 'var(--acx-primary-white)',
   '@table-body-sort-bg': 'var(--acx-primary-white)',
-  '@table-row-hover-bg': 'var(--acx-primary-white)',
-  '@table-selected-row-bg': '#FFFFFF', // var(--acx-primary-white)
+  '@table-row-hover-bg': 'var(--acx-accents-orange-10)',
+  '@table-selected-row-bg': '#FDE3C9', // var(--acx-accents-orange-20)
   '@table-body-selected-sort-bg': 'var(--acx-primary-white)',
-  '@table-selected-row-hover-bg': 'var(--acx-primary-white)',
+  '@table-selected-row-hover-bg': 'var(--acx-accents-orange-10)',
   '@table-expanded-row-bg': 'var(--acx-primary-white)',
 
   '@text-color': 'var(--acx-primary-black)',

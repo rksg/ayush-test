@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   CreateDpskPassphrasesFormFields,
   DpskDetailsTabKey,
@@ -230,7 +230,7 @@ describe('DpskPassphraseDrawer', () => {
       phoneNumber: '+886987111222'
     }
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>

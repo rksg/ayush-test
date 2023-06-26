@@ -1,7 +1,7 @@
 import { Typography } from 'antd'
 
-import { Card, GridRow, GridCol } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Card, GridRow, GridCol }     from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
@@ -21,7 +21,7 @@ export interface DpskOverviewProps {
 
 export default function DpskOverview (props: DpskOverviewProps) {
   const intl = getIntl()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data } = props
 
   return (

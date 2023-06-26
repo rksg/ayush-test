@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }             from '@acx-ui/feature-toggle'
 import type { LocationExtended }                  from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -22,9 +22,7 @@ function VenueEditTabs () {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const enableMacRegistration = useIsSplitOn(Features.MAC_REGISTRATION)
-  const enablePersona = useIsSplitOn(Features.PERSONA) && enableMacRegistration
-  const enablePropertyManagement = useIsSplitOn(Features.PROPERTY_MANAGEMENT) && enablePersona
+  const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
   const {
     editContextData,
