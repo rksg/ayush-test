@@ -18,6 +18,8 @@ import { noDataDisplay }                               from '@acx-ui/utils'
 import * as UI           from './styledComponents'
 
 import { useRecommendationListQuery, Recommendation } from './services'
+import { SCOPE_TYPE } from './config'
+
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 
@@ -119,7 +121,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       filterable: true
     },
     {
-      title: $t(defineMessage({ defaultMessage: 'Scope' })),
+      title: $t(SCOPE_TYPE),
       width: 150,
       dataIndex: 'scope',
       key: 'scope',
@@ -130,14 +132,6 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       },
       sorter: { compare: sortProp('scope', defaultSort) },
       searchable: true
-    },
-    {
-      title: $t(defineMessage({ defaultMessage: 'Type' })),
-      width: 90,
-      dataIndex: 'type',
-      key: 'type',
-      sorter: { compare: sortProp('type', defaultSort) },
-      show: false
     },
     {
       title: $t(defineMessage({ defaultMessage: 'Status' })),

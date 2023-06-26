@@ -9,21 +9,24 @@ const getApiUrls = () => {
   const r1ApiSearchURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/search`
   const raApiURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/analytics`
   const raApiSearchURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/search`
-
+  
   const isRa = get('IS_MLISA_SA')
   return {
     dataApiURL: isRa ? raApiURL : r1ApiURL,
-    dataApiSearchURL: isRa ? raApiSearchURL : r1ApiSearchURL
+    dataApiSearchURL: isRa ? raApiSearchURL : r1ApiSearchURL,
+    recommendationUrl: isRa
+    ? `${window.location.origin}/analytics/api/rsa-data-api/graphql/configRecommendation`
+    : `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/configRecommendation`
   }
 }
 
-export const { dataApiURL, dataApiSearchURL } = getApiUrls()
+export const { dataApiURL, dataApiSearchURL, recommendationUrl } = getApiUrls()
 
 // GraphQL queries are place in the context of their respective route/widget,
 // please refer to them in source folder under /apps/analytics/src
 export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
-    url:  `${window.location.origin}/analytics/api/rsa-data-api/graphql/analytics`,
+    url: dataApiURL,
     prepareHeaders: (headers) => {
       Object.entries(getJwtHeaders())
         .forEach(([header, value]) => headers.set(header, value))
@@ -38,7 +41,7 @@ export const dataApi = createApi({
 
 export const recommendationApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
-    url:  `${window.location.origin}/analytics/api/rsa-data-api/graphql/configRecommendation`,
+    url: recommendationUrl,
     prepareHeaders: (headers) => {
       Object.entries(getJwtHeaders())
         .forEach(([header, value]) => headers.set(header, value))
