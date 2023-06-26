@@ -35,7 +35,9 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const [clientsCount, devicesCount, networksCount, unitCount] = [
     (data?.totalClientCount ? Number(data.totalClientCount) : 0) +
       (data?.switchClients?.totalCount ?? 0),
-    (data?.aps?.totalApCount ?? 0) + (data?.switches?.totalCount ?? 0),
+    (data?.aps?.totalApCount ?? 0) +
+      (data?.switches?.totalCount ?? 0) +
+      (data?.edges?.totalCount ?? 0),
     data?.activeNetworkCount ?? 0,
     unitQuery?.totalCount ?? 0
   ]
