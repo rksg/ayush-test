@@ -1,4 +1,5 @@
-import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
+import { get }                               from 'lodash'
+import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
 import { GridCol, GridRow }          from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -12,7 +13,8 @@ import {
   StatusTrailWrapper
 } from './styledComponents'
 
-const trailFormatter = (trail: Array<{ status: keyof typeof states }>, trailIndex: number) => {
+const trailFormatter = (
+  trail: Array<{ status: keyof typeof states }>, trailIndex: number, $t: IntlShape['$t']) => {
   const set = trail.slice(trailIndex, trailIndex + 2)
   const patterns = [
     {
@@ -26,35 +28,39 @@ const trailFormatter = (trail: Array<{ status: keyof typeof states }>, trailInde
   ]
   for (const { pattern, replacement } of patterns) {
     const matched = pattern.every((status, index) => status === set[index]?.status)
-    if (matched) return replacement
+    if (matched) return $t(replacement)
   }
-  return statusTrailMsgs[trail[trailIndex].status]
+  const status = get(trail[trailIndex], 'status', undefined)
+  return status ? statusTrailMsgs[status] : $t({ defaultMessage: '&nbr' })
 }
 
-const getStatusTrail = (details: EnhancedRecommendation) => {
+const getStatusTrail = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
   const { statusTrail } = details
   return statusTrail.map(({ createdAt }, index) => ({
-    status: trailFormatter(statusTrail, index),
+    status: trailFormatter(statusTrail, index, $t),
     createdAt: formatter(DateFormatEnum.DateTimeFormat)(createdAt)
   }))
 }
 
 const StatusTrailItem = ({ statusTrail, $t }:
-  { statusTrail: { status: MessageDescriptor, createdAt: string }, $t: IntlShape['$t'] }) => {
+  { statusTrail: ReturnType<typeof getStatusTrail>[0],
+  $t: IntlShape['$t'] }) => {
+  if (typeof statusTrail === 'string') return null
   const { status, createdAt } = statusTrail
+  const translatedStatus = typeof status === 'string' ? status : $t(status)
   return <StatusTrailItemWrapper>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel>
       </GridCol>
-      <GridCol col={{ span: 14 }}>{$t(status)}</GridCol>
+      <GridCol col={{ span: 14 }}>{translatedStatus}</GridCol>
     </GridRow>
   </StatusTrailItemWrapper>
 }
 
 export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const statusTrail = getStatusTrail(details)
+  const statusTrail = getStatusTrail(details, $t)
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>
     <StatusTrailWrapper>
