@@ -137,7 +137,7 @@ describe('Edge Detail Page Header', () => {
     await userEvent.click(resetBtn)
 
     const resetDialog = await screen.findByRole('dialog')
-    await within(resetDialog).findByText(`Reset and Recover "${currentEdge.name}"?`)
+    await within(resetDialog).findByText(`Reset and recover "${currentEdge.name}"?`)
     await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
   })
 
