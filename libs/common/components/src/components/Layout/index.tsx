@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import ProLayout                             from '@ant-design/pro-layout'
 import { Menu }                              from 'antd'
@@ -14,7 +14,9 @@ import { useIntl } from 'react-intl'
 import { get as getEnv }                                           from '@acx-ui/config'
 import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import { Message } from './Responsive/message'
+import * as UI     from './styledComponents'
+
 
 export enum IsActiveCheck {
   STARTS_WITH_URI = 'STARTS_WITH_URI',
@@ -159,19 +161,39 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
+  const [display, setDisplay] = useState(window.innerWidth >= 1280)
+  const [subOptimalDisplay, setSubOptimalDisplay] = useState(false)
 
-  return <UI.Wrapper>
+  const updateScreenWidth = () => {
+    if(window.innerWidth >= 1280){
+      setDisplay(true)
+      setSubOptimalDisplay(false)
+    }else{
+      setDisplay(false)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', updateScreenWidth)
+
+    return () => {
+      window.removeEventListener('resize', updateScreenWidth)
+    }
+  }, [window.innerWidth])
+
+  return <UI.Wrapper showScreen={display || subOptimalDisplay} >
     <ProLayout
       breakpoint='xl'
       disableMobile={true}
       fixedHeader={true}
-      fixSiderbar={true}
+      fixSiderbar={display || subOptimalDisplay}
       location={location}
       menuContentRender={() => <SiderMenu menuConfig={menuConfig}/>}
       menuHeaderRender={() => logo}
       headerContentRender={() => leftHeaderContent &&
         <UI.LeftHeaderContentWrapper children={leftHeaderContent} />}
-      rightContentRender={() => <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
+      rightContentRender={() => (display || subOptimalDisplay) &&
+        <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>
         {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
@@ -182,7 +204,10 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      <UI.Content>{content}</UI.Content>
+      {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
+        <UI.ResponsiveContent>
+          <Message setShowScreen={setSubOptimalDisplay} />
+        </UI.ResponsiveContent>}
     </ProLayout>
   </UI.Wrapper>
 }

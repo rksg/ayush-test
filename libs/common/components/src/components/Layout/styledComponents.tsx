@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Button as AntButton,
   Divider as AntDivider,
@@ -9,7 +10,7 @@ import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 
 import modifyVars from '../../theme/modify-vars'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
@@ -17,14 +18,20 @@ export const Wrapper = styled.div`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
-
   .ant-pro-basicLayout {
     .ant-layout {
       background: var(--acx-primary-white);
-
       &.ant-layout-has-sider {
         .ant-layout-sider {
           overflow: visible !important;
+          ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              height: var(--acx-header-height);
+              position: fixed;
+              top: 0;
+              left: 0;
+              z-index: 100;
+            }`)}
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
               padding: 0;
@@ -59,10 +66,18 @@ export const Wrapper = styled.div`
           }
           &:before {
             background-color: var(--acx-primary-black);
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
           &:after {
             background-color: var(--acx-primary-white);
             border-top-left-radius: 20px;
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
         }
         .ant-menu {
@@ -128,6 +143,10 @@ export const Wrapper = styled.div`
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
           &:last-child {
             margin-top: auto;
@@ -227,7 +246,17 @@ export const Wrapper = styled.div`
     }
     &.sider-collapsed {
       .ant-layout.ant-layout-has-sider {
-        > div:first-child, .ant-layout-sider {
+        > div:first-child {
+          flex: 0 0 var(--acx-sider-collapsed-width) !important;
+          max-width: var(--acx-sider-collapsed-width) !important;
+          min-width: var(--acx-sider-collapsed-width) !important;
+          width: var(--acx-sider-collapsed-width) !important;
+          ${({ showScreen }) => (!showScreen &&
+          `@media screen and (min-width: 1279px) {
+            display: none;
+          }`)}
+        }
+        .ant-layout-sider {
           flex: 0 0 var(--acx-sider-collapsed-width) !important;
           max-width: var(--acx-sider-collapsed-width) !important;
           min-width: var(--acx-sider-collapsed-width) !important;
@@ -269,6 +298,12 @@ export const Wrapper = styled.div`
     .ant-layout-content {
       margin: 0;
       background-color: var(--acx-primary-white);
+      ${({ showScreen }) => (!showScreen &&
+      `@media screen and (max-width: 1279px) {
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3OSIgaGVpZ2h0PSI3MjAiIHZpZXdCb3g9IjAgMCAxMjc5IDcyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyOTEgLTUyLjEzOEwxMjYyLjQ1IC04OEwxMTA3LjcgLTIyLjIxNUwxMDQyLjU0IC02Ni4zMDAxTDkzNy45OTEgLTQzLjQ1ODFMODIyLjg1NCA3LjcwODA3TDc5My4xNDkgNzMuMDM2M0w4NDguMTg0IDEzNy40NTFMODkwLjMyNSAxNDkuNzg2TDEwMDEuNTUgMzUuNTc1NEw5MDMuMjIgMTk1LjQ3TDgyNy40NiAxNzEuMDI5TDgxMC40MiAxNDQuNzZMNjgzLjMwOSAzMDAuMDg2TDI4Ny42OTkgNDAzLjMzMkgyNTMuNjE5Qy0xMTIuOTc2IDI0Ny41NDkgOTcuNzIzOSAzNy44NTk2IDk5Ljc5NjQgMzYuMjYwNkM5Ny4yNjM0IDM3LjYzMTEgLTIwMC45NCAxODcuMDE4IDEzNi4xOCA0NjIuMjY0TDczLjA4NDcgNTMzLjA3NUwyOC4xODE0IDczMy44NTZMLTg1LjExMyA4MjIuOTRMLTIwOSAxMDkxLjMzSC05MS4zMzA0TC03MS45ODc0IDEwNDUuNjVMLTExOC4wNDIgMTAzNC40NkwtNDMuNjYzOCA5MDYuMDg1Qy00Ljk3Nzg4IDg4NS41MjcgMTMzLjY0NyA4MzAuMjUgMTYwLjgxOSA4MTEuNTE5TDM0NS4wMzcgNTgzLjA5OUw1NTEuNTkzIDY0Ny4yODVMNTgwLjYwNyA1MjAuMDU1TDU5MC43MzkgNTQxLjUyNkw2MDYuNjI4IDcyMi42NjRMNTE5LjM1NCAxMTA5LjYxSDY0Mi43ODFWMTA3MC4wOUw1OTYuNzI2IDEwNTAuOUw3NDYuNjM0IDcxNy4xODFDNzQ2LjYzNCA3MTcuMTgxIDk3NC42MDUgNTczLjI3NyA5NzQuMTQ0IDU3MS45MDZDOTczLjY4MyA1NzAuNTM2IDEwODQuOTEgMjI5LjI3NiAxMDg0LjkxIDIyOS4yNzZMMTIyMy4wNyAyMTcuNjI2TDEyNjMuMzcgMTYyLjU3N0gxMTAwLjMzTDEyODkuNjIgMjQuMTU0NEwxMjkxIC01Mi4xMzhaIiBmaWxsPSIjMjMxRjIwIi8+CjxwYXRoIGQ9Ik03ODQuNDE1IDczOC4yMDNMOTM0LjMyMiA2NDMuODY1TDc3Mi4yMSAxMDE4LjdMODE4LjQ5NSAxMDM2LjI5VjEwNzMuNzVMNzEwLjAzNiAxMDczLjk4TDc4NC40MTUgNzM4LjIwM1oiIGZpbGw9IiMyMzFGMjAiLz4KPHBhdGggZD0iTTQwNi4yODkgODIyLjcwOEwyMzQuOTY2IDkwOS4wNTFMMTcxLjg3MSAxMDE5LjYxTDIxOS43NjggMTAzMi44NUwyMDEuMTE2IDEwNzMuNTFIOTQuOTU5OUwxNzguMDg5IDg1Ni43NDNDMTg1LjkxOCA4NTEuOTQ2IDI3Mi43MzEgNzc0Ljk2OCAyNzIuNzMxIDc3NC45NjhMMjgwLjEgNzI2LjA4NkwzNjAuNDY1IDYyNi4yNjdMNDc3LjQ0NCA2NjMuNzI4TDQwNi4yODkgODIyLjcwOFoiIGZpbGw9IiMyMzFGMjAiLz4KPHBhdGggZD0iTTEwNTUuNDQgMzgxLjQwNkw3MTEuNjQ1IDI1My4yNjJMNzQ1Ljk1NSAyMTAuNzc2TDEwNjkuOTUgMzI2LjEyOEwxMDU1LjQ0IDM4MS40MDZaIiBmaWxsPSIjRjQ3OTIwIi8+Cjwvc3ZnPgo=");
+        background-size: cover;
+        background-repeat: no-repeat;
+      }`)}
     }
   }
 `
@@ -320,6 +355,22 @@ export const Content = styled.div`
     left: 0;
     top: var(--acx-header-height);
     height: var(--acx-content-vertical-space);
+    width: 100%;
+    background-color: var(--acx-primary-white);
+    z-index: 5;
+  }
+`
+
+export const ResponsiveContent = styled.div`
+  min-width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  &:before {
+    content: '';
+    position: fixed;
+    left: 0;
     width: 100%;
     background-color: var(--acx-primary-white);
     z-index: 5;
