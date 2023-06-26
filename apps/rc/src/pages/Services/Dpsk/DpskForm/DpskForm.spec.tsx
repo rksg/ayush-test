@@ -2,7 +2,7 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskUrls,

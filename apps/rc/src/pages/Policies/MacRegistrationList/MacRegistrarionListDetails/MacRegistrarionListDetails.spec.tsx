@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }                                            from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockServer, render, screen }                                  from '@acx-ui/test-utils'

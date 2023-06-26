@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed }                                                  from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import {
   ExpirationType,
   getPolicyRoutePath,
