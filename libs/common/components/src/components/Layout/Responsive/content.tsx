@@ -10,11 +10,11 @@ import {
 
 import * as UI from './styledComponents'
 
-interface MessageProps {
+interface ContentProps {
     setShowScreen: (value: boolean) => void
 }
 
-export function Message ({ setShowScreen }: MessageProps) {
+export function Content ({ setShowScreen }: ContentProps) {
   const { $t } = useIntl()
 
   return (
@@ -73,7 +73,7 @@ export function Message ({ setShowScreen }: MessageProps) {
         <p>{$t({ defaultMessage: 'to landscape orientation' })}</p>
       </UI.SpaceAlignBlock>
       <UI.Description style={{ marginTop: '30px' }}>
-        <Typography.Link onClick={() => setShowScreen(true)}>
+        <Typography.Link onClick={() => setShowScreen(true)} data-testid='subOptimalButton'>
           <p>{$t({ defaultMessage: 'Let me continue with sub-optimal display' })}</p>
         </Typography.Link>
       </UI.Description>

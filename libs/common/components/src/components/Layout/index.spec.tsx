@@ -7,8 +7,8 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-import { TenantType }                from '@acx-ui/react-router-dom'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { TenantType }                     from '@acx-ui/react-router-dom'
+import { fireEvent, act, render, screen } from '@acx-ui/test-utils'
 
 import menuConfig   from './stories/menuConfig'
 import { LayoutUI } from './styledComponents'
@@ -24,8 +24,16 @@ describe('Layout', () => {
     params: { tenantType: 't', tenantId: 't-id', page: 'dashboard' },
     wrapRoutes: false
   }
+
+  beforeEach(() => {
+    global.window.innerWidth = 1024
+    global.window.innerHeight = 768
+  })
+
   afterEach(() => {
     get.mockReturnValue('')
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1024
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Layout
@@ -110,5 +118,37 @@ describe('Layout', () => {
       }
     })
     await screen.findByTestId('SpeedIndicatorSolid')
+  })
+  it('should render correctly when innerWidth >= 1280', async () => {
+    render(<Layout
+      logo={<div />}
+      menuConfig={menuConfig}
+      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, { route })
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      global.window.innerWidth = 1280
+      global.window.resizeTo(1280, 1024)
+      fireEvent(global.window, new Event('resize'))
+    })
+  })
+  it('should render correctly when innerWidth < 1280', async () => {
+    render(<Layout
+      logo={<div />}
+      menuConfig={menuConfig}
+      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, { route })
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      global.window.innerWidth = 500
+      global.window.resizeTo(500, 1024)
+      fireEvent(global.window, new Event('resize'))
+    })
   })
 })

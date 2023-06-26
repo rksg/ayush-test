@@ -14,7 +14,7 @@ import { useIntl } from 'react-intl'
 import { get as getEnv }                                           from '@acx-ui/config'
 import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import { Message } from './Responsive/message'
+import { Content } from './Responsive/content'
 import * as UI     from './styledComponents'
 
 
@@ -206,7 +206,7 @@ export function Layout ({
     >
       {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
         <UI.ResponsiveContent>
-          <Message setShowScreen={setSubOptimalDisplay} />
+          <Content setShowScreen={setSubOptimalDisplay} />
         </UI.ResponsiveContent>}
     </ProLayout>
   </UI.Wrapper>
