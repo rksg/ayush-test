@@ -26,14 +26,14 @@ describe('Layout', () => {
   }
 
   beforeEach(() => {
-    global.window.innerWidth = 1024
-    global.window.innerHeight = 768
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1080
   })
 
   afterEach(() => {
     get.mockReturnValue('')
     global.window.innerWidth = 1920
-    global.window.innerHeight = 1024
+    global.window.innerHeight = 1080
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Layout
