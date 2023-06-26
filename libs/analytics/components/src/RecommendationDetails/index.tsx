@@ -1,8 +1,8 @@
-import { get }       from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { get }     from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { Kpis }                          from './kpis'
 import { Overview }                      from './overview'
