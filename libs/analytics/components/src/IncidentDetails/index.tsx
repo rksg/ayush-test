@@ -37,7 +37,7 @@ export const incidentDetailsMap = {
   'i-switch-vlan-mismatch': SwitchVlanMismatch
 }
 
-function IncidentDetailsPage () {
+export function IncidentDetails () {
   const queryResults = useIncident()
   const code = queryResults.data?.code as keyof typeof incidentDetailsMap
   const IncidentDetails = code ? incidentDetailsMap[code] : null
@@ -48,4 +48,3 @@ function IncidentDetailsPage () {
   )
 }
 
-export default IncidentDetailsPage

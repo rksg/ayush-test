@@ -9,10 +9,10 @@ import {
 
 import { api } from './services'
 
-import IncidentDetailsPage from '.'
+import { IncidentDetails } from '.'
 
-jest.mock('../IncidentDetails/IncidentAttributes', () => ({
-  ...jest.requireActual('../IncidentDetails/IncidentAttributes'),
+jest.mock('.', () => ({
+  ...jest.requireActual('.'),
   IncidentAttributes: () => <div data-testid='incidentAttributes' />
 }))
 
@@ -33,7 +33,7 @@ describe('incident details', () => {
       incidentId: fakeIncident1.id
     }
     const { asFragment } = render(<Provider>
-      <IncidentDetailsPage />
+      <IncidentDetails />
     </Provider>, { route: { params } })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
