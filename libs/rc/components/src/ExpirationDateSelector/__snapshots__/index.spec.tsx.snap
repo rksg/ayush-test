@@ -36,7 +36,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                 id="expirationDate_mode"
               >
                 <div
-                  class="sc-iBkjds bcEKQd"
+                  class="sc-ftvSup hTLrSe"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
@@ -60,7 +60,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                   </label>
                 </div>
                 <div
-                  class="sc-iBkjds jvVMUK"
+                  class="sc-ftvSup iVpeit"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -83,7 +83,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                   </label>
                 </div>
                 <div
-                  class="sc-iBkjds dfDoQf"
+                  class="sc-ftvSup kyYGvE"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
