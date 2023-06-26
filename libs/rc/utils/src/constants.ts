@@ -825,12 +825,12 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.FIBER }
       ]
     },
-    // 'C08P': {
-    //   powerSlots: 1, fanSlots: 0, portModuleSlots: [
-    //     { portLabel: PortLabelType.GENERAL },
-    //     { portLabel: PortLabelType.FIBER_1G }
-    //   ]
-    // },
+    'C08P': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.FIBER_1G }
+      ]
+    },
     'C08PT': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
@@ -1039,12 +1039,12 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL }
       ]
     },
-    'C08P': {
-      powerSlots: 1, fanSlots: 0, portModuleSlots: [
-        { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.GENERAL }
-      ]
-    },
+    // 'C08P': {
+    //   powerSlots: 1, fanSlots: 0, portModuleSlots: [
+    //     { portLabel: PortLabelType.GENERAL },
+    //     { portLabel: PortLabelType.GENERAL }
+    //   ]
+    // },
     'C08PF': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
