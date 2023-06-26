@@ -1,33 +1,18 @@
 import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }                    from '@acx-ui/components'
+import { GridRow, GridCol, PageHeader, RangePicker }                    from '@acx-ui/components'
+import { useDateFilter }                            from '@acx-ui/utils'
 
-import { Header }             from '../Header'
-import { IncidentBySeverity } from '../IncidentBySeverity'
 import { RecommendationTable }      from '../Recommendations/table'
-import { NetworkHistory }     from '../NetworkHistory'
+import moment from 'moment-timezone'
 
-export const IncidentTabContent = (props: {
-  filters?: AnalyticsFilter,
-  disableGraphs?: boolean
-}) => {
-  const { filters: widgetFilters, disableGraphs } = props
+export const RecommendationTabContent = () => {
   const { filters } = useAnalyticsFilter()
-  const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   return (
     <GridRow>
-      {disableGraphs ? null : <>
-        <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
-          <IncidentBySeverity type='bar' filters={incidentsPageFilters} />
-        </GridCol>
-        <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
-          <NetworkHistory hideTitle filters={incidentsPageFilters} type='no-border' />
-        </GridCol>
-      </>
-      }
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-        <RecommendationTable filters={incidentsPageFilters} />
+        <RecommendationTable filters={filters} />
       </GridCol>
     </GridRow>
   )
@@ -36,20 +21,27 @@ export const IncidentTabContent = (props: {
 export function Recommendations () {
   const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
-  return (
-    <>
-      <Header
-        title={$t({ defaultMessage: 'Recommendations' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'AI Assurance' }) },
-          { text: $t({ defaultMessage: 'AI Analytics' }) }
-        ]}
-        shouldQuerySwitch={false}
-      />
-       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-         <RecommendationTable filters={filters} /> 
-      </GridCol>
-      {/* <IncidentTabContent/> */}
-    </>
-  )
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+
+  return (<>
+    <PageHeader
+      breadcrumb={[
+        { text: $t({ defaultMessage: 'AI Assurance' }) }
+      ]}
+      title={$t({ defaultMessage: 'AI Analytics' })}
+      extra={[<RangePicker
+        key='range-picker'
+        selectedRange={{
+          startDate: moment(startDate),
+          endDate: moment(endDate)
+        }}
+        onDateApply={setDateFilter as CallableFunction}
+        showTimePicker
+        selectionType={range}
+      />]}
+    />
+    <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
+      <RecommendationTable filters={filters} /> 
+    </GridCol>
+  </>)
 }

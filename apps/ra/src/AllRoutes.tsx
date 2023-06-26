@@ -2,7 +2,7 @@ import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-rout
 
 import Incidents from './pages/Incidents'
 import Layout    from './pages/Layout'
-import { Recommendations } from '@acx-ui/analytics/components'
+import Recommendations  from './pages/Recommendations'
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
 

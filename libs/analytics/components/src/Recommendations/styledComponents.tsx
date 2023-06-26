@@ -4,8 +4,8 @@ import { Table } from '@acx-ui/components'
 
 const colors = {
   High: '--acx-semantics-red-60',
-  Medium: '--acx-semantics-yellow-70',
-  Low: '--acx-semantics-yellow-40'
+  Medium: '--acx-semantics-yellow-60',
+  Low: '--acx-semantics-yellow-30'
 }
 
 export const withDottedUnderline = `

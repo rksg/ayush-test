@@ -18,15 +18,17 @@ export type HeaderData = {
 
 type useHeaderExtraProps = {
   shouldQuerySwitch: boolean,
-  withIncidents?: boolean
+  withIncidents?: boolean,
+  excludeNetworkFilter?: boolean
 }
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & useHeaderExtraProps
 
-const Filter = ({ shouldQuerySwitch, withIncidents }: useHeaderExtraProps) => {
-  const isRa = Boolean(get('IS_MLISA_SA'))
-  return isRa
-    ? null
-    : <NetworkFilter
+const Filter = (
+  { shouldQuerySwitch, withIncidents, excludeNetworkFilter }: useHeaderExtraProps
+) => {
+  return excludeNetworkFilter
+      ? null 
+      : <NetworkFilter
       key='network-filter'
       shouldQuerySwitch={shouldQuerySwitch}
       withIncidents={withIncidents}
@@ -40,6 +42,7 @@ export const useHeaderExtra = (props: useHeaderExtraProps) => {
       key='network-filter'
       shouldQuerySwitch={props.shouldQuerySwitch}
       withIncidents={props.withIncidents}
+      excludeNetworkFilter={props.excludeNetworkFilter}
     />,
     <RangePicker
       key='range-picker'
