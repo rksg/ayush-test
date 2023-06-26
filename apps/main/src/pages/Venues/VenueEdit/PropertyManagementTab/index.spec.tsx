@@ -3,7 +3,7 @@ import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { rest }            from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   MacRegListUrlsInfo,
@@ -201,7 +201,7 @@ describe('Property Config Tab', () => {
   })
 
   it('should render Property config tab with msg-template', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>
