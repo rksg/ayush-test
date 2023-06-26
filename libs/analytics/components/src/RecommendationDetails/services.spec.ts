@@ -97,7 +97,7 @@ describe('recommendation services', () => {
       metadata: {},
       monitoring: null,
       originalValue: [
-        { channelMode: null, channelWidth: null, radio: '2.4' }
+        { channelMode: 'CHANNEL_FLY', channelWidth: '_80MHZ', radio: '2.4' }
       ],
       path: [
         { name: 'vsz34', type: 'system' },
@@ -108,6 +108,11 @@ describe('recommendation services', () => {
       sliceType: 'zone',
       sliceValue: '21_US_Beta_Samsung',
       status: 'applied',
+      kpi_number_of_interfering_links: {
+        current: 0,
+        previous: null,
+        projected: 0
+      },
       statusTrail: mockedRecommendationCRRM.statusTrail
     } as unknown as EnhancedRecommendation)
   })

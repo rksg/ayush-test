@@ -126,9 +126,9 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
     ? $t({ defaultMessage: 'Original Configuration' })
     : $t({ defaultMessage: 'Current Configuration' })
   const secondValue = applied ? current : recommended
-  const secondLabel = !applied
-    ? $t({ defaultMessage: 'Original Configuration' })
-    : $t({ defaultMessage: 'Current Configuration' })
+  const secondLabel = applied
+    ? $t({ defaultMessage: 'Current Configuration' })
+    : $t({ defaultMessage: 'Recommended Configuration' })
   const recommendationText = getRecommendationsText(details, $t)
   const tooltipText = typeof tooltipContent === 'string'
     ? tooltipContent

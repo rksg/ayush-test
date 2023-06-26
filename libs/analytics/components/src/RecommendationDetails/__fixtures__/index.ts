@@ -1,14 +1,57 @@
 import { RecommendationDetails } from '../services'
 
-export const mockedRecommendationCRRM: RecommendationDetails = {
+export const mockedRecommendationPower = {
+  id: '30d997ab-2c1d-4002-bac5-75d164c4def9',
+  code: 'c-txpower-same',
+  status: 'new',
+  appliedTime: null,
+  originalValue: null,
+  currentValue: '_FULL',
+  recommendedValue: '_1DB',
+  metadata: {},
+  sliceType: 'zone',
+  sliceValue: '12-US-CA-D12-Guru-Home',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '12-US-CA-D12-Guru-Home'
+    },
+    {
+      type: 'zone',
+      name: '12-US-CA-D12-Guru-Home'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'new',
+      createdAt: '2023-06-25T06:05:13.243Z'
+    }
+  ],
+  kpi_co_channel_interference: {
+    current: null,
+    previous: null,
+    projected: null
+  },
+  kpi_session_time_on_24_g_hz: {
+    current: 0.022116903633491312,
+    previous: null,
+    projected: null
+  }
+} as unknown as RecommendationDetails
+
+export const mockedRecommendationCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
   appliedTime: '2023-06-25T00:00:25.772Z',
   originalValue: [
     {
-      channelMode: null,
-      channelWidth: null,
+      channelMode: 'CHANNEL_FLY',
+      channelWidth: '_80MHZ',
       radio: '2.4'
     }
   ],
@@ -208,7 +251,12 @@ export const mockedRecommendationCRRM: RecommendationDetails = {
       status: 'new',
       createdAt: '2023-05-17T07:04:11.663Z'
     }
-  ]
+  ],
+  kpi_number_of_interfering_links: {
+    current: 0,
+    previous: null,
+    projected: 0
+  }
 } as unknown as RecommendationDetails
 
 export const mockedRecommendationFirmware = {
