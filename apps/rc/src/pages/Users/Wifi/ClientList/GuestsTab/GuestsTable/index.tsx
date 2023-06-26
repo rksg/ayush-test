@@ -225,18 +225,19 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       dataIndex: 'name',
       searchable: true,
       sorter: true,
+      ellipsis: true,
       defaultSortOrder: 'ascend',
       render: (data, row, __, highlightFn) =>
-        <Button
-          type='link'
-          size='small'
+        // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        <a
+          // eslint-disable-next-line no-script-url
+          href='javascript: void(0)'
           onClick={() => {
             setCurrentGuest(row)
             setVisible(true)
           }}
-        >
-          {highlightFn(row.name as string)}
-        </Button>
+          children={highlightFn(row.name as string)}
+        />
     }, {
       key: 'mobilePhoneNumber',
       title: $t({ defaultMessage: 'Phone' }),

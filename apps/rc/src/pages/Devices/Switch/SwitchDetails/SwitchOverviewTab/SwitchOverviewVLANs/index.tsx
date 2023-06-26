@@ -92,17 +92,7 @@ export function SwitchOverviewVLANs () {
       key: 'untaggedPorts',
       title: $t({ defaultMessage: 'Untagged Ports' }),
       dataIndex: 'untaggedPorts',
-      ellipsis: false, //TODO: Need to check the root cause
-      render: (data) => (
-        <div style={{
-          width: '200px',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis'
-        }}>
-          {data}
-        </div>
-      )
+      ellipsis: true
     }, {
       key: 'taggedPorts',
       title: $t({ defaultMessage: 'Tagged Ports' }),
