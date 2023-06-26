@@ -7,7 +7,7 @@ export const DetailsHeader = styled.div`
   font-style: normal;
   font-weight: 700;
   font-size: 16px;
-  margin-bottom: 13px;
+  margin-bottom: 12px;
 `
 
 export const ValueDetails = styled.div`
@@ -20,7 +20,7 @@ export const ValueDetailsWithIcon = styled.span`
 `
 
 export const DetailsWrapper = styled.div`
-  height: 120px
+  height: 150px;
 `
 
 export const RecommendationDivider = styled.div`
@@ -82,6 +82,6 @@ export const RecommendationApImpacted = styled.div`
 `
 
 export const KpiContentWrapper = styled.div`
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
 `

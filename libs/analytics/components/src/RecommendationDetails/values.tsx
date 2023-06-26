@@ -162,31 +162,31 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
           </GridCol>
         </GridRow>
       </Card>
-      <RecommendationCardWrapper>
-        <GridRow>
-          <GridCol col={{ span: 24 }}>
-            <RecommendationTitle>
-              {$t({ defaultMessage: 'What is the recommendation?' })}
-            </RecommendationTitle>
-            <RecommendationDivider />
-            {recommendationText.actionText}
-          </GridCol>
-          <GridCol col={{ span: 24 }}>
-            <RecommendationTitle>
-              {$t({ defaultMessage: 'Why this recommendation?' })}
-            </RecommendationTitle>
-            <RecommendationDivider />
-            {recommendationText.reasonText}
-          </GridCol>
-          <GridCol col={{ span: 24 }}>
-            <RecommendationTitle>
-              {$t({ defaultMessage: 'What is the potential trade-off?' })}
-            </RecommendationTitle>
-            <RecommendationDivider />
-            {recommendationText.tradeoffText}
-          </GridCol>
-        </GridRow>
-      </RecommendationCardWrapper>
     </DetailsWrapper>
+    <RecommendationCardWrapper>
+      <GridRow>
+        <GridCol col={{ span: 24 }}>
+          <RecommendationTitle>
+            {$t({ defaultMessage: 'What is the recommendation?' })}
+          </RecommendationTitle>
+          <RecommendationDivider />
+          {recommendationText.actionText}
+        </GridCol>
+        <GridCol col={{ span: 24 }}>
+          <RecommendationTitle>
+            {$t({ defaultMessage: 'Why this recommendation?' })}
+          </RecommendationTitle>
+          <RecommendationDivider />
+          {recommendationText.reasonText}
+        </GridCol>
+        <GridCol col={{ span: 24 }}>
+          <RecommendationTitle>
+            {$t({ defaultMessage: 'What is the potential trade-off?' })}
+          </RecommendationTitle>
+          <RecommendationDivider />
+          {recommendationText.tradeoffText}
+        </GridCol>
+      </GridRow>
+    </RecommendationCardWrapper>
   </>
 }

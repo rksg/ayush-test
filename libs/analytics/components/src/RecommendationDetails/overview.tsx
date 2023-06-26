@@ -6,7 +6,7 @@ import { capitalize } from 'lodash'
 import { useIntl, MessageDescriptor, MessageFormatElement } from 'react-intl'
 
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { formatter }          from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import { DescriptionSection } from '@acx-ui/analytics/components'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
@@ -69,7 +69,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const Icon = () => <Badge color={`var(${iconColor})`} text={capitalize($t(priority))}/>
   const fields = [
     { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
-    { label: $t({ defaultMessage: 'Date' }), children: formatter('calendarFormat')(moment(createdAt)) },
+    { label: $t({ defaultMessage: 'Date' }), children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     { label: $t({ defaultMessage: 'Category' }), children: $t(category) },
     { label: $t({ defaultMessage: 'Venue' }), children: sliceValue },
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }

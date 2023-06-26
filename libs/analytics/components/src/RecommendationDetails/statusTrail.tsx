@@ -1,14 +1,16 @@
 import { defineMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
-import { GridCol, GridRow } from '@acx-ui/components'
-import { formatter }        from '@acx-ui/formatter'
+import { GridCol, GridRow }          from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { states, statusTrailMsgs }                                                         from './configRecommendationData'
-import { EnhancedRecommendation }                                                          from './services'
-import { DetailsHeader, StatusTrailDateLabel, StatusTrailItemWrapper, StatusTrailWrapper } from './styledComponents'
-
-
-
+import { states, statusTrailMsgs } from './configRecommendationData'
+import { EnhancedRecommendation }  from './services'
+import {
+  DetailsHeader,
+  StatusTrailDateLabel,
+  StatusTrailItemWrapper,
+  StatusTrailWrapper
+} from './styledComponents'
 
 const trailFormatter = (trail: Array<{ status: keyof typeof states }>, trailIndex: number) => {
   const set = trail.slice(trailIndex, trailIndex + 2)
@@ -33,7 +35,7 @@ const getStatusTrail = (details: EnhancedRecommendation) => {
   const { statusTrail } = details
   return statusTrail.map(({ createdAt }, index) => ({
     status: trailFormatter(statusTrail, index),
-    createdAt: formatter('calendarFormat')(createdAt)
+    createdAt: formatter(DateFormatEnum.DateTimeFormat)(createdAt)
   }))
 }
 
