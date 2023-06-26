@@ -131,7 +131,6 @@ const ApplicationPolicyMgmt = ()=>{
     const removed = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_REMOVED]?.data ?? []
     const renamed = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_RENAMED]?.data ?? []
 
-
     const tabs = {
       APPLICATION_ADDED: {
         title: <UI.TabSpan>
