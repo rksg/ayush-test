@@ -65,7 +65,7 @@ export interface Network {
   vlan: number
   aps: number
   clients: number
-  venues: { count: number, names: string[] }
+  venues: { count: number, names: string[], ids: string[] }
   captiveType: GuestNetworkTypeEnum
   deepNetwork?: NetworkDetail
   vlanPool?: { name: string }
