@@ -39,8 +39,11 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   const [enableSecondaryServer, type ] =
     [useWatch('enableSecondaryServer'), useWatch('type')]
   const nameValidator = async (value: string) => {
-    return checkObjectNotExists(aaaPolicyList?.data!, { name: value } ,
-      $t({ defaultMessage: 'AAA Policy' }))
+    const policyList = aaaPolicyList?.data!
+    return checkObjectNotExists(policyList.filter(
+      policy => edit ? policy.name !== value : true
+    ), { name: value } ,
+    $t({ defaultMessage: 'AAA Policy' }))
   }
   const radiusIpPortValidator = async (isPrimary: boolean) => {
     const primaryValue =
@@ -53,7 +56,11 @@ const AAASettingForm = (props: AAASettingFormProps) => {
         defaultMessage: 'IP address and Port combinations must be unique'
       }))
     }
-    if (aaaPolicyIpList.includes(value)) {
+
+    if (aaaPolicyIpList
+      .filter(policy => edit ? policy !== value : true)
+      .includes(value)
+    ) {
       return Promise.reject($t({
         // eslint-disable-next-line max-len
         defaultMessage: 'IP address and Port combinations must be unique, there is an existing combination in the list.'
