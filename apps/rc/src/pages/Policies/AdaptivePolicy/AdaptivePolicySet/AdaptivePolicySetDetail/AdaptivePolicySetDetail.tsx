@@ -3,7 +3,7 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
 import {
   useGetAdaptivePolicySetQuery,
   useGetDpskListQuery,
@@ -27,7 +27,7 @@ export default function AdaptivePolicySetDetail () {
   const { policyId, tenantId } = useParams()
   const { Paragraph } = Typography
 
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })
