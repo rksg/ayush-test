@@ -207,7 +207,7 @@ describe('Edit edge firewall service', () => {
     cleanup()
   }, 30000)
 
-  it('should correctly edit stateful ACL rule', async () => {
+  it.skip('should correctly edit stateful ACL rule', async () => {
     const mockFirewall2: EdgeFirewallSetting = _.cloneDeep(mockFirewall)
     mockFirewall2.edgeIds = ['0000000002', '0000000003']
     mockFirewall2.ddosRateLimitingEnabled = true

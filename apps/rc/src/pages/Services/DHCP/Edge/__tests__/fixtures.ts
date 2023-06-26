@@ -148,7 +148,7 @@ export const mockDhcpPoolStatsData = {
 export const mockDhcpStatsData = {
   fields: [
     'tenantId','id','serviceName','serviceType','dhcpRelay','dhcpPoolNum',
-    'edgeNum','venueNum','leaseTime', 'updateAvailable', 'serviceVersion',
+    'edgeNum','venueNum','leaseTime', 'currentVersion', 'targetVersion',
     'tags'
   ],
   totalCount: 3,
@@ -165,8 +165,8 @@ export const mockDhcpStatsData = {
       venueNum: 3,
       leaseTime: '24 hours',
       health: 'Good',
-      updateAvailable: 'NO',
-      serviceVersion: '0.0.1',
+      currentVersion: '1.0.1',
+      targetVersion: '1.0.2',
       tags: ['Tag1']
     },
     {
@@ -180,8 +180,8 @@ export const mockDhcpStatsData = {
       venueNum: 3,
       leaseTime: '24 hours',
       health: 'Good',
-      updateAvailable: 'NO',
-      serviceVersion: '0.0.1',
+      currentVersion: '',
+      targetVersion: '1.0.2',
       tags: ['Tag1']
     },{
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -194,8 +194,8 @@ export const mockDhcpStatsData = {
       venueNum: 3,
       leaseTime: '24 hours',
       health: 'Good',
-      updateAvailable: 'NO',
-      serviceVersion: '0.0.1',
+      currentVersion: '1.0.2',
+      targetVersion: '1.0.2',
       tags: ['Tag1']
     }
   ]

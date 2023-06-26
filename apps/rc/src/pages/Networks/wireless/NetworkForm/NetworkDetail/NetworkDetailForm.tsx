@@ -6,7 +6,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
   apNameRegExp,
@@ -124,7 +124,7 @@ export function NetworkDetailForm () {
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
-    { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
+    { type: NetworkTypeEnum.AAA, disabled: !useIsTierAllowed(Features.CLOUDPATH_BETA) },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
