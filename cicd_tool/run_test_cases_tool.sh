@@ -15,6 +15,13 @@ do
     cmd="${RUN_COMMAND} ${nx_param}"
     echo $cmd
     bash -c $cmd
+    ret=$?
+    echo "ret: $ret"
+    if [ ! "$ret" -eq 0 ]; then
+        echo "$cmd"
+        echo "[Fail] Test case is failure."
+        exit 1
+    fi
 done
 
 bash -c "mkdir -p /app/coverage"

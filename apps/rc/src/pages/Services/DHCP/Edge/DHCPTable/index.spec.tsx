@@ -184,4 +184,19 @@ describe('EdgeDhcpTable', () => {
     await screen.findByText('Are you sure you want to update these services to the latest version immediately?')
     await user.click(screen.getByRole('button', { name: 'OK' }))
   })
+
+  it('should show [Update Available] correctly', async () => {
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
+    expect(await within(row).findByText('Yes')).toBeValid()
+    const row1 = await screen.findByRole('row', { name: /TestDHCP-2/i })
+    expect(await within(row1).findByText('Yes')).toBeValid()
+    const row2 = await screen.findByRole('row', { name: /TestDHCP-3/i })
+    expect(await within(row2).findByText('No')).toBeValid()
+  })
 })

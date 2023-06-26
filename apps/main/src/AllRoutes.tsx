@@ -24,11 +24,12 @@ import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
 import { VenuesForm }   from './pages/Venues/VenuesForm'
 import { VenuesTable }  from './pages/Venues/VenuesTable'
-
-const RcRoutes = React.lazy(() => import('rc/Routes'))
-const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
-const ReportsRoutes = React.lazy(() => import('reports/Routes'))
-const MspRoutes = React.lazy(() => import('msp/Routes'))
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+const AnalyticsRoutes = React.lazy(() => import('@analytics/Routes'))
+const MspRoutes = React.lazy(() => import('@msp/Routes'))
+const RcRoutes = React.lazy(() => import('@rc/Routes'))
+const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
+/* eslint-enable @nrwl/nx/enforce-module-boundaries */
 
 function AllRoutes () {
   useStreamActivityMessagesQuery({})

@@ -165,7 +165,7 @@ const MigrationForm = () => {
             return true
           }}
         >
-          <MigrationSettingForm />
+          <MigrationSettingForm countryCode={validateZdApsResult.countryCode} />
         </StepsFormLegacy.StepForm>
 
         <StepsFormLegacy.StepForm
