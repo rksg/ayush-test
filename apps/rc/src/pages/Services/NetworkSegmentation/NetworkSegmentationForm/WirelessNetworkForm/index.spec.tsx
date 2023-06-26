@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
 
-import { logRoles } from '@storybook/testing-library'
-import userEvent    from '@testing-library/user-event'
-import { Form }     from 'antd'
-import { rest }     from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { StepsForm }                                           from '@acx-ui/components'
+import { StepsForm }  from '@acx-ui/components'
 import {
-  CommonUrlsInfo, TunnelProfileUrls, NetworkSegmentationUrls
+  CommonUrlsInfo,
+  NetworkSegmentationUrls,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -20,9 +21,9 @@ import {
 
 import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
-  mockVenueNetworkData,
   mockNetworkGroup,
-  mockNsgStatsList
+  mockNsgStatsList,
+  mockVenueNetworkData
 } from '../../__tests__/fixtures'
 
 
@@ -101,7 +102,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       return form
     })
     const user = userEvent.setup()
-    const { container } = render(
+    render(
       <Provider>
         <StepsForm form={formRef.current} onFinish={mockedFinishFn}>
           <StepsForm.StepForm>
@@ -119,7 +120,6 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const usedNetowrkIds = mockNsgStatsList.data.flatMap(item => item.networkIds)
     const unusedNetworkOptions = mockNetworkGroup.response.length - usedNetowrkIds.length
     expect(checkboxs.length).toBe(unusedNetworkOptions)
-    logRoles(container)
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
   })
