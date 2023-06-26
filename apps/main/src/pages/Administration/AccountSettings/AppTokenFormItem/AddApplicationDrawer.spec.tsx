@@ -2,8 +2,8 @@ import userEvent from '@testing-library/user-event'
 // import { ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
 import {
   render,
   screen,
@@ -14,6 +14,17 @@ import {
 } from '@acx-ui/test-utils'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
+
+const tenantAuthenticationData =
+{
+  id: '1',
+  name: 'test123',
+  authenticationType: TenantAuthenticationType.ldap,
+  clientID: '123',
+  clientIDStatus: ApplicationAuthenticationStatus.ACTIVE,
+  clientSecret: 'secret123'
+}
+
 
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
@@ -32,7 +43,7 @@ describe('Add Application Drawer', () => {
     )
     jest.spyOn(services, 'useUpdateTenantAuthenticationsMutation')
     mockServer.use(
-      rest.post(
+      rest.put(
         AdministrationUrlsInfo.updateTenantAuthentications.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
@@ -193,6 +204,35 @@ describe('Add Application Drawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
     await waitFor(()=>
       expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
+    await waitFor(() => {
+      expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
+    })
+  })
+  it('should save edited token correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={true}
+          editData={tenantAuthenticationData}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Edit API Token')).toBeVisible()
+    expect(screen.getByDisplayValue('test123')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Generate Secret' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '456' },
+      status: 'fulfilled'
+    })]
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+    await waitFor(()=>
+      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
     })

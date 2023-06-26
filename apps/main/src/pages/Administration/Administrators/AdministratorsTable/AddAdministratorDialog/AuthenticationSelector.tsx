@@ -8,16 +8,20 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { SpaceWrapper } from '@acx-ui/rc/components'
 
-export enum ECCustomerRadioButtonEnum {
+interface AuthenticationSelectorProps {
+  ssoConfigured: boolean
+}
+
+export enum AuthTypeRadioButtonEnum {
   sso = 'sso',
   idm = 'idm'
 }
 
-export const GetAuthTypeString = (type: ECCustomerRadioButtonEnum) => {
+export const GetAuthTypeString = (type: AuthTypeRadioButtonEnum) => {
   switch (type) {
-    case ECCustomerRadioButtonEnum.sso:
+    case AuthTypeRadioButtonEnum.sso:
       return defineMessage({ defaultMessage: 'SSO with 3rd Party' })
-    case ECCustomerRadioButtonEnum.idm:
+    case AuthTypeRadioButtonEnum.idm:
       return defineMessage({ defaultMessage: 'RUCKUS Identity Management' })
   }
 }
@@ -25,17 +29,19 @@ export const GetAuthTypeString = (type: ECCustomerRadioButtonEnum) => {
 export const getAuthTypes = () => {
   return [
     {
-      label: GetAuthTypeString(ECCustomerRadioButtonEnum.sso),
-      value: ECCustomerRadioButtonEnum.sso
+      label: GetAuthTypeString(AuthTypeRadioButtonEnum.sso),
+      value: AuthTypeRadioButtonEnum.sso
     },
     {
-      label: GetAuthTypeString(ECCustomerRadioButtonEnum.idm),
-      value: ECCustomerRadioButtonEnum.idm
+      label: GetAuthTypeString(AuthTypeRadioButtonEnum.idm),
+      value: AuthTypeRadioButtonEnum.idm
     }]
 }
 
-const AuthenticationSelector = () => {
+const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
   const { $t } = useIntl()
+
+  const { ssoConfigured } = props
 
   const authTypesList = getAuthTypes().map((item) => ({
     label: $t(item.label),
@@ -46,14 +52,15 @@ const AuthenticationSelector = () => {
     <Form.Item
       name='authType'
       label={$t({ defaultMessage: 'Authentication Type' })}
-      initialValue={ECCustomerRadioButtonEnum.idm}
+      initialValue={AuthTypeRadioButtonEnum.idm}
       rules={[{ required: true }]}
     >
       <Radio.Group style={{ width: '100%' }}>
         <SpaceWrapper full direction='vertical' size='middle'>
           {authTypesList.map((item) => {
             return (
-              <Radio value={item.value}>
+              <Radio disabled={!ssoConfigured && item.value === AuthTypeRadioButtonEnum.sso}
+                value={item.value}>
                 {item.label}
               </Radio>
             )})}

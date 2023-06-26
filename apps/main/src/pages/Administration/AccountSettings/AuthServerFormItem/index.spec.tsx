@@ -5,8 +5,8 @@ import { Provider }                                                  from '@acx-
 import {
   render,
   screen,
-  // waitFor,
-  fireEvent
+  fireEvent,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { AuthServerFormItem } from '.'
@@ -32,15 +32,30 @@ const tenantAuthenticationData = [
 
 const emptyData = [{ name: '1', authenticationType: TenantAuthenticationType.ldap }]
 
+const xmlText = '<note><to>Me</to><from>You</from><heading>Reminder</heading><body></body></note>'
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const utils = require('@acx-ui/utils')
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils')
+}))
 
 describe('Auth Server Form Item', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    utils.loadImageWithJWT = jest.fn().mockImplementation(() =>
+      Promise.resolve('fileUrl')
+    )
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(xmlText),
+        text: () => Promise.resolve(xmlText)
+      })
+    )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -133,7 +148,9 @@ describe('Auth Server Form Item', () => {
 
     expect(screen.getByText('Enable SSO with 3rd Party provider')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'View XML code' }))
-    expect(screen.getAllByText('IdP Metadata')).toHaveLength(2)
+    await waitFor(() => {
+      expect(screen.getAllByText('IdP Metadata')).toHaveLength(2)
+    })
     expect(screen.getByRole('button', { name: 'Ok' })).toBeEnabled()
   })
   it('should navigate correctly when manage sso users button is clicked', async () => {

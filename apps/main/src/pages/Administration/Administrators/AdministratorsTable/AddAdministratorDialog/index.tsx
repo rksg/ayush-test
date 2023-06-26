@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import {
@@ -14,21 +14,24 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Modal, showActionModal }  from '@acx-ui/components'
+import { Modal, showActionModal }    from '@acx-ui/components'
 import {
   useAddAdminMutation,
-  useGetRegisteredUsersListQuery
+  useGetRegisteredUsersListQuery,
+  useGetTenantAuthenticationsQuery
 } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CatchErrorDetails,
-  emailRegExp
+  emailRegExp,
+  TenantAuthenticationType,
+  TenantAuthentications
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import AuthenticationSelector                             from './AuthenticationSelector'
-import MspCustomerSelector, { ECCustomerRadioButtonEnum } from './MspCustomersSelector'
-import RoleSelector                                       from './RoleSelector'
+import AuthenticationSelector, { AuthTypeRadioButtonEnum } from './AuthenticationSelector'
+import MspCustomerSelector, { ECCustomerRadioButtonEnum }  from './MspCustomersSelector'
+import RoleSelector                                        from './RoleSelector'
 
 
 interface AddAdministratorDialogProps {
@@ -46,7 +49,9 @@ interface AddAdministratorDataModel {
   externalId?: string;
   delegateToAllECs?: boolean;
   delegatedECs?: string[];
-  // authenticationId?: string;
+  authenticationId?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
@@ -62,6 +67,11 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   const [form] = Form.useForm()
   const userType = Form.useWatch('userType', form)
   const [addAdmin, { isLoading: isAddAdminUpdating }] = useAddAdminMutation()
+  const [isSsoConfigured, setSsoConfigured] = useState(false)
+  const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
+
+  const tenantAuthenticationData =
+    useGetTenantAuthenticationsQuery({ params })
 
   const {
     data: registerUsersList,
@@ -144,7 +154,11 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
       if (userType === 'new') {
         payload.email = formValues.newEmail
-        // payload.authenticationId = '76c223d990794fe1a6d5ffe9ba6489f4'
+        if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
+          payload.authenticationId = authenticationData.id
+        }
+        // payload.lastName = formValues.lastName ?? ''
+        // payload.firstName = formValues.firstName ?? ''
       } else {
         payload.email = formValues.email
         payload.externalId = _.find(registerUsersList, { email: formValues.email })?.externalId
@@ -166,6 +180,14 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   useEffect(() => {
     if (form && registerUsersList) {
       form.setFieldValue('userType', registerUsersList.length > 0 ? 'existing' : 'new')
+    }
+    if (tenantAuthenticationData) {
+      const ssoData = tenantAuthenticationData.data?.filter(n =>
+        n.authenticationType === TenantAuthenticationType.saml)
+      if (ssoData?.length && ssoData?.length > 0) {
+        setSsoConfigured(true)
+        setAuthenticationData(ssoData[0])
+      }
     }
   }, [form, registerUsersList])
 
@@ -195,7 +217,9 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         onFinish={handleSubmit}
       >
         <Space direction='vertical' style={{ width: '100%' }} >
-          <AuthenticationSelector />
+          <AuthenticationSelector
+            ssoConfigured={isSsoConfigured}
+          />
 
           <Form.Item name='userType' initialValue='new'>
             <Radio.Group style={{ width: '100%' }}>
@@ -271,7 +295,8 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                         {
                           message: $t({ defaultMessage: 'Please enter first name' })
                         },
-                        { validator: (_, value) => emailRegExp(value) }
+                        { min: 2 },
+                        { max: 64 }
                       ]}
                       initialValue=''
                     >
@@ -285,13 +310,14 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                 <Row justify='space-between'>
                   <Col span={24}>
                     <Form.Item
-                      name='familyName'
+                      name='lastName'
                       label={$t({ defaultMessage: 'Family Name' })}
                       rules={[
                         {
                           message: $t({ defaultMessage: 'Please enter family name' })
                         },
-                        { validator: (_, value) => emailRegExp(value) }
+                        { min: 2 },
+                        { max: 64 }
                       ]}
                       initialValue=''
                     >

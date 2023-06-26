@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Col, Row } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Form, Col, Row, Input } from 'antd'
+import { useIntl }               from 'react-intl'
 
 import { Button, Card, PasswordInput, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { CopyOutlined }                                                    from '@acx-ui/icons'
 import {
   useDeleteTenantAuthenticationsMutation,
   useUpdateTenantAuthenticationsMutation
@@ -79,7 +80,26 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Client ID' }),
         dataIndex: 'clientID',
-        key: 'clientID'
+        key: 'clientID',
+        width: 245,
+        render: function (data, row) {
+          return <div>
+            <Input
+              readOnly
+              bordered={false}
+              value={row.clientID}
+              style={{ overflow: 'hidden', width: '190px' }}
+            />
+            <Button
+              ghost
+              data-testid={'copy'}
+              icon={<CopyOutlined />}
+              onClick={() =>
+                navigator.clipboard.writeText(row.clientID ?? '')
+              }
+            />
+          </div>
+        }
       },
       {
         title: $t({ defaultMessage: 'Share Secret' }),
@@ -91,6 +111,14 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               readOnly
               bordered={false}
               value={row.clientSecret}
+            />
+            <Button
+              ghost
+              data-testid={'copy'}
+              icon={<CopyOutlined />}
+              onClick={() =>
+                navigator.clipboard.writeText(row.clientSecret ?? '')
+              }
             />
           </div>
         }

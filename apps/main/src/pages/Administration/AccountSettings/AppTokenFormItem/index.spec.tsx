@@ -1,12 +1,14 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { Provider }                                                  from '@acx-ui/store'
+import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
 import {
   render,
   screen,
   within,
-  waitFor
+  waitFor,
+  mockServer
 } from '@acx-ui/test-utils'
 
 import { AppTokenFormItem } from '.'
@@ -28,11 +30,37 @@ const tenantAuthenticationData = [
     clientIDStatus: ApplicationAuthenticationStatus.REVOKED,
     clientSecret: 'secret456'
   }
+  ,
+  {
+    id: '3',
+    name: 'test789',
+    authenticationType: TenantAuthenticationType.ldap,
+    clientIDStatus: ApplicationAuthenticationStatus.REVOKED
+  }
 ]
+
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
 
 describe('App Token Form Item', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    jest.spyOn(services, 'useDeleteTenantAuthenticationsMutation')
+    mockServer.use(
+      rest.delete(
+        AdministrationUrlsInfo.deleteTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      )
+    )
+    jest.spyOn(services, 'useUpdateTenantAuthenticationsMutation')
+    mockServer.use(
+      rest.put(
+        AdministrationUrlsInfo.updateTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -77,10 +105,47 @@ describe('App Token Form Item', () => {
     expect(rows).toHaveLength(tenantAuthenticationData.length)
     expect(screen.getByText('test123')).toBeVisible()
     expect(screen.getByText('ACTIVE')).toBeVisible()
-    expect(screen.getByText('123')).toBeVisible()
+    expect(screen.getByDisplayValue('123')).toBeVisible()
     expect(screen.getByText('test456')).toBeVisible()
-    expect(screen.getByText('REVOKED')).toBeVisible()
-    expect(screen.getByText('456')).toBeVisible()
+    const revoked = screen.getAllByText('REVOKED')
+    expect(revoked[0]).toBeVisible()
+    expect(revoked[1]).toBeVisible()
+    expect(screen.getByDisplayValue('456')).toBeVisible()
+  })
+  it('copy buttons should work correctly', async () => {
+    const writeText = jest.fn()
+    Object.assign(navigator, {
+      clipboard: {
+        writeText
+      }
+    })
+    render(
+      <Provider>
+        <AppTokenFormItem
+          tenantAuthenticationData={tenantAuthenticationData}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/administration/accountSettings' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(tenantAuthenticationData.length)
+    const buttons = screen.getAllByTestId('copy')
+    expect(buttons).toHaveLength(tenantAuthenticationData.length * 2)
+    await userEvent.click(buttons[0])
+    expect(writeText).toHaveBeenLastCalledWith('123')
+    await userEvent.click(buttons[1])
+    expect(writeText).toHaveBeenLastCalledWith('secret123')
+    await userEvent.click(buttons[2])
+    expect(writeText).toHaveBeenLastCalledWith('456')
+    await userEvent.click(buttons[3])
+    expect(writeText).toHaveBeenLastCalledWith('secret456')
+    await userEvent.click(buttons[4])
+    expect(writeText).toHaveBeenLastCalledWith('')
+    await userEvent.click(buttons[5])
+    expect(writeText).toHaveBeenLastCalledWith('')
   })
   it('should revoke active token correctly', async () => {
     render(
@@ -102,8 +167,17 @@ describe('App Token Form Item', () => {
     await waitFor(() => {
       expect(screen.queryByText('Revoke application "test123"?')).toBeNull()
     })
-    // TODO: uncomment when revoke functionality implemented
-    // expect(screen.queryByText('ACTIVE')).toBeNull()
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '456' },
+      status: 'fulfilled'
+    })]
+    await waitFor(()=> {
+      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+    await waitFor(() => {
+      expect(screen.queryByText('Revoke application "test123"?')).toBeNull()
+    })
   })
   it('should activate revoked token correctly', async () => {
     render(
@@ -125,8 +199,17 @@ describe('App Token Form Item', () => {
     await waitFor(() => {
       expect(screen.queryByText('Activate application "test456"?')).toBeNull()
     })
-    // TODO: uncomment when activate functionality implemented
-    // expect(screen.queryByText('REVOKED')).toBeNull()
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '456' },
+      status: 'fulfilled'
+    })]
+    await waitFor(()=> {
+      expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+    await waitFor(() => {
+      expect(screen.queryByText('Activate application "test456"?')).toBeNull()
+    })
   })
   it('should show drawer when edit button clicked', async () => {
     render(
@@ -158,14 +241,19 @@ describe('App Token Form Item', () => {
     const button = await screen.findByText('Delete')
     expect(button).toBeVisible()
     await userEvent.click(button)
-    // TODO: uncomment and correct text when delete functionality implemented
-    // expect(await screen.findByText('Delete Application?')).toBeVisible()
-    // const deleteButtons = screen.getAllByRole('button', { name: 'Delete' })
-    // await userEvent.click(deleteButtons[1])
-    // waitFor(() => {
-    //   expect(screen.queryByText('delete modal text')).toBeNull()
-    // })
-    // expect(screen.queryByText('test123')).toBeNull()
+    expect(await screen.findByText('Delete "test123"?')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Application' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+    await waitFor(()=> {
+      expect(services.useDeleteTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
+    })
+    await waitFor(() => {
+      expect(screen.queryByText('Delete "test123"?')).toBeNull()
+    })
   })
   it('should show secret when share secret button clicked', async () => {
     render(

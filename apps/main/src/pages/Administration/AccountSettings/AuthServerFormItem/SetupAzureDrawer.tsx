@@ -108,7 +108,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       } as UploadFile
       setFile(editFile)
       setFileDescription(<Typography.Text><FileTextOutlined /> {editData?.name} </Typography.Text>)
-      // TODO: setMetadata() to contents of file
+      // TODO: setMetadata() to contents of file only if we want to see file contents in metadata in editmode
       // fetchMetaData()
     }
   }, [form, props.visible])
@@ -166,7 +166,6 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     }) as { data: UploadUrlResponse }
 
     if (uploadUrl && uploadUrl.data && uploadUrl.data.fileId) {
-      // TODO: switch out return block with below commented code after resolving CORS error with fetch
       return await fetch(uploadUrl.data.signedUrl,
         { method: 'put', body: file as unknown as File, headers: {
           'Content-Type': ''
@@ -189,7 +188,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       const fileURL = uploadFile && file ? await getFileUploadURL(file)
         : !uploadFile ? await getFileUploadURL(metadataFile)
           : undefined
-      if (!(fileURL && fileURL.data && fileURL.data.fileId)) {
+      // if (!(fileURL && fileURL.data && fileURL.data.fileId) && !metadata) {
+      //   throw 'Error uploading file'
+      // }
+      if (!fileURL) {
         throw 'Error uploading file'
       }
 
@@ -250,6 +252,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       { $t({ defaultMessage: 'IdP Metadata' }) }
     </label>
     {!uploadFile && <Button
+      style={{ alignSelf: 'end' }}
       type='link'
       key='pasteIdp'
       onClick={() => { setUploadFile(true) }}>
@@ -257,7 +260,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     </Button>}
     {!uploadFile && <Form.Item
       // rules={[
-      //   { validator: (_, value) => notAllDigitsRegExp(value) }
+      //   { validator: (_, value) => xmlRegExp(value) }
       // ]}
     >
       <TextArea
