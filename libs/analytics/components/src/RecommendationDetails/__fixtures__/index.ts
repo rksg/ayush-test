@@ -8,7 +8,61 @@ export const mockedRecommendationPower = {
   originalValue: null,
   currentValue: '_FULL',
   recommendedValue: '_1DB',
-  metadata: {},
+  metadata: {
+    scheduledAt: '2023-06-27T00:00:00.000Z',
+    scheduledBy: '0032h00000cJeQcAAK',
+    algorithmData: {
+      zoneCCIR: 0,
+      channelPlan: [
+        {
+          apMac: '28:B3:71:1A:44:20',
+          radio: 0,
+          channel: 1,
+          txPower: 'NA',
+          channelRange: [
+            1,
+            11,
+            6
+          ],
+          channelWidth: 20,
+          apRadioDeploy: '2-5'
+        },
+        {
+          apMac: '94:B3:4F:1A:B5:C0',
+          radio: 0,
+          channel: 6,
+          txPower: 'NA',
+          channelRange: [
+            1,
+            11,
+            6
+          ],
+          channelWidth: 20,
+          apRadioDeploy: '2-5-6'
+        }
+      ],
+      zoneCoChannelPeerCount: 0,
+      zoneCurrentCoChannelPeer: []
+    },
+    config_backup: {
+      is_rogue_on: false,
+      backup_plans: [
+        {
+          apMac: '28:B3:71:1A:44:20',
+          radio: 0,
+          apName: 'R550-with-Attenuator',
+          channel: 1,
+          configKey: 'radio24g',
+          channelRange: [
+            1,
+            6,
+            11
+          ],
+          channelWidth: 0
+        }
+      ]
+    }
+  },
   sliceType: 'zone',
   sliceValue: '12-US-CA-D12-Guru-Home',
   path: [
@@ -41,6 +95,79 @@ export const mockedRecommendationPower = {
     previous: null,
     projected: null
   }
+} as unknown as RecommendationDetails
+
+export const mockedRecommendationPowerMonitoring = {
+  id: '30d997ab-2c1d-4002-bac5-75d164c4def9',
+  code: 'c-txpower-same',
+  status: 'applied',
+  appliedTime: '2023-06-26T16:01:17.962Z',
+  originalValue: '_1DB',
+  currentValue: '_1DB',
+  recommendedValue: '_1DB',
+  metadata: {},
+  sliceType: 'zone',
+  sliceValue: '12-US-CA-D12-Guru-Home',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '12-US-CA-D12-Guru-Home'
+    },
+    {
+      type: 'zone',
+      name: '12-US-CA-D12-Guru-Home'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'applied',
+      createdAt: '2023-06-26T16:01:17.962Z'
+    },
+    {
+      status: 'applyscheduleinprogress',
+      createdAt: '2023-06-26T16:01:01.567Z'
+    },
+    {
+      status: 'applyscheduled',
+      createdAt: '2023-06-26T15:35:11.315Z'
+    },
+    {
+      status: 'new',
+      createdAt: '2023-06-25T06:05:13.243Z'
+    }
+  ],
+  kpi_co_channel_interference: {
+    current: null,
+    previous: null,
+    projected: null
+  },
+  kpi_session_time_on_24_g_hz: {
+    current: 0.022116903633491312,
+    previous: null,
+    projected: null
+  }
+} as unknown as RecommendationDetails
+
+export const mockRecommendationNoKPI = {
+  id: '1',
+  code: 'c-bgscan24g-enable',
+  status: 'applyscheduled',
+  path: [{ type: 'system', name: 'ruckus-62' }],
+  appliedTime: '2021-10-26T00:00:00.000Z',
+  originalValue: null,
+  currentValue: null,
+  recommendedValue: true,
+  metadata: {},
+  sliceType: 'system',
+  sliceValue: 'ruckus-62',
+  statusTrail: [
+    { status: 'applyscheduled', createdAt: '2021-10-27T08:35:01.934Z' },
+    { status: 'new', createdAt: '2021-10-27T06:02:06.973Z' }
+  ]
 } as unknown as RecommendationDetails
 
 export const mockedRecommendationCRRM = {
@@ -296,6 +423,47 @@ export const mockedRecommendationFirmware = {
       0
     ],
     previous: null,
+    projected: null
+  }
+} as unknown as RecommendationDetails
+
+export const mockedRecommendationClientLoad = {
+  id: 'c59c786c-0ad6-4645-b7d8-1ae8537d9bdd',
+  code: 'c-aclb-enable',
+  status: 'new',
+  appliedTime: null,
+  originalValue: null,
+  currentValue: null,
+  recommendedValue: true,
+  metadata: {},
+  sliceType: 'zone',
+  sliceValue: 'Fong@Home',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '32-US-CA-D32-SQA-Phong-Sunnyvale'
+    },
+    {
+      type: 'zone',
+      name: 'Fong@Home'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'new',
+      createdAt: '2023-06-12T07:05:14.785Z'
+    }
+  ],
+  kpi_avg_ap_unique_client_count: {
+    current: 10,
+    projected: null
+  },
+  kpi_max_ap_unique_client_count: {
+    current: 22,
     projected: null
   }
 } as unknown as RecommendationDetails

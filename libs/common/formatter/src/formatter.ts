@@ -247,7 +247,8 @@ export const formats = {
     number?.toLocaleString('en-US', { maximumFractionDigits: 0 }),
   fpsFormat: (value: number) => `${value} fps`,
   percent: (value: number) => `${value} %`,
-  crrmFormat: (value: CrrmTextType) => crrmText(value)
+  crrmFormat: (value: CrrmTextType) => crrmText(value),
+  noFormat: (value: unknown) => value as string
 } as const
 
 const enabledFormat: MessageDescriptor = defineMessage({

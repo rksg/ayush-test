@@ -3,9 +3,9 @@ import { ReactNode } from 'react'
 import { get, pick, snakeCase, isNumber } from 'lodash'
 import { useIntl }                        from 'react-intl'
 
-import { Card, Tooltip } from '@acx-ui/components'
-import { formatter }     from '@acx-ui/formatter'
-import { noDataDisplay } from '@acx-ui/utils'
+import { Card, Tooltip, TrendPill, TrendType } from '@acx-ui/components'
+import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
+import { noDataDisplay }                       from '@acx-ui/utils'
 
 import recommendationConfigs      from './configRecommendations'
 import { EnhancedRecommendation } from './services'
@@ -80,6 +80,11 @@ const getKpis = (details: EnhancedRecommendation) => {
     return {
       ...pick(config, ['key', 'label', 'tooltipContent', 'showAps']),
       delta,
+      deltaSign: deltaSign === '+'
+        ? 'positive'
+        : deltaSign === '-'
+          ? 'negative'
+          : 'none',
       value: current !== null ? format(current) : noDataDisplay
     }
   })
@@ -103,7 +108,7 @@ const KpiCard = ({ children }: { children: ReactNode }) => <RecommendationCardWr
 
 const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
   const { $t } = useIntl()
-  const { tooltipContent, label, value } = kpi
+  const { tooltipContent, label, value, delta, deltaSign } = kpi
   const infoIcon = tooltipContent
     ? <Tooltip title={$t(tooltipContent, { br: <br /> })}>
       <RecommendationInfoIcon />
@@ -112,7 +117,12 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
 
   return <KpiCard>
     <KpiTitle>{$t(label)}{infoIcon}</KpiTitle>
-    <KpiLabel>{value}</KpiLabel>
+    <KpiLabel>
+      {value}
+      {delta ?
+        <TrendPill value={delta.label} trend={deltaSign as TrendType} />
+        : null}
+    </KpiLabel>
   </KpiCard>
 }
 
@@ -123,12 +133,12 @@ export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
 
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indicators' })}</DetailsHeader>
-    {kpis.map((kpi, ind) => <Kpi kpi={kpi} key={ind} />)}
+    {!monitoring && kpis.map((kpi, ind) => <Kpi kpi={kpi} key={ind} />)}
     {monitoring && <KpiCard>
       {$t({ defaultMessage: 'Monitoring performance indicators' })}
       <br />
       {$t({ defaultMessage: 'until {datetime}' },
-        { datetime: formatter('calendarFormat')(monitoring.until) })}
+        { datetime: formatter(DateFormatEnum.DateTimeFormat)(monitoring.until) })}
     </KpiCard>}
     {!kpis.length && <KpiCard>
       {$t({ defaultMessage: 'No performance indicators' })}

@@ -2,9 +2,9 @@
 import { merge }                            from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { formatter } from '@acx-ui/formatter'
+import { compareVersion } from '@acx-ui/analytics/utils'
+import { formatter }      from '@acx-ui/formatter'
 
-import { compareVersion }          from './compareVersion'
 import { states, codes, CodeInfo } from './configRecommendationData'
 
 
@@ -146,7 +146,7 @@ const configs: Record<string, RecommendationConfig> = {
     kpis: []
   },
   'i-zonefirmware-upgrade': {
-    valueFormatter: (val: unknown) => val as string,
+    valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
     recommendedValueTooltipContent: (status, currentValue, recommendedValue) =>
       (![
@@ -216,7 +216,7 @@ const configs: Record<string, RecommendationConfig> = {
     }]
   },
   'c-bandbalancing-proactive': {
-    valueFormatter: (val: unknown) => val as string,
+    valueFormatter: formatter('noFormat'),
     valueText: defineMessage({ defaultMessage: 'Load Balancing: Steering Mode' }),
     actionText: defineMessage({ defaultMessage: 'Steering mode for {scope} is set as {currentValue}. It is recommended to change the mode to PROACTIVE.' }),
     reasonText: defineMessage({ defaultMessage: 'Band Balancing (BB) feature intelligently distributes the WLAN clients on the 2.4 GHz and the 5 GHz channels in order to balance the client load. Mode "PROACTIVE" shall have higher efficiency in steering clients from one band to another and hence shall result in improve load on the AP resulting in better WiFi experience to the user.' }),
