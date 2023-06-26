@@ -66,22 +66,15 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       }
 
       if(isEditMode) {
-        const result =
         await updateApiToken({ params: { authenticationId: editData?.id },
           payload: apiTokenEditData }).unwrap()
-        if (result) {
-        }
       } else {
-        const result =
         await addApiToken({ payload: apiTokenData }).unwrap()
-        if (result) {
-        }
       }
       onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
-    // setVisible(false)
   }
 
   const handleClickCopy = (copyString: string) => {

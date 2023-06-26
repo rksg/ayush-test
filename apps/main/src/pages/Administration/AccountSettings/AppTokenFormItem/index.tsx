@@ -47,12 +47,12 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   const AddAppLink = () => {
     return (
-      <Col span={24}>
+      <Col style={{ width: '800px' }}>
         <Card type='solid-bg'>
           <Form.Item
             children={
               <Button
-                style={{ marginLeft: '300px', marginTop: '17px' }}
+                style={{ marginLeft: '290px', marginTop: '17px' }}
                 type='link'
                 key='viewxml'
                 onClick={() => {onAddAppToken()}}>
@@ -151,9 +151,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
           }
           return false
         },
-        // onClick: ([{ name, id }], clearSelection) => {
         onClick: (rows, clearSelection) => {
-          // onClick: ([{ name }]) => {
           const title = $t(
             { defaultMessage: 'Revoke application "{formattedName}"?' },
             { formattedName: rows[0].name }
@@ -250,7 +248,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   return ( <>
     <Row gutter={24} style={{ marginBottom: '25px' }}>
-      <Col span={12}>
+      <Col style={{ width: '800px' }}>
         <Form.Item
           style={hasAppTokenConfigured ? { marginBottom: '-20px' } : { marginBottom: '10px' }}
           colon={false}

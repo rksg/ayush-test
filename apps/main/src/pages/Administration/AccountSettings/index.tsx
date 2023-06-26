@@ -47,7 +47,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
 
   const isPrimeAdminUser = isPrimeAdmin()
   const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
-  const isIdmDecoupling = true//useIsSplitOn(Features.IDM_DECOUPLING)
+  const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING)
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
