@@ -91,7 +91,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
 
   return <Loader states={[impactedApsQuery]}>
     <DescriptionSection fields={fields} />
-    {hasAp && <ImpactedApsDrawer
+    {(hasAp && visible) && <ImpactedApsDrawer
       id={id}
       aps={impactedApsQuery.data!}
       onClose={() => setVisible(false)}

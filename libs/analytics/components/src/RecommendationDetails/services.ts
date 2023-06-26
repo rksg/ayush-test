@@ -21,7 +21,7 @@ type RecommendationKpi = Record<string, {
   projected: number | null
 }>
 
-type RecommendationDetails = {
+export type RecommendationDetails = {
   id: string;
   code: keyof typeof codes;
   status: keyof typeof states;
@@ -65,7 +65,7 @@ const getRecommendationStatus = (recommendation: RecommendationDetails) =>
     .value()
     .status
 
-const transformResponse = (details: RecommendationDetails): EnhancedRecommendation => {
+export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
     code, statusTrail, status, appliedTime, currentValue, recommendedValue
   } = details
@@ -134,7 +134,7 @@ export const api = dataApiRecommendation.injectEndpoints({
         }
       }),
       transformResponse: (response: { recommendation: RecommendationDetails }) =>
-        transformResponse(response.recommendation),
+        transformDetailsResponse(response.recommendation),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
     }),
     getAps: build.query<RecommendationAp[], RecommendationApPayload>({

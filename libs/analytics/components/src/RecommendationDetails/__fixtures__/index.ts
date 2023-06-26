@@ -1,4 +1,6 @@
-export const mockedRecommendationCRRM = {
+import { RecommendationDetails } from '../services'
+
+export const mockedRecommendationCRRM: RecommendationDetails = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
@@ -207,7 +209,7 @@ export const mockedRecommendationCRRM = {
       createdAt: '2023-05-17T07:04:11.663Z'
     }
   ]
-}
+} as unknown as RecommendationDetails
 
 export const mockedRecommendationFirmware = {
   id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
@@ -248,7 +250,7 @@ export const mockedRecommendationFirmware = {
     previous: null,
     projected: null
   }
-}
+} as unknown as RecommendationDetails
 
 export const mockedRecommendationApFirmware = [
   {
@@ -270,41 +272,3 @@ export const mockedRecommendationApFirmware = [
     version: 'Unknown'
   }
 ]
-
-export const recommendationDetailsMock = {
-  id: '11461d57-b29f-4236-8c91-d7995ff420e5',
-  code: 'c-bandbalancing-enable',
-  status: 'new',
-  appliedTime: null,
-  originalValue: null,
-  currentValue: null,
-  recommendedValue: true,
-  metadata: {},
-  sliceType: 'zone',
-  sliceValue: 'Albert-Mesh-Testing',
-  path: [
-    {
-      type: 'system',
-      name: 'vsz34'
-    },
-    {
-      type: 'domain',
-      name: '04-US-CA-D4-Albert-Home'
-    },
-    {
-      type: 'zone',
-      name: 'Albert-Mesh-Testing'
-    }
-  ],
-  statusTrail: [
-    {
-      status: 'new',
-      createdAt: '2023-06-12T07:05:14.850Z'
-    }
-  ],
-  kpi_client_ratio: {
-    current: 0.875,
-    previous: null,
-    projected: null
-  }
-}
