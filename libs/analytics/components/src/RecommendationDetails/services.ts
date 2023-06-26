@@ -26,7 +26,7 @@ type RecommendationDetails = {
   code: keyof typeof codes;
   status: keyof typeof states;
   appliedTime: string;
-  originalValue: Array<{ channelMode: string, channelWidth: string, rao: string }>;
+  originalValue: Array<{ channelMode: string, channelWidth: string, radio: string }>;
   currentValue: string;
   recommendedValue: string;
   metadata: object;

@@ -206,20 +206,25 @@ const json2keymap = (keyFields: string[], field: keyof(typeof enumMap)[0], filte
       item[field]
     ), new Map())
 
-type CrrmTextType = string | Array<{ radio: string, channelMode: string, channelWidth: string }>
+type CrrmTextType =
+  string | Array<{ radio: string, channelMode: string, channelWidth: string }>
 
 const crrmText = (value: CrrmTextType) => {
+  const { $t } = getIntl()
   const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(enumMap)
   const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
   const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
   if (typeof value === 'string') {
-    return 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection'
+    return $t({
+      defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection' })
   }
   return value.map(config => {
     const channelMode = enumTextMap.get(`${enumMode}-${config.channelMode}`)
     const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
     const radio = formats.radioFormat(config.radio)
-    return `${channelMode} and ${channelWidth} for ${radio}`
+    return $t({
+      defaultMessage: '{channelMode} and {channelWidth} for {radio}' },
+    { channelMode, channelWidth, radio } )
   }).join(', ')
 }
 

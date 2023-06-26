@@ -355,4 +355,28 @@ describe('formatter', () => {
       })
     })
   })
+
+  describe('crrmFormat', () => {
+    it('should return correct value for string', () => {
+      const test_auto = formatter('crrmFormat')('Auto')
+      expect(test_auto)
+        .toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection')
+    })
+
+    it('should return correct value for crrm object', () => {
+      const test_auto = formatter('crrmFormat')([{
+        radio: '2.4',
+        channelWidth: '_AUTO',
+        channelMode: 'BACKGROUND_SCANNING'
+      }])
+      expect(test_auto).toMatch('Background scanning and Auto for 2.4 GHz')
+
+      const test_normal = formatter('crrmFormat')([{
+        radio: '5.0',
+        channelWidth: '_80MHZ',
+        channelMode: 'CHANNEL_FLY'
+      }])
+      expect(test_normal).toMatch('ChannelFly and 80 MHz for 5.0 GHz')
+    })
+  })
 })
