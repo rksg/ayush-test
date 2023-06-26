@@ -82,7 +82,7 @@ export const EdgeDetailsPageHeader = () => {
         label: $t({ defaultMessage: 'Reboot' }),
         key: 'reboot'
       }, {
-        label: $t({ defaultMessage: 'Factory Reset' }),
+        label: $t({ defaultMessage: 'Reset and Recover' }),
         key: 'factoryReset'
       }, {
         label: $t({ defaultMessage: 'Delete SmartEdge' }),
@@ -171,11 +171,11 @@ const useEdgeActions = (edgeName?: string, serialNumber?: string): {
       showActionModal({
         type: 'confirm',
         title: $t(
-          { defaultMessage: 'Factory reset "{edgeName}"?' },
+          { defaultMessage: 'Reset and recover "{edgeName}"?' },
           { edgeName }
         ),
         content: $t({
-          defaultMessage: 'Are you sure you want to factory reset this SmartEdge?'
+          defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
         }),
         customContent: {
           action: 'CUSTOM_BUTTONS',
