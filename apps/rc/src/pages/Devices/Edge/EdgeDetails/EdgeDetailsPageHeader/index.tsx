@@ -171,7 +171,7 @@ const useEdgeActions = (edgeName?: string, serialNumber?: string): {
       showActionModal({
         type: 'confirm',
         title: $t(
-          { defaultMessage: 'Reset and Recover "{edgeName}"?' },
+          { defaultMessage: 'Reset and recover "{edgeName}"?' },
           { edgeName }
         ),
         content: $t({
