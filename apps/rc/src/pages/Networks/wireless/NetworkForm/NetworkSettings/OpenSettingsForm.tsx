@@ -8,9 +8,9 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages }      from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip }   from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { WifiNetworkMessages }        from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -83,8 +83,7 @@ function SettingsForm () {
   useEffect(()=>{
     form.setFieldsValue(data)
   },[data])
-  const disablePolicies = !useIsSplitOn(Features.POLICIES)
-  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (
     <>
@@ -96,7 +95,7 @@ function SettingsForm () {
             <Form.Item noStyle
               name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'>
-              <Switch onChange={onMacAuthChange} disabled={editMode || disablePolicies}/>
+              <Switch onChange={onMacAuthChange} disabled={editMode || !isCloudpathBetaEnabled}/>
             </Form.Item>
             <span>{$t({ defaultMessage: 'MAC Authentication' })}</span>
             <Tooltip.Question
@@ -113,7 +112,7 @@ function SettingsForm () {
           >
             <Radio.Group disabled={editMode} defaultValue={!!isMacRegistrationList}>
               <Space direction='vertical'>
-                <Radio value={true} disabled={!macRegistrationEnabled}>
+                <Radio value={true} disabled={!isCloudpathBetaEnabled}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }
                 </Radio>
                 <Radio value={false}>

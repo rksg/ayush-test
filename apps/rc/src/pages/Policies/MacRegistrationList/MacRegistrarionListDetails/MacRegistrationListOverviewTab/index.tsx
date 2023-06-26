@@ -4,8 +4,8 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Card, Loader }              from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Card, Loader }               from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetMacRegListQuery,
   useLazyGetAdaptivePolicySetQuery
@@ -25,7 +25,7 @@ export function MacRegistrationListOverviewTab () {
 
   const [ getAdaptivePolicySet ] = useLazyGetAdaptivePolicySetQuery()
 
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   useEffect(() => {
     if(policyEnabled && data?.policySetId) {
@@ -80,7 +80,7 @@ export function MacRegistrationListOverviewTab () {
                   </Col>
                   <Col span={6}>
                     <Form.Item
-                      label={$t({ defaultMessage: 'Access Policy Set' })}
+                      label={$t({ defaultMessage: 'Adaptive Policy Set' })}
                     >
                       <Paragraph>{policySetName}</Paragraph>
                     </Form.Item>
