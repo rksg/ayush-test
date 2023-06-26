@@ -634,7 +634,6 @@ export function MoreSettingsForm (props: {
             children={<Switch />}
           />
         </UI.FieldLabel>
-        
         <UI.FieldLabel width='250px'>
           { $t({ defaultMessage: 'AP Host Name Advertisement in Beacon' }) }
           <Form.Item
@@ -656,7 +655,6 @@ export function MoreSettingsForm (props: {
             children={<Switch />}
           />
         </UI.FieldLabel>
-
         {enableOce &&
           <>
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
