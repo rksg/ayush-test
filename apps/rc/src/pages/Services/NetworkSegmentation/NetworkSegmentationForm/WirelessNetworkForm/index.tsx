@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+
 import { Checkbox, Col, Form, Row, Select, Space } from 'antd'
 import { CheckboxValueType }                       from 'antd/lib/checkbox/Group'
 import { useIntl }                                 from 'react-intl'
@@ -17,7 +18,7 @@ import * as UI                from './styledComponents'
 import { TunnelProfileModal } from './TunnelProfileModal'
 
 const venueNetworkDefaultPayload = {
-  fields: ['name', 'id'],
+  fields: ['name', 'id', 'venues'],
   filters: { nwSubType: ['dpsk'] },
   pageSize: 10000,
   sortField: 'name',
@@ -76,7 +77,9 @@ export const WirelessNetworkForm = () => {
       }
     }
   })
-  const networkOptions = networkList?.data.map(item => ({ label: item.name, value: item.id }))
+  const networkOptions = networkList?.data
+    .filter(item => item.venues?.ids.includes(venueId))
+    .map(item => ({ label: item.name, value: item.id }))
   const networkIds = networkList?.data.map(item => (item.id))
 
   const { nsgViewData } =
