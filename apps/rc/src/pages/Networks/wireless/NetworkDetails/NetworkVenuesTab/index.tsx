@@ -251,19 +251,19 @@ export function NetworkVenuesTab () {
   const deActivateSelected = (deActivatingVenues: Venue[]) => {
     const network = networkQuery.data
     const networkVenues = network?.venues || []
-    const selectedVenuesId: string[] = []
+    const selectedVenuesIds: string[] = []
 
     deActivatingVenues.forEach(venue => {
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
       if (alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
         const { id } = alreadyActivatedVenue
         if (!venue.activated.isDisabled && id && venue.activated.isActivated === true) {
-          selectedVenuesId.push(id)
+          selectedVenuesIds.push(id)
         }
       }
     })
 
-    return selectedVenuesId
+    return selectedVenuesIds
   }
 
   const activation = (selectedRows:Venue[]) => {
