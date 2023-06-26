@@ -8,7 +8,7 @@ import {
   RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getServiceListRoutePath,
@@ -26,7 +26,7 @@ export default function SelectServiceForm () {
   const navigate = useNavigate()
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const propertyManagementEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
