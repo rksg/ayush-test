@@ -57,7 +57,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Support Regular:' })}
               </UI.CurrentLabel>
               <UI.CurrentValue>
-                {$t({ defaultMessage: 'No' })}
+                {$t({ defaultMessage: 'Yes' })}
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
@@ -83,7 +83,7 @@ const ApplicationPolicyMgmt = ()=>{
                 {$t({ defaultMessage: 'Support Regular:' })}
               </UI.CurrentLabel>
               <UI.CurrentValue>
-                {$t({ defaultMessage: 'No' })}
+                {$t({ defaultMessage: 'Yes' })}
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
