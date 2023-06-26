@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useGetMspEcDelegatedAdminsQuery,
   useMspAdminListQuery,
@@ -115,6 +116,8 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const { Option } = Select
 
+  const dpskRbac=useIsSplitOn(Features.PTENANT_RBAC_DPSK_ROLE_INTRODUCTION)
+
   const columns: TableProps<MspAdministrator>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -161,7 +164,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
-          <Option
+          !(value === RolesEnum.DPSK_ADMIN
+            && !dpskRbac)
+          && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}
           </Option>
