@@ -317,21 +317,21 @@ export function BasePersonaTable (props: PersonaTableProps) {
             }),
           onOk: () => {
             const ids = selectedItems.map(({ id }) => id)
-            const names = selectedItems.map(({ name }) => name).join(', ')
+            // const names = selectedItems.map(({ name }) => name).join(', ')
 
             deletePersonas({ payload: ids })
               .unwrap()
               .then(() => {
-                const fewItems = ids.length <= 5
-                showToast({
-                  type: 'success',
-                  content: $t({
-                    // eslint-disable-next-line max-len
-                    defaultMessage: '{fewItems, select, ' +
-                      'true {Persona {names} was deleted} ' +
-                      'other {{count} personas was deleted}}'
-                  }, { fewItems, names, count: ids.length })
-                })
+                // const fewItems = ids.length <= 5
+                // showToast({
+                //   type: 'success',
+                //   content: $t({
+                //     // eslint-disable-next-line max-len
+                //     defaultMessage: '{fewItems, select, ' +
+                //       'true {Persona {names} was deleted} ' +
+                //       'other {{count} personas was deleted}}'
+                //   }, { fewItems, names, count: ids.length })
+                // })
                 clearSelection()
               })
               .catch((e) => {
