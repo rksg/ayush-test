@@ -634,6 +634,28 @@ export function MoreSettingsForm (props: {
             children={<Switch />}
           />
         </UI.FieldLabel>
+        
+        <UI.FieldLabel width='250px'>
+          { $t({ defaultMessage: 'AP Host Name Advertisement in Beacon' }) }
+          <Form.Item
+            name={['wlan','advancedCustomization','apHostNameAdvertisementInBeacon']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
+
+        <UI.FieldLabel width='250px'>
+          { $t({ defaultMessage: 'GTK Rekey' }) }
+          <Form.Item
+            name={['wlan','advancedCustomization','GTKRekey']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
 
         {enableOce &&
           <>
