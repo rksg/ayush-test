@@ -1,18 +1,25 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { formatter }                                        from '@acx-ui/formatter'
-import { EdgeStatus, EdgeStatusEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                                       from '@acx-ui/react-router-dom'
+import { PasswordInput }                                                        from '@acx-ui/components'
+import { formatter }                                                            from '@acx-ui/formatter'
+import { EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                                           from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                from '@acx-ui/user'
+
+import * as UI from './styledComponents'
 
 interface PropertiesProps {
   currentEdge: EdgeStatus | undefined,
+  passwordDetail: EdgePasswordDetail | undefined
 }
 
 export const Properties = (props: PropertiesProps) => {
 
-  const { currentEdge } = props
+  const { currentEdge, passwordDetail } = props
   const { $t } = useIntl()
+  const { data: userProfile } = useUserProfileContext()
+  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
 
   return (
     <Form
@@ -70,6 +77,34 @@ export const Properties = (props: PropertiesProps) => {
           transformDisplayText(currentEdge?.firmwareVersion)
         }
       />
+      { isShowEdgePassword &&
+        <Form.Item
+          label={$t({ defaultMessage: 'Login Password' })}
+          children={
+            <UI.DetailsPassword>
+              <PasswordInput
+                readOnly
+                bordered={false}
+                value={passwordDetail?.loginPassword}
+              />
+            </UI.DetailsPassword>
+          }
+        />
+      }
+      { isShowEdgePassword &&
+        <Form.Item
+          label={$t({ defaultMessage: 'Enable Password' })}
+          children={
+            <UI.DetailsPassword>
+              <PasswordInput
+                readOnly
+                bordered={false}
+                value={passwordDetail?.enablePassword}
+              />
+            </UI.DetailsPassword>
+          }
+        />
+      }
       <Form.Item
         label={$t({ defaultMessage: 'S/N' })}
         children={
