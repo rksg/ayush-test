@@ -3,8 +3,9 @@ import {
   XAXisComponentOption,
   YAXisComponentOption,
   RegisteredSeriesOption,
-  TooltipComponentOption
-}                                                   from 'echarts'
+  TooltipComponentOption,
+  ToolboxComponentOption
+}                                            from 'echarts'
 import { InsideDataZoomOption }              from 'echarts/types/dist/shared'
 import { FormatXMLElementFn }                from 'intl-messageformat'
 import moment                                from 'moment-timezone'
@@ -83,6 +84,20 @@ export const legendTextStyleOptions = () => ({
   lineHeight: cssNumber('--acx-body-5-line-height'),
   fontWeight: cssNumber('--acx-body-font-weight')
 })
+
+export const toolboxDataZoomOptions = {
+  feature: {
+    dataZoom: {
+      yAxisIndex: 'none',
+      brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
+      icon: { back: 'path://', zoom: 'path://' }
+    },
+    brush: {
+      type: ['rect' as const],
+      icon: { rect: 'path://' }
+    }
+  }
+} as ToolboxComponentOption
 
 export const dataZoomOptions = (data: TimeSeriesChartData[]) => [{
   id: 'zoom',
