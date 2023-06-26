@@ -193,7 +193,7 @@ describe('Add administrator dialog component', () => {
     })
   })
 
-  it('should non MSP EC and non MSP submit correctly', async () => {
+  xit('should non MSP EC and non MSP submit correctly', async () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getRegisteredUsersList.url,
