@@ -131,7 +131,6 @@ describe('Layout', () => {
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
       global.window.innerWidth = 1280
-      global.window.resizeTo(1280, 1024)
       fireEvent(global.window, new Event('resize'))
     })
   })
@@ -147,7 +146,6 @@ describe('Layout', () => {
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
       global.window.innerWidth = 500
-      global.window.resizeTo(500, 1024)
       fireEvent(global.window, new Event('resize'))
     })
   })
