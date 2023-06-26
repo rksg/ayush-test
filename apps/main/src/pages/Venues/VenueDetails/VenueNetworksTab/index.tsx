@@ -265,7 +265,6 @@ export function VenueNetworksTab () {
       key: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
-      width: 80,
       render: function (data, row) {
         return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }

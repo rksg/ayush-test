@@ -162,6 +162,7 @@ export function ApTable (props: ApTableProps) {
       )
     }, {
       key: 'deviceStatus',
+      width: 200,
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
@@ -280,6 +281,7 @@ export function ApTable (props: ApTableProps) {
         const key = channel as keyof ApExtraParams
         acc.push({
           key: channel,
+          width: 80,
           dataIndex: channel,
           title: <Table.SubTitle children={channelTitleMap[key]} />,
           align: 'center',

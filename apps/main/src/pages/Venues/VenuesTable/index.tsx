@@ -51,12 +51,12 @@ function useColumns (
     },
     {
       title: $t({ defaultMessage: 'Address' }),
+      width: Infinity,
       key: 'country',
       dataIndex: 'country',
       sorter: true,
       filterKey: 'city',
       filterable: filterables ? filterables['city'] : false,
-      width: 120,
       render: function (data, row) {
         return `${row.country}, ${row.city}`
       }

@@ -100,6 +100,7 @@ const ActivityTable = ({
   const columns: TableProps<Activity>['columns'] = [
     {
       key: 'startDatetime',
+      width: 135,
       title: $t({ defaultMessage: 'Date' }),
       dataIndex: 'startDatetime',
       defaultSortOrder: 'descend',
@@ -144,12 +145,14 @@ const ActivityTable = ({
     },
     {
       key: 'name',
+      width: 220,
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: ['admin', 'name'],
       sorter: true
     },
     {
       key: 'description',
+      width: Infinity,
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       render: function (_, row) {

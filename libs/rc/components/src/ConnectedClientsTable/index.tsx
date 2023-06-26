@@ -71,6 +71,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
     },
     {
       key: 'osType',
+      width: 60,
       title: intl.$t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       sorter: true,
@@ -84,6 +85,7 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
     },
     {
       key: 'healthCheckStatus',
+      width: 70,
       title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: true,
