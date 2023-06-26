@@ -1,7 +1,14 @@
 
 import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import {
+  mockDpskList,
+  mockMacRegistrationList,
+  mockPersonaGroupList,
+  replacePagination
+} from 'apps/rc/src/pages/Users/Persona/__tests__/fixtures'
+import { rest } from 'msw'
 
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -16,13 +23,6 @@ import {
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import {
-  mockDpskList,
-  mockMacRegistrationList,
-  mockPersonaGroupList,
-  replacePagination
-} from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
 import {
   mockedTemplateScope,
   mockEnabledNoNSGPropertyConfig,
