@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { cssStr, DonutChartData, onChartClick }                    from '@acx-ui/components'
+import { cssStr, DonutChartData }                                  from '@acx-ui/components'
 import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, EventSeverityEnum, useTableQuery } from '@acx-ui/rc/utils'
+
 
 import { AlarmsDrawer }                              from '../../AlarmsDrawer'
 import { EdgeOverviewDonutWidget, ReduceReturnType } from '../EdgeOverviewDonutWidget'
@@ -56,6 +57,7 @@ export const getAlarmChartData = (alarms: Alarm[] | undefined): DonutChartData[]
 interface EdgeAlarmWidgetProps {
   isLoading: boolean
   serialNumber: string | undefined
+  onClick?: (type: string) => void
 }
 
 export const EdgeAlarmWidget = (props:EdgeAlarmWidgetProps) => {
@@ -108,12 +110,13 @@ export const EdgeAlarmWidget = (props:EdgeAlarmWidgetProps) => {
       data={chartData}
       isLoading={isLoading || isAlarmListLoading}
       emptyMessage={$t({ defaultMessage: 'No active alarms' })}
-      onClick={onChartClick(handleDonutClick)}
+      onClick={handleDonutClick}
     />
-    <AlarmsDrawer
-      visible={alarmDrawerVisible}
-      setVisible={setAlarmDrawerVisible}
-      serialNumber={serialNumber}
-    />
+    {alarmDrawerVisible &&
+      <AlarmsDrawer
+        visible={alarmDrawerVisible}
+        setVisible={setAlarmDrawerVisible}
+        serialNumber={serialNumber}
+      />}
   </>)
 }

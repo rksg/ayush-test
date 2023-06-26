@@ -6,7 +6,7 @@ export type ReduceReturnType = Record<string, number>
 
 interface EdgeOverviewDonutWidgetProps {
   title:string,
-  data: DonutChartData[],
+  data: DonutChartData[] | undefined,
   isLoading: boolean,
   emptyMessage: string,
   onClick?: DonutChartProps['onClick']
@@ -29,7 +29,7 @@ export function EdgeOverviewDonutWidget (props : EdgeOverviewDonutWidgetProps ) 
             title={title}
             style={{ width: 100, height: 100 }}
             legend={'name-value'}
-            data={data}
+            data={data!}
             onClick={onClick}
           />
           : <NoActiveData text={emptyMessage}/>

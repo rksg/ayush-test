@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { cssStr, DonutChartData, onChartClick }    from '@acx-ui/components'
+import { cssStr, DonutChartData }                  from '@acx-ui/components'
 import { EdgePortAdminStatusEnum, EdgePortStatus } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
 
 import { EdgeOverviewDonutWidget, ReduceReturnType } from '../EdgeOverviewDonutWidget'
 
@@ -42,19 +41,16 @@ export const getPortsAdminStatusChartData =
 interface EdgePortsWidgetProps {
   isLoading: boolean
   edgePortsSetting: EdgePortStatus[] | undefined
+  onClick?: (type: string) => void
 }
 
-export const EdgePortsWidget = ({ isLoading, edgePortsSetting }: EdgePortsWidgetProps) => {
+export const EdgePortsWidget = (props: EdgePortsWidgetProps) => {
+  const { isLoading, edgePortsSetting, onClick } = props
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
-  const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/overview`)
 
-  const handleDonutClick = () => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/ports`
-    })
+  const handleClick = () => {
+    if (typeof onClick === 'function')
+      onClick('port')
   }
 
   const chartData = getPortsAdminStatusChartData(edgePortsSetting)
@@ -64,6 +60,6 @@ export const EdgePortsWidget = ({ isLoading, edgePortsSetting }: EdgePortsWidget
     data={chartData}
     isLoading={isLoading}
     emptyMessage={$t({ defaultMessage: 'No data' })}
-    onClick={onChartClick(handleDonutClick)}
+    onClick={handleClick}
   />
 }
