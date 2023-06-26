@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                      from '@acx-ui/icons'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                     from '@acx-ui/icons'
 import {
+  doProfileDelete,
   useDeletePersonaGroupMutation,
   useGetDpskListQuery,
   useGetNetworkSegmentationGroupListQuery,
@@ -233,6 +234,27 @@ export function PersonaGroupTable () {
     })
   }
 
+  const doDelete = (selectedRow: PersonaGroup, callback: () => void) => {
+    const { id, name } = selectedRow
+    doProfileDelete(
+      [selectedRow],
+      $t({ defaultMessage: 'Persona Group' }),
+      selectedRow.name,
+      [
+        { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Network segmentation' }) },
+        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
+      ],
+      async () => deletePersonaGroup({ params: { groupId: id } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
+          })
+          callback()
+        })
+    )
+  }
+
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Persona Group' }),
@@ -256,29 +278,8 @@ export function PersonaGroupTable () {
         (selectedItem && selectedItem.personaCount)
           ? selectedItem.personaCount > 0 : false
       ),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Persona Group' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deletePersonaGroup({ params: { groupId: id } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
-                })
-                clearSelection()
-              })
-              .catch((error) => {
-                console.log(error) // eslint-disable-line no-console
-              })
-          }
-        })
+      onClick: ([selectedRow], clearSelection) => {
+        doDelete(selectedRow, clearSelection)
       }
     }
   ]
