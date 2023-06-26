@@ -79,19 +79,33 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                           style="overflow-x: auto; overflow-y: hidden;"
                         >
                           <table
-                            style="min-width: 100%; table-layout: auto;"
+                            style="width: 992px; min-width: 100%; table-layout: fixed;"
                           >
                             <colgroup>
                               <col
-                                style="width: 200px;"
+                                style="width: 120px;"
                               />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
-                              <col />
+                              <col
+                                style="width: 120px;"
+                              />
+                              <col
+                                style="width: 120px;"
+                              />
+                              <col
+                                style="width: 120px;"
+                              />
+                              <col
+                                style="width: 120px;"
+                              />
+                              <col
+                                style="width: 120px;"
+                              />
+                              <col
+                                style="width: 120px;"
+                              />
+                              <col
+                                style="width: 120px;"
+                              />
                               <col
                                 style="width: 32px;"
                               />
@@ -102,10 +116,13 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                               <tr>
                                 <th
                                   aria-sort="ascending"
-                                  class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters react-resizable"
                                   style="position: sticky; left: 0px;"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -161,11 +178,17 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -221,11 +244,17 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -281,11 +310,17 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -341,11 +376,17 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -401,11 +442,17 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -461,11 +508,17 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -521,11 +574,17 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
-                                  class="ant-table-cell ant-table-column-has-sorters"
+                                  class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                   tabindex="0"
                                 >
+                                  <div
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  />
                                   <div
                                     class="ant-table-column-sorters"
                                   >
@@ -581,6 +640,9 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                       </span>
                                     </span>
                                   </div>
+                                  <div
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  />
                                 </th>
                                 <th
                                   class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"

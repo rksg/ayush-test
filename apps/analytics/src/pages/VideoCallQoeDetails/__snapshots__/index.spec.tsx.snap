@@ -179,7 +179,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
@@ -215,21 +215,33 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="min-width: 100%; table-layout: auto;"
+                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 200px;"
                             />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 100px;"
                             />
-                            <col />
-                            <col />
-                            <col />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 50px;"
                             />
@@ -248,62 +260,128 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Client MAC
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Participant
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 IP Address
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Network Type
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 AP
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 AP MAC
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 SSID
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Radio
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                                 style="text-align: center;"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Join Time
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                                 style="text-align: center;"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Leave Time
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell"
+                                class="ant-table-cell react-resizable"
                                 style="text-align: center;"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 Wi-Fi Connection Quality
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
                                 class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -5124,7 +5202,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
@@ -5160,21 +5238,33 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="min-width: 100%; table-layout: auto;"
+                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 200px;"
                             />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 100px;"
                             />
-                            <col />
-                            <col />
-                            <col />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 50px;"
                             />
@@ -9831,7 +9921,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
@@ -9867,21 +9957,33 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="min-width: 100%; table-layout: auto;"
+                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 200px;"
                             />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 100px;"
                             />
-                            <col />
-                            <col />
-                            <col />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 50px;"
                             />
@@ -11310,7 +11412,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 UEvh"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
     >
       <div
@@ -11346,21 +11448,33 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                         style="overflow-x: auto; overflow-y: hidden;"
                       >
                         <table
-                          style="min-width: 100%; table-layout: auto;"
+                          style="width: 1302px; min-width: 100%; table-layout: fixed;"
                         >
                           <colgroup>
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 200px;"
                             />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 100px;"
                             />
-                            <col />
-                            <col />
-                            <col />
-                            <col />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
+                            <col
+                              style="width: 120px;"
+                            />
                             <col
                               style="width: 50px;"
                             />

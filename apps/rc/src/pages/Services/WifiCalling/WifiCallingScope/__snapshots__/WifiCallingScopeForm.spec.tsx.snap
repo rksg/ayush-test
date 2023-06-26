@@ -81,16 +81,24 @@ exports[`WifiCallingScopeForm should render wifiCallingScopeForm successfully 1`
                                     style="overflow-x: auto; overflow-y: hidden;"
                                   >
                                     <table
-                                      style="min-width: 100%; table-layout: auto;"
+                                      style="width: 512px; min-width: 100%; table-layout: fixed;"
                                     >
                                       <colgroup>
                                         <col
                                           class="ant-table-selection-col"
                                         />
-                                        <col />
-                                        <col />
-                                        <col />
-                                        <col />
+                                        <col
+                                          style="width: 120px;"
+                                        />
+                                        <col
+                                          style="width: 120px;"
+                                        />
+                                        <col
+                                          style="width: 120px;"
+                                        />
+                                        <col
+                                          style="width: 120px;"
+                                        />
                                         <col
                                           style="width: 32px;"
                                         />

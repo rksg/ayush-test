@@ -1108,25 +1108,39 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                 style="overflow-x: auto; overflow-y: hidden;"
                                               >
                                                 <table
-                                                  style="min-width: 100%; table-layout: auto;"
+                                                  style="width: 1092px; min-width: 100%; table-layout: fixed;"
                                                 >
                                                   <colgroup>
                                                     <col
                                                       class="ant-table-selection-col"
                                                     />
-                                                    <col />
-                                                    <col />
-                                                    <col />
-                                                    <col />
-                                                    <col />
-                                                    <col />
+                                                    <col
+                                                      style="width: 120px;"
+                                                    />
+                                                    <col
+                                                      style="width: 120px;"
+                                                    />
+                                                    <col
+                                                      style="width: 120px;"
+                                                    />
+                                                    <col
+                                                      style="width: 120px;"
+                                                    />
+                                                    <col
+                                                      style="width: 120px;"
+                                                    />
+                                                    <col
+                                                      style="width: 120px;"
+                                                    />
                                                     <col
                                                       style="width: 80px;"
                                                     />
                                                     <col
                                                       style="width: 140px;"
                                                     />
-                                                    <col />
+                                                    <col
+                                                      style="width: 120px;"
+                                                    />
                                                     <col
                                                       style="width: 32px;"
                                                     />
