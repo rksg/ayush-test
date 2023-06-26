@@ -1,15 +1,20 @@
 import userEvent from '@testing-library/user-event'
 
-import { EdgeStatus }                from '@acx-ui/rc/utils'
-import { Provider  }                 from '@acx-ui/store'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { EdgeStatus }     from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
-import { tenantID, currentEdge, edgePortsSetting, edgeDnsServers } from '../__tests__/fixtures'
+import { tenantID, currentEdge, edgePortsSetting, edgeDnsServers, passwordDetail } from '../__tests__/fixtures'
 
 import EdgeDetailsDrawer from '.'
 
 const params: { tenantId: string, serialNumber: string, venueId: string } =
     { tenantId: tenantID, serialNumber: currentEdge.serialNumber, venueId: currentEdge.venueId }
+
+const user = require('@acx-ui/user')
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user')
+}))
 
 describe('Edge Detail Drawer', () => {
   it('should render correctly', async () => {
@@ -20,13 +25,13 @@ describe('Edge Detail Drawer', () => {
         currentEdge={currentEdge}
         dnsServers={edgeDnsServers}
         edgePortsSetting={edgePortsSetting}
+        passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
 
     expect(await screen.findByText('Properties')).toBeVisible()
-    fireEvent.click(screen.getByText('Settings'))
-    const button = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(button)
+    expect(screen.queryByText('Login Password')).toBeNull()
+    expect(screen.queryByText('Enable Password')).toBeNull()
   })
 
   it('should render -- if data is undefined', async () => {
@@ -41,6 +46,7 @@ describe('Edge Detail Drawer', () => {
         currentEdge={edgeWithoutModel}
         dnsServers={edgeDnsServers}
         edgePortsSetting={edgePortsSetting}
+        passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
 
@@ -58,6 +64,7 @@ describe('Edge Detail Drawer', () => {
         currentEdge={undefinedEdge}
         edgePortsSetting={edgePortsSetting}
         dnsServers={edgeDnsServers}
+        passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
 
@@ -73,6 +80,7 @@ describe('Edge Detail Drawer', () => {
         currentEdge={currentEdge}
         dnsServers={edgeDnsServers}
         edgePortsSetting={edgePortsSetting}
+        passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
 
@@ -91,6 +99,7 @@ describe('Edge Detail Drawer', () => {
         currentEdge={currentEdge}
         dnsServers={{ primary: '', secondary: '' }}
         edgePortsSetting={edgePortsSetting}
+        passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
 
@@ -98,5 +107,25 @@ describe('Edge Detail Drawer', () => {
     await screen.findAllByText('DNS Server')
     const emptyLabel = await screen.findAllByText('--')
     expect(emptyLabel.length).toBe(2)
+  })
+
+  it('should render edge password when role is match', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: { support: true , var: true, dogfood: true } }
+    })
+
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={() => {}}
+        currentEdge={currentEdge}
+        dnsServers={edgeDnsServers}
+        edgePortsSetting={edgePortsSetting}
+        passwordDetail={passwordDetail}
+      />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('Login Password')).toBeVisible()
+    expect(await screen.findByText('Enable Password')).toBeVisible()
   })
 })
