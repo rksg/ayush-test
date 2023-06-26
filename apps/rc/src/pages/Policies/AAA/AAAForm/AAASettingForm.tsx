@@ -40,8 +40,8 @@ const AAASettingForm = (props: AAASettingFormProps) => {
     [useWatch('enableSecondaryServer'), useWatch('type')]
   const nameValidator = async (value: string) => {
     const policyList = aaaPolicyList?.data!
-    return checkObjectNotExists(policyList.filter(
-      policy => edit ? policy.name !== value : true
+    return checkObjectNotExists(policyList.map(policy => ({ name: policy.name })).filter(
+      policy => edit ? policy.name !== saveState.name : true
     ), { name: value } ,
     $t({ defaultMessage: 'AAA Policy' }))
   }
@@ -57,8 +57,12 @@ const AAASettingForm = (props: AAASettingFormProps) => {
       }))
     }
 
+    const stateValue = isPrimary
+      ? `${saveState.primary!.ip}:${saveState.primary!.port}`
+      : `${saveState.secondary!.ip}:${saveState.secondary!.port}`
+
     if (aaaPolicyIpList
-      .filter(policy => edit ? policy !== value : true)
+      .filter(policy => edit ? policy !== stateValue : true)
       .includes(value)
     ) {
       return Promise.reject($t({
