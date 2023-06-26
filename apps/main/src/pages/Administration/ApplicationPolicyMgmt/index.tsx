@@ -61,9 +61,9 @@ const ApplicationPolicyMgmt = ()=>{
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
-              <UI.CurrentLabel style={{ fontWeight: 600 }}>
+              <UI.CurrentLabelBold>
                 {$t({ defaultMessage: 'Release' })}
-              </UI.CurrentLabel>
+              </UI.CurrentLabelBold>
               <UI.CurrentValue>
                 {formatter(DateFormatEnum.DateFormat)(data?.latestReleasedDate)}
               </UI.CurrentValue>
@@ -87,6 +87,14 @@ const ApplicationPolicyMgmt = ()=>{
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
+              <UI.CurrentLabelBold>
+                {$t({ defaultMessage: 'Release' })}
+              </UI.CurrentLabelBold>
+              <UI.CurrentValue>
+                {formatter(DateFormatEnum.DateFormat)(data?.currentReleasedDate)}
+              </UI.CurrentValue>
+            </UI.CurrentDetail>
+            <UI.CurrentDetail>
               <UI.CurrentLabel>
                 {$t({ defaultMessage: 'Last Updated:' })}
               </UI.CurrentLabel>
@@ -96,13 +104,15 @@ const ApplicationPolicyMgmt = ()=>{
             </UI.CurrentDetail>
           </UI.FwContainer>
         </Space>
-        {updateAvailable&&<div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
-          {$t({ defaultMessage: 'Clicking "Update" will proceed with '+
-            'the below updates under this tenant' })}
-        </div>}
-        {updateAvailable&&<div style={{ marginTop: 10 }}>
-          <UpdateConfirms />
-        </div>}
+        {updateAvailable && <>
+          <div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
+            {/* eslint-disable-next-line max-len */}
+            {$t({ defaultMessage: 'Clicking "Update" will proceed with the below updates under this tenant' })}
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <UpdateConfirms />
+          </div>
+        </>}
       </div>
     )
   }
@@ -174,9 +184,9 @@ const ApplicationPolicyMgmt = ()=>{
       }
     }
     return <>
-      <div style={{ fontWeight: 600, marginTop: 20 }}>
+      <UI.CurrentLabelBold style={{ marginTop: 20 }}>
         {$t({ defaultMessage: 'Update Details' })}
-      </div>
+      </UI.CurrentLabelBold>
       <div>
         <Tabs
           defaultActiveKey='APPLICATION_ADDED'

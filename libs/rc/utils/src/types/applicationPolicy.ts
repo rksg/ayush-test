@@ -1,6 +1,7 @@
 export interface ApplicationPolicyMgmt {
   currentVersion: string,
   currentUpdatedDate: string,
+  currentReleasedDate: string,
   latestVersion: string,
   latestReleasedDate: string,
   changedApplications?: ApplicationInfo[]
