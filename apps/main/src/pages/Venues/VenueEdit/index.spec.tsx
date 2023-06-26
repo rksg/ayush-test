@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { venueApi }                              from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
@@ -25,7 +25,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('VenueEdit', () => {
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(

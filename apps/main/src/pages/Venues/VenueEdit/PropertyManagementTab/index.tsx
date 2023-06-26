@@ -2,11 +2,15 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { FetchBaseQueryError }            from '@reduxjs/toolkit/dist/query/react'
 import { Col, Form, Row, Select, Switch } from 'antd'
-import { FormFinishInfo }                 from 'rc-field-form/lib/FormContext'
-import { useIntl }                        from 'react-intl'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PersonaGroupDrawer } from 'apps/rc/src/pages/Users/Persona/PersonaGroupDrawer'
+import { FormFinishInfo }     from 'rc-field-form/lib/FormContext'
+import { useIntl }            from 'react-intl'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Subtitle, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                               from '@acx-ui/feature-toggle'
 import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
@@ -28,11 +32,8 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 // FIXME: move this component to common folder.
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { PersonaGroupLink } from '../../../../../../rc/src/pages/Users/Persona/LinkHelper'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { PersonaGroupDrawer } from '../../../../../../rc/src/pages/Users/Persona/PersonaGroupDrawer'
-import { VenueEditContext }   from '../index'
+
+import { VenueEditContext } from '../index'
 
 
 
@@ -73,7 +74,7 @@ export function PropertyManagementTab () {
   const { $t } = useIntl()
   const basePath = useTenantLink('/venues/')
   const { tenantId, venueId } = useParams()
-  const msgTemplateEnabled = useIsSplitOn(Features.MSG_TEMPLATE)
+  const msgTemplateEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()
