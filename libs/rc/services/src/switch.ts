@@ -204,7 +204,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Switch', id: 'Detail' }],
+      providesTags: [{ type: 'Switch', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -248,6 +248,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateSwitch'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'SwitchPort', id: 'LIST' }]))
+          })
+        })
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
