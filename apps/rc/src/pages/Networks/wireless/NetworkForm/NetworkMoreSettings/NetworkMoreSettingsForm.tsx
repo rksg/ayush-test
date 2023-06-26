@@ -164,6 +164,8 @@ export function MoreSettingsForm (props: {
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
     data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
 
+  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
+
   if (isPortalDefaultVLANId) {
     delete data?.wlan?.vlanId
     form.setFieldValue(['wlan', 'vlanId'], 3000)
@@ -281,7 +283,7 @@ export function MoreSettingsForm (props: {
               <UI.Description>
                 {
                   $t({
-                    defaultMessage: `Not able to modify when the network 
+                    defaultMessage: `Not able to modify when the network
                     enables network segmentation service`
                   })
                 }
@@ -634,27 +636,27 @@ export function MoreSettingsForm (props: {
             children={<Switch />}
           />
         </UI.FieldLabel>
-        <UI.FieldLabel width='250px'>
-          { $t({ defaultMessage: 'AP Host Name Advertisement in Beacon' }) }
-          <Form.Item
-            name={['wlan','advancedCustomization','apHostNameAdvertisementInBeacon']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
-
-        <UI.FieldLabel width='250px'>
-          { $t({ defaultMessage: 'GTK Rekey' }) }
-          <Form.Item
-            name={['wlan','advancedCustomization','GTKRekey']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
-          />
-        </UI.FieldLabel>
+        {gtkRekeyFlag &&
+          <>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'apHostNameAdvertisementInBeacon']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </UI.FieldLabel>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'GTK Rekey' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'GTKRekey']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </UI.FieldLabel></>
+        }
         {enableOce &&
           <>
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
