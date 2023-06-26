@@ -11,7 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
 import {
@@ -75,13 +75,14 @@ export default function DpskPassphraseManagement () {
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskPassphraseListQuery,
     sorter: defaultSorter,
     defaultPayload,
-    search: defaultSearch
+    search: defaultSearch,
+    enableSelectAllPagesData: ['id']
   })
 
   const downloadPassphrases = () => {
@@ -334,6 +335,7 @@ export default function DpskPassphraseManagement () {
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        getAllPagesData={tableQuery.getAllPagesData}
         onChange={tableQuery.handleTableChange}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}

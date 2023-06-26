@@ -9,6 +9,7 @@ import { Button, StepsFormLegacy, Tooltip, cssStr }                    from '@ac
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
+  apNameRegExp,
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
@@ -49,7 +50,7 @@ export function NetworkDetailForm () {
   }
 
   useEffect(() => {
-    if ((editMode) && data?.wlan?.ssid) {
+    if (editMode && data?.wlan?.ssid) {
       if (!differentSSID) {
         setDifferentSSID(data?.wlan?.ssid !== data?.name)
       }
@@ -147,7 +148,8 @@ export function NetworkDetailForm () {
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value) },
-            { validator: (_, value) => hasGraveAccentAndDollarSign(value) }
+            { validator: (_, value) => hasGraveAccentAndDollarSign(value) },
+            { validator: (_, value) => apNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback

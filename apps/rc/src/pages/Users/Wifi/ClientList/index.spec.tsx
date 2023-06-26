@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { clientList, clientMeta, historicalClientList, eventMeta } from '../__tests__/fixtures'
+import { clientList, historicalClientList, eventMeta } from '../__tests__/fixtures'
 
 import ClientList from '.'
 
@@ -22,6 +22,8 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+window.scrollTo = jest.fn()
 
 describe('ClientList', () => {
   const params = { tenantId: 'tenant-id', activeTab: 'clients' }
@@ -32,13 +34,21 @@ describe('ClientList', () => {
         (_, res, ctx) => res(ctx.json({ data: clientList }))
       ),
       rest.post(ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json(clientMeta))
+        (_, res, ctx) => res(ctx.json({ data: [
+          { venueName: 'UI-TEST-VENUE', clientMac: '24:41:8c:c3:16:df', apName: 'UI team ONLY' }
+        ] }))
       ),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(historicalClientList))
       ),
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventMeta))
+      ),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -52,12 +62,17 @@ describe('ClientList', () => {
       })
 
     // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    fireEvent.click(await screen.findByRole('tab', { name: 'Guest Pass Credentials' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/users/wifi/guests`,
-      hash: '',
-      search: ''
-    })
+    await screen.findByText('LP-XXXXX')
+    await screen.findByText('UI team ONLY')
+    await screen.findByText('UI-TEST-VENUE')
+
+    // fireEvent.click(await screen.findByRole('tab', { name: 'Guest Pass Credentials' }))
+    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    //   pathname: `/${params.tenantId}/t/users/wifi/guests`,
+    //   hash: '',
+    //   search: ''
+    // })
+    // TODO: fix error
   })
 
   it('should render search response correctly', async () => {

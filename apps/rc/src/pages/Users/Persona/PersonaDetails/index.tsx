@@ -38,7 +38,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 function PersonaDetails () {
   const { $t } = useIntl()
-  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
@@ -61,7 +61,6 @@ function PersonaDetails () {
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
   })
-  const deviceCount = personaDetailsQuery.data?.devices?.length ?? 0
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
@@ -304,8 +303,8 @@ function PersonaDetails () {
 
 
         <PersonaDevicesTable
-          title={$t({ defaultMessage: 'Devices ({deviceCount})' }, { deviceCount })}
           persona={personaDetailsQuery.data}
+          dpskPoolId={personaGroupData?.dpskPoolId}
         />
       </Space>
 

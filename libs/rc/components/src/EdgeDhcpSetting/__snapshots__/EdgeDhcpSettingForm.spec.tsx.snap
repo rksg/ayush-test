@@ -53,7 +53,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
         </div>
       </div>
       <label
-        class="styledComponents__FieldLabel-sc-71wmpn-5 hJwBvP"
+        class="styledComponents__FieldLabel-sc-1ibvcih-6 eZOSVg"
         width="100px"
       >
         DHCP Relay:
@@ -394,7 +394,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                     class="ant-form-item-control-input-content"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1abm7iv-12 hgNgTL"
+                      class="styledComponents__Wrapper-sc-1abm7iv-12 cvwnRC"
                     >
                       <div
                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -982,7 +982,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                     class="ant-form-item-control-input-content"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1abm7iv-12 hgNgTL"
+                      class="styledComponents__Wrapper-sc-1abm7iv-12 cvwnRC"
                     >
                       <div
                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1342,7 +1342,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                     class="ant-form-item-control-input-content"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1abm7iv-12 hgNgTL"
+                      class="styledComponents__Wrapper-sc-1abm7iv-12 cvwnRC"
                     >
                       <div
                         class="ant-space ant-space-horizontal ant-space-align-center"

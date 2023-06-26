@@ -250,7 +250,8 @@ export const VenueTable = (
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Venues' }),
+          entityName: rows.length === 1? $t({ defaultMessage: 'Venue' })
+            : $t({ defaultMessage: 'Venues' }),
           entityValue: rows.length === 1 ? rows[0].name : undefined,
           numOfEntities: rows.length,
           confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
@@ -273,6 +274,7 @@ export const VenueTable = (
       <Table
         settingsId='venues-table'
         columns={columns}
+        getAllPagesData={tableQuery.getAllPagesData}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -295,12 +297,16 @@ export function VenuesTable () {
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
+    },
+    enableSelectAllPagesData: ['id', 'name']
   })
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
     selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name })) || true
+      cityFilterOptions: data?.map(v=>({
+        key: v.name,
+        value: v.name.split(', ').map(_.startCase).join(', ')
+      })) || true
     })
   })
 

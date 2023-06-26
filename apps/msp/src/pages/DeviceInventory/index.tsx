@@ -9,7 +9,11 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeviceInventoryListQuery, useExportDeviceInventoryMutation } from '@acx-ui/rc/services'
+import {
+  useDeviceInventoryListQuery,
+  useExportDeviceInventoryMutation,
+  useGetTenantDetailsQuery
+} from '@acx-ui/rc/services'
 import {
   APView,
   ApDeviceStatusEnum,
@@ -20,6 +24,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { AccountType }           from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -74,6 +79,11 @@ export function DeviceInventory () {
   const { tenantId } = useParams()
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
+  const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
+  const isIntegrator =
+    (tenantDetailsData.data?.tenantType === AccountType.MSP_INSTALLER ||
+     tenantDetailsData.data?.tenantType === AccountType.MSP_INTEGRATOR)
+  const parentTenantId = tenantDetailsData.data?.mspEc?.parentMspId
 
   const filterPayload = {
     searchString: '',
@@ -89,11 +99,18 @@ export function DeviceInventory () {
       'name',
       'deviceStatus'
     ],
-    searchTargetFields: ['apMac','switchMac','serialNumber']
+    searchTargetFields: ['apMac','switchMac','serialNumber'],
+    filters: {}
+  }
+  if (isIntegrator) {
+    filterPayload.filters = {
+      id: [ tenantId ]
+    }
   }
 
   const filterResults = useTableQuery({
     useQuery: useDeviceInventoryListQuery,
+    apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
     pagination: {
       pageSize: 10000
     },
@@ -114,7 +131,9 @@ export function DeviceInventory () {
       ? _.uniq(list?.data.filter(item => !!item.model).map(c=>c.model)) : []
 
   const ExportInventory = () => {
-    downloadCsv({ params: { tenantId }, payload: filterPayload })
+    downloadCsv({
+      params: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
+      payload: filterPayload })
   }
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
@@ -214,12 +233,19 @@ export function DeviceInventory () {
       'model',
       'customerName',
       'deviceStatus' ],
-    searchTargetFields: ['apMac', 'switchMac', 'serialNumber']
+    searchTargetFields: ['apMac', 'switchMac', 'serialNumber'],
+    filters: {}
+  }
+  if (isIntegrator) {
+    defaultPayload.filters = {
+      id: [ tenantId ]
+    }
   }
 
   const DeviceTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
+      apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]

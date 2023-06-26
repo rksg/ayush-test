@@ -73,6 +73,7 @@ export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
 export { usePreference, countryCodes } from './usePreference'
 export type { updatePreferenceProps } from './usePreference'
+export { usePlacesAutocomplete } from './usePlacesAutocomplete'
 export { GoogleMapWithPreference } from './GoogleMapWithPreference'
 export { SubscriptionUtilizationWidget } from './SubscriptionUtilizationWidget'
 export {
@@ -85,6 +86,8 @@ export {
   useDefaultDDoSRulesColumns } from './EdgeFirewallTables/DDoSRulesTable'
 export { RuleStatisticDataTable as DDoSRuleStatisticDataTable }
   from './EdgeFirewallTables/DDoSRulesTable/RuleStatisticDataTable'
+export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
+  from './EdgeFirewallTables/GroupedStatsTables'
 
 
 export { TunnelProfileForm } from './TunnelProfileForm'

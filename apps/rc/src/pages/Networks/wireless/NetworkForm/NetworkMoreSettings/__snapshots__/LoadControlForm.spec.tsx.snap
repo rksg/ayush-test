@@ -179,82 +179,82 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
+      class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+      width="250px"
     >
+      Enable load balancing between all radios
       <div
-        class="ant-row ant-form-item-row"
+        class="ant-form-item"
+        style="margin-bottom: 10px;"
       >
         <div
-          class="ant-col ant-form-item-control"
+          class="ant-row ant-form-item-row"
         >
           <div
-            class="ant-form-item-control-input"
+            class="ant-col ant-form-item-control"
           >
             <div
-              class="ant-form-item-control-input-content"
+              class="ant-form-item-control-input"
             >
-              <label
-                class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+              <div
+                class="ant-form-item-control-input-content"
               >
-                <span
-                  class="ant-checkbox ant-checkbox-checked"
+                <button
+                  aria-checked="true"
+                  class="ant-switch ant-switch-checked"
+                  id="wlan_advancedCustomization_enableBandBalancing"
+                  role="switch"
+                  type="button"
                 >
-                  <input
-                    checked=""
-                    class="ant-checkbox-input"
-                    id="wlan_advancedCustomization_enableBandBalancing"
-                    type="checkbox"
-                    value=""
+                  <div
+                    class="ant-switch-handle"
                   />
                   <span
-                    class="ant-checkbox-inner"
+                    class="ant-switch-inner"
                   />
-                </span>
-                <span>
-                  Enable load balancing between all radios
-                </span>
-              </label>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
+      class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+      width="250px"
     >
+      Enable load balancing between APs
       <div
-        class="ant-row ant-form-item-row"
+        class="ant-form-item"
+        style="margin-bottom: 10px;"
       >
         <div
-          class="ant-col ant-form-item-control"
+          class="ant-row ant-form-item-row"
         >
           <div
-            class="ant-form-item-control-input"
+            class="ant-col ant-form-item-control"
           >
             <div
-              class="ant-form-item-control-input-content"
+              class="ant-form-item-control-input"
             >
-              <label
-                class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
+              <div
+                class="ant-form-item-control-input-content"
               >
-                <span
-                  class="ant-checkbox ant-checkbox-checked"
+                <button
+                  aria-checked="true"
+                  class="ant-switch ant-switch-checked"
+                  id="wlan_advancedCustomization_clientLoadBalancingEnable"
+                  role="switch"
+                  type="button"
                 >
-                  <input
-                    checked=""
-                    class="ant-checkbox-input"
-                    id="wlan_advancedCustomization_clientLoadBalancingEnable"
-                    type="checkbox"
-                    value=""
+                  <div
+                    class="ant-switch-handle"
                   />
                   <span
-                    class="ant-checkbox-inner"
+                    class="ant-switch-inner"
                   />
-                </span>
-                <span>
-                  Enable load balancing between APs
-                </span>
-              </label>
+                </button>
+              </div>
             </div>
           </div>
         </div>

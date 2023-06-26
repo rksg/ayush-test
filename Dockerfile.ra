@@ -16,7 +16,6 @@ COPY .eslintignore \
   jest.config.ts \
   jest.preset.ts \
   jest.setup.js \
-  modulefederation.config.base.js \
   nx.json \
   webpack.config.base.js \
   tsconfig.base.json \
@@ -51,7 +50,7 @@ COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
 
 RUN echo NX_GIT_SHA=$CIRCLE_SHA1 >> .env
 RUN echo NX_GIT_DATE=$(date -R) >> .env
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra,analytics
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra
 
 ###############################################################
 FROM nginx:1.21.6-alpine
@@ -71,8 +70,6 @@ COPY tools/docker/nginx/nginx.conf \
 COPY --from=build /app/dist/apps ./
 
 RUN \
-  # Move all other apps into main
-  ls | grep -v ra | xargs mv -t ra && \
   # Create structure to match deployment need
   mkdir -p analytics/next && \
   # Move all files into it

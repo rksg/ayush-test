@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-import { Button, Modal, ModalType, SelectionControl } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { ExpirationDateSelector }                     from '@acx-ui/rc/components'
+import { Modal, ModalType, SelectionControl } from '@acx-ui/components'
+import { Features, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector }             from '@acx-ui/rc/components'
 import {
   useAdaptivePolicySetListQuery,
   useLazySearchMacRegListsQuery
@@ -22,7 +22,7 @@ export function MacRegistrationListSettingForm () {
   const { policyId } = useParams()
   const policySetId = Form.useWatch('policySetId')
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const form = Form.useFormInstance()
 
   const { data: policySetsData } = useAdaptivePolicySetListQuery(
@@ -76,13 +76,13 @@ export function MacRegistrationListSettingForm () {
         </Col>
         {policyEnabled &&
         <Col span={24}>
-          <Form.Item label={$t({ defaultMessage: 'Access Policy Set' })}>
+          <Form.Item label={$t({ defaultMessage: 'Adaptive Policy Set' })}>
             <Space direction='horizontal'>
               <Form.Item name='policySetId'
                 noStyle
                 valuePropName='value'
                 rules={[
-                  { message: $t({ defaultMessage: 'Please select Access Policy Set' }) }
+                  { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
                 ]}
                 children={
                   <Select style={{ minWidth: 250 }}
@@ -92,13 +92,6 @@ export function MacRegistrationListSettingForm () {
                   />
                 }
               />
-              <Form.Item noStyle>
-                <Button
-                  type={'link'}
-                  onClick={() => setPolicyModalVisible(true)}
-                >{$t({ defaultMessage: 'Add Access Policy Set' })}
-                </Button>
-              </Form.Item>
             </Space>
           </Form.Item>
           {policySetId &&
