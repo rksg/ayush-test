@@ -41,9 +41,9 @@ const dhcpProfilesList = [
 async function fillInBeforeSettings (dhcpName: string) {
   const insertInput = screen.getByLabelText('Service Name')
   fireEvent.change(insertInput, { target: { value: dhcpName } })
-  fireEvent.blur(insertInput)
+  insertInput.focus()
   const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating, { timeout: 7000 })
+  await waitForElementToBeRemoved(validating)
 }
 
 describe('DHCPForm', () => {

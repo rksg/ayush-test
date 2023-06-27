@@ -354,6 +354,8 @@ export function SwitchTable (props : SwitchTableProps) {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
+    } else {
+      delete customFilters.syncedSwitchConfig
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }

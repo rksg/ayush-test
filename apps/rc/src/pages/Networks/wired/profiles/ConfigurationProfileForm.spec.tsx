@@ -24,6 +24,12 @@ const configureProfileContextValues = {
   currentData
 } as unknown as ConfigurationProfileType
 
+const mockNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate
+}))
+
 describe('Wired', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -142,6 +148,9 @@ describe('Wired', () => {
 
     expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockNavigate).toHaveBeenCalledWith({
+      hash: '', pathname: '/tenant-id/t/networks/wired/profiles', search: '' }, { replace: true }
+    )
   })
 
   it('should render create Switch Configuration Profile correctly', async () => {
