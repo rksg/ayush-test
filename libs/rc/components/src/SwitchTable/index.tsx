@@ -89,7 +89,7 @@ export const defaultSwitchPayload = {
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware'
   ]
 }
 
@@ -217,6 +217,11 @@ export function SwitchTable (props : SwitchTableProps) {
       dataIndex: 'ipAddress',
       sorter: true,
       searchable: searchable
+    }, {
+      key: 'firmware',
+      title: $t({ defaultMessage: 'Firmware' }),
+      dataIndex: 'firmware',
+      sorter: true
     },
     // { TODO: Health scope
     //   key: 'incidents',

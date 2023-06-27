@@ -91,6 +91,31 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+type MockDrawerProps = React.PropsWithChildren<{
+  visible: boolean
+  importRequest: () => void
+  onClose: () => void
+}>
+jest.mock('../ImportFileDrawer', () => ({
+  ...jest.requireActual('../ImportFileDrawer'),
+  ImportFileDrawer: ({ importRequest, onClose, visible }: MockDrawerProps) =>
+    visible && <div data-testid={'ImportFileDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        importRequest()
+      }}>Import</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
+
+jest.mock('../SwitchCliSession', () => ({
+  SwitchCliSession: ({ modalState }: { modalState: boolean }) =>
+    modalState && <div data-testid={'SwitchCliSession'}></div>
+}))
+
 describe('SwitchTable', () => {
   afterEach(() => jest.restoreAllMocks())
 
@@ -157,6 +182,8 @@ describe('SwitchTable', () => {
 
     expect(await screen.findByText('Import from file')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Import from file' }))
+
+    expect(await screen.findByTestId('ImportFileDrawer')).toBeVisible()
   })
 
   it('should clicks add stack correctly', async () => {
