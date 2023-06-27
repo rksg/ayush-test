@@ -171,7 +171,10 @@ export function SwitchTable (props : SwitchTableProps) {
       filterable: filterableKeys ? switchFilterOptions : false,
       render: (data, row) => {
         return row.isFirstLevel ?
-          <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
+          <TenantLink
+            to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
+            style={{ lineHeight: '20px' }}
+          >
             {getSwitchName(row)}
           </TenantLink> :
           <div>
