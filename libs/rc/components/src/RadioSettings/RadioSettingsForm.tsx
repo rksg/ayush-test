@@ -1,7 +1,10 @@
 import { Form, Slider, InputNumber, Space } from 'antd'
 import { useIntl }                          from 'react-intl'
 
+import { cssStr }                 from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationOutlined }    from '@acx-ui/icons'
+
 
 import {
   ApRadioTypeEnum,
@@ -31,6 +34,7 @@ export function RadioSettingsForm (props:{
 }) {
 
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const { radioType,
     disabled = false,
@@ -130,6 +134,19 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
+      {form.getFieldValue(['radioParams6G', 'channelBandwidth']) === '320MHz' ?
+        <div style={{ color: cssStr('--acx-neutrals-50'), fontSize: '12px', marginBottom: '14px' }}>
+          <InformationOutlined style={{
+            height: '14px',
+            marginBottom: '-2px',
+            marginRight: '2px'
+          }}/>
+          {$t(
+            // eslint-disable-next-line max-len
+            { defaultMessage: '320 MHz applies only to R770. The other AP models will enable 160 MHz.' }
+          )}
+        </div>
+        : '' }
       <Form.Item
         label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
         name={txPowerFieldName}>
