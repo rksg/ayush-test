@@ -11,10 +11,7 @@ import { WrapperStyles } from './styledComponents'
 
 
 const calculatePercentage = (value: number, totalVal: number)=> {
-  if (Boolean(totalVal) === false) {
-    if (Boolean(totalVal) === false) return 0
-    return 100
-  }
+  if (Boolean(totalVal) === false) return 0
   return Math.round(value / totalVal * 100)
 }
 export interface EdgeStateCardProps {

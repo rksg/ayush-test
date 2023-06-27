@@ -125,7 +125,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     onClose={() => {
       setDrawerVisible(false)
     }}
-    mask={false}
+    maskStyle={{ background: 'none' }}
     children={
       <div>
         <Table

@@ -128,7 +128,10 @@ const EdgeDhcpTable = () => {
       align: 'center',
       key: 'currentVersion',
       dataIndex: 'currentVersion',
-      sorter: true
+      sorter: true,
+      render (data, row) {
+        return row.currentVersion || $t({ defaultMessage: 'NA' })
+      }
     },
     {
       title: $t({ defaultMessage: 'Tags' }),
