@@ -1,8 +1,8 @@
+/* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { get }           from '@acx-ui/config'
 import { recommendationUrl, store } from '@acx-ui/store'
-import { mockGraphqlQuery }  from '@acx-ui/test-utils'
+import { mockGraphqlQuery }         from '@acx-ui/test-utils'
 import {
   DateRange,
   setUpIntl,
@@ -11,12 +11,49 @@ import {
 
 import { api } from './services'
 
-const mockGet = get as jest.Mock
-
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
-}))
-
+export const mockResult = {
+  recommendations: [
+    {
+      id: '1',
+      code: 'c-crrm-channel5g-auto',
+      status: 'applied',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      path: [
+        { type: 'system', name: 'vsz611' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ]
+    },
+    {
+      id: '2',
+      code: 'c-txpower-same',
+      status: 'revertfailed',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:06:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-2',
+      metadata: {
+        error: {
+          details: [{
+            apName: 'AP',
+            apMac: 'MAC',
+            configKey: 'radio5g',
+            message: 'unknown error'
+          }]
+        }
+      },
+      isMuted: false,
+      path: [
+        { type: 'system', name: 'vsz6' },
+        { type: 'zone', name: 'EDU' }
+      ]
+    }
+  ]
+}
 describe('RecommendationTable: services', () => {
   const props = {
     startDate: '2023-06-10T00:00:00+08:00',
@@ -26,49 +63,7 @@ describe('RecommendationTable: services', () => {
     filter: {}
   } as const
 
-  const mockResult = {
-    recommendations: [
-      {
-        id: '1',
-        code: 'c-crrm-channel5g-auto',
-        status: 'applied',
-        createdAt: '2023-06-13T07:05:08.638Z',
-        updatedAt: '2023-06-16T06:05:02.839Z',
-        sliceType: 'zone',
-        sliceValue: 'zone-1',
-        metadata: {},
-        isMuted: false,
-        path: [
-          { type: 'system', name: 'vsz611' },
-          { type: 'zone', name: 'EDU-MeshZone_S12348' }
-        ]
-      },
-      {
-        id: '2',
-        code: 'c-txpower-same',
-        status: 'revertfailed',
-        createdAt: '2023-06-13T07:05:08.638Z',
-        updatedAt: '2023-06-16T06:06:02.839Z',
-        sliceType: 'zone',
-        sliceValue: 'zone-2',
-        metadata: {
-          error: {
-            details: [{
-              apName: 'AP',
-              apMac: 'MAC',
-              configKey: 'radio5g',
-              message: 'unknown error'
-            }]
-          }
-        },
-        isMuted: false,
-        path: [
-          { type: 'system', name: 'vsz6' },
-          { type: 'zone', name: 'EDU' }
-        ]
-      }
-    ]
-  }
+
   const expectedResult = [
     {
       id: '1',
@@ -134,9 +129,6 @@ describe('RecommendationTable: services', () => {
     store.dispatch(api.util.resetApiState())
   })
 
-  afterEach(() => {
-    mockGet.mockClear()
-  })
   it('should return correct data for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
       data: mockResult

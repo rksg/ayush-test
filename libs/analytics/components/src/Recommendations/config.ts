@@ -1,10 +1,5 @@
+/* eslint-disable max-len */
 import { defineMessage } from 'react-intl'
-
-import { get }           from '@acx-ui/config'
-
-export const SCOPE_TYPE = get('IS_MLISA_SA')
-  ? defineMessage({ defaultMessage: 'Zone' })
-  : defineMessage({ defaultMessage: 'Venue' })
 
 const priorities = {
   low: { order: 1, label: defineMessage({ defaultMessage: 'Low' }) },
@@ -13,9 +8,9 @@ const priorities = {
 }
 const categories = {
   'Wi-Fi Client Experience': defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
-  Security : defineMessage({ defaultMessage: 'Security' }),
-  Infrastructure: defineMessage({ defaultMessage: 'Infrastructure' }),
-  'AP Performance': defineMessage({ defaultMessage:  'AP Performance' }),
+  'Security': defineMessage({ defaultMessage: 'Security' }),
+  'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
+  'AP Performance': defineMessage({ defaultMessage: 'AP Performance' }),
   'AI-Driven Cloud RRM': defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' })
 }
 export const { states, codes } = {
@@ -77,99 +72,99 @@ export const { states, codes } = {
   },
   codes: {
     'c-bgscan24g-enable': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Auto channel selection mode and background scan on 2.4 GHz radio' }),
-      'priority': priorities.medium
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Auto channel selection mode and background scan on 2.4 GHz radio' }),
+      priority: priorities.medium
     },
     'c-bgscan5g-enable': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Auto channel selection mode and background scan on 5 GHz radio' }),
-      'priority': priorities.medium
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Auto channel selection mode and background scan on 5 GHz radio' }),
+      priority: priorities.medium
     },
     'c-bgscan24g-timer': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Background scan timer on 2.4 GHz radio' }),
-      'priority': priorities.low
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Background scan timer on 2.4 GHz radio' }),
+      priority: priorities.low
     },
     'c-bgscan5g-timer': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Background scan timer on 5 GHz radio' }),
-      'priority': priorities.low
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Background scan timer on 5 GHz radio' }),
+      priority: priorities.low
     },
     'c-dfschannels-enable': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Enable DFS channels' }),
-      'priority': priorities.medium
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Enable DFS channels' }),
+      priority: priorities.medium
     },
     'c-dfschannels-disable': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Disable DFS channels' }),
-      'priority': priorities.low
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Disable DFS channels' }),
+      priority: priorities.low
     },
     'c-bandbalancing-enable': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Enable band balancing' }),
-      'priority': priorities.low
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Enable band balancing' }),
+      priority: priorities.low
     },
     'c-bandbalancing-enable-below-61': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Enable band balancing' }),
-      'priority': priorities.low
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Enable band balancing' }),
+      priority: priorities.low
     },
     'c-bandbalancing-proactive': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Change band balancing mode' }),
-      'priority': priorities.low
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Change band balancing mode' }),
+      priority: priorities.low
     },
     'c-aclb-enable': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Enable load balancing based on client count' }),
-      'priority': priorities.low
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Enable load balancing based on client count' }),
+      priority: priorities.low
     },
     'i-zonefirmware-upgrade': {
-      'category': categories.Infrastructure,
-      'summary': defineMessage({ defaultMessage: 'Zone firmware upgrade' }),
-      'priority': priorities.medium
+      category: categories.Infrastructure,
+      summary: defineMessage({ defaultMessage: 'Zone firmware upgrade' }),
+      priority: priorities.medium
     },
     'c-txpower-same': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Tx power setting for 2.4 GHz and 5 GHz radio' }),
-      'priority': priorities.medium
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Tx power setting for 2.4 GHz and 5 GHz radio' }),
+      priority: priorities.medium
     },
     'c-txpower5g-low': {
-      'category': categories['Wi-Fi Client Experience'],
-      'summary': defineMessage({ defaultMessage: 'Tx power is low for 5 GHz' }),
-      'priority': priorities.medium
+      category: categories['Wi-Fi Client Experience'],
+      summary: defineMessage({ defaultMessage: 'Tx power is low for 5 GHz' }),
+      priority: priorities.medium
     },
     's-wlanauth-open': {
-      'category': categories.Security,
-      'summary': defineMessage({ defaultMessage: 'WLAN with Open Security' }),
-      'priority': priorities.medium
+      category: categories.Security,
+      summary: defineMessage({ defaultMessage: 'WLAN with Open Security' }),
+      priority: priorities.medium
     },
     's-wlanauth-weak': {
-      'category': categories.Security,
-      'summary': defineMessage({ defaultMessage: 'Weak WLAN authentication method' }),
-      'priority': priorities.medium
+      category: categories.Security,
+      summary: defineMessage({ defaultMessage: 'Weak WLAN authentication method' }),
+      priority: priorities.medium
     },
     'p-multicasttraffic-limit': {
-      'category': categories['AP Performance'],
-      'summary': defineMessage({ defaultMessage: 'Multicast/Broadcast traffic flood' }),
-      'priority': priorities.medium
+      category: categories['AP Performance'],
+      summary: defineMessage({ defaultMessage: 'Multicast/Broadcast traffic flood' }),
+      priority: priorities.medium
     },
     'c-crrm-channel24g-auto': {
-      'category': categories['AI-Driven Cloud RRM'],
-      'summary': defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 2.4 GHz radio' }),
-      'priority': priorities.high
+      category: categories['AI-Driven Cloud RRM'],
+      summary: defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 2.4 GHz radio' }),
+      priority: priorities.high
     },
     'c-crrm-channel5g-auto': {
-      'category': categories['AI-Driven Cloud RRM'],
-      'summary': defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio' }),
-      'priority': priorities.high
+      category: categories['AI-Driven Cloud RRM'],
+      summary: defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio' }),
+      priority: priorities.high
     },
     'c-crrm-channel6g-auto': {
-      'category': categories['AI-Driven Cloud RRM'],
-      'summary': defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 6 GHz radio' }),
-      'priority': priorities.high
+      category: categories['AI-Driven Cloud RRM'],
+      summary: defineMessage({ defaultMessage: 'More optimal channel plan and channel bandwidth selection on 6 GHz radio' }),
+      priority: priorities.high
     }
   }
 }

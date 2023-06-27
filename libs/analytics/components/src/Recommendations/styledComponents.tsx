@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
-import { Table } from '@acx-ui/components'
+import { Table, TableProps } from '@acx-ui/components'
+
+import { RecommendationRow } from './table'
 
 const colors = {
   High: '--acx-semantics-red-60',
@@ -34,7 +36,7 @@ export const PriorityIcon = styled.span.attrs((props: { value: string }) => prop
 `
 
 export const RecommendationTableWrapper =
-styled((props: any) => <Table {...props} />)`
+styled((props: TableProps<RecommendationRow>) => <Table {...props} />)`
   --recommendation-table-muted-row-font-color: var(--acx-neutrals-40);
   --recommendation-table-muted-row-background-color: var(--acx-neutrals-20);
 

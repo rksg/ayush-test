@@ -1,14 +1,14 @@
-import { gql }               from 'graphql-request'
+import { gql }           from 'graphql-request'
+import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
 import {
   nodeTypes,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { recommendationApi }                 from '@acx-ui/store'
-import { NodeType, getIntl } from '@acx-ui/utils'
-import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
-import moment from 'moment'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { recommendationApi }         from '@acx-ui/store'
+import { NodeType, getIntl }         from '@acx-ui/utils'
 
 import { states, codes } from './config'
 
@@ -71,7 +71,9 @@ const getStatusTooltip = (code: string, state: string, metadata: Metadata) => {
     errorMessage: errorMessage,
     updatedAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.updatedAt),
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
-    updatedAtPlus7Days: formatter(DateFormatEnum.DateTimeFormat)(moment(metadata.updatedAt).add(7, 'd'))
+    updatedAtPlus7Days: formatter(DateFormatEnum.DateTimeFormat)(
+      moment(metadata.updatedAt).add(7, 'd')
+    )
   })
 }
 function transformResponse (recommendations: Recommendation[]) {

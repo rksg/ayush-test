@@ -1,7 +1,6 @@
 import moment from 'moment-timezone'
 
 import { PageHeader, PageHeaderProps, RangePicker } from '@acx-ui/components'
-import { get }                                      from '@acx-ui/config'
 import { useDateFilter }                            from '@acx-ui/utils'
 
 import { NetworkFilter } from '../NetworkFilter'
@@ -27,8 +26,8 @@ const Filter = (
   { shouldQuerySwitch, withIncidents, excludeNetworkFilter }: useHeaderExtraProps
 ) => {
   return excludeNetworkFilter
-      ? null 
-      : <NetworkFilter
+    ? null
+    : <NetworkFilter
       key='network-filter'
       shouldQuerySwitch={shouldQuerySwitch}
       withIncidents={withIncidents}

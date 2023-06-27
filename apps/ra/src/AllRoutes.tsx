@@ -1,10 +1,10 @@
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import Incidents from './pages/Incidents'
-import Layout    from './pages/Layout'
-import Recommendations  from './pages/Recommendations'
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
+import Incidents       from './pages/Incidents'
+import Layout          from './pages/Layout'
+import Recommendations from './pages/Recommendations'
 
 function AllRoutes () {
   return rootRoutes(<Route element={<Layout />}>
