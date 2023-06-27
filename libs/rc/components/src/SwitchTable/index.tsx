@@ -186,7 +186,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterable: filterableKeys ? switchFilterOptions : false,
       render: (data, row) => {
         return row.isFirstLevel ?
-          <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
+          <TenantLink
+            to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
+            style={{ lineHeight: '20px' }}
+          >
             {getSwitchName(row)}
           </TenantLink> :
           <div>
