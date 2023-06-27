@@ -131,7 +131,7 @@ export function MoreSettingsForm (props: {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
-
+  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const [
     enableDhcp,
     enableOfdmOnly,
@@ -163,8 +163,6 @@ export function MoreSettingsForm (props: {
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
     data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
-
-  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
 
   if (isPortalDefaultVLANId) {
     delete data?.wlan?.vlanId
