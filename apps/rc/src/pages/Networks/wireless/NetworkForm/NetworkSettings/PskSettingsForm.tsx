@@ -291,7 +291,11 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode || disablePolicies} onChange={onMacAuthChange} />
+                <Switch disabled={
+                  editMode || disablePolicies
+                  || wlanSecurity !== WlanSecurityEnum.WPA2Personal}
+                onChange={onMacAuthChange}
+                />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
               <Tooltip.Question
