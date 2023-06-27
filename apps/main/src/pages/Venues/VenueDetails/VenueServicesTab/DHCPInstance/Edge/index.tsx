@@ -1,9 +1,9 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader }                              from '@acx-ui/components'
+import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, ServiceInfo }                                           from '@acx-ui/rc/components'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable }                                                        from '@acx-ui/rc/components'
 import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpHostStatus, ServiceOperation, ServiceType, getServiceDetailsLink }                     from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                   from '@acx-ui/react-router-dom'
@@ -136,7 +136,7 @@ const EdgeDhcpTab = () => {
     }]}>
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <ServiceInfo data={dhcpInfo} />
+          <SummaryCard data={dhcpInfo} />
         </GridCol>
         <ContentSwitcher tabDetails={tabDetails} size='large' />
       </GridRow>
