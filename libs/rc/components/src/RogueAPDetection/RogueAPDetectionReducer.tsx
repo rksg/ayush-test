@@ -32,8 +32,12 @@ export const rogueAPDetectionReducer = (
       const updateRule = action.payload.rule
       const updateRules = [...state.rules]
       if (updateRule.priority) {
-        updateRules[updateRule.priority - 1] = updateRule
+        const updateIdx = updateRules.findIndex(
+          rule => rule.priority === updateRule.priority
+        )
+        updateRules[updateIdx] = updateRule
       }
+
       return {
         ...state,
         rules: updateRules
@@ -75,7 +79,8 @@ export const rogueAPDetectionReducer = (
       }
     case RogueAPDetectionActionTypes.DRAG_AND_DROP:
       const { oldIndex, newIndex } = action.payload
-      const dragAndDropRules = [...state.rules] as RogueAPRule[]
+      const dragAndDropRules = [...state.rules]
+        .sort((a, b) => a.priority! - b.priority!) as RogueAPRule[]
       [dragAndDropRules[oldIndex], dragAndDropRules[newIndex]] =
         [dragAndDropRules[newIndex], dragAndDropRules[oldIndex]]
       return {
