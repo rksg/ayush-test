@@ -380,7 +380,17 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }]
+      providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Remove Services'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SERVICE' }]))
+          })
+        })
+      }
     }),
     getEdgesTopTraffic: build.query<EdgesTopTraffic,
     RequestPayload<EdgeTimeSeriesPayload>>({
