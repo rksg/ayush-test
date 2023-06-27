@@ -1,7 +1,7 @@
 import { dataApiRecommendationURL, Provider }        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { mockedRecommendationFirmware } from './__fixtures__'
+import { mockedRecommendationFirmware } from './__tests__/fixtures'
 
 import { RecommendationDetails } from '.'
 

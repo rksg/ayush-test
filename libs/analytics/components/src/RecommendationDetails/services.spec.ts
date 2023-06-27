@@ -7,7 +7,7 @@ import {
   mockedRecommendationFirmware,
   mockedRecommendationApFirmware,
   mockedRecommendationCRRM
-} from './__fixtures__'
+} from './__tests__/fixtures'
 import { api, EnhancedRecommendation, RecommendationAp } from './services'
 
 

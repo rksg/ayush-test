@@ -6,7 +6,7 @@ import {
   mockedRecommendationFirmware,
   mockedRecommendationApFirmware,
   mockedRecommendationClientLoad
-} from './__fixtures__'
+} from './__tests__/fixtures'
 import { Overview }                 from './overview'
 import { transformDetailsResponse } from './services'
 

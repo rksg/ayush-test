@@ -1,11 +1,14 @@
-import { render, screen } from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+
+import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
   mockRecommendationNoKPI,
   mockedRecommendationPower,
+  mockedRecommendationFirmware,
   mockedRecommendationClientLoad,
   mockedRecommendationPowerMonitoring
-} from './__fixtures__'
+} from './__tests__/fixtures'
 import { Kpis }                                            from './kpis'
 import { RecommendationDetails, transformDetailsResponse } from './services'
 
@@ -32,7 +35,7 @@ describe('Recommendation Kpis', () => {
     expect(await screen.findByText('22')).toBeVisible()
   })
 
-  it('should render correctly for with load delta', async () => {
+  it('should render correctly for with negative delta', async () => {
     const clientLoadDetails = transformDetailsResponse({
       ...mockedRecommendationPower,
       kpi_session_time_on_24_g_hz: {
@@ -46,6 +49,28 @@ describe('Recommendation Kpis', () => {
     expect(await screen.findByText('Session time on 2.4 GHz')).toBeVisible()
     expect(await screen.findByText('20%')).toBeVisible()
     expect(await screen.findByText('-35%')).toBeVisible()
+  })
+
+  it('should render correctly for with positive delta', async () => {
+    const firmwareDetails = transformDetailsResponse({
+      ...mockedRecommendationFirmware,
+      kpi_aps_on_latest_fw_version: {
+        current: [4, 5],
+        previous: [1, 5],
+        projected: null
+      }
+    } as unknown as RecommendationDetails)
+    render(<Kpis details={firmwareDetails} />)
+    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
+    expect(await screen.findByText('APs on Latest Firmware Version')).toBeVisible()
+    expect(await screen.findByText('=')).toBeVisible()
+    const infoIcons = await screen.findAllByTestId('InformationSolid')
+    expect(infoIcons).toHaveLength(1)
+    await waitFor(async () => {
+      await userEvent.hover(infoIcons[0])
+      const tooltip = await screen.findByText('Numbers could be delayed by up to 1 hour.')
+      expect(tooltip).toBeInTheDocument()
+    })
   })
 
   it('should render correctly for monitoring', async () => {

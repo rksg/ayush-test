@@ -9,7 +9,7 @@ import {
   mockedRecommendationPower,
   mockedRecommendationFirmware,
   mockRecommendationAutoBackground
-} from './__fixtures__'
+} from './__tests__/fixtures'
 import { RecommendationDetails, transformDetailsResponse } from './services'
 import { Values }                                          from './values'
 
