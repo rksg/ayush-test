@@ -15,6 +15,7 @@ import styled                from 'styled-components/macro'
 
 import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -46,7 +47,7 @@ const RadioLegends = styled.div`
   .legends {
     position: absolute;
     display: grid;
-    grid-template-columns: 209px 272px 92px;
+    grid-template-columns: 209px 116px 272px;
     grid-column-gap: 11px;
     height: 16px;
 
@@ -547,9 +548,7 @@ export function RadioSettings () {
               { isDual5gMode &&
                 <div className='legends'>
                   <div></div>
-                  <div className='legend'>
-                    <div className='legend-display'>R760</div>
-                  </div>
+                  <div></div>
                   <div className='legend'>
                     <div className='legend-display'>R560</div>
                   </div>
@@ -563,6 +562,20 @@ export function RadioSettings () {
           >
             <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key='Normal24GHz' />
             <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
+            { isTriBandRadio &&
+                <Tabs.TabPane
+                  tab={<>
+                    {$t({ defaultMessage: '6 GHz' })}
+                    <Tooltip title={
+                      $t({ defaultMessage: '6 GHz only supports R770 and R560.' })
+                    }
+                    placement='bottom'>
+                      <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }}/>
+                    </Tooltip>
+                  </>
+                  }
+                  key='Normal6GHz' />
+            }
             { isTriBandRadio && isDual5gMode &&
                   <>
                     <Tabs.TabPane
@@ -573,9 +586,7 @@ export function RadioSettings () {
                       key='Upper5GHz' />
                   </>
             }
-            { isTriBandRadio &&
-                <Tabs.TabPane tab={$t({ defaultMessage: '6 GHz' })} key='Normal6GHz' />
-            }
+
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
             <SingleRadioSettings

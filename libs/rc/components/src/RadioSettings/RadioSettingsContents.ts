@@ -48,7 +48,8 @@ export const channelBandwidth5GOptions = channelBandwidth24GOptions.concat([
 ])
 
 export const channelBandwidth6GOptions = [
-  ...channelBandwidth5GOptions
+  ...channelBandwidth5GOptions,
+  { label: '320 MHz', value: '320MHz' }
 ]
 
 export const txPowerAdjustment6GOptions = [
