@@ -9,7 +9,7 @@ import {
 import { FormattedMessage } from 'react-intl'
 
 import { GridCol, GridRow, SelectionControl, StepsFormLegacy, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -40,7 +40,7 @@ export default function DpskSettingsForm () {
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
   const [ dpskList ] = useLazyGetDpskListQuery()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const nameValidator = async (value: string) => {
     const list = (await dpskList({}).unwrap()).data
@@ -141,7 +141,8 @@ function CloudpathFormItems () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
-  const isPolicyManagementEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const isPolicyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const policySetId = Form.useWatch<string>('policySetId', form)
 
   const { policySetOptions } = useAdaptivePolicySetListQuery(
     { payload: { page: 1, pageSize: '2147483647' } },
@@ -202,36 +203,41 @@ function CloudpathFormItems () {
           }
         />
         {isPolicyManagementEnabled &&
-          <Form.Item
-            name='policySetId'
-            label={$t({ defaultMessage: 'Access Policy Set' })}
-            rules={[{ required: false }]}
-          >
-            <Select style={{ width: 200 }}
-              placeholder={$t({ defaultMessage: 'Select...' })}
-              allowClear
-              options={policySetOptions}
-            />
-          </Form.Item>
+          <>
+            <Form.Item
+              name='policySetId'
+              label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+              rules={[{ required: false }]}
+            >
+              <Select style={{ width: 200 }}
+                placeholder={$t({ defaultMessage: 'Select...' })}
+                allowClear
+                options={policySetOptions}
+              />
+            </Form.Item>
+            {policySetId &&
+              <Form.Item
+                name='policyDefaultAccess'
+                label={$t({ defaultMessage: 'Default Access' })}
+                initialValue={PolicyDefaultAccess.ACCEPT}
+                rules={[{ required: true }]}
+              >
+                <SelectionControl
+                  options={[
+                    {
+                      value: PolicyDefaultAccess.ACCEPT,
+                      label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.ACCEPT])
+                    },
+                    {
+                      value: PolicyDefaultAccess.REJECT,
+                      label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.REJECT])
+                    }
+                  ]}
+                />
+              </Form.Item>
+            }
+          </>
         }
-        <Form.Item name='policyDefaultAccess'
-          label={$t({ defaultMessage: 'Default Access' })}
-          initialValue={PolicyDefaultAccess.ACCEPT}
-          rules={[{ required: true }]}
-        >
-          <SelectionControl
-            options={[
-              {
-                value: PolicyDefaultAccess.ACCEPT,
-                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.ACCEPT])
-              },
-              {
-                value: PolicyDefaultAccess.REJECT,
-                label: $t(defaultAccessLabelMapping[PolicyDefaultAccess.REJECT])
-              }
-            ]}
-          />
-        </Form.Item>
       </GridCol>
     </GridRow>
   )

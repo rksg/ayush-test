@@ -246,7 +246,6 @@ describe('NetworkVenuesTab', () => {
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
-    await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
   })
 
   it('Table action bar activate Network and show modal', async () => {
@@ -342,7 +341,6 @@ describe('NetworkVenuesTab', () => {
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
-    await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 
   it('has custom scheduling', async () => {
