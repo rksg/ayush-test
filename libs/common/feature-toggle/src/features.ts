@@ -7,6 +7,7 @@ export enum Features {
   G_MAP = 'acx-ui-maps-api-toggle',
   SERVICES = 'acx-ui-services',
   PLM_FF = 'ACX-PLM-FF',
+  POLICIES = 'acx-ui-policies',
   DEVICES = 'acx-ui-devices',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   EDGES = 'PLCY-EDGE',
