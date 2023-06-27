@@ -1320,8 +1320,8 @@ export function EditPortDrawer ({
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
         profileId={switchConfigurationProfileId}
-        updateSwitchVlans={
-          async (values: Vlan) => updateSwitchVlans(values, switchVlans, setSwitchVlans)
+        updateSwitchVlans={async (values: Vlan) =>
+          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
         }
       />}
 

@@ -584,7 +584,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
       query: ({ params, payload }) => {

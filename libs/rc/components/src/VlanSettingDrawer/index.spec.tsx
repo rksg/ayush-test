@@ -100,6 +100,8 @@ describe('VlanSettingDrawer', () => {
     const IGMPSnooping = await screen.findByLabelText('IGMP Snooping')
     fireEvent.mouseDown(IGMPSnooping)
     fireEvent.click(await screen.findByText('Active'))
+
+    // TODO
     // fireEvent.mouseDown(IGMPSnooping)
     // fireEvent.click(await screen.findByLabelText('NONE'))
 
