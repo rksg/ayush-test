@@ -4,7 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
@@ -164,7 +164,7 @@ export interface PersonaTableProps {
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, colProps } = props
-  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const columns = useColumns(colProps, unitPool, venueId)
@@ -380,7 +380,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         type='Persona'
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
-        maxEntries={30}
+        maxEntries={512}
         templateLink='assets/templates/persona_import_template.csv'
         importRequest={importPersonas}
         onClose={() => setUploadCsvDrawerVisible(false)}

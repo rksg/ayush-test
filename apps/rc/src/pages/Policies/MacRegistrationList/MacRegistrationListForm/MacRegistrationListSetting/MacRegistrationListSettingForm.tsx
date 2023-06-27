@@ -4,7 +4,7 @@ import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
 import { Modal, ModalType, SelectionControl } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { ExpirationDateSelector }             from '@acx-ui/rc/components'
 import {
   useAdaptivePolicySetListQuery,
@@ -22,7 +22,7 @@ export function MacRegistrationListSettingForm () {
   const { policyId } = useParams()
   const policySetId = Form.useWatch('policySetId')
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const form = Form.useFormInstance()
 
   const { data: policySetsData } = useAdaptivePolicySetListQuery(

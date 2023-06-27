@@ -226,6 +226,27 @@ export const apApi = baseApApi.injectEndpoints({
         })
       }
     }),
+    getApOperational: build.query<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApOperational, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'Details' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApCustomization',
+            'ResetApCustomization'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
+          })
+        })
+      }
+    }),
     updateAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
@@ -711,6 +732,7 @@ export const {
   usePingApMutation,
   useTraceRouteApMutation,
   useGetApQuery,
+  useGetApOperationalQuery,
   useLazyGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
