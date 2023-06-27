@@ -11,6 +11,7 @@ export enum Features {
   DEVICES = 'acx-ui-devices',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   EDGES = 'PLCY-EDGE',
+  EDGES_STATS_TOGGLE = 'acx-ui-edges-toggle', // temporary. to prevent Edge stats related API being triggered in stage env
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',

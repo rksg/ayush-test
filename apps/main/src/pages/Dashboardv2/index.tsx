@@ -28,8 +28,8 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { VenueFilter }                from '@acx-ui/main/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { VenueFilter }                              from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
@@ -46,6 +46,8 @@ import * as UI from './styledComponents'
 export default function Dashboardv2 () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeStatsEnabled = useIsSplitOn(Features.EDGES_STATS_TOGGLE)
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -57,13 +59,13 @@ export default function Dashboardv2 () {
       value: 'switch',
       children: <SwitchWidgets />
     },
-    ...isEdgeEnabled ? [
+    ...(isEdgeEnabled && isEdgeStatsEnabled ? [
       {
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',
         children: <EdgeWidgets />
       }
-    ] : []
+    ] : [])
   ]
 
   /**

@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
 import { GridCol, GridRow, Tabs }  from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery,
@@ -25,6 +26,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const { $t } = useIntl()
   const { serialNumber, activeSubTab } = useParams()
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
+  const isEdgeStatsEnabled = useIsSplitOn(Features.EDGES_STATS_TOGGLE)
 
   const edgeStatusPayload = {
     fields: [
@@ -98,6 +100,20 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       setCurrentTab(activeSubTab)
   }, [activeSubTab])
 
+  const tabs = [{
+    label: $t({ defaultMessage: 'Monitor' }),
+    value: 'monitor',
+    children: <MonitorTab />
+  }, {
+    label: $t({ defaultMessage: 'Ports' }),
+    value: 'ports',
+    children: <PortsTab isLoading={isPortListLoading} data={portStatusList as EdgePortStatus[]}/>
+  }, {
+    label: $t({ defaultMessage: 'Sub-Interfaces' }),
+    value: 'subInterfaces',
+    children: 'Sub-Interfaces'
+  }].filter(i => i.value !== 'monitor' || isEdgeStatsEnabled)
+
   return (
     <GridRow className={className}>
       <GridCol col={{ span: 24 }}>
@@ -113,27 +129,17 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
         <Tabs
           type='card'
           activeKey={currentTab}
-          defaultActiveKey={activeSubTab || OverviewInfoType.MONITOR}
+          defaultActiveKey={activeSubTab || tabs[0].value}
           onChange={handleTabChange}
         >
-          <Tabs.TabPane
-            tab={$t({ defaultMessage: 'Monitor' })}
-            key={OverviewInfoType.MONITOR}
-          >
-            <MonitorTab />
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            tab={$t({ defaultMessage: 'Ports' })}
-            key={OverviewInfoType.PORTS}
-          >
-            <PortsTab isLoading={isPortListLoading} data={portStatusList as EdgePortStatus[]}/>
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            tab={$t({ defaultMessage: 'Sub-Interfaces' })}
-            key={OverviewInfoType.SUB_INTERFACES}
-          >
-          Sub-Interfaces
-          </Tabs.TabPane>
+          {tabs.map((tab) => (
+            <Tabs.TabPane
+              tab={tab.label}
+              key={tab.value}
+            >
+              {tab.children}
+            </Tabs.TabPane>
+          ))}
         </Tabs>
       </GridCol>
     </GridRow>
