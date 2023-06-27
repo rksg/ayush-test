@@ -29,6 +29,7 @@ import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 // Needed for Browser language detection
 const supportedLocales: Record<string, LangKey> = {
@@ -157,6 +158,13 @@ export async function init (root: Root) {
             <UserProfileProvider>
               <DataGuardLoader>
                 <React.Suspense fallback={null}>
+                  <HelmetProvider>
+                    <meta
+                      http-equiv='Content-Security-Policy'
+                      content="frame-ancestors 'self'"
+                    />
+                    {/* Add other head-related elements as needed */}
+                  </HelmetProvider>
                   <AllRoutes />
                 </React.Suspense>
               </DataGuardLoader>
