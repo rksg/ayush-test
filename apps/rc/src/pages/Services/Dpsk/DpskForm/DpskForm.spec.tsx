@@ -2,7 +2,7 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskUrls,
@@ -152,7 +152,7 @@ describe('DpskForm', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>

@@ -10,6 +10,7 @@ import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onC
 import {
   Alarm,
   EdgeDnsServers,
+  EdgePasswordDetail,
   EdgePortAdminStatusEnum,
   EdgePortStatus,
   EdgeResourceUtilizationEnum,
@@ -33,6 +34,7 @@ interface EdgeInfoWidgetProps {
   isPortListLoading: boolean
   isAlarmListLoading: boolean
   alarmList: Alarm[]
+  passwordDetail: EdgePasswordDetail | undefined
 }
 
 interface EdgeAlarmWidgetProps {
@@ -198,7 +200,8 @@ export const EdgeInfoWidget = styled(({
   isEdgeStatusLoading,
   isPortListLoading,
   isAlarmListLoading,
-  alarmList }: EdgeInfoWidgetProps) => {
+  alarmList,
+  passwordDetail }: EdgeInfoWidgetProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const moreDetailsHandler = () => {
@@ -251,6 +254,7 @@ export const EdgeInfoWidget = styled(({
         currentEdge={currentEdge}
         edgePortsSetting={edgePortsSetting}
         dnsServers={dnsServers}
+        passwordDetail={passwordDetail}
       />
     </GridRow>
   )
