@@ -44,15 +44,12 @@ describe('DistributionSwitchDrawer', () => {
 
   it('Should edit successfully', async () => {
     const user = userEvent.setup()
-    const requestSpy = jest.fn()
+    const saveSpy = jest.fn()
 
     mockServer.use(
       rest.post(
         NetworkSegmentationUrls.validateDistributionSwitchInfo.url,
-        (req, res, ctx) => {
-          requestSpy()
-          return res(ctx.json({ valid: true }))
-        }
+        (req, res, ctx) => res(ctx.json({ valid: true }))
       )
     )
 
@@ -73,7 +70,11 @@ describe('DistributionSwitchDrawer', () => {
       <Provider>
         <StepsForm form={formRef.current}>
           <DistributionSwitchDrawer open={true}
-            editRecord={mockNsgSwitchInfoData.distributionSwitches[0]}
+            onSaveDS={saveSpy}
+            editRecord={{
+              ...mockNsgSwitchInfoData.distributionSwitches[0],
+              accessSwitches: mockNsgSwitchInfoData.accessSwitches
+            }}
             availableSwitches={mockNsgSwitchInfoData.accessSwitches} />
         </StepsForm>
       </Provider>, {
@@ -88,13 +89,13 @@ describe('DistributionSwitchDrawer', () => {
     await user.click(await screen.findByRole('button', { name: 'Select' }))
 
     const dialog = await screen.findByRole('dialog', { name: /Select Access Switches/i })
-
     await within(dialog).findByText(/FEK3224R09N---AS---3/i)
 
-    await user.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+    await user.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
 
     await user.click(await screen.findByRole('button', { name: 'Save' }))
 
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(saveSpy).toHaveBeenCalledTimes(1))
   })
 })

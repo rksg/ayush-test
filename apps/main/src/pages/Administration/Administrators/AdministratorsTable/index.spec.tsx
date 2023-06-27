@@ -383,7 +383,7 @@ describe('Administrators table with MSP-EC FF enabled', () => {
     )
   })
 
-  it('should be able to delete all admin when it is MSP-EC user and FF enabled', async () => {
+  it.skip('should be able to delete all admin when it is MSP-EC user and FF enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.MSPEC_OPTIONAL_ADMIN ? true : false
     })

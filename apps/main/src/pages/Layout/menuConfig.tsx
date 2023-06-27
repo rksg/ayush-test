@@ -38,9 +38,7 @@ export function useMenuConfig () {
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
-  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
-  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+  const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -131,7 +129,7 @@ export function useMenuConfig () {
             }
           ]
         },
-        ...(isPersonaEnabled && isMacRegistrationEnabled ? [{
+        ...(isCloudpathBetaEnabled ? [{
           type: 'group' as const,
           label: $t({ defaultMessage: 'Persona Management' }),
           children: [
@@ -236,7 +234,7 @@ export function useMenuConfig () {
       ]
     },
     ...(isEdgeEnabled ? [{
-      uri: '/devices/edge/list',
+      uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
       label: $t({ defaultMessage: 'SmartEdge' }),
       inactiveIcon: SmartEdgeOutlined,
@@ -323,7 +321,7 @@ export function useMenuConfig () {
               uri: '/administration/onpremMigration',
               label: $t({ defaultMessage: 'ZD Migration' })
             }] : []),
-            ...(isRadiusClientEnabled ? [{
+            ...(isCloudpathBetaEnabled ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])

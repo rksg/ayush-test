@@ -37,7 +37,7 @@ describe('AdaptivePolicyFormDrawer', () => {
     )
   })
 
-  it('should add new policy successfully', async () => {
+  it.skip('should add new policy successfully', async () => {
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],

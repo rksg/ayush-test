@@ -389,7 +389,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
+        const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
         return{
           ...req
         }
@@ -1223,6 +1223,7 @@ export const {
   useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueExternalAntennaQuery,
+  useLazyGetVenueExternalAntennaQuery,
   useGetVenueApCapabilitiesQuery,
   useUpdateVenueExternalAntennaMutation,
   useGetAvailableLteBandsQuery,

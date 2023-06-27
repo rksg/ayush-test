@@ -25,6 +25,7 @@ import {
   WebAuthTemplate,
   defaultTemplateData,
   getServiceListRoutePath,
+  getWebAuthLabelValidator,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -73,7 +74,10 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
     return (
       <UI.TextAreaWithReset label={label}>
         <Space size='middle'>
-          <Form.Item name={name} children={<Input.TextArea autoSize />} />
+          <Form.Item name={name}
+            validateTrigger='onBlur'
+            rules={[getWebAuthLabelValidator()]}
+            children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{
               formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name].defaultMessage, {
@@ -125,6 +129,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
               .map(name=>{
                 const item = defaultTemplateData[name]
                 return (<WebAuthFormItem name={name}
+                  key={name}
                   label={$t(item.label)} />)
               })
           }

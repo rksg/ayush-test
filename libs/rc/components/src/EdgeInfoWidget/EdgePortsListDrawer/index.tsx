@@ -7,6 +7,7 @@ import {
 import { formatter }                             from '@acx-ui/formatter'
 import { EdgePortStatus }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                        from '@acx-ui/user'
 
 
 const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
@@ -85,7 +86,7 @@ const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
   const handlePortSettingClick = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${params.serialNumber}/edit/ports`
+      pathname: `${basePath.pathname}/${params.serialNumber}/edit/ports/ports-general`
     })
   }
 
@@ -93,17 +94,14 @@ const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
     title={$t({ defaultMessage: 'Port Details' })}
     visible={visible}
     onClose={onClose}
-    children={
-      <>
-        <Button
-          key='configure'
-          size='small'
-          type='link'
-          onClick={handlePortSettingClick}
-
-        >{$t({ defaultMessage: 'Configure Port Settings' })}</Button>
-        <EdgePortsTable data={edgePortsSetting as EdgePortStatus[]}/>
-      </>}
+    children={filterByAccess([
+      <Button
+        size='small'
+        type='link'
+        onClick={handlePortSettingClick}
+      >{$t({ defaultMessage: 'Configure Port Settings' })}</Button>,
+      <EdgePortsTable key='edge-ports-table' data={edgePortsSetting as EdgePortStatus[]} />
+    ])}
     width={'auto'}
     bodyStyle={{ alignItems: 'flex-end' }}
   />

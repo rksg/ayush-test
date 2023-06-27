@@ -155,14 +155,15 @@ function findDefaultActiveVersionIndex (availableVersions: FirmwareVersion[]): n
 }
 
 // eslint-disable-next-line max-len
-function getDefaultActiveVersion (availableVersions?: FirmwareVersion[]): FirmwareVersion | undefined {
+export function getDefaultActiveVersion (availableVersions?: FirmwareVersion[]): FirmwareVersion | undefined {
   if (!availableVersions) return
 
   const index = findDefaultActiveVersionIndex(availableVersions)
   return index === -1 ? undefined : { ...availableVersions[index] }
 }
 
-function filteredOtherActiveVersions (availableVersions?: FirmwareVersion[]): FirmwareVersion[] {
+// eslint-disable-next-line max-len
+export function filteredOtherActiveVersions (availableVersions?: FirmwareVersion[]): FirmwareVersion[] {
   if (!availableVersions) return []
 
   const index = findDefaultActiveVersionIndex(availableVersions)

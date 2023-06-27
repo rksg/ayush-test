@@ -219,8 +219,6 @@ export function StackForm () {
             }
           })
 
-        stackMembers.sort((a: { active: boolean }, b: { active: boolean }) =>
-          Number(b.active) - Number(a.active))
         setTableData(stackMembers)
         setRowKey(stackMembers.length)
       }
@@ -277,7 +275,7 @@ export function StackForm () {
       const dataRows = [...tableData]
       const serialNumber = formRef.current?.getFieldValue(
         `serialNumber${row.key}`
-      )
+      )?.toUpperCase()
       dataRows[index].id = serialNumber
       dataRows[index].model = serialNumber && getSwitchModelWithRodan(serialNumber)
       setTableData(dataRows)
@@ -592,7 +590,6 @@ export function StackForm () {
       tempDataSource.splice(oldIndex, 1)
       tempDataSource = [...tempDataSource.slice(0, newIndex),
         ...[movingItem], ...tempDataSource.slice(newIndex, tempDataSource.length)]
-      tempDataSource.sort((a, b) => Number(b.active) - Number(a.active))
       setTableData(tempDataSource)
     }
   }

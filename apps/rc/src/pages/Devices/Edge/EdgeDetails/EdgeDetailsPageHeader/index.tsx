@@ -1,5 +1,4 @@
 import {
-  Badge,
   Dropdown,
   Menu,
   MenuProps,
@@ -9,7 +8,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal } from '@acx-ui/components'
-import { ArrowExpand, BulbOutlined }                        from '@acx-ui/icons'
+import { ArrowExpand }                                      from '@acx-ui/icons'
 import { EdgeStatusLight }                                  from '@acx-ui/rc/components'
 import {
   useDeleteEdgeMutation,
@@ -29,19 +28,6 @@ import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
 import EdgeDetailsTabs from './EdgeDetailsTabs'
-
-// TODO: component purpose is TBD
-const EdgeBulb = (
-  { count = 0 }: { count: number | undefined }
-) => {
-  return (
-    <Badge count={count}>
-      <Button>
-        <BulbOutlined />
-      </Button>
-    </Badge>
-  )
-}
 
 export const EdgeDetailsPageHeader = () => {
   const { $t } = useIntl()
@@ -82,7 +68,7 @@ export const EdgeDetailsPageHeader = () => {
     if (!serialNumber || serialNumber === 'undefined') return
     if(e.key === 'delete') {
       actions[e.key as keyof typeof actions](
-        () => navigate(`${basePath.pathname}/devices/edge/list`)
+        () => navigate(`${basePath.pathname}/devices/edge`)
       )
     } else {
       actions[e.key as keyof typeof actions]()
@@ -96,7 +82,7 @@ export const EdgeDetailsPageHeader = () => {
         label: $t({ defaultMessage: 'Reboot' }),
         key: 'reboot'
       }, {
-        label: $t({ defaultMessage: 'Factory Reset' }),
+        label: $t({ defaultMessage: 'Reset and Recover' }),
         key: 'factoryReset'
       }, {
         label: $t({ defaultMessage: 'Delete SmartEdge' }),
@@ -110,7 +96,7 @@ export const EdgeDetailsPageHeader = () => {
       title={currentEdge?.name || ''}
       titleExtra={<EdgeStatusLight data={status} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
+        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
       extra={filterByAccess([
         <RangePicker
@@ -136,8 +122,7 @@ export const EdgeDetailsPageHeader = () => {
               pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
             })
           }
-        >{$t({ defaultMessage: 'Configure' })}</Button>,
-        <EdgeBulb key='bulbCount' count={0} />
+        >{$t({ defaultMessage: 'Configure' })}</Button>
       ])}
       footer={<EdgeDetailsTabs />}
     />
@@ -186,11 +171,11 @@ const useEdgeActions = (edgeName?: string, serialNumber?: string): {
       showActionModal({
         type: 'confirm',
         title: $t(
-          { defaultMessage: 'Factory reset "{edgeName}"?' },
+          { defaultMessage: 'Reset and recover "{edgeName}"?' },
           { edgeName }
         ),
         content: $t({
-          defaultMessage: 'Are you sure you want to factory reset this SmartEdge?'
+          defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
         }),
         customContent: {
           action: 'CUSTOM_BUTTONS',

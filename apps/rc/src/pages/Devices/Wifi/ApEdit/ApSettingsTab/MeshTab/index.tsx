@@ -4,11 +4,12 @@ import { Form, Radio, RadioChangeEvent, Space }     from 'antd'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import { useNavigate, useParams }                   from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                              from '@acx-ui/components'
-import { useGetApMeshSettingsQuery, useGetApQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
-import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended, redirectPreviousPage }                             from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal }                                              from '@acx-ui/components'
+import { useGetApMeshSettingsQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
+import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended, redirectPreviousPage }              from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                                      from '@acx-ui/react-router-dom'
 
+import { ApDataContext } from '..'
 import { ApEditContext } from '../..'
 
 import { MeshUplinkApsTable }                                        from './MeshUplinkApsTable'
@@ -51,8 +52,8 @@ export function ApMesh () {
   const basePath = useTenantLink('/devices/')
 
   const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
+  const { apData: apDetails } = useContext(ApDataContext)
 
-  const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
   const getApMesh = useGetApMeshSettingsQuery({ params: { serialNumber } })
   const [updateApMesh, { isLoading: isUpdateingApMesh } ] = useUpdateApMeshSettingsMutation()
   const [getVenue] = useLazyGetVenueQuery()
@@ -130,9 +131,21 @@ export function ApMesh () {
 
       if (uplinkMode === UplinkModeEnum.MANUAL &&
           (meshMode === MeshModeEnum.AUTO || meshMode === MeshModeEnum.MESH)) {
-        payload = {
-          ...values,
-          uplinkMacAddresses: uplinkMac
+        if (uplinkMac && uplinkMac.length > 0) {
+          payload = {
+            ...values,
+            uplinkMacAddresses: uplinkMac
+          }
+        } else {
+          showActionModal({
+            type: 'error',
+            title: $t({ defaultMessage: 'No Uplink Selected' }),
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'For manual uplink configuration, you must select at least one uplink access point from the list before you may apply your changes'
+            })
+          })
+          return
         }
       }
 

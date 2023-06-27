@@ -108,8 +108,8 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
   const content = <>
     <Row>
-      <Col span={14}>
-        <span style={{ display: 'inline-flex' }}>
+      <Col span={14} style={{ paddingTop: '2px' }}>
+        <span>
           {$t({ defaultMessage: 'Drag to reposition' })}
         </span>
       </Col>

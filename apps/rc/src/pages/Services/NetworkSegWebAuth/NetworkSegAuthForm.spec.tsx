@@ -24,6 +24,7 @@ describe( 'NetworkSegAuthForm', () => {
   const params = { tenantId: 'tenant-id', serviceId: 'service-id' }
 
   beforeEach(async () => {
+    mockedUsedNavigate.mockClear()
     mockServer.use(
       rest.get(
         NetworkSegmentationUrls.getWebAuthTemplate.url,
@@ -32,6 +33,14 @@ describe( 'NetworkSegAuthForm', () => {
           name: 'Mock Template name',
           webAuthCustomTitle: 'Enter your Password below and press the button'
         }))
+      ),
+      rest.post(
+        NetworkSegmentationUrls.addWebAuthTemplate.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.put(
+        NetworkSegmentationUrls.updateWebAuthTemplate.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -51,6 +60,8 @@ describe( 'NetworkSegAuthForm', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[0])
 
     fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalled())
   })
 
   it( 'should render Edit form', async () => {
@@ -68,5 +79,7 @@ describe( 'NetworkSegAuthForm', () => {
         'Enter your Password below and press the button')).toBeVisible())
 
     fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalled())
   })
 })

@@ -99,7 +99,7 @@ describe('Edge Detail Page Header', () => {
     await screen.findByText(`Delete "${currentEdge.name}"?`)
     await userEvent.click(screen.getByRole('button', { name: 'Delete SmartEdge' }))
     await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/edge/list`)
+      expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/edge`)
     })
   })
 
@@ -133,11 +133,11 @@ describe('Edge Detail Page Header', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    const resetBtn = await screen.findByRole('menuitem', { name: 'Factory Reset' })
+    const resetBtn = await screen.findByRole('menuitem', { name: 'Reset and Recover' })
     await userEvent.click(resetBtn)
 
     const resetDialog = await screen.findByRole('dialog')
-    await within(resetDialog).findByText(`Factory reset "${currentEdge.name}"?`)
+    await within(resetDialog).findByText(`Reset and recover "${currentEdge.name}"?`)
     await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
   })
 

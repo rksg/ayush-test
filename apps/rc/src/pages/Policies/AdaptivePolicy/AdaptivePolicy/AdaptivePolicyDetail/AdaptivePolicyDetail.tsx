@@ -104,7 +104,7 @@ export default function AdaptivePolicyDetail () {
                   </Form.Item>
                 </Col>
                 <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'Access Policy Type' })}>
+                  <Form.Item label={$t({ defaultMessage: 'Adaptive Policy Type' })}>
                     <Paragraph>Advanced Policy Engine</Paragraph>
                   </Form.Item>
                 </Col>
