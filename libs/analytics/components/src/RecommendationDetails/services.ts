@@ -33,7 +33,7 @@ export type RecommendationDetails = {
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
-  statusTrail: Array<{ status: keyof typeof states, createdAt: string }>;
+  statusTrail: Array<{ status: Lowercase<keyof typeof states>, createdAt: string }>;
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -58,13 +58,13 @@ export type RecommendationAp = {
   version: string;
 }
 
-const getRecommendationStatus = (recommendation: RecommendationDetails) =>
-  chain(recommendation.statusTrail)
+const getRecommendationStatus = (recommendation: RecommendationDetails) => {
+  const config = chain(recommendation.statusTrail)
     .filter(item => ['new', 'applied', 'reverted'].includes(item.status))
     .first()
     .value()
-    .status
-
+  return config ? config.status : 'unknown'
+}
 export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
     code, statusTrail, status, appliedTime, currentValue, recommendedValue

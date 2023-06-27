@@ -14,7 +14,8 @@ import {
 } from './styledComponents'
 
 const trailFormatter = (
-  trail: Array<{ status: keyof typeof states }>, trailIndex: number, $t: IntlShape['$t']) => {
+  trail: Array<{ status: Lowercase<keyof typeof states> }>,
+  trailIndex: number, $t: IntlShape['$t']) => {
   const set = trail.slice(trailIndex, trailIndex + 2)
   const patterns = [
     {
@@ -30,8 +31,9 @@ const trailFormatter = (
     const matched = pattern.every((status, index) => status === set[index]?.status)
     if (matched) return $t(replacement)
   }
-  const status = get(trail[trailIndex], 'status', undefined)
-  return status ? statusTrailMsgs[status] : $t({ defaultMessage: '&nbr' })
+  const status = get(trail[trailIndex], 'status')
+  const msg = get(statusTrailMsgs, status, undefined)
+  return msg ? $t(msg) : $t({ defaultMessage: 'Unknown' })
 }
 
 const getStatusTrail = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
@@ -42,18 +44,14 @@ const getStatusTrail = (details: EnhancedRecommendation, $t: IntlShape['$t']) =>
   }))
 }
 
-const StatusTrailItem = ({ statusTrail, $t }:
-  { statusTrail: ReturnType<typeof getStatusTrail>[0],
-  $t: IntlShape['$t'] }) => {
-  if (typeof statusTrail === 'string') return null
+const StatusTrailItem = ({ statusTrail }:{ statusTrail: ReturnType<typeof getStatusTrail>[0] }) => {
   const { status, createdAt } = statusTrail
-  const translatedStatus = typeof status === 'string' ? status : $t(status)
   return <StatusTrailItemWrapper>
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel>
       </GridCol>
-      <GridCol col={{ span: 14 }}>{translatedStatus}</GridCol>
+      <GridCol col={{ span: 14 }}>{status}</GridCol>
     </GridRow>
   </StatusTrailItemWrapper>
 }
@@ -64,7 +62,7 @@ export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) =>
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>
     <StatusTrailWrapper>
-      {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind} $t={$t} />)}
+      {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind} />)}
     </StatusTrailWrapper>
   </>
 }
