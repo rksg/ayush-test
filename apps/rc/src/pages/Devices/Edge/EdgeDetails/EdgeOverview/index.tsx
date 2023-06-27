@@ -12,11 +12,16 @@ import {
 } from '@acx-ui/rc/components'
 import {
   useAlarmsListQuery,
-  useEdgeBySerialNumberQuery, useGetDnsServersQuery, useGetEdgePortsStatusListQuery
+  useEdgeBySerialNumberQuery,
+  useGetDnsServersQuery,
+  useGetEdgePortsStatusListQuery,
+  useGetEdgePasswordDetailQuery
 } from '@acx-ui/rc/services'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useUserProfileContext }         from '@acx-ui/user'
 
 import { wrapperStyle } from './styledComponents'
+
 
 export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const params = useParams()
@@ -104,6 +109,15 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
     }
   })
 
+  const { data: userProfile } = useUserProfileContext()
+  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
+  const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
+    { params },
+    {
+      skip: !isShowEdgePassword
+    }
+  )
+
   return (
     <GridRow className={className}>
       <GridCol col={{ span: 24 }}>
@@ -111,6 +125,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
           currentEdge={currentEdge}
           edgePortsSetting={portStatusList}
           dnsServers={dnsServers}
+          passwordDetail={passwordDetail}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
           isAlarmListLoading={isAlarmListLoading}
