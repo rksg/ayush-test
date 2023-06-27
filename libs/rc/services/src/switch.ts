@@ -204,7 +204,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Switch', id: 'Detail' }],
+      providesTags: [{ type: 'Switch', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -248,6 +248,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateSwitch'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'SwitchPort', id: 'LIST' }]))
+          })
+        })
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
@@ -396,7 +406,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlans: build.query<Vlan[], RequestPayload>({
       query: ({ params }) => {
@@ -404,7 +416,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchesVlan: build.query<SwitchVlanUnion, RequestPayload>({
       query: ({ params, payload }) => {
@@ -570,7 +584,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -662,6 +678,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addAcl: build.mutation<Acl, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addAcl, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addVlan: build.mutation<Vlan, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addVlan, params)
         return {
           ...req,
           body: payload
@@ -1329,6 +1354,7 @@ export const {
   useUpdateCliTemplateMutation,
   useGetCliConfigExamplesQuery,
   useAddAclMutation,
+  useAddVlanMutation,
   useGetSwitchConfigProfileQuery,
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,

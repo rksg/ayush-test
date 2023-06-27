@@ -583,16 +583,16 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     }
   ],
 
-  'ICX8200-C08P': [
-    {
-      start: '1/1/1', end: '1/1/8',
-      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
-        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
-    }, {
-      start: '1/2/1', end: '1/2/2',
-      capacity: ['NONE', 'ONE_G_FULL']
-    }
-  ],
+  // 'ICX8200-C08P': [
+  //   {
+  //     start: '1/1/1', end: '1/1/8',
+  //     capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+  //       'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+  //   }, {
+  //     start: '1/2/1', end: '1/2/2',
+  //     capacity: ['NONE', 'ONE_G_FULL']
+  //   }
+  // ],
 
   'ICX8200-C08PF': [
     {
@@ -679,29 +679,29 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
       start: '1/2/1', end: '1/2/2',
       capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'TWENTY_FIVE_G_FULL']
     }
-  ],
-
-  'ICX8200-C08PT': [
-    {
-      start: '1/1/1', end: '1/1/8',
-      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
-        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
-    }, {
-      start: '1/2/1', end: '1/2/2',
-      capacity: ['NONE', 'ONE_G_FULL']
-    }
-  ],
-
-  'ICX8200-C08PDC': [
-    {
-      start: '1/1/1', end: '1/1/8',
-      capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
-        'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
-    }, {
-      start: '1/2/1', end: '1/2/2',
-      capacity: ['NONE', 'ONE_G_FULL']
-    }
   ]
+
+  // 'ICX8200-C08PT': [
+  //   {
+  //     start: '1/1/1', end: '1/1/8',
+  //     capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+  //       'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+  //   }, {
+  //     start: '1/2/1', end: '1/2/2',
+  //     capacity: ['NONE', 'ONE_G_FULL']
+  //   }
+  // ],
+
+  // 'ICX8200-C08PDC': [
+  //   {
+  //     start: '1/1/1', end: '1/1/8',
+  //     capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
+  //       'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+  //   }, {
+  //     start: '1/2/1', end: '1/2/2',
+  //     capacity: ['NONE', 'ONE_G_FULL']
+  //   }
+  // ]
 }
 /* eslint-enable */
 
