@@ -168,7 +168,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
     setSlotOptionsList: { (value: SetStateAction<ModelsType[]>): void }) =>{
     const slotOptions: ModelsType[] = []
     if (slots.length > slotIndex) {
-      for (let value of slots[slotIndex]) {
+      for (let value of slots?.[slotIndex]) {
         const name = value.toString().split('X').join(' X ')
         slotOptions.push({ label: name, value: value.toString() })
       }
@@ -189,7 +189,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
     const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
-    const modelsData = Object.keys(modelsList).map(key => {
+    const modelsData = Object.keys(modelsList ?? {})?.map(key => {
       return { label: key, value: key }
     })
     setModels(modelsData)

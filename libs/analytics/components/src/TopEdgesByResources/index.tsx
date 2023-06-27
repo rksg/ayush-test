@@ -86,9 +86,17 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
   },
   {
     selectFromResult: ({ data, ...rest }) => {
-      const resourcesData = data?.[currentDataType as keyof EdgesTopResources] || []
+      const resourcesData = data?.[currentDataType as keyof EdgesTopResources] as {
+        [key: string]: string | number
+      }[]
+      const transferedResult = resourcesData?.map(item => ({
+        name: item.name,
+        serial: item.serial,
+        percentage: item.percentage,
+        ...(currentDataType !== 'cpu' && { usedBytes: item.usedBytes })
+      })) || []
       return{
-        data: getBarChartSeriesData(resourcesData,seriesMapping, 'name'),
+        data: getBarChartSeriesData(transferedResult,seriesMapping, 'name'),
         ...rest
       }
     }

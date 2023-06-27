@@ -124,9 +124,25 @@ export const mockVenueNetworkData = {
   totalCount: 3,
   page: 1,
   data: [
-    { id: '1', name: 'Network 1' },
-    { id: '2', name: 'Network 2' },
-    { id: '3', name: 'Network 3' }
+    { id: '1', name: 'Network 1' , venues: {
+      count: 1,
+      names: [
+        null
+      ],
+      ids: [
+        'testVenueId1'
+      ]
+    } },
+    { id: '2', name: 'Network 2' , venues: {
+      count: 0,
+      names: [],
+      ids: []
+    } },
+    { id: '3', name: 'Network 3' , venues: {
+      count: 0,
+      names: [],
+      ids: []
+    } }
   ]
 }
 
