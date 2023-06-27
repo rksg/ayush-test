@@ -1,30 +1,31 @@
+import { useEffect, useState } from 'react'
+
+import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-
-import { GridCol, GridRow } from '@acx-ui/components'
+import { GridCol, GridRow, Tabs }  from '@acx-ui/components'
+import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
-  EdgeInfoWidget,
-  EdgePortsByTrafficWidget,
-  EdgeResourceUtilizationWidget,
-  EdgeTrafficByVolumeWidget,
-  EdgeUpTimeWidget
-} from '@acx-ui/rc/components'
-import {
-  useAlarmsListQuery,
   useEdgeBySerialNumberQuery,
-  useGetDnsServersQuery,
-  useGetEdgePortsStatusListQuery,
-  useGetEdgePasswordDetailQuery
+  useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useUserProfileContext }         from '@acx-ui/user'
+import {  EdgePortStatus } from '@acx-ui/rc/utils'
 
+import { MonitorTab }   from './MonitorTab'
+import { PortsTab }     from './PortsTab'
 import { wrapperStyle } from './styledComponents'
 
-
+enum OverviewInfoType {
+    MONITOR = 'monitor',
+    PORTS = 'ports',
+    SUB_INTERFACES = 'subInterfaces'
+}
 export const EdgeOverview = styled(({ className }:{ className?: string }) => {
-  const params = useParams()
+  const { $t } = useIntl()
+  const { serialNumber, activeSubTab } = useParams()
+  const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
+
   const edgeStatusPayload = {
     fields: [
       'name',
@@ -46,13 +47,15 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'diskUsedKb',
       'diskTotalKb'
     ],
-    filters: { serialNumber: [params.serialNumber] } }
+    filters: { serialNumber: [serialNumber] } }
 
-  const { data: currentEdge, isLoading: isLoadingEdgeStatus } = useEdgeBySerialNumberQuery({
-    params, payload: edgeStatusPayload
+  const {
+    data: currentEdge,
+    isLoading: isLoadingEdgeStatus
+  } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: edgeStatusPayload
   })
-
-  const { data: dnsServers } = useGetDnsServersQuery({ params })
 
   const edgePortStatusPayload = {
     fields: [
@@ -68,55 +71,32 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'duplex',
       'sort_idx'
     ],
-    filters: { serialNumber: [params.serialNumber] },
+    filters: { serialNumber: [serialNumber] },
     sortField: 'sort_idx',
     sortOrder: 'ASC'
   }
 
-  const { data: portStatusList, isLoading: isPortListLoading } = useGetEdgePortsStatusListQuery({
-    params, payload: edgePortStatusPayload
+  const {
+    data: portStatusList,
+    isLoading: isPortListLoading
+  } = useGetEdgePortsStatusListQuery({
+    params: { serialNumber },
+    payload: edgePortStatusPayload
   })
 
-  const alarmListPayload = {
-    url: CommonUrlsInfo.getAlarmsList.url,
-    fields: [
-      'startTime',
-      'severity',
-      'message',
-      'id',
-      'serialNumber',
-      'entityType',
-      'entityId'
-    ]
+  const handleTabChange = (val: string) => {
+    setCurrentTab(val)
   }
 
-  const { data: alarmList, isLoading: isAlarmListLoading } = useTableQuery({
-    useQuery: useAlarmsListQuery,
-    defaultPayload: {
-      ...alarmListPayload,
-      filters: {
-        serialNumber: [params.serialNumber]
-      }
-    },
-    sorter: {
-      sortField: 'startTime',
-      sortOrder: 'DESC'
-    },
-    pagination: {
-      pageSize: 10000,
-      page: 1,
-      total: 0
-    }
-  })
+  const handleClickWidget = (type: string) => {
+    if (type === 'port')
+      handleTabChange(OverviewInfoType.PORTS)
+  }
 
-  const { data: userProfile } = useUserProfileContext()
-  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
-  const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
-    { params },
-    {
-      skip: !isShowEdgePassword
-    }
-  )
+  useEffect(() => {
+    if (activeSubTab && Object.values(OverviewInfoType).includes(activeSubTab as OverviewInfoType))
+      setCurrentTab(activeSubTab)
+  }, [activeSubTab])
 
   return (
     <GridRow className={className}>
@@ -124,25 +104,37 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
         <EdgeInfoWidget
           currentEdge={currentEdge}
           edgePortsSetting={portStatusList}
-          dnsServers={dnsServers}
-          passwordDetail={passwordDetail}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
-          isAlarmListLoading={isAlarmListLoading}
-          alarmList={alarmList?.data || []}
+          onClickWidget={handleClickWidget}
         />
       </GridCol>
-      <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
-        <EdgeUpTimeWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeTrafficByVolumeWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeResourceUtilizationWidget />
-      </GridCol>
-      <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgePortsByTrafficWidget />
+      <GridCol col={{ span: 24 }}>
+        <Tabs
+          type='card'
+          activeKey={currentTab}
+          defaultActiveKey={activeSubTab || OverviewInfoType.MONITOR}
+          onChange={handleTabChange}
+        >
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Monitor' })}
+            key={OverviewInfoType.MONITOR}
+          >
+            <MonitorTab />
+          </Tabs.TabPane>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Ports' })}
+            key={OverviewInfoType.PORTS}
+          >
+            <PortsTab isLoading={isPortListLoading} data={portStatusList as EdgePortStatus[]}/>
+          </Tabs.TabPane>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Sub-Interfaces' })}
+            key={OverviewInfoType.SUB_INTERFACES}
+          >
+          Sub-Interfaces
+          </Tabs.TabPane>
+        </Tabs>
       </GridCol>
     </GridRow>
   )
