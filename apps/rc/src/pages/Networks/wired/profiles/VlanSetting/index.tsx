@@ -4,6 +4,7 @@ import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { VlanSettingDrawer }                                            from '@acx-ui/rc/components'
 import {
   Vlan,
   SwitchModel,
@@ -18,7 +19,6 @@ import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormCont
 
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'
 import * as UI               from './styledComponents'
-import { VlanSettingDrawer } from './VlanSettingDrawer'
 
 export function VlanSetting () {
   const { $t } = getIntl()
