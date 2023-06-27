@@ -30,7 +30,8 @@ import {
   EdgeTimeSeriesPayload,
   EdgeService,
   EdgesTopTraffic,
-  EdgesTopResources
+  EdgesTopResources,
+  EdgePasswordDetail
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi } from '@acx-ui/store'
 
@@ -420,6 +421,15 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'SERVICE' }]
+    }),
+    getEdgePasswordDetail: build.query<EdgePasswordDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgePasswordDetail, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
     })
   })
 })
@@ -472,5 +482,6 @@ export const {
   useGetEdgeServiceListQuery,
   useGetEdgesTopTrafficQuery,
   useGetEdgesTopResourcesQuery,
-  useDeleteEdgeServicesMutation
+  useDeleteEdgeServicesMutation,
+  useGetEdgePasswordDetailQuery
 } = edgeApi
