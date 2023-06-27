@@ -9,14 +9,14 @@ const getApiUrls = () => {
   const r1ApiSearchURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/search`
   const raApiURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/analytics`
   const raApiSearchURL = `${window.location.origin}/analytics/api/rsa-data-api/graphql/search`
-  
+
   const isRa = get('IS_MLISA_SA')
   return {
     dataApiURL: isRa ? raApiURL : r1ApiURL,
     dataApiSearchURL: isRa ? raApiSearchURL : r1ApiSearchURL,
     recommendationUrl: isRa
-    ? `${window.location.origin}/analytics/api/rsa-data-api/graphql/configRecommendation`
-    : `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/configRecommendation`
+      ? `${window.location.origin}/analytics/api/rsa-data-api/graphql/configRecommendation`
+      : `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/configRecommendation`
   }
 }
 
