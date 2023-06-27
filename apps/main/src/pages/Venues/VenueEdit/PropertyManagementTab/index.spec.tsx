@@ -145,10 +145,8 @@ describe('Property Config Tab', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // check toggle with 'false' value
-    await screen.findByRole('switch', {
-      name: 'Enable Property Management',
-      checked: false
-    })
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    expect(enableSwitch).toHaveAttribute('aria-checked', 'false')
 
     // other fields should not render(e.g., Persona Group)
     const otherFields = screen.queryByText('Persona Group')
@@ -172,13 +170,9 @@ describe('Property Config Tab', () => {
       </Provider>, { route: { params: enabledParams } }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     // check toggle with 'true' value
-    await screen.findByRole('switch', {
-      name: 'Enable Property Management',
-      checked: true
-    })
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
 
     // check rending other fields
     await screen.findByText('Persona Group')
@@ -214,15 +208,44 @@ describe('Property Config Tab', () => {
       </Provider>, { route: { params: enabledParams } }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     // check toggle with 'true' value
-    await screen.findByRole('switch', {
-      name: 'Enable Property Management',
-      checked: true
-    })
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
 
     // check rending msg-template tab list view
     await screen.findByRole('tablist')
+  })
+
+  it('should pop up warning dialog while disable property', async () => {
+    render(
+      <Provider>
+        <VenueEditContext.Provider
+          // @ts-ignore
+          value={{ editContextData: null, setEditContextData: setEditContextDataFn }}
+        >
+          <PropertyManagementTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params: enabledParams } }
+    )
+
+    // check toggle with 'true' value
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
+
+    // try to disable PropertyConfig
+    await userEvent.click(enableSwitch)
+
+    // type confirm text
+    const confirmBox = await screen.findByRole(
+      'textbox',
+      { name: /type the word "disable" to confirm:/i }
+    )
+    await userEvent.type(confirmBox, 'disable')
+
+    const confirmButton = await screen.findByRole('button', { name: /switch off/i })
+    await userEvent.click(confirmButton)
+
+    // check switch has been OFF
+    expect(enableSwitch).toHaveAttribute('aria-checked', 'false')
   })
 })
