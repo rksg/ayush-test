@@ -53,5 +53,6 @@ export enum Features {
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
-  CLOUDPATH_BETA = 'BETA-CP'
+  CLOUDPATH_BETA = 'BETA-CP',
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
 }
