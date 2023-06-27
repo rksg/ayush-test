@@ -317,7 +317,7 @@ export function VarCustomers () {
         title={title}
         breadcrumb={isNavbarEnhanced
           ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
-          : []}
+          : undefined}
         extra={
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

@@ -118,7 +118,7 @@ export default function MyServices () {
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) }
-        ]: []}
+        ]: undefined}
         extra={filterByAccess([
           <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>

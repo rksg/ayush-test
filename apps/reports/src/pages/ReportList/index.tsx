@@ -68,7 +68,7 @@ export function ReportList () {
         title={$t({ defaultMessage: 'Reports' })}
         breadcrumb={isNavbarEnhanced
           ? [{ text: $t({ defaultMessage: 'Business Insights' }) }]
-          : []
+          : undefined
         }
       />
       <GridRow>

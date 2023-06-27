@@ -54,7 +54,7 @@ function Timeline () {
         title={$t({ defaultMessage: 'Timeline' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Administration' }) }
-        ]: []}
+        ] : undefined}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}

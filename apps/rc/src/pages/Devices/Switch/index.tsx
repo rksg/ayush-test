@@ -68,7 +68,7 @@ export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
       }
       breadcrumb={isNavbarEnhanced
         ? [{ text: $t({ defaultMessage: 'Wired' }) }]
-        : []
+        : undefined
       }
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

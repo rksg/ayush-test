@@ -84,7 +84,7 @@ export default function ServiceCatalog () {
         title={$t({ defaultMessage: 'Service Catalog' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) }
-        ]: []}
+        ]: undefined}
       />
       {sets.map(set => {
         const isAllDisabled = _.findIndex(set.items,

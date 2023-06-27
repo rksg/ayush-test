@@ -35,7 +35,7 @@ export default function ClientList () {
       }
       breadcrumb={isNavbarEnhanced ?[
         { text: $t({ defaultMessage: 'Clients' }) }
-      ] : []}
+      ] : undefined}
     />
     <SwitchClientsTable filterByVenue={true} filterBySwitch={true} />
   </SwitchClientContext.Provider>

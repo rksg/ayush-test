@@ -54,8 +54,7 @@ const useTabs = () : WifiTab[] => {
   }
   return [
     listTab,
-    ...(isNavbarEnhanced ? [apReportTab] : []),
-    ...(isNavbarEnhanced ? [airtimeReportTab] : [])
+    ...(isNavbarEnhanced ? [apReportTab, airtimeReportTab] : [])
   ]
 }
 
@@ -76,7 +75,7 @@ export function AccessPointList ({ tab }: { tab: WifiTabsEnum }) {
       title={isNavbarEnhanced
         ? $t({ defaultMessage: 'Access Points' })
         : $t({ defaultMessage: 'Wi-Fi' })}
-      breadcrumb={isNavbarEnhanced ? [{ text: $t({ defaultMessage: 'Wi-Fi' }) }] : []}
+      breadcrumb={isNavbarEnhanced ? [{ text: $t({ defaultMessage: 'Wi-Fi' }) }] : undefined}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}

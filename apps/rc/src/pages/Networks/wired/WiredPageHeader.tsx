@@ -35,7 +35,7 @@ function WiredPageHeader () {
       }
       breadcrumb={isNavbarEnhanced ? [
         { text: $t({ defaultMessage: 'Wired' }) }
-      ] : []}
+      ] : undefined}
       footer={<WiredTabs
         profileCount={profileList?.data?.totalCount ? profileList?.data.totalCount : 0}
         cliCount={cli?.data?.totalCount ? cli?.data.totalCount : 0}

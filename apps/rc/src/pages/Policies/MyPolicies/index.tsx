@@ -60,7 +60,7 @@ export default function MyPolicies () {
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Network Control' }) }
-        ]: []}
+        ]: undefined}
         extra={filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>

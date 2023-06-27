@@ -64,9 +64,7 @@ const useTabs = () : NetworkTab[] => {
   }
   return [
     listTab,
-    ...(isNavbarEnhanced ? [wlanReportTab] : []),
-    ...(isNavbarEnhanced ? [applicationsReportTab] : []),
-    ...(isNavbarEnhanced ? [wirelessReportTab] : [])
+    ...(isNavbarEnhanced ? [wlanReportTab, applicationsReportTab, wirelessReportTab] : [])
   ]
 }
 
@@ -90,7 +88,7 @@ export function NetworksList ({ tab }: { tab: NetworkTabsEnum }) {
       }
       breadcrumb={isNavbarEnhanced
         ? [{ text: $t({ defaultMessage: 'Wi-Fi' }) }]
-        : []
+        : undefined
       }
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

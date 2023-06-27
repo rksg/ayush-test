@@ -599,7 +599,7 @@ export function MspCustomers () {
         title={$t({ defaultMessage: 'MSP Customers' })}
         breadcrumb={isNavbarEnhanced
           ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
-          : []}
+          : undefined}
         extra={isAdmin ?
           [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

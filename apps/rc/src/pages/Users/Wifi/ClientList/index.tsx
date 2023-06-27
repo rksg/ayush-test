@@ -163,7 +163,7 @@ export function WifiClientList ({ tab }: { tab: WirelessTabsEnum }) {
       }
       breadcrumb={isNavbarEnhanced
         ? [{ text: $t({ defaultMessage: 'Clients' }) }]
-        : []
+        : undefined
       }
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>

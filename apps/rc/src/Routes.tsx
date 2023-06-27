@@ -145,13 +145,13 @@ function DeviceRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
-      <Route path='devices/wifi' element={AccessPointList({ tab: WifiTabsEnum.LIST })} />
-      <Route path='devices/wifi/reports/aps'
-        element={
-          AccessPointList({ tab: WifiTabsEnum.AP_REPORT })} />
-      <Route path='devices/wifi/reports/airtime'
-        element={
-          AccessPointList({ tab: WifiTabsEnum.AIRTIME_REPORT })} />
+      <Route path='devices/wifi' element={<AccessPointList tab={WifiTabsEnum.LIST} />} />
+      <Route
+        path='devices/wifi/reports/aps'
+        element={<AccessPointList tab={WifiTabsEnum.AP_REPORT} />} />
+      <Route
+        path='devices/wifi/reports/airtime'
+        element={<AccessPointList tab={WifiTabsEnum.AIRTIME_REPORT} />} />
       <Route path='devices/wifi/:action' element={<ApForm />} />
       <Route path='devices/wifi/:serialNumber/:action/:activeTab' element={<ApEdit />} />
       <Route
@@ -192,11 +192,9 @@ function DeviceRoutes () {
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
-      {/* <Route path='devices/switch' element={<TenantNavigate replace to='/devices/switch/list' />} /> */}
-      <Route path='devices/switch' element={SwitchList({ tab: SwitchTabsEnum.LIST })} />
+      <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
-        element={
-          SwitchList({ tab: SwitchTabsEnum.WIRED_REPORT })} />
+        element={<SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />} />
       <Route path='devices/switch/:action' element={<SwitchForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
       <Route path='devices/switch/stack/:action' element={<StackForm />} />
@@ -211,16 +209,13 @@ function NetworkRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='networks' element={<TenantNavigate replace to='/networks/wireless' />} />
-      <Route path='networks/wireless' element={NetworksList({ tab: NetworkTabsEnum.LIST })} />
+      <Route path='networks/wireless' element={<NetworksList tab={NetworkTabsEnum.LIST} />} />
       <Route path='networks/wireless/reports/wlans'
-        element={
-          NetworksList({ tab: NetworkTabsEnum.WLAN_REPORT })} />
+        element={<NetworksList tab={NetworkTabsEnum.WLAN_REPORT} />} />
       <Route path='networks/wireless/reports/applications'
-        element={
-          NetworksList({ tab: NetworkTabsEnum.APPLICATIONS_REPORT })} />
+        element={<NetworksList tab={NetworkTabsEnum.APPLICATIONS_REPORT} />} />
       <Route path='networks/wireless/reports/wireless'
-        element={
-          NetworksList({ tab: NetworkTabsEnum.WIRELESS_REPORT })} />
+        element={<NetworksList tab={NetworkTabsEnum.WIRELESS_REPORT} />} />
       <Route path='networks/wireless/add' element={<NetworkForm />} />
       <Route
         path='networks/wireless/:networkId/network-details/:activeTab'
@@ -721,14 +716,11 @@ function UserRoutes () {
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/clients'
-        element={
-          WifiClientList({ tab: WirelessTabsEnum.CLIENTS })} />
+        element={<WifiClientList tab={WirelessTabsEnum.CLIENTS} />} />
       <Route path='users/wifi/guests'
-        element={
-          WifiClientList({ tab: WirelessTabsEnum.GUESTS })} />
+        element={<WifiClientList tab={WirelessTabsEnum.GUESTS} />} />
       <Route path='users/wifi/reports/clients'
-        element={
-          WifiClientList({ tab: WirelessTabsEnum.CLIENT_REPORT })} />
+        element={<WifiClientList tab={WirelessTabsEnum.CLIENT_REPORT} />} />
       <Route path='users/wifi/:activeTab/:clientId/details'>
         <Route path='' element={<Navigate replace to='./overview' />} />
         <Route path=':activeTab' element={<WifiClientDetails />} />
