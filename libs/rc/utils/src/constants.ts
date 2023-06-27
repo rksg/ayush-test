@@ -1039,12 +1039,12 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL }
       ]
     },
-    'C08P': {
-      powerSlots: 1, fanSlots: 0, portModuleSlots: [
-        { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.GENERAL }
-      ]
-    },
+    // 'C08P': {
+    //   powerSlots: 1, fanSlots: 0, portModuleSlots: [
+    //     { portLabel: PortLabelType.GENERAL },
+    //     { portLabel: PortLabelType.GENERAL }
+    //   ]
+    // },
     'C08PF': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
@@ -1086,19 +1086,19 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL },
         { portLabel: PortLabelType.GENERAL }
       ]
-    },
-    'C08PT': {
-      powerSlots: 1, fanSlots: 0, portModuleSlots: [
-        { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.GENERAL }
-      ]
-    },
-    'C08PDC': {
-      powerSlots: 1, fanSlots: 0, portModuleSlots: [
-        { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.GENERAL }
-      ]
     }
+    // 'C08PT': {
+    //   powerSlots: 1, fanSlots: 0, portModuleSlots: [
+    //     { portLabel: PortLabelType.GENERAL },
+    //     { portLabel: PortLabelType.GENERAL }
+    //   ]
+    // },
+    // 'C08PDC': {
+    //   powerSlots: 1, fanSlots: 0, portModuleSlots: [
+    //     { portLabel: PortLabelType.GENERAL },
+    //     { portLabel: PortLabelType.GENERAL }
+    //   ]
+    // }
   }
 }
 
