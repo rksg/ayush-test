@@ -547,7 +547,7 @@ export function VenuePropertyTab () {
         type='PropertyUnit'
         acceptType={['xlsx']}
         maxSize={CsvSize['5MB']}
-        maxEntries={30}
+        maxEntries={512}
         templateLink='assets/templates/units_import_template.xlsx'
         importRequest={importUnits}
         formDataName={'unitImports'}
