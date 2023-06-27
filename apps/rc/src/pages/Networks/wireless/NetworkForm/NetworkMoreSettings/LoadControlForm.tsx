@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useContext, useEffect } from 'react'
 
 import {
@@ -32,17 +33,19 @@ export function LoadControlForm () {
   const form = Form.useFormInstance()
 
   useEffect(() => {
-    if (data) {
-      if (data.wlan?.advancedCustomization) {
-        form.setFieldsValue({
-          maxRate: get(data, 'wlan.advancedCustomization.totalUplinkRateLimiting') > 0 ||
-            get(data, 'wlan.advancedCustomization.totalDownlinkRateLimiting') > 0 ?
-            MaxRateEnum.PER_AP : MaxRateEnum.UNLIMITED,
-          totalUplinkLimited: get(data, 'wlan.advancedCustomization.totalUplinkRateLimiting') > 0,
-          totalDownlinkLimited: get(data,
-            'wlan.advancedCustomization.totalDownlinkRateLimiting') > 0
-        })
-      }
+    const advancedCustomization = data?.wlan?.advancedCustomization
+    if (advancedCustomization) {
+      const apUplinkRateLimiting = get(data, 'wlan.advancedCustomization.totalUplinkRateLimiting')
+      const apDownlinkRateLimiting = get(data, 'wlan.advancedCustomization.totalDownlinkRateLimiting')
+
+      const hasApUplinkRateLimiting = apUplinkRateLimiting > 0
+      const hasApDownlinkRateLimiting = apDownlinkRateLimiting > 0
+      form.setFieldsValue({
+        maxRate: (hasApUplinkRateLimiting || hasApDownlinkRateLimiting) ?
+          MaxRateEnum.PER_AP : MaxRateEnum.UNLIMITED,
+        totalUplinkLimited: hasApUplinkRateLimiting,
+        totalDownlinkLimited: hasApDownlinkRateLimiting
+      })
     }
   }, [data])
 
@@ -55,9 +58,11 @@ export function LoadControlForm () {
           defaultValue={MaxRateEnum.UNLIMITED}
           style={{ width: '240px' }}
           onChange={function (value: string) {
-            if (value == MaxRateEnum.UNLIMITED) {
-              form.setFieldValue(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 0)
-              form.setFieldValue(['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 0)
+            if (value === MaxRateEnum.PER_AP) {
+              form.setFieldValue('totalUplinkLimited', true)
+              form.setFieldValue('totalDownlinkLimited', true)
+              form.setFieldValue(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 200)
+              form.setFieldValue(['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 200)
             }
           }}>
           <Option value={MaxRateEnum.UNLIMITED}>
@@ -199,7 +204,7 @@ function PerApForm () {
                 min={1}
                 max={200}
                 marks={{
-                  0: { label: '1 Mbps' },
+                  1: { label: '1 Mbps' },
                   200: { label: '200 Mbps' }
                 }}
               />
