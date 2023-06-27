@@ -1,220 +1,75 @@
-/* eslint-disable max-len */
 import React from 'react'
 
 import { useIntl } from 'react-intl'
-// import AutoSizer   from 'react-virtualized-auto-sizer'
-import styled from 'styled-components'
+import styled      from 'styled-components'
 
-import type { DonutChartData, DonutChartProps }                                             from '@acx-ui/components'
-import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onChartClick } from '@acx-ui/components'
+import { Button, GridCol, GridRow }                             from '@acx-ui/components'
+import { useGetDnsServersQuery, useGetEdgePasswordDetailQuery } from '@acx-ui/rc/services'
 import {
-  Alarm,
-  EdgeDnsServers,
-  EdgePasswordDetail,
-  EdgePortAdminStatusEnum,
   EdgePortStatus,
   EdgeResourceUtilizationEnum,
-  EdgeStatus,
-  EventSeverityEnum
+  EdgeStatus
 } from '@acx-ui/rc/utils'
+import { useParams }             from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
-import { AlarmsDrawer } from '../AlarmsDrawer'
-import { SpaceWrapper } from '../SpaceWrapper/index'
-
+import { EdgeAlarmWidget }    from './EdgeAlarmWidget'
 import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
-import EdgePortsListDrawer    from './EdgePortsListDrawer'
+import { EdgePortsWidget }    from './EdgePortsWidget'
 import { EdgeSysResourceBox } from './EdgeSysResourceBox'
+import { Styles }             from './styledComponents'
 
 interface EdgeInfoWidgetProps {
   className?: string
   currentEdge: EdgeStatus | undefined
   edgePortsSetting: EdgePortStatus[] | undefined
-  dnsServers: EdgeDnsServers | undefined
   isEdgeStatusLoading: boolean
   isPortListLoading: boolean
-  isAlarmListLoading: boolean
-  alarmList: Alarm[]
-  passwordDetail: EdgePasswordDetail | undefined
+  onClickWidget?: (widget: string) => void
 }
 
-interface EdgeAlarmWidgetProps {
-  isLoading: boolean
-  serialNumber: string,
-  alarmList: Alarm[]
-}
-
-interface EdgePortsWidgetProps {
-  isLoading: boolean
-  edgePortsSetting: EdgePortStatus[] | undefined
-}
-
-function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, emptyMessage, onClick }:
-   {
-    title:string,
-    data: Array<DonutChartData>,
-    isLoading: boolean,
-    chartDataTransformer?:Function,
-    emptyMessage: string,
-    onClick?: DonutChartProps['onClick'] }) {
-  if (chartDataTransformer)
-    data = chartDataTransformer(data)
-
-  return (
-    <Loader states={[{ isLoading }]}>
-      <SpaceWrapper full>
-        { data && data.length > 0
-          ?
-          <DonutChart
-            title={title}
-            style={{ width: 100, height: 100 }}
-            legend={'name-value'}
-            data={data}
-            onClick={onClick}
-          />
-          : <NoActiveData text={emptyMessage}/>
-        }
-      </SpaceWrapper>
-    </Loader>
-  )
-}
-
-const EdgeAlarmWidget = ({ isLoading, serialNumber, alarmList }: EdgeAlarmWidgetProps) => {
+export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
+  const {
+    className,
+    currentEdge,
+    edgePortsSetting,
+    isEdgeStatusLoading,
+    isPortListLoading,
+    onClickWidget
+  } = props
   const { $t } = useIntl()
-  const [alarmDrawerVisible, setAlarmDrawerVisible] = React.useState(false)
-  const handleDonutClick = () => {
-    setAlarmDrawerVisible(true)
-  }
-
-  const chartData = getChartData(alarmList)
-
-  return (<>
-    <EdgeOverviewDonutWidget
-      title={$t({ defaultMessage: 'Alarms' })}
-      data={chartData}
-      isLoading={isLoading}
-      emptyMessage={$t({ defaultMessage: 'No active alarms' })}
-      onClick={onChartClick(handleDonutClick)} />
-    <AlarmsDrawer
-      visible={alarmDrawerVisible}
-      setVisible={setAlarmDrawerVisible}
-      serialNumber={serialNumber}
-    />
-  </>)
-}
-
-type ReduceReturnType = Record<string, number>
-
-export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
-  const seriesMapping = [
-    { key: EventSeverityEnum.CRITICAL,
-      name: 'Critical',
-      color: cssStr('--acx-semantics-red-50') },
-    { key: EventSeverityEnum.MAJOR,
-      name: 'Major',
-      color: cssStr('--acx-accents-orange-30') }
-  ] as Array<{ key: string, name: string, color: string }>
-  const chartData: DonutChartData[] = []
-
-  if (alarms && alarms.length > 0) {
-    const alarmsSummary = alarms.reduce<ReduceReturnType>((acc, { severity }) => {
-      acc[severity] = (acc[severity] || 0) + 1
-      return acc
-    }, {})
-
-    seriesMapping.forEach(({ key, name, color }) => {
-      if (alarmsSummary[key]) {
-        chartData.push({
-          name,
-          value: alarmsSummary[key],
-          color
-        })
-      }
-    })
-  }
-
-  return chartData
-}
-
-export const getPortsAdminStatusChartData = (ports: EdgePortStatus[] | undefined): DonutChartData[] => {
-  const seriesMapping = [
-    { key: EdgePortAdminStatusEnum.Enabled,
-      name: EdgePortAdminStatusEnum.Enabled,
-      color: cssStr('--acx-semantics-green-50') },
-    { key: EdgePortAdminStatusEnum.Disabled,
-      name: EdgePortAdminStatusEnum.Disabled,
-      color: cssStr('--acx-accents-orange-30') }
-  ] as Array<{ key: string, name: string, color: string }>
-
-  const chartData: DonutChartData[] = []
-
-  if (ports && ports.length > 0) {
-    const portsSummary = ports.reduce<ReduceReturnType>((acc, { adminStatus }) => {
-      acc[adminStatus] = (acc[adminStatus] || 0) + 1
-      return acc
-    }, {})
-
-    seriesMapping.forEach(({ key, name, color }) => {
-      if (portsSummary[key]) {
-        chartData.push({
-          name,
-          value: portsSummary[key],
-          color
-        })
-      }
-    })
-  }
-
-  return chartData
-}
-
-const EdgePortsWidget = ({ isLoading, edgePortsSetting }: EdgePortsWidgetProps) => {
-  const { $t } = useIntl()
-  const [visible, setVisible] = React.useState(false)
-  const handleDonutClick = () => {
-    setVisible(true)
-  }
-
-  const chartData = getPortsAdminStatusChartData(edgePortsSetting)
-
-  return (<>
-    <EdgeOverviewDonutWidget
-      title={$t({ defaultMessage: 'Ports' })}
-      data={chartData}
-      isLoading={isLoading}
-      emptyMessage={$t({ defaultMessage: 'No data' })}
-      onClick={onChartClick(handleDonutClick)}
-    />
-    <EdgePortsListDrawer
-      visible={visible}
-      setVisible={setVisible}
-      edgePortsSetting={edgePortsSetting as EdgePortStatus[]}
-    />
-  </>)
-}
-
-export const EdgeInfoWidget = styled(({
-  className,
-  currentEdge,
-  edgePortsSetting,
-  dnsServers,
-  isEdgeStatusLoading,
-  isPortListLoading,
-  isAlarmListLoading,
-  alarmList,
-  passwordDetail }: EdgeInfoWidgetProps) => {
-  const { $t } = useIntl()
+  const { serialNumber } = useParams()
   const [visible, setVisible] = React.useState(false)
   const moreDetailsHandler = () => {
     setVisible(true)
   }
 
+  const { data: dnsServers } = useGetDnsServersQuery({ params: { serialNumber } })
+
+  const { data: userProfile } = useUserProfileContext()
+  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
+  const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
+    { params: { serialNumber } },
+    {
+      skip: !isShowEdgePassword
+    }
+  )
+
   return (
     <GridRow className={className}>
       <GridCol col={{ span: 4 }}>
-        <EdgeAlarmWidget isLoading={isAlarmListLoading} serialNumber={currentEdge?.serialNumber!} alarmList={alarmList} />
+        <EdgeAlarmWidget
+          isLoading={isEdgeStatusLoading}
+          serialNumber={serialNumber}
+          onClick={onClickWidget}
+        />
       </GridCol>
       <GridCol col={{ span: 4 }}>
-        <EdgePortsWidget isLoading={isPortListLoading} edgePortsSetting={edgePortsSetting} />
+        <EdgePortsWidget
+          isLoading={isPortListLoading}
+          edgePortsSetting={edgePortsSetting}
+          onClick={onClickWidget}
+        />
       </GridCol>
       <GridCol col={{ span: 4 }}>
         <EdgeSysResourceBox
@@ -258,14 +113,4 @@ export const EdgeInfoWidget = styled(({
       />
     </GridRow>
   )
-})`
-background-color: var(--acx-neutrals-10);
-
-& > .ant-col {
-  height: 176px;
-
-  & .moreBtn {
-    justify-content: center;
-  }
-}
-`
+})`${Styles}`
