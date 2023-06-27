@@ -3,14 +3,15 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
-import { Button, GridCol, GridRow } from '@acx-ui/components'
-import { useGetDnsServersQuery }    from '@acx-ui/rc/services'
+import { Button, GridCol, GridRow }                             from '@acx-ui/components'
+import { useGetDnsServersQuery, useGetEdgePasswordDetailQuery } from '@acx-ui/rc/services'
 import {
   EdgePortStatus,
   EdgeResourceUtilizationEnum,
   EdgeStatus
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }             from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
 import { EdgeAlarmWidget }    from './EdgeAlarmWidget'
 import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
@@ -44,6 +45,15 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
   }
 
   const { data: dnsServers } = useGetDnsServersQuery({ params: { serialNumber } })
+
+  const { data: userProfile } = useUserProfileContext()
+  const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
+  const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
+    { params: { serialNumber } },
+    {
+      skip: !isShowEdgePassword
+    }
+  )
 
   return (
     <GridRow className={className}>
@@ -99,6 +109,7 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
         currentEdge={currentEdge}
         edgePortsSetting={edgePortsSetting}
         dnsServers={dnsServers}
+        passwordDetail={passwordDetail}
       />
     </GridRow>
   )

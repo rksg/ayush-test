@@ -30,7 +30,8 @@ import {
   EdgeTimeSeriesPayload,
   EdgeService,
   EdgesTopTraffic,
-  EdgesTopResources
+  EdgesTopResources,
+  EdgePasswordDetail
 } from '@acx-ui/rc/utils'
 import { baseEdgeApi } from '@acx-ui/store'
 
@@ -379,7 +380,17 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }]
+      providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Remove Services'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SERVICE' }]))
+          })
+        })
+      }
     }),
     getEdgesTopTraffic: build.query<EdgesTopTraffic,
     RequestPayload<EdgeTimeSeriesPayload>>({
@@ -410,6 +421,15 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'SERVICE' }]
+    }),
+    getEdgePasswordDetail: build.query<EdgePasswordDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgePasswordDetail, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
     })
   })
 })
@@ -462,5 +482,6 @@ export const {
   useGetEdgeServiceListQuery,
   useGetEdgesTopTrafficQuery,
   useGetEdgesTopResourcesQuery,
-  useDeleteEdgeServicesMutation
+  useDeleteEdgeServicesMutation,
+  useGetEdgePasswordDetailQuery
 } = edgeApi
