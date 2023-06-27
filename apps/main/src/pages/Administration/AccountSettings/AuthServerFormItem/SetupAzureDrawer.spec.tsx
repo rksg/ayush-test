@@ -1,15 +1,15 @@
 import userEvent from '@testing-library/user-event'
-// import { rest }  from 'msw'
+import { rest }  from 'msw'
 
-import { CsvSize }                                                   from '@acx-ui/rc/components'
-import { ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { CsvSize }                                                                                           from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, CommonUrlsInfo, TenantAuthenticationType } from '@acx-ui/rc/utils'
 // import {
 //   UploadUrlResponse
 // } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   fireEvent,
-  // mockServer,
+  mockServer,
   render,
   screen,
   waitFor
@@ -36,30 +36,56 @@ const metadataText = '<note><to>Me</to><from>You</from><heading>Reminder</headin
 //   signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/ecc2d7cf9d2342fdb31ae0e24958fcac/f1-001.xml'
 // }
 // const uploadUrlResponse = {
-//   data: response
+//   data: {
+//     fileId: 'f1-001.xml',
+//     signedUrl: 'www.storage.com'
+//   }
 // }
 
-// const services = require('@acx-ui/rc/services')
+const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useGetUploadURLMutation: () => ('')
+  ...jest.requireActual('@acx-ui/rc/services')
 }))
 
 describe('Setup Azure Drawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    // jest.spyOn(services, 'useGetUploadURLMutation')
-    // mockServer.use(
-    //   rest.post(
-    //     CommonUrlsInfo.getUploadURL.url,
-    //     (req, res, ctx) => res(ctx.json(uploadUrlResponse))
-    //   )
+    jest.spyOn(services, 'useGetUploadURLMutation')
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getUploadURL.url,
+        (req, res, ctx) => res(ctx.json({ fileId: 'f1-001/xml', signedUrl: 'www.storage.com' }))
+      )
+    )
+    // TODO: mock response.clone for getUploadURL
+    // services.useGetUploadURLMutation.clone = jest.fn().mockReturnValue(uploadUrlResponse)
+    // services.useGetUploadURLMutation = jest.fn().mockImplementation(() =>
+    //   Promise.resolve({
+    //     json: () => Promise.resolve(uploadUrlResponse),
+    //     text: () => Promise.resolve({}),
+    //     clone: () => Promise.resolve(uploadUrlResponse)
+    //   })
     // )
+    jest.spyOn(services, 'useAddTenantAuthenticationsMutation')
+    mockServer.use(
+      rest.post(
+        AdministrationUrlsInfo.addTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      )
+    )
+    jest.spyOn(services, 'useUpdateTenantAuthenticationsMutation')
+    mockServer.use(
+      rest.put(
+        AdministrationUrlsInfo.updateTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
     global.URL.createObjectURL = jest.fn()
     jest.spyOn(global.URL, 'createObjectURL')
     global.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
-        json: () => Promise.resolve({})
+        json: () => Promise.resolve({}),
+        text: () => Promise.resolve({})
       })
     )
     params = {
@@ -301,7 +327,7 @@ describe('Setup Azure Drawer', () => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
     })
   })
-  xit('should save metadata correctly', async () => {
+  it('should save metadata correctly', async () => {
     const mockedCloseDrawer = jest.fn()
     render(
       <Provider>
@@ -328,6 +354,15 @@ describe('Setup Azure Drawer', () => {
       expect(button).toBeEnabled()
     })
     await userEvent.click(button)
+
+    // const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+    //   data: { requestId: '123' },
+    //   status: 'fulfilled'
+    // })]
+    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loading' }))
+
+    // await waitFor(()=>
+    //   expect(services.useAddTenantAuthenticationsMutation).toHaveLastReturnedWith(value))
     await waitFor(() => {
       expect(mockedCloseDrawer).toHaveBeenLastCalledWith(false)
     })

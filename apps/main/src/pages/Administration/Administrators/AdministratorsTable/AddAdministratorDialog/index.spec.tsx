@@ -77,6 +77,10 @@ describe('Add administrator dialog component', () => {
           mockedAddAdminFn(req.body)
           return res(ctx.json({}))
         }
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -193,7 +197,7 @@ describe('Add administrator dialog component', () => {
     })
   })
 
-  xit('should non MSP EC and non MSP submit correctly', async () => {
+  it('should non MSP EC and non MSP submit correctly', async () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getRegisteredUsersList.url,

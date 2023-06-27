@@ -182,8 +182,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
 
   const okHandler = async () => {
     try {
-      const contents = new Blob([metadata ?? ''], { type: 'text/xml' })
-      const metadataFile = { ...contents, uid: '' , name: 'mysaml.xml' } as UploadFile
+      const metadataFile = new Blob([metadata ?? ''], { type: 'text/xml' }) as unknown as UploadFile
+      metadataFile.name = 'mysaml.xml'
 
       const fileURL = uploadFile && file ? await getFileUploadURL(file)
         : !uploadFile ? await getFileUploadURL(metadataFile)
