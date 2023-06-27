@@ -23,9 +23,9 @@ const AddDhcp = () => {
   const formRef = useRef<StepsFormLegacyInstance<EdgeDhcpSetting>>()
   const [addEdgeDhcp, { isLoading: isFormSubmitting }] = useAddEdgeDhcpServiceMutation()
 
-  const handleAddEdgeDhcp = async (data: EdgeDhcpSetting) => {
+  const handleAddEdgeDhcp = async () => {
     try {
-      const payload = { ...data }
+      const payload = formRef.current?.getFieldsValue(true)
       await addEdgeDhcp({ payload: payload }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {
