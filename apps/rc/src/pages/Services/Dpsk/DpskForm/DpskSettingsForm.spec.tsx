@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { NewDpskBaseUrl, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                from '@acx-ui/store'
 import { mockServer, render, renderHook, screen }  from '@acx-ui/test-utils'
@@ -65,7 +65,7 @@ describe('DpskSettingsForm', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>

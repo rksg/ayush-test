@@ -47,7 +47,7 @@ export function TemplateSelect (props: TemplateSelectorProps) {
     setIsModalOpen(true)
   }
 
-  const handleCancel = () => {
+  const handleModalClose = () => {
     setIsModalOpen(false)
   }
 
@@ -84,7 +84,8 @@ export function TemplateSelect (props: TemplateSelectorProps) {
           title={getTemplatePreviewTitle()}
           visible={isModalOpen}
           cancelButtonProps={{ style: { display: 'none' } }}
-          onOk={handleCancel}>
+          onOk={handleModalClose}
+          onCancel={handleModalClose}>
           <TemplatePreview
             templateType={templateType}
             template={previewTemplate} />

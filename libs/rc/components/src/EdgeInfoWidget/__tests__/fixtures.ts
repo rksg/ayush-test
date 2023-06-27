@@ -1,4 +1,4 @@
-import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePasswordDetail, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -79,4 +79,9 @@ export const alarmList = {
       '{"message_template": "SmartEdge @@serialNumber firmware update failed."}'
     }
   ] as Alarm[]
+}
+
+export const passwordDetail:EdgePasswordDetail = {
+  loginPassword: 'admin!234',
+  enablePassword: 'admin!234'
 }

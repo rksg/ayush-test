@@ -938,9 +938,6 @@ export function ManageIntegrator () {
               value={address.addressLine}
             />
           </Form.Item >
-          <Form.Item hidden>
-            <GoogleMapWithPreference libraries={['places']} />
-          </Form.Item>
 
           <MspAdminsForm />
           <ManageAssignedEcForm />
