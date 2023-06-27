@@ -25,25 +25,32 @@ export const changedApplicationTypeTextMap: Record<ApplicationUpdateType, Messag
   [ApplicationUpdateType.CATEGORY_UPDATED]: defineMessage({ defaultMessage: 'Category Update' })
 }
 
-const ApplicationPolicyMgmt = ()=>{
+const ApplicationPolicyMgmt = () => {
   const { $t } = useIntl()
   const [ exportAllSigPack ] = useExportAllSigPackMutation()
   const [ exportSigPack ] = useExportSigPackMutation()
   const [ type, setType ] = useState(ApplicationUpdateType.APPLICATION_ADDED)
-  const { data, changedAppsInfoMap, updateAvailable, isFetching, isLoading } = useSigPackDetails()
+  const {
+    data,
+    changedAppsInfoMap,
+    updateAvailable,
+    confirmationType,
+    isFetching,
+    isLoading
+  } = useSigPackDetails()
 
-  const showCurrentInfo = ()=>{
+  const showCurrentInfo = () => {
     return (
       <div>
         <Space split={<Divider type='vertical' style={{ height: '80px' }} />}>
-          {!updateAvailable&&<UI.FwContainer>
+          {!updateAvailable && <UI.FwContainer>
             <UI.LatestVersion>
               {$t({ defaultMessage: 'Latest Application Version:' })}
             </UI.LatestVersion>
             <UI.CheckMarkIcon/>
             {$t({ defaultMessage: 'Now is the latest version' })}
           </UI.FwContainer>}
-          {updateAvailable&&<UI.FwContainer>
+          {updateAvailable && <UI.FwContainer>
             <UI.CurrentDetail>
               <UI.CurrentLabelBold>
                 {$t({ defaultMessage: 'Latest Application Version:' })}
@@ -110,7 +117,10 @@ const ApplicationPolicyMgmt = ()=>{
             {$t({ defaultMessage: 'Clicking "Update" will proceed with the below updates under this tenant' })}
           </div>
           <div style={{ marginTop: 10 }}>
-            <UpdateConfirms />
+            <UpdateConfirms
+              changedAppsInfoMap={changedAppsInfoMap}
+              confirmationType={confirmationType}
+            />
           </div>
         </>}
       </div>

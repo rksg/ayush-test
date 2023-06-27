@@ -1,45 +1,31 @@
 import { useState } from 'react'
 
-import { Input, Modal }                     from 'antd'
-import { useIntl }                          from 'react-intl'
-import { MessageDescriptor, defineMessage } from 'react-intl'
+import { Input, Modal }      from 'antd'
+import { useIntl }           from 'react-intl'
+import { MessageDescriptor } from 'react-intl'
 
-import { Button, Collapse }                              from '@acx-ui/components'
-import { ExpandSquareDown, ExpandSquareUp }              from '@acx-ui/icons'
-import { useUpdateSigPackMutation }                      from '@acx-ui/rc/services'
-import { ApplicationConfirmType, ApplicationUpdateType } from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { getIntl }                                       from '@acx-ui/utils'
+import { Button, Collapse }                 from '@acx-ui/components'
+import { ExpandSquareDown, ExpandSquareUp } from '@acx-ui/icons'
+import { useUpdateSigPackMutation }         from '@acx-ui/rc/services'
+import { ApplicationUpdateType }            from '@acx-ui/rc/utils'
+import { getIntl }                          from '@acx-ui/utils'
 
-import * as UI                                   from './styledComponents'
-import { ChangedAppsInfoMap, useSigPackDetails } from './useSigPackDetails'
+import * as UI                                                          from './styledComponents'
+import { cautionDescription, confirmationContentMap, confirmationText } from './UpdateConfirmsConstants'
+import { ConfirmContentProps, DialogFooterProps, UpdateConfirmsProps }  from './UpdateConfirmsTypes'
+import { ChangedAppsInfoMap, useSigPackDetails }                        from './useSigPackDetails'
 
 import { changedApplicationTypeTextMap } from '.'
 
-const contentMap: Record<ApplicationConfirmType, MessageDescriptor | undefined> = {
-  // eslint-disable-next-line max-len
-  [ApplicationConfirmType.UPDATED_APPS]: defineMessage({ defaultMessage: 'Please note that there will be updates to {updatedCount} application policies/rules in access control on this tenant.' }),
-  // eslint-disable-next-line max-len
-  [ApplicationConfirmType.UPDATED_REMOVED_APPS]: defineMessage({ defaultMessage: 'Please note that there will be updates to {updatedCount} application policies/rules and the removal of {removedCount} rule in access control on this tenant.' }),
-  // eslint-disable-next-line max-len
-  [ApplicationConfirmType.UPDATED_APP_ONLY]: defineMessage({ defaultMessage: 'Please note that there will be updates to {updatedCount} application policies/rules in access control on this tenant.' }),
-  // eslint-disable-next-line max-len
-  [ApplicationConfirmType.REMOVED_APP_ONLY]: defineMessage({ defaultMessage: 'Please note that {removedCount} impacted application rules in access control will be removed on this tenant' }),
-  [ApplicationConfirmType.NEW_APP_ONLY]: undefined
-}
-
-// eslint-disable-next-line max-len
-const cautionDescription = defineMessage({ defaultMessage: 'Are you sure you want to update the application under this tenant?' })
-const confirmationText = 'Update'
-
-export const UpdateConfirms = () => {
+export const UpdateConfirms = (props: UpdateConfirmsProps) => {
+  const { changedAppsInfoMap } = props
   const { $t } = useIntl()
-  const [updateSigPack] = useUpdateSigPackMutation()
-  const { changedAppsInfoMap } = useSigPackDetails()
-  const [disabled, setDisabled]=useState(false)
+  const [ updateSigPack ] = useUpdateSigPackMutation()
+  const [ disabled, setDisabled ] = useState(false)
 
   const doUpdate = () => {
     setDisabled(true)
+
     try{
       updateSigPack({ params: {}, payload: { action: 'UPDATE' } }).then(() => {
         setTimeout(() => setDisabled(false), 3500)
@@ -56,10 +42,15 @@ export const UpdateConfirms = () => {
       type: 'confirm',
       title: $t({ defaultMessage: 'Update Application policy?' }),
       className: 'modal-custom',
-      content: <Provider><ConfirmContent
-        onOk={doUpdate}
+      content: <ConfirmContent
+        changedAppsInfoMap={changedAppsInfoMap}
+        confirmationType={props.confirmationType}
+        onOk={() => {
+          doUpdate()
+          modal.destroy()
+        }}
         onCancel={() => modal.destroy()}
-      /></Provider>,
+      />,
       icon: <> </>
     })
     return modal
@@ -89,21 +80,15 @@ export const UpdateConfirms = () => {
   </Button>
 }
 
-interface ConfirmContentProps {
-  onOk: () => void
-  onCancel: () => void
-}
-
 function ConfirmContent (props: ConfirmContentProps) {
-  const { onOk, onCancel } = props
+  const { changedAppsInfoMap, confirmationType, onOk, onCancel } = props
   const { $t } = getIntl()
   const [ okDisabled, setOkDisabled ] = useState(true)
-  const { changedAppsInfoMap, confirmationType } = useSigPackDetails()
 
   return (
     <>
       <UI.DialogContent>
-        {$t(contentMap[confirmationType] as MessageDescriptor, {
+        {$t(confirmationContentMap[confirmationType] as MessageDescriptor, {
           updatedCount: getUpdatedCount(changedAppsInfoMap),
           removedCount: getRemovedCount(changedAppsInfoMap)
         }) + ' ' + $t(cautionDescription)}
@@ -120,12 +105,6 @@ function ConfirmContent (props: ConfirmContentProps) {
       <DialogFooter onOk={onOk} onCancel={onCancel} okDisabled={okDisabled} />
     </>
   )
-}
-
-interface DialogFooterProps {
-  onOk: () => void
-  onCancel: () => void
-  okDisabled: boolean
 }
 
 function DialogFooter (props: DialogFooterProps) {
@@ -149,7 +128,7 @@ function DialogFooter (props: DialogFooterProps) {
 
 function ImpactedRulesDetails () {
   const { $t } = getIntl()
-  const { changedAppsInfoMap } = useSigPackDetails()
+  const { changedAppsInfoMap } = useSigPackDetails(true)
 
   return (
     <UI.Collapse

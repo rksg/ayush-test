@@ -17,7 +17,7 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'SigPack', id: 'SIGPACK' }]
+      providesTags: [{ type: 'SigPack', id: 'LIST' }]
     }),
     exportAllSigPack: build.mutation<Blob, RequestPayload>({
       query: () => {
@@ -70,7 +70,7 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           if(msg.status === TxStatus.SUCCESS){
-            api.dispatch(sigPackApi.util.invalidateTags([{ type: 'SigPack', id: 'SIGPACK' }]))
+            api.dispatch(sigPackApi.util.invalidateTags([{ type: 'SigPack', id: 'LIST' }]))
           }
         })
       }
@@ -79,6 +79,7 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
 })
 export const {
   useGetSigPackQuery,
+  useLazyGetSigPackQuery,
   useExportAllSigPackMutation,
   useExportSigPackMutation,
   useUpdateSigPackMutation
