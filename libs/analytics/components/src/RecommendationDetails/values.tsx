@@ -144,13 +144,13 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
           <GridCol col={{ span: 12 }}>
             {firstLabel}
           </GridCol>
-          <GridCol col={{ span: 12 }}>
+          <GridCol col={{ span: 10, pull: 2 }}>
             <ValueDetails>{firstValue}</ValueDetails>
           </GridCol>
           <GridCol col={{ span: 12 }}>
             {secondLabel}
           </GridCol>
-          <GridCol col={{ span: 12 }}>
+          <GridCol col={{ span: 10, pull: 2 }}>
             <ValueDetails>
               <ValueDetailsWithIcon>
                 {secondValue}

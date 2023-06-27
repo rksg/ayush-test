@@ -488,3 +488,39 @@ export const mockedRecommendationApFirmware = [
     version: 'Unknown'
   }
 ]
+
+
+export const mockRecommendationAutoBackground = {
+  id: 'c5218138-d14c-4cec-9ee4-3164cdd15f15',
+  code: 'c-bgscan24g-enable',
+  status: 'new',
+  appliedTime: null,
+  originalValue: null,
+  currentValue: null,
+  recommendedValue: true,
+  metadata: {
+    channelSelectionMode: 'BACKGROUND_SCANNING'
+  },
+  sliceType: 'zone',
+  sliceValue: '18-US-CA-Z18-Shivshankar-Home',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '18-US-CA-D18-Shivshankar-Home'
+    },
+    {
+      type: 'zone',
+      name: '18-US-CA-Z18-Shivshankar-Home'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'new',
+      createdAt: '2023-06-12T07:05:14.752Z'
+    }
+  ]
+} as unknown as RecommendationDetails
