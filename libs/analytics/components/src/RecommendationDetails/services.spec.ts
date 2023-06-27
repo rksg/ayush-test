@@ -71,6 +71,56 @@ describe('recommendation services', () => {
     } as unknown as EnhancedRecommendation)
   })
 
+  it('should return correct details with code', async () => {
+    mockGraphqlQuery(dataApiRecommendationURL, 'ConfigRecommendationDetails', {
+      data: {
+        recommendation: mockedRecommendationFirmware
+      }
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.recommendationDetails.initiate({
+        ...recommendationPayload,
+        code: 'c-aclb-enable'
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(error).toBeUndefined()
+    const removedMsgs = omit(data, [
+      'category',
+      'priority',
+      'summary',
+      'tooltipContent'
+    ])
+    expect(removedMsgs).toStrictEqual<EnhancedRecommendation>({
+      appliedOnce: false,
+      appliedTime: null,
+      code: 'i-zonefirmware-upgrade',
+      currentValue: '6.1.1.0.1274',
+      id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
+      kpi_aps_on_latest_fw_version: {
+        current: [0, 0],
+        previous: null,
+        projected: null
+      },
+      metadata: {},
+      monitoring: null,
+      originalValue: null,
+      path: [
+        { name: 'vsz34', type: 'system' },
+        { name: '39-IND-BDC-D39-Mayank', type: 'domain' },
+        { name: '39-IND-BDC-D39-Mayank-Ofc-Z2', type: 'zone' }
+      ],
+      recommendedValue: '6.1.2',
+      sliceType: 'zone',
+      sliceValue: '39-IND-BDC-D39-Mayank-Ofc-Z2',
+      status: 'new',
+      statusTrail: [{
+        createdAt: '2023-06-12T07:05:14.106Z',
+        status: 'new'
+      }]
+    } as unknown as EnhancedRecommendation)
+  })
+
   it('should return correct crrm recommendation details', async () => {
     mockGraphqlQuery(dataApiRecommendationURL, 'ConfigRecommendationDetails', {
       data: {

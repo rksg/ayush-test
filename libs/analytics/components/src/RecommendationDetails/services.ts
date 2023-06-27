@@ -97,10 +97,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
 
 const kpiHelper = ({ code }: { code?: string }) => {
   if (!code) return ''
-  const data = code in configRecommendations
-    ? configRecommendations[code as keyof typeof configRecommendations]
-    : null
-  if (!data) return ''
+  const data = configRecommendations[code as keyof typeof configRecommendations]
   return get(data, ['kpis'])
     .map(kpi => {
       const name = `kpi_${snakeCase(kpi.key)}`
