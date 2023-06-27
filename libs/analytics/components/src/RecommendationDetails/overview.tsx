@@ -63,7 +63,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
-  const { createdAt } = statusTrail && statusTrail.length ? statusTrail[statusTrail.length - 1] : { createdAt: undefined } 
+  const { createdAt } = statusTrail[statusTrail.length - 1] 
   const { kpis } = configRecommendations[code]
   const iconColor = getPriorityColor(priority)
   const Icon = () => <Badge color={`var(${iconColor})`} text={capitalize($t(priority))}/>
