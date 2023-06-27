@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
+  CommonUrlsInfo,
   DpskUrls,
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -28,6 +29,24 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
+export const AllowedNetworkList = {
+  fields: ['name', 'id', 'defaultGuestCountry'],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'guest pass wlan1',
+      id: 'tenant-id',
+      defaultGuestCountry: 'United States'
+    },
+    {
+      name: 'guest pass wlan2',
+      id: 'dasjk12359552a9d041813131d007aca',
+      defaultGuestCountry: 'United States'
+    }
+  ]
+}
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
@@ -47,6 +66,9 @@ describe('DpskTable', () => {
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
+        res(ctx.json(AllowedNetworkList))
       )
     )
   })
