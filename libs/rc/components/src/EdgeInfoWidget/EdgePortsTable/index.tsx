@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Table,TableProps } from '@acx-ui/components'
-import { formatter }        from '@acx-ui/formatter'
-import { EdgePortStatus }   from '@acx-ui/rc/utils'
+import { Table,TableProps }                      from '@acx-ui/components'
+import { formatter }                             from '@acx-ui/formatter'
+import { defaultSort, EdgePortStatus, sortProp } from '@acx-ui/rc/utils'
 
 export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
   const { $t } = useIntl()
@@ -13,6 +13,7 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       key: 'sortIdx',
       dataIndex: 'sortIdx',
       defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('sortIdx', defaultSort) },
       render: (id, record, index) => {
         return index + 1
       }
@@ -20,37 +21,44 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
     {
       title: $t({ defaultMessage: 'Port' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
-      dataIndex: 'status'
+      dataIndex: 'status',
+      sorter: { compare: sortProp('status', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Admin Status' }),
       key: 'adminStatus',
-      dataIndex: 'adminStatus'
+      dataIndex: 'adminStatus',
+      sorter: { compare: sortProp('adminStatus', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'type',
-      dataIndex: 'type'
+      dataIndex: 'type',
+      sorter: { compare: sortProp('type', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Interface MAC' }),
       key: 'mac',
-      dataIndex: 'mac'
+      dataIndex: 'mac',
+      sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
-      dataIndex: 'ip'
+      dataIndex: 'ip',
+      sorter: { compare: sortProp('ip', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Speed' }),
       key: 'speedKbps',
       dataIndex: 'speedKbps',
+      sorter: { compare: sortProp('speedKbps', defaultSort) },
       render: (data, row) => {
         return formatter('networkSpeedFormat')(row.speedKbps)
       }
@@ -59,6 +67,7 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
 
   return (
     <Table
+      settingsId='edge-ports-table'
       rowKey='portId'
       columns={columns}
       dataSource={data}

@@ -32,7 +32,7 @@ export const PortsTab = ({ data, isLoading }: { data: EdgePortStatus[], isLoadin
 
     <GridCol col={{ span: 24 }}>
       <Loader states={[{ isLoading }]}>
-        <EdgePortsTable key='edge-ports-table' data={data} />
+        <EdgePortsTable data={data} />
       </Loader>
     </GridCol>
   </GridRow>
