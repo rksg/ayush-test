@@ -1,4 +1,3 @@
-import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { IncidentTabContent, useHeaderExtra } from '@acx-ui/analytics/components'
