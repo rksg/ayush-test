@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo }       from '@acx-ui/rc/utils'
 import { Provider  }          from '@acx-ui/store'
 import {
@@ -49,8 +48,6 @@ describe('Edge Detail Overview', () => {
   { tenantId: 'tenant-id', serialNumber: 'edge-serialnum' }
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -172,23 +169,5 @@ describe('Edge Detail Overview', () => {
     // monitor tab should still be active
     expect(await screen.findByRole('tab', { name: 'Monitor' }))
       .toHaveAttribute('aria-selected', 'true')
-  })
-
-  it('should hide monitor tab when EDGE_STATS_TOGGLE disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <EdgeOverview />
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(await screen.findByTestId('rc-EdgeInfoWidget')).toBeVisible()
-
-    // ports tab should be default active
-    expect(await screen.findByRole('tab', { name: 'Ports' }))
-      .toHaveAttribute('aria-selected', 'true')
-    expect(screen.queryByRole('tab', { name: 'Monitor' })).toBeNull()
   })
 })

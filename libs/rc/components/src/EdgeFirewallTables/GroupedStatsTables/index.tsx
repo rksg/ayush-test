@@ -1,13 +1,11 @@
 import { useState } from 'react'
 
-import { Empty, Select } from 'antd'
-import _                 from 'lodash'
-import moment            from 'moment'
-import { useIntl }       from 'react-intl'
-import styled            from 'styled-components/macro'
+import { Select }  from 'antd'
+import moment      from 'moment'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
 import { DateRangeType, RangePicker, Tabs } from '@acx-ui/components'
-import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import {
   ACLDirection,
   EdgeFirewallSetting,
@@ -15,9 +13,6 @@ import {
   getACLDirectionOptions } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
-
-import { DDoSRulesTable as DDoSRulesConfigTable }               from '../DDoSRulesTable'
-import { StatefulACLRulesTable as StatefulACLRulesConfigTable } from '../StatefulACLRulesTable'
 
 import { DDoSRulesTable }        from './DDoSRulesTable'
 import { StatefulACLRulesTable } from './StatefulACLRulesTable'
@@ -32,7 +27,6 @@ interface GroupedStatsTablesProps {
 export const GroupedStatsTables =
   styled((props: GroupedStatsTablesProps) => {
     const { $t } = useIntl()
-    const isEdgeStatsEnabled = useIsSplitOn(Features.EDGES_STATS_TOGGLE)
     const { className, edgeData, edgeFirewallData } = props
     const { startDate, endDate, range, setDateFilter } = useDateFilter()
     const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
@@ -63,23 +57,15 @@ export const GroupedStatsTables =
             />])
           }
         </UI.ActionsContainer>
-        {isEdgeStatsEnabled
-          ? <DDoSRulesTable
-            firewallData={edgeFirewallData}
-            dateFilter={{
-              startDate,
-              endDate
-            }}
-            edgeId={edgeData.serialNumber}
-            venueId={edgeData.venueId}
-          />
-          : <DDoSRulesConfigTable
-            dataSource={edgeFirewallData.ddosRateLimitingRules}
-            locale={{
-              emptyText: <Empty description={$t({ defaultMessage: 'No data' })} />
-            }}
-          />
-        }
+        <DDoSRulesTable
+          firewallData={edgeFirewallData}
+          dateFilter={{
+            startDate,
+            endDate
+          }}
+          edgeId={edgeData.serialNumber}
+          venueId={edgeData.venueId}
+        />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Stateful ACL' })}
@@ -104,24 +90,16 @@ export const GroupedStatsTables =
             />])
           }
         </UI.ActionsContainer>
-        {isEdgeStatsEnabled
-          ? <StatefulACLRulesTable
-            firewallData={edgeFirewallData}
-            direction={aclDirection}
-            dateFilter={{
-              startDate,
-              endDate
-            }}
-            edgeId={edgeData.serialNumber}
-            venueId={edgeData.venueId}
-          />
-          : <StatefulACLRulesConfigTable
-            dataSource={_.find(edgeFirewallData.statefulAcls,
-              { direction: aclDirection })?.rules}
-            locale={{
-              emptyText: <Empty description={$t({ defaultMessage: 'No data' })} />
-            }}
-          />}
+        <StatefulACLRulesTable
+          firewallData={edgeFirewallData}
+          direction={aclDirection}
+          dateFilter={{
+            startDate,
+            endDate
+          }}
+          edgeId={edgeData.serialNumber}
+          venueId={edgeData.venueId}
+        />
       </Tabs.TabPane>
     </Tabs>
   })`${UI.WrapperStyle}`
