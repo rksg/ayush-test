@@ -34,6 +34,7 @@ export function useMenuConfig () {
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
+  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
@@ -240,7 +241,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(isServiceEnabled || isCloudpathBetaEnabled ? [{
+    ...(isServiceEnabled || isPolicyEnabled ? [{
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -256,7 +257,7 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Service Catalog' })
           }
         ] : []),
-        ...(isCloudpathBetaEnabled
+        ...(isPolicyEnabled
           ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
           : [])
       ]
