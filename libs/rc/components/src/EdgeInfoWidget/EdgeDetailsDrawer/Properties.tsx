@@ -78,6 +78,7 @@ export const Properties = (props: PropertiesProps) => {
         }
       />
       { isShowEdgePassword &&
+      <>
         <Form.Item
           label={$t({ defaultMessage: 'Login Password' })}
           children={
@@ -90,8 +91,6 @@ export const Properties = (props: PropertiesProps) => {
             </UI.DetailsPassword>
           }
         />
-      }
-      { isShowEdgePassword &&
         <Form.Item
           label={$t({ defaultMessage: 'Enable Password' })}
           children={
@@ -104,6 +103,7 @@ export const Properties = (props: PropertiesProps) => {
             </UI.DetailsPassword>
           }
         />
+      </>
       }
       <Form.Item
         label={$t({ defaultMessage: 'S/N' })}
