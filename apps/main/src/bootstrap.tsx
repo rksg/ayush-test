@@ -1,8 +1,7 @@
 import React from 'react'
 
-import { Root }           from 'react-dom/client'
-import { HelmetProvider } from 'react-helmet-async'
-import { addMiddleware }  from 'redux-dynamic-middlewares'
+import { Root }          from 'react-dom/client'
+import { addMiddleware } from 'redux-dynamic-middlewares'
 
 import {
   ConfigProvider,
@@ -158,13 +157,6 @@ export async function init (root: Root) {
             <UserProfileProvider>
               <DataGuardLoader>
                 <React.Suspense fallback={null}>
-                  <HelmetProvider>
-                    <meta
-                      http-equiv='Content-Security-Policy'
-                      content="frame-ancestors 'self'"
-                    />
-                    {/* Add other head-related elements as needed */}
-                  </HelmetProvider>
                   <AllRoutes />
                 </React.Suspense>
               </DataGuardLoader>
