@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer } from '@acx-ui/components'
-import { EdgeDnsServers, EdgePortStatus, EdgeStatus }    from '@acx-ui/rc/utils'
+import { ContentSwitcher, ContentSwitcherProps, Drawer }                  from '@acx-ui/components'
+import { EdgeDnsServers, EdgePasswordDetail, EdgePortStatus, EdgeStatus } from '@acx-ui/rc/utils'
 
 
 import { Properties } from './Properties'
@@ -14,11 +14,12 @@ interface EdgeDetailsDrawerProps {
   currentEdge: EdgeStatus | undefined,
   edgePortsSetting: EdgePortStatus[] | undefined
   dnsServers: EdgeDnsServers | undefined
+  passwordDetail: EdgePasswordDetail | undefined
 }
 
 const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, currentEdge, edgePortsSetting, dnsServers } = props
+  const { visible, setVisible, currentEdge, edgePortsSetting, dnsServers, passwordDetail } = props
 
   const onClose = () => {
     setVisible(false)
@@ -28,7 +29,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Properties' }),
       value: 'properties',
-      children: <Properties currentEdge={currentEdge} />
+      children: <Properties currentEdge={currentEdge} passwordDetail={passwordDetail} />
     },
     {
       label: $t({ defaultMessage: 'Settings' }),
