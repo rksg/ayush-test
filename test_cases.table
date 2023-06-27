@@ -4,7 +4,7 @@ Group1=(
 "run main:test --coverage --maxWorkers=3"
 )
 Group2=(
-"run-many --target=test --all --exclude=rc,analytics,rc-components,main --coverage --runInBand --verbose --parallel --maxWorkers=50%"
+"run-many --target=test --all --exclude=rc,analytics,rc-components,main --coverage --runInBand --verbose --parallel --maxWorkers=3"
 )
 Group3=(
 "run rc-components:test --coverage --maxWorkers=3"
