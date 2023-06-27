@@ -12,8 +12,8 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
-import { formatter }  from '@acx-ui/formatter'
-import { PathFilter } from '@acx-ui/utils'
+import { formatter }   from '@acx-ui/formatter'
+import { NodesFilter } from '@acx-ui/utils'
 
 import {
   Stages,
@@ -60,7 +60,7 @@ const transformData = (
   return { nodes: [], wlans: [] }
 }
 
-export function pieNodeMap (filter: PathFilter): MessageDescriptor {
+export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
   const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
     case 'zone':
@@ -68,7 +68,6 @@ export function pieNodeMap (filter: PathFilter): MessageDescriptor {
         one {AP Group}
         other {AP Groups}
       }` })
-    case 'ap':
     case 'AP':
       return defineMessage({ defaultMessage: `{ count, plural,
         one {AP}

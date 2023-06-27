@@ -11,7 +11,7 @@ exports[`useAnalyticsFilter changes filter value 1`] = `
 exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]],"switchNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"AP","name":"D8:38:FC:36:78:D0"}]]}}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"zone","name":"A-T-Venue"},{"type":"apMac","list":["D8:38:FC:36:78:D0"]}]]}}
   </div>
 </DocumentFragment>
 `;
@@ -32,14 +32,6 @@ exports[`useAnalyticsFilter should render correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`useAnalyticsFilter should set filter to default when select path does not have switch or AP 1`] = `
-<DocumentFragment>
-  <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"someType","name":"someValue"},{"type":"randomType","name":"randomValue"}]],"switchNodes":[[{"type":"someType","name":"someValue"},{"type":"randomType","name":"randomValue"}]]}}
-  </div>
-</DocumentFragment>
-`;
-
 exports[`useAnalyticsFilter should set filter with switchGroup & zone 1`] = `
 <DocumentFragment>
   <div>
@@ -51,7 +43,7 @@ exports[`useAnalyticsFilter should set filter with switchGroup & zone 1`] = `
 exports[`useAnalyticsFilter should set filter with switches when search parameters has switches 1`] = `
 <DocumentFragment>
   <div>
-    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","name":"D8:38:FC:36:78:D0"}]]}}
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:59+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]],"switchNodes":[[{"type":"switchGroup","name":"switchGroup"},{"type":"switch","list":["D8:38:FC:36:78:D0"]}]]}}
   </div>
 </DocumentFragment>
 `;

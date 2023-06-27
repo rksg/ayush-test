@@ -3,10 +3,11 @@ import { useEffect } from 'react'
 import { renderHook, render } from '@testing-library/react'
 import { MemoryRouter }       from 'react-router-dom'
 
-import { resetRanges, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
+import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { useAnalyticsFilter, getFilterPayload, getSelectedNodePath, pathToFilter } from './analyticsFilter'
 
+const network = { type: 'network', name: 'Network' }
 const original = Date.now
 describe('useAnalyticsFilter', () => {
   beforeEach(() => {
@@ -127,29 +128,6 @@ describe('useAnalyticsFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should set filter to default when select path does not have switch or AP', () => {
-    const filter = {
-      path: [
-        { type: 'someType', name: 'someValue' },
-        { type: 'randomType', name: 'randomValue' }
-      ],
-      raw: ['[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},...]']
-    }
-    const path = fixedEncodeURIComponent(JSON.stringify(filter))
-    function Component () {
-      const { filters } = useAnalyticsFilter()
-      return <div>{JSON.stringify(filters)}</div>
-    }
-    const { asFragment } = render(
-      <MemoryRouter initialEntries={[{
-        pathname: '/analytics/incidents',
-        search: `?analyticsNetworkFilter=${path}`
-      }]}>
-        <Component />
-      </MemoryRouter>
-    )
-    expect(asFragment()).toMatchSnapshot()
-  })
   it('should set path to default when path is health and selected node is switch', () => {
     const filter = {
       path: [
@@ -216,36 +194,53 @@ describe('useAnalyticsFilter', () => {
 describe('getFilterPayload', () => {
   it('returns default path', () => {
     const filter = {
-      networkNodes: [[{ type: 'zoneName' as NodeType, name: 'Zone' }]],
-      switchNodes: [[{ type: 'switchGroup' as NodeType, name: 'Switches' }]]
+      networkNodes: [[{ type: 'zone' as 'zone', name: 'Zone' }]],
+      switchNodes: [[{ type: 'switchGroup' as 'switchGroup', name: 'Switches' }]]
     }
     expect(getFilterPayload({ filter })).toEqual({
       filter,
-      path: [{ type: 'network', name: 'Network' }]
+      path: [network]
     })
   })
 })
 describe('getSelectedNodePath', () => {
   it('returns ap, switch or default path', () => {
     expect(getSelectedNodePath({
-      networkNodes: [[{ type: 'zoneName' as NodeType, name: 'Zone' }]],
-      switchNodes: [[{ type: 'switchGroup' as NodeType, name: 'Switches' }]]
-    })).toEqual([{ type: 'zoneName' as NodeType, name: 'Zone' }])
+      networkNodes: [[{ type: 'zone', name: 'Zone' }]],
+      switchNodes: [[{ type: 'switchGroup', name: 'Switches' }]]
+    })).toEqual([network, { type: 'zone', name: 'Zone' }])
     expect(getSelectedNodePath({
-      switchNodes: [[{ type: 'switchGroup' as NodeType, name: 'Switches' }]]
-    })).toEqual([{ type: 'switchGroup' as NodeType, name: 'Switches' }])
+      switchNodes: [[{ type: 'switchGroup', name: 'Switches' }]]
+    })).toEqual([network, { type: 'switchGroup', name: 'Switches' }])
+    expect(getSelectedNodePath({
+      networkNodes: [[{ type: 'zone', name: 'Zone' }, { type: 'apGroup', name: 'a1' }]]
+    })).toEqual([network, { type: 'zone', name: 'Zone' }]) // TODO , { type: 'apGroup', name: 'a1' }
+    expect(getSelectedNodePath({
+      networkNodes: [[{ type: 'zone', name: 'Zone' }, { type: 'apMac', list: ['m1'] }]]
+    })).toEqual([network, { type: 'zone', name: 'Zone' }, { type: 'AP', name: 'm1' }])
+    expect(getSelectedNodePath({
+      switchNodes: [[{ type: 'switchGroup', name: 'sg1' }, { type: 'switch', list: ['s1'] }]]
+    })).toEqual([network, { type: 'switchGroup', name: 'sg1' }, { type: 'switch', name: 's1' }])
     expect(getSelectedNodePath({
       // default
-    })).toEqual([{ type: 'network', name: 'Network' }])
+    })).toEqual([network])
   })
 })
 describe('pathToFilter', () => {
   it('does not override non venue paths', () => {
     expect(pathToFilter(
-      [{ type: 'switch' as NodeType, name: 'mac1' }]
+      [{ type: 'switch', name: 'mac1' }]
     )).toEqual({
-      networkNodes: [[{ name: 'mac1', type: 'switch' }]],
-      switchNodes: [[{ name: 'mac1', type: 'switch' }]]
+      networkNodes: [[{ list: ['mac1'], type: 'switch' }]],
+      switchNodes: [[{ list: ['mac1'], type: 'switch' }]]
+    })
+  })
+  it('returns ap group', () => {
+    expect(pathToFilter(
+      [{ type: 'zone', name: 'z1' }, { type: 'apGroup', name: 'a1' }]
+    )).toEqual({
+      networkNodes: [[{ type: 'zone', name: 'z1' }]], // TODO , { type: 'apGroup', name: 'a1' }
+      switchNodes: [[{ type: 'zone', name: 'z1' }]] // TODO , { type: 'apGroup', name: 'a1' }
     })
   })
 })

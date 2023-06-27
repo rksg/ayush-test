@@ -7,8 +7,8 @@ import {
   calculateGranularity,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { dataApi }    from '@acx-ui/store'
-import { PathFilter } from '@acx-ui/utils'
+import { dataApi }     from '@acx-ui/store'
+import { NodesFilter } from '@acx-ui/utils'
 
 export interface KpiThresholdType {
   timeToConnect: number;
@@ -50,11 +50,11 @@ type ThresholdPermissionResponse = {
 }
 
 type ThresholdPermissionPayload = {
-  filter: PathFilter
+  filter: NodesFilter
 }
 
 type ThresholdMutationPayload = {
-  filter: PathFilter,
+  filter: NodesFilter,
   name: ConfigCode,
   value: number
 }
@@ -211,15 +211,15 @@ export const healthApi = dataApi.injectEndpoints({
           mutation SaveThreshold(
               $name: String!
               $value: Float!
-              $networkPath: [HierarchyNodeInput]
+              $path: [HierarchyNodeInput]
             ) {
-              saveThreshold: KPIThreshold(name: $name, value: $value, networkPath: $networkPath) {
+              saveThreshold: KPIThreshold(name: $name, value: $value, networkPath: $path) {
                 success
               }
             }
           `,
         variables: {
-          networkPath: getSelectedNodePath(payload.filter),
+          path: getSelectedNodePath(payload.filter),
           name: payload.name,
           value: payload.value
         }

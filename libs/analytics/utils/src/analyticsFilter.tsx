@@ -1,20 +1,19 @@
 import { useMemo } from 'react'
 
-import { useLocation } from '@acx-ui/react-router-dom'
+import { useLocation }  from '@acx-ui/react-router-dom'
 import {
   DateFilter,
-  PathFilter,
+  NodeType,
+  NodeFilter,
+  NodesFilter,
   SSIDFilter,
   NetworkPath,
   useDateFilter,
-  useEncodedParameter,
-  NodeType
+  useEncodedParameter
 } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
-
-export type AnalyticsFilter = DateFilter & { filter : PathFilter & SSIDFilter } & { mac?: string }
-
+export type AnalyticsFilter = DateFilter & { filter : NodesFilter & SSIDFilter } & { mac?: string }
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
@@ -33,10 +32,9 @@ export function useAnalyticsFilter () {
 
   return useMemo(() => {
     const { path, raw: rawPath } = read() || { path: [], raw: [] }
-    // const hasNetwork = path.some(({ type }: { type: NodeType }) => type === 'network') // temp for existing urls, should be removed
     const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
     const isHealthPage = pathname.includes('/analytics/health')
-    const { filter, raw } = (isHealthPage && isSwitchPath) // || hasNetwork
+    const { filter, raw } = (isHealthPage && isSwitchPath)
       ? { filter: {}, raw: [] }
       : { filter: pathToFilter(path), raw: rawPath }
     return {
@@ -48,15 +46,16 @@ export function useAnalyticsFilter () {
 }
 
 export const getFilterPayload = (
-  { filter }: { filter: PathFilter }
-): { path: NetworkPath, filter: PathFilter } => {
+  { filter }: { filter: NodesFilter }
+): { path: NetworkPath, filter: NodesFilter } => {
   return {
     path: defaultNetworkPath, // to avoid error from legacy api
     filter
   }
 }
 
-export const pathToFilter = (path: NetworkPath): PathFilter => {
+export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
+  const path = networkPath.filter(({ type }: { type: NodeType }) => type !== 'network')
   switch (path.length) {
     case 0:
       return {}
@@ -69,13 +68,33 @@ export const pathToFilter = (path: NetworkPath): PathFilter => {
         }
       }
   }
+  const filter = path.reduce((filter, { type, name }) => {
+    if (type === 'zone' || type === 'switchGroup') {
+      filter.push({ type, name })
+    } else if (type === 'AP') {
+      filter.push({ type: 'apMac', list: [name] })
+    } else if (type === 'switch') {
+      filter.push({ type, list: [name] })
+    }
+    return filter
+  }, [] as NodeFilter)
   return { // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
-    networkNodes: [path],
-    switchNodes: [path]
+    networkNodes: [filter],
+    switchNodes: [filter]
   }
 }
 
-export const getSelectedNodePath = (filter: PathFilter) => {
+export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
   const { networkNodes, switchNodes } = filter
-  return (networkNodes?.[0] || switchNodes?.[0] || defaultNetworkPath)
+  return (networkNodes?.[0] || switchNodes?.[0] || []).reduce((path, node) => {
+    const { type } = node
+    if (type === 'zone' || type === 'switchGroup') {
+      path.push({ type, name: node.name })
+    } else if (type === 'apMac') {
+      path.push({ type: 'AP', name: node.list[0] })
+    } else if (type === 'switch') {
+      path.push({ type, name: node.list[0] })
+    }
+    return path
+  }, defaultNetworkPath.slice())
 }

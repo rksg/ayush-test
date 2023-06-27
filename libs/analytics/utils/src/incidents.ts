@@ -1,7 +1,7 @@
 import { capitalize } from 'lodash'
 
-import { formatter, intlFormats }                     from '@acx-ui/formatter'
-import { getIntl, PathNode, NodeType, noDataDisplay } from '@acx-ui/utils'
+import { formatter, intlFormats }                                  from '@acx-ui/formatter'
+import { getIntl, PathNode, NetworkPath, NodeType, noDataDisplay } from '@acx-ui/utils'
 
 import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
@@ -99,7 +99,7 @@ function formattedNodeName (
   }, { isComplexName, name: sliceValue, nodeName: node.name })
 }
 
-export function formattedPath (path: PathNode[], sliceValue: string) {
+export function formattedPath (path: NetworkPath, sliceValue: string) {
   const { $t } = getIntl()
   return path
     .filter(node => node.type !== 'network')
@@ -117,7 +117,7 @@ export function formattedPath (path: PathNode[], sliceValue: string) {
     }, { nodeA, nodeB, newline: '\n' }))
 }
 
-export function impactedArea (path: PathNode[], sliceValue: string) {
+export function impactedArea (path: NetworkPath, sliceValue: string) {
   const lastNode = path[path.length - 1]
   return lastNode
     ? formattedNodeName(lastNode, sliceValue)

@@ -11,7 +11,7 @@ import {
   DateRange,
   setUpIntl,
   NodeType,
-  PathNode
+  NetworkPath
 } from '@acx-ui/utils'
 
 import { api, transformData } from './services'
@@ -128,7 +128,7 @@ describe('IncidentTable: services', () => {
         type: 'zone',
         name: 'Venue-3-US'
       }
-    ] as PathNode[],
+    ] as NetworkPath,
     metadata: {
       dominant: {
         ssid: 'qa-eric-acx-R760-psk'

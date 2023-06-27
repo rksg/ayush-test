@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 import { getFilterPayload } from '@acx-ui/analytics/utils'
 import { dataApi }          from '@acx-ui/store'
-import type { PathFilter }  from '@acx-ui/utils'
+import type { NodesFilter } from '@acx-ui/utils'
 
 export interface SummaryData {
   network: {
@@ -18,7 +18,7 @@ export interface SummaryData {
 }
 
 export interface RequestPayload {
-  filter: PathFilter
+  filter: NodesFilter
   start: string
   end: string
 }

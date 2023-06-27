@@ -3,7 +3,7 @@ import { find } from 'lodash'
 
 import { getFilterPayload, getSelectedNodePath } from '@acx-ui/analytics/utils'
 import { dataApi }                               from '@acx-ui/store'
-import { PathFilter }                            from '@acx-ui/utils'
+import { NodesFilter }                           from '@acx-ui/utils'
 
 export interface ConnectionDrilldown {
   network: {
@@ -47,13 +47,13 @@ export interface ImpactedClient {
   username: string | string[]
 }
 export interface RequestPayload {
-  filter: PathFilter
+  filter: NodesFilter
   start: string
   end: string
 }
 
 export interface PieChartPayload {
-  filter: PathFilter
+  filter: NodesFilter
   start: string
   end: string
   queryType: string
@@ -70,7 +70,7 @@ export type ImpactedNodesAndWlans = {
 }
 
 export const pieChartQuery = (
-  filter: PathFilter,
+  filter: NodesFilter,
   type: string,
   stageFilter: string
 ) => {
