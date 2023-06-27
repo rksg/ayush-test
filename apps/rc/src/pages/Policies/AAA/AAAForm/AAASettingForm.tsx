@@ -40,9 +40,9 @@ const AAASettingForm = (props: AAASettingFormProps) => {
     [useWatch('enableSecondaryServer'), useWatch('type')]
   const nameValidator = async (value: string) => {
     const policyList = aaaPolicyList?.data!
-    return checkObjectNotExists(policyList.map(policy => ({ name: policy.name })).filter(
-      policy => edit ? policy.name !== saveState.name : true
-    ), { name: value } ,
+    return checkObjectNotExists(policyList.filter(
+      policy => edit ? policy.id !== saveState.id : true
+    ).map(policy => ({ name: policy.name })), { name: value } ,
     $t({ defaultMessage: 'AAA Policy' }))
   }
   const radiusIpPortValidator = async (isPrimary: boolean) => {
