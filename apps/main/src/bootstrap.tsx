@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Root }          from 'react-dom/client'
-import { addMiddleware } from 'redux-dynamic-middlewares'
+import { Root }           from 'react-dom/client'
+import { HelmetProvider } from 'react-helmet-async'
+import { addMiddleware }  from 'redux-dynamic-middlewares'
 
 import {
   ConfigProvider,
@@ -29,7 +30,6 @@ import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
-import { Helmet, HelmetProvider } from 'react-helmet-async'
 
 // Needed for Browser language detection
 const supportedLocales: Record<string, LangKey> = {
