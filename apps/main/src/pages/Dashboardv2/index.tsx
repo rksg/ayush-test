@@ -28,8 +28,8 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { VenueFilter }                from '@acx-ui/main/components'
+import { Features, useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { VenueFilter }                              from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
@@ -136,7 +136,7 @@ function DashboardPageHeader () {
 
   return (
     <PageHeader
-      title=''
+      title={useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? '' : 'Dashboard'}
       extra={filterByAccess([
         <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
           <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>

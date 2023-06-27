@@ -32,12 +32,12 @@ export function useMenuConfig () {
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -134,12 +134,16 @@ export function useMenuConfig () {
           children: [
             {
               uri: '/users/persona-management/persona-group',
-              label: $t({ defaultMessage: 'Persona Groups' })
+              label: isNavbarEnhanced
+                ? $t({ defaultMessage: 'Persona Groups' })
+                : $t({ defaultMessage: 'Persona Group' })
             },
             {
               uri: '/users/persona-management/persona',
               isActiveCheck: new RegExp('^/users/persona-management/persona($|/)'),
-              label: $t({ defaultMessage: 'Personas List' })
+              label: isNavbarEnhanced
+                ? $t({ defaultMessage: 'Personas List' })
+                : $t({ defaultMessage: 'Persona' })
             }
           ]
         }] : [])
@@ -155,11 +159,15 @@ export function useMenuConfig () {
           children: [
             {
               uri: '/devices/wifi',
-              label: $t({ defaultMessage: 'Access Points List' })
+              label: isNavbarEnhanced
+                ? $t({ defaultMessage: 'Access Points List' })
+                : $t({ defaultMessage: 'Access Point List' })
             },
             {
               uri: isNavbarEnhanced ? '/devices/wifi/reports/aps' : '/reports/aps',
-              label: $t({ defaultMessage: 'Access Points Report' }),
+              label: isNavbarEnhanced
+                ? $t({ defaultMessage: 'Access Points Report' })
+                : $t({ defaultMessage: 'Access Point Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
@@ -179,7 +187,9 @@ export function useMenuConfig () {
             },
             {
               uri: isNavbarEnhanced ? '/networks/wireless/reports/wlans' : '/reports/wlans',
-              label: $t({ defaultMessage: 'WLAN Report' }),
+              label: isNavbarEnhanced
+                ? $t({ defaultMessage: 'WLAN Report' })
+                : $t({ defaultMessage: 'WLANs Report' }),
               isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
