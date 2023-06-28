@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { PageNotFound }                      from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
@@ -38,6 +39,7 @@ function AllRoutes () {
       <Route path=':tenantId/t' element={<MFACheck />}>
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
+          <Route path='*' element={<PageNotFound />} />
           <Route path='dashboard' element={<Dashboardv2 />} />
           <Route path='dashboard-v1' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
@@ -105,6 +107,7 @@ function VenuesRoutes () {
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+      <Route path='*' element={<PageNotFound />} />
     </Route>
   )
 }

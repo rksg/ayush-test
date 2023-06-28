@@ -1,3 +1,4 @@
+import { PageNotFound }                                                                                        from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
 import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode } from '@acx-ui/rc/components'
 import {
@@ -193,6 +194,7 @@ function DeviceRoutes () {
       <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/stack/:action' element={<StackForm />} />
       <Route path='devices/edge' element={<Edges />} />
+      <Route path='*' element={<PageNotFound />} />
     </Route>
   )
 }
