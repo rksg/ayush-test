@@ -24,17 +24,17 @@ function AllRoutes () {
       <Route path='dataStudio' element={<div>Data Studio</div>} />
       <Route path='reports' element={<div>Reports</div>} />
       <Route path='admin/*' element={<div>Admin</div>} />
+      <Route path='health'>
+        <Route index={true} element={<HealthPage />} />
+        <Route index={false} path='tab/:categoryTab' element={<HealthPage />} />
+      </Route>
+      <Route path='serviceValidation' element={<div>Service Validation</div>} />
+      <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
+      <Route path='occupancy' element={<div>Occupancy</div>} />
+      <Route path='dataStudio' element={<div>Data Studio</div>} />
+      <Route path='reports' element={<div>Reports</div>} />
+      <Route path='admin/*' element={<div>Admin</div>} />
     </Route>
-    <Route path='health'>
-      <Route index={true} element={<HealthPage />} />
-      <Route index={false} path='tab/:categoryTab' element={<HealthPage />} />
-    </Route>
-    <Route path='serviceValidation' element={<div>Service Validation</div>} />
-    <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
-    <Route path='occupancy' element={<div>Occupancy</div>} />
-    <Route path='dataStudio' element={<div>Data Studio</div>} />
-    <Route path='reports' element={<div>Reports</div>} />
-    <Route path='admin/*' element={<div>Admin</div>} />
   </Route>)
 }
 
