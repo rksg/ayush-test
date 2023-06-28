@@ -178,11 +178,12 @@ describe('Topology AP Card', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
       data: { network: { hierarchyNode: { ...sample } } }
     })
-    const { asFragment } = render(<Provider><APDetailsCard
+    const { asFragment } = render(<APDetailsCard
       apDetail={apDetail as ApViewModel}
       isLoading={false}
-    /></Provider>, {
-      route: {}
+    />, {
+      route: {},
+      wrapper: Provider
     })
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
@@ -196,11 +197,12 @@ describe('Topology AP Card', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
       data: { network: { hierarchyNode: { ...sample } } }
     })
-    const { asFragment } = render(<Provider><APDetailsCard
+    const { asFragment } = render(<APDetailsCard
       apDetail={apDetailWithNullTraffic as ApViewModel}
       isLoading={false}
-    /></Provider>, {
-      route: {}
+    />, {
+      route: {},
+      wrapper: Provider
     })
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
