@@ -1,5 +1,5 @@
 Group1=(
-"run rc:test --coverage --maxWorkers=5"
+"run rc:test --coverage --maxWorkers=3"
 "run analytics:test --coverage --maxWorkers=3"
 "run main:test --coverage --maxWorkers=3"
 "run common-components:test --coverage --maxWorkers=3"
