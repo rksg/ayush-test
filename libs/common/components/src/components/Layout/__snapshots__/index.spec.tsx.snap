@@ -3,17 +3,20 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 FhmQA"
+    class="styledComponents__Wrapper-sc-iwostn-0 iiPWcw"
   >
     <div
-      class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-side"
+      class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
     >
       <section
         class="ant-layout ant-layout-has-sider"
         style="min-height: 100%;"
       >
+        <div
+          style="width: 208px; overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; transition: background-color 0.3s, min-width 0.3s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);"
+        />
         <aside
-          class="ant-layout-sider ant-layout-sider-dark ant-pro-sider ant-pro-sider-layout-side"
+          class="ant-layout-sider ant-layout-sider-dark ant-pro-sider ant-pro-sider-fixed ant-pro-sider-layout-side"
           style="overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; width: 208px;"
         >
           <div
@@ -374,141 +377,23 @@ exports[`Layout should render correctly 1`] = `
                   </span>
                 </div>
               </div>
+              <div
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+              >
+                <div>
+                  Right header
+                </div>
+              </div>
             </div>
           </header>
           <main
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__ResponsiveContent-sc-iwostn-3 gEJLSl"
+              class="styledComponents__Content-sc-iwostn-2 dTPuAm"
             >
-              <div
-                class="styledComponents__SpaceAlignContainer-sc-vgyaa0-0 gyShKo"
-              >
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                >
-                  <h2>
-                    Hey, you are missing the bigger picture
-                  </h2>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  style="margin-top: 15px;"
-                >
-                  <h3>
-                    The screen width seems to be too low
-                  </h3>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                >
-                  <h3>
-                    (minimal supported width is 1280px)
-                  </h3>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  style="margin-top: 15px;"
-                >
-                  <p>
-                    For optimal display of RUCKUS One, please use one of the following methods:
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="MagnifyingGlassMinusOutlined"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Zoom Out
-                    </strong>
-                  </span>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="ArrowsOut"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Resize browser window
-                    </strong>
-                  </span>
-                  <p>
-                    to at least 1280 pixels width
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="DesktopOutlined"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Change screen resolution
-                    </strong>
-                  </span>
-                  <p>
-                    to 1280*X or higher
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="RotateMobileOutlined"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Rotate your device
-                    </strong>
-                  </span>
-                  <p>
-                    to landscape orientation
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  style="margin-top: 30px;"
-                >
-                  <a
-                    class="ant-typography"
-                    data-testid="subOptimalButton"
-                  >
-                    <p>
-                      Let me continue with sub-optimal display
-                    </p>
-                  </a>
-                </div>
+              <div>
+                content
               </div>
             </div>
           </main>
@@ -522,17 +407,20 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 FhmQA"
+    class="styledComponents__Wrapper-sc-iwostn-0 iiPWcw"
   >
     <div
-      class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-side"
+      class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
     >
       <section
         class="ant-layout ant-layout-has-sider"
         style="min-height: 100%;"
       >
+        <div
+          style="width: 208px; overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; transition: background-color 0.3s, min-width 0.3s, max-width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);"
+        />
         <aside
-          class="ant-layout-sider ant-layout-sider-dark ant-pro-sider ant-pro-sider-layout-side"
+          class="ant-layout-sider ant-layout-sider-dark ant-pro-sider ant-pro-sider-fixed ant-pro-sider-layout-side"
           style="overflow: hidden; flex: 0 0 208px; max-width: 208px; min-width: 208px; width: 208px;"
         >
           <div
@@ -653,141 +541,23 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                   </div>
                 </div>
               </div>
+              <div
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
+              >
+                <div>
+                  Right header
+                </div>
+              </div>
             </div>
           </header>
           <main
             class="ant-layout-content ant-pro-basicLayout-content ant-pro-basicLayout-has-header"
           >
             <div
-              class="styledComponents__ResponsiveContent-sc-iwostn-3 gEJLSl"
+              class="styledComponents__Content-sc-iwostn-2 dTPuAm"
             >
-              <div
-                class="styledComponents__SpaceAlignContainer-sc-vgyaa0-0 gyShKo"
-              >
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                >
-                  <h2>
-                    Hey, you are missing the bigger picture
-                  </h2>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  style="margin-top: 15px;"
-                >
-                  <h3>
-                    The screen width seems to be too low
-                  </h3>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                >
-                  <h3>
-                    (minimal supported width is 1280px)
-                  </h3>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  style="margin-top: 15px;"
-                >
-                  <p>
-                    For optimal display of RUCKUS One, please use one of the following methods:
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="MagnifyingGlassMinusOutlined"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Zoom Out
-                    </strong>
-                  </span>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="ArrowsOut"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Resize browser window
-                    </strong>
-                  </span>
-                  <p>
-                    to at least 1280 pixels width
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="DesktopOutlined"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Change screen resolution
-                    </strong>
-                  </span>
-                  <p>
-                    to 1280*X or higher
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__SpaceAlignBlock-sc-vgyaa0-1 gotgWc"
-                >
-                  <div
-                    class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  >
-                    <svg
-                      data-testid="RotateMobileOutlined"
-                    />
-                  </div>
-                  <span
-                    class="ant-typography"
-                  >
-                    <strong>
-                      Rotate your device
-                    </strong>
-                  </span>
-                  <p>
-                    to landscape orientation
-                  </p>
-                </div>
-                <div
-                  class="styledComponents__Description-sc-vgyaa0-2 ldCssJ"
-                  style="margin-top: 30px;"
-                >
-                  <a
-                    class="ant-typography"
-                    data-testid="subOptimalButton"
-                  >
-                    <p>
-                      Let me continue with sub-optimal display
-                    </p>
-                  </a>
-                </div>
+              <div>
+                content
               </div>
             </div>
           </main>

@@ -7,8 +7,8 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-import { TenantType }                     from '@acx-ui/react-router-dom'
-import { fireEvent, act, render, screen } from '@acx-ui/test-utils'
+import { TenantType }                              from '@acx-ui/react-router-dom'
+import { fireEvent, act, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import menuConfig   from './stories/menuConfig'
 import { LayoutUI } from './styledComponents'
@@ -130,9 +130,12 @@ describe('Layout', () => {
 
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
+      global.window.innerWidth = 500
+      fireEvent(global.window, new Event('resize'))
       global.window.innerWidth = 1280
       fireEvent(global.window, new Event('resize'))
     })
+    await waitFor(() => screen.findByText('Left header'))
   })
   it('should render correctly when innerWidth < 1280', async () => {
     render(<Layout
@@ -148,5 +151,27 @@ describe('Layout', () => {
       global.window.innerWidth = 500
       fireEvent(global.window, new Event('resize'))
     })
+    await waitFor(() => screen.findByText('Hey, you are missing the bigger picture'))
+    const subOptimalButton = await screen.findByTestId('subOptimalButton')
+    await userEvent.click(subOptimalButton)
+    localStorage.setItem('acx-ui-view-suboptimal-display', 'true')
+    await waitFor(() => screen.findByText('Left header'))
+  })
+  it('should render correctly when acx-ui-view-suboptimal-display is not exist', async () => {
+    localStorage.removeItem('acx-ui-view-suboptimal-display')
+    render(<Layout
+      logo={<div />}
+      menuConfig={menuConfig}
+      leftHeaderContent={<LayoutUI.DropdownText>Left header</LayoutUI.DropdownText>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, { route })
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      global.window.innerWidth = 500
+      fireEvent(global.window, new Event('resize'))
+    })
+    await waitFor(() => screen.findByText('Hey, you are missing the bigger picture'))
   })
 })
