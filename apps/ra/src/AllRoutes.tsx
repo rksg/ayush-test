@@ -16,8 +16,16 @@ function AllRoutes () {
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
+      <Route path='recommendations' element={<div>Recommendations</div>} />
       <Route path='configChange' element={<ConfigChange />} />
     </Route>
+    <Route path='health' element={<div>Health</div>} />
+    <Route path='serviceValidation' element={<div>Service Validation</div>} />
+    <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
+    <Route path='occupancy' element={<div>Occupancy</div>} />
+    <Route path='dataStudio' element={<div>Data Studio</div>} />
+    <Route path='reports' element={<div>Reports</div>} />
+    <Route path='admin/*' element={<div>Admin</div>} />
   </Route>)
 }
 
