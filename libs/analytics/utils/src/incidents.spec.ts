@@ -1,5 +1,6 @@
 import { capitalize, omit } from 'lodash'
 
+import * as configUtil           from '@acx-ui/config'
 import { renderHook }            from '@acx-ui/test-utils'
 import { NetworkPath, NodeType } from '@acx-ui/utils'
 
@@ -18,7 +19,6 @@ import {
 } from './incidents'
 
 import type { Incident } from './types/incidents'
-
 describe('calculateSeverity', () => {
   it('should return correct value', () => {
     const output = [0.1, 0.65, 0.76, 0.92].map((severity) => calculateSeverity(severity))
@@ -94,8 +94,21 @@ describe('nodeTypes', () => {
     expect(nodeTypes('switch')).toEqual('Switch')
     expect(nodeTypes('apMac')).toEqual('Access Point')
     expect(nodeTypes('ap')).toEqual('Access Point')
-    expect(nodeTypes('AP')).toEqual('Access Point')
+    expect(nodeTypes('system')).toEqual('SZ Cluster')
+    expect(nodeTypes('controller')).toEqual('Controller')
+    expect(nodeTypes('domains')).toEqual('Domain')
+    expect(nodeTypes('domain')).toEqual('Domain')
     expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
+  })
+
+  it('should return correct value for RA', () => {
+    const getConfigSpy = jest.spyOn(configUtil, 'get')
+      .mockReturnValue('true')
+    expect(nodeTypes('network')).toEqual('Network')
+    expect(nodeTypes('zone')).toEqual('Zone')
+    expect(nodeTypes('switchGroup')).toEqual('Switch Group')
+    expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
+    getConfigSpy.mockRestore()
   })
 })
 

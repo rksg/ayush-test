@@ -1,12 +1,14 @@
 import { useIntl } from 'react-intl'
 
-import { IncidentTabContent, useHeaderExtra } from '@acx-ui/analytics/components'
-import { PageHeader, Tabs }                   from '@acx-ui/components'
-import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
-import { filterByAccess }                     from '@acx-ui/user'
+import { PageHeader, Tabs }           from '@acx-ui/components'
+import { get }                        from '@acx-ui/config'
+import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }             from '@acx-ui/user'
 
-import { ConfigChange } from '../ConfigChange'
+import { ConfigChange }       from '../ConfigChange'
+import { useHeaderExtra }     from '../Header'
+import { IncidentTabContent } from '../Incidents'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
@@ -22,6 +24,7 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
@@ -36,7 +39,7 @@ const useTabs = () : Tab[] => {
   }
   return [
     incidentsTab,
-    ...(useIsSplitOn(Features.CONFIG_CHANGE) ? [configChangeTab] : [])
+    ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : [])
   ]
 }
 

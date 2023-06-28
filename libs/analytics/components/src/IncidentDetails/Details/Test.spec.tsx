@@ -31,10 +31,7 @@ import { SwitchPoePd }             from './SwitchPoePd'
 import { SwitchVlanMismatch }      from './SwitchVlanMismatch'
 import { Ttc }                     from './Ttc'
 
-jest.mock('../IncidentDetails/IncidentAttributes', () => ({
-  ...jest.requireActual('../../IncidentDetails/IncidentAttributes'),
-  IncidentAttributes: () => <div data-testid='incidentAttributes' />
-}))
+
 jest.mock('../Insights', () => ({
   Insights: () => <div data-testid='insights' />
 }))
@@ -171,7 +168,6 @@ describe('Test', () => {
         const { asFragment } = render(<Provider>
           <test.component {...test.fakeIncident} />
         </Provider>, { route: { params } })
-        expect(screen.getByTestId('incidentAttributes')).toBeVisible()
         expect(screen.getByTestId('insights')).toBeVisible()
         if (test.hasNetworkImpact) {
           // eslint-disable-next-line jest/no-conditional-expect

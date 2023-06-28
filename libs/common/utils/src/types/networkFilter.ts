@@ -1,8 +1,12 @@
 // path stored in URL (for now) and used for single path in api, like thresholds
 export type NodeType = 'network'
+  | 'system'
+  | 'controller'
+  | 'domain'
   | 'zone' | 'switchGroup'
   | 'apGroup'
   | 'switch' | 'AP'
+
 export type PathNode = {
   type: NodeType
   name: string

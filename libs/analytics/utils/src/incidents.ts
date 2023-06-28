@@ -1,5 +1,6 @@
 import { capitalize } from 'lodash'
 
+import { get }                                                     from '@acx-ui/config'
 import { formatter, intlFormats }                                  from '@acx-ui/formatter'
 import { getIntl, PathNode, NetworkPath, NodeType, noDataDisplay } from '@acx-ui/utils'
 
@@ -13,7 +14,6 @@ import type {
   SeverityRange,
   Incident
 } from './types/incidents'
-
 
 /**
  * Uses to transform incident record loaded from API and
@@ -52,6 +52,7 @@ type SliceType = NodeType
   | 'ap' | 'apMac'
   | 'apGroupName'
   | 'zoneName'
+  | 'domains'
 
 /**
  * Uses to normalize various node types we have between server & UI
@@ -62,19 +63,39 @@ export function normalizeNodeType (nodeType: SliceType): NodeType {
     case 'apMac': return 'AP'
     case 'apGroupName': return 'apGroup'
     case 'zoneName': return 'zone'
+    case 'domains': return 'domain'
     default: return nodeType
   }
 }
 
 export function nodeTypes (nodeType: NodeType): string {
   const { $t } = getIntl()
+  const isMLISA = get('IS_MLISA_SA')
   switch (normalizeNodeType(nodeType)) {
-    case 'network': return $t({ defaultMessage: 'Organization' })
-    case 'apGroup': return $t({ defaultMessage: 'AP Group' })
-    case 'zone': return $t({ defaultMessage: 'Venue' })
-    case 'switchGroup': return $t({ defaultMessage: 'Venue' })
-    case 'switch': return $t({ defaultMessage: 'Switch' })
-    case 'AP': return $t({ defaultMessage: 'Access Point' })
+    case 'network':
+      return isMLISA
+        ? $t({ defaultMessage: 'Network' })
+        : $t({ defaultMessage: 'Organization' })
+    case 'apGroup':
+      return $t({ defaultMessage: 'AP Group' })
+    case 'zone':
+      return isMLISA
+        ? $t({ defaultMessage: 'Zone' })
+        : $t({ defaultMessage: 'Venue' })
+    case 'switchGroup':
+      return isMLISA
+        ? $t({ defaultMessage: 'Switch Group' })
+        : $t({ defaultMessage: 'Venue' })
+    case 'switch':
+      return $t({ defaultMessage: 'Switch' })
+    case 'AP':
+      return $t({ defaultMessage: 'Access Point' })
+    case 'system':
+      return $t({ defaultMessage: 'SZ Cluster' })
+    case 'controller':
+      return $t({ defaultMessage: 'Controller' })
+    case 'domain':
+      return $t({ defaultMessage: 'Domain' })
     default:
       return $t({ defaultMessage: 'Unknown' })
   }
