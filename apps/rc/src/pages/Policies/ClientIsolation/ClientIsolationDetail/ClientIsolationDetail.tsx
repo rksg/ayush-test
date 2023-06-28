@@ -1,14 +1,15 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { useGetClientIsolationQuery }                 from '@acx-ui/rc/services'
+import { Button, GridCol, GridRow, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useGetClientIsolationQuery }                        from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
-  PolicyType,
-  PolicyOperation,
   ClientIsolationSaveData,
-  getPolicyRoutePath
+  PolicyOperation,
+  PolicyType,
+  getPolicyDetailsLink,
+  getPolicyRoutePath,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
@@ -20,16 +21,28 @@ export default function ClientIsolationDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const { data } = useGetClientIsolationQuery({ params })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
 
   return (
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           {
             text: $t({ defaultMessage: 'Client Isolation' }),
-            // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
+            link: tablePath
+          }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Client Isolation' }),
+            link: tablePath
           }
         ]}
         extra={filterByAccess([
@@ -61,19 +74,16 @@ interface ClientIsolationOverviewProps {
 function ClientIsolationOverview (props: ClientIsolationOverviewProps) {
   const { data } = props
   const { $t } = useIntl()
+  const clientIsolationInfo = [
+    {
+      title: $t({ defaultMessage: 'Client Entries' }),
+      content: data.allowlist?.length
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      content: data.description
+    }
+  ]
 
-  return (
-    <Card>
-      <GridRow>
-        <GridCol col={{ span: 8 }}>
-          <Card.Title>{$t({ defaultMessage: 'Client Entries' })}</Card.Title>
-          <Typography.Paragraph>{data.allowlist?.length}</Typography.Paragraph>
-        </GridCol>
-        <GridCol col={{ span: 8 }}>
-          <Card.Title>{$t({ defaultMessage: 'Description' })}</Card.Title>
-          <Typography.Paragraph>{data.description}</Typography.Paragraph>
-        </GridCol>
-      </GridRow>
-    </Card>
-  )
+  return <SummaryCard data={clientIsolationInfo} />
 }

@@ -63,7 +63,7 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (userProfile?.support) {
+      if (userProfile?.support || userProfile?.dogfood) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)

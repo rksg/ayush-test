@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Tabs }                                from '@acx-ui/components'
-import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
-import { useGetEdgeListQuery }                 from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType } from '@acx-ui/rc/utils'
+import { Tabs }                                     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useGetEdgeListQuery }                      from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType }      from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -19,12 +19,14 @@ import { VenueRogueAps }        from './VenueRogueAps'
 export function VenueServicesTab () {
   const { venueId } = useParams()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const { $t } = useIntl()
 
   // get edge by venueId, use 'firewallId' in edge data
   const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
     { payload: {
       fields: [
+        'name',
         'serialNumber',
         'venueId',
         'firewallId'
@@ -61,7 +63,7 @@ export function VenueServicesTab () {
         </Tabs>
       </Tabs.TabPane>
       {
-        isEdgeEnabled &&
+        (isEdgeEnabled && isEdgeReady) &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Network Segmentation' })}
             key={ServiceType.NETWORK_SEGMENTATION}
@@ -85,7 +87,7 @@ export function VenueServicesTab () {
         <VenueRogueAps />
       </Tabs.TabPane>
       {
-        isEdgeEnabled && isAppliedFirewall && !isEdgeLoading &&
+        isEdgeEnabled && isAppliedFirewall && !isEdgeLoading && isEdgeReady &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Firewall' })}
             key={ServiceType.EDGE_FIREWALL}

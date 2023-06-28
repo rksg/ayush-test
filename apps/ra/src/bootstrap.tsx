@@ -14,7 +14,8 @@ import {
   useLocaleContext,
   LangKey,
   DEFAULT_SYS_LANG,
-  LocaleProvider
+  LocaleProvider,
+  setUpIntl
 } from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
@@ -51,7 +52,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
-
+  setUpIntl({ locale: 'en-US' })
   root.render(
     <React.StrictMode>
       <Provider>
