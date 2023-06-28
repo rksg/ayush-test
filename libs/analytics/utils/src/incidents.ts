@@ -48,17 +48,15 @@ export function calculateSeverity (severity: number): IncidentSeverities {
   return severityType
 }
 
-type NormalizedNodeType = 'network'
-  | 'zone'
-  | 'switchGroup'
-  | 'apGroup'
-  | 'switch'
-  | 'AP'
+type SliceType = NodeType
+  | 'ap' | 'apMac'
+  | 'apGroupName'
+  | 'zoneName'
 
 /**
  * Uses to normalize various node types we have between server & UI
  */
-export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
+export function normalizeNodeType (nodeType: SliceType): NodeType {
   switch (nodeType) {
     case 'ap': return 'AP'
     case 'apMac': return 'AP'

@@ -1,21 +1,15 @@
 // path stored in URL (for now) and used for single path in api, like thresholds
 export type NodeType = 'network'
-  | 'apGroupName'
+  | 'zone' | 'switchGroup'
   | 'apGroup'
-  | 'zoneName'
-  | 'zone'
-  | 'switchGroup'
-  | 'switch'
-  | 'apMac'
-  | 'ap'
-  | 'AP'
+  | 'switch' | 'AP'
 export type PathNode = {
   type: NodeType
   name: string
 }
 export type NetworkPath = PathNode[]
 
-// filter sent to data api (xNodes + SSIDs)
+// filter sent to data api (xNodes + SSIDs), uses resource group format
 type FilterNameNode = {
   type: 'zone' | 'switchGroup'
   name: string
