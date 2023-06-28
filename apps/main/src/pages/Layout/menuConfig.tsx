@@ -158,10 +158,11 @@ export function useMenuConfig () {
           label: $t({ defaultMessage: 'Access Points' }),
           children: [
             {
-              uri: '/devices/wifi/clients',
+              uri: '/devices/wifi',
               label: isNavbarEnhanced
                 ? $t({ defaultMessage: 'Access Points List' })
-                : $t({ defaultMessage: 'Access Point List' })
+                : $t({ defaultMessage: 'Access Point List' }),
+              isActiveCheck: new RegExp('^/devices/wifi(?!(/reports))')
             },
             {
               uri: isNavbarEnhanced ? '/devices/wifi/reports/aps' : '/reports/aps',
