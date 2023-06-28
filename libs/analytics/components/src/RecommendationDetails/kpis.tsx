@@ -16,8 +16,10 @@ import {
   RecommendationCardWrapper,
   KpiTitle,
   RecommendationInfoIcon,
-  KpiLabel,
-  KpiContentWrapper
+  KpiLabelWrapper,
+  KpiContentWrapper,
+  KpiLabelValue,
+  KpiLabelExtra
 } from './styledComponents'
 
 const kpiDelta = (
@@ -117,12 +119,16 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
 
   return <KpiCard>
     <KpiTitle>{$t(label)}{infoIcon}</KpiTitle>
-    <KpiLabel>
-      {value}
+    <KpiLabelWrapper>
+      <KpiLabelValue>
+        {value}
+      </KpiLabelValue>
       {delta ?
-        <TrendPill value={delta.label} trend={deltaSign as TrendType} />
+        <KpiLabelExtra>
+          <TrendPill value={delta.label} trend={deltaSign as TrendType} />
+        </KpiLabelExtra>
         : null}
-    </KpiLabel>
+    </KpiLabelWrapper>
   </KpiCard>
 }
 

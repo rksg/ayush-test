@@ -52,11 +52,22 @@ export const RecommendationInfoIcon = styled(InformationSolid)`
   margin-left: 4px;
 `
 
-export const KpiLabel = styled.div`
+export const KpiLabelWrapper = styled.div`
+  display: block;
   text-align: center;
   font-weight: 700;
   font-size: 30px;
   line-height: 40px;
+`
+
+export const KpiLabelValue = styled.span`
+  position: relative;
+`
+
+export const KpiLabelExtra = styled.span`
+  position: absolute;
+  margin-left: 5px;
+  margin-top: -8px;
 `
 
 export const StatusTrailDateLabel = styled.span`
