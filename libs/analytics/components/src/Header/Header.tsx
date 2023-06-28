@@ -1,7 +1,6 @@
 import moment from 'moment-timezone'
 
 import { PageHeader, PageHeaderProps, RangePicker } from '@acx-ui/components'
-import { get }                                      from '@acx-ui/config'
 import { useDateFilter }                            from '@acx-ui/utils'
 
 import { NetworkFilter } from '../NetworkFilter'
@@ -18,13 +17,15 @@ export type HeaderData = {
 
 type useHeaderExtraProps = {
   shouldQuerySwitch: boolean,
-  withIncidents?: boolean
+  withIncidents?: boolean,
+  excludeNetworkFilter?: boolean
 }
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & useHeaderExtraProps
 
-const Filter = ({ shouldQuerySwitch, withIncidents }: useHeaderExtraProps) => {
-  const isRa = Boolean(get('IS_MLISA_SA'))
-  return isRa
+const Filter = (
+  { shouldQuerySwitch, withIncidents, excludeNetworkFilter }: useHeaderExtraProps
+) => {
+  return excludeNetworkFilter
     ? null
     : <NetworkFilter
       key='network-filter'
@@ -40,6 +41,7 @@ export const useHeaderExtra = (props: useHeaderExtraProps) => {
       key='network-filter'
       shouldQuerySwitch={props.shouldQuerySwitch}
       withIncidents={props.withIncidents}
+      excludeNetworkFilter={props.excludeNetworkFilter}
     />,
     <RangePicker
       key='range-picker'
