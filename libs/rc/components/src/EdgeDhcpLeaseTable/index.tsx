@@ -2,6 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery }                from '@acx-ui/rc/services'
 import { DhcpHostStats, EdgeDhcpHostStatus, RequestPayload, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -12,6 +13,7 @@ interface EdgeDhcpLeaseTableProps {
 export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
 
   const { $t } = useIntl()
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const getDhcpHostStatsPayload = {
     filters: { edgeId: [props.edgeId] },
@@ -22,7 +24,7 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
     defaultPayload: getDhcpHostStatsPayload,
-    option: { skip: !!!props.edgeId },
+    option: { skip: !!!props.edgeId || !isEdgeReady },
     search: {
       searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
     }
