@@ -1,5 +1,6 @@
 import { capitalize, omit } from 'lodash'
 
+import * as configUtil        from '@acx-ui/config'
 import { renderHook }         from '@acx-ui/test-utils'
 import { PathNode, NodeType } from '@acx-ui/utils'
 
@@ -101,12 +102,13 @@ describe('nodeTypes', () => {
   })
 
   it('should return correct value for RA', () => {
-    const env = process.env
-    env.NX_IS_MLISA_SA = 'true'
+    const getConfigSpy = jest.spyOn(configUtil, 'get')
+      .mockReturnValue('true')
     expect(nodeTypes('network')).toEqual('Network')
     expect(nodeTypes('zone')).toEqual('Zone')
     expect(nodeTypes('switchGroup')).toEqual('Switch Group')
     expect(nodeTypes('other' as unknown as NodeType)).toEqual('Unknown')
+    getConfigSpy.mockRestore()
   })
 })
 
