@@ -31,6 +31,15 @@ type QueryVariables = {
   filter?: pathFilter
 }
 
+type AttributesKey =
+  | 'network'
+  | 'zone'
+  | 'switchGroup'
+  | 'switchSubGroup'
+  | 'apGroup'
+  | 'switch'
+  | 'AP'
+
 const lowPreferenceList = ['0.0.0.0', '0', 'Unknown']
 
 const getAttributesByNodeType = (nodeType: NodeType) => {
@@ -58,7 +67,7 @@ const getAttributesByNodeType = (nodeType: NodeType) => {
     ] as const
   }
   const key = normalizeNodeType(nodeType)
-  return attributes[key]
+  return attributes[key as AttributesKey]
 }
 
 const getQuery = (path: NetworkPath) : string => {

@@ -281,6 +281,12 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId/acl',
     newApi: true
   },
+  addVlan: {
+    method: 'post',
+    url: '/switchProfiles/:profileId/vlans',
+    oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId/vlan',
+    newApi: true
+  },
   addVePort: {
     method: 'post',
     url: '/switches/:switchId/vePorts',
