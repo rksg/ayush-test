@@ -1,19 +1,20 @@
 import { Provider } from '@acx-ui/store'
 import {
-  render
+  render,
+  screen
 } from '@acx-ui/test-utils'
 
 import { MdnsProxyOverview } from './MdnsProxyOverview'
 
+
 describe('MdnsProxyOverview', () => {
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <MdnsProxyOverview data={{ name: '', rules: [] }} />
       </Provider>)
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Forwarding Rules')).toBeInTheDocument()
   })
 
 })
