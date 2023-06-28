@@ -1,19 +1,19 @@
-import moment from 'moment-timezone'
-
 import { useState } from 'react'
-import { Badge } from 'antd'
-import { capitalize } from 'lodash'
+
+import { Badge }                                            from 'antd'
+import { capitalize }                                       from 'lodash'
+import moment                                               from 'moment-timezone'
 import { useIntl, MessageDescriptor, MessageFormatElement } from 'react-intl'
 
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
-import { DescriptionSection } from '@acx-ui/analytics/components'
+import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
+import { DescriptionSection } from '../DescriptionSection'
+
+import { statusTrailMsgs }                                          from './configRecommendationData'
+import configRecommendations                                        from './configRecommendations'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
-import configRecommendations from './configRecommendations'
-import { statusTrailMsgs } from './configRecommendationData'
-import { RecommendationApImpacted } from './styledComponents'
-
+import { RecommendationApImpacted }                                 from './styledComponents'
 
 const getPriorityColor = (val: MessageDescriptor ) => {
   const msg = (val.defaultMessage as MessageFormatElement[])
@@ -25,7 +25,8 @@ const getPriorityColor = (val: MessageDescriptor ) => {
   }
 }
 
-const ImpactedApsDrawer = ({ id, aps, visible, onClose }: { id: string,  aps: RecommendationAp[], visible: boolean, onClose: () => void }) => {
+const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
+  { id: string, aps: RecommendationAp[], visible: boolean, onClose: () => void }) => {
   const { $t } = useIntl()
   const [search, setSearch] = useState('')
   const impactedApsQuery = useGetApsQuery({ id, search })
@@ -36,10 +37,10 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }: { id: string,  aps: Re
     { key: 'version', dataIndex: 'version', title: $t({ defaultMessage: 'AP Version' }) }
   ]
 
-  return <Drawer 
+  return <Drawer
     width='600px'
     title={$t(
-      { defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}' }, 
+      { defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}' },
       { count: aps!.length }
     )}
     onClose={onClose}
@@ -48,7 +49,7 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }: { id: string,  aps: Re
       <>
         <SearchBar onChange={setSearch} />
         <Loader states={[impactedApsQuery]}>
-          <Table<RecommendationAp> 
+          <Table<RecommendationAp>
             rowKey='mac'
             columns={columns}
             dataSource={impactedApsQuery.data}
@@ -63,13 +64,14 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
-  const { createdAt } = statusTrail[statusTrail.length - 1] 
+  const { createdAt } = statusTrail[statusTrail.length - 1]
   const { kpis } = configRecommendations[code]
   const iconColor = getPriorityColor(priority)
   const Icon = () => <Badge color={`var(${iconColor})`} text={capitalize($t(priority))}/>
   const fields = [
     { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
-    { label: $t({ defaultMessage: 'Date' }), children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
+    { label: $t({ defaultMessage: 'Date' }),
+      children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     { label: $t({ defaultMessage: 'Category' }), children: $t(category) },
     { label: $t({ defaultMessage: 'Venue' }), children: sliceValue },
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
@@ -81,9 +83,9 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     const impactedApField = {
       label: $t({ defaultMessage: 'AP Impact Count' }),
       children: <RecommendationApImpacted onClick={() => setVisible(true)}>
-        {$t({ 
-          defaultMessage: '{count} of {count} {count, plural, one {AP} other {APs}} ({percent})' }, 
-          { count: impactedApsQuery.data.length, percent: formatter('percent')(100) })}
+        {$t({
+          defaultMessage: '{count} of {count} {count, plural, one {AP} other {APs}} ({percent})' },
+        { count: impactedApsQuery.data.length, percent: formatter('percent')(100) })}
       </RecommendationApImpacted>
     }
     fields.splice(2, 0, impactedApField)
