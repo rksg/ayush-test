@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, MspUrlsInfo }                              from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -141,7 +141,6 @@ describe('ManageCustomer', () => {
   })
 
   it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <ManageCustomer />
@@ -157,7 +156,7 @@ describe('ManageCustomer', () => {
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(split => split === Features.NAVBAR_ENHANCEMENT)
     render(
       <Provider>
         <ManageCustomer />
