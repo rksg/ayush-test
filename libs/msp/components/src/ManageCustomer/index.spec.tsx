@@ -156,7 +156,7 @@ describe('ManageCustomer', () => {
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(split => split === Features.NAVBAR_ENHANCEMENT)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NAVBAR_ENHANCEMENT)
     render(
       <Provider>
         <ManageCustomer />

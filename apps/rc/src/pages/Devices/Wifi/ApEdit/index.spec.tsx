@@ -183,9 +183,7 @@ describe('ApEdit', () => {
     })
 
     it('should handle error occurred', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff !== Features.WIFI_EDA_READY_TOGGLE
-      )
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockServer.use(
         rest.put(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => {
@@ -289,7 +287,7 @@ describe('ApEdit', () => {
     })
 
     it('should render breadcrumb correctly when feature flag is off', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NAVBAR_ENHANCEMENT)
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
         path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
@@ -301,7 +299,6 @@ describe('ApEdit', () => {
     })
 
     it('should render breadcrumb correctly when feature flag is on', async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
         path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
