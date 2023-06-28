@@ -286,10 +286,6 @@ describe('Aps', () => {
   })
 
   it('Table action bar Delete', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.WIFI_EDA_READY_TOGGLE
-    )
-
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
