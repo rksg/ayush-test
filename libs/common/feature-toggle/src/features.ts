@@ -54,5 +54,6 @@ export enum Features {
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
-  CLOUDPATH_BETA = 'BETA-CP'
+  CLOUDPATH_BETA = 'BETA-CP',
+  WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle'
 }
