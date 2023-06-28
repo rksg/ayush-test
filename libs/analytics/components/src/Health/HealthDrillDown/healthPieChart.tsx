@@ -12,6 +12,7 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
+import { get }         from '@acx-ui/config'
 import { formatter }   from '@acx-ui/formatter'
 import { NetworkPath } from '@acx-ui/utils'
 
@@ -26,6 +27,7 @@ import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import * as UI                                     from './styledComponents'
 
 const topCount = 5
+const isMLISA = get('IS_MLISA_SA')
 
 type PieChartData = {
   key: string
@@ -74,9 +76,14 @@ export function pieNodeMap (node: NetworkPath) {
         other {APs}
       }` })
     default:
-      return defineMessage({ defaultMessage: `{ count, plural,
+      return !isMLISA ?
+        defineMessage({ defaultMessage: `{ count, plural,
         one {Venue}
         other {Venues}
+      }` })
+        : defineMessage({ defaultMessage: `{ count, plural,
+        one {Zone}
+        other {Zones}
       }` })
   }
 }

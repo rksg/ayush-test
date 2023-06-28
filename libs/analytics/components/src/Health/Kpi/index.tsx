@@ -15,6 +15,7 @@ import {
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
+import { get }                      from '@acx-ui/config'
 import { useApContext }             from '@acx-ui/rc/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
@@ -24,6 +25,8 @@ import Histogram     from './Histogram'
 import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
 
+const isMLISA = get('IS_MLISA_SA')
+
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
   rss: kpiConfig.rss.histogram.initialThreshold,
@@ -31,7 +34,8 @@ export const defaultThreshold: KpiThresholdType = {
   apCapacity: kpiConfig.apCapacity.histogram.initialThreshold,
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
-  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
+  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
+  ...(isMLISA ? { clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold } : {})
 }
 
 

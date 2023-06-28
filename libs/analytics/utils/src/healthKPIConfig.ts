@@ -3,6 +3,7 @@ import { identity }      from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
+import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 
 const pillSuffix = {
@@ -22,6 +23,7 @@ const multipleBy100 = (ms: number) => ms * 100
 export const multipleBy1000 = (ms: number) => ms * 1000
 export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
+const isMLISA = get('IS_MLISA_SA')
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -294,6 +296,44 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
+  clusterLatency: {
+    text: defineMessage({ defaultMessage: 'Cluster Latency' }),
+    timeseries: {
+      apiMetric: 'szLatencyCountAndSzCount',
+      minGranularity: 'PT3M'
+    },
+    barChart: createBarChartConfig('szLatencyCountAndSzCount'),
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 10,
+      apiMetric: 'szLatency',
+      splits: [2, 5, 10, 25, 50, 100, 200, 500],
+      xUnit: defineMessage({ defaultMessage: 'ms' }),
+      yUnit: 'internode links',
+      shortXFormat: (x: number) => x,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({
+        defaultMessage: '{successCount} of {totalCount} internode links'
+      }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'below' }),
+        defineMessage({ defaultMessage: '{threshold} ms' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: null,
+      tooltip: defineMessage({
+        defaultMessage:
+          'The time-series graph on the left displays the percentage of samples that have intra-SZ cluster latency (which is the latency between each node within a SZ cluster) which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of clusters. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.'
+      })
+    },
+    configChange: {
+      apiMetric: 'szLatency',
+      format: 'durationFormat',
+      deltaSign: '-'
+    }
+  },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
     isBeta: false,
@@ -374,6 +414,7 @@ export const kpisForTab = {
     kpis: [
       'apServiceUptime',
       'apToSZLatency',
+      ...(isMLISA ? ['clusterLatency'] : []),
       'switchPoeUtilization',
       'onlineAPs'
     ]

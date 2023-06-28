@@ -3,10 +3,12 @@ import { MouseEventHandler } from 'react'
 import { useIntl,  defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Button, DisabledButton } from '@acx-ui/components'
+import { get }                    from '@acx-ui/config'
 import { formatter }              from '@acx-ui/formatter'
 
 import * as UI from './styledComponents'
 
+const isMLISA = get('IS_MLISA_SA')
 const thresholdDescText = {
   goal: defineMessage({ defaultMessage: 'Goal' }),
   metGoal: defineMessage({ defaultMessage: 'met goal' }),
@@ -14,11 +16,24 @@ const thresholdDescText = {
   applyBtn: defineMessage({ defaultMessage: 'Apply' })
 }
 
-const getDisabledToolTip = (isNetwork?: boolean) => (isNetwork)
-  // eslint-disable-next-line max-len
-  ? defineMessage({ defaultMessage: 'Cannot save threshold at organisation level. Please select a Venue or AP to set a threshold.' })
-  // eslint-disable-next-line max-len
-  : defineMessage({ defaultMessage: 'You don\'t have permission to set threshold for selected network node.' })
+const getDisabledToolTip = (isNetwork?: boolean) =>
+  isNetwork
+    ? !isMLISA
+      ?
+      defineMessage({
+        defaultMessage:
+        // eslint-disable-next-line max-len
+            'Cannot save threshold at organisation level. Please select a Venue or AP to set a threshold.'
+      })
+      :
+      defineMessage({
+        defaultMessage:
+            'Cannot save threshold at network level. Please select a Zone or AP to set a threshold.'
+      })
+    :
+    defineMessage({
+      defaultMessage: "You don't have permission to set threshold for selected network node."
+    })
 
 function ThresholdConfig ({
   thresholdValue,
