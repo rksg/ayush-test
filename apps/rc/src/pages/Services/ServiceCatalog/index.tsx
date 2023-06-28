@@ -21,6 +21,7 @@ export default function ServiceCatalog () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const sets = [
     {
@@ -37,7 +38,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeEnabled || !isEdgeReady
         }
       ]
     },
@@ -47,7 +48,7 @@ export default function ServiceCatalog () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeEnabled || !isEdgeReady
         }
       ]
     },

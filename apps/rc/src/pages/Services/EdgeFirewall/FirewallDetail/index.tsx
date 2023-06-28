@@ -1,9 +1,9 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { useGetEdgeFirewallViewDataListQuery }                from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { useGetEdgeFirewallViewDataListQuery }           from '@acx-ui/rc/services'
 import {
   ACLDirection,
   EdgeFirewallViewData,
@@ -37,7 +37,7 @@ const FirewallDetail = () => {
     }
   )
 
-  const infoFields = [
+  const firewallInfo = [
     {
       title: $t({ defaultMessage: 'Service Status' }),
       content: () => (<></>)
@@ -117,24 +117,7 @@ const FirewallDetail = () => {
         }
       ]}>
         <Space direction='vertical' size={30}>
-          <Card type='solid-bg'>
-            <UI.InfoMargin>
-              <GridRow>
-                {infoFields.map(item =>
-                  (<GridCol col={{ span: 3 }} key={item.title}>
-                    <Space direction='vertical' size={10}>
-                      <Typography.Text>
-                        {item.title}
-                      </Typography.Text>
-                      <Typography.Text>
-                        {item.content()}
-                      </Typography.Text>
-                    </Space>
-                  </GridCol>)
-                )}
-              </GridRow>
-            </UI.InfoMargin>
-          </Card>
+          <SummaryCard data={firewallInfo} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>

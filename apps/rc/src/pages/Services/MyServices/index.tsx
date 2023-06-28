@@ -34,6 +34,7 @@ export default function MyServices () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const services = [
     {
@@ -62,9 +63,9 @@ export default function MyServices () {
       tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled
+        skip: !isEdgeEnabled || !isEdgeReady
       }),
-      disabled: !isEdgeEnabled
+      disabled: !isEdgeEnabled || !isEdgeReady
     },
     {
       type: ServiceType.EDGE_FIREWALL,
@@ -72,9 +73,9 @@ export default function MyServices () {
       tableQuery: useGetEdgeFirewallViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled
+        skip: !isEdgeEnabled || !isEdgeReady
       }),
-      disabled: !isEdgeEnabled
+      disabled: !isEdgeEnabled || !isEdgeReady
     },
     {
       type: ServiceType.DPSK,

@@ -17,6 +17,7 @@ describe('EdgeDhcpDetail', () => {
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: '1'

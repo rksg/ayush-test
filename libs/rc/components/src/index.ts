@@ -109,7 +109,6 @@ export {
 export { RadiusOptionsForm } from './RadiusOptionsForm'
 export { PassphraseViewer } from './PassphraseViewer'
 export { PhoneInput } from './PhoneInput'
-export { ServiceInfo } from './ServiceInfo'
 export { NetworkSegmentationServiceInfo } from './NetworkSegmentationServiceInfo'
 export { NetworkSegmentationDetailTableGroup } from './NetworkSegmentationDetailTableGroup'
 export { AccessSwitchTable } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'

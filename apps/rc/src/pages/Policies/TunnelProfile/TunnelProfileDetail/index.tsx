@@ -1,13 +1,20 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader }                                                                                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                            from '@acx-ui/feature-toggle'
-import { ServiceInfo }                                                                                                                       from '@acx-ui/rc/components'
-import { useGetTunnelProfileViewDataListQuery }                                                                                              from '@acx-ui/rc/services'
-import { MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                             from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                    from '@acx-ui/user'
+import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
+import {
+  MtuTypeEnum,
+  PolicyOperation,
+  PolicyType,
+  TunnelProfileViewData,
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { NetworkTable } from './Networktable'
 import * as UI          from './styledComponents'
@@ -102,7 +109,7 @@ const TunnelProfileDetail = () => {
         }
       ]}>
         <Space direction='vertical' size={30}>
-          <ServiceInfo data={tunnelInfo} />
+          <SummaryCard data={tunnelInfo} colPerRow={6} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>
