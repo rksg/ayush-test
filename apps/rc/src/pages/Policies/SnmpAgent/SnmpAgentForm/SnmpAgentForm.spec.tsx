@@ -145,8 +145,8 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUseNavigate,
   useTenantLink: (to: To): Path => {
     return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
@@ -243,6 +243,11 @@ describe('SnmpAgentForm', () => {
     await screen.findByText(/already exists/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
+      pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
+      hash: '',
+      search: ''
+    })
   })
 
   it('should at least one SNMPv2 agent or SNMPv3 agent', async () => {
@@ -265,6 +270,11 @@ describe('SnmpAgentForm', () => {
     await screen.findByText(/At least one SNMPv2 agent or SNMPv3 agent/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
+      pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
+      hash: '',
+      search: ''
+    })
   })
 
 })

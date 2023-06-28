@@ -131,7 +131,9 @@ export function DeviceInventory () {
       ? _.uniq(list?.data.filter(item => !!item.model).map(c=>c.model)) : []
 
   const ExportInventory = () => {
-    downloadCsv({ params: { tenantId }, payload: filterPayload })
+    downloadCsv({
+      params: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
+      payload: filterPayload })
   }
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [

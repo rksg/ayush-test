@@ -58,8 +58,8 @@ export function RedirectUrlInput () {
         name={['guestPortal','redirectUrl']}
         rules={[
           { required: redirectCheckbox },
-          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve() }]
-        }
+          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve() }
+        ]}
         children={
           <Input
             style={{ marginTop: '5px' }}

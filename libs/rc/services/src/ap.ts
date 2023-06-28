@@ -226,6 +226,27 @@ export const apApi = baseApApi.injectEndpoints({
         })
       }
     }),
+    getApOperational: build.query<ApDeep, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApOperational, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'Details' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApCustomization',
+            'ResetApCustomization'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
+          })
+        })
+      }
+    }),
     updateAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.updateAp, params)
@@ -482,7 +503,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
     getApLanPorts: build.query<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
@@ -500,6 +520,25 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    resetApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApLanPorts, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    getApCustomization: build.query<WifiApSetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApApCustomization, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     updateApCustomization: build.mutation<WifiApSetting, RequestPayload>({
@@ -512,17 +551,6 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
-
-    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-
     resetApCustomization: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApCustomization, params)
@@ -531,6 +559,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params }) => {
@@ -695,6 +732,7 @@ export const {
   usePingApMutation,
   useTraceRouteApMutation,
   useGetApQuery,
+  useGetApOperationalQuery,
   useLazyGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
@@ -726,8 +764,10 @@ export const {
   useStartPacketCaptureMutation,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
+  useResetApLanPortsMutation,
   useGetApCapabilitiesQuery,
   useLazyGetApCapabilitiesQuery,
+  useGetApCustomizationQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
   useGetApValidChannelQuery,

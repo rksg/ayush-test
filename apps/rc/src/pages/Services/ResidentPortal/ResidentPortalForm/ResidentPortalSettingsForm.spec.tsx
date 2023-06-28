@@ -80,7 +80,7 @@ describe('ResidentPortal', () => {
     nameInput.blur()
 
     const errorMessageElem = await screen.findByRole('alert')
-    expect(errorMessageElem.textContent).toBe('Resident Portal with that name already exists')
+    expect(errorMessageElem.textContent).toBe('Resident Portal with that name already exists ')
   })
 
 })

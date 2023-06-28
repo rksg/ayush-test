@@ -8,7 +8,8 @@ import {
   PageHeader,
   StepsForm,
   StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsFormLegacyInstance,
+  useStepFormContext
 } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
@@ -112,7 +113,7 @@ export default function NetworkForm (props:{
   const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
   const [deleteNetworkVenues] = useDeleteNetworkVenuesMutation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
-  const form = Form.useFormInstance()
+  const [form] = Form.useForm()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
@@ -139,11 +140,22 @@ export default function NetworkForm (props:{
 
   useEffect(() => {
     if(data && saveState.name === ''){
-      form?.resetFields()
-      form?.setFieldsValue(data)
+
+      console.log(data, saveState.name)
       let name = data.name
       if (cloneMode) {
         name = data.name + ' - copy'
+        formRef.current?.resetFields()
+        formRef.current?.setFieldsValue({
+          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
+          enableAccountingService: (data.accountingRadius||
+            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
+      }else if(editMode){
+        form?.resetFields()
+        form?.setFieldsValue({
+          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
+          enableAccountingService: (data.accountingRadius||
+            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
       }
       updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
         enableAccountingService: (data.accountingRadius||
@@ -160,6 +172,7 @@ export default function NetworkForm (props:{
   }, [])
 
   const handleDetails = async (data: NetworkSaveData) => {
+    console.log(data)
     const detailsSaveData = transferDetailToSave(data)
     if(modalMode&&createType){
       detailsSaveData.type = createType
@@ -187,14 +200,20 @@ export default function NetworkForm (props:{
       return true
     }else {
       if(!(editMode||cloneMode)){
+        if(_.get(data, 'lockoutPeriodUnit')&&data?.guestPortal?.lockoutPeriod){
+          data.guestPortal={
+            ...data.guestPortal,
+            lockoutPeriod: data.guestPortal.lockoutPeriod*
+            minutesMapping[_.get(data, 'lockoutPeriodUnit')]
+          }
+        }
         const settingCaptiveData = {
           ...{ type: saveState.type },
           ...data
         }
         let settingCaptiveSaveData = tranferSettingsToSave(settingCaptiveData, editMode)
         if (!editMode) {
-          settingCaptiveSaveData =
-            transferMoreSettingsToSave(data, settingCaptiveSaveData)
+          settingCaptiveSaveData = transferMoreSettingsToSave(data, settingCaptiveSaveData)
         }
         updateSaveData(settingCaptiveSaveData)
       }
@@ -587,7 +606,7 @@ export default function NetworkForm (props:{
           </StepsFormLegacy>
         </NetworkFormContext.Provider>
       }
-      {editMode && !cloneMode &&
+      {editMode &&
         <NetworkFormContext.Provider value={{
           modalMode,
           createType,
@@ -597,6 +616,7 @@ export default function NetworkForm (props:{
           setData: updateSaveState
         }}>
           <StepsForm<NetworkSaveData>
+            form={form}
             editMode={editMode}
             onCancel={() => modalMode
               ? modalCallBack?.()

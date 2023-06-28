@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch } from 'antd'
-import { cloneDeep, includes, isEmpty }                           from 'lodash'
-import { FormattedMessage, useIntl }                              from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Space } from 'antd'
+import { cloneDeep, includes, isEmpty }                   from 'lodash'
+import { FormattedMessage, useIntl }                      from 'react-intl'
 
 import { Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import {
@@ -12,14 +12,11 @@ import {
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
-  SelectItemOption,
-  SingleRadioSettings } from '@acx-ui/rc/components'
+  SelectItemOption } from '@acx-ui/rc/components'
 import {
-  useGetApQuery,
   useGetApRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
   useDeleteApRadioCustomizationMutation,
-  useGetApCapabilitiesQuery,
   useGetApValidChannelQuery,
   useLazyGetVenueQuery,
   useLazyGetVenueRadioCustomizationQuery
@@ -33,10 +30,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { ApDataContext } from '..'
 import { ApEditContext } from '../..'
-import { FieldLabel }    from '../styledComponents'
 
-import { DisabledDiv } from './styledComponents'
+import { ApSingleRadioSettings } from './ApSingleRadioSettings'
+
 
 export function RadioSettings () {
   const { $t } = useIntl()
@@ -49,9 +47,9 @@ export function RadioSettings () {
     setEditContextData
   } = useContext(ApEditContext)
 
+  const { apData, apCapabilities } = useContext(ApDataContext)
+
   const { tenantId, serialNumber } = useParams()
-  const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
-  const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
   const getApAvailableChannels = useGetApValidChannelQuery({ params: { tenantId, serialNumber } })
 
   const formRef = useRef<StepsFormLegacyInstance<ApRadioCustomization>>()
@@ -67,8 +65,7 @@ export function RadioSettings () {
 
   const [apModelType, setApModelType] = useState('indoor')
   const [venue, setVenue] = useState({} as VenueExtended)
-  //const [currentRadioData, setCurrentRadioData] = useState<ApRadioCustomization>()
-  //const [venueRadioData, setVenueRadioData] = useState<ApRadioCustomization>()
+
   const [isSupportTriBandRadioAp, setIsSupportTriBandRadioAp] = useState(false)
   const [isSupportDual5GAp, setIsSupportDual5GAp] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(false)
@@ -113,7 +110,7 @@ export function RadioSettings () {
       const bandwidth = (option.value === 'AUTO') ? 'auto' : option.value
 
       if (bandwidth === '160MHz') {
-        return isSupport160Mhz
+        return isSupport160Mhz && includes(bandwidthList, bandwidth)
       }
 
       return includes(bandwidthList, bandwidth)
@@ -127,14 +124,10 @@ export function RadioSettings () {
   }
 
   useEffect(() => {
-    const ap = getAp.data
-    const capabilities = getApCapabilities.data
     const availableChannels = getApAvailableChannels.data
 
-    if (!apDataLoaded && ap && capabilities && availableChannels) {
+    if (!apDataLoaded && apData && apCapabilities && availableChannels) {
       const setData = async () => {
-
-        const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
         const { has160MHzChannelBandwidth = false,
           maxChannelization5G = 160,
           maxChannelization6G = 160,
@@ -188,7 +181,7 @@ export function RadioSettings () {
         setBandwidth6GOptions(bandwidth6g)
 
         const venue = (await getVenue({
-          params: { tenantId, venueId: ap?.venueId } }, true).unwrap())
+          params: { tenantId, venueId: apData?.venueId } }, true).unwrap())
 
         setVenue(venue)
         setApDataLoaded(true)
@@ -196,7 +189,7 @@ export function RadioSettings () {
 
       setData()
     }
-  }, [getAp, getApCapabilities, getApAvailableChannels, apDataLoaded])
+  }, [apData, apCapabilities, getApAvailableChannels, apDataLoaded])
 
   useEffect(() => {
     if (isEmpty(venue)) {
@@ -341,7 +334,7 @@ export function RadioSettings () {
     setCurrentTab(tab)
   }
 
-  const onEnableChanged = (value: boolean, fieldName: string) => {
+  const handleEnableChanged = (value: boolean, fieldName: string) => {
     switch(fieldName) {
       case 'enable24G':
         setIsEnable24g(value)
@@ -703,145 +696,74 @@ export function RadioSettings () {
             }
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
-            <FieldLabel width='180px'>
-              {$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
-              <Form.Item
-                name={['enable24G']}
-                //label={$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
-                valuePropName='checked'
-                style={{ marginTop: '16px' }}
-                children={isUseVenueSettings ?
-                  <span>{$t({ defaultMessage: 'On' })}</span>
-                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable24G')} />
-                }
-              />
-            </FieldLabel>
-            { (!isEnable24g && !isUseVenueSettings) ? (
-              <DisabledDiv>
-                {$t({ defaultMessage: '2.4 GHz Radio is disabled' })}
-              </DisabledDiv>) : (
-              <SingleRadioSettings
-                context='ap'
-                radioType={ApRadioTypeEnum.Radio24G}
-                supportChannels={support24GChannels}
-                bandwidthOptions={bandwidth24GOptions}
-                editContext={ApEditContext}
-                isUseVenueSettings={isUseVenueSettings} />
-            )
-            }
+            <ApSingleRadioSettings
+              isEnabled={isEnable24g}
+              radioTypeName='2.4 GHz'
+              enabledFieldName={['enable24G']}
+              onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable24G')}
+              radioType={ApRadioTypeEnum.Radio24G}
+              supportChannels={support24GChannels}
+              bandwidthOptions={bandwidth24GOptions}
+              editContext={ApEditContext}
+              isUseVenueSettings={isUseVenueSettings}
+            />
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
-            <FieldLabel width='180px'>
-              {$t({ defaultMessage: 'Enable 5 GHz band:' })}
-              <Form.Item
-                name={['enable50G']}
-                valuePropName='checked'
-                style={{ marginTop: '16px' }}
-                children={isUseVenueSettings ?
-                  <span>{$t({ defaultMessage: 'On' })}</span>
-                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable5G')} />
-                }
-              />
-            </FieldLabel>
-            { (!isEnable5g && !isUseVenueSettings) ? (
-              <DisabledDiv>
-                {$t({ defaultMessage: '5 GHz Radio is disabled' })}
-              </DisabledDiv>) : (
-              <SingleRadioSettings
-                context='ap'
-                radioType={ApRadioTypeEnum.Radio5G}
-                supportChannels={support5GChannels}
-                supportDfsChannels={supportDfsChannels}
-                bandwidthOptions={bandwidth5GOptions}
-                editContext={ApEditContext}
-                isUseVenueSettings={isUseVenueSettings} />
-            )
-            }
+            <ApSingleRadioSettings
+              isEnabled={isEnable5g}
+              radioTypeName='5 GHz'
+              enabledFieldName={['enable50G']}
+              onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable5G')}
+              radioType={ApRadioTypeEnum.Radio5G}
+              supportChannels={support5GChannels}
+              supportDfsChannels={supportDfsChannels}
+              bandwidthOptions={bandwidth5GOptions}
+              editContext={ApEditContext}
+              isUseVenueSettings={isUseVenueSettings}
+            />
           </div>
           <div style={{ display: currentTab === 'Normal6GHz' ? 'block' : 'none' }}>
-            <FieldLabel width='180px'>
-              {$t({ defaultMessage: 'Enable 6 GHz band:' })}
-              <Form.Item
-                name={['enable6G']}
-                valuePropName='checked'
-                style={{ marginTop: '16px' }}
-                children={isUseVenueSettings ?
-                  <span>{$t({ defaultMessage: 'On' })}</span>
-                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable6G')} />
-                }
-              />
-            </FieldLabel>
-            { (!isEnable6g && !isUseVenueSettings) ? (
-              <DisabledDiv>
-                {$t({ defaultMessage: '6 GHz Radio is disabled' })}
-              </DisabledDiv>) : (
-              <SingleRadioSettings
-                context='ap'
-                radioType={ApRadioTypeEnum.Radio6G}
-                supportChannels={support6GChannels}
-                bandwidthOptions={bandwidth6GOptions}
-                editContext={ApEditContext}
-                isUseVenueSettings={isUseVenueSettings} />
-            )
-            }
+            <ApSingleRadioSettings
+              isEnabled={isEnable6g}
+              radioTypeName='6 GHz'
+              enabledFieldName={['enable6G']}
+              onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enable6G')}
+              radioType={ApRadioTypeEnum.Radio6G}
+              supportChannels={support6GChannels}
+              bandwidthOptions={bandwidth6GOptions}
+              editContext={ApEditContext}
+              isUseVenueSettings={isUseVenueSettings}
+            />
           </div>
           {isSupportDual5GAp && (
             <>
               <div style={{ display: currentTab === 'Lower5GHz' ? 'block' : 'none' }}>
-                <FieldLabel width='180px'>
-                  {$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
-                  <Form.Item
-                    name={['apRadioParamsDual5G', 'lower5gEnabled']}
-                    valuePropName='checked'
-                    style={{ marginTop: '16px' }}
-                    children={isUseVenueSettings ?
-                      <span>{$t({ defaultMessage: 'On' })}</span>
-                      :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
-                    }
-                  />
-                </FieldLabel>
-                { (!isEnableLower5g && !isUseVenueSettings) ? (
-                  <DisabledDiv>
-                    {$t({ defaultMessage: 'Lower 5 GHz Radio is disabled' })}
-                  </DisabledDiv>) : (
-                  <SingleRadioSettings
-                    context='ap'
-                    radioType={ApRadioTypeEnum.RadioLower5G}
-                    supportChannels={supportLower5GChannels}
-                    supportDfsChannels={supportLowerDfsChannels}
-                    bandwidthOptions={bandwidthLower5GOptions}
-                    editContext={ApEditContext}
-                    isUseVenueSettings={isUseVenueSettings} />
-                )
-                }
+                <ApSingleRadioSettings
+                  isEnabled={isEnableLower5g}
+                  radioTypeName='Lower 5 GHz'
+                  enabledFieldName={['apRadioParamsDual5G', 'lower5gEnabled']}
+                  onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableLower5G')}
+                  radioType={ApRadioTypeEnum.RadioLower5G}
+                  supportChannels={supportLower5GChannels}
+                  supportDfsChannels={supportLowerDfsChannels}
+                  bandwidthOptions={bandwidthLower5GOptions}
+                  editContext={ApEditContext}
+                  isUseVenueSettings={isUseVenueSettings}
+                />
               </div>
               <div style={{ display: currentTab === 'Upper5GHz' ? 'block' : 'none' }}>
-                <FieldLabel width='180px'>
-                  {$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
-                  <Form.Item
-                    name={['apRadioParamsDual5G', 'upper5gEnabled']}
-                    valuePropName='checked'
-                    style={{ marginTop: '16px' }}
-                    children={isUseVenueSettings ?
-                      <span>{$t({ defaultMessage: 'On' })}</span>
-                      :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />
-                    }
-                  />
-                </FieldLabel>
-                { (!isEnableUpper5g && !isUseVenueSettings) ? (
-                  <DisabledDiv>
-                    {$t({ defaultMessage: 'Upper 5 GHz Radio is disabled' })}
-                  </DisabledDiv>) : (
-                  <SingleRadioSettings
-                    context='ap'
-                    radioType={ApRadioTypeEnum.RadioUpper5G}
-                    supportChannels={supportUpper5GChannels}
-                    supportDfsChannels={supportUpperDfsChannels}
-                    bandwidthOptions={bandwidthUpper5GOptions}
-                    editContext={ApEditContext}
-                    isUseVenueSettings={isUseVenueSettings} />
-                )
-                }
+                <ApSingleRadioSettings
+                  isEnabled={isEnableUpper5g}
+                  radioTypeName='Upper 5 GHz'
+                  enabledFieldName={['apRadioParamsDual5G', 'upper5gEnabled']}
+                  onEnableChanged={(checked: boolean) => handleEnableChanged(checked, 'enableUpper5G')}
+                  radioType={ApRadioTypeEnum.RadioUpper5G}
+                  supportChannels={supportUpper5GChannels}
+                  supportDfsChannels={supportUpperDfsChannels}
+                  bandwidthOptions={bandwidthUpper5GOptions}
+                  editContext={ApEditContext}
+                  isUseVenueSettings={isUseVenueSettings}
+                />
               </div>
             </>
           )}

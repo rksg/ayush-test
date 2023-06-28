@@ -12,16 +12,16 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { LanPortSettings }          from '@acx-ui/rc/components'
+import { LanPortSettings }     from '@acx-ui/rc/components'
 import {
-  useGetApQuery,
   useGetApLanPortsQuery,
-  useGetApCapabilitiesQuery,
   useLazyGetVenueQuery,
   useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
-  useUpdateApCustomizationMutation,
-  useResetApCustomizationMutation
+  //useUpdateApCustomizationMutation,
+  //useResetApCustomizationMutation,
+  useUpdateApLanPortsMutation,
+  useResetApLanPortsMutation
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -36,6 +36,7 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
+import { ApDataContext } from '..'
 import { ApEditContext } from '../../../ApEdit/index'
 
 export function LanPorts () {
@@ -45,20 +46,26 @@ export function LanPorts () {
   const basePath = useTenantLink('/devices/')
 
   const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
+  const { apData: apDetails, apCapabilities: apCaps } = useContext(ApDataContext)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
-  const { data: apCaps } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
   const { data: apLanPorts, isLoading: isApLanPortsLoading }
     = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const [getVenueSettings] = useLazyGetVenueSettingsQuery()
+
+  const [updateApCustomization, {
+    isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
+  const [resetApCustomization, {
+    isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
+  /*
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApCustomizationMutation()
   const [resetApCustomization, {
     isLoading: isApLanPortsResetting }] = useResetApCustomizationMutation()
+    */
 
   const [venue, setVenue] = useState({} as VenueExtended)
   const [venueLanPorts, setVenueLanPorts] = useState({})
@@ -84,15 +91,14 @@ export function LanPorts () {
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
         const venueSettings = (await getVenueSettings({
           params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap())
-        const modelCaps = apCaps.apModels?.filter(item => item.model === apDetails?.model)?.[0]
 
         const lanPorts = (apLanPorts?.useVenueSettings
           ? venueLanPorts : apLanPorts) as WifiApSetting
         setVenue(venue)
         setVenueLanPorts(venueLanPorts)
         setSelectedModel(lanPorts)
-        setSelectedModelCaps(modelCaps as CapabilitiesApModel)
-        setSelectedPortCaps(modelCaps?.lanPorts?.[activeTabIndex] as LanPort)
+        setSelectedModelCaps(apCaps as CapabilitiesApModel)
+        setSelectedPortCaps(apCaps?.lanPorts?.[activeTabIndex] as LanPort)
         setUseVenueSettings(apLanPorts?.useVenueSettings ?? true)
         setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
         setLanData(lanPorts?.lanPorts as LanPort[])
