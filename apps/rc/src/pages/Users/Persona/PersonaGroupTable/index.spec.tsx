@@ -109,13 +109,13 @@ describe('Persona Group Table', () => {
     //   80 |       70 |   66.66 |   80.95
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /Class A/i })
+    const personaGroupName = mockPersonaGroupTableResult.content[2].name
+    const row = await screen.findByRole('row', { name: new RegExp(personaGroupName) })
     fireEvent.click(within(row).getByRole('radio'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
-    const personaGroupName = mockPersonaGroupTableResult.content[0].name
     await screen.findByText(`Delete "${personaGroupName}"?`)
     const deletePersonaGroupButton = await screen.findByText('Delete Persona Group')
     fireEvent.click(deletePersonaGroupButton)
@@ -197,7 +197,7 @@ describe('Persona Group Table', () => {
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    await userEvent.click(await screen.findByRole('button', { name: /Export To File/i }))
+    await userEvent.click(await screen.findByTestId('export-persona-group'))
 
     await waitFor(() => expect(exportFn).toHaveBeenCalled())
   })
