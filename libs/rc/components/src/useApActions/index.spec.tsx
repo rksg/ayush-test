@@ -9,7 +9,6 @@ import { message } from 'antd'
 import { rest }    from 'msw'
 import '@testing-library/jest-dom'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   WifiUrlsInfo
