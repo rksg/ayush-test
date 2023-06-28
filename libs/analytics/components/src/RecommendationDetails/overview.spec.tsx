@@ -1,5 +1,5 @@
-import { recommendationUrl, Provider }                 from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { recommendationUrl, Provider }                          from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
 
 import {
   mockedRecommendationCRRM,
@@ -45,12 +45,17 @@ describe('Recommendation Overview', () => {
     render(<Overview details={firmwareDetails} />, { wrapper: Provider })
     const affectedAps = await screen.findByText('3 of 3 APs (100 %)')
     fireEvent.click(affectedAps)
-    expect(await screen.findByText('3 Impacted APs')).toBeVisible()
+    const tableTitle = await screen.findByText('3 Impacted APs')
+    expect(tableTitle).toBeVisible()
     expect(await screen.findByText('B4:79:C8:3E:7E:50')).toBeVisible()
     expect(await screen.findByText('28:B3:71:27:38:E0')).toBeVisible()
     expect(await screen.findByText('C8:84:8C:3E:46:B0')).toBeVisible()
-    fireEvent.click(await screen.findByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('3 Impacted APs')).not.toBeInTheDocument()
+    const closeButton = screen.queryByRole('button', { name: 'Close' })
+    expect(closeButton).not.toBeNull()
+    fireEvent.click(closeButton!)
+    await waitFor(async () => {
+      expect(screen.queryByText('3 Impacted APs')).not.toBeVisible()
+    })
   })
 
   it('should render correctly for crrm', async () => {

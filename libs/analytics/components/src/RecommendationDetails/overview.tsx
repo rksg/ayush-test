@@ -43,6 +43,9 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
       { defaultMessage: '{count} Impacted {count, plural, one {AP} other {APs}}' },
       { count: aps!.length }
     )}
+    style={{
+      display: visible ? 'block' : 'none'
+    }}
     onClose={onClose}
     visible={visible}
     children={
@@ -93,7 +96,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
 
   return <Loader states={[impactedApsQuery]}>
     <DescriptionSection fields={fields} />
-    {(hasAp && visible) && <ImpactedApsDrawer
+    {(hasAp) && <ImpactedApsDrawer
       id={id}
       aps={impactedApsQuery.data!}
       onClose={() => setVisible(false)}
