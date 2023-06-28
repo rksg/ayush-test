@@ -18,7 +18,7 @@ type MappingType = {
   id: number,
   value: string,
   text: MessageDescriptor | string,
-  textAlto?: MessageDescriptor,
+  textAlto?: MessageDescriptor | string,
   enumType: string,
   incidents?: {},
   kpis?: {}

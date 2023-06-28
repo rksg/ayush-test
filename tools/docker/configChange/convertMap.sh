@@ -1,5 +1,5 @@
 # Before start this script, please make sure you have copyed the mapping files to dir.
-dir="./apps/analytics/src/pages/ConfigChange/ConfigChangeTable/mapping"
+dir="./libs/analytics/components/src/ConfigChange/ConfigChangeTable/mapping"
 
 for input_file in ${dir}/*.json; do
   filename=$(basename "$input_file" .json)
@@ -18,21 +18,21 @@ for input_file in ${dir}/*.json; do
   input=$(echo "$input" | sed 's/:"\([^"]*\)"/:'\''\1'\''/g')
   input=$(echo "$input" | sed 's/:""/:'\'\''/g')
 
-  # spacing
+  # normalize spacing
   input=$(echo "$input" | sed 's/,\([^$]\)/, \1/g')
   input=$(echo "$input" | sed 's/{\([^}]\)/{ \1/g')
   input=$(echo "$input" | sed 's/\([^{]\)}/\1 }/g')
   input=$(echo "$input" | sed 's/}}/} }/g')
-  input=$(echo "$input" | sed 's/:\([^ ]\)/: \1/g')
+  input=$(echo "$input" | sed 's/\([^ ]\):\([^ ]\)/\1: \2/g')
 
   # add defineMessage
   input=$(echo "$input" | awk 'BEGIN { FS = ","; OFS=","; };
     {
-      if($3 != "" && substr($3,2,6) == "text: " && $3 != " text: '\''TBD'\''" && $3 != " text: '\''NA'\''") {
+      if($3 != "" && substr($3,2,5) == "text:" && $3 != " text: '\''TBD'\''" && $3 != " text: '\''NA'\''" && $3 != " text: '\'''\''" ) {
         $3 = " text: defineMessage({ defaultMessage: "substr($3,8)" })"
       }
 
-      if($4 != "" && substr($4,2,9) == "textAlto:" && $4 != " textAlto: '\''TBD'\''" && $4 != " textAlto: '\''NA'\''") {
+      if($4 != "" && substr($4,2,9) == "textAlto:" && $4 != " textAlto: '\''TBD'\''" && $4 != " textAlto: '\''NA'\''" && $4 != " textAlto: '\'''\''" ) {
         $4 = " textAlto: defineMessage({ defaultMessage: "substr($4,12)" })"
       }
       if(NR == 1){
