@@ -369,14 +369,6 @@ export const ResponsiveContent = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  &:before {
-    content: '';
-    position: fixed;
-    left: 0;
-    width: 100%;
-    background-color: var(--acx-primary-white);
-    z-index: 5;
-  }
 `
 
 export const LeftHeaderContentWrapper = styled.div`
