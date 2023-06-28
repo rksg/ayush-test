@@ -20,15 +20,15 @@ function AllRoutes () {
         <Route index={true} element={<Recommendations />} />
         <Route index={false} path=':id' element={<RecommendationDetails />} />
       </Route>
+      <Route path='configChange' element={<ConfigChange />} />
+      <Route path='health' element={<div>Health</div>} />
+      <Route path='serviceValidation' element={<div>Service Validation</div>} />
+      <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
+      <Route path='occupancy' element={<div>Occupancy</div>} />
+      <Route path='dataStudio' element={<div>Data Studio</div>} />
+      <Route path='reports' element={<div>Reports</div>} />
+      <Route path='admin/*' element={<div>Admin</div>} />
     </Route>
-    <Route path='configChange' element={<ConfigChange />} />
-    <Route path='health' element={<div>Health</div>} />
-    <Route path='serviceValidation' element={<div>Service Validation</div>} />
-    <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
-    <Route path='occupancy' element={<div>Occupancy</div>} />
-    <Route path='dataStudio' element={<div>Data Studio</div>} />
-    <Route path='reports' element={<div>Reports</div>} />
-    <Route path='admin/*' element={<div>Admin</div>} />
   </Route>)
 }
 
