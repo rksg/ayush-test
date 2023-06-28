@@ -122,7 +122,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     applicationPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
       query: ({ params }) => {
         const applicationPolicyListReq = createHttpRequest(
-          AccessControlUrls.getApplicationPolicyList,
+          AccessControlUrls.getAppPolicyList,
           params
         )
         return {

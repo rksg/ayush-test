@@ -228,3 +228,8 @@ export interface EdgesTopResources {
     usedBytes: number
   } []
 }
+
+export interface EdgePasswordDetail {
+  loginPassword: string
+  enablePassword: string
+}
