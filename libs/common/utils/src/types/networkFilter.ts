@@ -8,6 +8,10 @@ export type NodeType = 'network'
   | 'apMac'
   | 'ap'
   | 'AP'
+  | 'system'
+  | 'controller'
+  | 'domains'
+  | 'domain'
 
 export interface PathNode {
   type: NodeType

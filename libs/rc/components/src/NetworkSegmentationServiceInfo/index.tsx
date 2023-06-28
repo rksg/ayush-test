@@ -1,13 +1,19 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
-import { Loader, Tooltip }                                                                                                                                                                            from '@acx-ui/components'
-import { useApListQuery, useGetEdgeDhcpServiceQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery, useGetPersonaGroupByIdQuery, useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink }                                                                                    from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                                                                                      from '@acx-ui/react-router-dom'
+import { Loader, Tooltip, SummaryCard } from '@acx-ui/components'
+import {
+  useApListQuery,
+  useGetEdgeDhcpServiceQuery,
+  useGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationViewDataListQuery,
+  useGetPersonaGroupByIdQuery,
+  useGetTunnelProfileByIdQuery
+} from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, ServiceOperation, ServiceType, getPolicyDetailsLink, getServiceDetailsLink } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                                   from '@acx-ui/react-router-dom'
 
 import { defaultApPayload } from '../NetworkSegmentationDetailTableGroup/ApsTable'
-import { ServiceInfo }      from '../ServiceInfo'
 
 import * as UI from './styledComponents'
 
@@ -94,7 +100,7 @@ export const NetworkSegmentationServiceInfo = styled((
   const nsgInfo = [
     {
       title: $t({ defaultMessage: 'Service Status' }),
-      content: () => (nsgViewData?.serviceStatus || $t({ defaultMessage: 'Down' }))
+      content: nsgViewData?.serviceStatus || $t({ defaultMessage: 'Down' })
     },
     {
       title: $t({ defaultMessage: 'Service Health' }),
@@ -136,11 +142,11 @@ export const NetworkSegmentationServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Number of Segments' }),
-      content: () => (nsgViewData?.edgeInfos[0]?.segments)
+      content: nsgViewData?.edgeInfos[0]?.segments
     },
     {
       title: $t({ defaultMessage: 'Number of devices per segment' }),
-      content: () => (nsgViewData?.edgeInfos[0]?.devices)
+      content: nsgViewData?.edgeInfos[0]?.devices
     },
     {
       title: $t({ defaultMessage: 'DHCP Service (Pool)' }),
@@ -189,19 +195,19 @@ export const NetworkSegmentationServiceInfo = styled((
     },
     {
       title: $t({ defaultMessage: 'Networks' }),
-      content: () => (nsgViewData?.networkIds?.length)
+      content: nsgViewData?.networkIds?.length
     },
     {
       title: $t({ defaultMessage: 'APs' }),
-      content: () => (apListQuery.data?.totalCount)
+      content: apListQuery.data?.totalCount
     },
     {
       title: $t({ defaultMessage: 'Dist. Switches' }),
-      content: () => (nsgData?.distributionSwitchInfos.length)
+      content: nsgData?.distributionSwitchInfos.length
     },
     {
       title: $t({ defaultMessage: 'Access Switches' }),
-      content: () => (nsgData?.accessSwitchInfos.length)
+      content: nsgData?.accessSwitchInfos.length
     }
   ]
 
@@ -211,7 +217,7 @@ export const NetworkSegmentationServiceInfo = styled((
       isDhcpLoading || isTunnelLoading || isPersonaGroupLoading,
       isLoading: false
     }]}>
-      <ServiceInfo className={props.className} data={nsgInfo} />
+      <SummaryCard className={props.className} data={nsgInfo} />
     </Loader>
   )
 })`${UI.textAlign}`
