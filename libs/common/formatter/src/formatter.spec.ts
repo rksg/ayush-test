@@ -379,4 +379,31 @@ describe('formatter', () => {
       expect(test_normal).toMatch('ChannelFly and 80 MHz for 5.0 GHz')
     })
   })
+
+  describe('noFormat', () => {
+    it('should return number as string', () => {
+      const test_number = formatter('noFormat')(3)
+      expect(test_number).toMatch('3')
+    })
+
+    it('should return function as string', () => {
+      const test_number = formatter('noFormat')(() => {})
+      expect(test_number).toMatch('() => {}')
+    })
+
+    it('should return correct null as string', () => {
+      const test_number = formatter('noFormat')(null)
+      expect(test_number).toMatch('--')
+    })
+
+    it('should return correct undefined as string', () => {
+      const test_number = formatter('noFormat')(undefined)
+      expect(test_number).toMatch('undefined')
+    })
+
+    it('should return correct object as string', () => {
+      const test_number = formatter('noFormat')({})
+      expect(test_number).toMatch('Object')
+    })
+  })
 })
