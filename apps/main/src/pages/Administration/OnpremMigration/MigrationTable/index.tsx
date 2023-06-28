@@ -29,10 +29,10 @@ import {
   useDeleteMigrationMutation
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
   TaskContextType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { useTableQuery } from '@acx-ui/utils'
 
 import {
   GuestsDetail
