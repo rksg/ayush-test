@@ -1,10 +1,12 @@
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery }                from '@acx-ui/rc/services'
-import { DhcpHostStats, EdgeDhcpHostStatus, RequestPayload, useTableQuery } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery } from '@acx-ui/rc/services'
+import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }  from '@acx-ui/rc/utils'
+import { RequestPayload }                                    from '@acx-ui/types'
+
 
 interface EdgeDhcpLeaseTableProps {
   edgeId?: string
