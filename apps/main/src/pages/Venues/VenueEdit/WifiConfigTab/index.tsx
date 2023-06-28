@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { Features, useIsTierAllowed }            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
@@ -70,7 +70,7 @@ export function WifiConfigTab () {
         <SecurityTab />
       </Tabs.TabPane>
       <Tabs.TabPane
-        disabled={!useIsTierAllowed(Features.CLOUDPATH_BETA)}
+        disabled={!useIsSplitOn(Features.POLICIES)}
         tab={tabTitleMap('servers')}
         key='servers'
       >

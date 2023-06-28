@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Col, Form, Row, Space, Typography } from 'antd'
-import { useIntl }                           from 'react-intl'
-import { useParams }                         from 'react-router-dom'
+import { Space }     from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Card, Loader }               from '@acx-ui/components'
+import { SummaryCard }                from '@acx-ui/components'
 import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetMacRegListQuery,
@@ -20,7 +20,6 @@ export function MacRegistrationListOverviewTab () {
   const { policyId } = useParams()
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
   const data = macRegistrationListQuery.data
-  const { Paragraph } = Typography
   const [ policySetName, setPolicySetName ] = useState('')
 
   const [ getAdaptivePolicySet ] = useLazyGetAdaptivePolicySetQuery()
@@ -38,59 +37,42 @@ export function MacRegistrationListOverviewTab () {
     }
   }, [data])
 
+  const macRegistrationInfo = [
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      content: data?.name,
+      colSpan: 3
+    },
+    {
+      title: $t({ defaultMessage: 'List Expiration' }),
+      content: returnExpirationString(data ?? {}) ?? '',
+      colSpan: 3
+    },
+    {
+      title: $t({ defaultMessage: 'Automatically clean expired entries' }),
+      content: data?.autoCleanup ? $t({ defaultMessage: 'Yes' }) :
+        $t({ defaultMessage: 'No' }),
+      colSpan: 5
+    },
+    {
+      title: $t({ defaultMessage: 'Default Access' }),
+      content: data?.policySetId ? data?.defaultAccess : '',
+      colSpan: 3
+    },
+    {
+      title: $t({ defaultMessage: 'Adaptive Policy Set' }),
+      content: policySetName,
+      colSpan: 3
+    }
+  ]
+
   return (
     <Space direction={'vertical'}>
-      <Card>
-        <Loader states={[
-          macRegistrationListQuery,
-          { isLoading: false }
-        ]}>
-          <Form layout={'vertical'}>
-            <Row>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Name' })}
-                >
-                  <Paragraph>{data?.name}</Paragraph>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'List Expiration' })}
-                >
-                  <Paragraph>{returnExpirationString(data ?? {}) ?? ''}</Paragraph>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item
-                  label={$t({ defaultMessage: 'Automatically clean expired entries' })}
-                >
-                  <Paragraph>{data?.autoCleanup ? $t({ defaultMessage: 'Yes' }) :
-                    $t({ defaultMessage: 'No' })}</Paragraph>
-                </Form.Item>
-              </Col>
-              {policyEnabled &&
-                <>
-                  <Col span={6}>
-                    <Form.Item
-                      label={$t({ defaultMessage: 'Default Access' })}
-                    >
-                      <Paragraph>{data?.policySetId ? data?.defaultAccess : ''}</Paragraph>
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item
-                      label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-                    >
-                      <Paragraph>{policySetName}</Paragraph>
-                    </Form.Item>
-                  </Col>
-                </>
-              }
-            </Row>
-          </Form>
-        </Loader>
-      </Card>
+      <SummaryCard
+        data={macRegistrationInfo}
+        isLoading={macRegistrationListQuery.isLoading}
+        isFetching={macRegistrationListQuery.isFetching}
+      />
       <NetworkTable networkIds={data?.networkIds}/>
     </Space>
   )
