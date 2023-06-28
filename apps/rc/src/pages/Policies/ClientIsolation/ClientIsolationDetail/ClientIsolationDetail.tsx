@@ -1,13 +1,12 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { useGetClientIsolationQuery }                 from '@acx-ui/rc/services'
+import { Button, GridCol, GridRow, PageHeader, SummaryCard } from '@acx-ui/components'
+import { useGetClientIsolationQuery }                        from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
-  PolicyType,
-  PolicyOperation,
   ClientIsolationSaveData,
+  PolicyOperation,
+  PolicyType,
+  getPolicyDetailsLink,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -61,19 +60,16 @@ interface ClientIsolationOverviewProps {
 function ClientIsolationOverview (props: ClientIsolationOverviewProps) {
   const { data } = props
   const { $t } = useIntl()
+  const clientIsolationInfo = [
+    {
+      title: $t({ defaultMessage: 'Client Entries' }),
+      content: data.allowlist?.length
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      content: data.description
+    }
+  ]
 
-  return (
-    <Card>
-      <GridRow>
-        <GridCol col={{ span: 8 }}>
-          <Card.Title>{$t({ defaultMessage: 'Client Entries' })}</Card.Title>
-          <Typography.Paragraph>{data.allowlist?.length}</Typography.Paragraph>
-        </GridCol>
-        <GridCol col={{ span: 8 }}>
-          <Card.Title>{$t({ defaultMessage: 'Description' })}</Card.Title>
-          <Typography.Paragraph>{data.description}</Typography.Paragraph>
-        </GridCol>
-      </GridRow>
-    </Card>
-  )
+  return <SummaryCard data={clientIsolationInfo} />
 }

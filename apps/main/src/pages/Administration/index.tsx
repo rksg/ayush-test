@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs, PageHeader }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                 from '@acx-ui/user'
+import { Tabs, PageHeader }                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                    from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -18,7 +18,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const { activeTab } = useParams()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
-  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
+  const isRadiusClientEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
 
   const onTabChange = (tab: string) => {

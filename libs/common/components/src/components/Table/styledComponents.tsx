@@ -481,6 +481,12 @@ export const Wrapper = styled.div<StyledTable>`
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
 
+        ${props => props.$type !== 'tall' && css`
+          &.ant-table-cell-row-hover {
+            background-color: var(--acx-primary-white) !important;
+          }
+        `}
+
         a {
           font-size: unset;
         }

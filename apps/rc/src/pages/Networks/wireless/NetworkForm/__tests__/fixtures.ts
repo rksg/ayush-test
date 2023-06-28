@@ -1572,3 +1572,14 @@ export const mockMacRegistrationPoolList = {
   first: true,
   empty: false
 }
+
+export const mockAAAPolicyResponse = [{
+  id: '1',
+  name: 'test1',
+  type: 'AUTHENTICATION',
+  primary: {
+    ip: '1.1.1.2',
+    port: 1812,
+    sharedSecret: '111211121112'
+  }
+}]
