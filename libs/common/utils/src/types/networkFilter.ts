@@ -5,10 +5,10 @@ export type NodeType = 'network'
   | 'zoneName'
   | 'zone'
   | 'switchGroup'
+  | 'switch'
   | 'apMac'
   | 'ap'
   | 'AP'
-  | 'switch'
 export type PathNode = {
   type: NodeType
   name: string
