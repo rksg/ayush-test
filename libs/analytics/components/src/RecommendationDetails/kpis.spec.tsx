@@ -1,6 +1,6 @@
-import userEvent from '@testing-library/user-event'
+import moment from 'moment-timezone'
 
-import { render, screen, waitFor } from '@acx-ui/test-utils'
+import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 
 import {
   mockRecommendationNoKPI,
@@ -52,6 +52,37 @@ describe('Recommendation Kpis', () => {
   })
 
   it('should render correctly for with positive delta', async () => {
+    const clientLoadDetails = transformDetailsResponse({
+      ...mockedRecommendationPower,
+      kpi_session_time_on_24_g_hz: {
+        current: 0.55,
+        previous: 0.20,
+        projected: null
+      }
+    } as unknown as RecommendationDetails)
+    render(<Kpis details={clientLoadDetails} />)
+    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
+    expect(await screen.findByText('Session time on 2.4 GHz')).toBeVisible()
+    expect(await screen.findByText('55%')).toBeVisible()
+    expect(await screen.findByText('+35%')).toBeVisible()
+  })
+
+  it('should render correctly for with non-number delta', async () => {
+    const clientLoadDetails = transformDetailsResponse({
+      ...mockedRecommendationPower,
+      kpi_session_time_on_24_g_hz: {
+        current: 0.55,
+        previous: undefined,
+        projected: null
+      }
+    } as unknown as RecommendationDetails)
+    render(<Kpis details={clientLoadDetails} />)
+    expect(await screen.findByTestId('statustrail')).toBeInTheDocument()
+    expect(await screen.findByText('Session time on 2.4 GHz')).toBeVisible()
+    expect(await screen.findByText('55%')).toBeVisible()
+  })
+
+  it('should render correctly for kpis with tooltip', async () => {
     const firmwareDetails = transformDetailsResponse({
       ...mockedRecommendationFirmware,
       kpi_aps_on_latest_fw_version: {
@@ -66,15 +97,18 @@ describe('Recommendation Kpis', () => {
     expect(await screen.findByText('=')).toBeVisible()
     const infoIcons = await screen.findAllByTestId('InformationSolid')
     expect(infoIcons).toHaveLength(1)
+    fireEvent.mouseOver(infoIcons[0])
     await waitFor(async () => {
-      await userEvent.hover(infoIcons[0])
-      const tooltip = await screen.findByText('Numbers could be delayed by up to 1 hour.')
+      const tooltip = screen.queryByText('Numbers could be delayed by up to 1 hour.')
       expect(tooltip).toBeInTheDocument()
     })
   })
 
   it('should render correctly for monitoring', async () => {
-    const powerDetails = transformDetailsResponse(mockedRecommendationPowerMonitoring)
+    const powerDetails = transformDetailsResponse({
+      ...mockedRecommendationPowerMonitoring,
+      appliedTime: moment().toISOString()
+    } as unknown as RecommendationDetails)
     render(<Kpis details={powerDetails} />)
     expect(await screen.findByText(/monitoring performance indicators*/i)).toBeVisible()
   })

@@ -16,7 +16,6 @@ type RecommendationKPIConfig = {
   tooltipContent?: MessageDescriptor;
   format: FormatterReturn;
   deltaSign: '+' | '-' | 'none';
-  displayRatio?: 0.5 | 1;
   valueAccessor?: (value: number[]) => number;
   valueFormatter?: FormatterReturn;
   showAps?: boolean;
@@ -169,7 +168,6 @@ const configs: Record<string, RecommendationConfig> = {
       valueFormatter: formatter('percentFormat'),
       deltaSign: '+',
       format: formatter('ratioFormat'),
-      displayRatio: 1,
       tooltipContent: defineMessage({ defaultMessage: 'Numbers could be delayed by up to 1 hour.' }),
       showAps: true
     }]
@@ -239,7 +237,6 @@ const configs: Record<string, RecommendationConfig> = {
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
-      displayRatio: 1,
       deltaSign: '-'
     }]
   },
@@ -254,7 +251,6 @@ const configs: Record<string, RecommendationConfig> = {
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
-      displayRatio: 1,
       deltaSign: '-'
     }]
   },
@@ -269,7 +265,6 @@ const configs: Record<string, RecommendationConfig> = {
       key: 'number-of-interfering-links',
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
-      displayRatio: 1,
       deltaSign: '-'
     }]
   }
