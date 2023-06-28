@@ -15,6 +15,8 @@ import { useIntl } from 'react-intl'
 import { get as getEnv }                                           from '@acx-ui/config'
 import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
+import modifyVars from '../../theme/modify-vars'
+
 import { Content } from './Responsive/content'
 import * as UI     from './styledComponents'
 
@@ -161,7 +163,8 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-  const [display, setDisplay] = useState(window.innerWidth >= 1280)
+  const screenXL = parseInt(modifyVars['@screen-xl'], 10)
+  const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
     () => localStorage.getItem('acx-ui-view-suboptimal-display') === 'true' ?? false)
 
@@ -171,7 +174,7 @@ export function Layout ({
   }, [])
 
   const updateScreenWidth = debounce(() => {
-    if(window.innerWidth >= 1280){
+    if(window.innerWidth >= screenXL){
       setDisplay(true)
       setSubOptimalDisplay(false)
     }else{
