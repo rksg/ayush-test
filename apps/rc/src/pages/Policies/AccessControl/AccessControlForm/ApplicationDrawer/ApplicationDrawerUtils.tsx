@@ -133,7 +133,7 @@ export const transformToRulesForPayload = (
   avcCategoryList: AvcCategory[]
 ) => {
   return applicationsRuleList.map(rule => {
-    let appConfig = {}
+    let appConfig = {} as { [key: string]: string | number }
     if (isSystemDefinedRule(rule)) {
       appConfig = transformCatAppConfigForPayload(rule, categoryAppMap, avcCategoryList)
     } else if (isUserDefinedRule(rule)) {
@@ -146,6 +146,12 @@ export const transformToRulesForPayload = (
     if (rule.id) {
       ruleId.id = rule.id
     }
+
+    Object.keys(appConfig).forEach(key => {
+      if (appConfig[key] === undefined) {
+        delete appConfig[key]
+      }
+    })
 
     return {
       ...ruleId,
@@ -193,7 +199,7 @@ function transformUserAppConfigForPayload (rule: ApplicationsRule) {
     applicationName: rule.ruleSettings.appNameUserDefined,
     destinationPort: rule.ruleSettings.destinationPort,
     protocol: rule.ruleSettings.protocol,
-    portMapping: rule.ruleSettings.portMappingOnly
+    portMapping: rule.ruleSettings.portMappingOnly || rule.ruleSettings.destinationIp === undefined
       ? ApplicationPortMappingType.PORT_ONLY
       : ApplicationPortMappingType.IP_WITH_PORT
   } as {

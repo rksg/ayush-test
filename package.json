@@ -80,7 +80,7 @@
     "@babel/preset-typescript": "7.12.13",
     "@craco/craco": "6.4.3",
     "@formatjs/cli": "5.0.6",
-    "@googlemaps/jest-mocks": "2.7.5",
+    "@googlemaps/jest-mocks": "2.19.1",
     "@nrwl/cli": "14.1.2",
     "@nrwl/cypress": "14.1.2",
     "@nrwl/eslint-plugin-nx": "14.1.2",

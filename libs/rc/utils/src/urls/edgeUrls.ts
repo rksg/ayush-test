@@ -196,5 +196,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/:serialNumber/service',
     oldUrl: '/edges/:serialNumber/service',
     newApi: true
+  },
+  getEdgePasswordDetail: {
+    method: 'get',
+    url: '/edges/:serialNumber/passwordDetails',
+    oldUrl: '/edges/:serialNumber/passwordDetails',
+    newApi: true
   }
 }

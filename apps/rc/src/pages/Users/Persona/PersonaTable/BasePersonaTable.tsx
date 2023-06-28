@@ -4,7 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
@@ -16,8 +16,15 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useGetPersonaGroupByIdQuery
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                       from '@acx-ui/user'
+import {
+  FILTER,
+  Persona,
+  PersonaErrorResponse,
+  PersonaGroup,
+  SEARCH,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
 import { PersonaDrawer }                                          from '../PersonaDrawer'
@@ -164,7 +171,7 @@ export interface PersonaTableProps {
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, colProps } = props
-  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
   const columns = useColumns(colProps, unitPool, venueId)
@@ -214,15 +221,27 @@ export function BasePersonaTable (props: PersonaTableProps) {
     setUnitPool(pool)
   }, [personaListQuery.data, personaGroupQuery.data])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const toastDetailErrorMessage = (error: any) => {
-  //   const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
-  //   showToast({
-  //     type: 'error',
-  //     content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
-  //     link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
-  //   })
-  // }
+  const toastDetailErrorMessage = (error: PersonaErrorResponse) => {
+    const hasSubMessages = error.data?.subErrors
+    showToast({
+      type: 'error',
+      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+      link: hasSubMessages && { onClick: () => {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Technical Details' }),
+          content: $t({
+            defaultMessage: 'The following information was reported for the error you encountered'
+          }),
+          customContent: {
+            action: 'SHOW_ERRORS',
+            // @ts-ignore
+            errorDetails: error.data?.subErrors
+          }
+        })
+      } }
+    })
+  }
 
   const importPersonas = async (formData: FormData, values: object) => {
     const { groupId } = values as { groupId: string }
@@ -233,7 +252,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
       }).unwrap()
       setUploadCsvDrawerVisible(false)
     } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+      toastDetailErrorMessage(error as PersonaErrorResponse)
     }
   }
 
@@ -298,21 +317,21 @@ export function BasePersonaTable (props: PersonaTableProps) {
             }),
           onOk: () => {
             const ids = selectedItems.map(({ id }) => id)
-            const names = selectedItems.map(({ name }) => name).join(', ')
+            // const names = selectedItems.map(({ name }) => name).join(', ')
 
             deletePersonas({ payload: ids })
               .unwrap()
               .then(() => {
-                const fewItems = ids.length <= 5
-                showToast({
-                  type: 'success',
-                  content: $t({
-                    // eslint-disable-next-line max-len
-                    defaultMessage: '{fewItems, select, ' +
-                      'true {Persona {names} was deleted} ' +
-                      'other {{count} personas was deleted}}'
-                  }, { fewItems, names, count: ids.length })
-                })
+                // const fewItems = ids.length <= 5
+                // showToast({
+                //   type: 'success',
+                //   content: $t({
+                //     // eslint-disable-next-line max-len
+                //     defaultMessage: '{fewItems, select, ' +
+                //       'true {Persona {names} was deleted} ' +
+                //       'other {{count} personas was deleted}}'
+                //   }, { fewItems, names, count: ids.length })
+                // })
                 clearSelection()
               })
               .catch((e) => {
@@ -380,7 +399,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         type='Persona'
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
-        maxEntries={30}
+        maxEntries={512}
         templateLink='assets/templates/persona_import_template.csv'
         importRequest={importPersonas}
         onClose={() => setUploadCsvDrawerVisible(false)}

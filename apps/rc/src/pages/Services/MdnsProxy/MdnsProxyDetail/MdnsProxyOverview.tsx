@@ -1,7 +1,6 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Card }              from '@acx-ui/components'
+import { SummaryCard }       from '@acx-ui/components'
 import { MdnsProxyFormData } from '@acx-ui/rc/utils'
 
 export interface MdnsProxyOverviewProps {
@@ -12,10 +11,12 @@ export function MdnsProxyOverview (props: MdnsProxyOverviewProps) {
   const { $t } = useIntl()
   const { data } = props
 
-  return (
-    <Card>
-      <Card.Title>{$t({ defaultMessage: 'Forwarding Rules' })}</Card.Title>
-      <Typography.Paragraph>{data.rules?.length}</Typography.Paragraph>
-    </Card>
-  )
+  const mdnsProxyInfo = [
+    {
+      title: $t({ defaultMessage: 'Forwarding Rules' }),
+      content: data.rules?.length
+    }
+  ]
+
+  return <SummaryCard data={mdnsProxyInfo} />
 }

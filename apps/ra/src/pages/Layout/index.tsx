@@ -1,7 +1,5 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import { UserButton } from '@acx-ui/analytics/components'
 import {
   Layout as LayoutComponent,
@@ -19,7 +17,6 @@ import { useMenuConfig } from './menuConfig'
 // import SearchBar         from './SearchBar'
 
 function Layout () {
-  const { $t } = useIntl()
   const params = useParams()
   const companyName = 'companyName'
   const searchFromUrl = params.searchVal || ''
@@ -30,7 +27,6 @@ function Layout () {
       logo={<TenantNavLink to={''} children={<Logo />} />}
       menuConfig={useMenuConfig()}
       content={<Outlet />}
-      leftHeaderContent={<>{$t({ defaultMessage: 'Analytics' })}</>}
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>

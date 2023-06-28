@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo }               from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -36,6 +37,7 @@ describe('EdgeDetails', () => {
   let params: { tenantId: string, serialNumber: string, activeTab: string }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: currentEdge.serialNumber,
