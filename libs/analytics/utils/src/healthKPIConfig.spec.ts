@@ -1,4 +1,5 @@
-import { kpiConfig, multipleBy1000, divideBy100, noFormat } from './healthKPIConfig'
+
+import { kpiConfig, multipleBy1000, divideBy100, noFormat, kpisForTab } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   it('should format correctly', () => {
@@ -13,10 +14,36 @@ describe('Health KPI', () => {
     expect(kpiConfig.apServiceUptime.histogram.shortXFormat(10)).toBe(1000)
     expect(kpiConfig.switchPoeUtilization.histogram.shortXFormat(10)).toBe(1000)
     expect(kpiConfig.rss.histogram.shortXFormat(10)).toBe(10)
+    expect(kpiConfig.clusterLatency.histogram.shortXFormat(10)).toBe(10)
     expect(kpiConfig.apToSZLatency.histogram.shortXFormat(10)).toBe(10)
     expect(multipleBy1000(10)).toBe(10000)
     expect(divideBy100(100)).toBe(1)
     expect(noFormat(100)).toBe(100)
 
+  })
+  it('should return correct config for RA', () => {
+    expect(kpisForTab('true')).toMatchObject({
+      infrastructure: {
+        kpis: [
+          'apServiceUptime',
+          'apToSZLatency',
+          'clusterLatency',
+          'switchPoeUtilization',
+          'onlineAPs'
+        ]
+      }
+    })
+  })
+  it('should return correct config for ACX', () => {
+    expect(kpisForTab(undefined)).toMatchObject({
+      infrastructure: {
+        kpis: [
+          'apServiceUptime',
+          'apToSZLatency',
+          'switchPoeUtilization',
+          'onlineAPs'
+        ]
+      }
+    })
   })
 })

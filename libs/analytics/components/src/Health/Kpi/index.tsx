@@ -41,7 +41,7 @@ export const defaultThreshold: KpiThresholdType = {
 
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
-  const { kpis } = kpisForTab[tab]
+  const { kpis } = kpisForTab(isMLISA)[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const apContext = useApContext()

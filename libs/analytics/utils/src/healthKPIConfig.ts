@@ -3,7 +3,6 @@ import { identity }      from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 
 const pillSuffix = {
@@ -23,7 +22,6 @@ const multipleBy100 = (ms: number) => ms * 100
 export const multipleBy1000 = (ms: number) => ms * 1000
 export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
-const isMLISA = get('IS_MLISA_SA')
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -380,43 +378,45 @@ export const kpiConfig = {
   }
 }
 
-export const kpisForTab = {
-  overview: {
-    kpis: [
-      'connectionSuccess',
-      'timeToConnect',
-      'clientThroughput',
-      'apCapacity',
-      'apServiceUptime',
-      'onlineAPs'
-    ]
-  },
-  connection: {
-    kpis: [
-      'connectionSuccess',
-      'timeToConnect',
-      'userAuthentication',
-      'association',
-      'eap',
-      'radius',
-      'dhcp',
-      'roamingSuccess'
-    ]
-  },
-  performance: {
-    kpis: [
-      'clientThroughput',
-      'apCapacity',
-      'rss'
-    ]
-  },
-  infrastructure: {
-    kpis: [
-      'apServiceUptime',
-      'apToSZLatency',
-      ...(isMLISA ? ['clusterLatency'] : []),
-      'switchPoeUtilization',
-      'onlineAPs'
-    ]
+export const kpisForTab = (isMLISA? : string) => {
+  return {
+    overview: {
+      kpis: [
+        'connectionSuccess',
+        'timeToConnect',
+        'clientThroughput',
+        'apCapacity',
+        'apServiceUptime',
+        'onlineAPs'
+      ]
+    },
+    connection: {
+      kpis: [
+        'connectionSuccess',
+        'timeToConnect',
+        'userAuthentication',
+        'association',
+        'eap',
+        'radius',
+        'dhcp',
+        'roamingSuccess'
+      ]
+    },
+    performance: {
+      kpis: [
+        'clientThroughput',
+        'apCapacity',
+        'rss'
+      ]
+    },
+    infrastructure: {
+      kpis: [
+        'apServiceUptime',
+        'apToSZLatency',
+        ...(isMLISA ? ['clusterLatency'] : []),
+        'switchPoeUtilization',
+        'onlineAPs'
+      ]
+    }
   }
 }
