@@ -9,10 +9,7 @@ describe('Connection drill down api', () => {
     store.dispatch(api.util.resetApiState())
   )
   const payload: RequestPayload = {
-    filter: {
-      networkNodes: [[{ name: 'Network', type: 'network' }]],
-      switchNodes: [[{ name: 'Network', type: 'network' }]]
-    },
+    filter: {},
     start: '2021-12-31T00:00:00+00:00',
     end: '2022-01-01T00:00:00+00:00'
   }
@@ -71,10 +68,7 @@ describe('Connection drill down api', () => {
     afterEach(() => store.dispatch(api.util.resetApiState()))
 
     const payload: PieChartPayload = {
-      filter: {
-        networkNodes: [[{ name: 'Network', type: 'network' }]],
-        switchNodes: [[{ name: 'Network', type: 'network' }]]
-      },
+      filter: {},
       start: '2023-03-15T00:00:00+00:00',
       end: '2023-03-16T00:00:00+00:00',
       queryType: 'connectionFailure',
