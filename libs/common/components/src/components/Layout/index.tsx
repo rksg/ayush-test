@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import ProLayout                             from '@ant-design/pro-layout'
-import { Menu }                              from 'antd'
+import { Menu, Grid }                        from 'antd'
 import { ItemType as AntItemType }           from 'antd/lib/menu/hooks/useItems'
 import { get, has, snakeCase }               from 'lodash'
 import {
@@ -16,7 +16,6 @@ import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui
 
 import { Content } from './Responsive/content'
 import * as UI     from './styledComponents'
-
 
 export enum IsActiveCheck {
   STARTS_WITH_URI = 'STARTS_WITH_URI',
@@ -161,38 +160,34 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-  const [display, setDisplay] = useState(window.innerWidth >= 1280)
-  const [subOptimalDisplay, setSubOptimalDisplay] = useState(false)
+  const { useBreakpoint } = Grid
+  const screens = useBreakpoint()
+  const [subOptimalDisplay, setSubOptimalDisplay] = useState(
+    () => localStorage.getItem('acx-ui-view-suboptimal-display') === 'true' ?? false)
 
-  const updateScreenWidth = () => {
-    if(window.innerWidth >= 1280){
-      setDisplay(true)
-      setSubOptimalDisplay(false)
-    }else{
-      setDisplay(false)
-    }
-  }
+  const onSubOptimalDisplay = useCallback((state: boolean) => {
+    setSubOptimalDisplay(state)
+    localStorage.setItem('acx-ui-view-suboptimal-display', state.toString())
+  }, [])
 
   useEffect(() => {
-    window.addEventListener('resize', updateScreenWidth)
-
-    return () => {
-      window.removeEventListener('resize', updateScreenWidth)
+    if(screens.xl){
+      onSubOptimalDisplay(false)
     }
-  }, [window.innerWidth])
+  }, [screens.xl])
 
-  return <UI.Wrapper showScreen={display || subOptimalDisplay} >
+  return <UI.Wrapper showScreen={screens.xl || subOptimalDisplay} >
     <ProLayout
       breakpoint='xl'
       disableMobile={true}
       fixedHeader={true}
-      fixSiderbar={display || subOptimalDisplay}
+      fixSiderbar={screens.xl || subOptimalDisplay}
       location={location}
       menuContentRender={() => <SiderMenu menuConfig={menuConfig}/>}
       menuHeaderRender={() => logo}
       headerContentRender={() => leftHeaderContent &&
         <UI.LeftHeaderContentWrapper children={leftHeaderContent} />}
-      rightContentRender={() => (display || subOptimalDisplay) &&
+      rightContentRender={() => (screens.xl || subOptimalDisplay) &&
         <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>
@@ -204,9 +199,9 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
+      {(screens.xl || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
         <UI.ResponsiveContent>
-          <Content setShowScreen={setSubOptimalDisplay} />
+          <Content setShowScreen={onSubOptimalDisplay} />
         </UI.ResponsiveContent>}
     </ProLayout>
   </UI.Wrapper>
