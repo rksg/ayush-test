@@ -20,7 +20,7 @@ export const ValueDetailsWithIcon = styled.span`
 `
 
 export const DetailsWrapper = styled.div`
-  height: 150px;
+  height: auto;
 `
 
 export const RecommendationDivider = styled.div`
@@ -93,6 +93,5 @@ export const RecommendationApImpacted = styled.div`
 `
 
 export const KpiContentWrapper = styled.div`
-  margin-top: 30px;
   text-align: center;
 `
