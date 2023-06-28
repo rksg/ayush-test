@@ -674,7 +674,6 @@ export function ManageCustomer () {
 
   const CustomerAdminsForm = () => {
 
-    const dpskRbac=useIsSplitOn(Features.PTENANT_RBAC_DPSK_ROLE_INTRODUCTION)
     if (isEditMode) {
       return <><Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
@@ -723,8 +722,7 @@ export function ManageCustomer () {
             <Select>
               {
                 Object.entries(RolesEnum).map(([label, value]) => (
-                  !(value === RolesEnum.DPSK_ADMIN
-                    && !dpskRbac)
+                  !(value === RolesEnum.DPSK_ADMIN)
                   && <Option
                     key={label}
                     value={value}>{intl.$t(roleDisplayText[value])}

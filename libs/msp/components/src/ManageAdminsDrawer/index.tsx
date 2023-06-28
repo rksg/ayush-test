@@ -10,7 +10,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useGetMspEcDelegatedAdminsQuery,
   useMspAdminListQuery,
@@ -116,8 +115,6 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const { Option } = Select
 
-  const dpskRbac=useIsSplitOn(Features.PTENANT_RBAC_DPSK_ROLE_INTRODUCTION)
-
   const columns: TableProps<MspAdministrator>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -146,7 +143,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
         }
       },
       render: function (data, row) {
-        return transformAdminRole(row.id, row.role)
+        return row.role === RolesEnum.DPSK_ADMIN
+          ? <span>DPSK Manager</span>
+          : transformAdminRole(row.id, row.role)
       }
     }
   ]
@@ -164,8 +163,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
-          !(value === RolesEnum.DPSK_ADMIN
-            && !dpskRbac)
+          !(value === RolesEnum.DPSK_ADMIN)
           && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}
@@ -190,7 +188,10 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
-            }
+            },
+            getCheckboxProps: (record: MspAdministrator) => ({
+              disabled: record.role === RolesEnum.DPSK_ADMIN
+            })
           }}
         />
         {selectedRows.length === 0 &&
