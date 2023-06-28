@@ -1,4 +1,5 @@
 import { Form, Radio, Typography } from 'antd'
+import _                           from 'lodash'
 import { defineMessage, useIntl }  from 'react-intl'
 
 import {
@@ -29,6 +30,7 @@ export default function SelectServiceForm () {
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -56,7 +58,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeEnabled || !isEdgeReady
         }
       ]
     },
@@ -65,7 +67,7 @@ export default function SelectServiceForm () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeEnabled || !isEdgeReady
         }
       ]
     },
@@ -118,7 +120,10 @@ export default function SelectServiceForm () {
             rules={[{ required: true }]}
           >
             <Radio.Group style={{ width: '100%' }}>
-              {sets.map(set =>
+              {sets.map(set => {
+                const isAllDisabled = _.findIndex(set.items,
+                  (o) => o.disabled === undefined || o.disabled === false ) === -1
+                return !isAllDisabled &&
                 <UI.CategoryContainer>
                   <Typography.Title level={3}>
                     { $t(set.title) }
@@ -136,7 +141,7 @@ export default function SelectServiceForm () {
                       </GridCol>)}
                   </GridRow>
                 </UI.CategoryContainer>
-              )}
+              })}
             </Radio.Group>
           </Form.Item>
         </StepsFormLegacy.StepForm>

@@ -1,17 +1,18 @@
 import userEvent from '@testing-library/user-event'
 
-import { useMuteIncidentsMutation } from '@acx-ui/analytics/components'
-import { fakeIncident1 }            from '@acx-ui/analytics/utils'
-import { showToast }                from '@acx-ui/components'
-import { Provider }                 from '@acx-ui/store'
-import { render, screen }           from '@acx-ui/test-utils'
+import { fakeIncident1 }  from '@acx-ui/analytics/utils'
+import { showToast }      from '@acx-ui/components'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+
+import { useMuteIncidentsMutation } from '../../IncidentTable/services'
 
 import MuteIncident from './MuteIncident'
 
 const mockedUseMuteIncidentsMutation = useMuteIncidentsMutation as jest.Mock
 const mockedMuteIncident = jest.fn()
-jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
+jest.mock('../../IncidentTable/services', () => ({
+  ...jest.requireActual('../../IncidentTable/services'),
   useMuteIncidentsMutation: jest.fn()
 }))
 

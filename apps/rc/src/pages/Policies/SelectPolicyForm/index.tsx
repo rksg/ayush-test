@@ -37,6 +37,7 @@ export default function SelectPolicyForm () {
     }
   }).data?.totalCount || 0
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -67,7 +68,7 @@ export default function SelectPolicyForm () {
       disabled: (ApSnmpPolicyTotalCount >= 64)
     })
   }
-  if (isEdgeEnabled) {
+  if (isEdgeEnabled && isEdgeReady) {
     sets.push({
       type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
     })

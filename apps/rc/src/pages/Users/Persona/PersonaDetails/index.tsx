@@ -253,9 +253,11 @@ function PersonaDetails () {
             </Subtitle>
           </Col>
           <Col span={12}>
-            <Subtitle level={4}>
-              {$t({ defaultMessage: 'Network Segmentation' })}
-            </Subtitle>
+            {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+              <Subtitle level={4}>
+                {$t({ defaultMessage: 'Network Segmentation' })}
+              </Subtitle>
+            }
           </Col>
           <Col span={12}>
             <Loader >
@@ -271,34 +273,36 @@ function PersonaDetails () {
               )}
             </Loader>
           </Col>
-          <Col span={12}>
-            {netSeg.map(item =>
-              <Row key={item.label}>
-                <Col span={7}>
-                  <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                    {item.label}:
-                  </Typography.Paragraph>
-                </Col>
-                <Col span={12}>{item.value ?? noDataDisplay}</Col>
-              </Row>
-            )}
-            {
-              isConnectionMeteringEnabled &&
-              <Row key={'Connection Metering'}>
-                <Col span={7}>
-                  <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                    {$t({ defaultMessage: 'Connection Metering' })}:
-                  </Typography.Paragraph>
-                </Col>
-                <Col span={12}>{connectionMetering ?
-                  <ConnectionMeteringLink
-                    id={connectionMetering.id}
-                    name={connectionMetering.name}/> :
-                  noDataDisplay}
-                </Col>
-              </Row>
-            }
-          </Col>
+          {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+            <Col span={12}>
+              {netSeg.map(item =>
+                <Row key={item.label}>
+                  <Col span={7}>
+                    <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                      {item.label}:
+                    </Typography.Paragraph>
+                  </Col>
+                  <Col span={12}>{item.value ?? noDataDisplay}</Col>
+                </Row>
+              )}
+              {
+                isConnectionMeteringEnabled &&
+                <Row key={'Connection Metering'}>
+                  <Col span={7}>
+                    <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                      {$t({ defaultMessage: 'Connection Metering' })}:
+                    </Typography.Paragraph>
+                  </Col>
+                  <Col span={12}>{connectionMetering ?
+                    <ConnectionMeteringLink
+                      id={connectionMetering.id}
+                      name={connectionMetering.name}/> :
+                    noDataDisplay}
+                  </Col>
+                </Row>
+              }
+            </Col>
+          }
         </Row>
 
 
