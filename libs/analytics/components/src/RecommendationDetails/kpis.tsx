@@ -146,7 +146,7 @@ export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
       {$t({ defaultMessage: 'until {datetime}' },
         { datetime: formatter(DateFormatEnum.DateTimeFormat)(monitoring.until) })}
     </KpiCard>}
-    {!kpis.length && <KpiCard>
+    {(!monitoring && !kpis.length) && <KpiCard>
       {$t({ defaultMessage: 'No performance indicators' })}
     </KpiCard>}
     <StatusTrail details={details}/>
