@@ -46,8 +46,8 @@ export function useAnalyticsFilter () {
 }
 
 export const getFilterPayload = (
-  { filter }: { filter: NodesFilter }
-): { path: NetworkPath, filter: NodesFilter } => {
+  { filter }: { filter: NodesFilter & SSIDFilter }
+): { path: NetworkPath, filter: NodesFilter & SSIDFilter } => {
   return {
     path: defaultNetworkPath, // to avoid error from legacy api
     filter
