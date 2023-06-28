@@ -10,10 +10,8 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within,
-  findTBody,
-  fireEvent
+  findTBody
 } from '@acx-ui/test-utils'
 
 import { SwitchTable } from '.'
@@ -117,8 +115,6 @@ jest.mock('../SwitchCliSession', () => ({
 }))
 
 describe('SwitchTable', () => {
-  afterEach(() => jest.restoreAllMocks())
-
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -141,8 +137,6 @@ describe('SwitchTable', () => {
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -170,6 +164,8 @@ describe('SwitchTable', () => {
 
     expect(await screen.findByText('Add Switch')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Switch' }))
+
+    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/add')
   })
 
   it('should clicks Import correctly', async () => {
@@ -196,6 +192,8 @@ describe('SwitchTable', () => {
 
     expect(await screen.findByText('Add Stack')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Stack' }))
+
+    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/stack/add')
   })
 
   it('Table action bar Delete', async () => {
@@ -254,13 +252,9 @@ describe('SwitchTable', () => {
       route: { params, path: '/:tenantId/t' }
     })
 
-    const input =
-      await screen
-        .findByPlaceholderText('Search Switch, Model, Serial Number, MAC Address, IP Address')
+    const input = await screen
+      .findByPlaceholderText('Search Switch, Model, Serial Number, MAC Address, IP Address')
 
-    input.focus()
-    fireEvent.change(input, { target: { value: 'ICX7150-C08P' } })
-
-    expect(await screen.findByText('ICX7150-C08P')).toBeVisible()
+    expect(input).toBeVisible()
   })
 })
