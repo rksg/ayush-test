@@ -8,8 +8,7 @@ import {
   PageHeader,
   StepsForm,
   StepsFormLegacy,
-  StepsFormLegacyInstance,
-  useStepFormContext
+  StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
@@ -140,8 +139,6 @@ export default function NetworkForm (props:{
 
   useEffect(() => {
     if(data && saveState.name === ''){
-
-      console.log(data, saveState.name)
       let name = data.name
       if (cloneMode) {
         name = data.name + ' - copy'
@@ -172,7 +169,6 @@ export default function NetworkForm (props:{
   }, [])
 
   const handleDetails = async (data: NetworkSaveData) => {
-    console.log(data)
     const detailsSaveData = transferDetailToSave(data)
     if(modalMode&&createType){
       detailsSaveData.type = createType
@@ -227,27 +223,26 @@ export default function NetworkForm (props:{
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
     }
-    const dataMore = handleGuestMoreSetting(data)
-    handlePortalWebPage(dataMore)
+    handlePortalWebPage(data)
     return true
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMoreSettings = async (data: any) => {
-    const dataMore = handleGuestMoreSetting(data)
-    const settingSaveData = transferMoreSettingsToSave(dataMore, saveState)
+    const settingSaveData = transferMoreSettingsToSave(data, saveState)
     updateSaveData(settingSaveData)
     return true
   }
 
   const handleGuestMoreSetting = (data:GuestMore)=>{
     if(data.guestPortal){
-      if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit)
+      if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit){
         data.guestPortal={
           ...data.guestPortal,
           userSessionTimeout: data.guestPortal.userSessionTimeout*
           minutesMapping[data.userSessionTimeoutUnit]
         }
+      }
       if(data.lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
         data.guestPortal={
           ...data.guestPortal,
@@ -439,35 +434,6 @@ export default function NetworkForm (props:{
 
     if(data?.type === NetworkTypeEnum.CAPTIVEPORTAL){
       handleOnboarding(data)
-    }
-
-    if(data.guestPortal){
-      const userSessionTimeoutUnit = _.get(data, 'userSessionTimeoutUnit')
-      if(data.guestPortal.userSessionTimeout&&userSessionTimeoutUnit){
-        data.guestPortal={
-          ...data.guestPortal,
-          userSessionTimeout: data.guestPortal.userSessionTimeout*
-          minutesMapping[userSessionTimeoutUnit]
-        }
-      }
-
-      const lockoutPeriodUnit = _.get(data, 'lockoutPeriodUnit')
-      if(lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
-        data.guestPortal={
-          ...data.guestPortal,
-          lockoutPeriod: data.guestPortal.lockoutPeriod*
-          minutesMapping[lockoutPeriodUnit]
-        }
-      }
-
-      const macCredentialsDurationUnit = _.get(data, 'macCredentialsDurationUnit')
-      if(macCredentialsDurationUnit&&data.guestPortal.macCredentialsDuration){
-        data.guestPortal={
-          ...data.guestPortal,
-          macCredentialsDuration: data.guestPortal.macCredentialsDuration*
-          minutesMapping[macCredentialsDurationUnit]
-        }
-      }
     }
 
     handleGuestMoreSetting(data)
