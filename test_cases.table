@@ -2,12 +2,10 @@ Group1=(
 "run rc:test --coverage --maxWorkers=3"
 "run analytics:test --coverage --maxWorkers=3"
 "run main:test --coverage --maxWorkers=3"
-"run main-components:test --coverage --maxWorkers=3"
-"run analytics-components:test --coverage --maxWorkers=3"
 "run common-components:test --coverage --maxWorkers=3"
 )
 Group2=(
-"run-many --target=test --all --exclude=rc,analytics,rc-components,main,common-components,analytics-components,main-components --coverage --runInBand --verbose --maxWorkers=3"
+"run-many --target=test --all --exclude=ra,rc,analytics,rc-components,main,common-components --coverage --runInBand --verbose --maxWorkers=3"
 )
 Group3=(
 "run rc-components:test --coverage --maxWorkers=3"
