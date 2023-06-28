@@ -26,6 +26,7 @@ export function VenueServicesTab () {
   const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
     { payload: {
       fields: [
+        'name',
         'serialNumber',
         'venueId',
         'firewallId'
