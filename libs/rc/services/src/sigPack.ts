@@ -5,9 +5,11 @@ import {
   onSocketActivityChanged,
   RequestPayload,
   SigPackUrlsInfo,
+  Transaction,
   TxStatus
 } from '@acx-ui/rc/utils'
 import { baseSigPackApi } from '@acx-ui/store'
+
 export const sigPackApi = baseSigPackApi.injectEndpoints({
   endpoints: (build) => ({
     getSigPack: build.query<ApplicationPolicyMgmt, RequestPayload>({
@@ -17,7 +19,14 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'SigPack', id: 'SIGPACK' }]
+      providesTags: [{ type: 'SigPack', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if (isTriggerSigPackFinished(msg)) {
+            api.dispatch(sigPackApi.util.invalidateTags([{ type: 'SigPack', id: 'LIST' }]))
+          }
+        })
+      }
     }),
     exportAllSigPack: build.mutation<Blob, RequestPayload>({
       query: () => {
@@ -59,26 +68,31 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
         }
       }
     }),
-    updateSigPack: build.mutation<{ [key:string]:string }, RequestPayload>({
+    updateSigPack: build.mutation<{ [key:string]: string }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SigPackUrlsInfo.updateSigPack, params)
         return {
           ...req,
           body: payload
         }
-      },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          if(msg.status === TxStatus.SUCCESS){
-            api.dispatch(sigPackApi.util.invalidateTags([{ type: 'SigPack', id: 'SIGPACK' }]))
-          }
-        })
       }
     })
   })
 })
+
+function isTriggerSigPackFinished (tx: Transaction): boolean {
+  const targetUseCase = 'TriggerApplicationLibraryAction'
+
+  if (tx.useCase !== targetUseCase) return false
+
+  const targetStep = tx.steps?.find(step => step.id === targetUseCase)
+
+  return targetStep ? targetStep.status !== TxStatus.IN_PROGRESS : false
+}
+
 export const {
   useGetSigPackQuery,
+  useLazyGetSigPackQuery,
   useExportAllSigPackMutation,
   useExportSigPackMutation,
   useUpdateSigPackMutation
