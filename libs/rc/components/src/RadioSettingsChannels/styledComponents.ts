@@ -54,6 +54,7 @@ div.ant-checkbox-group {
 const channelWidth = '26px'
 const channelMarginRight = '6px'
 
+
 export const CheckboxGroup = styled(Checkbox.Group)`
   .ant-checkbox-wrapper {
     position: relative;
@@ -128,6 +129,24 @@ export const CheckboxGroup = styled(Checkbox.Group)`
     justify-content: space-around;
   }
 }
+`
+export const CheckboxGroupFor320Mhz = styled(CheckboxGroup)`
+  .ant-checkbox-wrapper {
+    border-bottom: 30px solid var(--acx-neutrals-30);
+    width: 260px;
+    border-bottom-width: 30px;
+    > span {
+      &:last-child {
+        position: relative;
+        text-align: center;
+        font-size: var(--acx-body-3-font-size);
+        height: 30px;
+        line-height: 30px;
+        color: var(--acx-primary-white);
+        user-select: none;
+      }
+    }
+  }
 `
 
 const BarButton = styled(Button)`
