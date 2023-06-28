@@ -26,7 +26,7 @@ export function useAnalyticsFilter () {
   const venuesFilter = dashboardFilter.read()
   if (!read() && venuesFilter?.nodes.length === 1) {
     const [ name ] = venuesFilter.nodes[0]
-    const path = [{ type: 'zone' as NodeType, name }]
+    const path = [...defaultNetworkPath, { type: 'zone' as NodeType, name }]
     write({ path, raw: [JSON.stringify(path)] })
   }
 
