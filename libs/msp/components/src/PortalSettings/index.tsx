@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import {
@@ -20,8 +20,7 @@ import {
   PageHeader,
   showActionModal,
   showToast,
-  StepsFormLegacy,
-  StepsFormLegacyInstance,
+  StepsForm,
   Subtitle,
   Fieldset,
   GridCol,
@@ -74,7 +73,7 @@ export const getFileExtension = function (fileName: string) {
 export function PortalSettings () {
   const intl = useIntl()
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormLegacyInstance<MspPortal>>()
+  const [form] = Form.useForm()
   const params = useParams()
 
   const linkDashboard = useTenantLink('/dashboard', 'v')
@@ -229,10 +228,10 @@ export function PortalSettings () {
     newFile.url = URL.createObjectURL(file)
     // If this is the only image imported, load image into all logo previews
     if (!fileList.length) {
-      formRef.current?.setFieldValue('logo_uuid', newFile.uid)
-      formRef.current?.setFieldValue('ping_login_logo_uuid', newFile.uid)
-      formRef.current?.setFieldValue('ping_notification_logo_uuid', newFile.uid)
-      formRef.current?.setFieldValue('alarm_notification_logo_uuid', newFile.uid)
+      form.setFieldValue('logo_uuid', newFile.uid)
+      form.setFieldValue('ping_login_logo_uuid', newFile.uid)
+      form.setFieldValue('ping_notification_logo_uuid', newFile.uid)
+      form.setFieldValue('alarm_notification_logo_uuid', newFile.uid)
       setPortalLogoUrl(newFile.url?? '')
       setLoginLogoUrl(newFile.url?? '')
       setSupportLogoUrl(newFile.url?? '')
@@ -247,20 +246,20 @@ export function PortalSettings () {
     const newFileList = fileList.filter(f => f.uid !== file.uid)
     setFileList(newFileList)
     // Remove image from logo previews
-    if (formRef.current?.getFieldValue('logo_uuid') === file.uid) {
-      formRef.current?.setFieldValue('logo_uuid', undefined)
+    if (form.getFieldValue('logo_uuid') === file.uid) {
+      form.setFieldValue('logo_uuid', undefined)
       setPortalLogoUrl('')
     }
-    if (formRef.current?.getFieldValue('ping_login_logo_uuid') === file.uid) {
-      formRef.current?.setFieldValue('ping_login_logo_uuid', undefined)
+    if (form.getFieldValue('ping_login_logo_uuid') === file.uid) {
+      form.setFieldValue('ping_login_logo_uuid', undefined)
       setLoginLogoUrl('')
     }
-    if (formRef.current?.getFieldValue('ping_notification_logo_uuid') === file.uid) {
-      formRef.current?.setFieldValue('ping_notification_logo_uuid', undefined)
+    if (form.getFieldValue('ping_notification_logo_uuid') === file.uid) {
+      form.setFieldValue('ping_notification_logo_uuid', undefined)
       setSupportLogoUrl('')
     }
-    if (formRef.current?.getFieldValue('alarm_notification_logo_uuid') === file.uid) {
-      formRef.current?.setFieldValue('alarm_notification_logo_uuid', undefined)
+    if (form.getFieldValue('alarm_notification_logo_uuid') === file.uid) {
+      form.setFieldValue('alarm_notification_logo_uuid', undefined)
       setAlarmLogoUrl('')
     }
   }
@@ -443,7 +442,7 @@ export function PortalSettings () {
           setPreferredProvider(value)
           setCustomProfileName('')
         },
-        onCancel: () => formRef.current?.setFieldValue('external_provider', preferredProvider)
+        onCancel: () => form.setFieldValue('external_provider', preferredProvider)
       })
     } else {
       setOtherProvider(value === 'Other provider')
@@ -786,16 +785,16 @@ export function PortalSettings () {
         title={intl.$t({ defaultMessage: 'Settings' })}
       />
       {mspLabel &&
-        <StepsFormLegacy
+        <StepsForm
           editMode={isEditMode}
-          formRef={formRef}
+          form={form}
           onFinish={isEditMode ? handleUpdateMspLabel : handleAddMspLabel}
           onCancel={() => navigate(linkDashboard, { replace: true })}
           buttonLabel={{ submit: isEditMode ?
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Create' }) }}
         >
-          <StepsFormLegacy.StepForm name='branding'
+          <StepsForm.StepForm name='branding'
             title={intl.$t({ defaultMessage: 'Branding' })}>
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: 'Branding' }) }</Subtitle>
@@ -1037,9 +1036,9 @@ export function PortalSettings () {
               </Space>
             </div>
 
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormLegacy.StepForm
+          <StepsForm.StepForm
             name='portalProvider'
             title={intl.$t({ defaultMessage: '3rd Party Portal Providers' })}>
             <Subtitle level={3}>
@@ -1054,9 +1053,9 @@ export function PortalSettings () {
               {intl.$t({ defaultMessage: 'a 3rd party portal (WISPr) network.' })}</label>
             {isOtherProvider && <AuthAccServerSetting />}
 
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormLegacy.StepForm name='supportLinks'
+          <StepsForm.StepForm name='supportLinks'
             title={intl.$t({ defaultMessage: 'Support Links' })}>
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: 'Support links behavior' }) }</Subtitle>
@@ -1182,9 +1181,9 @@ export function PortalSettings () {
               <img src={supportLinkImg} alt={intl.$t({ defaultMessage: 'Support link image' })} />
             </div>
 
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
 
-          <StepsFormLegacy.StepForm name='contactInfo'
+          <StepsForm.StepForm name='contactInfo'
             title={intl.$t({ defaultMessage: 'Contact Info' })}>
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: 'Contact information for emails footer' }) }</Subtitle>
@@ -1200,7 +1199,7 @@ export function PortalSettings () {
               children={
                 <PhoneInput
                   name={'msp_phone'}
-                  callback={(value) => formRef.current?.setFieldValue('msp_phone', value)}
+                  callback={(value) => form.setFieldValue('msp_phone', value)}
                   onTop={false}
                 />
               }
@@ -1227,9 +1226,9 @@ export function PortalSettings () {
               initialValue={mspLabel?.msp_website}
               children={<Input/>}
             />
-          </StepsFormLegacy.StepForm>
+          </StepsForm.StepForm>
 
-        </StepsFormLegacy>
+        </StepsForm>
       }
     </>
   )

@@ -292,7 +292,9 @@ export function SwitchTable (props : SwitchTableProps) {
       const token = (await getJwtToken({ params: { tenantId: params.tenantId, serialNumber: row.serialNumber } }, true)
         .unwrap()).access_token || ''
       setCliData({ token, switchName: row.switchName || row.name || row.serialNumber, serialNumber: row.serialNumber })
-      setCliModalOpen(true)
+      setTimeout(() => {
+        setCliModalOpen(true)
+      }, 1000)
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
@@ -347,6 +349,8 @@ export function SwitchTable (props : SwitchTableProps) {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
+    } else {
+      delete customFilters.syncedSwitchConfig
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }

@@ -116,4 +116,22 @@ describe('Edge resource utilization chart', () => {
 
     await screen.findByText(exptectedUsedStr)
   })
+
+  it('should correctly render CPU utilization', async () => {
+    render(
+      <Provider>
+        <EdgeSysResourceBox
+          isLoading={false}
+          type={EdgeResourceUtilizationEnum.CPU}
+          title='CPU Usage'
+          value={currentEdge?.cpuUsedPercentage}
+        />
+      </Provider>,{
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/overview' }
+      })
+
+    let targetBox = await screen.findByText('CPU Usage')
+    const targetElem = targetBox.parentElement?.getElementsByClassName('ant-statistic-content-value')[0]
+    expect(targetElem?.textContent).toBe('92%')
+  })
 })

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { FetchBaseQueryError }            from '@reduxjs/toolkit/dist/query/react'
-import { Col, Form, Row, Select, Switch } from 'antd'
+import { FetchBaseQueryError }                                      from '@reduxjs/toolkit/dist/query/react'
+import { Col, Form, Row, Select, Switch, Modal, Input, Typography } from 'antd'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -9,9 +9,18 @@ import { PersonaGroupDrawer } from 'apps/rc/src/pages/Users/Persona/PersonaGroup
 import { FormFinishInfo }     from 'rc-field-form/lib/FormContext'
 import { useIntl }            from 'react-intl'
 
-import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Subtitle, Tabs } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                               from '@acx-ui/feature-toggle'
-import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
+import {
+  Button,
+  Loader,
+  ModalRef,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
+  Subtitle,
+  Tabs,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { PersonaGroupSelect, TemplateSelector } from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -23,6 +32,7 @@ import {
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
 import {
+  EditPropertyConfigMessages,
   getServiceDetailsLink,
   PropertyConfigs,
   PropertyConfigStatus,
@@ -30,8 +40,6 @@ import {
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-// FIXME: move this component to common folder.
 
 import { VenueEditContext } from '../index'
 
@@ -80,6 +88,7 @@ export function PropertyManagementTab () {
   const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const [isPropertyEnable, setIsPropertyEnable] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const [groupData, setGroupData] = useState<{ id?: string, name?: string }>()
   const [selectedGroupId, setSelectedGroupId] = useState<string|undefined>()
@@ -125,7 +134,7 @@ export function PropertyManagementTab () {
           })
       }
     }
-    formRef?.current.setFieldValue('isPropertyEnable', enabled)
+    setIsPropertyEnable(enabled)
   }, [propertyConfigsQuery.data, formRef])
 
   const registerMessageTemplates = async () => {
@@ -156,10 +165,8 @@ export function PropertyManagementTab () {
   }
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
-    const enableProperty = info.values.isPropertyEnable
-
     try {
-      if (enableProperty) {
+      if (isPropertyEnable) {
         await registerMessageTemplates()
         await updatePropertyConfigs({
           params: { venueId },
@@ -168,7 +175,7 @@ export function PropertyManagementTab () {
             venueName: venueData?.name ?? venueId,
             description: venueData?.description,
             address: venueData?.address,
-            status: enableProperty
+            status: isPropertyEnable
               ? PropertyConfigStatus.ENABLED
               : PropertyConfigStatus.DISABLED
           }
@@ -187,6 +194,50 @@ export function PropertyManagementTab () {
     } catch (e) {
       console.log(e) // eslint-disable-line no-console
     }
+  }
+
+  const handlePropertyEnable = (enabled: boolean) => {
+    if (!enabled) {
+      showConfirmModal(() => setIsPropertyEnable(false))
+    } else {
+      setIsPropertyEnable(enabled)
+    }
+  }
+
+  const showConfirmModal = (callback: () => void) => {
+    const modal = Modal['confirm']({})
+
+    modal.update({
+      title: $t({ defaultMessage: 'Switch Property Management Off?' }),
+      content: <>
+        {$t(EditPropertyConfigMessages.DISABLE_PROPERTY_MESSAGE)}
+        {confirmForm({ text: 'Disable', modal })}
+      </>,
+      okText: $t({ defaultMessage: 'Switch Off' }),
+      okButtonProps: { disabled: true },
+      onOk: () => {callback()},
+      icon: <> </>
+    })
+
+  }
+
+  const confirmForm = (props: {
+    text: string,
+    modal: ModalRef
+  }) => {
+    const label = $t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: props.text })
+    return (
+      <Form>
+        <Form.Item name='name' label={label}>
+          <Input onChange={(e) => {
+            const disabled = e.target.value.toLowerCase() !== props.text.toLowerCase()
+            props.modal.update({
+              okButtonProps: { disabled: disabled }
+            })
+          }} />
+        </Form.Item>
+      </Form>
+    )
   }
 
   const handleFormChange = async () => {
@@ -218,20 +269,35 @@ export function PropertyManagementTab () {
         <StepsFormLegacy.StepForm
           initialValues={defaultPropertyConfigs}
         >
-          <StepsFormLegacy.FieldLabel width={'200px'}>
-            {$t({ defaultMessage: 'Enable Property Management' })}
-            <Form.Item
-              name='isPropertyEnable'
-              valuePropName={'checked'}
-              children={<Switch />}
-            />
-          </StepsFormLegacy.FieldLabel>
-          {formRef?.current?.getFieldValue('isPropertyEnable') &&
+          <Row gutter={20} style={{ marginBottom: '12px' }}>
+            <Col span={8}>
+              <Typography.Text>
+                {$t({ defaultMessage: 'Enable Property Management' })}
+              </Typography.Text>
+              <Switch
+                data-testid={'property-enable-switch'}
+                checked={isPropertyEnable}
+                onChange={handlePropertyEnable}
+                style={{ marginLeft: '20px' }}
+              />
+              <Tooltip.Question
+                title={$t(EditPropertyConfigMessages.ENABLE_PROPERTY_TOOLTIP)}
+                placement={'bottom'}
+              />
+            </Col>
+          </Row>
+          {isPropertyEnable &&
             <Row gutter={20}>
               <Col span={8}>
                 <Form.Item
                   name='personaGroupId'
-                  label={$t({ defaultMessage: 'Persona Group' })}
+                  label={<>
+                    {$t({ defaultMessage: 'Persona Group' })}
+                    <Tooltip.Question
+                      title={$t(EditPropertyConfigMessages.BIND_PERSONA_GROUP_TOOLTIP)}
+                      placement={'bottom'}
+                    />
+                  </>}
                   rules={[{ required: true }]}
                 >
                   {personaGroupHasBound
