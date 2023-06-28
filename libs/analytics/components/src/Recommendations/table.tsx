@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
-// import { Checkbox } from 'antd'
-// import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { Checkbox } from 'antd'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -17,7 +17,11 @@ import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink }                  from '@acx-ui/react-router-dom'
 import { noDataDisplay }               from '@acx-ui/utils'
 
-import { useRecommendationListQuery, Recommendation } from './services'
+import {
+  useRecommendationListQuery,
+  Recommendation,
+  useMuteReommendationMutation
+} from './services'
 import * as UI                                        from './styledComponents'
 
 
@@ -45,34 +49,32 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
   const scopeType = get('IS_MLISA_SA')
     ? $t({ defaultMessage: 'Zone' })
     : $t({ defaultMessage: 'Venue' })
-  // const [ showMuted, setShowMuted ] = useState<boolean>(false)
+  const [ showMuted, setShowMuted ] = useState<boolean>(false)
 
-  // const [muteRecommendation] = useMuteRecommendationsMutation()
-  // const [selectedRowData, setSelectedRowData] = useState<{
-  //   id: string,
-  //   code: string,
-  //   severityLabel: string,
-  //   isMuted: boolean
-  // }[]>([])
+  const [muteRecommendation] = useMuteReommendationMutation()
+  const [selectedRowData, setSelectedRowData] = useState<{
+    id: string,
+    isMuted: boolean
+  }[]>([])
 
-  // const selectedRecommendation = selectedRowData[0]
-  // const data = (showMuted)
-  //   ? queryResults.data
-  //   : filterMutedRecommendations(queryResults.data)
+  const selectedRecommendation = selectedRowData[0]
+  const data = (showMuted)
+    ? queryResults.data
+    : queryResults.data //filterMutedRecommendations(queryResults.data)
 
-  // const rowActions: TableProps<Recommendation>['rowActions'] = [
-  //   {
-  //     label: $t(selectedRecommendation?.isMuted
-  //       ? defineMessage({ defaultMessage: 'Unmute' })
-  //       : defineMessage({ defaultMessage: 'Mute' })
-  //     ),
-  //     onClick: async () => {
-  //       // const { id, code, severityLabel, isMuted } = selectedRecommendation
-  //       // await muteRecommendation({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
-  //       // setSelectedRowData([])
-  //     }
-  //   }
-  // ]
+  const rowActions: TableProps<Recommendation>['rowActions'] = [
+    {
+      label: $t(selectedRecommendation?.isMuted
+        ? defineMessage({ defaultMessage: 'Unmute' })
+        : defineMessage({ defaultMessage: 'Mute' })
+      ),
+      onClick: async () => {
+        const { id, isMuted } = selectedRecommendation
+        await muteRecommendation({ id, mute: !isMuted }).unwrap()
+        setSelectedRowData([])
+      }
+    }
+  ]
 
   const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => [
     {
@@ -156,35 +158,33 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
         type='tall'
         dataSource={queryResults.data}
         columns={ColumnHeaders}
-        // rowActions={rowActions}
-        // rowSelection={{
-        //   type: 'radio',
-        //   selectedRowKeys: selectedRowData.map(val => val.id),
-        //   // onChange: (_, [row]) => {
-        //   //   // row && setSelectedRowData([{
-        //   //   //   id: row.id,
-        //   //   //   code: row.code,
-        //   //   //   severityLabel: row?.priority,
-        //   //   //   isMuted: row.isMuted
-        //   //   // }])
-        //   // }
-        // }}
+        rowActions={rowActions}
+        rowSelection={{
+          type: 'radio',
+          selectedRowKeys: selectedRowData.map(val => val.id),
+          onChange: (_, [row]) => {
+            row && setSelectedRowData([{
+              id: row.id,
+              isMuted: row.isMuted
+            }])
+          }
+        }}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}
-        // onResetState={() => {
-        //   setShowMuted(false)
-        //   setSelectedRowData([])
-        // }}
-        // extraSettings={[
-        //   <Checkbox
-        //     onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
-        //     checked={showMuted}
-        //     children={$t({ defaultMessage: 'Show Muted Recommendations' })}
-        //   />
-        // ]}
-        //rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        onResetState={() => {
+          setShowMuted(false)
+          setSelectedRowData([])
+        }}
+        extraSettings={[
+          <Checkbox
+            onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
+            checked={showMuted}
+            children={$t({ defaultMessage: 'Show Muted Recommendations' })}
+          />
+        ]}
+        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
         filterableWidth={155}
         searchableWidth={240}
       />
