@@ -8,7 +8,8 @@ export const baseSwitchApi = createApi({
     'SwitchClient',
     'SwitchPort',
     'SwitchProfiles',
-    'SwitchOnDemandCli'],
+    'SwitchOnDemandCli',
+    'SwitchVlan'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })

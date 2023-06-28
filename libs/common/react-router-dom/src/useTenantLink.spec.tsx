@@ -26,7 +26,25 @@ describe('useTenantLink', () => {
   it('returns path prepend with MLISA base path', () => {
     get.mockReturnValue('true')
     const { result } = renderHook(
-      () => useTenantLink('/networks'),
+      () => useTenantLink({ pathname: undefined }),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/analytics/next')
+  })
+
+  it('returns path without "analytics" for MLISA', () => {
+    get.mockReturnValue('true')
+    const { result } = renderHook(
+      () => useTenantLink('/analytics/networks'),
+      { wrapper: getWrapper('') }
+    )
+    expect(result.current.pathname).toEqual('/analytics/next/networks')
+  })
+
+  it('returns pathname without "analytics" for MLISA', () => {
+    get.mockReturnValue('true')
+    const { result } = renderHook(
+      () => useTenantLink({ pathname: '/analytics/networks' }),
       { wrapper: getWrapper('') }
     )
     expect(result.current.pathname).toEqual('/analytics/next/networks')
