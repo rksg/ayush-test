@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen }                                       from '@acx-ui/test-utils'
@@ -16,6 +17,7 @@ describe('EdgeDhcpDetail', () => {
     oper: ServiceOperation.DETAIL
   })
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: '1'
