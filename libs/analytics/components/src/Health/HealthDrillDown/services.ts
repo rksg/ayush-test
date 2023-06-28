@@ -222,6 +222,7 @@ export const api = dataApi.injectEndpoints({
           `,
           variables: {
             ...getFilterPayload(payload),
+            path: getSelectedNodePath(payload.filter),
             start: payload.start,
             end: payload.end
           }
