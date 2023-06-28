@@ -67,11 +67,6 @@ function KpiSection (props: {
 }) {
   const { kpis, filters, thresholds } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
-  const { filter } = filters
-  const path = filter.networkNodes && filter.networkNodes.length
-    ? filter.networkNodes[0]
-    : [{ type: 'network' as 'network', name: 'Network' }]
-  const isNetwork = path.length === 1
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -119,7 +114,7 @@ function KpiSection (props: {
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
-                isNetwork={isNetwork}
+                isNetwork={!filters.filter.networkNodes}
               />
             ) : (
               <BarChart
