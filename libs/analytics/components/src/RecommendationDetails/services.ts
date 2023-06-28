@@ -3,8 +3,8 @@ import { chain, get, snakeCase } from 'lodash'
 import moment                    from 'moment-timezone'
 import { MessageDescriptor }     from 'react-intl'
 
-import { dataApiRecommendation } from '@acx-ui/store'
-import { NetworkPath }           from '@acx-ui/utils'
+import { recommendationApi } from '@acx-ui/store'
+import { NetworkPath }       from '@acx-ui/utils'
 
 import { states, codes }     from './configRecommendationData'
 import configRecommendations from './configRecommendations'
@@ -110,7 +110,7 @@ const kpiHelper = ({ code }: { code?: string }) => {
     .trim()
 }
 
-export const api = dataApiRecommendation.injectEndpoints({
+export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     recommendationDetails: build.query<EnhancedRecommendation, RecommendationsDetailsPayload>({
       query: (payload) => ({

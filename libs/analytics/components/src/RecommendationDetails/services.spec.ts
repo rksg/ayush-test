@@ -1,7 +1,7 @@
 import { omit } from 'lodash'
 
-import { dataApiRecommendationURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery }                from '@acx-ui/test-utils'
+import { recommendationUrl, store } from '@acx-ui/store'
+import { mockGraphqlQuery }         from '@acx-ui/test-utils'
 
 import {
   mockedRecommendationFirmware,
@@ -22,7 +22,7 @@ describe('recommendation services', () => {
   }
 
   it('should return correct recommendation details', async () => {
-    mockGraphqlQuery(dataApiRecommendationURL, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: {
         recommendation: mockedRecommendationFirmware
       }
@@ -72,7 +72,7 @@ describe('recommendation services', () => {
   })
 
   it('should return correct details with code', async () => {
-    mockGraphqlQuery(dataApiRecommendationURL, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: {
         recommendation: mockedRecommendationFirmware
       }
@@ -122,7 +122,7 @@ describe('recommendation services', () => {
   })
 
   it('should return correct crrm recommendation details', async () => {
-    mockGraphqlQuery(dataApiRecommendationURL, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: {
         recommendation: mockedRecommendationCRRM
       }
@@ -168,7 +168,7 @@ describe('recommendation services', () => {
   })
 
   it('should return correct ap details', async () => {
-    mockGraphqlQuery(dataApiRecommendationURL, 'GetAps', {
+    mockGraphqlQuery(recommendationUrl, 'GetAps', {
       data: {
         recommendation: {
           APs: mockedRecommendationApFirmware

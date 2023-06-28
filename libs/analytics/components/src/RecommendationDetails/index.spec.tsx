@@ -1,4 +1,4 @@
-import { dataApiRecommendationURL, Provider }        from '@acx-ui/store'
+import { recommendationUrl, Provider }               from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockedRecommendationFirmware } from './__tests__/fixtures'
@@ -26,12 +26,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 describe('RecommendationDetails', () => {
   it('renders correctly', async () => {
-    mockGraphqlQuery(dataApiRecommendationURL, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: {
         recommendation: mockedRecommendationFirmware
       }
     })
-    mockGraphqlQuery(dataApiRecommendationURL, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: {
         recommendation: mockedRecommendationFirmware
       }

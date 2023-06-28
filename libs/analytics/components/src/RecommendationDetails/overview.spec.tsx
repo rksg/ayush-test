@@ -1,4 +1,4 @@
-import { dataApiRecommendationURL, Provider }          from '@acx-ui/store'
+import { recommendationUrl, Provider }                 from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {
@@ -13,7 +13,7 @@ import { transformDetailsResponse } from './services'
 describe('Recommendation Overview', () => {
   it('should render correctly for firmware', async () => {
     const firmwareDetails = transformDetailsResponse(mockedRecommendationFirmware)
-    mockGraphqlQuery(dataApiRecommendationURL, 'GetAps', {
+    mockGraphqlQuery(recommendationUrl, 'GetAps', {
       data: {
         recommendation: {
           APs: mockedRecommendationApFirmware
@@ -35,7 +35,7 @@ describe('Recommendation Overview', () => {
 
   it('should render correctly for firmware drawer', async () => {
     const firmwareDetails = transformDetailsResponse(mockedRecommendationFirmware)
-    mockGraphqlQuery(dataApiRecommendationURL, 'GetAps', {
+    mockGraphqlQuery(recommendationUrl, 'GetAps', {
       data: {
         recommendation: {
           APs: mockedRecommendationApFirmware
