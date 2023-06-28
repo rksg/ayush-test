@@ -1,18 +1,17 @@
 import React from 'react'
 
-import { Col, Row, Typography } from 'antd'
-import { useIntl }              from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Button, Card, PageHeader, Subtitle, Table, TableProps } from '@acx-ui/components'
+import { Button, Card, PageHeader, SummaryCard, Table, TableProps } from '@acx-ui/components'
 import {
   useGetWebAuthTemplateQuery,
   useGetWebAuthTemplateSwitchesQuery
 } from '@acx-ui/rc/services'
 import {
+  ServiceOperation,
   ServiceType,
   WebAuthTemplate,
   getServiceDetailsLink,
-  ServiceOperation,
   getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
@@ -22,36 +21,40 @@ import { filterByAccess }                     from '@acx-ui/user'
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
   const { $t } = useIntl()
-  return <Row gutter={[24, 16]}>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Service Name' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.name} />
-    </Col>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Header' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomTop} />
-    </Col>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Title' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomTitle} />
-    </Col>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Password Label' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthPasswordLabel} />
-    </Col>
-    {/* <Col span={6}> // TODO: Waiting for TAG feature support
-      <Subtitle level={5}>{$t({ defaultMessage: 'Tags' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.tag} />
-    </Col> */}
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Button' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomLoginButton} />
-    </Col>
-    <Col span={12}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Footer' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomBottom} />
-    </Col>
-  </Row>
+
+  const networkSegAuthInfo = [
+    {
+      title: $t({ defaultMessage: 'Service Name' }),
+      content: data?.name
+    },
+    {
+      title: $t({ defaultMessage: 'Header' }),
+      content: data?.webAuthCustomTop
+    },
+    {
+      title: $t({ defaultMessage: 'Title' }),
+      content: data?.webAuthCustomTitle
+    },
+    {
+      title: $t({ defaultMessage: 'Password Label' }),
+      content: data?.webAuthPasswordLabel
+    },
+    {
+      title: $t({ defaultMessage: 'Tags' }),
+      content: data?.tag,
+      visible: false
+    },
+    {
+      title: $t({ defaultMessage: 'Button' }),
+      content: data?.webAuthCustomLoginButton
+    },
+    {
+      title: $t({ defaultMessage: 'Footer' }),
+      content: data?.webAuthCustomBottom
+    }
+  ]
+
+  return <SummaryCard data={networkSegAuthInfo} colPerRow={4} />
 }
 
 export default function NetworkSegAuthDetail () {
@@ -111,9 +114,7 @@ export default function NetworkSegAuthDetail () {
           </TenantLink>
         ])}
       />
-      <Card type='solid-bg'>
-        <NetworkSegAuthSummary data={data} />
-      </Card>
+      <NetworkSegAuthSummary data={data} />
       <br /><br />
 
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
