@@ -14,9 +14,9 @@ export type ChangedAppsInfoMap = {
   }
 }
 
-export function useSigPackDetails (skipQuery: boolean = false) {
+export function useSigPackDetails () {
   // eslint-disable-next-line max-len
-  const { data, isFetching, isLoading } = useGetSigPackQuery({ params: { changesIncluded: 'true' } }, { skip: skipQuery })
+  const { data, isFetching, isLoading } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
 
   const updatedCount = (): number => {
     const updated = changedAppsInfoMap[ApplicationUpdateType.CATEGORY_UPDATED]?.data ?? []

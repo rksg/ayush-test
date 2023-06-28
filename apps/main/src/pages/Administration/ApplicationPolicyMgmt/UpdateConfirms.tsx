@@ -10,10 +10,10 @@ import { useUpdateSigPackMutation }         from '@acx-ui/rc/services'
 import { ApplicationUpdateType }            from '@acx-ui/rc/utils'
 import { getIntl }                          from '@acx-ui/utils'
 
-import * as UI                                                          from './styledComponents'
-import { cautionDescription, confirmationContentMap, confirmationText } from './UpdateConfirmsConstants'
-import { ConfirmContentProps, DialogFooterProps, UpdateConfirmsProps }  from './UpdateConfirmsTypes'
-import { ChangedAppsInfoMap, useSigPackDetails }                        from './useSigPackDetails'
+import * as UI                                                                                    from './styledComponents'
+import { cautionDescription, confirmationContentMap, confirmationText }                           from './UpdateConfirmsConstants'
+import { ConfirmContentProps, DialogFooterProps, ImpactedRulesDetailsProps, UpdateConfirmsProps } from './UpdateConfirmsTypes'
+import { ChangedAppsInfoMap }                                                                     from './useSigPackDetails'
 
 import { changedApplicationTypeTextMap } from '.'
 
@@ -21,19 +21,15 @@ export const UpdateConfirms = (props: UpdateConfirmsProps) => {
   const { changedAppsInfoMap } = props
   const { $t } = useIntl()
   const [ updateSigPack ] = useUpdateSigPackMutation()
-  const [ disabled, setDisabled ] = useState(false)
+  const [ isUpdating, setIsUpdating ] = useState(false)
 
   const doUpdate = () => {
-    setDisabled(true)
+    setIsUpdating(true)
 
     try{
-      updateSigPack({ params: {}, payload: { action: 'UPDATE' } }).then(() => {
-        setTimeout(() => setDisabled(false), 3500)
-      }, () => {
-        setDisabled(false)
-      })
+      updateSigPack({ params: {}, payload: { action: 'UPDATE' } }).unwrap()
     } catch(error) {
-      setDisabled(false)
+      setIsUpdating(false)
     }
   }
 
@@ -71,12 +67,12 @@ export const UpdateConfirms = (props: UpdateConfirmsProps) => {
       }
     }}
     type='primary'
-    disabled={disabled}
-    style={!disabled ? {
+    disabled={isUpdating}
+    style={isUpdating ? {} : {
       backgroundColor: 'var(--acx-accents-orange-50)',
       borderColor: 'var(--acx-accents-orange-50)'
-    } : {}}>
-    {$t({ defaultMessage: 'Update' })}
+    }}>
+    {isUpdating ? $t({ defaultMessage: 'Updating...' }) : $t({ defaultMessage: 'Update' })}
   </Button>
 }
 
@@ -102,7 +98,12 @@ function ConfirmContent (props: ConfirmContentProps) {
           style={{ width: 80, marginLeft: 5 }}
         />
       </UI.TypeContent>
-      <DialogFooter onOk={onOk} onCancel={onCancel} okDisabled={okDisabled} />
+      <DialogFooter
+        changedAppsInfoMap={changedAppsInfoMap}
+        onOk={onOk}
+        onCancel={onCancel}
+        okDisabled={okDisabled}
+      />
     </>
   )
 }
@@ -114,7 +115,7 @@ function DialogFooter (props: DialogFooterProps) {
 
   return (
     <UI.DialogFooter>
-      {hasImpacedRules && <ImpactedRulesDetails />}
+      {hasImpacedRules && <ImpactedRulesDetails changedAppsInfoMap={props.changedAppsInfoMap} />}
       <UI.DialogFooterButtons>
         <Button type='default'
           onClick={onCancel}>{$t({ defaultMessage: 'Cancel' })}</Button>
@@ -126,9 +127,9 @@ function DialogFooter (props: DialogFooterProps) {
   )
 }
 
-function ImpactedRulesDetails () {
+function ImpactedRulesDetails (props: ImpactedRulesDetailsProps) {
   const { $t } = getIntl()
-  const { changedAppsInfoMap } = useSigPackDetails(true)
+  const { changedAppsInfoMap } = props
 
   return (
     <UI.Collapse

@@ -15,6 +15,7 @@ export interface ConfirmContentProps {
 }
 
 export interface DialogFooterProps {
+  changedAppsInfoMap: ChangedAppsInfoMap
   onOk: () => void
   onCancel: () => void
   okDisabled: boolean
