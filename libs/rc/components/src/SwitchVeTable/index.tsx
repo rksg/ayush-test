@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -10,10 +10,17 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery } from '@acx-ui/rc/services'
+import {
+  useDeleteVePortsMutation,
+  useGetSwitchRoutedListQuery,
+  useGetVenueRoutedListQuery,
+  useSwitchDetailHeaderQuery,
+  useVenueSwitchSettingQuery
+} from '@acx-ui/rc/services'
 import {
   isOperationalSwitch,
   useTableQuery,
+  VenueMessages,
   VeViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -28,8 +35,11 @@ export function SwitchVeTable ( { isVenueLevel } : {
 }
 ) {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
+  const params = useParams()
+  const [cliApplied, setCliApplied] = useState(false)
 
+  const { data: venueSwitchSetting } = useVenueSwitchSettingQuery({ params, skip: !isVenueLevel })
+  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params, skip: isVenueLevel })
 
   const defaultPayload = {
     fields: [
@@ -120,6 +130,12 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const [disabledDelete, setDisabledDelete] = useState(false)
 
+  useEffect(() => {
+    if (switchDetail || venueSwitchSetting) {
+      setCliApplied((switchDetail?.cliApplied || venueSwitchSetting?.cliApplied) as boolean)
+    }
+  }, [switchDetail, venueSwitchSetting])
+
   const onSelectChange = (keys: React.Key[], rows: VeViewModel[]) => {
     setDeleteButtonTooltip('')
     setDisabledDelete(false)
@@ -170,7 +186,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
             numOfEntities: rows.length
           },
           onOk: () => {
-            deleteVePorts({ params: { tenantId }, payload: _.map(rows, 'id') })
+            deleteVePorts({ params, payload: _.map(rows, 'id') })
               .then(clearSelection)
           }
         })
@@ -201,6 +217,8 @@ export function SwitchVeTable ( { isVenueLevel } : {
       }}
       actions={filterByAccess([{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
+        disabled: cliApplied,
+        tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
         onClick: () => {
           setIsEditMode(false)
           setVisible(true) }
@@ -212,6 +230,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
       isEditMode={isEditMode}
       isVenueLevel={isVenueLevel}
       editData={editData}
+      readOnly={isEditMode && cliApplied}
     />}
 
   </Loader>
