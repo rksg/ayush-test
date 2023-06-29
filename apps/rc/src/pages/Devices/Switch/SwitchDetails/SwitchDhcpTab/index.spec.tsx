@@ -102,8 +102,12 @@ describe('SwitchDhcpTab', () => {
       mockedShowActionModal
     )
 
+    await screen.findByText('DHCP Service state')
+    await screen.findByText('Lease Expiration')
+
     const statusBtn = screen.getByRole('switch')
     await waitFor(() => expect(statusBtn).toBeEnabled())
+    expect(statusBtn).not.toBeChecked()
 
     fireEvent.click(screen.getByRole('switch'))
     expect(mockedShowActionModal).toBeCalledTimes(1)

@@ -28,16 +28,17 @@ export function SwitchDhcpTab () {
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/${activeTab}`)
 
   const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
-  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
+  const { data: switchDetail, isLoading: isDetailLoading }
+    = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
   const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
 
   const isOperational = switchDetail?.deviceStatus ?
     isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
 
-  const tooltipTitle = !isOperational
+  const tooltip = !isOperational
     // eslint-disable-next-line max-len
     ? $t({ defaultMessage: 'Switch must be operational before you can apply the DHCP Service state.' })
-    : (switchDetail?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : '')
+    : (!!switchDetail?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : '')
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -73,11 +74,11 @@ export function SwitchDhcpTab () {
   const operations =
     <Form.Item style={{ marginBottom: 0 }}
       label={$t({ defaultMessage: 'DHCP Service state' })}>
-      <Tooltip title={tooltipTitle}>
+      <Tooltip title={tooltip}>
         <Switch onChange={onDhcpStatusChange}
           checked={switchData?.dhcpServerEnabled}
-          loading={isLoading}
-          disabled={!isOperational || switchDetail?.cliApplied} />
+          loading={isLoading || isDetailLoading}
+          disabled={!isOperational || !!switchDetail?.cliApplied} />
       </Tooltip>
     </Form.Item>
 
