@@ -34,7 +34,7 @@ function ActualMap () {
     params: useParams()
   })
   const {
-    currentMapRegion, currentDefaultLang,
+    currentMapRegion,
     getReqState,
     updateReqState
   } = usePreference()
@@ -50,7 +50,7 @@ function ActualMap () {
           cluster={true}
           data={data}
           enableVenueFilter={true}
-          language={currentDefaultLang}
+          language={'en'}
           region={currentMapRegion} />
       }
     </Loader>
@@ -72,7 +72,7 @@ function ActualMapV2 () {
   })
 
   const {
-    currentMapRegion, currentDefaultLang,
+    currentMapRegion,
     getReqState,
     updateReqState
   } = usePreference()
@@ -88,7 +88,7 @@ function ActualMapV2 () {
           cluster={true}
           data={data}
           enableVenueFilter={true}
-          language={currentDefaultLang}
+          language={'en'}
           region={currentMapRegion}
         />
       }

@@ -2,10 +2,12 @@ import React from 'react'
 
 import { initialize, mockInstances, Autocomplete } from '@googlemaps/jest-mocks'
 import { Input }                                   from 'antd'
+import { rest }                                    from 'msw'
 
-import { useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { Provider }                    from '@acx-ui/store'
-import { render, renderHook, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo }                  from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { mockServer, render, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { usePlacesAutocomplete } from '.'
 
@@ -21,6 +23,17 @@ jest.mock('@googlemaps/js-api-loader', () => ({
 
 describe('Test usePlacesAutocomplete', () => {
   afterAll(()=>{ mockInstances.clearAll() })
+
+  beforeEach(()=>{
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({
+          global: { mapRegion: 'TW' }
+        }))
+      )
+    )
+  })
 
   it('usePlacesAutocomplete loader', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

@@ -5,7 +5,7 @@ import { usePreference } from '../usePreference'
 
 export function GoogleMapWithPreference (props: MapProps) {
   const {
-    currentMapRegion, currentDefaultLang,
+    currentMapRegion,
     getReqState,
     updateReqState
   } = usePreference()
@@ -18,7 +18,7 @@ export function GoogleMapWithPreference (props: MapProps) {
         isLoading === false &&
         <GoogleMap
           loaderOpts={{
-            language: currentDefaultLang,
+            language: 'en',
             region: currentMapRegion
           }}
           {...props}

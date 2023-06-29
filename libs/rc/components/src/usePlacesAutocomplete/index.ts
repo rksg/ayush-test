@@ -14,7 +14,7 @@ export function usePlacesAutocomplete ( props:
     onPlaceSelected?: (place: google.maps.places.PlaceResult)=>void
   }
 ) {
-  const { currentMapRegion, currentDefaultLang } = usePreference()
+  const { currentMapRegion } = usePreference()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const inputRef = useRef<InputRef>(null)
   const autocompleteRef = useRef<google.maps.places.Autocomplete>()
@@ -23,21 +23,21 @@ export function usePlacesAutocomplete ( props:
   const [mapReady, setMapReady] = useState(false)
 
   useEffect(() => {
-    if (!isMapEnabled || !currentMapRegion || !currentDefaultLang) return
+    if (!isMapEnabled || !currentMapRegion) return
     if (!!window.google?.maps?.places) {
       setMapReady(true)
     } else {
       const loader = new MapLoader({
         apiKey: get('GOOGLE_MAPS_KEY'),
         libraries: ['places'],
-        language: currentDefaultLang,
+        language: 'en',
         region: currentMapRegion
       })
       loader.load().then(()=>{
         setMapReady(true)
       })
     }
-  }, [isMapEnabled, currentMapRegion, currentDefaultLang])
+  }, [isMapEnabled, currentMapRegion])
 
   useEffect(() => {
     if (mapReady && inputRef.current?.input && !autocompleteRef.current) {
