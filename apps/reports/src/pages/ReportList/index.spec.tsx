@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { render, screen, within } from '@acx-ui/test-utils'
 
 import { ReportList } from '.'
@@ -21,6 +22,12 @@ describe('ReportList', () => {
     render(<ReportList />, { route: { path, params } })
     expect(screen.getByText('Reports')).toBeVisible()
     expect(screen.getByText('Overview')).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<ReportList />, { route: { path, params } })
+    expect(await screen.findByText('Business Insights')).toBeVisible()
   })
 
   it('should route to report when card is clicked', async () => {

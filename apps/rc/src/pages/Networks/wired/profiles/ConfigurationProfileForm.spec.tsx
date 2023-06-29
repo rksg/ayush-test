@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { switchApi, venueApi }                                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo }                         from '@acx-ui/rc/utils'
 import { Provider, store }                                        from '@acx-ui/store'
@@ -22,6 +23,12 @@ const configureProfileContextValues = {
   editMode: false,
   currentData
 } as unknown as ConfigurationProfileType
+
+const mockNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate
+}))
 
 describe('Wired', () => {
   beforeEach(() => {
@@ -81,6 +88,46 @@ describe('Wired', () => {
     expect(await screen.findByText('Add Switch Configuration Profile')).toBeVisible()
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+      })
+
+    expect(screen.getByRole('link', {
+      name: /wired networks/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+      })
+
+    expect(await screen.findByText('Wired')).toBeVisible()
+    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /configuration profiles/i
+    })).toBeTruthy()
+  })
+
   it('should render edit Switch Configuration Profile form correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -101,6 +148,9 @@ describe('Wired', () => {
 
     expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockNavigate).toHaveBeenCalledWith({
+      hash: '', pathname: '/tenant-id/t/networks/wired/profiles', search: '' }, { replace: true }
+    )
   })
 
   it('should render create Switch Configuration Profile correctly', async () => {

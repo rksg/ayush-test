@@ -4,6 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -26,6 +27,7 @@ export function ConfigurationProfileForm () {
   const params = useParams()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
   const [form] = Form.useForm()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data, isLoading } = useGetSwitchConfigProfileQuery(
     { params }, { skip: !params.profileId })
@@ -156,7 +158,14 @@ export function ConfigurationProfileForm () {
         title={editMode
           ? $t({ defaultMessage: 'Edit Switch Configuration Profile' })
           : $t({ defaultMessage: 'Add Switch Configuration Profile' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Configuration Profiles' }),
+            link: '/networks/wired/profiles'
+          }
+        ] : [
           { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired/profiles' }
         ]}
       />
