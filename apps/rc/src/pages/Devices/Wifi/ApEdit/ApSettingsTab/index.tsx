@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs, Tooltip }                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }               from '@acx-ui/icons'
 import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
 import { ApDeep, ApModel }                          from '@acx-ui/rc/utils'
@@ -39,7 +39,10 @@ export function ApSettingsTab () {
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const supportMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+
+  const isTierAllowMeshEnhancement = useIsTierAllowed(Features.BETA_MESH)
+  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+  const supportMeshEnhancement = isTierAllowMeshEnhancement && isFeatureOnMeshEnhancement
 
   const getAp = useGetApQuery({ params })
   const getApCapabilities = useGetApCapabilitiesQuery({ params })
