@@ -184,7 +184,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   }
 
   const validatorUniqueMember = (serialNumber: string) => {
-    const memberExistCount = tableData.filter((item: SwitchTable) => {
+    const member = switchDetail?.stackMembers || []
+    const memberExistCount = member.concat(tableData).filter((item) => {
       return item.id === serialNumber
     }).length
     return memberExistCount > 1
@@ -228,6 +229,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
     try {
       let payload = {
         ...switchDetail,
+        enableStack: true,
         stackMembers: [
           ...(switchDetail?.stackMembers.map((item) => ({ id: item.id })) ?? []),
           ...tableData.map((item) => ({ id: item.id }))
