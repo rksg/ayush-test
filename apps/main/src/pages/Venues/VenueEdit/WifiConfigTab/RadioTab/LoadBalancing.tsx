@@ -43,7 +43,7 @@ export function LoadBalancing () {
 
   const betaStickyFlag = useIsTierAllowed(Features.BETA_CLB)
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
-  const supportStickyClient = betaStickyFlag && stickyClientFlag && enabled
+  const supportStickyClient = betaStickyFlag && stickyClientFlag
 
   const infoMessage = defineMessage({
     defaultMessage: `Make sure <b>background scan</b> is selected for channel selection
@@ -237,7 +237,7 @@ export function LoadBalancing () {
     </Row>
     }
 
-    {supportStickyClient &&
+    {supportStickyClient && enabled &&
     <Row>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
@@ -260,7 +260,7 @@ export function LoadBalancing () {
     </Row>
     }
 
-    {supportStickyClient && stickyClientSteeringEnabled &&
+    {supportStickyClient && enabled && stickyClientSteeringEnabled &&
     <Row>
       <Col span={colSpan}>
         <Space>
