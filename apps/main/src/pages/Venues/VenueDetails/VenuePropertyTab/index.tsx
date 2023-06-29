@@ -17,6 +17,7 @@ import {
   useIsSplitOn
 }                                from '@acx-ui/feature-toggle'
 import {
+  DownloadOutlined,
   WarningTriangleSolid
 } from '@acx-ui/icons'
 import {
@@ -172,7 +173,7 @@ export function VenuePropertyTab () {
       params: { venueId },
       payload: {
         ...queryUnitList.payload,
-        pageSize: 100,
+        pageSize: 2147483647,
         page: 1
       }
     }).unwrap().catch((error) => {
@@ -315,10 +316,6 @@ export function VenuePropertyTab () {
       label: $t({ defaultMessage: 'Import From File' }),
       disabled: !hasAssociation,
       onClick: () => setUploadCsvDrawerVisible(true)
-    },
-    {
-      label: $t({ defaultMessage: 'Export To CSV' }),
-      onClick: downloadUnit
     }
   ]
 
@@ -529,6 +526,10 @@ export function VenuePropertyTab () {
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
+        iconButton={{
+          icon: <DownloadOutlined data-testid={'export-unit'} />,
+          onClick: downloadUnit
+        }}
       />
       {venueId &&
         <PropertyUnitDrawer
@@ -546,7 +547,7 @@ export function VenuePropertyTab () {
         type='PropertyUnit'
         acceptType={['xlsx']}
         maxSize={CsvSize['5MB']}
-        maxEntries={30}
+        maxEntries={512}
         templateLink='assets/templates/units_import_template.xlsx'
         importRequest={importUnits}
         formDataName={'unitImports'}

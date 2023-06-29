@@ -2,6 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useGetEdgeServiceListQuery }            from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -11,6 +12,7 @@ const EdgeDetailsTabs = () => {
   const { serialNumber } = params
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'
     navigate({
@@ -24,6 +26,7 @@ const EdgeDetailsTabs = () => {
       filters: { edgeId: [serialNumber] }
     }
   }, {
+    skip: !isEdgeReady,
     selectFromResult: ({ data }) => ({
       servicesCount: data?.totalCount
     })
@@ -38,10 +41,13 @@ const EdgeDetailsTabs = () => {
       {/* { currentEdgeOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />} */}
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
-        key='services'
-      />
+      {
+        isEdgeReady &&
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
+          key='services'
+        />
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>

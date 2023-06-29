@@ -10,8 +10,8 @@ import {
   Loader,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }      from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegListMutation,
@@ -42,8 +42,9 @@ export default function MacRegistrationListsTable () {
   const [policySetMap, setPolicySetMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
-  const policyEnabled = useIsSplitOn(Features.POLICY_MANAGEMENT)
+  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const filter = {
     filterKey: 'name',
@@ -139,7 +140,7 @@ export default function MacRegistrationListsTable () {
         }
       },
       {
-        title: $t({ defaultMessage: 'Access Policy Set' }),
+        title: $t({ defaultMessage: 'Adaptive Policy Set' }),
         key: 'policySet',
         dataIndex: 'policySetId',
         show: policyEnabled,
@@ -237,11 +238,14 @@ export default function MacRegistrationListsTable () {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true) }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={filterByAccess([
           <TenantLink

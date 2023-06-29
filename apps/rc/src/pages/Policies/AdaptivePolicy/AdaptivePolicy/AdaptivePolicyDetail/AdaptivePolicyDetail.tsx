@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Space, Typography } from 'antd'
 import moment                                from 'moment'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader } from '@acx-ui/components'
+import { Button, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetAdaptivePolicyQuery,
   useGetConditionsInPolicyQuery,
@@ -14,11 +15,11 @@ import {
 import {
   AccessCondition,
   CriteriaOption,
+  PolicyOperation,
+  PolicyType,
   getAdaptivePolicyDetailLink,
   getPolicyListRoutePath,
-  getPolicyRoutePath,
-  PolicyOperation,
-  PolicyType
+  getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -28,6 +29,9 @@ export default function AdaptivePolicyDetail () {
   const { policyId, templateId } = useParams()
   const { Paragraph } = Typography
   const [attributeGroupName, seAttributeGroupName] = useState('' as string)
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   // eslint-disable-next-line max-len
   const { data: policyData, isLoading: isGetAdaptivePolicyLoading }= useGetAdaptivePolicyQuery({ params: { templateId, policyId } })
@@ -57,10 +61,12 @@ export default function AdaptivePolicyDetail () {
         : condition.evaluationRule.regexStringCriteria
       return (
         <Col span={6} key={condition.id}>
-          <Form.Item
-            //eslint-disable-next-line max-len
-            label={condition.templateAttribute?.attributeType === 'DATE_RANGE' ? condition.templateAttribute?.name : $t({ defaultMessage: '{name} (Regex)' }, { name: condition.templateAttribute?.name })}>
-            <Paragraph>{criteria}</Paragraph>
+          <Form.Item>
+            <SummaryCard.Item
+              //eslint-disable-next-line max-len
+              title={condition.templateAttribute?.attributeType === 'DATE_RANGE' ? condition.templateAttribute?.name : $t({ defaultMessage: '{name} (Regex)' }, { name: condition.templateAttribute?.name })}
+              content={criteria}
+            />
           </Form.Item>
         </Col>
       )
@@ -71,12 +77,22 @@ export default function AdaptivePolicyDetail () {
     <>
       <PageHeader
         title={policyData?.name || ''}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Adaptive Policy' }),
-            // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }) }
+            link: tablePath }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          { text: $t({ defaultMessage: 'Adaptive Policy' }),
+            link: tablePath
+          }
         ]}
         extra={filterByAccess([
           <TenantLink
@@ -92,39 +108,44 @@ export default function AdaptivePolicyDetail () {
         ])}
       />
       <Space direction={'vertical'}>
-        <Card>
-          <Loader states={[
-            { isLoading: isGetAdaptivePolicyLoading || isGetConditionsLoading }
-          ]}>
-            <Form layout={'vertical'}>
-              <Row>
-                <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
-                    <Paragraph>{policyData?.name}</Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'Access Policy Type' })}>
-                    <Paragraph>Advanced Policy Engine</Paragraph>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={24}>
-                  <Paragraph>{$t({ defaultMessage: 'Access Conditions' })}</Paragraph>
-                </Col>
-                {getConditions(conditionsData?.data)}
-              </Row>
-              <Row>
-                <Col span={6}>
-                  <Form.Item label={$t({ defaultMessage: 'RADIUS Attributes Group' })}>
-                    {attributeGroupName}
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </Loader>
-        </Card>
+        <SummaryCard isLoading={isGetAdaptivePolicyLoading || isGetConditionsLoading}>
+          <Form>
+            <Row>
+              <Col span={6}>
+                <Form.Item>
+                  <SummaryCard.Item
+                    title={$t({ defaultMessage: 'Policy Name' })}
+                    content={policyData?.name}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item>
+                  <SummaryCard.Item
+                    title={$t({ defaultMessage: 'Adaptive Policy Type' })}
+                    content='Advanced Policy Engine'
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Paragraph>{$t({ defaultMessage: 'Access Conditions' })}</Paragraph>
+              </Col>
+              {getConditions(conditionsData?.data)}
+            </Row>
+            <Row>
+              <Col span={6}>
+                <Form.Item>
+                  <SummaryCard.Item
+                    title={$t({ defaultMessage: 'RADIUS Attributes Group' })}
+                    content={attributeGroupName}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </SummaryCard>
       </Space>
     </>
   )

@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import { mockServer, render, screen }                                                         from '@acx-ui/test-utils'
@@ -45,5 +46,39 @@ describe('TunnelProfileDetail', () => {
     await screen.findByText('ON')
     const row = await screen.findAllByRole('row', { name: /TestNetwork/i })
     expect(row.length).toBe(2)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <TunnelProfileDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Tunnel Profile'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <TunnelProfileDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Tunnel Profile'
+    })).toBeVisible()
   })
 })

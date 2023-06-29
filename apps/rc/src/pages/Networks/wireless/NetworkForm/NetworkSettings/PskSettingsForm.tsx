@@ -17,8 +17,8 @@ import {
   Tooltip,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                         from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -187,8 +187,8 @@ function SettingsForm () {
     }
   },[data])
 
+  const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
-  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return (
     <>
@@ -291,7 +291,11 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode || disablePolicies} onChange={onMacAuthChange} />
+                <Switch disabled={
+                  editMode || disablePolicies
+                  || wlanSecurity !== WlanSecurityEnum.WPA2Personal}
+                onChange={onMacAuthChange}
+                />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
               <Tooltip.Question
@@ -307,7 +311,7 @@ function SettingsForm () {
             >
               <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
                 <Space direction='vertical'>
-                  <Radio value={true} disabled={!macRegistrationEnabled}>
+                  <Radio value={true} disabled={!isCloudpathBetaEnabled}>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
                   </Radio>
                   <Radio value={false}>

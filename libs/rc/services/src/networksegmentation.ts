@@ -14,7 +14,8 @@ import {
   SwitchLite,
   TableResult,
   transferToTableResult,
-  WebAuthTemplate
+  WebAuthTemplate,
+  WebAuthTemplateTableData
 } from '@acx-ui/rc/utils'
 import { baseNsgApi } from '@acx-ui/store'
 
@@ -109,7 +110,17 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         }
       }
     }),
-    webAuthTemplateList: build.query<TableResult<WebAuthTemplate>, RequestPayload>({
+    getWebAuthTemplateSwitches: build.query<{
+      switchVenueInfos?: SwitchLite[]
+    }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateSwitches, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    webAuthTemplateList: build.query<TableResult<WebAuthTemplateTableData>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateList, params)
         return {
@@ -218,6 +229,7 @@ export const {
   useGetNetworkSegmentationGroupByIdQuery,
   useGetNetworkSegmentationGroupListQuery,
   useGetWebAuthTemplateQuery,
+  useGetWebAuthTemplateSwitchesQuery,
   useLazyGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,

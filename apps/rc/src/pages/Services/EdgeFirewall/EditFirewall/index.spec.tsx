@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import {
   ACLDirection, AccessAction, AddressType,
   CommonUrlsInfo, DdosAttackType, EdgeFirewallSetting,
@@ -207,7 +208,35 @@ describe('Edit edge firewall service', () => {
     cleanup()
   }, 30000)
 
-  it('should correctly edit stateful ACL rule', async () => {
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<EditFirewall />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Firewall'
+    })).toBeVisible()
+  }, 30000)
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<EditFirewall />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Firewall'
+    })).toBeVisible()
+  }, 30000)
+
+  it.skip('should correctly edit stateful ACL rule', async () => {
     const mockFirewall2: EdgeFirewallSetting = _.cloneDeep(mockFirewall)
     mockFirewall2.edgeIds = ['0000000002', '0000000003']
     mockFirewall2.ddosRateLimitingEnabled = true

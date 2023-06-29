@@ -79,7 +79,7 @@ export interface MigrationResultType {
   model? : string,
   description?: string,
   state: string,
-  validationErrors?: string[]
+  validationErrors?: string
 }
 
 export interface TaskContextType {
@@ -87,10 +87,12 @@ export interface TaskContextType {
   createTime: number,
   completedTime?: number,
   state: string,
+  errorMessage?: string,
   tenantId: string,
   fileName: string,
   venueName?: string,
   description?: string,
+  countryCode?: string,
   error?: ValidationErrorType
   apImportResults: MigrationResultType[]
 }

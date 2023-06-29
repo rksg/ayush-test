@@ -10,7 +10,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -250,7 +250,8 @@ export const VenueTable = (
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Venues' }),
+          entityName: rows.length === 1? $t({ defaultMessage: 'Venue' })
+            : $t({ defaultMessage: 'Venues' }),
           entityValue: rows.length === 1 ? rows[0].name : undefined,
           numOfEntities: rows.length,
           confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
@@ -290,6 +291,7 @@ export const VenueTable = (
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
@@ -302,14 +304,22 @@ export function VenuesTable () {
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
     selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({ key: v.name, value: _.capitalize(v.name) })) || true
+      cityFilterOptions: data?.map(v=>({
+        key: v.name,
+        value: v.name.split(', ').map(_.startCase).join(', ')
+      })) || true
     })
   })
+
+  const count = tableQuery?.currentData?.totalCount || 0
 
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Venues' })}
+        title={isNavbarEnhanced
+          ? $t({ defaultMessage: 'Venues ({count})' }, { count })
+          : $t({ defaultMessage: 'Venues' })
+        }
         extra={filterByAccess([
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>

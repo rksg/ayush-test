@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { NewDpskBaseUrl, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                from '@acx-ui/store'
 import { mockServer, render, renderHook, screen }  from '@acx-ui/test-utils'
@@ -53,8 +53,8 @@ describe('DpskSettingsForm', () => {
     await userEvent.type(nameInput, mockedDpskList.content[0].name)
     nameInput.blur()
 
-    const errorMessageElem = await screen.findByRole('alert')
-    expect(errorMessageElem.textContent).toBe('DPSK service with that name already exists')
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('alert')).toHaveTextContent('DPSK service with that name already exists')
   })
 
   it('should render the cloudpath form items', async () => {
@@ -65,7 +65,7 @@ describe('DpskSettingsForm', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
       <Provider>
@@ -73,10 +73,12 @@ describe('DpskSettingsForm', () => {
       </Provider>
     )
 
-    expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
-    expect(await screen.findByRole('radio', { name: /Unlimited/ })).toBeVisible()
+    await userEvent.click(await screen.findByRole('combobox', { name: /Adaptive Policy Set/ }))
 
-    await userEvent.click(await screen.findByRole('combobox', { name: /Access Policy Set/ }))
-    expect(await screen.findByText(mockedPolicySet.content[0].name)).toBeInTheDocument()
+    const policySetOption = await screen.findByText(mockedPolicySet.content[0].name)
+    expect(policySetOption).toBeInTheDocument()
+
+    await userEvent.click(policySetOption)
+    expect(await screen.findByRole('radio', { name: /ACCEPT/ })).toBeVisible()
   })
 })

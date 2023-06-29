@@ -30,13 +30,110 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
 
+const jwtToken = {
+  access_token: 'access_token',
+  expires_in: '604800',
+  id_token: 'id_token',
+  type: 'JWT'
+}
+
+const switchOnlineData = {
+  data: [
+    {
+      cliApplied: false,
+      configReady: true,
+      deviceStatus: 'ONLINE',
+      id: '58:fb:96:0e:bc:f8',
+      serialNumber: 'FEK3230S0C5',
+      syncDataEndTime: '2023-01-23T07:53:36Z',
+      syncDataId: '',
+      syncedSwitchConfig: true
+    }
+  ]
+}
+
+export const switchResponse = {
+  id: 'dc:ae:eb:2d:ff:8a',
+  venueId: '561c8f43714647e2a4aecaba4c4b658b',
+  name: 'ICX7150-C12 Router',
+  enableStack: false,
+  igmpSnooping: 'active',
+  jumboMode: false,
+  softDeleted: false,
+  ipAddressInterfaceType: 'VE',
+  ipAddressInterface: '1',
+  ipAddressType: 'static',
+  ipAddress: '192.168.1.73',
+  subnetMask: '255.255.255.0',
+  isPrimaryDeleted: false,
+  sendedHostname: true,
+  firmwareVersion: 'SPR09010e.bin',
+  dhcpClientEnabled: false,
+  dhcpServerEnabled: false,
+  specifiedType: 'AUTO',
+  rearModule: 'none'
+}
+
+const configBackupsList = {
+  data: [
+    {
+      id: '93999bfb05d34a438ff5ff40b8648967',
+      createdDate: '2023-01-11T10:12:48.880+00:00',
+      name: 'Manual_20230111181247',
+      backupType: 'MANUAL',
+      backupName: 'c0:c5:20:aa:32:79-1673431968878',
+      status: 'SUCCESS',
+      config: 'ver 09.0.10eT213\n!\nstack unit 1',
+      switchId: 'c0:c5:20:aa:32:79'
+    },
+    {
+      id: 'f89fee4468d2405cbfc7fb012d0632c8',
+      createdDate: '2023-01-10T05:00:00.408+00:00',
+      name: 'SCHEDULED_1',
+      backupType: 'SCHEDULED',
+      backupName: 'c0:c5:20:aa:32:79-1673326800403',
+      status: 'SUCCESS',
+      restoreStatus: 'SUCCESS',
+      config: 'ver 09.0.10eT213\n!\nstack unit 2',
+      switchId: 'c0:c5:20:aa:32:79'
+    }
+  ],
+  page: 1,
+  totalCount: 2,
+  totalPages: 1
+}
+
+export const troubleshootingResult_ping_emptyResult = {
+  requestId: '3d618952-4c53-4a81-a1a7-7d0f9b5e56fe',
+  response: {
+    latestResultResponseTime: '2023-01-09T03:39:04.114+00:00',
+    result: 'EMPTY_RESULT',
+    pingIp: '1.1.1.1',
+    traceRouteTtl: 0,
+    syncing: false,
+    troubleshootingType: 'ping'
+  }
+}
+
 describe('SwitchDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
-      rest.get( SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(switchDetailData)))
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(switchDetailData))),
+      rest.get(SwitchUrlsInfo.getJwtToken.url,
+        (_, res, ctx) => res(ctx.json(jwtToken))),
+      rest.post(SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json(switchOnlineData))),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json(switchResponse))),
+      rest.post(SwitchUrlsInfo.getDhcpPools.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(SwitchUrlsInfo.getSwitchConfigBackupList.url,
+        (req, res, ctx) => res(ctx.json(configBackupsList))),
+      rest.get(SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult)))
     )
   })
 

@@ -16,10 +16,22 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              Network Control
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/services/list"
               >
-                Services
+                My Services
               </a>
             </span>
             <span
@@ -112,8 +124,8 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
         style="margin-bottom: 30px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-          type="solid-bg"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+          type="default"
         >
           <div
             class="ant-card"
@@ -152,147 +164,151 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
               class="ant-card-body"
             >
               <div
-                class="sc-olbas jQkydB"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
-                  class="ant-row Grid__GridRow-sc-5irhjd-2 sc-hiMGwR jIQpLv"
-                  style="margin: -10px -10px -10px -10px;"
+                  class="sc-iBkjds gKlYH"
                 >
                   <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
+                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    style="margin: -10px -10px -10px -10px;"
                   >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical"
                         >
-                          <span
-                            class="ant-typography"
-                          >
-                            Service Health
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
                             <span
-                              class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+                              class="ant-typography sc-jSMfEi iSONzx"
+                            >
+                              Service Health
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
+                          >
+                            <span
+                              class="ant-typography sc-gKXOVf iOspyK"
                             >
                               <span
-                                class="ant-badge-status-dot"
-                              />
-                              <span
-                                class="ant-badge-status-text"
+                                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
                               >
-                                Good
+                                <span
+                                  class="ant-badge-status-dot"
+                                />
+                                <span
+                                  class="ant-badge-status-text"
+                                >
+                                  Good
+                                </span>
                               </span>
                             </span>
-                          </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical"
                         >
-                          <span
-                            class="ant-typography"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
-                            DHCP Relay
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                            <span
+                              class="ant-typography sc-jSMfEi iSONzx"
+                            >
+                              DHCP Relay
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
                           >
-                            ON
-                          </span>
+                            <span
+                              class="ant-typography sc-gKXOVf iOspyK"
+                            >
+                              ON
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical"
                         >
-                          <span
-                            class="ant-typography"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
-                            DHCP Pools
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                            <span
+                              class="ant-typography sc-jSMfEi iSONzx"
+                            >
+                              DHCP Pools
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
                           >
-                            3
-                          </span>
+                            <span
+                              class="ant-typography sc-gKXOVf iOspyK"
+                            >
+                              3
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
                     <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                      class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="ant-space ant-space-vertical"
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="ant-space-item"
-                          style="margin-bottom: 10px;"
+                          class="ant-space ant-space-vertical"
                         >
-                          <span
-                            class="ant-typography"
+                          <div
+                            class="ant-space-item"
+                            style="margin-bottom: 6px;"
                           >
-                            Lease Time
-                          </span>
-                        </div>
-                        <div
-                          class="ant-space-item"
-                        >
-                          <span
-                            class="ant-typography text-color"
+                            <span
+                              class="ant-typography sc-jSMfEi iSONzx"
+                            >
+                              Lease Time
+                            </span>
+                          </div>
+                          <div
+                            class="ant-space-item"
                           >
-                            24 hours
-                          </span>
+                            <span
+                              class="ant-typography sc-gKXOVf iOspyK"
+                            >
+                              24 hours
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -355,7 +371,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                   Instances (0)
                 </h2>
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 hgNgTL"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 jdrCXZ"
                 >
                   <div
                     class="ant-pro-table"
@@ -394,9 +410,6 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                     >
                                       <colgroup>
                                         <col
-                                          class="ant-table-selection-col"
-                                        />
-                                        <col
                                           style="width: 200px;"
                                         />
                                         <col />
@@ -412,38 +425,6 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                         class="ant-table-thead"
                                       >
                                         <tr>
-                                          <th
-                                            class="ant-table-cell ant-table-selection-column ant-table-cell-fix-left react-resizable"
-                                            style="position: sticky; left: 0px;"
-                                          >
-                                            <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                            />
-                                            <div
-                                              class="ant-table-selection"
-                                            >
-                                              <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
-                                              >
-                                                <span
-                                                  class="ant-checkbox ant-checkbox-disabled"
-                                                >
-                                                  <input
-                                                    class="ant-checkbox-input"
-                                                    disabled=""
-                                                    type="checkbox"
-                                                    value=""
-                                                  />
-                                                  <span
-                                                    class="ant-checkbox-inner"
-                                                  />
-                                                </span>
-                                              </label>
-                                            </div>
-                                            <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                            />
-                                          </th>
                                           <th
                                             aria-sort="ascending"
                                             class="ant-table-cell ant-table-column-sort ant-table-cell-fix-left ant-table-cell-fix-left-last ant-table-column-has-sorters react-resizable"
@@ -654,22 +635,13 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                                
                                             </div>
                                           </td>
-                                          <td
-                                            style="padding: 0px; border: 0px; height: 0px;"
-                                          >
-                                            <div
-                                              style="height: 0px; overflow: hidden;"
-                                            >
-                                               
-                                            </div>
-                                          </td>
                                         </tr>
                                         <tr
                                           class="ant-table-placeholder"
                                         >
                                           <td
                                             class="ant-table-cell"
-                                            colspan="8"
+                                            colspan="7"
                                           >
                                             <div
                                               class="ant-table-expanded-row-fixed"

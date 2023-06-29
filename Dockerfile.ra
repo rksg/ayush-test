@@ -50,7 +50,7 @@ COPY --from=build-locales /app/apps/ra/src/locales ./apps/ra/src/locales
 
 RUN echo NX_GIT_SHA=$CIRCLE_SHA1 >> .env
 RUN echo NX_GIT_DATE=$(date -R) >> .env
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra,analytics
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=ra
 
 ###############################################################
 FROM nginx:1.21.6-alpine
@@ -70,13 +70,11 @@ COPY tools/docker/nginx/nginx.conf \
 COPY --from=build /app/dist/apps ./
 
 RUN \
-  # Move all other apps into main
-  ls | grep -v ra | xargs mv -t ra && \
   # Create structure to match deployment need
-  mkdir -p analytics/next && \
+  mkdir -p tenant/t && \
   # Move all files into it
-  cp -a ra/* analytics/next/ && \
-  # Remove the main folder
+  cp -a ra/* tenant/t && \
+  # Remove the ra folder
   rm -rf ra
 
 EXPOSE 8080

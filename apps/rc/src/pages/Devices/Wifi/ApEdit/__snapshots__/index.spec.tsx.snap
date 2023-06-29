@@ -16,10 +16,34 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              Wi-Fi
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              Access Points
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/tenant-id/t/devices/wifi"
               >
-                Access Points
+                AP List
               </a>
             </span>
             <span
@@ -1379,6 +1403,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                       <img
                                         alt="AP LAN port image - R650"
                                         class="ant-image-img"
+                                        src="https://storage.googleapis.com/"
                                       />
                                     </div>
                                   </div>

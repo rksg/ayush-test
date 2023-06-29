@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                                            from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -87,8 +87,8 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = await screen.findByLabelText('Passphrase')
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText('Passphrase')
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
 
     await fillInAfterSettings(async () => {
       expect(await screen.findByText('PSK network test')).toBeVisible()
@@ -100,14 +100,15 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = await screen.findByLabelText(/Passphrase/)
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText(/Passphrase/)
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
     await userEvent.click(await screen.findByRole('switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])
     // await userEvent.click((await screen.findAllByTitle('test1'))[0])
   })
 
   it('should create PSK network with WPA2 and mac auth (for mac registration list)', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
@@ -120,8 +121,8 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('PSK network test')
 
-    const passphraseTextbox = await screen.findByLabelText(/Passphrase/)
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText(/Passphrase/)
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
     await userEvent.click(await screen.findByRole('switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])
     // await userEvent.click((await screen.findAllByTitle('test1'))[0])
@@ -159,8 +160,8 @@ describe('NetworkForm', () => {
 
     await userEvent.click(option)
 
-    const passphraseTextbox = await screen.findByLabelText('Passphrase')
-    fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
+    const passphraseTextbox = await screen.findAllByLabelText('Passphrase')
+    fireEvent.change(passphraseTextbox[0], { target: { value: '11111111' } })
 
     await userEvent.click(await screen.findByRole('switch'))
     // await userEvent.click((await screen.findAllByRole('combobox'))[3])

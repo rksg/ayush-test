@@ -76,15 +76,16 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   }
 
   const onModalCancel = () => {
+    setUpdateNowRequestPayload({})
     onCancel()
   }
 
   // eslint-disable-next-line max-len
   const updateSelectedABF = (abfId: string, value: UpdateNowRequestWithoutVenues | null) => {
-    setUpdateNowRequestPayload({
-      ...(updateNowRequestPayload ?? {}),
+    setUpdateNowRequestPayload((current) => ({
+      ...(current ?? {}),
       [abfId]: value
-    })
+    }))
   }
 
   return (
@@ -106,6 +107,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
           <ABFSelector
             categoryId={'active'}
             abfLabel={$t({ defaultMessage: 'Active Device' })}
+            defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
             otherVersions={otherActiveVersionOptions}
@@ -155,14 +157,15 @@ function findDefaultActiveVersionIndex (availableVersions: FirmwareVersion[]): n
 }
 
 // eslint-disable-next-line max-len
-function getDefaultActiveVersion (availableVersions?: FirmwareVersion[]): FirmwareVersion | undefined {
+export function getDefaultActiveVersion (availableVersions?: FirmwareVersion[]): FirmwareVersion | undefined {
   if (!availableVersions) return
 
   const index = findDefaultActiveVersionIndex(availableVersions)
   return index === -1 ? undefined : { ...availableVersions[index] }
 }
 
-function filteredOtherActiveVersions (availableVersions?: FirmwareVersion[]): FirmwareVersion[] {
+// eslint-disable-next-line max-len
+export function filteredOtherActiveVersions (availableVersions?: FirmwareVersion[]): FirmwareVersion[] {
   if (!availableVersions) return []
 
   const index = findDefaultActiveVersionIndex(availableVersions)
@@ -178,6 +181,7 @@ function filteredOtherActiveVersions (availableVersions?: FirmwareVersion[]): Fi
 interface ABFSelectorProps {
   categoryId: string
   abfLabel: string
+  defaultChecked?: boolean
   defaultVersionId: string
   defaultVersionLabel: string
   defaultVersionExtraComponent?: ReactNode
@@ -186,10 +190,10 @@ interface ABFSelectorProps {
 }
 
 function ABFSelector (props: ABFSelectorProps) {
-  const { categoryId, abfLabel, defaultVersionId, defaultVersionLabel, otherVersions = [],
-    update, defaultVersionExtraComponent } = props
+  const { categoryId, abfLabel, defaultChecked = false, defaultVersionId, defaultVersionLabel,
+    otherVersions = [], update, defaultVersionExtraComponent } = props
   const { $t } = useIntl()
-  const [ disabledABF, setDisabledABF ] = useState(true)
+  const [ isChecked, setIsChecked ] = useState(defaultChecked)
   const [ selectMode, setSelectMode ] = useState(VersionsSelectMode.Radio)
   const [ selectedOtherVersion, setSelectedOtherVersion ] = useState('')
 
@@ -204,12 +208,12 @@ function ABFSelector (props: ABFSelectorProps) {
     } as UpdateNowRequestWithoutVenues
   }
 
-  const doUpdate = (removed: boolean) => {
-    update(categoryId, removed ? null : getFirmwareResult())
+  const doUpdate = (checked: boolean) => {
+    update(categoryId, checked ? getFirmwareResult() : null)
   }
 
   const onEnabledABFChange = (e: CheckboxChangeEvent) => {
-    setDisabledABF(!e.target.checked)
+    setIsChecked(e.target.checked)
   }
 
   const onSelectModeChange = (e: RadioChangeEvent) => {
@@ -221,18 +225,18 @@ function ABFSelector (props: ABFSelectorProps) {
   }
 
   useEffect(() => {
-    doUpdate(disabledABF)
-  }, [disabledABF, selectMode, selectedOtherVersion])
+    doUpdate(isChecked)
+  }, [isChecked, selectMode, selectedOtherVersion])
 
   return (<>
-    <Checkbox onChange={onEnabledABFChange}>
+    <Checkbox value={isChecked} checked={isChecked} onChange={onEnabledABFChange}>
       <UI.TitleActive>{abfLabel}</UI.TitleActive>
     </Checkbox>
-    <UI.ValueContainer className={disabledABF ? 'disabled' : ''}>
+    <UI.ValueContainer className={isChecked ? '' : 'disabled'}>
       <Radio.Group
         onChange={onSelectModeChange}
         value={selectMode}
-        disabled={disabledABF}
+        disabled={!isChecked}
       >
         <Space direction={'vertical'}>
           <Radio value={VersionsSelectMode.Radio}>{defaultVersionLabel}</Radio>
@@ -246,7 +250,7 @@ function ABFSelector (props: ABFSelectorProps) {
                 value={selectedOtherVersion}
                 onChange={onOtherVersionChange}
                 options={otherVersions}
-                disabled={disabledABF}
+                disabled={!isChecked}
               />
             </UI.SelectDiv>
             : null

@@ -95,6 +95,7 @@ export function StackForm () {
   const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
@@ -219,8 +220,6 @@ export function StackForm () {
             }
           })
 
-        stackMembers.sort((a: { active: boolean }, b: { active: boolean }) =>
-          Number(b.active) - Number(a.active))
         setTableData(stackMembers)
         setRowKey(stackMembers.length)
       }
@@ -592,7 +591,6 @@ export function StackForm () {
       tempDataSource.splice(oldIndex, 1)
       tempDataSource = [...tempDataSource.slice(0, newIndex),
         ...[movingItem], ...tempDataSource.slice(newIndex, tempDataSource.length)]
-      tempDataSource.sort((a, b) => Number(b.active) - Number(a.active))
       setTableData(tempDataSource)
     }
   }
@@ -642,7 +640,11 @@ export function StackForm () {
             name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber
           }) :
           $t({ defaultMessage: 'Add Switch Stack' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Switches' }) },
+          { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
+        ] : [
           {
             text: $t({ defaultMessage: 'Switches' }),
             link: '/devices/switch'

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { AaaUrls }                               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
@@ -27,13 +28,63 @@ const aaaData={
   tags: ['xxdd']
 }
 const successResponse = { requestId: 'request-id', id: '2', name: 'test2' }
-const aaaList=[{
-  id: '1',
-  name: 'test1'
-},{
-  id: 'policy-id',
-  name: 'test2'
-}]
+const aaaList=[
+  {
+    name: 'test1',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.2',
+      port: 1812,
+      sharedSecret: '111211121112'
+    },
+    id: '1'
+  },
+  {
+    name: 'policy-id',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '2.3.3.4',
+      port: 101,
+      sharedSecret: 'xxxxxxxx'
+    },
+    secondary: {
+      ip: '2.3.3.4',
+      port: 101,
+      sharedSecret: 'xxxxxxxx'
+    },
+    id: '2'
+  },
+  {
+    name: 'aaa2',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.1',
+      port: 1812,
+      sharedSecret: '11111111'
+    },
+    id: '9f1ce5aecc834f0f95d3df1e97f85f19'
+  },
+  {
+    name: 'aaa-temp',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '2.2.2.2',
+      port: 1812,
+      sharedSecret: 'asdfasdf'
+    },
+    id: '3e9e139d6ef3459c95ab547acb1672b5'
+  },
+  {
+    name: 'aaa-temp1',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.19',
+      port: 1805,
+      sharedSecret: '34tgweg453g45g34g'
+    },
+    id: '343ddabf261546258bc46c049e0641e5'
+  }
+]
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
   policyId: 'policy-id' }
 describe('AAAForm', () => {
@@ -67,10 +118,14 @@ describe('AAAForm', () => {
 
     //step 1 setting form
     await userEvent.click(await screen.findByText('Add Secondary Server'))
-    await userEvent.type((await screen.findAllByLabelText('IP Address'))[0],
-      '2.3.3.4')
-    fireEvent.change((await screen.findAllByLabelText('IP Address'))[0],
-      { target: { value: '2.3.3.4' } })
+    await userEvent.type((await screen.findAllByRole('textbox', {
+      name: /ip address/i
+    }))[0],
+    '2.3.3.4')
+    fireEvent.change((await screen.findAllByRole('textbox', {
+      name: /ip address/i
+    }))[0],
+    { target: { value: '2.3.3.4' } })
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
       'test1234')
     await userEvent.click(await screen.findByRole('radio', { name: /Authentication/ }))
@@ -80,12 +135,43 @@ describe('AAAForm', () => {
     fireEvent.change(inputProfile, { target: { value: 'test1' } })
     fireEvent.blur(inputProfile)
     fireEvent.change(inputProfile, { target: { value: 'create aaa test' } })
-    await userEvent.type((await screen.findAllByLabelText('IP Address'))[1],
-      '2.3.3.4')
-    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
-      'test1234')
+    await userEvent.type((await screen.findAllByRole('textbox', {
+      name: /ip address/i
+    }))[1],
+    '2.3.3.4')
+    await userEvent.type((await screen.findAllByRole('textbox', {
+      name: /ip address/i
+    }))[1],
+    'test1234')
     await userEvent.click(await screen.findByText('Finish'))
   })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
+      route: { params }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Server'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
+      route: { params }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Server'
+    })).toBeVisible()
+  })
+
   it('should edit AAA successfully', async () => {
     await editAAA()
   })

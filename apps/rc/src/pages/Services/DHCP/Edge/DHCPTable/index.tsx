@@ -2,6 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                       from '@acx-ui/feature-toggle'
 import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery, useGetEdgeListQuery }                                                 from '@acx-ui/rc/services'
 import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                                                                                       from '@acx-ui/react-router-dom'
@@ -14,6 +15,7 @@ const EdgeDhcpTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const getDhcpStatsPayload = {
     fields: [
@@ -23,8 +25,8 @@ const EdgeDhcpTable = () => {
       'edgeNum',
       'venueNum',
       'health',
-      'updateAvailable',
-      'serviceVersion',
+      'targetVersion',
+      'currentVersion',
       'tags'
     ]
   }
@@ -113,19 +115,25 @@ const EdgeDhcpTable = () => {
     {
       title: $t({ defaultMessage: 'Update Available' }),
       align: 'center',
-      key: 'updateAvailable',
-      dataIndex: 'updateAvailable',
+      key: 'targetVersion',
+      dataIndex: 'targetVersion',
       sorter: true,
       render (data, row) {
-        return row.updateAvailable ? $t({ defaultMessage: 'Yes' }) : $t({ defaultMessage: 'No' })
+        if(row.targetVersion && row.currentVersion !== row.targetVersion) {
+          return $t({ defaultMessage: 'Yes' })
+        }
+        return $t({ defaultMessage: 'No' })
       }
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
       align: 'center',
-      key: 'serviceVersion',
-      dataIndex: 'serviceVersion',
-      sorter: true
+      key: 'currentVersion',
+      dataIndex: 'currentVersion',
+      sorter: true,
+      render (data, row) {
+        return row.currentVersion || $t({ defaultMessage: 'NA' })
+      }
     },
     {
       title: $t({ defaultMessage: 'Tags' }),
@@ -202,9 +210,14 @@ const EdgeDhcpTable = () => {
           $t({ defaultMessage: 'DHCP for SmartEdge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        ]
+          : [
+            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+          ]
+        }
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}>

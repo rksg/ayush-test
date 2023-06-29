@@ -22,7 +22,7 @@ import { GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
-  useGetApQuery,
+  useGetApOperationalQuery,
   useLazyApGroupListQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
@@ -85,12 +85,14 @@ export function ApForm () {
   const {
     editContextData, setEditContextData, previousPath, isOnlyOneTab
   } = useContext(ApEditContext)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
   const { data: apDetails, isLoading: isApDetailsLoading }
-    = useGetApQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
+    // eslint-disable-next-line max-len
+    = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
   const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
 
   const [addAp] = useAddApMutation()
@@ -310,7 +312,11 @@ export function ApForm () {
   return <>
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Wi-Fi' }) },
+        { text: $t({ defaultMessage: 'Access Points' }) },
+        { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
+      ] : [
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />}

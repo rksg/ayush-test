@@ -23,21 +23,24 @@ import {
   useGetLagListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetVlansByVenueQuery,
+  useLazyGetSwitchConfigurationProfileByVenueQuery,
   useSwitchDetailHeaderQuery,
   useSwitchPortlistQuery,
   useUpdateLagMutation } from '@acx-ui/rc/services'
-import { SwitchVlanUnion,
+import {
+  SwitchVlanUnion,
   EditPortMessages,
   SwitchPortViewModel,
   Vlan,
   Lag,
   LAG_TYPE,
-  sortPortFunction }                                                  from '@acx-ui/rc/utils'
+  sortPortFunction
+} from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import { getAllSwitchVlans, sortOptions } from '../SwitchPortTable/editPortDrawer.utils'
-import { SelectVlanModal }                from '../SwitchPortTable/selectVlanModal'
+import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
+import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
 
 interface SwitchLagProps {
   visible: boolean
@@ -65,6 +68,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const lagList = useGetLagListQuery({ params: { tenantId, switchId } })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
+  const [getSwitchConfigurationProfileByVenue]
+    = useLazyGetSwitchConfigurationProfileByVenueQuery()
   const { data: switchDetailHeader } =
   useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
   const { data: switchesDefaultVlan }
@@ -80,6 +85,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [defaultVlanId, setDefaultVlanId] = useState(1 as number)
   const [portsTypeItem, setPortsTypeItem] = useState([] as DefaultOptionType[])
+  const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
+  const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
   // const [isStackMode, setIsStackMode] = useState(false) //TODO
   // const [stackMemberItem, setStackMemberItem] = useState([] as DefaultOptionType[])
 
@@ -95,8 +102,13 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       const vlansByVenue = await getVlansByVenue({
         params: { tenantId, venueId: venueId }
       }, true).unwrap()
+      const switchProfile = await getSwitchConfigurationProfileByVenue({
+        params: { tenantId, venueId: venueId }
+      }, true).unwrap()
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
+      setHasSwitchProfile(!!switchProfile?.length)
+      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
     }
 
     if (portList.data && lagList.data && switchDetailHeader) {
@@ -544,6 +556,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         taggedVlans={taggedVlans}
         untaggedVlan={untaggedVlan}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+        hasSwitchProfile={hasSwitchProfile}
+        profileId={switchConfigurationProfileId}
+        updateSwitchVlans={async (values: Vlan) =>
+          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+        }
       />
     </>
   )

@@ -4,9 +4,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                                           from '@acx-ui/components'
+import { StepsForm }  from '@acx-ui/components'
 import {
-  CommonUrlsInfo, TunnelProfileUrls, NetworkSegmentationUrls
+  CommonUrlsInfo,
+  NetworkSegmentationUrls,
+  TunnelProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -19,9 +21,9 @@ import {
 
 import { mockedTunnelProfileViewData } from '../../../../Policies/TunnelProfile/__tests__/fixtures'
 import {
-  mockVenueNetworkData,
   mockNetworkGroup,
-  mockNsgStatsList
+  mockNsgStatsList,
+  mockVenueNetworkData
 } from '../../__tests__/fixtures'
 
 
@@ -96,7 +98,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
   it('Step3 - Wireless network success', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('venueId', 'testVenueId')
+      form.setFieldValue('venueId', 'testVenueId1')
       return form
     })
     const user = userEvent.setup()
@@ -118,7 +120,6 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     const usedNetowrkIds = mockNsgStatsList.data.flatMap(item => item.networkIds)
     const unusedNetworkOptions = mockNetworkGroup.response.length - usedNetowrkIds.length
     expect(checkboxs.length).toBe(unusedNetworkOptions)
-
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
   })
@@ -126,7 +127,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
   it('Step3 - Wireless network will be block by mandatory validation', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('venueId', 'testVenueId')
+      form.setFieldValue('venueId', 'testVenueId1')
       return form
     })
     const user = userEvent.setup()

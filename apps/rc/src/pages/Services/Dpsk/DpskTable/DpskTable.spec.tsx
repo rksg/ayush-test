@@ -1,7 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  CommonUrlsInfo,
   DpskUrls,
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -28,6 +30,24 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
+export const AllowedNetworkList = {
+  fields: ['name', 'id', 'defaultGuestCountry'],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'guest pass wlan1',
+      id: 'tenant-id',
+      defaultGuestCountry: 'United States'
+    },
+    {
+      name: 'guest pass wlan2',
+      id: 'dasjk12359552a9d041813131d007aca',
+      defaultGuestCountry: 'United States'
+    }
+  ]
+}
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
@@ -47,6 +67,9 @@ describe('DpskTable', () => {
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
+        res(ctx.json(AllowedNetworkList))
       )
     )
   })
@@ -63,6 +86,36 @@ describe('DpskTable', () => {
     const targetDpsk = mockedDpskList.data[0]
     expect(await screen.findByRole('button', { name: /Add DPSK Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <DpskTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
   })
 
   it('should delete selected row', async () => {

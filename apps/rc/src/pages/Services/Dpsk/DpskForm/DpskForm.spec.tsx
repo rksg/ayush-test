@@ -2,6 +2,7 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
+import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskUrls,
@@ -10,7 +11,8 @@ import {
   getServiceRoutePath,
   ServiceType,
   ServiceOperation,
-  NewDpskBaseUrl
+  NewDpskBaseUrl,
+  RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -48,6 +50,26 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   }
 }))
 
+const policySetList = {
+  paging: {
+    totalCount: 2,
+    page: 1,
+    pageSize: 2,
+    pageCount: 1
+  },
+  content: [
+    {
+      id: '50f5cec9-850d-483d-8272-6ee5657f53da',
+      name: 'testPolicySet',
+      description: 'for test'
+    },
+    {
+      id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+      name: 'testPolicySet1',
+      description: 'for test'
+    }
+  ]
+}
 
 describe('DpskForm', () => {
   beforeEach(async () => {
@@ -67,6 +89,10 @@ describe('DpskForm', () => {
       rest.get(
         websocketServerUrl,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(policySetList))
       )
     )
   })
@@ -122,6 +148,40 @@ describe('DpskForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'DPSK'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DPSK'
+    })).toBeVisible()
+  })
+
   it('should render Edit form', async () => {
     render(
       <Provider>
@@ -137,6 +197,34 @@ describe('DpskForm', () => {
     // Verify service name
     const nameInput = await screen.findByDisplayValue(mockedEditFormData.name)
     expect(nameInput).toBeInTheDocument()
+  })
+
+  it('should render Edit form with cloudpath FF enabled', async () => {
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({
+          ...mockedEditFormData,
+          policySetId: 'a3a8449e-a649-4bf4-8798-d772ee1dbd5f',
+          policyDefaultAccess: false
+        }))
+      )
+    )
+
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <DpskForm editMode={true} />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
+          path: editPath
+        }
+      }
+    )
+
+    expect(await screen.findByRole('radio', { name: /REJECT/ })).toBeChecked()
   })
 
   it('should show toast when edit service profile failed', async () => {
