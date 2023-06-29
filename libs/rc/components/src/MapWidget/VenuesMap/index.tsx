@@ -23,7 +23,7 @@ export interface NavigateProps {
   path?: string
 }
 
-function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps) {
+function VenuesMap ({ cluster, data, enableVenueFilter, region, language }: GoogleMapProps) {
 
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
   const basePath = useTenantLink('/')
@@ -77,7 +77,7 @@ function VenuesMap ({ cluster, data, enableVenueFilter, region }: GoogleMapProps
     <Wrapper
       apiKey={get('GOOGLE_MAPS_KEY')}
       libraries={['places']}
-      language={'en'}
+      language={language}
       region={region}
       render={render}
     >

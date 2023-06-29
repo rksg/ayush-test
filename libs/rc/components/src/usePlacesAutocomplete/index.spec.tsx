@@ -9,7 +9,7 @@ import { render, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { usePlacesAutocomplete } from '.'
 
-
+const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 const mockedLoadAsync = jest.fn().mockImplementation(() => {
   initialize()
   return Promise.resolve()
@@ -26,7 +26,8 @@ describe('Test usePlacesAutocomplete', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     const { result } = renderHook(() => usePlacesAutocomplete({}), {
-      wrapper: ({ children }) => <Provider children={children} />
+      wrapper: ({ children }) => <Provider children={children} />,
+      route: { params }
     })
     render(<Input ref={result.current.ref}/>)
 
@@ -41,7 +42,8 @@ describe('Test usePlacesAutocomplete', () => {
     const { result, rerender } = renderHook(() => usePlacesAutocomplete({
       onPlaceSelected
     }), {
-      wrapper: ({ children }) => <Provider children={children} />
+      wrapper: ({ children }) => <Provider children={children} />,
+      route: { params }
     })
 
     render(<Input ref={result.current.ref}/>)

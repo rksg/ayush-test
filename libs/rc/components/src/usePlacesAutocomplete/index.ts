@@ -6,12 +6,15 @@ import { InputRef }            from 'antd'
 import { get }                    from '@acx-ui/config'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
+import { usePreference } from '../usePreference'
+
 
 export function usePlacesAutocomplete ( props:
   {
     onPlaceSelected?: (place: google.maps.places.PlaceResult)=>void
   }
 ) {
+  const { currentMapRegion, currentDefaultLang } = usePreference()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const inputRef = useRef<InputRef>(null)
   const autocompleteRef = useRef<google.maps.places.Autocomplete>()
@@ -20,19 +23,21 @@ export function usePlacesAutocomplete ( props:
   const [mapReady, setMapReady] = useState(false)
 
   useEffect(() => {
-    if (!isMapEnabled) return
+    if (!isMapEnabled || !currentMapRegion || !currentDefaultLang) return
     if (!!window.google?.maps?.places) {
       setMapReady(true)
     } else {
       const loader = new MapLoader({
         apiKey: get('GOOGLE_MAPS_KEY'),
-        libraries: ['places']
+        libraries: ['places'],
+        language: currentDefaultLang,
+        region: currentMapRegion
       })
       loader.load().then(()=>{
         setMapReady(true)
       })
     }
-  }, [isMapEnabled])
+  }, [isMapEnabled, currentMapRegion, currentDefaultLang])
 
   useEffect(() => {
     if (mapReady && inputRef.current?.input && !autocompleteRef.current) {
