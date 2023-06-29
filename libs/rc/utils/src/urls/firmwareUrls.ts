@@ -48,26 +48,23 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   skipVenueUpgradeSchedules: {
-    // [New API] new uri not ready
     method: 'delete',
     url: '/venues/apFirmwares/schedules',
     oldUrl: '/api/tenant/:tenantId/wifi/skip/venue/schedule',
-    newApi: false
+    newApi: true
   },
   updateVenueSchedules: {
-    // [New API] new uri not ready
     method: 'post',
     url: '/venues/apFirmwares/schedules',
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/venue/schedule',
-    newApi: false
+    newApi: true
   },
   updateNow: {
-    // [New API] new uri not ready
     method: 'PATCH',
     url: '/venues/apFirmwares',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/update-now',
-    newApi: false
+    newApi: true
   },
   skipSwitchUpgradeSchedules: {
     method: 'delete',
