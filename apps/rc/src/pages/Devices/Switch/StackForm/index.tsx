@@ -452,10 +452,9 @@ export function StackForm () {
       width: 60,
       show: editMode,
       render: (data, row) => {
-        return activeRow !== row.key &&
-          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}>
-            <DragHandle />
-          </div>
+        return (
+          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}><DragHandle /></div>
+        )
       }
     },
     {
