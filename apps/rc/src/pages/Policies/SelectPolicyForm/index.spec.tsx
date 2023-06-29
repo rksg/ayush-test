@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { policyApi }       from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -71,6 +72,38 @@ describe('SelectPolicyForm', () => {
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${policyCreatePath}`
     })
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <SelectPolicyForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/' + getSelectPolicyRoutePath() }
+      }
+    )
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <SelectPolicyForm />
+      </Provider>, {
+        route: { params, path: '/:tenantId/' + getSelectPolicyRoutePath() }
+      }
+    )
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /policies & profiles/i
+    })).toBeTruthy()
   })
 
   it('should navigate to the policies list when cancel the form', async () => {
