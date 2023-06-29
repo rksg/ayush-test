@@ -177,7 +177,7 @@ export default function MacRegistrationListsTable () {
         render: function (data, row) {
           if(networkVenuesMap.size > 0) {
             // eslint-disable-next-line max-len
-            const venueNames = row.networkIds?.map(id => networkVenuesMap.get(id)).flat()
+            const venueNames = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item)
             const toolTipItems: string [] = Array.from(new Set(venueNames))
             return toolTipItems.length === 0 ? 0 :
               <SimpleListTooltip items={toolTipItems} displayText={toolTipItems.length}/>
