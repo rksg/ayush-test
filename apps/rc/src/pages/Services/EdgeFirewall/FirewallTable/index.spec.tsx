@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { Provider }                                                                             from '@acx-ui/store'
 import { mockServer, render, screen, within }                                                   from '@acx-ui/test-utils'
@@ -88,6 +89,36 @@ describe('Firewall Table', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
   })
 
   it('edit button will remove when select above 1 row', async () => {

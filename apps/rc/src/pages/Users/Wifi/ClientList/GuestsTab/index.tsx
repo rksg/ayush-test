@@ -1,4 +1,4 @@
-import { GuestDateFilter } from '../PageHeader'
+import { GuestDateFilter } from '../index'
 
 import { GuestsTable } from './GuestsTable'
 
