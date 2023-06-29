@@ -446,6 +446,27 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    if (enableLayer2 || enableLayer3 || enableDeviceOs || enableApplications || enableClientRateLimit) {
+      form.setFieldsValue({
+        wlan: {
+          advancedCustomization: {
+            accessControlEnable: false,
+            accessControlProfileId: null
+          }
+        }
+      })
+    }
+  }, [
+    enableLayer2,
+    enableLayer3,
+    enableDeviceOs,
+    enableDeviceOs,
+    enableApplications,
+    enableClientRateLimit
+  ])
+
   return (<>
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Layer 2' })}
