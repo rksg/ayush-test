@@ -260,7 +260,7 @@ export function LoadBalancing () {
     </Row>
     }
 
-    {supportStickyClient && stickyClientSteeringEnabled &&
+    {supportStickyClient && enabled && stickyClientSteeringEnabled &&
     <Row>
       <Col span={colSpan}>
         <Space>
