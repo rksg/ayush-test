@@ -76,7 +76,9 @@ export default function MacRegistrationListsTable () {
     getNetworkList({
       params,
       payload: {
-        fields: [ 'venues', 'id' ]
+        fields: [ 'venues', 'id' ],
+        page: 1,
+        pageSize: 10000
       } }).then(result => {
       const networkList = new Map()
       result.data?.data.forEach(n => networkList.set(n.id, n.venues.names))
@@ -174,7 +176,7 @@ export default function MacRegistrationListsTable () {
         render: function (data, row) {
           if(networkVenuesMap.size > 0) {
             // eslint-disable-next-line max-len
-            const venueNames = row.networkIds?.map(id => networkVenuesMap.get(id)).flat().filter(item => item)
+            const venueNames = row.networkIds?.map(id => networkVenuesMap.get(id)).flat()
             const toolTipItems: string [] = Array.from(new Set(venueNames))
             return toolTipItems.length === 0 ? 0 :
               <SimpleListTooltip items={toolTipItems} displayText={toolTipItems.length}/>
