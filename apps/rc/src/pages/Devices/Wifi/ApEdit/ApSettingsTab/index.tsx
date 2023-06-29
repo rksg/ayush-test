@@ -2,13 +2,13 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }               from '@acx-ui/icons'
-import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApModel }                          from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                    from '@acx-ui/utils'
+import { Tabs, Tooltip }                                          from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
+import { useGetApCapabilitiesQuery, useGetApQuery }               from '@acx-ui/rc/services'
+import { ApDeep, ApModel }                                        from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                                  from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
@@ -40,7 +40,7 @@ export function ApSettingsTab () {
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
-  const isTierAllowMeshEnhancement = useIsTierAllowed(Features.BETA_MESH)
+  const isTierAllowMeshEnhancement = useIsTierAllowed(TierFeatures.BETA_MESH)
   const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
   const supportMeshEnhancement = isTierAllowMeshEnhancement && isFeatureOnMeshEnhancement
 
