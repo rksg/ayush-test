@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -94,6 +94,8 @@ export const defaultSwitchPayload = {
   ]
 }
 
+export type SwitchTableRefType = { openImportDrawer: ()=>void }
+
 interface SwitchTableProps
   extends Omit<TableProps<SwitchRow>, 'columns'> {
   showAllColumns?: boolean,
@@ -103,7 +105,7 @@ interface SwitchTableProps
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }
 
-export function SwitchTable (props : SwitchTableProps) {
+export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<SwitchTableRefType>) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -114,6 +116,12 @@ export function SwitchTable (props : SwitchTableProps) {
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
   const importTemplateLink = 'assets/templates/switches_import_template.csv'
+
+  useImperativeHandle(ref, () => ({
+    openImportDrawer: () => {
+      setImportVisible(true)
+    }
+  }))
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
@@ -440,4 +448,4 @@ export function SwitchTable (props : SwitchTableProps) {
       onClose={() => setImportVisible(false)}
     />
   </Loader>
-}
+})

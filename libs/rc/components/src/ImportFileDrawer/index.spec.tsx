@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
+import { fireEvent, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { CsvSize, ImportFileDrawer } from '.'
 
@@ -16,6 +16,9 @@ const props = {
 }
 
 describe('Import CSV Drawer', () => {
+  afterEach(()=>{
+    importRequest.mockClear()
+  })
 
   it('should render correctly', async () => {
     render(<ImportFileDrawer type='AP'
@@ -30,7 +33,7 @@ describe('Import CSV Drawer', () => {
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
-    expect(importRequest).toBeCalled()
+    await waitFor(() => expect(importRequest).toBeCalled())
   })
 
   it('show errors', async () => {
@@ -87,7 +90,7 @@ describe('Import CSV Drawer', () => {
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
-    expect(importRequest).toBeCalledTimes(1)
+    await waitFor(() => expect(importRequest).toBeCalledTimes(1))
   })
 
   it('should render extra descriptions', async () => {
