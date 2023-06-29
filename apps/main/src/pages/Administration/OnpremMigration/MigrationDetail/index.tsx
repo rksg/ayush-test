@@ -45,6 +45,10 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         children={currentTask.state ?? '--'} />
 
       <Descriptions.Item
+        label={$t({ defaultMessage: 'Error Message' })}
+        children={currentTask.errorMessage ?? '--'} />
+
+      <Descriptions.Item
         label={$t({ defaultMessage: 'Venue' })}
         children={currentTask.venueName ?? '--'} />
 
