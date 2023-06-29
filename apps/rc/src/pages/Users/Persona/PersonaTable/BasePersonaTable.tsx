@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -26,11 +26,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { PersonasContext }                                        from '..'
 import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
 import { PersonaDrawer }                                          from '../PersonaDrawer'
 import { PersonaBlockedIcon }                                     from '../styledComponents'
-
-
 
 function useColumns (
   props: PersonaTableColProps,
@@ -189,6 +188,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     { skip: !personaGroupId }
   )
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
+  const { setPersonasCount } = useContext(PersonasContext)
 
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
@@ -361,6 +361,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     personaListQuery.setPayload(payload)
   }
 
+  setPersonasCount?.(personaListQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[

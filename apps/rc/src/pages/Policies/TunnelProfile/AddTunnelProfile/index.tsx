@@ -3,9 +3,11 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { PageHeader, StepsForm }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { TunnelProfileForm, TunnelProfileFormType } from '@acx-ui/rc/components'
 import { useCreateTunnelProfileMutation }           from '@acx-ui/rc/services'
 import {
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   LocationExtended,
   MtuTypeEnum,
@@ -27,6 +29,7 @@ const AddTunnelProfile = () => {
   })
   const linkToTableView = useTenantLink(tablePath)
   const [createTunnelProfile] = useCreateTunnelProfileMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const handleAddTunnelProfile = async (data: TunnelProfileFormType) => {
     try {
@@ -46,7 +49,17 @@ const AddTunnelProfile = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Tunnel Profile' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'Tunnel Profile' }),
+            link: tablePath
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath

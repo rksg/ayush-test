@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { AccessControlUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
 import {
@@ -76,5 +77,44 @@ describe('Access Control Detail Page', () => {
     expect(screen.getByText('Client Rate Limit')).toBeInTheDocument()
 
     await screen.findByText('test-psk')
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <AccessControlDetail />
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', policyId: 'policyId1' }
+        }
+      })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <AccessControlDetail />
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', policyId: 'policyId1' }
+        }
+      })
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(await screen.findByText('Policies & Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Access Control'
+    })).toBeVisible()
   })
 })
