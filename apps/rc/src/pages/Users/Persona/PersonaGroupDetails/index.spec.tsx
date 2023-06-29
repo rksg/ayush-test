@@ -101,6 +101,46 @@ describe('Persona Group Details', () => {
     await screen.findByRole('heading', { level: 4, name: /Personas/i })
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <PersonaGroupDetails />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
+      }
+    )
+
+    expect(screen.queryByText('Clients')).toBeNull()
+    expect(screen.queryByText('Persona Management')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Persona Group'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <PersonaGroupDetails />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId'
+        }
+      }
+    )
+
+    expect(await screen.findByText('Clients')).toBeVisible()
+    expect(await screen.findByText('Persona Management')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Persona Groups'
+    })).toBeVisible()
+  })
+
   it.skip('should delete selected persona', async () => {
     render(
       <Provider>

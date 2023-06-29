@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   VlanPoolUrls,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -68,6 +69,44 @@ describe('VLANPoolForm', () => {
     await userEvent.type(await screen.findByLabelText('VLANs'),
       '5')
     await userEvent.click(await screen.findByText('Finish'))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = {
+      networkId: 'UNKNOWN-NETWORK-ID',
+      tenantId: 'tenant-id',
+      type: 'wifi',
+      policyId: 'policy-id'
+    }
+    render(<Provider><VLANPoolForm edit={false}/></Provider>, {
+      route: { params }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'VLAN Pools'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      networkId: 'UNKNOWN-NETWORK-ID',
+      tenantId: 'tenant-id',
+      type: 'wifi',
+      policyId: 'policy-id'
+    }
+    render(<Provider><VLANPoolForm edit={false}/></Provider>, {
+      route: { params }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'VLAN Pools'
+    })).toBeVisible()
   })
 
   it('should edit vlan successfully', async () => {

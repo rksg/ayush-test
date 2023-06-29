@@ -2,7 +2,7 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskUrls,
@@ -146,6 +146,40 @@ describe('DpskForm', () => {
     await userEvent.click(screen.getByText('Days'))
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'DPSK'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DPSK'
+    })).toBeVisible()
   })
 
   it('should render Edit form', async () => {
