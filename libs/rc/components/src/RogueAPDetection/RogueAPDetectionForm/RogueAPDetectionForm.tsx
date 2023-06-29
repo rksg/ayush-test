@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
 import {
   RogueAPDetectionContextType,
@@ -38,6 +39,7 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const { edit, modalMode, modalCallBack } = props
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
@@ -89,7 +91,11 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
         title={edit
           ? $t({ defaultMessage: 'Edit Rogue AP Detection Policy' })
           : $t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
       />}
