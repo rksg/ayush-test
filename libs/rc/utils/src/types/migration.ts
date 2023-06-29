@@ -87,6 +87,7 @@ export interface TaskContextType {
   createTime: number,
   completedTime?: number,
   state: string,
+  errorMessage?: string,
   tenantId: string,
   fileName: string,
   venueName?: string,
