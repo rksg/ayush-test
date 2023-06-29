@@ -96,7 +96,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Account Settings' })
+    const tab = screen.getByRole('tab', { name: 'Settings' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -128,7 +128,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('Notifications'))
+    fireEvent.click(screen.getByText('Notifications (0)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/administration/notifications`,
       hash: '',
@@ -150,7 +150,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Notifications' })
+    const tab = screen.getByRole('tab', { name: 'Notifications (0)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -168,7 +168,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Administrators' })
+    const tab = screen.getByRole('tab', { name: 'Administrators (0)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -259,5 +259,26 @@ describe('Administration page', () => {
 
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render administrator title with count', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    params.activeTab = 'administrators'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const adminTab = screen.getByRole('tab', { name: 'Administrators (0)' })
+    expect(adminTab.getAttribute('aria-selected')).toBeTruthy()
+    const notificationTab = screen.getByRole('tab', { name: 'Notifications (0)' })
+    expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
   })
 })
