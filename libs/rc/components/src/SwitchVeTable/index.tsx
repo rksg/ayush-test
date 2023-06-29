@@ -174,8 +174,8 @@ export function SwitchVeTable ( { isVenueLevel } : {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: disabledDelete,
-      tooltip: deleteButtonTooltip,
+      disabled: disabledDelete || cliApplied,
+      tooltip: deleteButtonTooltip || $t(VenueMessages.CLI_APPLIED),
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
