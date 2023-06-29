@@ -8,6 +8,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { useDeleteNetworkSegmentationGroupMutation, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
@@ -40,6 +41,7 @@ const NetworkSegmentationTable = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetNetworkSegmentationViewDataListQuery,
     defaultPayload: getNetworkSegmentationPayload,
@@ -191,7 +193,10 @@ const NetworkSegmentationTable = () => {
           $t({ defaultMessage: 'Network Segmentation ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([

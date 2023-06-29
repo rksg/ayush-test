@@ -68,6 +68,11 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('AllRoutes', () => {
+  beforeEach(() => {
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1080
+  })
+
   afterEach(cleanup)
   test('should navigate to dashboard', async () => {
     render(<Provider><AllRoutes /></Provider>, {
