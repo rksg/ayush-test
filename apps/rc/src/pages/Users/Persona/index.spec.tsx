@@ -12,7 +12,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('Persona Portal', () => {
-
   let params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }

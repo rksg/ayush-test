@@ -15,7 +15,7 @@ import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Tooltip }                                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
 import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                                    from '@acx-ui/utils'
@@ -131,7 +131,7 @@ export function MoreSettingsForm (props: {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
-
+  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const [
     enableDhcp,
     enableOfdmOnly,
@@ -237,9 +237,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={
-                <Switch disabled={!useIsTierAllowed(Features.CLOUDPATH_BETA) || enableVxLan}/>
-              }
+              children={<Switch disabled={!useIsSplitOn(Features.POLICIES) || enableVxLan}/>}
             />
           </UI.FieldLabel>
 
@@ -281,7 +279,7 @@ export function MoreSettingsForm (props: {
               <UI.Description>
                 {
                   $t({
-                    defaultMessage: `Not able to modify when the network 
+                    defaultMessage: `Not able to modify when the network
                     enables network segmentation service`
                   })
                 }
@@ -634,7 +632,27 @@ export function MoreSettingsForm (props: {
             children={<Switch />}
           />
         </UI.FieldLabel>
-
+        {gtkRekeyFlag &&
+          <>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </UI.FieldLabel>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'GTK Rekey' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </UI.FieldLabel></>
+        }
         {enableOce &&
           <>
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>

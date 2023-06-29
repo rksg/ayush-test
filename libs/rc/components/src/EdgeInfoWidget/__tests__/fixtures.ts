@@ -1,4 +1,4 @@
-import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePasswordDetail, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -15,7 +15,7 @@ export const currentEdge:EdgeStatus = {
   tags: [],
   firmwareVersion: '1.1.1.1',
   cpuCores: 2,
-  cpuUsedPercentage: 65,
+  cpuUsedPercentage: 92,
   memoryUsedKb: 120 * Math.pow(1024, 1),
   memoryTotalKb: 50 * Math.pow(1024, 1),
   diskUsedKb: 250 * Math.pow(1024, 2),
@@ -56,6 +56,18 @@ export const edgeDnsServers: EdgeDnsServers = {
   secondary: '2.2.2.2'
 }
 
+export const overviewData = {
+  summary: {
+    alarms: {
+      summary: {
+        critical: 1,
+        major: 1
+      },
+      totalCount: 2
+    }
+  }
+}
+
 export const alarmList = {
   data: [
     {
@@ -79,4 +91,27 @@ export const alarmList = {
       '{"message_template": "SmartEdge @@serialNumber firmware update failed."}'
     }
   ] as Alarm[]
+}
+
+export const alarmListMeta = {
+  data: [
+    {
+      switchName: 'Some_Switch',
+      id: 'FEK3230S0A2_switch_status',
+      isSwitchExists: true
+    },
+    {
+      apName: 'Some_AP',
+      id: 'FEK3224R08J_ap_status'
+    }
+  ],
+  fields: [
+    'venueName',
+    'apName',
+    'switchName'
+  ]
+}
+export const passwordDetail:EdgePasswordDetail = {
+  loginPassword: 'admin!234',
+  enablePassword: 'admin!234'
 }
