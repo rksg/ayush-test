@@ -286,7 +286,7 @@ export const AAASettings = (props: {
           label={$t({ defaultMessage: 'SSH Authentication' })}
           valuePropName='checked'
         >
-          <Switch disabled={authnEnableTelnet || cliApplied}/>
+          <Switch data-testid='ssh-authentication' disabled={authnEnableTelnet || cliApplied}/>
         </Form.Item>
         <Popconfirm
           title={$t({ defaultMessage: 'Telnet Authentication requires SSH Authentication also to be turned ON.' })}
@@ -303,7 +303,7 @@ export const AAASettings = (props: {
             label={$t({ defaultMessage: 'Telnet Authentication' })}
             valuePropName='checked'
           >
-            <Switch disabled={cliApplied} />
+            <Switch data-testid='telnet-authentication' disabled={cliApplied} />
           </Form.Item>
         </Popconfirm>
         { authnEnabledSsh && <UI.TransferStyle>
@@ -332,7 +332,7 @@ export const AAASettings = (props: {
           label={$t({ defaultMessage: 'Command Authorization' })}
           valuePropName='checked'
         >
-          <Switch disabled={cliApplied} />
+          <Switch data-testid='command-authorization' disabled={cliApplied} />
         </Form.Item>
         { authzEnabledCommand &&
         <>
@@ -369,7 +369,7 @@ export const AAASettings = (props: {
           label={$t({ defaultMessage: 'Executive Authorization' })}
           valuePropName='checked'
         >
-          <Switch disabled={cliApplied} />
+          <Switch data-testid='executive-authorization' disabled={cliApplied} />
         </Form.Item>
         { authzEnabledExec && <UI.TransferStyle>
           <DndProvider backend={HTML5Backend}><Form.Item
@@ -396,7 +396,7 @@ export const AAASettings = (props: {
           label={$t({ defaultMessage: 'Command Accounting' })}
           valuePropName='checked'
         >
-          <Switch disabled={cliApplied} />
+          <Switch data-testid='command-accounting' disabled={cliApplied} />
         </Form.Item>
         { acctEnabledCommand &&
         <>
@@ -433,7 +433,7 @@ export const AAASettings = (props: {
           label={$t({ defaultMessage: 'Executive Accounting' })}
           valuePropName='checked'
         >
-          <Switch disabled={cliApplied} />
+          <Switch data-testid='executive-accounting' disabled={cliApplied} />
         </Form.Item>
         { acctEnabledExec && <UI.TransferStyle>
           <DndProvider backend={HTML5Backend}><Form.Item

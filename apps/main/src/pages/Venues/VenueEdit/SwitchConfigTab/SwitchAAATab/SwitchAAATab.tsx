@@ -88,7 +88,6 @@ export function SwitchAAATab () {
       })
   }
 
-
   const anchorItems = [{
     title: serversTitle,
     content: (
@@ -96,7 +95,7 @@ export function SwitchAAATab () {
         <StepsFormLegacy.SectionTitle id='aaa-servers'>
           { serversTitle }
         </StepsFormLegacy.SectionTitle>
-        <AAAServers cliApplied={!!venueSwitchSetting?.cliApplied} />
+        <AAAServers cliApplied={cliApplied} />
       </>
     )
   }, {
@@ -111,11 +110,11 @@ export function SwitchAAATab () {
           layout='horizontal'
           labelCol={{ flex: '150px' }}>
           <>
-            { !!venueSwitchSetting?.cliApplied
+            { cliApplied
               && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
             <AAASettings
               setAAASettingId={setAAASettingId}
-              cliApplied={!!venueSwitchSetting?.cliApplied}
+              cliApplied={cliApplied}
             />
           </>
         </StepsFormLegacy.StepForm>
