@@ -34,7 +34,7 @@ export function RedirectUrlInput () {
       form.setFieldValue(['guestPortal','redirectUrl'], redirectUrlValue)
     } else {
       setRedirectUrlValue(redirectUrl)
-      form.setFieldValue(['guestPortal','redirectUrl'], '')
+      form.setFieldValue(['guestPortal','redirectUrl'], null)
     }
   }
 
@@ -56,11 +56,10 @@ export function RedirectUrlInput () {
       </Tooltip>
       <Form.Item
         name={['guestPortal','redirectUrl']}
-        initialValue=''
         rules={[
           { required: redirectCheckbox },
-          { validator: (_, value) => URLRegExp(value) }]
-        }
+          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve() }
+        ]}
         children={
           <Input
             style={{ marginTop: '5px' }}

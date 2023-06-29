@@ -55,7 +55,7 @@ export function NetworkDetailForm () {
         setDifferentSSID(data?.wlan?.ssid !== data?.name)
       }
     }
-  }, [data, editMode])
+  }, [data?.wlan?.ssid, editMode])
 
   const networkListPayload = {
     searchString: '',
@@ -129,6 +129,13 @@ export function NetworkDetailForm () {
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
 
+  const nameOnChange = (differentSSID: boolean) => {
+    if (!differentSSID) {
+      const name = form.getFieldValue('name')
+      form.setFieldValue(['wlan', 'ssid'], name)
+    }
+  }
+
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -153,7 +160,7 @@ export function NetworkDetailForm () {
           ]}
           validateFirst
           hasFeedback
-          children={<Input />}
+          children={<Input onChange={() => nameOnChange(differentSSID)} />}
           validateTrigger={'onBlur'}
         />
         <Form.Item noStyle name='differentSSID'>
@@ -161,10 +168,7 @@ export function NetworkDetailForm () {
             type='link'
             style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
-              if (!differentSSID) {
-                const name = form.getFieldValue('name')
-                form.setFieldValue(['wlan', 'ssid'], name)
-              }
+              nameOnChange(!differentSSID)
               setDifferentSSID(!differentSSID)
             }}
           >
