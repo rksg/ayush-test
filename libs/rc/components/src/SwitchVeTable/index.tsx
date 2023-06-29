@@ -38,8 +38,10 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const params = useParams()
   const [cliApplied, setCliApplied] = useState(false)
 
-  const { data: venueSwitchSetting } = useVenueSwitchSettingQuery({ params, skip: !isVenueLevel })
-  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params, skip: isVenueLevel })
+  const { data: venueSwitchSetting }
+    = useVenueSwitchSettingQuery({ params }, { skip: !isVenueLevel })
+  const { data: switchDetail }
+    = useSwitchDetailHeaderQuery({ params }, { skip: isVenueLevel })
 
   const defaultPayload = {
     fields: [
