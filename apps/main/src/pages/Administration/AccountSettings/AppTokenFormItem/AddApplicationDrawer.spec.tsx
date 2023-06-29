@@ -12,6 +12,7 @@ import {
   mockServer,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import { RolesEnum } from '@acx-ui/types'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
@@ -22,7 +23,8 @@ const tenantAuthenticationData =
   authenticationType: TenantAuthenticationType.ldap,
   clientID: '123',
   clientIDStatus: ApplicationAuthenticationStatus.ACTIVE,
-  clientSecret: 'secret123'
+  clientSecret: 'secret123',
+  scopes: RolesEnum.PRIME_ADMIN
 }
 
 
@@ -150,6 +152,26 @@ describe('Add Application Drawer', () => {
     expect(await screen.findByText('Please enter Client secret')).toBeVisible()
     expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
   })
+  it('should validate scope correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AddApplicationDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer} />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Add API Token')).toBeVisible()
+    const input = screen.getByLabelText('Application Name')
+    fireEvent.change(input, { target: { value: 'test' } })
+    await userEvent.click(screen.getByRole('button', { name: 'Generate Secret' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('Please enter Scope')).toBeVisible()
+    expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
+  })
   it('should generate client secret correctly', async () => {
     const mockedCloseDrawer = jest.fn()
     render(
@@ -192,6 +214,8 @@ describe('Add Application Drawer', () => {
     const input = screen.getByLabelText('Application Name')
     fireEvent.change(input, { target: { value: 'testname' } })
     await userEvent.click(screen.getByRole('button', { name: 'Generate Secret' }))
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Scope' }))
+    await userEvent.click(screen.getByText('Prime Admin'))
     const copyButtons = screen.getAllByRole('button', { name: 'Copy' })
     await userEvent.click(copyButtons[0])
     await userEvent.click(copyButtons[1])

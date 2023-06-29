@@ -205,6 +205,8 @@ export interface TenantAuthentications {
   samlFileURL?: string;
   authorizationURL?: string;
   tenant?: string;
+  url?: string;
+  scopes?: string;
 }
 
 export const getRoles = () => {

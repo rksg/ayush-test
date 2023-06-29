@@ -1,5 +1,5 @@
-import { Divider, Form, Input } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Divider, Form, Input, Select } from 'antd'
+import { useIntl }                      from 'react-intl'
 
 import { Button, Drawer, PasswordInput }   from '@acx-ui/components'
 import {
@@ -11,7 +11,8 @@ import {
   notAllDigitsRegExp,
   TenantAuthentications,
   TenantAuthenticationType,
-  ApplicationAuthenticationStatus
+  ApplicationAuthenticationStatus,
+  getRoles
 } from '@acx-ui/rc/utils'
 
 interface AddApplicationDrawerProps {
@@ -49,6 +50,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
     const name = form.getFieldValue('name')
     const clientId = form.getFieldValue('clientId')
     const secret = form.getFieldValue('secret')
+    const scopes = form.getFieldValue('scopes')
     try {
       await form.validateFields()
       const apiTokenData: TenantAuthentications = {
@@ -56,13 +58,15 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
         clientIDStatus: ApplicationAuthenticationStatus.ACTIVE,
         clientID: clientId,
         authenticationType: TenantAuthenticationType.oauth2_client,
-        clientSecret: secret
+        clientSecret: secret,
+        scopes: scopes
       }
 
       const apiTokenEditData: TenantAuthentications = {
         name: form.getFieldValue('name'),
         authenticationType: TenantAuthenticationType.oauth2_client,
-        clientSecret: form.getFieldValue('secret')
+        clientSecret: form.getFieldValue('secret'),
+        scopes: scopes
       }
 
       if(isEditMode) {
@@ -80,6 +84,11 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   const handleClickCopy = (copyString: string) => {
     navigator.clipboard.writeText(copyString)
   }
+
+  const rolesList = getRoles().map((item) => ({
+    label: $t(item.label),
+    value: item.value
+  }))
 
   const initClientId = editData?.clientID || generateHexKey(32)
   const formContent = <Form layout='vertical'form={form} >
@@ -147,6 +156,18 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       }}>
       {$t({ defaultMessage: 'Copy' })}
     </Button>
+    <Form.Item
+      name='scopes'
+      style={{ marginTop: '13px' }}
+      label={$t({ defaultMessage: 'Scope' })}
+      initialValue={editData?.scopes || ''}
+      rules={[{ required: true }]}
+    >
+      <Select
+        options={rolesList}
+        placeholder={$t({ defaultMessage: 'Select...' })}
+      />
+    </Form.Item>
 
   </Form>
 

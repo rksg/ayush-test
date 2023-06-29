@@ -10,6 +10,7 @@ import {
   waitFor,
   mockServer
 } from '@acx-ui/test-utils'
+import { RolesEnum } from '@acx-ui/types'
 
 import { AppTokenFormItem } from '.'
 
@@ -20,7 +21,8 @@ const tenantAuthenticationData = [
     authenticationType: TenantAuthenticationType.ldap,
     clientID: '123',
     clientIDStatus: ApplicationAuthenticationStatus.ACTIVE,
-    clientSecret: 'secret123'
+    clientSecret: 'secret123',
+    scopes: RolesEnum.PRIME_ADMIN
   },
   {
     id: '2',
@@ -105,12 +107,15 @@ describe('App Token Form Item', () => {
     expect(rows).toHaveLength(tenantAuthenticationData.length)
     expect(screen.getByText('test123')).toBeVisible()
     expect(screen.getByText('ACTIVE')).toBeVisible()
-    expect(screen.getByDisplayValue('123')).toBeVisible()
+    // TODO: update back to getByDisplayValue when URL value is implemented
+    expect(screen.getAllByDisplayValue('123')[0]).toBeVisible()
+    expect(screen.getByText('Prime Admin')).toBeVisible()
     expect(screen.getByText('test456')).toBeVisible()
     const revoked = screen.getAllByText('REVOKED')
     expect(revoked[0]).toBeVisible()
     expect(revoked[1]).toBeVisible()
-    expect(screen.getByDisplayValue('456')).toBeVisible()
+    // TODO: update back to getByDisplayValue when URL value is implemented
+    expect(screen.getAllByDisplayValue('456')[0]).toBeVisible()
   })
   it('copy buttons should work correctly', async () => {
     const writeText = jest.fn()
@@ -133,19 +138,26 @@ describe('App Token Form Item', () => {
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(tenantAuthenticationData.length)
     const buttons = screen.getAllByTestId('copy')
-    expect(buttons).toHaveLength(tenantAuthenticationData.length * 2)
+    expect(buttons).toHaveLength(tenantAuthenticationData.length * 3)
     await userEvent.click(buttons[0])
     expect(writeText).toHaveBeenLastCalledWith('123')
     await userEvent.click(buttons[1])
     expect(writeText).toHaveBeenLastCalledWith('secret123')
     await userEvent.click(buttons[2])
-    expect(writeText).toHaveBeenLastCalledWith('456')
-    await userEvent.click(buttons[3])
-    expect(writeText).toHaveBeenLastCalledWith('secret456')
-    await userEvent.click(buttons[4])
     expect(writeText).toHaveBeenLastCalledWith('')
+    await userEvent.click(buttons[3])
+    expect(writeText).toHaveBeenLastCalledWith('456')
+    await userEvent.click(buttons[4])
+    expect(writeText).toHaveBeenLastCalledWith('secret456')
     await userEvent.click(buttons[5])
     expect(writeText).toHaveBeenLastCalledWith('')
+    await userEvent.click(buttons[6])
+    expect(writeText).toHaveBeenLastCalledWith('')
+    await userEvent.click(buttons[7])
+    expect(writeText).toHaveBeenLastCalledWith('')
+    await userEvent.click(buttons[8])
+    expect(writeText).toHaveBeenLastCalledWith('')
+
   })
   it('should revoke active token correctly', async () => {
     render(

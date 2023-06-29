@@ -22,7 +22,8 @@ describe('Authentication Selector', () => {
     render(
       <Provider>
         <AuthenticationSelector
-          ssoConfigured={false} />
+          ssoConfigured={false}
+          setSelected={() => void {}} />
       </Provider>, {
         route: { params }
       })
@@ -37,7 +38,8 @@ describe('Authentication Selector', () => {
     render(
       <Provider>
         <AuthenticationSelector
-          ssoConfigured={true} />
+          ssoConfigured={true}
+          setSelected={() => void {}} />
       </Provider>, {
         route: { params }
       })

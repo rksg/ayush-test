@@ -9,7 +9,13 @@ import {
   useDeleteTenantAuthenticationsMutation,
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
-import {  TenantAuthentications, TenantAuthenticationType, ApplicationAuthenticationStatus } from '@acx-ui/rc/utils'
+import {
+  TenantAuthentications,
+  TenantAuthenticationType,
+  ApplicationAuthenticationStatus,
+  roleDisplayText
+} from '@acx-ui/rc/utils'
+import { RolesEnum } from '@acx-ui/types'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
@@ -80,9 +86,10 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Client ID' }),
         dataIndex: 'clientID',
+        align: 'center',
         key: 'clientID',
         width: 245,
-        render: function (data, row) {
+        render: function (_, row) {
           return <div>
             <Input
               readOnly
@@ -104,8 +111,9 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
       {
         title: $t({ defaultMessage: 'Share Secret' }),
         dataIndex: 'clientSecret',
+        align: 'center',
         key: 'clientSecret',
-        render: function (data, row) {
+        render: function (_, row) {
           return <div onClick={(e)=> {e.stopPropagation()}}>
             <PasswordInput
               readOnly
@@ -121,6 +129,40 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               }
             />
           </div>
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'URL' }),
+        align: 'center',
+        dataIndex: 'url',
+        key: 'url',
+        width: 245,
+        render: function (_, row) {
+          return <div>
+            <Input
+              readOnly
+              bordered={false}
+              value={row.clientID}
+              style={{ overflow: 'hidden', width: '190px' }}
+            />
+            <Button
+              ghost
+              data-testid={'copy'}
+              icon={<CopyOutlined />}
+              onClick={() =>
+                navigator.clipboard.writeText(row.url ?? '')
+              }
+            />
+          </div>
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Scope' }),
+        dataIndex: 'scopes',
+        key: 'scopes',
+        render: function (_, row) {
+          return roleDisplayText[row.scopes as RolesEnum]
+            ? $t(roleDisplayText[row.scopes as RolesEnum]) : ''
         }
       }
     ]
@@ -248,7 +290,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   return ( <>
     <Row gutter={24} style={{ marginBottom: '25px' }}>
-      <Col style={{ width: '800px' }}>
+      <Col style={{ width: '1200px' }}>
         <Form.Item
           style={hasAppTokenConfigured ? { marginBottom: '-20px' } : { marginBottom: '10px' }}
           colon={false}

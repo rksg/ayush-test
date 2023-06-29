@@ -1,8 +1,9 @@
-import React from 'react'
+// import { useState } from 'react'
 
 import {
   Form,
-  Radio
+  Radio,
+  RadioChangeEvent
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
@@ -10,6 +11,7 @@ import { SpaceWrapper } from '@acx-ui/rc/components'
 
 interface AuthenticationSelectorProps {
   ssoConfigured: boolean
+  setSelected: (selectedAuth: string) => void
 }
 
 export enum AuthTypeRadioButtonEnum {
@@ -41,7 +43,11 @@ export const getAuthTypes = () => {
 const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
   const { $t } = useIntl()
 
-  const { ssoConfigured } = props
+  let { ssoConfigured, setSelected } = props
+
+  const onSelectModeChange = (e: RadioChangeEvent) => {
+    setSelected(e.target.value)
+  }
 
   const authTypesList = getAuthTypes().map((item) => ({
     label: $t(item.label),
@@ -55,7 +61,10 @@ const AuthenticationSelector = (props: AuthenticationSelectorProps) => {
       initialValue={AuthTypeRadioButtonEnum.idm}
       rules={[{ required: true }]}
     >
-      <Radio.Group style={{ width: '100%' }}>
+      <Radio.Group
+        style={{ width: '100%' }}
+        onChange={onSelectModeChange}
+      >
         <SpaceWrapper full direction='vertical' size='middle'>
           {authTypesList.map((item) => {
             return (

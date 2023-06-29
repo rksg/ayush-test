@@ -68,6 +68,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   const userType = Form.useWatch('userType', form)
   const [addAdmin, { isLoading: isAddAdminUpdating }] = useAddAdminMutation()
   const [isSsoConfigured, setSsoConfigured] = useState(false)
+  const [selectedAuth, setSelectedAuth] = useState('')
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
 
   const tenantAuthenticationData =
@@ -156,9 +157,9 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         payload.email = formValues.newEmail
         if (formValues.authType === AuthTypeRadioButtonEnum.sso && authenticationData?.id) {
           payload.authenticationId = authenticationData.id
+          payload.lastName = formValues.lastName ?? ''
+          payload.firstName = formValues.firstName ?? ''
         }
-        // payload.lastName = formValues.lastName ?? ''
-        // payload.firstName = formValues.firstName ?? ''
       } else {
         payload.email = formValues.email
         payload.externalId = _.find(registerUsersList, { email: formValues.email })?.externalId
@@ -219,6 +220,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
         <Space direction='vertical' style={{ width: '100%' }} >
           <AuthenticationSelector
             ssoConfigured={isSsoConfigured}
+            setSelected={setSelectedAuth}
           />
 
           <Form.Item name='userType' initialValue='new'>
@@ -286,6 +288,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                   </Form.Item>
                 </Row>
 
+                {selectedAuth === AuthTypeRadioButtonEnum.sso &&
                 <Row justify='space-between'>
                   <Col span={24}>
                     <Form.Item
@@ -305,8 +308,9 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                       />
                     </Form.Item>
                   </Col>
-                </Row>
+                </Row>}
 
+                {selectedAuth === AuthTypeRadioButtonEnum.sso &&
                 <Row justify='space-between'>
                   <Col span={24}>
                     <Form.Item
@@ -326,7 +330,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                       />
                     </Form.Item>
                   </Col>
-                </Row>
+                </Row>}
 
               </Space>
             </Radio.Group>

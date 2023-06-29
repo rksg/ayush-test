@@ -25,7 +25,7 @@ import {
 import {
   TenantAuthentications,
   TenantAuthenticationType,
-  // SamlFileType,
+  SamlFileType,
   UploadUrlResponse
 } from '@acx-ui/rc/utils'
 // import { loadImageWithJWT } from '@acx-ui/utils'
@@ -199,7 +199,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         const ssoEditData: TenantAuthentications = {
           name: fileURL.fileName,
           authenticationType: TenantAuthenticationType.saml,
-          // samlFileType: SamlFileType.file,
+          samlFileType: SamlFileType.file,
           samlFileURL: fileURL.data.fileId
         }
         const result =
@@ -211,7 +211,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         const ssoData: TenantAuthentications = {
           name: fileURL.fileName,
           authenticationType: TenantAuthenticationType.saml,
-          // samlFileType: SamlFileType.file,
+          samlFileType: SamlFileType.file,
           samlFileURL: fileURL.data.fileId
         }
         const result =
