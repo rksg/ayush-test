@@ -144,7 +144,7 @@ function ImpactedRulesDetails (props: ImpactedRulesDetailsProps) {
             return <UI.ImpactedRuleDetailsItem key={appType}>
               <div>{$t(changedApplicationTypeTextMap[appType as ApplicationUpdateType])}:</div>
               <div>{$t({
-                defaultMessage: '{count} {count, plural, one {rule} other {rules}} updated'
+                defaultMessage: '{count} {count, plural, one {rule} other {rules}}'
               }, { count: value.totalImpacted })}</div>
             </UI.ImpactedRuleDetailsItem>
           })}
