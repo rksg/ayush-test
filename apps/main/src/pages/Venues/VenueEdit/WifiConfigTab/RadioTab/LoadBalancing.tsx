@@ -6,7 +6,7 @@ import { defineMessage, FormattedMessage, useIntl }                  from 'react
 import { useParams }                                                 from 'react-router-dom'
 
 import { cssStr, Loader, Tooltip }                                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
 import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
 import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
@@ -41,6 +41,7 @@ export function LoadBalancing () {
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
     useUpdateVenueLoadBalancingMutation()
 
+  const betaStickyFlag = useIsTierAllowed(Features.BETA_CLB)
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
 
   const infoMessage = defineMessage({
@@ -235,7 +236,7 @@ export function LoadBalancing () {
     </Row>
     }
 
-    {stickyClientFlag && enabled &&
+    {betaStickyFlag && stickyClientFlag && enabled &&
     <Row>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
@@ -258,7 +259,7 @@ export function LoadBalancing () {
     </Row>
     }
 
-    {stickyClientFlag && enabled && stickyClientSteeringEnabled &&
+    {betaStickyFlag && stickyClientFlag && enabled && stickyClientSteeringEnabled &&
     <Row>
       <Col span={colSpan}>
         <Space>
