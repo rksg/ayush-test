@@ -209,7 +209,7 @@ export default function ConnectionMeteringTable () {
             })}
           >
             <Button type='primary'>
-              { $t({ defaultMessage: 'Add Data Usage Metering profile' }) }
+              { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
             </Button>
           </TenantLink>
         ])}
