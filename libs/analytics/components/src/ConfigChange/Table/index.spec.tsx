@@ -54,19 +54,20 @@ describe('Table', () => {
   })
 
   it('should log rows when clicked', async () => {
-    const spyConsole = jest.spyOn(console, 'log')
+    const onRowClick = jest.fn()
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table/>, { wrapper: Provider, route: {} })
+    render(<Table onRowClick={onRowClick}/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const radio = await screen.findAllByRole('radio')
-    await userEvent.click(radio[0])
-    await userEvent.click(radio[1])
 
-    expect(spyConsole).toHaveBeenCalledWith(
-      'selectedRowKeys: initialState.ccmAp.radio24g.radio.channel_fly_mtbc1685427082100',
-      'selectedRows: ', [{
+    await userEvent.click(radio[0])
+
+    expect(onRowClick).toHaveBeenCalledTimes(1)
+    expect(onRowClick).toHaveBeenCalledWith({
+      id: 0,
+      value: {
         children: undefined,
         id: 0,
         key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
@@ -75,6 +76,7 @@ describe('Table', () => {
         oldValues: [],
         timestamp: '1685427082100',
         type: 'ap'
-      }])
+      }
+    })
   })
 })

@@ -10,7 +10,7 @@ jest.mock('./Chart', () => ({
 }))
 
 jest.mock('./Table', () => ({
-  ConfigChangeTable: () => <div data-testid='Table' />
+  Table: () => <div data-testid='Table' />
 }))
 
 describe('ConfigChange', () => {

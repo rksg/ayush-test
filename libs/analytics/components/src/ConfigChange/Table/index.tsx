@@ -17,7 +17,9 @@ import { useConfigChangeQuery } from '../services'
 import { Dot }                                  from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
-export function Table () {
+export function Table (props: {
+  onRowClick?: (params: unknown) => void,
+}) {
   const { $t } = useIntl()
   const { filters: { path, startDate, endDate } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({ path, start: startDate, end: endDate })
@@ -35,9 +37,10 @@ export function Table () {
       key: 'type',
       title: $t(defineMessage({ defaultMessage: 'Entity Type' })),
       dataIndex: 'type',
-      render: (value) => getConfigChangeEntityTypeMapping().map(type =>
-        type.key === value && <Dot color={type.color} children={type.label}/>
-      ),
+      render: (value, row) => {
+        const config = getConfigChangeEntityTypeMapping().find(type => type.key === value)
+        return config ? <Dot key={row.id} color={config.color} children={config.label}/> : value
+      },
       filterable: getConfigChangeEntityTypeMapping()
         .map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },
@@ -100,8 +103,7 @@ export function Table () {
   const rowSelection = {
     // TODO: need to handle sync betweem chart and table
     onChange: (selectedRowKeys: React.Key[], selectedRows: ConfigChange[]) => {
-      // eslint-disable-next-line no-console
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
+      props.onRowClick?.({ id: selectedRowKeys[0], value: selectedRows[0] })
     }
   }
 

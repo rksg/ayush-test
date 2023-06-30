@@ -50,7 +50,7 @@ export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
       color: cssStr('--acx-viz-qualitative-2')
     },
     {
-      key: 'venue',
+      key: 'zone',
       label: $t({ defaultMessage: 'Venue' }),
       color: cssStr('--acx-viz-qualitative-1')
     }
