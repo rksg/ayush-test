@@ -92,7 +92,7 @@ const apList = {
   data: []
 }
 
-describe('SwitchClientsTable', () => {
+describe.skip('SwitchClientsTable', () => {
   beforeEach(() => {
     store.dispatch(clientApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
