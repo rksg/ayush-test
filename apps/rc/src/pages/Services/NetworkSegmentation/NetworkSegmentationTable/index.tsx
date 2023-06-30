@@ -132,18 +132,15 @@ const NetworkSegmentationTable = () => {
       title: $t({ defaultMessage: 'Update Available' }),
       key: 'updateAvailable',
       dataIndex: 'updateAvailable',
-      sorter: true
+      sorter: true,
+      render: () => {
+        return $t({ defaultMessage: 'No' })
+      }
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
       key: 'version',
       dataIndex: ['version'],
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
       sorter: true
     }
   ]
