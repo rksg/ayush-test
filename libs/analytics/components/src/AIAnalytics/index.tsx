@@ -43,9 +43,7 @@ const useTabs = () : Tab[] => {
     key: AIAnalyticsTabEnum.RECOMMENDATIONS,
     title: $t({ defaultMessage: 'Recommendations' }),
     component: <RecommendationTabContent />,
-    headerExtra: useHeaderExtra({
-      shouldQuerySwitch: true, withIncidents: false, excludeNetworkFilter: true
-    })
+    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
   }]
   return [
     incidentsTab,

@@ -16,7 +16,7 @@ export type HeaderData = {
 }
 
 type useHeaderExtraProps = {
-  shouldQuerySwitch: boolean,
+  shouldQuerySwitch?: boolean,
   withIncidents?: boolean,
   excludeNetworkFilter?: boolean
 }
@@ -29,7 +29,7 @@ const Filter = (
     ? null
     : <NetworkFilter
       key='network-filter'
-      shouldQuerySwitch={shouldQuerySwitch}
+      shouldQuerySwitch={Boolean(shouldQuerySwitch)}
       withIncidents={withIncidents}
     />
 }
@@ -39,9 +39,7 @@ export const useHeaderExtra = (props: useHeaderExtraProps) => {
   return [
     <Filter
       key='network-filter'
-      shouldQuerySwitch={props.shouldQuerySwitch}
-      withIncidents={props.withIncidents}
-      excludeNetworkFilter={props.excludeNetworkFilter}
+      {...props}
     />,
     <RangePicker
       key='range-picker'
