@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -55,7 +55,8 @@ import { useSwitchActions }          from '../useSwitchActions'
 import {
   getGroupableConfig
 } from './config'
-import { useExportCsv } from './useExportCsv'
+import { SwitchTabContext } from './context'
+import { useExportCsv }     from './useExportCsv'
 
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
@@ -111,6 +112,7 @@ export function SwitchTable (props : SwitchTableProps) {
   const { showAllColumns, searchable, filterableKeys } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
+  const { setSwitchCount } = useContext(SwitchTabContext)
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
   const importTemplateLink = 'assets/templates/switches_import_template.csv'
@@ -129,6 +131,11 @@ export function SwitchTable (props : SwitchTableProps) {
       'model', 'venueId', 'configReady', 'syncedSwitchConfig' ]
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+
+  useEffect(() => {
+    setSwitchCount?.(tableQuery.data?.totalCount || 0)
+  }, [tableQuery.data])
+
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
@@ -294,7 +301,9 @@ export function SwitchTable (props : SwitchTableProps) {
       const token = (await getJwtToken({ params: { tenantId: params.tenantId, serialNumber: row.serialNumber } }, true)
         .unwrap()).access_token || ''
       setCliData({ token, switchName: row.switchName || row.name || row.serialNumber, serialNumber: row.serialNumber })
-      setCliModalOpen(true)
+      setTimeout(() => {
+        setCliModalOpen(true)
+      }, 1000)
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),

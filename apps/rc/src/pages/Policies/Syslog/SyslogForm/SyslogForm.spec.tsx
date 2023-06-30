@@ -5,7 +5,8 @@ import { act, fireEvent } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import { rest }           from 'msw'
 
-import { policyApi } from '@acx-ui/rc/services'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { policyApi }    from '@acx-ui/rc/services'
 import {
   ProtocolEnum,
   FacilityEnum,
@@ -226,6 +227,54 @@ describe('SyslogForm', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(screen.getByText('Finish'))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <SyslogContext.Provider value={{
+        state: initState,
+        dispatch: setSyslogAPConfigure
+      }}>
+        <SyslogForm edit={false}/>
+      </SyslogContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Syslog'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <SyslogContext.Provider value={{
+        state: initState,
+        dispatch: setSyslogAPConfigure
+      }}>
+        <SyslogForm edit={false}/>
+      </SyslogContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Syslog Server'
+    })).toBeVisible()
   })
 
   it('should render SyslogForm with editMode successfully', async () => {

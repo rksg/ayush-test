@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useContext } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -51,7 +51,8 @@ import { useApActions }              from '../useApActions'
 import {
   getGroupableConfig, groupedFields
 } from './config'
-import { useExportCsv } from './useExportCsv'
+import { ApsTabContext } from './context'
+import { useExportCsv }  from './useExportCsv'
 
 export const defaultApPayload = {
   searchString: '',
@@ -104,7 +105,6 @@ export const APStatus = (
   )
 }
 
-
 interface ApTableProps
   extends Omit<TableProps<APExtended>, 'columns'> {
   tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
@@ -119,6 +119,7 @@ export function ApTable (props: ApTableProps) {
   const params = useParams()
   const filters = getFilters(params) as FILTER
   const { searchable, filterables } = props
+  const { setApsCount } = useContext(ApsTabContext)
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
@@ -134,6 +135,10 @@ export function ApTable (props: ApTableProps) {
       'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
+
+  useEffect(() => {
+    setApsCount?.(tableQuery.data?.totalCount || 0)
+  }, [tableQuery.data])
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)

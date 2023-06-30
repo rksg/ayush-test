@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -23,6 +23,7 @@ import { PersonaGroup }                  from '@acx-ui/rc/utils'
 import { filterByAccess }                from '@acx-ui/user'
 import { FILTER, useTableQuery, SEARCH } from '@acx-ui/utils'
 
+import { PersonaGroupContext } from '..'
 import {
   DpskPoolLink,
   MacRegistrationPoolLink,
@@ -31,8 +32,6 @@ import {
   VenueLink
 } from '../LinkHelper'
 import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
-
-
 
 function useColumns (
   macRegistrationPools: Map<string, string>,
@@ -153,6 +152,7 @@ export function PersonaGroupTable () {
     visible: false,
     data: {} as PersonaGroup | undefined
   })
+  const { setPersonaGroupCount } = useContext(PersonaGroupContext)
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
@@ -299,6 +299,7 @@ export function PersonaGroupTable () {
     tableQuery.setPayload(payload)
   }
 
+  setPersonaGroupCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[

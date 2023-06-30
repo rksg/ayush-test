@@ -6,7 +6,9 @@ import {
   FirmwareUrlsInfo,
   FirmwareVersion,
   FirmwareVenue,
-  FirmwareSwitchVenue
+  FirmwareSwitchVenue,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }                from '@acx-ui/store'
 import { RequestPayload }                 from '@acx-ui/types'
@@ -74,14 +76,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           totalCount: result.length
         } as TableResult<FirmwareVenue>
       },
-      providesTags: [{ type: 'Firmware', id: 'LIST' }]
-    }),
-    getVenueVersions: build.query<FirmwareVenue[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueVersions, params)
-        return {
-          ...req
-        }
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, ['UpdateNow'], () => {
+            api.dispatch(firmwareApi.util.invalidateTags([
+              { type: 'Firmware', id: 'LIST' }
+            ]))
+          })
+        })
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),

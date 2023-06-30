@@ -19,6 +19,7 @@ export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
@@ -80,7 +81,12 @@ export default function ServiceCatalog () {
 
   return (
     <>
-      <PageHeader title={$t({ defaultMessage: 'Service Catalog' })} />
+      <PageHeader
+        title={$t({ defaultMessage: 'Service Catalog' })}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) }
+        ]: undefined}
+      />
       {sets.map(set => {
         const isAllDisabled = _.findIndex(set.items,
           (o) => o.disabled === undefined || o.disabled === false ) === -1

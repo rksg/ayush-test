@@ -45,10 +45,6 @@ describe('Firmware Venues Table', () => {
         FirmwareUrlsInfo.getUpgradePreferences.url,
         (req, res, ctx) => res(ctx.json({ ...preference }))
       ),
-      rest.post(
-        FirmwareUrlsInfo.updateNow.oldUrl!,
-        (req, res, ctx) => res(ctx.json({ ...successResponse }))
-      ),
       rest.patch(
         FirmwareUrlsInfo.updateNow.url,
         (req, res, ctx) => res(ctx.json({ ...successResponse }))
@@ -123,13 +119,6 @@ describe('Firmware Venues Table', () => {
 
     const updateNowFn = jest.fn()
     mockServer.use(
-      rest.post(
-        FirmwareUrlsInfo.updateNow.oldUrl!,
-        (req, res, ctx) => {
-          updateNowFn(req.body)
-          return res(ctx.json({ ...successResponse }))
-        }
-      ),
       rest.patch(
         FirmwareUrlsInfo.updateNow.url,
         (req, res, ctx) => {

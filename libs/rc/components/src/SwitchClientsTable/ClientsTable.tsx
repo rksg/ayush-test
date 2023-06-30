@@ -1,3 +1,5 @@
+import { useContext, useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Loader, ColumnType } from '@acx-ui/components'
@@ -12,6 +14,8 @@ import {
   usePollingTableQuery,
   TableQuery
 } from '@acx-ui/utils'
+
+import { SwitchClientContext } from './context'
 
 export const defaultSwitchClientPayload = {
   searchString: '',
@@ -32,6 +36,7 @@ export function ClientsTable (props: {
 }) {
   const params = useParams()
   const { searchable, filterableKeys } = props
+  const { setSwitchCount } = useContext(SwitchClientContext)
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
@@ -49,6 +54,9 @@ export function ClientsTable (props: {
     option: { skip: !!props.tableQuery }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+  useEffect(() => {
+    setSwitchCount?.(tableQuery.data?.totalCount || 0)
+  }, [tableQuery.data])
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const columns: TableProps<SwitchClient>['columns'] = [{
