@@ -41,6 +41,7 @@ export function useMenuConfig () {
 
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -344,6 +345,6 @@ export function useMenuConfig () {
       ]
     }
   ]
-  if (isGuestManager) { return [] }
+  if (isGuestManager || isDPSKAdmin) { return [] }
   return config
 }
