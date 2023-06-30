@@ -57,7 +57,8 @@ import {
   SwitchViewModel,
   redirectPreviousPage,
   LocationExtended,
-  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -687,8 +688,7 @@ export function StackForm () {
                 </Tabs>
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
                   {readOnly &&
-                    // eslint-disable-next-line max-len
-                    <Alert type='info' message={$t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue' })} />}
+                    <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <Form.Item
                     name='venueId'
                     label={$t({ defaultMessage: 'Venue' })}
