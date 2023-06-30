@@ -9,8 +9,8 @@ jest.mock('./Chart', () => ({
   Chart: () => <div data-testid='Chart' />
 }))
 
-jest.mock('./ConfigChangeTable', () => ({
-  ConfigChangeTable: () => <div data-testid='ConfigChangeTable' />
+jest.mock('./Table', () => ({
+  ConfigChangeTable: () => <div data-testid='Table' />
 }))
 
 describe('ConfigChange', () => {
@@ -18,6 +18,6 @@ describe('ConfigChange', () => {
     render(<ConfigChange/>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('Chart')).toBeVisible()
     expect(await screen.findByText('kpi')).toBeVisible()
-    expect(await screen.findByTestId('ConfigChangeTable')).toBeVisible()
+    expect(await screen.findByTestId('Table')).toBeVisible()
   })
 })

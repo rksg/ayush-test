@@ -7,9 +7,9 @@ import '@testing-library/jest-dom'
 import { configChanges } from '../__tests__/fixtures'
 import { api }           from '../services'
 
-import { ConfigChangeTable } from '.'
+import { Table } from '.'
 
-describe('Config Change Table', () => {
+describe('Table', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
@@ -17,14 +17,14 @@ describe('Config Change Table', () => {
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<ConfigChangeTable/>, { wrapper: Provider, route: {} })
+    render(<Table/>, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
   it('should render table with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<ConfigChangeTable/>, { wrapper: Provider, route: {} })
+    render(<Table/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -37,7 +37,7 @@ describe('Config Change Table', () => {
   it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeTable/>, { wrapper: Provider, route: {} })
+    render(<Table/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -54,18 +54,27 @@ describe('Config Change Table', () => {
   })
 
   it('should log rows when clicked', async () => {
+    const spyConsole = jest.spyOn(console, 'log')
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeTable/>, { wrapper: Provider, route: {} })
+    render(<Table/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
-    /* eslint-disable no-console */
-    console.log = jest.fn()
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[0])
     await userEvent.click(radio[1])
 
-    // eslint-disable-next-line max-len
-    expect(console.log).toHaveBeenCalledWith('selectedRowKeys: initialState.ccmAp.radio24g.radio.channel_fly_mtbc1685427082100', 'selectedRows: ', [{ children: undefined, id: 0, key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc', name: '94:B3:4F:3D:21:80', newValues: ['480'], oldValues: [], timestamp: '1685427082100', type: 'ap' }])
+    expect(spyConsole).toHaveBeenCalledWith(
+      'selectedRowKeys: initialState.ccmAp.radio24g.radio.channel_fly_mtbc1685427082100',
+      'selectedRows: ', [{
+        children: undefined,
+        id: 0,
+        key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
+        name: '94:B3:4F:3D:21:80',
+        newValues: ['480'],
+        oldValues: [],
+        timestamp: '1685427082100',
+        type: 'ap'
+      }])
   })
 })

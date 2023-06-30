@@ -1,17 +1,23 @@
 import moment                                        from 'moment'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter }                                 from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, ConfigChange, getConfigChangeEntityTypeMapping } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
-import { noDataDisplay }                                                             from '@acx-ui/utils'
+import { defaultSort, sortProp, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import {
+  Loader,
+  TableProps,
+  Table as CommonTable,
+  ConfigChange,
+  getConfigChangeEntityTypeMapping
+}                                                    from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import { useConfigChangeQuery } from '../services'
 
 import { Block, Dot }                           from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
-export function ConfigChangeTable () {
+export function Table () {
   const { $t } = useIntl()
   const { filters: { path, startDate, endDate } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({ path, start: startDate, end: endDate })
@@ -103,7 +109,7 @@ export function ConfigChangeTable () {
 
   return (
     <Loader states={[queryResults]}>
-      <Table
+      <CommonTable
         settingsId='config-change-table'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
