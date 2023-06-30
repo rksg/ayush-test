@@ -1,25 +1,21 @@
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps, Tabs, Tooltip } from '@acx-ui/components'
+import { showActionModal, Tabs, Tooltip } from '@acx-ui/components'
 import {
-  useGetDhcpLeasesQuery,
   useGetSwitchQuery,
   useSwitchDetailHeaderQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
 import {
-  defaultSort,
   IP_ADDRESS_TYPE,
   isOperationalSwitch,
-  sortProp,
-  SwitchDhcpLease,
   VenueMessages
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { SwitchDhcpPoolTable } from './SwitchDhcpPoolTable'
-
+import { SwitchDhcpLeaseTable } from './SwitchDhcpLeaseTable'
+import { SwitchDhcpPoolTable }  from './SwitchDhcpPoolTable'
 
 export function SwitchDhcpTab () {
   const { $t } = useIntl()
@@ -97,49 +93,5 @@ export function SwitchDhcpTab () {
         <SwitchDhcpLeaseTable />
       </Tabs.TabPane>}
     </Tabs>
-  )
-}
-
-
-
-export function SwitchDhcpLeaseTable () {
-  const { $t } = useIntl()
-  const { switchId, tenantId } = useParams()
-
-  const { data: leaseData, isLoading } = useGetDhcpLeasesQuery({ params: { switchId, tenantId } })
-
-  const columns: TableProps<SwitchDhcpLease>['columns'] = [
-    {
-      key: 'clientId',
-      title: $t({ defaultMessage: 'Client ID' }),
-      dataIndex: 'clientId',
-      sorter: { compare: sortProp('clientId', defaultSort) },
-      defaultSortOrder: 'ascend'
-    }, {
-      key: 'clientIp',
-      title: $t({ defaultMessage: 'Client IP' }),
-      dataIndex: 'clientIp',
-      sorter: { compare: sortProp('clientIp', defaultSort) }
-    }, {
-      key: 'leaseExpiration',
-      title: $t({ defaultMessage: 'Lease Expiration' }),
-      dataIndex: 'leaseExpiration',
-      sorter: { compare: sortProp('leaseExpiration', defaultSort) }
-    }, {
-      key: 'leaseType',
-      title: $t({ defaultMessage: 'Lease Type' }),
-      dataIndex: 'leaseType',
-      sorter: { compare: sortProp('leaseType', defaultSort) }
-    }
-  ]
-
-  return (
-    <Loader states={[{ isLoading }]}>
-      <Table
-        columns={columns}
-        dataSource={leaseData}
-        rowKey='id'
-      />
-    </Loader>
   )
 }
