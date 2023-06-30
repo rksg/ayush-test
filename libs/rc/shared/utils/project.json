@@ -1,5 +1,5 @@
 {
-  "sourceRoot": "libs/rc/services/src",
+  "sourceRoot": "libs/rc/shared/utils/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -10,17 +10,17 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "libs/rc/services/**/*.{ts,tsx,js,jsx}"
+          "libs/rc/shared/utils/**/*.{ts,tsx,js,jsx}"
         ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": [
-        "coverage/libs/rc/services"
+        "coverage/libs/rc/shared/utils"
       ],
       "options": {
-        "jestConfig": "libs/rc/services/jest.config.ts",
+        "jestConfig": "libs/rc/shared/utils/jest.config.ts",
         "passWithNoTests": true
       }
     }

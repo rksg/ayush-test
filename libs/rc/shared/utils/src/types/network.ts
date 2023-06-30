@@ -32,7 +32,7 @@ export interface CreateNetworkFormFields {
   macAuthMacFormat?: string;
 }
 
-export interface Network { // TODO: Move all Network type from libs/rc/services/src/type
+export interface Network { // TODO: Move all Network type from libs/rc/shared/services/src/type
   id: string
   name: string
   description: string
