@@ -95,6 +95,7 @@ function VenuesRoutes () {
   return rootRoutes(
     <Route path='/:tenantId/t/venues'>
       <Route index element={<VenuesTable />} />
+      <Route path='*' element={<PageNotFound />} />
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       <Route
@@ -107,7 +108,6 @@ function VenuesRoutes () {
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
-      <Route path='*' element={<PageNotFound />} />
     </Route>
   )
 }
@@ -119,6 +119,7 @@ function AdministrationRoutes () {
         index
         element={<TenantNavigate replace to='/administration/accountSettings' />}
       />
+      <Route path='*' element={<PageNotFound />} />
       <Route path=':activeTab' element={<Administration />} />
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
