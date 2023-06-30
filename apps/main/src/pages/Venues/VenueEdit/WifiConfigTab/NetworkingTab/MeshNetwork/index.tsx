@@ -5,8 +5,8 @@ import { Button, Form, Input, Radio, RadioChangeEvent, Space, Switch } from 'ant
 import { useIntl }                                                     from 'react-intl'
 import { useParams }                                                   from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, Tooltip, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy, Tooltip, showActionModal }      from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -41,7 +41,10 @@ export function MeshNetwork () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
-  const supportMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+  const isTierAllowMeshEnhancement = useIsTierAllowed(TierFeatures.BETA_MESH)
+  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+  const supportMeshEnhancement = isTierAllowMeshEnhancement && isFeatureOnMeshEnhancement
+
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
