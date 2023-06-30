@@ -11,6 +11,10 @@ jest.mock('@acx-ui/analytics/components', () => ({
 }))
 
 describe('AllRoutes', () => {
+  beforeEach(() => {
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1080
+  })
   afterEach(() => cleanup())
   it('should render incidents correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/incidents' }, wrapper: Provider })
