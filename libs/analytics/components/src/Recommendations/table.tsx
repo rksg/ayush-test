@@ -14,7 +14,7 @@ import {
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { TenantLink }                  from '@acx-ui/react-router-dom'
+import { TenantLink, useLocation }     from '@acx-ui/react-router-dom'
 import { noDataDisplay }               from '@acx-ui/utils'
 
 import { useRecommendationListQuery, Recommendation } from './services'
@@ -32,16 +32,27 @@ export interface RecommendationRow extends Recommendation {
 }
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
-  return <TenantLink to={`/recommendations/${value.id}`}>
+  let { pathname } = useLocation()
+  if (pathname.includes('/next')) {
+    pathname = pathname.replace('/next', '')
+  }
+  return <TenantLink to={`${pathname}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
 
-export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
+export function RecommendationTable ({ filters, showCrrm }:
+  { filters: IncidentFilter, showCrrm?: boolean }) {
   const intl = useIntl()
   const { $t } = intl
 
   const queryResults = useRecommendationListQuery(filters)
+
+  const dataSource = useMemo(() => queryResults.data?.filter((val) => showCrrm
+    ? val.code.includes('crrm')
+    : !val.code.includes('crrm')
+  ), [queryResults, showCrrm])
+
   const scopeType = get('IS_MLISA_SA')
     ? $t({ defaultMessage: 'Zone' })
     : $t({ defaultMessage: 'Venue' })
@@ -154,7 +165,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       <UI.RecommendationTableWrapper
         settingsId='incident-table'
         type='tall'
-        dataSource={queryResults.data}
+        dataSource={dataSource}
         columns={ColumnHeaders}
         // rowActions={rowActions}
         // rowSelection={{

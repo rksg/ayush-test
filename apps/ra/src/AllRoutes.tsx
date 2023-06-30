@@ -11,12 +11,14 @@ function AllRoutes () {
     <Route path='/' element={<Navigate replace to={MLISA_BASE_PATH} />} />
     <Route path={MLISA_BASE_PATH}>
       <Route path='dashboard' element={<div>dashboard</div>} />
-      <Route path='recommendations' element={<Recommendations />} />
+      <Route path='recommendations/*'>
+        <Route index={true} element={<Recommendations/>} />
+        <Route index={false} path=':activeTab' element={<Recommendations/>} />
+      </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
-      <Route path='recommendations' element={<div>Recommendations</div>} />
       <Route path='configChange' element={<ConfigChange />} />
     </Route>
     <Route path='health' element={<div>Health</div>} />

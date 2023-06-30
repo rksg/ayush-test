@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }           from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
+import { PageHeader, Tabs }                      from '@acx-ui/components'
+import { get }                                   from '@acx-ui/config'
+import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
+import { useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                        from '@acx-ui/user'
 
 import { ConfigChange }             from '../ConfigChange'
 import { useHeaderExtra }           from '../Header'
@@ -56,11 +56,23 @@ export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
-  const onTabChange = (tab: string) =>
+  const params = useParams()
+  const onTabChange = (tab: string) => {
+    if (tab !== 'recommendation') {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${tab}`
+      })
+      return
+    }
+    let activeTab = params['activeTab']
+    if (!activeTab) activeTab = 'crrm'
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
+      pathname: `${basePath.pathname}/${tab}/${activeTab}`
     })
+  }
+
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
