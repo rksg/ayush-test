@@ -15,7 +15,7 @@ import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
 import {
-  countryCodes,
+  wifiCountryCodes,
   GoogleMapWithPreference,
   usePlacesAutocomplete
 } from '@acx-ui/rc/components'
@@ -159,7 +159,7 @@ export function VenuesForm () {
   useEffect(() => {
     if (data) {
       const defaultCountryCode = data.address?.countryCode
-      ?? countryCodes.find(code => code.label === data.address.country)?.value
+      ?? wifiCountryCodes.find(code => code.label === data.address.country)?.value
       ?? ''
       setCountryCode(defaultCountryCode)
 
@@ -385,7 +385,7 @@ export function VenuesForm () {
                 name={['address', 'countryCode']}
               >
                 <Select
-                  options={countryCodes}
+                  options={wifiCountryCodes}
                   onChange={(countryCode: string) => setCountryCode(countryCode)}
                   showSearch
                   allowClear

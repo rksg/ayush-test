@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, MspUrlsInfo }                              from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -83,6 +84,9 @@ const userProfile =
 
 
 describe('ManageCustomer', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
   let params: { tenantId: string, mspEcTenantId: string }
   beforeEach(async () => {
     mockServer.use(
@@ -134,6 +138,36 @@ describe('ManageCustomer', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 
     expect(screen.getByPlaceholderText('Set address here')).toBeDisabled()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    render(
+      <Provider>
+        <ManageCustomer />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
+      })
+
+    expect(screen.queryByText('My Customers')).toBeNull()
+    expect(screen.queryByText('MSP Customers')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Customers'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NAVBAR_ENHANCEMENT)
+    render(
+      <Provider>
+        <ManageCustomer />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
+      })
+
+    expect(await screen.findByText('My Customers')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'MSP Customers'
+    })).toBeVisible()
   })
 
   it('should validate required inputs correctly', async () => {

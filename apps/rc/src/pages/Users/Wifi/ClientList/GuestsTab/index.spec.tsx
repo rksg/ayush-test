@@ -8,6 +8,8 @@ import { DateRange }          from '@acx-ui/utils'
 
 import { GuestClient } from '../../__tests__/fixtures'
 
+import { GuestTabContext } from './GuestsTable/context'
+
 import { GuestsTab } from '.'
 
 const mockedUsedNavigate = jest.fn()
@@ -41,8 +43,11 @@ describe('AP Guest Tab', () => {
   })
 
   it('should render correctly', async () => {
+    const setGuestCount = jest.fn()
     const { asFragment } = render(<Provider>
-      <GuestsTab dateFilter={mockDateFilter} />
+      <GuestTabContext.Provider value={{ setGuestCount }}>
+        <GuestsTab dateFilter={mockDateFilter} />
+      </GuestTabContext.Provider>
     </Provider>, { route: { params } })
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
