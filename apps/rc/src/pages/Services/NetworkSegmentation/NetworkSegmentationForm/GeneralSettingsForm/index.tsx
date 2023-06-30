@@ -102,11 +102,6 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
             hasFeedback
             children={<Input />}
           />
-          <Form.Item
-            name='tags'
-            label={$t({ defaultMessage: 'Tags' })}
-            children={<Select mode='tags' />}
-          />
         </Col>
       </Row>
       <Row gutter={20}>

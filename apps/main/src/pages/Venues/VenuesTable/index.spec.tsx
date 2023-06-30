@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }                 from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -139,5 +139,37 @@ describe('Venues Table', () => {
 
     const row = await screen.findByRole('row', { name: /^test/ })
     expect(within(row).getByRole('cell', { name: '3' })).toBeTruthy()
+  })
+
+  it('should render correct title when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await screen.findByText('Venues (0)')
+    expect(screen.getByRole('heading', {
+      name: /venues \(0\)/i
+    })).toBeTruthy()
+  })
+
+  it('should render correct title when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <VenuesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues' }
+      })
+
+    await screen.findByText('Venues')
+    expect(screen.getByRole('heading', {
+      name: /venues/i
+    })).toBeTruthy()
   })
 })

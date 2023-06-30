@@ -88,6 +88,7 @@ export function SwitchForm () {
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -363,7 +364,11 @@ export function SwitchForm () {
         $t({ defaultMessage: '{name}' }, {
           name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
         $t({ defaultMessage: 'Add Switch' })}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Wired' }) },
+        { text: $t({ defaultMessage: 'Switches' }) },
+        { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
+      ] : [
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
     />

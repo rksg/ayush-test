@@ -138,6 +138,32 @@ describe('AP Form - Add', () => {
     })
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><ApForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByRole('link', {
+      name: /access points/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><ApForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(await screen.findByText('Access Points')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /ap list/i
+    })).toBeTruthy()
+  })
+
   describe('handle Add AP and Coordinates Modal', () => {
     beforeEach(async () => {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
