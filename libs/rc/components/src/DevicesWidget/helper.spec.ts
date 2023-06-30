@@ -12,7 +12,8 @@ import {
   getVenueSwitchDonutChartData,
   getEdgeDonutChartData,
   getSwitchStackedBarChartData,
-  getApStackedBarChartData
+  getApStackedBarChartData,
+  getEdgeStackedBarChartData
 } from './helper'
 
 describe('getApDonutChartData', () => {
@@ -221,5 +222,32 @@ describe('getEdgeDonutChartData', () => {
   })
   it('should return empty array if no data', ()=>{
     expect(getEdgeDonutChartData(null as unknown as EdgeStatusSeverityStatistic)).toEqual([])
+  })
+})
+
+describe('getEdgeStackedBarChartData', () => {
+  const data = {
+    summary: {
+      edges: {
+        summary: {
+          '1_InSetupPhase': 6,
+          '3_RequiresAttention': 2,
+          '1_InSetupPhase_Offline': 1
+        },
+        totalCount: 9
+      }
+    }
+  }
+  it('should return correct formatted data', async () => {
+    expect(getEdgeStackedBarChartData(data.summary.edges)).toMatchSnapshot()
+
+    //Removing 1_InSetupPhase, and it should return 1_InSetupPhase_Offline count
+    const modifiedData = omit(data, 'summary.edges.summary.1_InSetupPhase')
+    expect(getEdgeStackedBarChartData(modifiedData.summary.edges))
+      .toMatchSnapshot('omit-InSetupPhase')
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getEdgeStackedBarChartData(null as unknown as
+       VenueDetailHeader['edges'])).toMatchSnapshot()
   })
 })
