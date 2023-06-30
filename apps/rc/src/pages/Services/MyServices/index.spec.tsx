@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, getSelectServiceRoutePath, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                   from '@acx-ui/store'
 import {
@@ -98,5 +99,29 @@ describe('MyServices', () => {
     const createPageLink = `/${params.tenantId}/t/` + getSelectServiceRoutePath()
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Add Service' })).toHaveAttribute('href', createPageLink)
+  })
+
+  it('should not render breadcrumb when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
   })
 })

@@ -23,7 +23,7 @@ describe('Analytics header', () => {
     expect(await screen.findByTestId('NetworkFilter')).toBeVisible()
     expect(await screen.findByTestId('RangePicker')).toBeVisible()
   })
-  it('should render header extra correctly', async () => {
+  it('should render header extra correctly for R1', async () => {
     const Component = () => {
       const component = useHeaderExtra({
         shouldQuerySwitch: true,
@@ -34,5 +34,20 @@ describe('Analytics header', () => {
     render(<BrowserRouter><Provider><Component/></Provider></BrowserRouter>)
     expect(await screen.findByTestId('NetworkFilter')).toBeVisible()
     expect(await screen.findByTestId('RangePicker')).toBeVisible()
+  })
+  it('should render header extra correctly for RA', async () => {
+    const env = process.env
+    env.NX_IS_MLISA_SA = 'true'
+    const Component = () => {
+      const component = useHeaderExtra({
+        shouldQuerySwitch: true,
+        withIncidents: true
+      })
+      return <span>{component}</span>
+    }
+    render(<BrowserRouter><Provider><Component/></Provider></BrowserRouter>)
+    expect(screen.queryByTestId('NetworkFilter')).not.toBeInTheDocument()
+    expect(await screen.findByTestId('RangePicker')).toBeVisible()
+    env.NX_IS_MLISA_SA = undefined
   })
 })

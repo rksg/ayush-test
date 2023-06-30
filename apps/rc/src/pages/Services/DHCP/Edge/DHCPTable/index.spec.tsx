@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import {
   EdgeDhcpUrls,
   EdgeUrlsInfo,
@@ -62,6 +63,34 @@ describe('EdgeDhcpTable', () => {
       })
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(3)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
   })
 
   it('edge dhcp service detail page link should be correct', async () => {
@@ -183,5 +212,20 @@ describe('EdgeDhcpTable', () => {
     // eslint-disable-next-line max-len
     await screen.findByText('Are you sure you want to update these services to the latest version immediately?')
     await user.click(screen.getByRole('button', { name: 'OK' }))
+  })
+
+  it('should show [Update Available] correctly', async () => {
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
+    expect(await within(row).findByText('Yes')).toBeValid()
+    const row1 = await screen.findByRole('row', { name: /TestDHCP-2/i })
+    expect(await within(row1).findByText('Yes')).toBeValid()
+    const row2 = await screen.findByRole('row', { name: /TestDHCP-3/i })
+    expect(await within(row2).findByText('No')).toBeValid()
   })
 })

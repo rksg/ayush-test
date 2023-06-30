@@ -208,7 +208,7 @@ export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): str
 }
 
 export const parseSwitchVersion = (version: string) => {
-  const defaultVersion = ['09010f_b19', '09010e_b392']
+  const defaultVersion = ['09010f_b19', '09010e_b392', '10010_rc3']
   if (defaultVersion.includes(version)) {
     return version.split('_')[0]
   }

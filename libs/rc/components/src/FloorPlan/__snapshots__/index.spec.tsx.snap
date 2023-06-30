@@ -6,7 +6,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-fLlhyt edFKlx"
+      class="sc-cxabCf LcMkL"
     >
       <div
         class="ant-row ant-row-space-between"
@@ -81,10 +81,10 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         style="margin: 0px;"
       />
       <div
-        class="sc-hAZoDl bAUJJB"
+        class="sc-bjUoiL fhqMFy"
       >
         <div
-          class="sc-fnykZs gFEddm"
+          class="sc-idiyUo ithYLO"
           data-testid="image-container"
         >
           <div
@@ -99,7 +99,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           />
         </div>
         <div
-          class="sc-fEOsli nrlvP"
+          class="sc-dIouRR cUCpoi"
         >
           <div
             class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
@@ -141,7 +141,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
       </div>
       <div
         alignbottom="0"
-        class="ant-space ant-space-vertical sc-bjUoiL khVJOP"
+        class="ant-space ant-space-vertical sc-hHLeRK cIloEg"
       >
         <div
           class="ant-space-item"
@@ -233,13 +233,13 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         class="ant-row"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl kVxLL"
+          class="ant-space ant-space-horizontal ant-space-align-center sc-ksZaOG hojjkz"
         >
           <div
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-evZas hQpdCy"
+              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-hAZoDl bFhZhB"
               data-testid="galleryIcon"
               type="button"
             >
@@ -253,18 +253,18 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           class="ant-col ant-col-23"
         >
           <div
-            class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX dyDNDl"
+            class="ant-space ant-space-horizontal ant-space-align-center sc-evZas iCIDL"
           >
             <div
               class="ant-space-item"
               style="margin-right: 4px;"
             >
               <div
-                class="sc-ksZaOG edtJxk"
+                class="sc-fEOsli PHHHt"
               >
                 <div
                   active="1"
-                  class="ant-card-grid sc-iqcoie hLhYrV"
+                  class="ant-card-grid sc-breuTD dUcBul"
                   data-testid="thumbnailBg"
                 >
                   <div
@@ -274,7 +274,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                        
                       <div>
                         <div
-                          class="sc-jSMfEi UOWfN device-container context-Album"
+                          class="sc-ftvSup bkrOCx device-container context-Album"
                           draggable="true"
                           style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                         >
@@ -288,7 +288,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                       </div>
                       <div>
                         <div
-                          class="sc-jSMfEi UOWfN device-container context-Album"
+                          class="sc-ftvSup bkrOCx device-container context-Album"
                           draggable="true"
                           style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                         >
@@ -310,7 +310,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-breuTD QFAjJ"
+                  class="sc-fnykZs fEzPcC"
                 >
                   TEST_2
                 </div>
@@ -320,11 +320,11 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               class="ant-space-item"
             >
               <div
-                class="sc-ksZaOG edtJxk"
+                class="sc-fEOsli PHHHt"
               >
                 <div
                   active="0"
-                  class="ant-card-grid sc-iqcoie IvfqM"
+                  class="ant-card-grid sc-breuTD cZQwAw"
                   data-testid="thumbnailBg"
                 >
                   <div
@@ -342,7 +342,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-breuTD ckvOwr"
+                  class="sc-fnykZs emxvkY"
                 >
                   dscx
                 </div>
@@ -352,14 +352,14 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-hHLeRK bQHTDj"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-fLlhyt bbhPlI"
       >
         <div
           class="ant-space-item"
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-kgflAQ sc-ivTmOn hDMeUr fIhEvG"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-ivTmOn sc-iIPllB lkELGi kbFTYz"
             type="button"
           >
             <svg
@@ -423,7 +423,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-fLlhyt edFKlx"
+      class="sc-cxabCf LcMkL"
     >
       <div
         class="ant-row"
@@ -479,7 +479,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                   TEST_2
                 </div>
                 <div
-                  class="sc-jqUVSM dKdNIi"
+                  class="sc-crXcEl eYNXTX"
                 >
                   <div
                     data-testid="dropContainer"
@@ -489,7 +489,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                      
                     <div>
                       <div
-                        class="sc-jSMfEi UOWfN device-container gallery"
+                        class="sc-ftvSup bkrOCx device-container gallery"
                         draggable="true"
                         style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                       >
@@ -506,7 +506,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                     </div>
                     <div>
                       <div
-                        class="sc-jSMfEi UOWfN device-container gallery"
+                        class="sc-ftvSup bkrOCx device-container gallery"
                         draggable="true"
                         style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                       >
@@ -583,7 +583,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                   dscx
                 </div>
                 <div
-                  class="sc-jqUVSM dKdNIi"
+                  class="sc-crXcEl eYNXTX"
                 >
                   <div
                     data-testid="dropContainer"
@@ -605,14 +605,14 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-hHLeRK bQHTDj"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-fLlhyt bbhPlI"
       >
         <div
           class="ant-space-item"
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-kgflAQ sc-ivTmOn hDMeUr fIhEvG"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-ivTmOn sc-iIPllB lkELGi kbFTYz"
             type="button"
           >
             <svg

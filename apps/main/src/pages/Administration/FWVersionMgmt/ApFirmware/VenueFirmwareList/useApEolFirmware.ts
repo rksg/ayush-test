@@ -105,6 +105,10 @@ export function useApEolFirmware () {
       return acc
     }, [])
 
+    uniqueEolApFirmwares.sort((a, b) => {
+      return -compareVersions(a.latestEolVersion, b.latestEolVersion)
+    })
+
     return uniqueEolApFirmwares
   }
 

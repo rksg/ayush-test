@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getServiceDetailsLink,
@@ -67,7 +68,7 @@ describe('MdnsProxyDetail', () => {
     expect(await screen.findByText('Instances (0)')).toBeVisible()
   })
 
-  it.skip('should navigate to the edit page', async () => {
+  it('should navigate to the edit page', async () => {
     const editLink = `/${params.tenantId}/t/` + getServiceDetailsLink({
       type: ServiceType.MDNS_PROXY,
       oper: ServiceOperation.EDIT,
@@ -88,5 +89,39 @@ describe('MdnsProxyDetail', () => {
     const targetAp = mockedApList.data[0]
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetAp.name) })
     expect(targetRow).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <MdnsProxyDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <MdnsProxyDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'mDNS Proxy'
+    })).toBeVisible()
   })
 })

@@ -2,6 +2,7 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
+import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
@@ -145,8 +146,8 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUseNavigate,
   useTenantLink: (to: To): Path => {
     return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
@@ -204,6 +205,42 @@ describe('SnmpAgentForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <SnmpAgentForm editMode={false}/>
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'SNMP Agent'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <SnmpAgentForm editMode={false}/>
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      })
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'SNMP Agent'
+    })).toBeVisible()
+  })
+
   it('should edit SNMP Agent successfully', async () => {
     render(
       <Provider>
@@ -243,6 +280,11 @@ describe('SnmpAgentForm', () => {
     await screen.findByText(/already exists/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
+      pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
+      hash: '',
+      search: ''
+    })
   })
 
   it('should at least one SNMPv2 agent or SNMPv3 agent', async () => {
@@ -265,6 +307,11 @@ describe('SnmpAgentForm', () => {
     await screen.findByText(/At least one SNMPv2 agent or SNMPv3 agent/)
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
+      pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
+      hash: '',
+      search: ''
+    })
   })
 
 })

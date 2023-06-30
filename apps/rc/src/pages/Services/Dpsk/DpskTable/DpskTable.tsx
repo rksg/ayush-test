@@ -7,7 +7,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -43,6 +43,7 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
@@ -89,9 +90,17 @@ export default function DpskTable () {
         title={
           intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: intl.$t({ defaultMessage: 'Network Control' }) },
+          {
+            text: intl.$t({ defaultMessage: 'My Services' }),
+            link: getServiceListRoutePath(true)
+          }
+        ] : [{
+          text: intl.$t({ defaultMessage: 'My Services' }),
+          link: getServiceListRoutePath(true)
+        }]
+        }
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
@@ -119,7 +128,7 @@ export default function DpskTable () {
 
 function useColumns () {
   const intl = useIntl()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const params = useParams()
 
   const { networkNameMap } = useNetworkListQuery({

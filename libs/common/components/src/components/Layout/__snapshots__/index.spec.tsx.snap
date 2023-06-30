@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 iwYUTK"
+    class="styledComponents__Wrapper-sc-iwostn-0 iiPWcw"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -323,11 +323,11 @@ exports[`Layout should render correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-5 kqELAN"
+                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-7 dGuosP ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -360,10 +360,10 @@ exports[`Layout should render correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 eOVnKH"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-4 dcnnLs"
                 >
                   <span
-                    class="styledComponents__DropdownText-sc-iwostn-10 cPrxgo"
+                    class="styledComponents__DropdownText-sc-iwostn-11 iEmwpR"
                   >
                     <div
                       class="ant-space ant-space-horizontal ant-space-align-center"
@@ -378,7 +378,7 @@ exports[`Layout should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 jckUtx"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
               >
                 <div>
                   Right header
@@ -407,7 +407,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 iwYUTK"
+    class="styledComponents__Wrapper-sc-iwostn-0 iiPWcw"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -497,11 +497,11 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                     class="ant-menu-title-content"
                   >
                     <svg
-                      class="styledComponents__Arrow-sc-iwostn-5 kqELAN"
+                      class="styledComponents__Arrow-sc-iwostn-6 bfzBym"
                       data-testid="ArrowChevronLeft"
                     />
                     <div
-                      class="styledComponents__CollapseText-sc-iwostn-7 dGuosP ant-pro-menu-item-title"
+                      class="styledComponents__CollapseText-sc-iwostn-8 fvDRIg ant-pro-menu-item-title"
                     >
                       Collapse
                     </div>
@@ -534,7 +534,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 style="flex: 1;"
               >
                 <div
-                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-3 eOVnKH"
+                  class="styledComponents__LeftHeaderContentWrapper-sc-iwostn-4 dcnnLs"
                 >
                   <div>
                     Left header
@@ -542,7 +542,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 jckUtx"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-5 cuwgTU"
               >
                 <div>
                   Right header
