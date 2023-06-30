@@ -6,7 +6,7 @@ import { PageHeader }                                                          f
 import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { SwitchClientsTable, SwitchClientContext, defaultSwitchClientPayload } from '@acx-ui/rc/components'
 import { useGetSwitchClientListQuery }                                         from '@acx-ui/rc/services'
-import { usePollingTableQuery }                                                from '@acx-ui/rc/utils'
+import { usePollingTableQuery }                                                from '@acx-ui/utils'
 
 export default function ClientList () {
   const { $t } = useIntl()

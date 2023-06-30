@@ -18,8 +18,9 @@ import {
   useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { CommonResult, ImportErrorRes, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                              from '@acx-ui/react-router-dom'
+import { CommonResult, ImportErrorRes } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { usePollingTableQuery }         from '@acx-ui/utils'
 
 export default function useApsTable () {
   const { $t } = useIntl()

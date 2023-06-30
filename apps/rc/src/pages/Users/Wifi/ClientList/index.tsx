@@ -7,11 +7,10 @@ import { PageHeader, RangePicker, Tabs }                           from '@acx-ui
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { ClientDualTable, ClientTabContext, defaultClientPayload } from '@acx-ui/rc/components'
 import { useGetClientListQuery, useGetGuestsListQuery }            from '@acx-ui/rc/services'
-import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                              from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType, usePageHeaderExtra }          from '@acx-ui/reports/components'
 import { filterByAccess }                                          from '@acx-ui/user'
-import { DateRange, getDateRangeFilter }                           from '@acx-ui/utils'
+import { DateRange, getDateRangeFilter, usePollingTableQuery }     from '@acx-ui/utils'
 
 import { GuestsTab }           from './GuestsTab'
 import { defaultGuestPayload } from './GuestsTab/GuestsDetail'
