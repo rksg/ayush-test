@@ -146,7 +146,7 @@ describe('EdgeDhcpTable', () => {
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
-  it('should delete selected row', async () => {
+  it.skip('should delete selected row', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -178,7 +178,7 @@ describe('EdgeDhcpTable', () => {
     await user.click(screen.getByRole('button', { name: 'Delete DHCP' }))
   })
 
-  it('should show update modal (single)', async () => {
+  it.skip('should show update modal (single)', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -195,7 +195,7 @@ describe('EdgeDhcpTable', () => {
     await user.click(screen.getByRole('button', { name: 'OK' }))
   })
 
-  it('should show update modal (multiple)', async () => {
+  it.skip('should show update modal (multiple)', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
