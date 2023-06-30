@@ -325,7 +325,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       rules={[
         { required: true },
         { min: 2 },
-        { max: 32 },
+        { max: 64 },
         { validator: (_, value) => {
           if (!editMode && applicationsRuleList.findIndex(rule => rule.ruleName === value) !== -1) {
             return Promise.reject($t({ defaultMessage: 'This rule name has been existed.' }))
