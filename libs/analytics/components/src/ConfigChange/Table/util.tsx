@@ -14,7 +14,7 @@ export type EntityType = 'zone' | 'wlan' | 'apGroup' | 'ap'
 
 type MappingFields = 'text' | 'textAlto' | 'enumType'
 
-type MappingType = {
+export type MappingType = {
   id: number,
   value: string,
   text: MessageDescriptor | string,
@@ -34,10 +34,9 @@ export const json2keymap = (keyFields: string[], field: string, filter: string[]
       item[field as MappingFields]!
     ), Map<string, MessageDescriptor | string>())
 
-export const configMapGenerator = json2keymap(
-  ['value'], 'textAlto' , filteredConfigText)
+const configMapGenerator = json2keymap(['value'], 'textAlto' , filteredConfigText)
 
-export const enumMapGenerator = json2keymap(['value'], 'enumType', [''])
+const enumMapGenerator = json2keymap(['value'], 'enumType', [''])
 
 export const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(enumMap)
 

@@ -14,7 +14,7 @@ import { noDataDisplay }             from '@acx-ui/utils'
 
 import { useConfigChangeQuery } from '../services'
 
-import { Block, Dot }                           from './styledComponents'
+import { Dot }                                  from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
 export function Table () {
@@ -27,8 +27,7 @@ export function Table () {
       key: 'timestamp',
       title: $t(defineMessage({ defaultMessage: 'Timestamp' })),
       dataIndex: 'timestamp',
-      render: (value) => formatter(DateFormatEnum.DateTimeFormat)(
-        moment(Number(value)).format('YYYY-MM-DD[T]HH:mm:ss[Z]')),
+      render: (value) => formatter(DateFormatEnum.DateTimeFormat)(moment(Number(value))),
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },
@@ -36,13 +35,9 @@ export function Table () {
       key: 'type',
       title: $t(defineMessage({ defaultMessage: 'Entity Type' })),
       dataIndex: 'type',
-      render: (value) => getConfigChangeEntityTypeMapping().map(type => {
-        return type.key === value &&
-          <Block>
-            <Dot color={type.color}/>
-            {type.label}
-          </Block>
-      }),
+      render: (value) => getConfigChangeEntityTypeMapping().map(type =>
+        type.key === value && <Dot color={type.color} children={type.label}/>
+      ),
       filterable: getConfigChangeEntityTypeMapping()
         .map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },
@@ -60,9 +55,10 @@ export function Table () {
       key: 'key',
       title: $t(defineMessage({ defaultMessage: 'Configuration' })),
       dataIndex: 'key',
-      render: (_, { type, key }) => jsonMapping[type as EntityType].configMap.get(key)
-        ? $t(jsonMapping[type as EntityType].configMap.get(key) as MessageDescriptor)
-        : key,
+      render: (_, { type, key }) => {
+        const value = jsonMapping[type as EntityType].configMap.get(key, key)
+        return (typeof value === 'string') ? value : $t(value as MessageDescriptor)
+      },
       sorter: { compare: sortProp('key', defaultSort) }
     },
     {
@@ -72,11 +68,12 @@ export function Table () {
       align: 'center',
       ellipsis: true,
       render: (_, { oldValues, type, key }) => {
-        const generateValues = oldValues?.map(value => (enumTextMap.get(
-          `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`))
-          ? $t(enumTextMap.get(`${jsonMapping[type as EntityType]
-            .enumMap.get(key, '')}-${value}`) as MessageDescriptor)
-          : value)
+        const generateValues = oldValues?.map(value => {
+          const mapped = enumTextMap.get(
+            `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
+          return (typeof mapped === 'string')
+            ? mapped : $t(mapped as MessageDescriptor)
+        })
         return generateValues.join(', ')
       },
       sorter: { compare: sortProp('oldValues', defaultSort) }
@@ -88,11 +85,12 @@ export function Table () {
       align: 'center',
       ellipsis: true,
       render: (_, { newValues, type, key }) => {
-        const generateValues = newValues?.map(value => (enumTextMap.get(
-          `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`))
-          ? $t(enumTextMap.get(`${jsonMapping[type as EntityType]
-            .enumMap.get(key, '')}-${value}`) as MessageDescriptor)
-          : value)
+        const generateValues = newValues?.map(value => {
+          const mapped = enumTextMap.get(
+            `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
+          return (typeof mapped === 'string')
+            ? mapped : $t(mapped as MessageDescriptor)
+        })
         return generateValues.join(', ')
       },
       sorter: { compare: sortProp('newValues', defaultSort) }
