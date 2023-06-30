@@ -313,11 +313,10 @@ describe('Topology', () => {
       )
     )
 
-    const { asFragment } = render(
-      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/>,{
-        route: { params },
-        wrapper: Provider
-      })
+    const { asFragment } = await render(<Provider>
+      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/></Provider>,{
+      route: { params }
+    })
 
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -426,11 +425,10 @@ describe('Topology', () => {
         }
       )
     )
-    const { asFragment } = render(
-      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} />,{
-        route: { params },
-        wrapper: Provider
-      })
+    const { asFragment } = await render(<Provider>
+      <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>,{
+      route: { params }
+    })
 
     const ApDevices = await screen.findAllByTestId('AccessPointWifi')
 
@@ -453,14 +451,13 @@ describe('Topology', () => {
       )
     )
 
-    const { asFragment } = await render(
+    const { asFragment } = await render(<Provider>
       <TopologyGraph
         showTopologyOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
         venueId={params.venueId}
-        deviceMac='5C:DF:89:2A:AF:01' />,{
-        route: { params },
-        wrapper: Provider
-      })
+        deviceMac='5C:DF:89:2A:AF:01' /></Provider>,{
+      route: { params }
+    })
 
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
