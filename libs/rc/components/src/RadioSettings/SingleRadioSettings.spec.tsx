@@ -284,11 +284,6 @@ describe('SignaleRadioSettings component', () => {
     }
   }
 
-  const mockEditContext = React.createContext({
-    editContextData: {},
-    setEditContextData: jest.fn()
-  })
-
   afterEach(() => cleanup())
 
   it('should render Venue Radio 24G singleRadioSettings', async () => {
@@ -304,7 +299,6 @@ describe('SignaleRadioSettings component', () => {
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             onResetDefaultValue={resetToDefaultSpy}
           />
         </Form>
@@ -352,7 +346,6 @@ describe('SignaleRadioSettings component', () => {
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             onResetDefaultValue={resetToDefaultSpy}
           />
         </Form>
@@ -405,7 +398,6 @@ describe('SignaleRadioSettings component', () => {
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             onResetDefaultValue={resetToDefaultSpy}
           />
         </Form>
@@ -451,10 +443,6 @@ describe('SignaleRadioSettings component', () => {
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={React.createContext({
-              editContextData: {},
-              setEditContextData: jest.fn()
-            })}
             isUseVenueSettings={false}
           />
         </Form>
@@ -495,7 +483,6 @@ describe('SignaleRadioSettings component', () => {
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             isUseVenueSettings={false}
           />
         </Form>
@@ -542,7 +529,6 @@ describe('SignaleRadioSettings component', () => {
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
           />
         </Form>
       </IntlProvider>

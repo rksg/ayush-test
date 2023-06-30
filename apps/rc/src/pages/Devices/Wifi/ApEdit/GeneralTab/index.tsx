@@ -1,6 +1,6 @@
 import { ApForm } from '../../ApForm'
 
-export function ApDetailsTab () {
+export function GeneralTab () {
   return (
     <ApForm />
   )

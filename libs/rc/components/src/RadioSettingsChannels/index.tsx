@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Space, Form }                        from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
@@ -37,21 +37,16 @@ export function RadioSettingsChannels (props: {
     lower5GChannels: string[],
     upper5GChannels: string[]
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editContext: React.Context<any>
+  handleChanged?: () => void
 }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
   const {
-    editContextData,
-    setEditContextData
-  } = useContext(props.editContext)
-
-  const {
     disabled: customDisable = false, readonly = false,
     displayBarSettings, channelBars,
-    channelList, groupSize
+    channelList, groupSize,
+    handleChanged
   } = props || {}
 
   const disabled = customDisable || readonly
@@ -100,10 +95,9 @@ export function RadioSettingsChannels (props: {
     setChannelGroupList(channelGroupList)
 
     // notify data is changed
-    setEditContextData({
-      ...editContextData,
-      isDirty: true
-    })
+    if (handleChanged) {
+      handleChanged()
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

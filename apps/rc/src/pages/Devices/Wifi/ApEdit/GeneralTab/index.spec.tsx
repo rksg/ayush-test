@@ -21,11 +21,11 @@ import {
   successResponse
 } from '../../../__tests__/fixtures'
 
-import { ApDetailsTab } from './'
+import { GeneralTab } from './'
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', action: 'edit' }
 
-describe('ApDetailsTab', () => {
+describe('GeneralTab', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -47,7 +47,7 @@ describe('ApDetailsTab', () => {
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApDetailsTab /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><GeneralTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })

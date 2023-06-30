@@ -3,7 +3,6 @@ import { useContext, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useApViewModelQuery }                    from '@acx-ui/rc/services'
 import { LocationExtended }                       from '@acx-ui/rc/utils'
 import {
@@ -18,14 +17,22 @@ import { ApEditContext, showUnsavedModal } from './index'
 
 import type { History, Transition } from 'history'
 
+const ApEditTabKeys = ['radio', 'networking', 'networkControl', 'advanced']
+
 function ApEditTabs () {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/`)
   const {
     editContextData,
     setEditContextData,
+    editRadioContextData,
+    setEditRadioContextData,
+    editNetworkingContextData,
+    setEditNetworkingContextData,
+    editNetworkControlContextData,
+    setEditNetworkControlContextData,
     setPreviousPath,
     setIsOnlyOneTab
   } = useContext(ApEditContext)
@@ -39,16 +46,28 @@ function ApEditTabs () {
     filters: { serialNumber: [params.serialNumber] }
   }
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
+
   setIsOnlyOneTab(!currentAP?.model)
 
   const onTabChange = (tab: string) => {
-    if (tab === 'settings') tab = (supportStaticIpSettings)? `${tab}/general` : `${tab}/radio`
-
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
+  }
+
+  const tabTitleMap = (tabkey: string) => {
+    const tabTitle = {
+      general: $t({ defaultMessage: 'General' }),
+      radio: $t({ defaultMessage: 'Radio' }),
+      networking: $t({ defaultMessage: 'Networking' }),
+      networkControl: $t({ defaultMessage: 'Network Control' }),
+      advanced: $t({ defaultMessage: 'Advanced' })
+    }
+
+    const title = tabTitle[tabkey as keyof typeof tabTitle]
+    return editContextData?.isDirty && params?.activeTab === tabkey
+      ? `${title} *` : title
   }
 
   const location = useLocation()
@@ -68,6 +87,12 @@ function ApEditTabs () {
         showUnsavedModal(
           editContextData,
           setEditContextData,
+          editRadioContextData,
+          setEditRadioContextData,
+          editNetworkingContextData,
+          setEditNetworkingContextData,
+          editNetworkControlContextData,
+          setEditNetworkControlContextData,
           tx.retry
         )
       })
@@ -80,11 +105,13 @@ function ApEditTabs () {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
   }, [])
 
+
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'AP Details' })} key='details' />
-      { typeof currentAP?.model !== 'undefined'
-        && <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Settings' })} key='settings' /> }
+      <Tabs.TabPane tab={tabTitleMap('general')} key='general' />
+      { typeof currentAP?.model !== 'undefined' && (
+        ApEditTabKeys.map(tabKey => <Tabs.TabPane tab={tabTitleMap(tabKey)} key={tabKey} />)
+      )}
     </Tabs>
   )
 }

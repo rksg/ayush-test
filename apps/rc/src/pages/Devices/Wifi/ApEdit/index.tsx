@@ -1,41 +1,100 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
-import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { useParams }                          from '@acx-ui/react-router-dom'
-import { getIntl }                            from '@acx-ui/utils'
+import { showActionModal, CustomButtonProps }       from '@acx-ui/components'
+import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
+import { ApDeep, ApModel }                          from '@acx-ui/rc/utils'
+import { useParams }                                from '@acx-ui/react-router-dom'
+import { getIntl }                                  from '@acx-ui/utils'
 
-import { ApDetailsTab }  from './ApDetailsTab'
-import ApEditPageHeader  from './ApEditPageHeader'
-import { ApSettingsTab } from './ApSettingsTab'
+
+import ApEditPageHeader                               from './ApEditPageHeader'
+import { GeneralTab }                                 from './GeneralTab'
+import { ApNetworkControlContext, NetworkControlTab } from './NetworkControlTab'
+import { ApNetworkingContext, NetworkingTab }         from './NetworkingTab'
+import { ApRadioContext, RadioTab }                   from './RadioTab'
 
 const tabs = {
-  details: ApDetailsTab,
-  settings: ApSettingsTab
+  general: GeneralTab,
+  radio: RadioTab,
+  networking: NetworkingTab,
+  networkControl: NetworkControlTab
+  //advanced: AdvancedTab
 }
 
+export const ApDataContext = createContext({} as {
+  apData?: ApDeep,
+  apCapabilities?: ApModel
+})
+
 export interface ApEditContextType {
-  tabTitle: string,
-  isDirty: boolean,
-  hasError?: boolean,
-  updateChanges: (data?: unknown) => void | Promise<void>,
+  tabTitle: string
+  unsavedTabKey?: string
+  isDirty: boolean
+  hasError?: boolean
+  updateChanges: (data?: unknown) => void | Promise<void>
   discardChanges: (data?: unknown) => void | Promise<void>
 }
 
-export const ApEditContext = createContext({} as {
-  editContextData: ApEditContextType,
-  setEditContextData: (data: ApEditContextType) => void,
+export interface ApEditContextProps {
+  editContextData: ApEditContextType
+  setEditContextData:(data: ApEditContextType) => void
+  editRadioContextData: ApRadioContext
+  setEditRadioContextData: (data: ApRadioContext) => void
+  editNetworkingContextData: ApNetworkingContext,
+  setEditNetworkingContextData: (data: ApNetworkingContext) => void
+  editNetworkControlContextData: ApNetworkControlContext
+  setEditNetworkControlContextData: (data: ApNetworkControlContext) => void
+}
+
+export interface ApEditContextExtendedProps extends ApEditContextProps {
   previousPath: string
   setPreviousPath: (data: string) => void
   isOnlyOneTab: boolean
   setIsOnlyOneTab: (data: boolean) => void
-})
+}
+
+export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 
 export function ApEdit () {
-  const { activeTab } = useParams()
+  const params = useParams()
+  const { activeTab } = params
   const Tab = tabs[activeTab as keyof typeof tabs]
+
   const [previousPath, setPreviousPath] = useState('')
   const [isOnlyOneTab, setIsOnlyOneTab] = useState(false)
   const [editContextData, setEditContextData] = useState({} as ApEditContextType)
+  const [editRadioContextData, setEditRadioContextData] = useState({} as ApRadioContext)
+  const [editNetworkingContextData, setEditNetworkingContextData]
+      = useState({} as ApNetworkingContext)
+  const [editNetworkControlContextData, setEditNetworkControlContextData]
+      = useState({} as ApNetworkControlContext)
+
+  const [apData, setApData] = useState<ApDeep>()
+  const [apCapabilities, setApCapabilities] = useState<ApModel>()
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  const getAp = useGetApQuery({ params })
+  const getApCapabilities = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
+
+  useEffect(() => {
+    const data = getAp?.data
+    const modelName = data?.model
+    const capabilities = getApCapabilities.data
+
+    if (modelName && capabilities) {
+      const setData = async () => {
+        const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
+
+        setApData(data)
+        setApCapabilities(curApCapabilities)
+
+        setIsLoaded(true)
+      }
+
+      setData()
+    }
+
+  }, [getAp?.data?.venueId, getApCapabilities?.data])
 
   return <ApEditContext.Provider value={{
     editContextData,
@@ -43,16 +102,148 @@ export function ApEdit () {
     previousPath,
     setPreviousPath,
     isOnlyOneTab,
-    setIsOnlyOneTab
+    setIsOnlyOneTab,
+    editRadioContextData,
+    setEditRadioContextData,
+    editNetworkingContextData,
+    setEditNetworkingContextData,
+    editNetworkControlContextData,
+    setEditNetworkControlContextData
   }}>
     <ApEditPageHeader />
-    { Tab && <Tab /> }
+    { Tab &&
+    <ApDataContext.Provider value={{ apData, apCapabilities }}>
+      <Tab />
+    </ApDataContext.Provider>
+    }
   </ApEditContext.Provider>
+}
+
+interface apEditSettingsProps {
+  editContextData: ApEditContextType
+  editRadioContextData: ApRadioContext
+  editNetworkingContextData: ApNetworkingContext
+  editNetworkControlContextData: ApNetworkControlContext
+}
+
+const processApEditSettings = (props: apEditSettingsProps) => {
+  const { editContextData,
+    editRadioContextData,
+    editNetworkingContextData,
+    editNetworkControlContextData
+  } = props
+
+  switch(editContextData?.unsavedTabKey){
+    case 'radio':
+      editRadioContextData.updateWifiRadio?.()
+      editRadioContextData.updateExternalAntenna?.()
+      break
+    case 'networking':
+      editNetworkingContextData.updateIpSettings?.()
+      editNetworkingContextData.updateLanPorts?.()
+      editNetworkingContextData.updateMesh?.()
+      editNetworkingContextData.updateDirectedMulticast?.()
+      break
+    case 'networkControl':
+      editNetworkControlContextData.updateMdnsProxy?.()
+      editNetworkControlContextData.updateApSnmp?.()
+      break
+    default:
+      editContextData?.updateChanges?.()
+      break
+  }
+}
+
+const discardApEditSettings = (props: apEditSettingsProps) => {
+  const { editContextData,
+    editRadioContextData,
+    editNetworkingContextData,
+    editNetworkControlContextData
+  } = props
+
+  switch(editContextData?.unsavedTabKey){
+    case 'radio':
+      editRadioContextData.discardWifiRadioChanges?.()
+      editRadioContextData.discardExternalAntennaChanges?.()
+      break
+    case 'networking':
+      editNetworkingContextData.discardIpSettingsChanges?.()
+      editNetworkingContextData.discardLanPortsChanges?.()
+      editNetworkingContextData.discardMeshChanges?.()
+      editNetworkingContextData.discardDirectedMulticastChanges?.()
+      break
+    case 'networkControl':
+      editNetworkControlContextData.discardMdnsProxyChanges?.()
+      editNetworkControlContextData.discardApSnmpChanges?.()
+      break
+    default:
+      editContextData?.updateChanges?.()
+      break
+  }
+}
+
+
+const resetApEditContextData = (props: ApEditContextProps) => {
+  const { editContextData,
+    setEditContextData,
+    editRadioContextData,
+    setEditRadioContextData,
+    editNetworkingContextData,
+    setEditNetworkingContextData,
+    editNetworkControlContextData,
+    setEditNetworkControlContextData
+  } = props
+
+  setEditContextData({
+    ...editContextData,
+    isDirty: false,
+    hasError: false
+  })
+
+  switch(editContextData?.unsavedTabKey){
+    case 'radio':
+      const newRadioContextData = { ...editRadioContextData }
+      delete newRadioContextData.updateWifiRadio
+      delete newRadioContextData.discardWifiRadioChanges
+      delete newRadioContextData.updateExternalAntenna
+      delete newRadioContextData.discardWifiRadioChanges
+
+      setEditRadioContextData(newRadioContextData)
+      break
+    case 'networking':
+      const newNetworkingContextData = { ...editNetworkingContextData }
+      delete newNetworkingContextData.updateIpSettings
+      delete newNetworkingContextData.discardIpSettingsChanges
+      delete newNetworkingContextData.updateLanPorts
+      delete newNetworkingContextData.discardLanPortsChanges
+      delete newNetworkingContextData.updateMesh
+      delete newNetworkingContextData.discardMeshChanges
+      delete newNetworkingContextData.updateDirectedMulticast
+      delete newNetworkingContextData.discardDirectedMulticastChanges
+
+      setEditNetworkingContextData(newNetworkingContextData)
+      break
+    case 'networkControl':
+      const newNetworkControlContextData = { ...editNetworkControlContextData }
+      delete newNetworkControlContextData.updateMdnsProxy
+      delete newNetworkControlContextData.discardMdnsProxyChanges
+      delete newNetworkControlContextData.updateApSnmp
+      delete newNetworkControlContextData.discardApSnmpChanges
+
+      setEditNetworkControlContextData(newNetworkControlContextData)
+      break
+  }
 }
 
 export function showUnsavedModal (
   editContextData: ApEditContextType,
   setEditContextData: (data: ApEditContextType) => void,
+  editRadioContextData: ApRadioContext,
+  setEditRadioContextData: (data: ApRadioContext) => void,
+  editNetworkingContextData: ApNetworkingContext,
+  setEditNetworkingContextData: (data: ApNetworkingContext) => void,
+  editNetworkControlContextData: ApNetworkControlContext,
+  setEditNetworkControlContextData: (data: ApNetworkControlContext) => void,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -73,7 +264,24 @@ export function showUnsavedModal (
     key: 'discard',
     closeAfterAction: true,
     handler: async () => {
-      editContextData?.discardChanges?.()
+      discardApEditSettings({
+        editContextData,
+        editRadioContextData,
+        editNetworkingContextData,
+        editNetworkControlContextData
+      })
+
+      resetApEditContextData({
+        editContextData,
+        setEditContextData,
+        editRadioContextData,
+        setEditRadioContextData,
+        editNetworkingContextData,
+        setEditNetworkingContextData,
+        editNetworkControlContextData,
+        setEditNetworkControlContextData
+      })
+
       callback?.()
     }
   }, {
@@ -82,7 +290,24 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      editContextData?.updateChanges?.()
+      processApEditSettings({
+        editContextData,
+        editRadioContextData,
+        editNetworkingContextData,
+        editNetworkControlContextData
+      })
+
+      resetApEditContextData({
+        editContextData,
+        setEditContextData,
+        editRadioContextData,
+        setEditRadioContextData,
+        editNetworkingContextData,
+        setEditNetworkingContextData,
+        editNetworkControlContextData,
+        setEditNetworkControlContextData
+      })
+
       callback?.()
     }
   }]
