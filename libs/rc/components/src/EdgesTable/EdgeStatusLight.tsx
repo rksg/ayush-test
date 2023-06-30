@@ -6,7 +6,8 @@ import { StatusLight } from '../StatusLight'
 
 
 type EdgeStatusLightProps = {
-  data: string
+  data: string,
+  showText: boolean
 }
 
 export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
@@ -65,6 +66,6 @@ export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
   }
 
   return (
-    <StatusLight config={EdgeStatusLightConfig} data={props.data} />
+    <StatusLight config={EdgeStatusLightConfig} data={props.data} showText={props.showText} />
   )
 }
