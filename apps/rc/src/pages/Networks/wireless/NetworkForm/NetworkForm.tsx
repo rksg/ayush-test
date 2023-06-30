@@ -409,7 +409,8 @@ export default function NetworkForm (props:{
 
   const handleAddNetwork = async () => {
     try {
-      const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
+      const saveData = handleGuestMoreSetting(saveState)
+      const payload = updateClientIsolationAllowlist(_.omit(saveData, 'id')) // omit id to handle clone
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
         // @ts-ignore
