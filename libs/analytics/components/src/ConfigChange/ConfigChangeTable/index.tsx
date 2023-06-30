@@ -1,4 +1,3 @@
-import { PageHeader }                                           from 'antd'
 import moment                                                   from 'moment'
 import { useIntl, defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
@@ -128,22 +127,18 @@ export function ConfigChangeTable () {
   }
 
   return (
-    <div>
-      <PageHeader title={$t({ defaultMessage: 'Configuration Change Listing' })}/>
-      <Loader states={[queryResults]}>
-        <Table
-          settingsId='config-change-table'
-          type='tall'
-          columns={ColumnHeaders}
-          dataSource={queryResults.data}
-          rowSelection={{ type: 'radio', ...rowSelection }}
-          tableAlertRender={false}
-          forceShowHeader={true}
-          rowKey={(config) => config.key + config.timestamp}
-          showSorterTooltip={false}
-          columnEmptyText={noDataDisplay}
-        />
-      </Loader>
-    </div>
+    <Loader states={[queryResults]}>
+      <Table
+        settingsId='config-change-table'
+        type='tall'
+        columns={ColumnHeaders}
+        dataSource={queryResults.data}
+        rowSelection={{ type: 'radio', ...rowSelection }}
+        tableAlertRender={false}
+        rowKey={(config) => config.key + config.timestamp}
+        showSorterTooltip={false}
+        columnEmptyText={noDataDisplay}
+      />
+    </Loader>
   )
 }
