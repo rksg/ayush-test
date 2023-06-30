@@ -373,6 +373,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       label={$t({ defaultMessage: 'Application Name' })}
       rules={[
         { required: true },
+        { max: 255 },
         { validator: (_, value) => {
           if (value === 'Select Application...') {
             return Promise.reject($t({ defaultMessage: 'Please select the application' }))

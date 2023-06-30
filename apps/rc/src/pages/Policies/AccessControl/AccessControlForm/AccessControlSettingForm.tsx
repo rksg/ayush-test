@@ -126,6 +126,9 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
         <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
+          rules={[
+            { max: 255 }
+          ]}
           initialValue={''}
           children={<Input />}
         />
