@@ -1,8 +1,10 @@
 import React from 'react'
 
 import { Root }          from 'react-dom/client'
+import { IntlShape }     from 'react-intl'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
+import { showActionModal } from '@acx-ui/components'
 import {
   ConfigProvider,
   Loader,
@@ -25,10 +27,10 @@ import {
   LangKey,
   DEFAULT_SYS_LANG
 } from '@acx-ui/utils'
+import { getIntl, setUpIntl, IntlSetUpError } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
-
 import '@acx-ui/theme'
 
 // Needed for Browser language detection
@@ -55,7 +57,12 @@ declare global {
 export function loadMessages (locales: readonly string[]): LangKey {
   const locale = locales.find(locale =>
     supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  return supportedLocales[locale as keyof typeof supportedLocales]
+  let browserLangVal = supportedLocales[locale as keyof typeof supportedLocales]
+  if (browserLangVal !== 'en-US') {
+    const val = browserLangSelection(browserLangVal)
+    browserLangVal = (val === 1) ? browserLangVal : DEFAULT_SYS_LANG
+  }
+  return browserLangVal
 }
 
 export function renderPendoAnalyticsTag () {
@@ -116,19 +123,62 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
+const browserLangSelection = ( broswerLang: string,
+  callback?: () => number ) => {
+  let retVal = 0
+  let intl: IntlShape
+  try {
+    intl = getIntl()
+  } catch (error) {
+    if (!(error instanceof IntlSetUpError)) throw error
+    setUpIntl({ locale: 'en-US' })
+    intl = getIntl()
+  }
+  const { $t } = intl
+  // console.log(`broswerLang----> ${broswerLang}`)
+
+  // if ( isModalShown ) {
+  showActionModal({
+    type: 'confirm',
+    customContent: {
+      action: 'CUSTOM_BUTTONS',
+      buttons: [{
+        text: $t({ defaultMessage: 'Cancel' }),
+        type: 'default',
+        key: 'cancel'
+        // handler () {}
+      }, {
+        text: $t({ defaultMessage: 'Change to {broswerLang}' }, { broswerLang }),
+        type: 'primary',
+        key: 'ok',
+        closeAfterAction: true,
+        handler () {
+          console.log('inside handler', broswerLang)
+          retVal = 1
+          callback?.()
+        }
+      }]
+    },
+    title: $t({ defaultMessage: 'Change System Language?' }),
+    content: $t({ defaultMessage: 'We noticed that your browser is set to {broswerLang}'
+          + ' Would you like to change the system\'s language to {broswerLang}?' }, { broswerLang })
+  })
+  return retVal
+}
+
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  // const queryParams = new URLSearchParams(window.location.search) // url query params
-  // const browserLang = loadMessages(navigator.languages) // browser detection
-  //
+  const browserLang = loadMessages(navigator.languages) // browser detection
+
   const result = useGetUserProfileQuery({})
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const userPreflang = String(userProfile?.preferredLanguage)
   const defaultLang = String(request.data?.global?.defaultLanguage)
 
-  console.log(`userProfile: ${userPreflang} ${defaultLang}`)
-  const lang = userPreflang? userPreflang : defaultLang
-  console.log(`lang: ${lang}`)
+  // console.log(`userProfile: ${userPreflang} ${defaultLang} browserLang: ${browserLang}`)
+  const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang :
+    userPreflang? userPreflang : defaultLang
+  // console.log(`lang: ${lang}`)
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}

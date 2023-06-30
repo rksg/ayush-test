@@ -20,7 +20,6 @@ import {
   useUpdateUserProfileMutation,
   roleStringMap
 } from '@acx-ui/user'
-import { LangKey, useLocaleContext } from '@acx-ui/utils'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import {
@@ -42,23 +41,14 @@ export function UserProfile () {
   const { data: userProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
   const location = useLocation().state as fromLoc
-  const locale = useLocaleContext()
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
-    if (userProfile?.preferredLanguage !== data?.preferredLanguage) {
-      handlePreferredLangChange(String(data?.preferredLanguage))
-    }
     navigate({
       pathname: location.from
     }, { replace: true })
   }
 
-  const handlePreferredLangChange = (langCode: string) => {
-    if (!langCode) return
-    const code = langCode as LangKey
-    locale.setLang(code)
-  }
   const handleCancel = () => {
     navigate({
       pathname: location.from
