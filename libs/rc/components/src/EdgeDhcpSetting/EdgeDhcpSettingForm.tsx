@@ -1,10 +1,13 @@
-import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
-import { useIntl }                                                   from 'react-intl'
+import { Col, Form, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Space, Switch } from 'antd'
+import { useIntl }                                                                            from 'react-intl'
+import styled                                                                                 from 'styled-components'
 
-import { Alert, StepsFormLegacy, Subtitle } from '@acx-ui/components'
+import { Alert, StepsFormLegacy, Subtitle, useStepFormContext } from '@acx-ui/components'
 import {
   EdgeDhcpSetting,
+  LeaseTimeType,
   LeaseTimeUnit,
+  domainNameRegExp,
   networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
 
@@ -14,27 +17,48 @@ import { ToggleButton } from '../ToggleButton'
 import DHCPHostTable   from './DhcpHost'
 import DHCPOptionTable from './DhcpOption'
 import DHCPPoolTable   from './DhcpPool'
+import * as UI         from './styledComponents'
 
 const { useWatch } = Form
 const { Option } = Select
 
-export const EdgeDhcpSettingForm = () => {
+interface EdgeDhcpSettingFormProps {
+  className?: string
+}
+
+export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
+  enableSecondaryDNSServer?: boolean
+  leaseTimeType?: LeaseTimeType
+}
+
+export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
 
   const { $t } = useIntl()
+  const { form } = useStepFormContext<EdgeDhcpSetting>()
   const [
     dhcpRelay,
-    enableSecondaryDNSServer
+    enableSecondaryDNSServer,
+    leaseTimeType,
+    leaseTime
   ] = [
     useWatch<boolean>('dhcpRelay'),
-    useWatch<boolean>('enableSecondaryDNSServer')
+    useWatch<boolean>('enableSecondaryDNSServer'),
+    useWatch('leaseTimeType'),
+    form.getFieldValue('leaseTime')
   ]
   const initDhcpData: Partial<EdgeDhcpSetting> = {
     leaseTime: 24,
     leaseTimeUnit: LeaseTimeUnit.HOURS
   }
 
+  const handleLeaseTimeRadioChange = (e: RadioChangeEvent) => {
+    if(e.target.value === LeaseTimeType.LIMITED && leaseTime === -1) {
+      form.setFieldValue('leaseTime', initDhcpData.leaseTime)
+    }
+  }
+
   return (
-    <>
+    <div className={props.className}>
       <Row gutter={20}>
         <Col span={7}>
           <Subtitle level={3}>
@@ -82,6 +106,9 @@ export const EdgeDhcpSettingForm = () => {
                 name='domainName'
                 label={$t({ defaultMessage: 'Domain Name' })}
                 children={<Input />}
+                rules={[
+                  { validator: (_, value) => domainNameRegExp(value) }
+                ]}
               />
               <Form.Item
                 name='primaryDnsIp'
@@ -108,30 +135,44 @@ export const EdgeDhcpSettingForm = () => {
                   ]}
                 />
               }
-              <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
-                <Space align='start'>
-                  <Form.Item
-                    noStyle
-                    name='leaseTime'
-                    label={$t({ defaultMessage: 'Lease Time' })}
-                    rules={[
-                      { required: true }
-                    ]}
-                    initialValue={initDhcpData.leaseTime}
-                  >
-                    <InputNumber min={1} max={1440} style={{ width: '100%' }} />
-                  </Form.Item>
-                  <Form.Item
-                    noStyle
-                    name='leaseTimeUnit'
-                    initialValue={initDhcpData.leaseTimeUnit}>
-                    <Select >
-                      <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
-                      <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                      <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
-                    </Select>
-                  </Form.Item>
-                </Space>
+              <Form.Item
+                name='leaseTimeType'
+                label={$t({ defaultMessage: 'Lease Time' })}
+                rules={[{ required: true }]}
+                initialValue={LeaseTimeType.LIMITED}
+              >
+                <Radio.Group onChange={handleLeaseTimeRadioChange}>
+                  <Space direction='vertical'>
+                    <Radio value={LeaseTimeType.LIMITED}>
+                      {$t({ defaultMessage: 'Limit to' })}
+                    </Radio>
+                    {
+                      leaseTimeType === LeaseTimeType.LIMITED &&
+                      <Space align='start' className='ml-22'>
+                        <Form.Item
+                          name='leaseTime'
+                          className='mb-0'
+                          rules={[{ required: true }]}
+                          initialValue={initDhcpData.leaseTime}
+                        >
+                          <InputNumber min={1} max={1440} style={{ width: '100%' }} />
+                        </Form.Item>
+                        <Form.Item
+                          name='leaseTimeUnit'
+                          initialValue={initDhcpData.leaseTimeUnit}>
+                          <Select >
+                            <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
+                            <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                            <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                          </Select>
+                        </Form.Item>
+                      </Space>
+                    }
+                    <Radio value={LeaseTimeType.INFINITE}>
+                      {$t({ defaultMessage: 'Infinite' })}
+                    </Radio>
+                  </Space>
+                </Radio.Group>
               </Form.Item>
             </>
           }
@@ -189,6 +230,6 @@ export const EdgeDhcpSettingForm = () => {
           </>
         }
       </SpaceWrapper>
-    </>
+    </div>
   )
-}
+})`${UI.styles}`
