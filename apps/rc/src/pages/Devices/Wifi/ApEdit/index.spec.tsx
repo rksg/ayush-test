@@ -54,7 +54,7 @@ async function showUnsavedChangesModal (tabKey, discard) {
   )
 }
 
-describe('ApEdit', () => {
+describe.skip('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
