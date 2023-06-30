@@ -91,7 +91,9 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
           <UI.Section>
             <UI.Ul>
               { // eslint-disable-next-line max-len
-                <UI.Li>{$t({ defaultMessage: 'Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.' })}</UI.Li>}
+                <UI.Li>{$t({ defaultMessage: 'Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation.' })}</UI.Li>}
+              { // eslint-disable-next-line max-len
+                <UI.Li>{$t({ defaultMessage: 'This action cannot be canceled once initiated.' })}</UI.Li>}
               { // eslint-disable-next-line max-len
                 <UI.Li>{$t({ defaultMessage: 'You will be notified once the update process has finished.' })}</UI.Li>}
             </UI.Ul>
