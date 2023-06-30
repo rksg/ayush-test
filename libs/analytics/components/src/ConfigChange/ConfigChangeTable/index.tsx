@@ -1,38 +1,15 @@
-import moment                                                   from 'moment'
-import { useIntl, defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
+import moment                                        from 'moment'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter }       from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, ConfigChange, cssStr } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
-import { noDataDisplay }                                   from '@acx-ui/utils'
+import { defaultSort, sortProp, useAnalyticsFilter }                                 from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, ConfigChange, getConfigChangeEntityTypeMapping } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
+import { noDataDisplay }                                                             from '@acx-ui/utils'
 
 import { useConfigChangeQuery } from '../services'
 
 import { Block, Dot }                           from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
-
-const configuredModeMapping = ($t: IntlShape['$t']) => [
-  {
-    key: 'ap',
-    value: $t({ defaultMessage: 'AP' }),
-    color: cssStr('--acx-viz-qualitative-4')
-  },
-  {
-    key: 'apGroup',
-    value: $t({ defaultMessage: 'AP Group' }),
-    color: cssStr('--acx-viz-qualitative-3')
-  },
-  {
-    key: 'wlan',
-    value: $t({ defaultMessage: 'WLAN' }),
-    color: cssStr('--acx-viz-qualitative-2')
-  },
-  {
-    key: 'zone',
-    value: $t({ defaultMessage: 'Venue' }),
-    color: cssStr('--acx-viz-qualitative-1')
-  }
-] as { key: string, value: string, color: string }[]
 
 export function ConfigChangeTable () {
   const { $t } = useIntl()
@@ -53,17 +30,15 @@ export function ConfigChangeTable () {
       key: 'type',
       title: $t(defineMessage({ defaultMessage: 'Entity Type' })),
       dataIndex: 'type',
-      render: (value) => configuredModeMapping($t).map(type => {
-        if (type.key !== value) {
-          return
-        } else {
-          return <Block>
+      render: (value) => getConfigChangeEntityTypeMapping().map(type => {
+        return type.key === value &&
+          <Block>
             <Dot color={type.color}/>
-            {type.value}
+            {type.label}
           </Block>
-        }
       }),
-      filterable: configuredModeMapping($t),
+      filterable: getConfigChangeEntityTypeMapping()
+        .map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },
       width: 100
     },
@@ -130,12 +105,11 @@ export function ConfigChangeTable () {
     <Loader states={[queryResults]}>
       <Table
         settingsId='config-change-table'
-        type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
         rowSelection={{ type: 'radio', ...rowSelection }}
         tableAlertRender={false}
-        rowKey={(config) => config.key + config.timestamp}
+        rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
       />
