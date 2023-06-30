@@ -182,6 +182,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               initialValue={''}
               rules={[
                 { required: true },
+                { max: 255 },
                 { validator: (_, value) => networkWifiSecretRegExp(value) }
               ]}
               children={<PasswordInput />}
