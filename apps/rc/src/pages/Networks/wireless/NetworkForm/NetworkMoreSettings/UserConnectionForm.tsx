@@ -32,6 +32,11 @@ const lockoutMapping: { [key:string]:number }={
   hours: 1092,
   minutes: 65535
 }
+const minutesMapping: { [key:string]:number }={
+  hours: 60,
+  days: 1440,
+  minutes: 1
+}
 const oneDay = 1440
 const oneHour = 60
 export function UserConnectionForm () {
@@ -57,7 +62,14 @@ export function UserConnectionForm () {
 
   useEffect(() => {
     if ((editMode || cloneMode)&&data) {
-      setMaxGracePeriod(data.guestPortal?.userSessionTimeout || maxGracePeriod)
+      if(_.get(data, 'userSessionTimeoutUnit')){
+        setMaxGracePeriod(
+          (data.guestPortal?.userSessionTimeout || 2) *
+            minutesMapping[_.get(data, 'userSessionTimeoutUnit')]
+          || maxGracePeriod)
+      }else{
+        setMaxGracePeriod(data.guestPortal?.userSessionTimeout || maxGracePeriod)
+      }
       form.setFieldValue(['guestPortal','userSessionGracePeriod'],
         data.guestPortal?.userSessionGracePeriod)
       if(data.guestPortal?.lockoutPeriodEnabled){
