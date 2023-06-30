@@ -3,10 +3,10 @@ import { useContext, useRef, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { useUpdateAAASettingMutation }                            from '@acx-ui/rc/services'
-import { redirectPreviousPage }                                   from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { Alert, AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { useUpdateAAASettingMutation, useVenueSwitchSettingQuery }       from '@acx-ui/rc/services'
+import { redirectPreviousPage, VenueMessages }                           from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -21,6 +21,8 @@ export function SwitchAAATab () {
   const [updateAAASettingMutation] = useUpdateAAASettingMutation()
   const [aaaSettingId, setAAASettingId] = useState<string>('')
   const { previousPath } = useContext(VenueEditContext)
+  const { data: venueSwitchSetting } = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
+  const cliApplied = !!venueSwitchSetting?.cliApplied
 
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })
   const settingsTitle = $t({ defaultMessage: 'Settings' })
@@ -86,7 +88,6 @@ export function SwitchAAATab () {
       })
   }
 
-
   const anchorItems = [{
     title: serversTitle,
     content: (
@@ -94,7 +95,7 @@ export function SwitchAAATab () {
         <StepsFormLegacy.SectionTitle id='aaa-servers'>
           { serversTitle }
         </StepsFormLegacy.SectionTitle>
-        <AAAServers />
+        <AAAServers cliApplied={cliApplied} />
       </>
     )
   }, {
@@ -108,7 +109,14 @@ export function SwitchAAATab () {
           name='aaa-settings'
           layout='horizontal'
           labelCol={{ flex: '150px' }}>
-          <AAASettings setAAASettingId={setAAASettingId} />
+          <>
+            { cliApplied
+              && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
+            <AAASettings
+              setAAASettingId={setAAASettingId}
+              cliApplied={cliApplied}
+            />
+          </>
         </StepsFormLegacy.StepForm>
       </>
     )
@@ -116,7 +124,7 @@ export function SwitchAAATab () {
   return (
     <StepsFormLegacy
       formRef={formRef}
-      onFinish={() => handleUpdate()}
+      onFinish={() => cliApplied ? Promise.resolve() : handleUpdate()}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
