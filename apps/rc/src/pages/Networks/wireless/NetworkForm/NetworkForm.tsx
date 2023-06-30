@@ -544,15 +544,6 @@ export default function NetworkForm (props:{
                   {pickOneCaptivePortalForm(saveState)}
                 </StepsFormLegacy.StepForm>
             }
-            {editMode &&
-              <StepsFormLegacy.StepForm
-                name='moreSettings'
-                title={intl.$t({ defaultMessage: 'More Settings' })}
-                onFinish={handleMoreSettings}>
-
-                <NetworkMoreSettingsForm wlanData={saveState} />
-
-              </StepsFormLegacy.StepForm>}
             { isPortalWebRender(saveState) &&<StepsFormLegacy.StepForm
               name='portalweb'
               title={intl.$t({ defaultMessage: 'Portal Web Page' })}
@@ -568,14 +559,12 @@ export default function NetworkForm (props:{
             >
               <Venues />
             </StepsFormLegacy.StepForm>
-            {!editMode &&
-              <StepsFormLegacy.StepForm
-                name='summary'
-                title={intl.$t({ defaultMessage: 'Summary' })}
-              >
-                <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-              </StepsFormLegacy.StepForm>
-            }
+            <StepsFormLegacy.StepForm
+              name='summary'
+              title={intl.$t({ defaultMessage: 'Summary' })}
+            >
+              <SummaryForm summaryData={saveState} portalData={portalDemo}/>
+            </StepsFormLegacy.StepForm>
           </StepsFormLegacy>
         </NetworkFormContext.Provider>
       }
@@ -652,11 +641,6 @@ export default function NetworkForm (props:{
             >
               <Venues />
             </StepsForm.StepForm>
-            {!editMode &&
-              <StepsForm.StepForm name='summary' title={intl.$t({ defaultMessage: 'Summary' })}>
-                <SummaryForm summaryData={saveState} portalData={portalDemo}/>
-              </StepsForm.StepForm>
-            }
           </StepsForm>
         </NetworkFormContext.Provider>
       }
