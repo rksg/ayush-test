@@ -64,7 +64,7 @@ export function UserConnectionForm () {
     if ((editMode || cloneMode)&&data) {
       if(_.get(data, 'userSessionTimeoutUnit')){
         setMaxGracePeriod(
-          (data.guestPortal?.userSessionTimeout || 2) *
+          (data.guestPortal?.userSessionTimeout || 1) *
             minutesMapping[_.get(data, 'userSessionTimeoutUnit')]
           || maxGracePeriod)
       }else{
