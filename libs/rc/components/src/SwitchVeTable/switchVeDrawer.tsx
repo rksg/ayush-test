@@ -235,16 +235,25 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   }
 
   const footer = [
-    <Button loading={loading} key='saveBtn' onClick={() => form.submit()} type={'primary'} >
-      {isEditMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })}
-    </Button>,
-    <Button disabled={loading} key='cancelBtn' onClick={resetFields}>
-      {$t({ defaultMessage: 'Cancel' })}
-    </Button>
+    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='ve-port-footer'>
+      <Button
+        disabled={loading}
+        key='cancelBtn'
+        onClick={resetFields}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+      <Button
+        loading={loading}
+        key='saveBtn'
+        type='secondary'
+        onClick={() => form.submit()}
+      >
+        {isEditMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })}
+      </Button>
+    </Space>
   ]
 
   return (
-
     <Drawer
       title={isEditMode
         ? $t({ defaultMessage: 'Edit VE Port' })

@@ -293,6 +293,7 @@ export const AAASettings = (props: {
           placement='bottomLeft'
           visible={openConfirm}
           onVisibleChange={handleOpenChange}
+          disabled={cliApplied}
           onConfirm={() => {
             setOpenConfirm(false)
             form.setFieldValue('authnEnabledSsh', true)
