@@ -160,12 +160,6 @@ export const WirelessNetworkForm = () => {
             <Loader states={[{ isLoading: isFilterNetworksLoading, isFetching: false }]}>
               <Form.Item
                 name='networkIds'
-                rules={[
-                  {
-                    required: true,
-                    message: $t({ defaultMessage: 'Please select at least 1 network' })
-                  }
-                ]}
                 children={
                   <Checkbox.Group onChange={onNetworkChange}>
                     <Space direction='vertical'>
