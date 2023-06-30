@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                       from '@acx-ui/rc/services'
 import { WifiUrlsInfo }                          from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
@@ -32,6 +32,7 @@ describe('ApSettingsTab', () => {
 
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(<Provider><ApSettingsTab /></Provider>, { route: { params } })
 
     await screen.findByRole('tab', { name: 'Mesh' })
@@ -40,6 +41,7 @@ describe('ApSettingsTab', () => {
 
   it('should render correctly when feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
     render(<Provider><ApSettingsTab /></Provider>, { route: { params } })
 
     fireEvent.click(await screen.findByRole('tab', { name: 'LAN Port' }))
