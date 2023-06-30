@@ -135,6 +135,9 @@ export const VenueMessages = {
   }),
   SNR_THRESHOLD_TOOLTIP: defineMessage({
     defaultMessage: 'SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100.'
+  }),
+  CLI_APPLIED: defineMessage({
+    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.'
   })
 }
 
