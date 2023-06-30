@@ -89,7 +89,7 @@ const HelpButton = (props:HelpButtonProps) => {
       }}
       items={[{
         key: 'documentation',
-        label: $t({ defaultMessage: 'Documentation Center' })
+        label: $t({ defaultMessage: 'What’s New' })
       },
       {
         key: 'videos',

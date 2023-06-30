@@ -1,4 +1,4 @@
-export const COUNTRY_CODE = [
+export const WIFI_COUNTRY_CODE = [
   { code: 'AF',name: 'Afghanistan' },
   { code: 'AX',name: 'Aland Islands' },
   { code: 'AL',name: 'Albania' },
@@ -243,5 +243,11 @@ export const COUNTRY_CODE = [
   { code: 'EH',name: 'Western Sahara' },
   { code: 'YE',name: 'Yemen' },
   { code: 'ZM',name: 'Zambia' },
-  { code: 'ZW',name: 'Zimbabwe' }
+  { code: 'ZW',name: 'Zimbabwe' },
+  { code: 'F2',name: 'France_Res' },
+  { code: 'I1',name: 'India2' },
+  { code: 'I2',name: 'Indonesia2' },
+  { code: 'I5',name: 'Indonesia5' },
+  { code: 'R1',name: 'Reserved_1' },
+  { code: 'Z2',name: 'Zone2' }
 ]
