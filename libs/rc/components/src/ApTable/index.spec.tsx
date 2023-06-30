@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
@@ -11,7 +12,6 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -196,25 +196,50 @@ const list = {
   ]
 }
 
-describe('Aps', () => {
-  afterEach(() => jest.restoreAllMocks())
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
-  it('should render correctly', async () => {
+type MockDrawerProps = React.PropsWithChildren<{
+  visible: boolean
+  importRequest: () => void
+  onClose: () => void
+}>
+jest.mock('../ImportFileDrawer', () => ({
+  ...jest.requireActual('../ImportFileDrawer'),
+  ImportFileDrawer: ({ importRequest, onClose, visible }: MockDrawerProps) =>
+    visible && <div data-testid={'ImportFileDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        importRequest()
+      }}>Import</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
+
+describe('Aps', () => {
+  afterEach(() => mockedUsedNavigate.mockClear())
+  beforeEach(() => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
+  })
+  const params = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
 
+  it('should render correctly', async () => {
     render(<Provider><ApTable /></Provider>, {
       route: { params, path: '/:tenantId' }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -225,21 +250,9 @@ describe('Aps', () => {
     for (const [index, item] of Object.entries(list.data)) {
       expect(await within(rows[Number(index)]).findByText(item.name)).toBeVisible()
     }
-
-    // expect(asFragment()).toMatchSnapshot() //TODO: <StackedBarChart
   })
 
   it('Table action bar Download Log and Reboot', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-
     render(<Provider><ApTable
       rowSelection={{
         type: 'checkbox'
@@ -285,16 +298,6 @@ describe('Aps', () => {
   })
 
   it('Table action bar Delete', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-
     render(<Provider><ApTable
       rowSelection={{
         type: 'checkbox'
@@ -351,12 +354,89 @@ describe('Aps', () => {
     await userEvent.click(await within(dialog2).findByRole('button', { name: 'Delete' }))
 
     expect(deleteSpy).toHaveBeenCalled()
+  }, 60000)
 
-    await within(row2).findByRole('checkbox', { checked: false })
+  it('Table action bar Edit', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return (ff === Features.DEVICES || ff === Features.EXPORT_DEVICE) ? true : false
+    })
 
-    await userEvent.click(await within(tbody).findByRole('row', { name: /mock-ap-1/i }))
+    render(<Provider><ApTable
+      rowSelection={{
+        type: 'checkbox'
+      }}
+    /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    const row = await screen.findByRole('row', { name: /mock-ap-1/i })
+    await within(row).findByRole('checkbox', { checked: false })
+
+    await userEvent.click(await screen.findByRole('row', { name: /mock-ap-1/i }))
 
     const toolbar = await screen.findByRole('alert')
     await userEvent.click(await within(toolbar).findByRole('button', { name: 'Edit' }))
-  }, 60000)
+
+    expect(mockedUsedNavigate).toHaveBeenCalled()
+  })
+
+  it('should render with filterables', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApGroupsListByGroup.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [{
+            clients: 0,
+            deviceGroupId: '',
+            deviceGroupName: '',
+            incidents: 0,
+            members: 0
+          }]
+        }))
+      )
+    )
+    render(<Provider><ApTable filterables={{
+      venueId: [],
+      deviceGroupId: []
+    }}/></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    const combos = await screen.findAllByRole('combobox')
+    expect(combos).toHaveLength(4)
+
+    await userEvent.click(combos[3])
+    await userEvent.click(await screen.findByTitle('AP Group'))
+
+    await waitFor(() => expect(screen.getByText('Ungrouped APs')).toBeVisible())
+  })
+
+  it('should import correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.AP_GPS ? true : false
+    })
+
+    mockServer.use(
+      rest.post(
+        WifiUrlsInfo.addAp.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+    render(<Provider><ApTable enableActions={true} /></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add AP' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add AP Group' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledTimes(2)
+
+    expect(await screen.findByText('Import from file')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Import from file' }))
+
+    const drawer = await screen.findByTestId('ImportFileDrawer')
+    expect(drawer).toBeVisible()
+
+    await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
+    await waitFor(() => expect(drawer).not.toBeVisible())
+  })
 })
