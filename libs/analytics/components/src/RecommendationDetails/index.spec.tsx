@@ -9,7 +9,7 @@ jest.mock('./overview', () => ({
   Overview: () => <div data-testid='overview'>Overview</div>
 }))
 
-jest.mock('./Kpis', () => ({
+jest.mock('./kpis', () => ({
   Kpis: () => <div data-testid='kpis'>Kpis</div>
 }))
 
