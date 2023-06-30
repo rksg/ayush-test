@@ -215,6 +215,7 @@ export interface Entitlement {
   typeLiteral?: string;
   createdDate: string;
   updatedDate: string;
+  assignedLicense?: boolean;
 }
 
 export interface EntitlementSummary {

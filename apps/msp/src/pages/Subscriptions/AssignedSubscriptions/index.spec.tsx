@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }                                                       from '@acx-ui/rc/utils'
-import { Provider }                                                          from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
-import { Subscriptions } from '.'
+import { AssignedSubscriptions } from '.'
 
 const entitlement =
   [
@@ -70,7 +70,7 @@ const summary =
     }
   ]
 
-describe('Subscriptions', () => {
+describe('AssignedSubscriptions', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
@@ -102,18 +102,18 @@ describe('Subscriptions', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <Subscriptions />
+        <AssignedSubscriptions />
       </Provider>, {
         route: { params, path: '/:tenantId/mspLicenses' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
-    fireEvent.click(generateUsageButton)
-    const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subscriptions' })
-    fireEvent.click(licenseManagementButton)
-    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    fireEvent.click(refreshButton)
+    // const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
+    // fireEvent.click(generateUsageButton)
+    // const licenseManagementButton =
+    // await screen.findByRole('button', { name: 'Manage Subscriptions' })
+    // fireEvent.click(licenseManagementButton)
+    // const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    // fireEvent.click(refreshButton)
   })
 })

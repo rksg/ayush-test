@@ -211,6 +211,7 @@ export interface MspEntitlement {
   tenantId: string;
   isTrial: boolean;
   status?: string;
+  assignedLicense?: boolean;
 }
 
 export interface MspEntitlementSummary {

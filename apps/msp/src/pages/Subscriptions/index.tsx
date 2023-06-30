@@ -10,7 +10,8 @@ import {
   PageHeader,
   Subtitle,
   Table,
-  TableProps
+  TableProps,
+  Tabs
 } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -31,9 +32,10 @@ import {
   MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { MspTenantLink, TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponent'
+import { AssignedSubscriptions } from './AssignedSubscriptions'
+import * as UI                   from './styledComponent'
 
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'Show All' }) },
@@ -54,6 +56,7 @@ export function Subscriptions () {
   const [totalSwitchCount, setTotalSwitchCount] = useState(0)
   const [usedSwitchCount, setUsedSwitchCount] = useState(0)
   const [showDialog, setShowDialog] = useState(false)
+  const [isAssignedActive, setActiveTab] = useState(false)
 
   const { tenantId } = useParams()
 
@@ -202,7 +205,7 @@ export function Subscriptions () {
 
     return (
       <>
-        <Subtitle level={4}>
+        <Subtitle level={4} style={{ marginBottom: '12px' }}>
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
         <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
@@ -256,18 +259,39 @@ export function Subscriptions () {
     )
   }
 
+  const onTabChange = (tab: string) => {
+    setActiveTab(tab === 'assignedSubscriptions')
+  }
+
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'MSP Subscriptions' })}
-        extra={
+        title={$t({ defaultMessage: 'Subscriptions' })}
+        extra={[
+          <MspTenantLink to='/dashboard/msplicenses/create'>
+            <Button
+              hidden={!isAssignedActive}
+              type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
+          </MspTenantLink>,
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
           </TenantLink>
-        }
+        ]}
       />
+      <Tabs
+        defaultActiveKey='mspSubscriptions'
+        onChange={onTabChange}
+      >
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'MSP Subscriptions' })}
+          key='mspSubscriptions' />
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'MSP Assigned Subscriptions' })}
+          key='assignedSubscriptions' />
+      </Tabs>
+
       <SubscriptionUtilization />
-      <SubscriptionTable />
+      {isAssignedActive ? <AssignedSubscriptions /> : <SubscriptionTable />}
     </>
   )
 }
