@@ -124,7 +124,7 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
-  xit('Step3 - Wireless network will be block by mandatory validation', async () => {
+  it('Step3 - Wireless network will be not block by empty list', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('venueId', 'testVenueId1')
@@ -142,7 +142,6 @@ describe('NetworkSegmentation - GeneralSettingsForm', () => {
       { route: { params, path: createNsgPath } })
     await screen.findByRole('checkbox', { name: 'Network 1' })
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
-    await screen.findByText('Please select at least 1 network')
   })
 
   it('Add tunnel profile', async () => {
