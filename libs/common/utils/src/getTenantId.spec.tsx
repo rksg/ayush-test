@@ -89,8 +89,8 @@ describe('tenant type v', () => {
 describe('other path', () => {
   const tenantId = '8b9e8338c81d404e986c1d651ca7fed0'
   const data = [
-    { path: '', tenantId: undefined },
-    { path: '/', tenantId: undefined },
+    { path: '', tenantId: '' },
+    { path: '/', tenantId: '' },
     { path: `/api/ui-beta/t/${tenantId}`, tenantId },
     { path: `/t/${tenantId}`, tenantId },
     { path: `/v/${tenantId}`, tenantId },
