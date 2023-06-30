@@ -18,7 +18,7 @@ import {
   fakeMFAEnabledAdminDetail
 } from './__tests__/fixtures'
 
-import { MultiFactor } from './'
+import { MultiFactor } from '.'
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),

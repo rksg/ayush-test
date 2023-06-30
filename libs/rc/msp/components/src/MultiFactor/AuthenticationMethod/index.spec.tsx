@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo, MFAStatus, MFAMethod } from '@acx-ui/user'
 
-import { AuthenticationMethod } from './'
+import { AuthenticationMethod } from '.'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
