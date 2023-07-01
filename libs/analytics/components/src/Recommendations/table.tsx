@@ -20,7 +20,7 @@ import { noDataDisplay }               from '@acx-ui/utils'
 import {
   useRecommendationListQuery,
   Recommendation,
-  useMuteReommendationMutation
+  useMuteRecommendationMutation
 } from './services'
 import * as UI                                        from './styledComponents'
 
@@ -51,7 +51,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
     : $t({ defaultMessage: 'Venue' })
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
 
-  const [muteRecommendation] = useMuteReommendationMutation()
+  const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
     isMuted: boolean
@@ -60,7 +60,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
   const selectedRecommendation = selectedRowData[0]
   const data = (showMuted)
     ? queryResults.data
-    : queryResults.data //filterMutedRecommendations(queryResults.data)
+    : queryResults.data?.filter((r: Recommendation) => !r.isMuted)
 
   const rowActions: TableProps<Recommendation>['rowActions'] = [
     {
@@ -156,7 +156,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       <UI.RecommendationTableWrapper
         settingsId='incident-table'
         type='tall'
-        dataSource={queryResults.data}
+        dataSource={data}
         columns={ColumnHeaders}
         rowActions={rowActions}
         rowSelection={{

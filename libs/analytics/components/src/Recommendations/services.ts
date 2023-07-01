@@ -147,7 +147,7 @@ export const api = recommendationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
-    muteReommendation: build.mutation<MutationResponse, MutationPayload>({
+    muteRecommendation: build.mutation<MutationResponse, MutationPayload>({
       query: (payload) => ({
         document: gql`
           mutation MutateRecommendation($id: String, $mute: Boolean) {
@@ -164,7 +164,7 @@ export const api = recommendationApi.injectEndpoints({
         }
       }),
       transformResponse: (response: MutationResponse) => response,
-      invalidatesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
+      invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     })
   })
 })
@@ -173,4 +173,4 @@ export interface Response<Recommendation> {
   recommendations: Recommendation[]
 }
 
-export const { useRecommendationListQuery, useMuteReommendationMutation } = api
+export const { useRecommendationListQuery, useMuteRecommendationMutation } = api

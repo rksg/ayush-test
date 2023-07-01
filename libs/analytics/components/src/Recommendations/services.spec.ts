@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { recommendationUrl, store } from '@acx-ui/store'
-import { mockGraphqlQuery }         from '@acx-ui/test-utils'
+import { recommendationUrl, store, Provider } from '@acx-ui/store'
+import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
 import {
   DateRange,
   setUpIntl,
   NetworkPath
 } from '@acx-ui/utils'
 
-import { api } from './services'
+import { api, MutationResponse, useMuteRecommendationMutation } from './services'
 
 export const mockResult = {
   recommendations: [
@@ -129,7 +129,7 @@ describe('RecommendationTable: services', () => {
     store.dispatch(api.util.resetApiState())
   })
 
-  it('should return correct data for R1', async () => {
+  it('should return correct data', async () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
       data: mockResult
     })
@@ -141,6 +141,23 @@ describe('RecommendationTable: services', () => {
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult)
+  })
+
+  it('should mutate correct data', async () => {
+    const resp =  { toggleMute: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+
+    const { result } = renderHook(
+      () => useMuteRecommendationMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({ id: 'test', mute: true })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+   
   })
 
 })
