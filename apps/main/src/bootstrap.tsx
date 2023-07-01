@@ -39,12 +39,13 @@ const supportedLocales: Record<string, LangKey> = {
   'en': 'en-US',
   'es': 'es-ES',
   'es-ES': 'es-ES',
-  'de-DE': 'de-DE',
-  'de': 'de-DE',
-  'ja-JP': 'ja-JP',
   'ja': 'ja-JP',
+  'ja-JP': 'ja-JP',
+  'fr': 'fr-FR',
   'fr-FR': 'fr-FR',
+  'ko': 'ko-KR',
   'ko-KR': 'ko-KR',
+  'pt': 'pt-BR',
   'pt-BR': 'pt-BR'
 }
 declare global {
@@ -58,9 +59,10 @@ export function loadMessages (locales: readonly string[]): LangKey {
   const locale = locales.find(locale =>
     supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
   let browserLangVal = supportedLocales[locale as keyof typeof supportedLocales]
-  if (browserLangVal !== 'en-US') {
+  if (browserLangVal !== DEFAULT_SYS_LANG) {
     const val = browserLangSelection(browserLangVal)
     browserLangVal = (val === 1) ? browserLangVal : DEFAULT_SYS_LANG
+    console.log(`val===========>>>>> ${val}`)
   }
   return browserLangVal
 }
@@ -123,15 +125,14 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
-const browserLangSelection = ( broswerLang: string,
-  callback?: () => number ) => {
+const browserLangSelection = ( broswerLang: string, callback?: () => void ) => {
   let retVal = 0
   let intl: IntlShape
   try {
     intl = getIntl()
   } catch (error) {
     if (!(error instanceof IntlSetUpError)) throw error
-    setUpIntl({ locale: 'en-US' })
+    setUpIntl({ locale: DEFAULT_SYS_LANG })
     intl = getIntl()
   }
   const { $t } = intl
@@ -172,8 +173,8 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const result = useGetUserProfileQuery({})
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  const userPreflang = String(userProfile?.preferredLanguage)
-  const defaultLang = String(request.data?.global?.defaultLanguage)
+  const userPreflang = String(userProfile?.preferredLanguage) as LangKey
+  const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
 
   // console.log(`userProfile: ${userPreflang} ${defaultLang} browserLang: ${browserLang}`)
   const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang :
@@ -184,7 +185,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading: result.isLoading || result.isFetching
     || request.isLoading || request.isFetching }]}
-    children={<ConfigProvider {...props} lang={loadMessages([lang])} />}
+    children={<ConfigProvider {...props} lang={lang} />}
   />
 }
 
