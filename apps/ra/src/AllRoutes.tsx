@@ -16,7 +16,6 @@ function AllRoutes () {
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
-      <Route path='recommendations' element={<div>Recommendations</div>} />
       <Route path='configChange' element={<ConfigChange />} />
     </Route>
     <Route path='health' element={<div>Health</div>} />
