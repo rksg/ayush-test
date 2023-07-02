@@ -9,6 +9,7 @@ import {
   useLazyGetSwitchVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                             from '@acx-ui/types'
 import {
   CloudVersion,
   getUserSettingsByPath,
@@ -16,7 +17,8 @@ import {
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
   useLazyGetCloudScheduleVersionQuery,
-  UserSettingsUIModel
+  UserSettingsUIModel,
+  hasRoles
 } from '@acx-ui/user'
 
 export function CloudMessageBanner () {
@@ -41,7 +43,8 @@ export function CloudMessageBanner () {
     if (cloudVersion && userSettings) {
       setVersion(version)
       checkWifiScheduleExists()
-      checkSwitchScheduleExists()
+      if (!hasRoles(RolesEnum.DPSK_ADMIN))
+        checkSwitchScheduleExists()
     }
   }, [cloudVersion, userSettings])
 

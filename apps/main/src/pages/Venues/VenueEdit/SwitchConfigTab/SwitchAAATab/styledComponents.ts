@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 export const AAAServers = styled.div`
    &.ant-collapse-ghost
@@ -7,4 +8,12 @@ export const AAAServers = styled.div`
          > .ant-collapse-content-box {
            padding-left: 85px;
          }
+`
+
+export const TransferStyle = styled(Space)`
+  .ant-transfer.ant-transfer-disabled {
+    .ant-transfer-list-content-item-disabled {
+      color: var(--acx-primary-black);
+    }
+  }
 `
