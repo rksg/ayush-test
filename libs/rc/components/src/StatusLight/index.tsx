@@ -4,7 +4,8 @@ type StatusLightProps = {
   config: {
     [key: string]: StatusLightConfig
   }
-  data: string
+  data: string,
+  showText?: boolean
 }
 
 type StatusLightConfig = {
@@ -12,11 +13,11 @@ type StatusLightConfig = {
   text: string
 }
 
-export function StatusLight (props: StatusLightProps) {
+export function StatusLight ({ config, data, showText = true }: StatusLightProps) {
   return (
     <Badge
-      color={props.config[props.data]?.color}
-      text={props.config[props.data]?.text || props.data}
+      color={config[data]?.color}
+      text={showText ? (config[data]?.text || data) : ''}
     />
   )
 }

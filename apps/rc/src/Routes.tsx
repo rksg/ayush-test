@@ -713,6 +713,7 @@ function UserRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='users/guestsManager' element={<GuestManagerPage />} />
+      <Route path='users/dpskAdmin' element={<DpskTable />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/clients'

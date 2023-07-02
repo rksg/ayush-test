@@ -29,6 +29,7 @@ import {
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
+
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   downloadFile: jest.fn()
