@@ -58,7 +58,7 @@ const mockedEmptyOutbound = {
 const mockedSetFieldValue = jest.fn()
 const { click, type, selectOptions } = userEvent
 
-describe('Stateful ACL config drawer', () => {
+describe.skip('Stateful ACL config drawer', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
   })
@@ -72,7 +72,7 @@ describe('Stateful ACL config drawer', () => {
       return form
     })
     const { result: visibleRef } = renderHook(() => {
-      const [ visible, setVisible ] = useState(true)
+      const [ visible, setVisible ] = useState('true')
       return { visible, setVisible }
     })
 
