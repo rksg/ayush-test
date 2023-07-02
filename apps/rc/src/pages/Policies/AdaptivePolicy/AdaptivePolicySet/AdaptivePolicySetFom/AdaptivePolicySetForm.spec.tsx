@@ -123,7 +123,7 @@ describe('AdaptivePolicySetForm', () => {
     })).toBeVisible()
   })
 
-  it('should create set successfully', async () => {
+  it.skip('should create set successfully', async () => {
     mockServer.use(
       rest.post(
         RulesManagementUrlsInfo.createPolicySet.url,

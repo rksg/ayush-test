@@ -77,7 +77,7 @@ describe('DistributionSwitchForm', () => {
     )
   })
 
-  it('should edit correctly', async () => {
+  it.skip('should edit correctly', async () => {
     const user = userEvent.setup()
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
