@@ -167,14 +167,9 @@ export const ChangedAPPTable=(props: APPTableProps)=>{
       dataIndex: 'toApplicationName',
       sorter: false
     }, {
-      title: $t({ defaultMessage: 'Current Application Category' }),
+      title: $t({ defaultMessage: 'Application Category' }),
       key: 'categoryName',
       dataIndex: 'categoryName',
-      sorter: false
-    }, {
-      title: $t({ defaultMessage: 'New Application Category' }),
-      key: 'toCategoryName',
-      dataIndex: 'toCategoryName',
       sorter: false
     }, {
       title: $t({ defaultMessage: 'Impacted Rules' }),

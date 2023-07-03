@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { venueApi }                                              from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
@@ -79,6 +79,7 @@ describe('MeshNetwork', () => {
 
   it('Mesh enhancement: should disabled all settings when mesh has been turned ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(<Provider><MeshNetwork /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -93,6 +94,8 @@ describe('MeshNetwork', () => {
 
   it('Mesh enhancement: enable mesh and set other settings', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
     mockServer.use(rest.get(
       CommonUrlsInfo.getVenueSettings.url,
       (_, res, ctx) => res(ctx.json({ mesh: { enabled: false } }))))
