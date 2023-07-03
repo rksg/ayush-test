@@ -17,12 +17,12 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
   useRefreshMspEntitlementMutation
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
+import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   dateSort,
   defaultSort,

@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   mockServer,
   render,

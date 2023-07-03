@@ -5,7 +5,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { Modal }                         from '@acx-ui/components'
-import { useResendEcInvitationMutation } from '@acx-ui/rc/services'
+import { useResendEcInvitationMutation } from '@acx-ui/msp/services'
 import { emailRegExp }                   from '@acx-ui/rc/utils'
 
 interface ResendInviteModalProps {

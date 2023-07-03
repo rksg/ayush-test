@@ -1,7 +1,6 @@
 export * from './commonUrls'
 export * from './wifiUrls'
 export * from './switchUrls'
-export * from './mspUrls'
 export * from './licenseUrls'
 export * from './services'
 export * from './edgeUrls'

@@ -21,10 +21,10 @@ import {
   useMspCustomerListQuery,
   useCheckDelegateAdmin,
   useGetMspLabelQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   MspEc
-} from '@acx-ui/rc/utils'
+} from '@acx-ui/msp/utils'
 import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'

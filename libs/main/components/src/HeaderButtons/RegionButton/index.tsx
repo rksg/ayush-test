@@ -13,8 +13,8 @@ import {
 } from '@acx-ui/icons'
 import {
   useGetMspEcProfileQuery
-} from '@acx-ui/rc/services'
-import { MSPUtils }                           from '@acx-ui/rc/utils'
+} from '@acx-ui/msp/services'
+import { MSPUtils }                           from '@acx-ui/msp/utils'
 import { RegionValue, useUserProfileContext } from '@acx-ui/user'
 import { useTenantId }                        from '@acx-ui/utils'
 

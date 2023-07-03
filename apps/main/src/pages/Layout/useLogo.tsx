@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 
 import { Logo }                                              from '@acx-ui/main/components'
-import { useGetMspEcProfileQuery, useGetParentLogoUrlQuery } from '@acx-ui/rc/services'
-import { MSPUtils }                                          from '@acx-ui/rc/utils'
+import { useGetMspEcProfileQuery, useGetParentLogoUrlQuery } from '@acx-ui/msp/services'
+import { MSPUtils }                                          from '@acx-ui/msp/utils'
 
 const { isMspEc } = MSPUtils()
 

@@ -11,9 +11,11 @@ import { useIntl } from 'react-intl'
 
 import { Modal }                from '@acx-ui/components'
 import {
-  useUpdateAdminMutation,
   useGetMspEcAdminQuery,
   useUpdateMspEcAdminMutation
+} from '@acx-ui/msp/services'
+import {
+  useUpdateAdminMutation
 } from '@acx-ui/rc/services'
 import {
   Administrator

@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen }          from '@acx-ui/test-utils'
-import { UserUrlsInfo }                        from '@acx-ui/user'
+import { MspUrlsInfo }                from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
 
 import { ManageIntegrator } from '.'
 

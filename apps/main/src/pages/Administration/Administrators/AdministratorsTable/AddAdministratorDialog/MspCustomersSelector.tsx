@@ -7,12 +7,10 @@ import {
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { SpaceWrapper }     from '@acx-ui/rc/components'
-import {
-  useMspCustomerListQuery
-} from '@acx-ui/rc/services'
-import { RolesEnum }     from '@acx-ui/types'
-import { useTableQuery } from '@acx-ui/utils'
+import { useMspCustomerListQuery } from '@acx-ui/msp/services'
+import { SpaceWrapper }            from '@acx-ui/rc/components'
+import { RolesEnum }               from '@acx-ui/types'
+import { useTableQuery }           from '@acx-ui/utils'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',

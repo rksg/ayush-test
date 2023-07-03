@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }                                                                       from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                                                       from '@acx-ui/msp/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { AccountType }                                                                       from '@acx-ui/utils'
@@ -38,9 +38,9 @@ const assignedEc = {
   mspec_list: ['6a0d92dee47942dda28d29770696c6a0','3061bd56e37445a8993ac834c01e2710']
 }
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
 }))
 
 describe('SelectIntegratorDrawer', () => {

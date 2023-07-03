@@ -22,10 +22,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                         from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }                      from '@acx-ui/formatter'
-import { SearchOutlined }                                 from '@acx-ui/icons'
-import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
+import { SearchOutlined }                from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -37,21 +36,24 @@ import {
   useGetMspEcDelegatedAdminsQuery,
   useMspCustomerListQuery,
   useGetAssignedMspEcToIntegratorQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
-  Address,
   dateDisplayText,
   DateSelectionEnum,
-  emailRegExp,
   MspAdministrator,
   MspEc,
   MspEcData,
-  roleDisplayText,
-  EntitlementUtil,
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
-  AssignActionEnum,
+  AssignActionEnum
+} from '@acx-ui/msp/utils'
+import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
+import {
+  Address,
+  emailRegExp,
+  roleDisplayText,
+  EntitlementUtil,
   EntitlementDeviceType,
   EntitlementDeviceSubType
 } from '@acx-ui/rc/utils'

@@ -15,10 +15,10 @@ import {
   useAssignMspEcToIntegratorMutation,
   useMspCustomerListQuery,
   useLazyGetAssignedMspEcToIntegratorQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   MspEc
-} from '@acx-ui/rc/utils'
+} from '@acx-ui/msp/utils'
 import { useTableQuery } from '@acx-ui/utils'
 import {
   AccountType

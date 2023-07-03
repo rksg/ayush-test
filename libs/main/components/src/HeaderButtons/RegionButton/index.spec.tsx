@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }  from '@acx-ui/rc/utils'
+import { MspUrlsInfo }  from '@acx-ui/msp/utils'
 import { Provider }     from '@acx-ui/store'
 import {
   mockServer,

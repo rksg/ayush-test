@@ -1,14 +1,8 @@
-import { defineMessage } from 'react-intl'
-
 import { RolesEnum } from '@acx-ui/types'
-import { getIntl }   from '@acx-ui/utils'
-
-import { EntitlementUtil } from '../msp.utils'
 
 import {
   EntitlementDeviceType,
-  EntitlementDeviceSubType,
-  roleDisplayText
+  EntitlementDeviceSubType
 } from './msp'
 
 export enum TenantDelegationStatus {
@@ -174,28 +168,6 @@ export interface NotificationRecipientResponse {
   updatedDate: string;
 }
 
-export const getRoles = () => {
-  return Object.keys(roleDisplayText).map(roleKey => ({
-    label: roleDisplayText[roleKey as RolesEnum],
-    value: roleKey
-  }))
-}
-
-export const getDelegetionStatusIntlString = (status: AdministrationDelegationStatus) => {
-  switch (status) {
-    case AdministrationDelegationStatus.INVITED :
-      return defineMessage({ defaultMessage: 'Invitation sent' })
-    case AdministrationDelegationStatus.ACCEPTED :
-      return defineMessage({ defaultMessage: 'Access granted' })
-    case AdministrationDelegationStatus.REJECTED :
-      return defineMessage({ defaultMessage: 'Invitation declined' })
-    case AdministrationDelegationStatus.REVOKED :
-      return defineMessage({ defaultMessage: 'Revoked' })
-    default:
-      return defineMessage({ defaultMessage: 'Unknown' })
-  }
-}
-
 export interface Entitlement {
   id: string;
   deviceType: EntitlementDeviceType;
@@ -238,10 +210,3 @@ export interface NewEntitlementSummary {
 }
 
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
-export const getEntitlementDeviceTypes = (): EntitlementDeviceTypes => {
-  return Object.keys(EntitlementDeviceType)
-    .map(key => ({
-      label: EntitlementUtil.getDeviceTypeText(getIntl().$t, key as EntitlementDeviceType),
-      value: key as EntitlementDeviceType
-    }))
-}

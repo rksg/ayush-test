@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
 import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'

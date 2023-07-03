@@ -14,13 +14,14 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { useGetMspProfileQuery }  from '@acx-ui/msp/services'
+import { MSPUtils }               from '@acx-ui/msp/utils'
 import {
   useGetAdminListQuery,
-  useGetMspProfileQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, MSPUtils, sortProp, defaultSort }       from '@acx-ui/rc/utils'
+import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 

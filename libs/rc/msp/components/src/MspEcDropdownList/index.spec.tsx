@@ -92,7 +92,11 @@ const varList = {
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom')
 }))
-const services = require('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
+const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
@@ -136,7 +140,7 @@ describe('MspEcDropdownList', () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: fakeUserProfile }
     })
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: fakeTenantDetail }
     })
     render(
@@ -167,7 +171,7 @@ describe('MspEcDropdownList', () => {
     })
     const varTenantDetail = { ...fakeTenantDetail }
     varTenantDetail.tenantType = AccountType.VAR
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: varTenantDetail }
     })
     render(
@@ -199,7 +203,7 @@ describe('MspEcDropdownList', () => {
     })
     const installerTenantDetail = { ...fakeTenantDetail }
     installerTenantDetail.tenantType = AccountType.MSP_INSTALLER
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: installerTenantDetail }
     })
     render(
@@ -230,7 +234,7 @@ describe('MspEcDropdownList', () => {
     })
     const varTenantDetail = { ...fakeTenantDetail }
     varTenantDetail.tenantType = AccountType.VAR
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: varTenantDetail }
     })
     render(
@@ -259,7 +263,7 @@ describe('MspEcDropdownList', () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: supportUserProfile }
     })
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: fakeTenantDetail }
     })
     render(
@@ -286,7 +290,7 @@ describe('MspEcDropdownList', () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: fakeUserProfile }
     })
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return {}
     })
     render(
@@ -302,7 +306,7 @@ describe('MspEcDropdownList', () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: fakeUserProfile }
     })
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: fakeTenantDetail }
     })
     render(

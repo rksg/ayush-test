@@ -9,26 +9,28 @@ import {
   AssignedEc,
   BaseUrl,
   MspUrlsInfo,
-  CommonResult,
   MspAdministrator,
   MspAssignmentHistory,
   MspAssignmentSummary,
-  MspEntitlement,
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
   TenantDetail,
   MspEcData,
   MspEcDelegatedAdmins,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
   SupportDelegation,
   VarCustomer,
   MspProfile,
-  EntitlementBanner,
   MspEcProfile,
   MspPortal,
-  downloadFile,
   ParentLogoUrl
+} from '@acx-ui/msp/utils'
+import {
+  CommonResult,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
+  EntitlementBanner,
+  MspEntitlement,
+  downloadFile
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                               from '@acx-ui/store'
 import { RequestPayload }                           from '@acx-ui/types'

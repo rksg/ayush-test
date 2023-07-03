@@ -2,8 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { BaseUrl, ExternalProviders, MspPortal } from '@acx-ui/rc/utils'
-import { Provider  }                             from '@acx-ui/store'
+import { BaseUrl, MspPortal } from '@acx-ui/msp/utils'
+import { ExternalProviders }  from '@acx-ui/rc/utils'
+import { Provider  }          from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -89,9 +90,9 @@ const baseUrl: BaseUrl =
       base_url: 'msp.devalto.ruckuswireless.com'
     }
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services'),
   useAddMspLabelMutation: () => (''),
   useUpdateMspLabelMutation: () => (''),
   useGetUploadURLMutation: () => ('')

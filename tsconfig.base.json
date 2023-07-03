@@ -28,6 +28,8 @@
       "@acx-ui/icons": ["libs/common/icons/src/index.ts"],
       "@acx-ui/main/components": ["libs/main/components/src/index.ts"],
       "@acx-ui/msp/components": ["libs/rc/msp/components/src/index.ts"],
+      "@acx-ui/msp/services": ["libs/rc/msp/services/src/index.ts"],
+      "@acx-ui/msp/utils": ["libs/rc/msp/utils/src/index.ts"],
       "@acx-ui/rc/components": ["libs/rc/shared/components/src/index.ts"],
       "@acx-ui/rc/services": ["libs/rc/shared/services/src/index.ts"],
       "@acx-ui/rc/utils": ["libs/rc/shared/utils/src/index.ts"],

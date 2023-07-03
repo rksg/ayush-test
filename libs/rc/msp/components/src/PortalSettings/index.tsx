@@ -26,22 +26,26 @@ import {
   GridCol,
   GridRow
 } from '@acx-ui/components'
-import { PhoneInput }         from '@acx-ui/rc/components'
 import {
   useAddMspLabelMutation,
-  useExternalProvidersQuery,
   useGetMspBaseURLQuery,
   useGetMspLabelQuery,
-  useGetUploadURLMutation,
   useUpdateMspLabelMutation
+} from '@acx-ui/msp/services'
+import {
+  MspPortal,
+  MspLogoFile
+} from '@acx-ui/msp/utils'
+import { PhoneInput }       from '@acx-ui/rc/components'
+import {
+  useExternalProvidersQuery,
+  useGetUploadURLMutation
 } from '@acx-ui/rc/services'
 import {
   emailRegExp,
   phoneRegExp,
-  MspPortal,
   Providers,
   UploadUrlResponse,
-  MspLogoFile,
   networkWifiIpRegExp,
   networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'

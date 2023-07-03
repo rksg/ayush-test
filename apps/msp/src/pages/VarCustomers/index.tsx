@@ -20,12 +20,14 @@ import {
   useVarCustomerListQuery,
   useAcceptRejectInvitationMutation,
   useDelegateToMspEcPath
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
-  EntitlementNetworkDeviceType,
-  EntitlementUtil,
   VarCustomer
+} from '@acx-ui/msp/utils'
+import {
+  EntitlementNetworkDeviceType,
+  EntitlementUtil
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'

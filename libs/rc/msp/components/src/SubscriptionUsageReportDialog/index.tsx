@@ -9,7 +9,7 @@ import { Subtitle, Modal }  from '@acx-ui/components'
 import {
   useGetGenerateLicenseUsageRptQuery,
   useMspCustomerListQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import { useTableQuery } from '@acx-ui/utils'
 
 interface SubscriptionUsageReportDialogProps {
