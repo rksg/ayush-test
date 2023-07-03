@@ -8,8 +8,8 @@ import MacRegistrationListTabs from './MacRegistrationListTabs'
 const mockedUsedNavigate = jest.fn()
 const params = { policyId: 'macRegistrationList-id', tenantId: 'tenant-id' }
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 

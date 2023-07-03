@@ -61,7 +61,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                 style="padding-left: 12px; padding-right: 12px;"
               >
                 <span
-                  class="styledComponents__TitleSpan-sc-15fqtrv-7 kikKkM"
+                  class="styledComponents__TitleSpan-sc-1kv32zz-7 hcWhjC"
                 >
                   Network availability
                 </span>
@@ -157,7 +157,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                       type="button"
                     >
                       <span
-                        class="styledComponents__TipSpan-sc-15fqtrv-9 eZcojU"
+                        class="styledComponents__TipSpan-sc-1kv32zz-9 gfdZoK"
                       >
                         See tips
                       </span>
@@ -216,7 +216,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             </span>
                           </label>
                           <span
-                            class="styledComponents__DaySpan-sc-15fqtrv-8 jILUjc"
+                            class="styledComponents__DaySpan-sc-1kv32zz-8 bwQzwW"
                           >
                             mon
                           </span>
@@ -229,67 +229,67 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             style="width: 100%; height: 25px; margin-left: -30px;"
                           >
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               Midnight
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               2 AM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               4 AM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               6 AM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               8 AM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               10 AM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               Noon
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               2 PM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               4 PM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               6 PM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               8 PM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               10 PM
                             </div>
                             <div
-                              class="styledComponents__Timetick-sc-15fqtrv-4 fXhwIU"
+                              class="styledComponents__Timetick-sc-1kv32zz-4 kYxOuO"
                             >
                               Midnight
                             </div>
@@ -298,151 +298,151 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             style="width: 980px; height: 5px;"
                           >
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                             <div
-                              class="styledComponents__Timetickborder-sc-15fqtrv-5 iJNnUd"
+                              class="styledComponents__Timetickborder-sc-1kv32zz-5 coyTDX"
                             />
                           </div>
                           <div
@@ -461,7 +461,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                                     class="ant-form-item-control-input-content"
                                   >
                                     <div
-                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-15fqtrv-2 fRComX"
+                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1kv32zz-2 gWTYZt"
                                       id="networkVenueScheduleForm_scheduler_mon"
                                     >
                                       <label
@@ -3000,7 +3000,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             </span>
                           </label>
                           <span
-                            class="styledComponents__DaySpan-sc-15fqtrv-8 jILUjc"
+                            class="styledComponents__DaySpan-sc-1kv32zz-8 bwQzwW"
                           >
                             tue
                           </span>
@@ -3025,7 +3025,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                                     class="ant-form-item-control-input-content"
                                   >
                                     <div
-                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-15fqtrv-2 fRComX"
+                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1kv32zz-2 gWTYZt"
                                       id="networkVenueScheduleForm_scheduler_tue"
                                     >
                                       <label
@@ -5564,7 +5564,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             </span>
                           </label>
                           <span
-                            class="styledComponents__DaySpan-sc-15fqtrv-8 jILUjc"
+                            class="styledComponents__DaySpan-sc-1kv32zz-8 bwQzwW"
                           >
                             wed
                           </span>
@@ -5589,7 +5589,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                                     class="ant-form-item-control-input-content"
                                   >
                                     <div
-                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-15fqtrv-2 fRComX"
+                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1kv32zz-2 gWTYZt"
                                       id="networkVenueScheduleForm_scheduler_wed"
                                     >
                                       <label
@@ -8128,7 +8128,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             </span>
                           </label>
                           <span
-                            class="styledComponents__DaySpan-sc-15fqtrv-8 jILUjc"
+                            class="styledComponents__DaySpan-sc-1kv32zz-8 bwQzwW"
                           >
                             thu
                           </span>
@@ -8153,7 +8153,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                                     class="ant-form-item-control-input-content"
                                   >
                                     <div
-                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-15fqtrv-2 fRComX"
+                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1kv32zz-2 gWTYZt"
                                       id="networkVenueScheduleForm_scheduler_thu"
                                     >
                                       <label
@@ -10692,7 +10692,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             </span>
                           </label>
                           <span
-                            class="styledComponents__DaySpan-sc-15fqtrv-8 jILUjc"
+                            class="styledComponents__DaySpan-sc-1kv32zz-8 bwQzwW"
                           >
                             fri
                           </span>
@@ -10717,7 +10717,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                                     class="ant-form-item-control-input-content"
                                   >
                                     <div
-                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-15fqtrv-2 fRComX"
+                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1kv32zz-2 gWTYZt"
                                       id="networkVenueScheduleForm_scheduler_fri"
                                     >
                                       <label
@@ -13256,7 +13256,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             </span>
                           </label>
                           <span
-                            class="styledComponents__DaySpan-sc-15fqtrv-8 jILUjc"
+                            class="styledComponents__DaySpan-sc-1kv32zz-8 bwQzwW"
                           >
                             sat
                           </span>
@@ -13281,7 +13281,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                                     class="ant-form-item-control-input-content"
                                   >
                                     <div
-                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-15fqtrv-2 fRComX"
+                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1kv32zz-2 gWTYZt"
                                       id="networkVenueScheduleForm_scheduler_sat"
                                     >
                                       <label
@@ -15820,7 +15820,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                             </span>
                           </label>
                           <span
-                            class="styledComponents__DaySpan-sc-15fqtrv-8 jILUjc"
+                            class="styledComponents__DaySpan-sc-1kv32zz-8 bwQzwW"
                           >
                             sun
                           </span>
@@ -15845,7 +15845,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                                     class="ant-form-item-control-input-content"
                                   >
                                     <div
-                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-15fqtrv-2 fRComX"
+                                      class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1kv32zz-2 gWTYZt"
                                       id="networkVenueScheduleForm_scheduler_sun"
                                     >
                                       <label

@@ -61,7 +61,7 @@ exports[`Floor Plan Form should render correctly 1`] = `
               class="ant-form-item-control-input-content"
             >
               <div
-                class="ant-form-item styledComponents__FloorNumberFormItem-sc-20o9n4-0 kwANhx ant-form-item-has-success"
+                class="ant-form-item styledComponents__FloorNumberFormItem-sc-1xvoije-0 kAnDpp ant-form-item-has-success"
               >
                 <div
                   class="ant-row ant-form-item-row"

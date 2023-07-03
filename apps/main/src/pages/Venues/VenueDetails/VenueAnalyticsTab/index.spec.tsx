@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import * as router from 'react-router-dom'
+// import * as router from 'react-router-dom'
 
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -8,10 +8,10 @@ import { VenueAnalyticsTab } from '.'
 
 const mockedUsedNavigate = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
-  useParams: jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+  // useParams: jest.fn()
 }))
 
 describe('VenueAnalyticsTab', () => {
@@ -19,7 +19,7 @@ describe('VenueAnalyticsTab', () => {
     mockedUsedNavigate.mockReset()
   })
   it('should handle default tab', async () => {
-    jest.spyOn(router, 'useParams').mockImplementation(() => ({}))
+    // jest.spyOn(router, 'useParams').mockImplementation(() => ({}))
     render(<Provider>
       <VenueAnalyticsTab />
     </Provider>, {

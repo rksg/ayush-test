@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import * as router from 'react-router-dom'
+// import * as router from 'react-router-dom'
 
 import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { Provider }                  from '@acx-ui/store'
@@ -9,10 +9,10 @@ import { ApAnalyticsTab } from '.'
 
 const mockedUsedNavigate = jest.fn()
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
-  useParams: jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+  // useParams: jest.fn()
 }))
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
@@ -25,9 +25,9 @@ describe('ApAnalyticsTab', () => {
     mockedUsedNavigate.mockReset()
   })
   it('should handle default tab', async () => {
-    jest.spyOn(router, 'useParams').mockImplementation(
-      () => ({ tenantId: 't1', serialNumber: '000000000001' })
-    )
+    // jest.spyOn(router, 'useParams').mockImplementation(
+    //   () => ({ tenantId: 't1', serialNumber: '000000000001' })
+    // )
     render(<Provider>
       <ApAnalyticsTab />
     </Provider>, {

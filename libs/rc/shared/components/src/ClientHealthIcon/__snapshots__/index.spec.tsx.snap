@@ -3,7 +3,7 @@
 exports[`ClientHealthIcon should render correctly 1`] = `
 <DocumentFragment>
   <svg
-    class="styledComponents__HealthIcon-sc-p8cyf-0 kgJauH"
+    class="styledComponents__HealthIcon-sc-y7jstt-0 imGkSc"
     data-testid="HealthSolid"
   />
 </DocumentFragment>
