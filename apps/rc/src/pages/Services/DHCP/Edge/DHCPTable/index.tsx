@@ -119,7 +119,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'targetVersion',
       sorter: true,
       render (data, row) {
-        if(row.targetVersion && row.currentVersion !== row.targetVersion) {
+        if(row.currentVersion && row.targetVersion && row.currentVersion !== row.targetVersion) {
           return $t({ defaultMessage: 'Yes' })
         }
         return $t({ defaultMessage: 'No' })

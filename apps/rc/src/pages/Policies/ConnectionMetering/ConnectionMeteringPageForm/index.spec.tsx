@@ -116,7 +116,7 @@ describe('ConnectionMeteringPageForm', () => {
     )
   })
 
-  it('should render correctly for creating connection metering', async () => {
+  it('should render correctly for creating data usage metering', async () => {
     render(<Provider><ConnectionMeteringPageForm
       mode={ConnectionMeteringFormMode.CREATE}
     />
@@ -126,10 +126,10 @@ describe('ConnectionMeteringPageForm', () => {
         policyId: ''
       }, path: '/:tenantId' }
     })
-    await screen.findAllByText('Add Connection Metering')
+    await screen.findAllByText('Add Data Usage Metering')
   })
 
-  it('should render correctly for editing connection metering', async () => {
+  it('should render correctly for editing data usage metering', async () => {
     render(<Provider><ConnectionMeteringPageForm
       mode={ConnectionMeteringFormMode.EDIT}
     />
@@ -139,6 +139,6 @@ describe('ConnectionMeteringPageForm', () => {
         policyId: connectionMeterings[0].id
       }, path: '/:tenantId/:policyId' }
     })
-    await screen.findAllByText('Edit Connection Metering')
+    await screen.findAllByText('Edit Data Usage Metering')
   })
 })
