@@ -225,18 +225,36 @@ export default function NetworkForm (props:{
     if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
       delete data.guestPortal.wisprPage
     }
-    handlePortalWebPage(data)
+    const dataMore = handleGuestMoreSetting(data)
+    handlePortalWebPage(dataMore)
     return true
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMoreSettings = async (data: any) => {
-    const settingSaveData = transferMoreSettingsToSave(data, saveState)
+    const dataMore = handleGuestMoreSetting(data)
+    const settingSaveData = transferMoreSettingsToSave(dataMore, saveState)
     updateSaveData(settingSaveData)
     return true
   }
 
-  const handleGuestMoreSetting = (data:GuestMore)=>{
+  const handleGuestMoreSetting = (data: GuestMore) => {
+    if(data.guestPortal){
+      if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
+        &&data.guestPortal.wisprPage?.customExternalProvider){
+        data.guestPortal = {
+          ...data.guestPortal,
+          wisprPage: {
+            ...data.guestPortal.wisprPage,
+            externalProviderName: data.guestPortal.wisprPage.providerName
+          }
+        }
+      }
+    }
+    return data
+  }
+
+  const handleUserConnection = (data: GuestMore) => {
     if(data.guestPortal){
       if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit){
         data.guestPortal={
@@ -257,16 +275,6 @@ export default function NetworkForm (props:{
           ...data.guestPortal,
           macCredentialsDuration: data.guestPortal.macCredentialsDuration*
           minutesMapping[data.macCredentialsDurationUnit]
-        }
-      }
-      if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
-        &&data.guestPortal.wisprPage?.customExternalProvider){
-        data.guestPortal = {
-          ...data.guestPortal,
-          wisprPage: {
-            ...data.guestPortal.wisprPage,
-            externalProviderName: data.guestPortal.wisprPage.providerName
-          }
         }
       }
     }
@@ -431,6 +439,7 @@ export default function NetworkForm (props:{
     }
 
     handleGuestMoreSetting(data)
+    handleUserConnection(data)
 
     if(isPortalWebRender(data)){
       handlePortalWebPage(data)
