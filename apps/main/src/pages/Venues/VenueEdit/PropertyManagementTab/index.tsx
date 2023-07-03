@@ -437,19 +437,20 @@ export function PropertyManagementTab () {
                     />
                 }
                 {/* eslint-disable-next-line max-len */}
-                {formRef?.current?.getFieldValue( 'residentPortalType') === ResidentPortalType.OWN_PORTAL &&
-                  <Form.Item
-                    children={<Card type={'solid-bg'}>
-                      <Space align='start'>
-                        <InformationSolid />
-                        {$t({
-                          // eslint-disable-next-line max-len
-                          defaultMessage: 'Please refer to the resident portal documentation for more information about how to set up your own portal via API'
-                        })}
-                      </Space>
-                    </Card>}
-                  />
-                }
+                {/* Once the Resident Portal document ready, it needs to show the text */}
+                {/*{formRef?.current?.getFieldValue( 'residentPortalType') === ResidentPortalType.OWN_PORTAL &&*/}
+                {/*  <Form.Item*/}
+                {/*    children={<Card type={'solid-bg'}>*/}
+                {/*      <Space align='start'>*/}
+                {/*        <InformationSolid />*/}
+                {/*        {$t({*/}
+                {/*          // eslint-disable-next-line max-len*/}
+                {/*          defaultMessage: 'Please refer to the resident portal documentation for more information about how to set up your own portal via API'*/}
+                {/*        })}*/}
+                {/*      </Space>*/}
+                {/*    </Card>}*/}
+                {/*  />*/}
+                {/*}*/}
 
                 {msgTemplateEnabled &&
                   <>
