@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { FetchBaseQueryError }                                      from '@reduxjs/toolkit/dist/query/react'
-import { Col, Form, Row, Select, Switch, Modal, Input, Typography } from 'antd'
+import { FetchBaseQueryError }                                             from '@reduxjs/toolkit/dist/query/react'
+import { Col, Form, Row, Select, Switch, Modal, Input, Typography, Space } from 'antd'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -11,6 +11,7 @@ import { useIntl }            from 'react-intl'
 
 import {
   Button,
+  Card,
   Loader,
   ModalRef,
   StepsFormLegacy,
@@ -20,6 +21,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { InformationSolid }                     from '@acx-ui/icons'
 import { PersonaGroupSelect, TemplateSelector } from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
