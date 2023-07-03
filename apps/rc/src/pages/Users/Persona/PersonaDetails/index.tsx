@@ -287,10 +287,10 @@ function PersonaDetails () {
               )}
               {
                 isConnectionMeteringEnabled &&
-                <Row key={'Connection Metering'}>
+                <Row key={'Data Usage Metering'}>
                   <Col span={7}>
                     <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                      {$t({ defaultMessage: 'Connection Metering' })}:
+                      {$t({ defaultMessage: 'Data Usage Metering' })}:
                     </Typography.Paragraph>
                   </Col>
                   <Col span={12}>{connectionMetering ?
