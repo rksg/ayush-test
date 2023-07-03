@@ -767,6 +767,9 @@ export function EditPortDrawer ({
             <UI.FormItem>
               <Form.Item name='name'
                 label={$t({ defaultMessage: 'Port Name' })}
+                rules={[
+                  { max: 255 }
+                ]}
                 initialValue=''
                 children={<Input />}
               />
