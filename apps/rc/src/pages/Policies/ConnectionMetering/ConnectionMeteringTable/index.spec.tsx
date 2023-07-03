@@ -150,7 +150,7 @@ describe('ConnectionMeteringTable', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const addButton = await screen.findByRole('button', { name: 'Add Connection metering profile' })
+    const addButton = await screen.findByRole('button', { name: 'Add Data Usage Metering Profile' })
     fireEvent.click(addButton)
   })
 

@@ -22,7 +22,7 @@ export const changedApplicationTypeTextMap: Record<ApplicationUpdateType, Messag
   [ApplicationUpdateType.APPLICATION_REMOVED]: defineMessage({ defaultMessage: 'Application Removed' }),
   // eslint-disable-next-line max-len
   [ApplicationUpdateType.APPLICATION_RENAMED]: defineMessage({ defaultMessage: 'Application Name Changed' }),
-  [ApplicationUpdateType.CATEGORY_UPDATED]: defineMessage({ defaultMessage: 'Category Update' })
+  [ApplicationUpdateType.CATEGORY_UPDATED]: defineMessage({ defaultMessage: 'Category Updated' })
 }
 
 const ApplicationPolicyMgmt = () => {

@@ -152,7 +152,8 @@ export const roleDisplayText = {
   [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
   [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
   [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
-  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
+  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
+  [RolesEnum.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
 }
 
 export enum DateSelectionEnum {
