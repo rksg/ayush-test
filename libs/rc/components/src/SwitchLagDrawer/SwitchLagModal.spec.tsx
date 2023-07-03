@@ -59,6 +59,9 @@ const mockServerQuery = () => {
     rest.post(
       SwitchUrlsInfo.getSwitchPortlist.url,
       (req, res, ctx) => res(ctx.json(portlist))
+    ),
+    rest.get(SwitchUrlsInfo.getSwitchConfigurationProfileByVenue.url,
+      (_, res, ctx) => res(ctx.json({}))
     )
   )}
 

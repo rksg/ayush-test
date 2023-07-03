@@ -11,8 +11,11 @@ import EdgeDhcpTab from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   EdgeDhcpLeaseTable: () => <div data-testid='edge-dhcp-lease-table' />,
-  EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />,
-  ServiceInfo: () => <div data-testid='service-info' />
+  EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />
+}))
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  SummaryCard: () => <div data-testid='summary-card' />
 }))
 
 const detailPath = '/:tenantId/venues/:venueId/venue-details/:activeTab'
@@ -53,7 +56,7 @@ describe('Venue Edge Dhcp Instance', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
-    expect(await screen.findByTestId('service-info')).toBeVisible()
+    expect(await screen.findByTestId('summary-card')).toBeVisible()
     expect(await screen.findByTestId('edge-dhcp-pool-table')).toBeVisible()
     await user.click(await screen.findByRole('radio', { name: /Leases \(/i }))
     expect(await screen.findByTestId('edge-dhcp-lease-table')).toBeVisible()

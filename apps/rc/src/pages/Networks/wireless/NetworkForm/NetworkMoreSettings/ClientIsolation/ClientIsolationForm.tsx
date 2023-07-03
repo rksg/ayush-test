@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import NetworkFormContext        from '../../NetworkFormContext'
 import { hasVxLanTunnelProfile } from '../../utils'
@@ -21,7 +21,7 @@ enum IsolatePacketsTypeEnum {
 }
 
 export default function ClientIsolationForm () {
-  const isPoliciesEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isPoliciesEnabled = useIsSplitOn(Features.POLICIES)
   const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   // eslint-disable-next-line max-len

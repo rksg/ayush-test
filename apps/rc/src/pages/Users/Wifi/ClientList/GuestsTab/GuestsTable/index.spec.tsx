@@ -22,6 +22,8 @@ import {
 } from '../../../__tests__/fixtures'
 
 
+import { GuestTabContext } from './context'
+
 import { GuestsTable } from '.'
 
 jest.mock('socket.io-client')
@@ -64,13 +66,16 @@ describe('Guest Table', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
+  const setGuestCount = jest.fn()
 
   it('should render table', async () => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -82,7 +87,9 @@ describe('Guest Table', () => {
   it('should render detail by click name', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -95,7 +102,9 @@ describe('Guest Table', () => {
   it('should render detail by click created time', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -111,7 +120,9 @@ describe('Guest Table', () => {
   it('should render not applicable guest client detail', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -127,7 +138,9 @@ describe('Guest Table', () => {
   it('should render online guest client detail', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -141,7 +154,9 @@ describe('Guest Table', () => {
   it('should click "enable guest" correctly', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -156,7 +171,9 @@ describe('Guest Table', () => {
   it('should click "disable guest" correctly', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -171,7 +188,9 @@ describe('Guest Table', () => {
   it('should click "generate new password" with mail and phone number', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' },
         wrapper: Provider
@@ -190,7 +209,9 @@ describe('Guest Table', () => {
   it('should click "generate new password" without mail and phone number', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -251,7 +272,9 @@ describe('Guest Table', () => {
 
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -302,7 +325,9 @@ describe('Guest Table', () => {
 
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -322,7 +347,9 @@ describe('Guest Table', () => {
   it('should click "download" correctly', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -337,7 +364,9 @@ describe('Guest Table', () => {
   it('should click "delete" correctly', async () => {
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -362,7 +391,9 @@ describe('Guest Table', () => {
     )
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
@@ -399,7 +430,9 @@ describe('Guest Table', () => {
     )
     render(
       <Provider>
-        <GuestsTable dateFilter={mockDateFilter} />
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable dateFilter={mockDateFilter} />
+        </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })

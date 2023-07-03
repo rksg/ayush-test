@@ -16,10 +16,34 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
             <span
               class="ant-breadcrumb-link"
             >
+              Wi-Fi
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              Access Points
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
               <a
                 href="/tenant-id/t/devices/wifi"
               >
-                Access Points
+                AP List
               </a>
             </span>
             <span
@@ -298,20 +322,6 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                 data-testid="QuestionMarkCircleOutlined"
                 style="margin-left: 8px; margin-bottom: -3px; height: 16px; width: 16px;"
               />
-            </div>
-          </div>
-          <div
-            class="ant-tabs-tab"
-          >
-            <div
-              aria-controls="rc-tabs-test-panel-mesh"
-              aria-selected="false"
-              class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-mesh"
-              role="tab"
-              tabindex="0"
-            >
-              Mesh
             </div>
           </div>
           <div
@@ -1452,15 +1462,6 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-multicast"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-multicast"
-          role="tabpanel"
-          style="display: none;"
-          tabindex="-1"
-        />
-        <div
-          aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-mesh"
-          class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-mesh"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"

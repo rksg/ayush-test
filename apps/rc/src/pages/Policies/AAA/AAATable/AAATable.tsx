@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -22,14 +23,13 @@ import {
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-
-
 export default function AAATable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteAAAPolicyListMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
@@ -85,10 +85,16 @@ export default function AAATable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>

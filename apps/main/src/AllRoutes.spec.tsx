@@ -68,6 +68,11 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('AllRoutes', () => {
+  beforeEach(() => {
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1080
+  })
+
   afterEach(cleanup)
   test('should navigate to dashboard', async () => {
     render(<Provider><AllRoutes /></Provider>, {
@@ -153,7 +158,7 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to policies/* if the feature flag is on', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -166,7 +171,7 @@ describe('AllRoutes', () => {
   })
 
   test('should not navigate to policies/* if the feature flag is off', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {

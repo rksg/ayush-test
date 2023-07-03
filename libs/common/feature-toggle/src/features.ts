@@ -7,9 +7,11 @@ export enum Features {
   G_MAP = 'acx-ui-maps-api-toggle',
   SERVICES = 'acx-ui-services',
   PLM_FF = 'ACX-PLM-FF',
+  POLICIES = 'acx-ui-policies',
   DEVICES = 'acx-ui-devices',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   EDGES = 'PLCY-EDGE',
+  EDGES_TOGGLE = 'acx-ui-edges-toggle', // temporary. to prevent Edge related API being triggered in prod env
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
@@ -52,5 +54,13 @@ export enum Features {
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
-  CLOUDPATH_BETA = 'BETA-CP'
+  PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
+  CLOUDPATH_BETA = 'BETA-CP',
+  WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
+}
+
+export enum TierFeatures { // for Tier (ex: Beta) feature flag
+  BETA_MESH = 'BETA-MESH',
+  BETA_CLB = 'BETA-CLB'
 }

@@ -1,13 +1,15 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useGetMdnsProxyQuery }                 from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceDetailsLink,
   ServiceOperation,
   MdnsProxyScopeData,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }        from '@acx-ui/user'
@@ -19,6 +21,7 @@ export default function MdnsProxyDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const { data } = useGetMdnsProxyQuery({ params })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const getApList = () => {
     if (!data || !data.scope?.length) {
@@ -34,7 +37,14 @@ export default function MdnsProxyDetail () {
     <>
       <PageHeader
         title={data?.name}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'mDNS Proxy' }),
+            link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Services' }),
             link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })

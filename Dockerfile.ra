@@ -71,10 +71,10 @@ COPY --from=build /app/dist/apps ./
 
 RUN \
   # Create structure to match deployment need
-  mkdir -p analytics/next && \
+  mkdir -p tenant/t && \
   # Move all files into it
-  cp -a ra/* analytics/next/ && \
-  # Remove the main folder
+  cp -a ra/* tenant/t && \
+  # Remove the ra folder
   rm -rf ra
 
 EXPOSE 8080
