@@ -36,18 +36,13 @@ describe('AllRoutes', () => {
 
   it('should render recommendation details correctly', async () => {
     render(<AllRoutes />, {
-      route: { path: '/analytics/next/recommendations/test-recommendation-id' },
+      route: { path: '/analytics/next/recommendations/crrm/test-recommendation-id' },
       wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('recommendationDetails')).toBeVisible()
   })
 
-  it('should render recommendations correctly', async () => {
-    render(<AllRoutes />, { route: { path: '/analytics/next/recommendations' }, wrapper: Provider })
-    expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
-  })
-  it('should render recommendations crrm correctly', async () => {
+  it('should render recommendations  correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/analytics/next/recommendations/crrm' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
