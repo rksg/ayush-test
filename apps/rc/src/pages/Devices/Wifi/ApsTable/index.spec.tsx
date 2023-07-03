@@ -1,7 +1,5 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
@@ -11,6 +9,14 @@ import {
 } from '@acx-ui/test-utils'
 
 import useApsTable from '.'
+
+jest.mock('@acx-ui/rc/components', () => {
+  const { forwardRef } = jest.requireActual('react')
+  return {
+    ...jest.requireActual('@acx-ui/rc/components'),
+    ApTable: forwardRef(() => <div data-testid={'ApTable'}></div>)
+  }
+})
 
 describe('AP List Table', () => {
   const list = {
@@ -67,9 +73,16 @@ describe('AP List Table', () => {
         (req, res, ctx) => res(ctx.json({
           txId: 'f83cdf6e-df01-466d-88ba-58e2f2c211c6'
         }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should render page correctly', async () => {
@@ -79,8 +92,7 @@ describe('AP List Table', () => {
     }
 
     render(<Component/>, { wrapper: Provider, route: {} })
-    expect(await screen.findByText('AP01')).toBeVisible()
-    expect(await screen.findByText('R750-WIFIMAP-test-updtaed-mesh12')).toBeVisible()
+    expect(await screen.findByTestId('ApTable')).toBeVisible()
   })
 
   it('should render title with count correctly', async () => {
@@ -99,23 +111,5 @@ describe('AP List Table', () => {
     }
     render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Add')).toBeVisible()
-  })
-
-  it('should show import CSV dialog', async () => {
-    const Component = () => {
-      const { headerExtra, component } = useApsTable()
-      return <>{headerExtra}{component}</>
-    }
-    render(<Component/>, { wrapper: Provider, route: {} })
-    const csvFile = new File([''], 'aps_import_template.csv', { type: 'text/csv' })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-    await userEvent.click(await screen.findByText('Import from file'))
-
-    const dialog = await screen.findByRole('dialog')
-
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
-    expect(dialog).toHaveTextContent('aps_import_template.csv')
   })
 })

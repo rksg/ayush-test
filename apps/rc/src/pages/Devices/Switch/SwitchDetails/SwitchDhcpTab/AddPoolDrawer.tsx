@@ -113,6 +113,21 @@ export function AddPoolDrawer (props: {
     }
   ]
 
+  const footer = [
+    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='dhcp-pool-footer'>
+      <Button onClick={props?.onClose}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+      <Button
+        loading={props.isLoading}
+        onClick={() => form.submit()}
+        type='secondary'
+      >
+        {$t({ defaultMessage: 'Save' })}
+      </Button>
+    </Space>
+  ]
+
   return (<>
     <Drawer
       title={props.editPoolId?
@@ -122,17 +137,7 @@ export function AddPoolDrawer (props: {
       onClose={props.onClose}
       closable={true}
       width={460}
-      footer={<div>
-        <Button
-          loading={props.isLoading}
-          onClick={() => form.submit()}
-          type={'secondary'} >
-          {$t({ defaultMessage: 'Save' })}
-        </Button>
-        <Button onClick={props?.onClose}>
-          {$t({ defaultMessage: 'Cancel' })}
-        </Button>
-      </div>}
+      footer={footer}
     >
       <Form layout='vertical' form={form} onFinish={handleFormFinish}>
         <Form.Item name={'id'} hidden children={<input type='hidden' />} />
