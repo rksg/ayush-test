@@ -52,7 +52,7 @@ export default function ConnectionMeteringDetail () {
             link: getPolicyListRoutePath(true)
           },
           {
-            text: $t({ defaultMessage: 'Connection Metering' }),
+            text: $t({ defaultMessage: 'Data Usage Metering' }),
             link: getPolicyRoutePath({
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.LIST

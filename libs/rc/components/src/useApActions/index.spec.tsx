@@ -9,7 +9,6 @@ import { message } from 'antd'
 import { rest }    from 'msw'
 import '@testing-library/jest-dom'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   WifiUrlsInfo
@@ -98,10 +97,6 @@ describe('Test useApActions', () => {
   })
 
   it('showDeleteAp', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.WIFI_EDA_READY_TOGGLE
-    )
-
     const { result } = renderHook(() => useApActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
