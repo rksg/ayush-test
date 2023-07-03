@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { get }                                from '@acx-ui/config'
-import { BrowserRouter as Router, useParams } from '@acx-ui/react-router-dom'
+import { BrowserRouter as Router }            from '@acx-ui/react-router-dom'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -18,7 +18,6 @@ import { mockResult } from './services.spec'
 import { RecommendationTabContent } from './index'
 
 const mockGet = get as jest.Mock
-const mockUseParams = useParams as jest.Mock
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -27,8 +26,7 @@ jest.mock('@acx-ui/config', () => ({
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate,
-  useParams: jest.fn()
+  useNavigate: () => mockedUsedNavigate
 }))
 
 describe('RecommendationTabContent', () => {
@@ -42,7 +40,6 @@ describe('RecommendationTabContent', () => {
   })
   afterEach(() => {
     mockGet.mockClear()
-    mockUseParams.mockClear()
   })
   it('should render loader', () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
@@ -57,10 +54,9 @@ describe('RecommendationTabContent', () => {
       data: mockResult
     })
     mockGet.mockReturnValue(false) // get('IS_MLISA) => false
-    mockUseParams.mockReturnValue({ activeTab: 'crrm' })
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/tenantId/t/analytics/recommendations',
+        path: '/tenantId/t/analytics/recommendations/crrm',
         wrapRoutes: false
       }
     })
@@ -76,10 +72,9 @@ describe('RecommendationTabContent', () => {
       data: mockResult
     })
     mockGet.mockReturnValue(true) // get('IS_MLISA) => true
-    mockUseParams.mockReturnValue({ activeTab: 'crrm' })
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/analytics/next/recommendations',
+        path: '/analytics/next/recommendations/crrm',
         wrapRoutes: false
       }
     })
@@ -97,10 +92,9 @@ describe('RecommendationTabContent', () => {
       data: mockResult
     })
     mockGet.mockReturnValue(true) // get('IS_MLISA) => true
-    mockUseParams.mockReturnValue({ activeTab: 'crrm' })
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/analytics/next/recommendations',
+        path: '/analytics/next/recommendations/crrm',
         wrapRoutes: true
       }
     })
@@ -119,11 +113,9 @@ describe('RecommendationTabContent', () => {
       data: mockResult
     })
     mockGet.mockReturnValue(true) // get('IS_MLISA) => true
-    mockUseParams.mockReturnValue({ activeTab: 'aiOps' })
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/analytics/next/recommendations/:activeTab',
-        params: { activeTab: 'aiOps' },
+        path: '/analytics/next/recommendations/aiOps',
         wrapRoutes: false
       }
     })

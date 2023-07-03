@@ -75,6 +75,16 @@ describe('NetworkAssurance', () => {
       pathname: '/tenant-id/t/analytics/configChange', hash: '', search: ''
     }))
   })
+  it('should handle recommendation tab click in RA SA', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockGet.mockReturnValue(true)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('Recommendations'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/analytics/next/recommendations/crrm', hash: '', search: ''
+    }))
+  })
   it('should render config recommendation tab for RA SA', async () => {
     jest.mocked(mockGet).mockReturnValue(true)
     render(<AIAnalytics tab={AIAnalyticsTabEnum.RECOMMENDATIONS}/>,
