@@ -6,7 +6,8 @@ import AllRoutes from './AllRoutes'
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
   AIAnalytics: () => <div data-testid='aiAnalytics'/>,
-  IncidentDetails: () => <div data-testid='incidentDetails'/>
+  IncidentDetails: () => <div data-testid='incidentDetails'/>,
+  RecommendationDetails: () => <div data-testid='recommendationDetails'></div>
 }))
 
 describe('AllRoutes', () => {
@@ -32,6 +33,15 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
   })
+
+  it('should render recommendation details correctly', async () => {
+    render(<AllRoutes />, {
+      route: { path: '/analytics/next/recommendations/test-recommendation-id' },
+      wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('recommendationDetails')).toBeVisible()
+  })
+
   it('should render recommendations correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/recommendations' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()

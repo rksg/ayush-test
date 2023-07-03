@@ -57,10 +57,18 @@ export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
   const onTabChange = (tab: string) => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    })
+    if (!tab.includes('recommendation')) {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${tab}`
+      })
+    } else {
+      const pathname = `${basePath.pathname}/${tab}/crrm`
+      navigate({
+        ...basePath,
+        pathname
+      })
+    }
   }
 
   const tabs = useTabs()

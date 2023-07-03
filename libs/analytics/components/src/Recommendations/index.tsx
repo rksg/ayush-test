@@ -1,9 +1,8 @@
-import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter }                    from '@acx-ui/analytics/utils'
-import { GridRow, GridCol, Tabs }                from '@acx-ui/components'
-import { useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { useAnalyticsFilter }                      from '@acx-ui/analytics/utils'
+import { GridRow, GridCol, Tabs }                  from '@acx-ui/components'
+import { useTenantLink, useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
 import { RecommendationTable } from '../Recommendations/table'
 
@@ -40,8 +39,8 @@ const useTabs = (): Tab[] => {
 export const RecommendationTabContent = () => {
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/recommendations')
-  const params = useParams()
-  const tab = get(params, 'activeTab', 'crrm')
+  const location = useLocation()
+  const tab = location.pathname.includes('crrm') ? 'crrm' : 'aiOps'
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
