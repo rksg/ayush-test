@@ -21,6 +21,7 @@ import { useParams }                                               from '@acx-ui
 import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { AAADraggableItem } from './AAADraggableItem'
+import * as UI              from './styledComponents'
 
 
 const SERVERS_OBJ = {
@@ -109,8 +110,11 @@ const defaultFormData = {
   acctCommonsLevel: 'READ_ONLY'
 }
 
-export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) => void }) => {
-  const { setAAASettingId } = props
+export const AAASettings = (props: {
+  setAAASettingId?: (aaaSettingId: string) => void,
+  cliApplied?: boolean
+}) => {
+  const { setAAASettingId, cliApplied } = props
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -283,13 +287,14 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
           label={$t({ defaultMessage: 'SSH Authentication' })}
           valuePropName='checked'
         >
-          <Switch disabled={authnEnableTelnet}/>
+          <Switch data-testid='ssh-authentication' disabled={authnEnableTelnet || cliApplied}/>
         </Form.Item>
         <Popconfirm
           title={$t({ defaultMessage: 'Telnet Authentication requires SSH Authentication also to be turned ON.' })}
           placement='bottomLeft'
           visible={openConfirm}
           onVisibleChange={handleOpenChange}
+          disabled={cliApplied}
           onConfirm={() => {
             setOpenConfirm(false)
             form.setFieldValue('authnEnabledSsh', true)
@@ -300,25 +305,27 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
             label={$t({ defaultMessage: 'Telnet Authentication' })}
             valuePropName='checked'
           >
-            <Switch />
+            <Switch data-testid='telnet-authentication' disabled={cliApplied} />
           </Form.Item>
         </Popconfirm>
-        { authnEnabledSsh &&
-        <DndProvider backend={HTML5Backend}><Form.Item
-          name='selectedLoginServers'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, AUTHEN_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-        >
-          <Transfer
-            {...defaultTransferProps('selectedLoginServers')}
-            dataSource={availableLoginServers}
-            titles={[$t({ defaultMessage: 'Available Servers & Users' }), $t({ defaultMessage: 'Selected order' })]}
-          />
-        </Form.Item></DndProvider>
+        { authnEnabledSsh && <UI.TransferStyle>
+          <DndProvider backend={HTML5Backend}><Form.Item
+            name='selectedLoginServers'
+            label={$t({ defaultMessage: 'Set Priority' })}
+            valuePropName='targetKeys'
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+              { validator: (_, value) => orderValidator(value, AUTHEN_SERVERS_OBJ.NONE_TYPE) }
+            ]}
+          >
+            <Transfer
+              {...defaultTransferProps('selectedLoginServers')}
+              dataSource={availableLoginServers}
+              disabled={cliApplied}
+              titles={[$t({ defaultMessage: 'Available Servers & Users' }), $t({ defaultMessage: 'Selected order' })]}
+            />
+          </Form.Item></DndProvider>
+        </UI.TransferStyle>
         }
       </Fieldset>
       <Fieldset {...defaultFieldSetProps} label={$t({ defaultMessage: 'Authorization' })} >
@@ -327,7 +334,7 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
           label={$t({ defaultMessage: 'Command Authorization' })}
           valuePropName='checked'
         >
-          <Switch />
+          <Switch data-testid='command-authorization' disabled={cliApplied} />
         </Form.Item>
         { authzEnabledCommand &&
         <>
@@ -336,11 +343,39 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
             label={$t({ defaultMessage: 'Level' })}
           >
             <Select style={{ width: 128 }}
+              disabled={cliApplied}
               options={serverLevelItem}
             />
           </Form.Item>
+          <UI.TransferStyle>
+            <DndProvider backend={HTML5Backend}><Form.Item
+              name='selectedCommandAuthOrder'
+              label={$t({ defaultMessage: 'Set Priority' })}
+              valuePropName='targetKeys'
+              rules={[
+                { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+                { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
+              ]}
+            >
+              <Transfer
+                {...defaultTransferProps('selectedCommandAuthOrder')}
+                dataSource={availableCommandAuthOrder}
+                disabled={cliApplied}
+              />
+            </Form.Item></DndProvider>
+          </UI.TransferStyle>
+        </>
+        }
+        <Form.Item
+          name='authzEnabledExec'
+          label={$t({ defaultMessage: 'Executive Authorization' })}
+          valuePropName='checked'
+        >
+          <Switch data-testid='executive-authorization' disabled={cliApplied} />
+        </Form.Item>
+        { authzEnabledExec && <UI.TransferStyle>
           <DndProvider backend={HTML5Backend}><Form.Item
-            name='selectedCommandAuthOrder'
+            name='selectedExecAuthOrder'
             label={$t({ defaultMessage: 'Set Priority' })}
             valuePropName='targetKeys'
             rules={[
@@ -349,34 +384,12 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
             ]}
           >
             <Transfer
-              {...defaultTransferProps('selectedCommandAuthOrder')}
-              dataSource={availableCommandAuthOrder}
+              {...defaultTransferProps('selectedExecAuthOrder')}
+              dataSource={availableExecAuthOrder}
+              disabled={cliApplied}
             />
           </Form.Item></DndProvider>
-        </>
-        }
-        <Form.Item
-          name='authzEnabledExec'
-          label={$t({ defaultMessage: 'Executive Authorization' })}
-          valuePropName='checked'
-        >
-          <Switch />
-        </Form.Item>
-        { authzEnabledExec &&
-        <DndProvider backend={HTML5Backend}><Form.Item
-          name='selectedExecAuthOrder'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, AUTHOR_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-        >
-          <Transfer
-            {...defaultTransferProps('selectedExecAuthOrder')}
-            dataSource={availableExecAuthOrder}
-          />
-        </Form.Item></DndProvider>
+        </UI.TransferStyle>
         }
       </Fieldset>
       <Fieldset {...defaultFieldSetProps} label={$t({ defaultMessage: 'Accounting' })} >
@@ -385,7 +398,7 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
           label={$t({ defaultMessage: 'Command Accounting' })}
           valuePropName='checked'
         >
-          <Switch />
+          <Switch data-testid='command-accounting' disabled={cliApplied} />
         </Form.Item>
         { acctEnabledCommand &&
         <>
@@ -394,11 +407,39 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
             label={$t({ defaultMessage: 'Level' })}
           >
             <Select style={{ width: 128 }}
+              disabled={cliApplied}
               options={serverLevelItem}
             />
           </Form.Item>
+          <UI.TransferStyle>
+            <DndProvider backend={HTML5Backend}><Form.Item
+              name='selectedCommandAcctOrder'
+              label={$t({ defaultMessage: 'Set Priority' })}
+              valuePropName='targetKeys'
+              rules={[
+                { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
+                { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
+              ]}
+            >
+              <Transfer
+                {...defaultTransferProps('selectedCommandAcctOrder')}
+                dataSource={availableCommandAcctOrder}
+                disabled={cliApplied}
+              />
+            </Form.Item></DndProvider>
+          </UI.TransferStyle>
+        </>
+        }
+        <Form.Item
+          name='acctEnabledExec'
+          label={$t({ defaultMessage: 'Executive Accounting' })}
+          valuePropName='checked'
+        >
+          <Switch data-testid='executive-accounting' disabled={cliApplied} />
+        </Form.Item>
+        { acctEnabledExec && <UI.TransferStyle>
           <DndProvider backend={HTML5Backend}><Form.Item
-            name='selectedCommandAcctOrder'
+            name='selectedExecAcctOrder'
             label={$t({ defaultMessage: 'Set Priority' })}
             valuePropName='targetKeys'
             rules={[
@@ -407,34 +448,12 @@ export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) =>
             ]}
           >
             <Transfer
-              {...defaultTransferProps('selectedCommandAcctOrder')}
-              dataSource={availableCommandAcctOrder}
+              {...defaultTransferProps('selectedExecAcctOrder')}
+              dataSource={availableExecAcctOrder}
+              disabled={cliApplied}
             />
           </Form.Item></DndProvider>
-        </>
-        }
-        <Form.Item
-          name='acctEnabledExec'
-          label={$t({ defaultMessage: 'Executive Accounting' })}
-          valuePropName='checked'
-        >
-          <Switch />
-        </Form.Item>
-        { acctEnabledExec &&
-        <DndProvider backend={HTML5Backend}><Form.Item
-          name='selectedExecAcctOrder'
-          label={$t({ defaultMessage: 'Set Priority' })}
-          valuePropName='targetKeys'
-          rules={[
-            { required: true, message: $t({ defaultMessage: 'The Selected Order must be configured.' }) },
-            { validator: (_, value) => orderValidator(value, ACCOUNTING_SERVERS_OBJ.NONE_TYPE) }
-          ]}
-        >
-          <Transfer
-            {...defaultTransferProps('selectedExecAcctOrder')}
-            dataSource={availableExecAcctOrder}
-          />
-        </Form.Item></DndProvider>
+        </UI.TransferStyle>
         }
       </Fieldset>
     </Loader>

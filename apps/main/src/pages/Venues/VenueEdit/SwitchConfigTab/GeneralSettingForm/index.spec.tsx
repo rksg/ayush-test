@@ -150,7 +150,10 @@ describe('GeneralSettingForm', () => {
   it('should handle DNS update', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
-        (_, res, ctx) => res(ctx.json(venueSwitchSetting[1])))
+        (_, res, ctx) => res(ctx.json({
+          ...venueSwitchSetting[1],
+          cliApplied: false
+        })))
     )
     render(<Provider>
       <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
@@ -171,7 +174,10 @@ describe('GeneralSettingForm', () => {
   it('should handle Syslog Server change and setting update', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
-        (_, res, ctx) => res(ctx.json(venueSwitchSetting[1])))
+        (_, res, ctx) => res(ctx.json({
+          ...venueSwitchSetting[1],
+          cliApplied: false
+        })))
     )
     render(<Provider>
       <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>

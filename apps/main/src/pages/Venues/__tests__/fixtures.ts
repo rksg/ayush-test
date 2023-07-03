@@ -1500,6 +1500,7 @@ export const mockAaaSetting = {
 }
 
 export const mockAaaSettingWithOrder = {
+  id: 'aaa-setting-id',
   authnEnabledSsh: false,
   authnEnableTelnet: false,
   authzEnabledCommand: true,

@@ -162,7 +162,7 @@ export default function ConnectionMeteringTable () {
               .then(() => {
                 showToast({
                   type: 'success',
-                  content: $t({ defaultMessage: 'Connection Metering {name} was deleted' },
+                  content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
                     { name })
                 })
                 clearSelection()
@@ -198,7 +198,7 @@ export default function ConnectionMeteringTable () {
             { text: $t({ defaultMessage: 'Policies & Profiles' }),
               link: getPolicyListRoutePath(true) }
           ]}
-        title={$t({ defaultMessage: 'Connection Metering' })}
+        title={$t({ defaultMessage: 'Data Usage Metering' })}
         extra={filterByAccess([
           <TenantLink
             to={getPolicyRoutePath({
@@ -207,7 +207,7 @@ export default function ConnectionMeteringTable () {
             })}
           >
             <Button type='primary'>
-              { $t({ defaultMessage: 'Add Connection metering profile' }) }
+              { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
             </Button>
           </TenantLink>
         ])}

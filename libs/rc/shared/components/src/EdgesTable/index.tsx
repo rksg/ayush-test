@@ -139,7 +139,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       filterKey: 'deviceStatusSeverity',
       render: (data, row) => {
         return (
-          <EdgeStatusLight data={row.deviceStatus} />
+          <EdgeStatusLight data={row.deviceStatus} showText={true} />
         )
       }
     },
