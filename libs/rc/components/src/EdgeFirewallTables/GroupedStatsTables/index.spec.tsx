@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { DdosAttackType, EdgeFirewallSetting, EdgeFirewallUrls, EdgeStatus } from '@acx-ui/rc/utils'
 import { Provider }                                                          from '@acx-ui/store'
 import {
@@ -79,6 +80,7 @@ describe('Edge firewall service grouped rule tables with stats', () => {
 
     mockedGetDDoSDataFn.mockReset()
     mockedGetACLDataFn.mockReset()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should correctly render', async () => {
@@ -264,5 +266,41 @@ describe('Edge firewall service grouped rule tables with stats', () => {
     const aclInRows = await within(aclPane).findAllByRole('row')
     expect(within(aclPane).queryByRole('row', { name: '' })).toBeValid()
     expect(aclInRows.length).toBe(4) // message row + 1(header) + 2 rows in info table
+  })
+
+  it('should not display stats data when EDGE_STATS_TOGGLE is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <GroupedStatsTables
+          edgeData={mockedEdgeStatus as EdgeStatus}
+          edgeFirewallData={mockFirewall as EdgeFirewallSetting}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    // display ddos rules
+    const ddosPane = screen.getByRole('tabpanel', { hidden: false })
+    expect(mockedGetDDoSDataFn).not.toBeCalled()
+    const ddosRows = await within(ddosPane).findAllByRole('row')
+
+    // shoud not exist stats column
+    expect(ddosRows.filter(i => i.className.includes('ant-table-row')).length).toBe(2)
+    expect(within(ddosPane).queryByRole('columnheader', { name: 'Pass Packet' })).toBeNull()
+
+    // display stateful ACL rules
+    await userEvent.click(screen.getByRole('tab', { name: 'Stateful ACL' }))
+    expect(mockedGetACLDataFn).not.toBeCalled()
+    await waitFor(async () => {
+      expect(await screen.findByText('Src Port')).toBeVisible()
+    })
+
+    const aclPane = screen.getByRole('tabpanel', { hidden: false })
+    const aclInRows = await within(aclPane).findAllByRole('row')
+    expect(aclInRows.filter(i => i.className.includes('ant-table-row')).length).toBe(1)
+    // shoud not exist stats column
+    expect(within(aclPane).queryByRole('columnheader', { name: 'Hits' })).toBeNull()
   })
 })

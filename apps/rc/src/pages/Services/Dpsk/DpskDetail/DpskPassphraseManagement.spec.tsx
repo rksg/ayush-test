@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   DpskDetailsTabKey,
@@ -28,6 +28,7 @@ import {
   mockedDpskPassphraseDevices
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
+
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -242,7 +243,7 @@ describe('DpskPassphraseManagement', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
         <DpskPassphraseManagement />
@@ -283,7 +284,7 @@ describe('DpskPassphraseManagement', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
         <DpskPassphraseManagement />
@@ -345,7 +346,7 @@ describe('DpskPassphraseManagement', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
         <DpskPassphraseManagement />
@@ -403,7 +404,7 @@ describe('DpskPassphraseManagement', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     render(
       <Provider>
         <DpskPassphraseManagement />

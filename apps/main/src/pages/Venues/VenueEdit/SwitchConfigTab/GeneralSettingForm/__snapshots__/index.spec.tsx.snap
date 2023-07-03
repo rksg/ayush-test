@@ -208,15 +208,24 @@ exports[`GeneralSettingForm should render correctly 1`] = `
                                   <div
                                     class="ant-space-item"
                                   >
-                                    <button
-                                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                                      style="float: right;"
-                                      type="button"
+                                    <div
+                                      class="ant-space ant-space-vertical"
+                                      style="width: 100%;"
                                     >
-                                      <span>
-                                        Add IP Address
-                                      </span>
-                                    </button>
+                                      <div
+                                        class="ant-space-item"
+                                      >
+                                        <button
+                                          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                          style="float: right;"
+                                          type="button"
+                                        >
+                                          <span>
+                                            Add IP Address
+                                          </span>
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>

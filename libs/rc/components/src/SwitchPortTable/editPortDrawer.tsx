@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                            from 'antd/lib/select'
-import _                                                from 'lodash'
+import { Checkbox, Col, Form, Input, Row, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                                      from 'antd/lib/select'
+import _                                                          from 'lodash'
 
 import {
   Alert,
@@ -70,7 +70,8 @@ import {
   sortOptions,
   PortVlan,
   MultipleText,
-  getPoeClass
+  getPoeClass,
+  updateSwitchVlans
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -256,7 +257,7 @@ export function EditPortDrawer ({
     const switchVlans = (await getEachSwitchVlans())?.flat()
 
     return switchVlans?.filter((v) =>
-      v.vlanName !== defaultVlanName && v.vlanId === Number(profileDefaultVlan)
+      v?.vlanName !== defaultVlanName && v?.vlanId === Number(profileDefaultVlan)
     )?.length > 0
   }
 
@@ -283,7 +284,7 @@ export function EditPortDrawer ({
         : []
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
-        ?.find((item) => item.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
+        ?.find((item) => item?.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
 
       setDefaultVlan(defaultVlan)
@@ -744,153 +745,37 @@ export function EditPortDrawer ({
           message={$t({ defaultMessage: 'Modifying the uplink port may result in the switch losing connectivity' })}
         />
       }
-      <Form layout='vertical'>
-        <Form.Item
-          label={$t({ defaultMessage: 'Selected Port' })}
-          children={
-            <Space style={{ fontSize: '16px' }}>
-              {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
-            </Space>
-          }
-        />
-      </Form>
-
       <UI.Form
         form={form}
         layout={isMultipleEdit ? 'horizontal' : 'vertical'}
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
-        { !isMultipleEdit && getFieldTemplate(
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            name='name'
-            label={$t({ defaultMessage: 'Port Name' })}
-            initialValue=''
-            children={<Input />}
-          />,
-          'name', $t({ defaultMessage: 'Port Name' })
-        )}
-
-        { getFieldTemplate(
-          <Form.Item
-            noStyle
-            label={false}
-            children={
-              isMultipleEdit && !portEnableCheckbox && hasMultipleValue.includes('portEnable')
-                ? <MultipleText />
-                : <Tooltip title={getFieldTooltip('portEnable')}>
-                  <Space>
-                    <Form.Item
-                      name='portEnable'
-                      noStyle
-                      valuePropName='checked'
-                      initialValue={false}
-                    >
-                      <Switch
-                        disabled={getFieldDisabled('portEnable')}
-                        className={
-                          getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)
-                        }
-                      />
-                    </Form.Item>
-                  </Space>
-                </Tooltip>
-            }
-          />,
-          'portEnable', $t({ defaultMessage: 'Port Enabled' }), true
-        )}
-
-        { getFieldTemplate(
-          <Form.Item
-            noStyle
-            children={isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
-              ? <MultipleText />
-              : <Tooltip title={getFieldTooltip('poeEnable')}>
-                <Space>
-                  <Form.Item
-                    name='poeEnable'
-                    noStyle
-                    valuePropName='checked'
-                    initialValue={false}
-                  >
-                    <Switch
-                      disabled={getFieldDisabled('poeEnable')}
-                      className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
-                    />
-                  </Form.Item>
+        <Row style={{ height: '80px' }}>
+          <Col flex='auto'>
+            <Form layout='vertical'>
+              <Form.Item
+                label={$t({ defaultMessage: 'Selected Port' })}
+                children={<Space style={{ fontSize: '16px' }}>
+                  {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
                 </Space>
-              </Tooltip>
-
-            }
-          />,
-          'poeEnable', $t({ defaultMessage: 'PoE Enabled' }), true
-        )}
-
-        { getFieldTemplate(
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            name='poeClass'
-            label={$t({ defaultMessage: 'PoE Class' })}
-            initialValue='UNSET'
-            children={isMultipleEdit && !poeClassCheckbox && hasMultipleValue.includes('poeClass')
-              ? <MultipleText />
-              : <Select
-                options={poeClassOptions.map(
-                  p => ({ label: $t(p.label), value: p.value }))}
-                disabled={getFieldDisabled('poeClass')}
-              />}
-          />,
-          'poeClass', $t({ defaultMessage: 'PoE Class' })
-        )}
-
-        { getFieldTemplate(
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            name='poePriority'
-            label={$t({ defaultMessage: 'PoE Priority' })}
-            initialValue={1}
-            children={
-              isMultipleEdit && !poePriorityCheckbox && hasMultipleValue.includes('poePriority')
-                ? <MultipleText />
-                : <Select
-                  options={poePriorityOptions}
-                  disabled={getFieldDisabled('poePriority')}
-                />}
-          />,
-          'poePriority', $t({ defaultMessage: 'PoE Priority' })
-        )}
-
-        { getFieldTemplate(
-          <>
-            <Form.Item
-              {...getFormItemLayout(isMultipleEdit)}
-              name='poeBudget'
-              label={$t({ defaultMessage: 'PoE Budget' })}
-              rules={[
-                { validator: (_, value) => poeBudgetRegExp(value) }
-              ]}
-              initialValue=''
-              children={
-                isMultipleEdit && !poeBudgetCheckbox && hasMultipleValue.includes('poeBudget')
-                  ? <MultipleText />
-                  : <Input
-                    data-testid='poe-budget-input'
-                    placeholder={$t({ defaultMessage: 'Enter value between 1000 to 30000 mWatts' })}
-                    disabled={getFieldDisabled('poeBudget')}
-                  />}
-            />
-            {((isMultipleEdit && poeBudgetCheckbox) || !isMultipleEdit)
-            && <Space align='baseline'
-              style={{
-                display: 'flex', fontSize: '12px',
-                margin: isMultipleEdit ? '10px 0px 0px 10px' : '30px 0 0 10px'
-              }}>
-              {$t({ defaultMessage: 'mWatts' })}</Space>
-            }
-          </>,
-          'poeBudget', $t({ defaultMessage: 'PoE Budget' })
-        )}
+                }
+              />
+            </Form>
+          </Col>
+          { !isMultipleEdit && <Col flex='250px'>
+            <UI.FormItem>
+              <Form.Item name='name'
+                label={$t({ defaultMessage: 'Port Name' })}
+                rules={[
+                  { max: 255 }
+                ]}
+                initialValue=''
+                children={<Input />}
+              />
+            </UI.FormItem>
+          </Col>}
+        </Row>
 
         <UI.ContentDivider />
 
@@ -1020,6 +905,128 @@ export function EditPortDrawer ({
             }
           />,
           'voiceVlan', $t({ defaultMessage: 'Voice VLAN' })
+        )}
+
+        <UI.ContentDivider />
+
+        { getFieldTemplate(
+          <Form.Item
+            noStyle
+            label={false}
+            children={
+              isMultipleEdit && !portEnableCheckbox && hasMultipleValue.includes('portEnable')
+                ? <MultipleText />
+                : <Tooltip title={getFieldTooltip('portEnable')}>
+                  <Space>
+                    <Form.Item
+                      name='portEnable'
+                      noStyle
+                      valuePropName='checked'
+                      initialValue={false}
+                    >
+                      <Switch
+                        disabled={getFieldDisabled('portEnable')}
+                        className={
+                          getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)
+                        }
+                      />
+                    </Form.Item>
+                  </Space>
+                </Tooltip>
+            }
+          />,
+          'portEnable', $t({ defaultMessage: 'Port Enabled' }), true
+        )}
+
+        { getFieldTemplate(
+          <Form.Item
+            noStyle
+            children={isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
+              ? <MultipleText />
+              : <Tooltip title={getFieldTooltip('poeEnable')}>
+                <Space>
+                  <Form.Item
+                    name='poeEnable'
+                    noStyle
+                    valuePropName='checked'
+                    initialValue={false}
+                  >
+                    <Switch
+                      disabled={getFieldDisabled('poeEnable')}
+                      className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
+                    />
+                  </Form.Item>
+                </Space>
+              </Tooltip>
+
+            }
+          />,
+          'poeEnable', $t({ defaultMessage: 'PoE Enabled' }), true
+        )}
+
+        { getFieldTemplate(
+          <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='poeClass'
+            label={$t({ defaultMessage: 'PoE Class' })}
+            initialValue='UNSET'
+            children={isMultipleEdit && !poeClassCheckbox && hasMultipleValue.includes('poeClass')
+              ? <MultipleText />
+              : <Select
+                options={poeClassOptions.map(
+                  p => ({ label: $t(p.label), value: p.value }))}
+                disabled={getFieldDisabled('poeClass')}
+              />}
+          />,
+          'poeClass', $t({ defaultMessage: 'PoE Class' })
+        )}
+
+        { getFieldTemplate(
+          <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
+            name='poePriority'
+            label={$t({ defaultMessage: 'PoE Priority' })}
+            initialValue={1}
+            children={
+              isMultipleEdit && !poePriorityCheckbox && hasMultipleValue.includes('poePriority')
+                ? <MultipleText />
+                : <Select
+                  options={poePriorityOptions}
+                  disabled={getFieldDisabled('poePriority')}
+                />}
+          />,
+          'poePriority', $t({ defaultMessage: 'PoE Priority' })
+        )}
+
+        { getFieldTemplate(
+          <>
+            <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              name='poeBudget'
+              label={$t({ defaultMessage: 'PoE Budget' })}
+              rules={[
+                { validator: (_, value) => poeBudgetRegExp(value) }
+              ]}
+              initialValue=''
+              children={
+                isMultipleEdit && !poeBudgetCheckbox && hasMultipleValue.includes('poeBudget')
+                  ? <MultipleText />
+                  : <Input
+                    data-testid='poe-budget-input'
+                    placeholder={$t({ defaultMessage: 'Enter value between 1000 to 30000 mWatts' })}
+                    disabled={getFieldDisabled('poeBudget')}
+                  />}
+            />
+            {((isMultipleEdit && poeBudgetCheckbox) || !isMultipleEdit)
+            && <Space align='baseline'
+              style={{
+                display: 'flex', fontSize: '12px',
+                margin: isMultipleEdit ? '10px 0px 0px 10px' : '30px 0 0 10px'
+              }}>
+              {$t({ defaultMessage: 'mWatts' })}</Space>
+            }
+          </>,
+          'poeBudget', $t({ defaultMessage: 'PoE Budget' })
         )}
 
         <UI.ContentDivider />
@@ -1318,6 +1325,10 @@ export function EditPortDrawer ({
         untaggedVlan={untaggedVlan}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
+        profileId={switchConfigurationProfileId}
+        updateSwitchVlans={async (values: Vlan) =>
+          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+        }
       />}
 
       {lldpModalvisible && <EditLldpModal

@@ -103,7 +103,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       dataIndex: 'online',
       sorter: true,
       render: (data, row) => {
-        return row.online ? ONLINE : ''
+        return row.online ? ONLINE : new Date(row.lastConnected + ' GMT').toLocaleString()
       }
     },
     {

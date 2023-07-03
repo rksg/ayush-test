@@ -40,7 +40,8 @@ import {
   isOperationalSwitch,
   redirectPreviousPage,
   LocationExtended,
-  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -88,6 +89,7 @@ export function SwitchForm () {
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -363,7 +365,11 @@ export function SwitchForm () {
         $t({ defaultMessage: '{name}' }, {
           name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
         $t({ defaultMessage: 'Add Switch' })}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Wired' }) },
+        { text: $t({ defaultMessage: 'Switches' }) },
+        { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
+      ] : [
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
     />
@@ -398,8 +404,7 @@ export function SwitchForm () {
               </Tabs>
               <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
                 {readOnly &&
-                  // eslint-disable-next-line max-len
-                  <Alert type='info' message={$t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue' })} />}
+                  <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                 <Form.Item
                   name='venueId'
                   label={<>

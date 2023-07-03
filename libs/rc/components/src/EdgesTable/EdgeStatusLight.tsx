@@ -6,7 +6,8 @@ import { StatusLight } from '../StatusLight'
 
 
 type EdgeStatusLightProps = {
-  data: string
+  data: string,
+  showText: boolean
 }
 
 export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
@@ -28,7 +29,7 @@ export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
     },
     [EdgeStatusEnum.NEEDS_CONFIG]: {
       color: 'var(--acx-neutrals-50)',
-      text: $t({ defaultMessage: 'Needs config' })
+      text: $t({ defaultMessage: 'Needs port config' })
     },
     [EdgeStatusEnum.OPERATIONAL]: {
       color: 'var(--acx-semantics-green-50)',
@@ -65,6 +66,6 @@ export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
   }
 
   return (
-    <StatusLight config={EdgeStatusLightConfig} data={props.data} />
+    <StatusLight config={EdgeStatusLightConfig} data={props.data} showText={props.showText} />
   )
 }

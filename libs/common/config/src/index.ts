@@ -49,6 +49,7 @@ export async function initialize () {
 }
 
 export function get (key: keyof EnvironmentConfig) {
+  if (key === 'IS_MLISA_SA') return process.env.NX_IS_MLISA_SA as string
   if (config.value === undefined) throw new Error('Config not initialized')
   return config.value[key]
 }

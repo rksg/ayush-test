@@ -254,6 +254,10 @@ export const VenueFirmwareTable = (
       return acc
     }, [])
 
+    uniqueEolApFirmwares.sort((a, b) => {
+      return -compareVersions(a.latestEolVersion, b.latestEolVersion)
+    })
+
     setEolApFirmwareList(uniqueEolApFirmwares)
   }
 

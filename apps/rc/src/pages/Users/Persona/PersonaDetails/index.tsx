@@ -38,7 +38,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 function PersonaDetails () {
   const { $t } = useIntl()
-  const propertyEnabled = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const networkSegmentationEnabled = useIsTierAllowed(Features.EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
@@ -253,9 +253,11 @@ function PersonaDetails () {
             </Subtitle>
           </Col>
           <Col span={12}>
-            <Subtitle level={4}>
-              {$t({ defaultMessage: 'Network Segmentation' })}
-            </Subtitle>
+            {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+              <Subtitle level={4}>
+                {$t({ defaultMessage: 'Network Segmentation' })}
+              </Subtitle>
+            }
           </Col>
           <Col span={12}>
             <Loader >
@@ -271,34 +273,36 @@ function PersonaDetails () {
               )}
             </Loader>
           </Col>
-          <Col span={12}>
-            {netSeg.map(item =>
-              <Row key={item.label}>
-                <Col span={7}>
-                  <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                    {item.label}:
-                  </Typography.Paragraph>
-                </Col>
-                <Col span={12}>{item.value ?? noDataDisplay}</Col>
-              </Row>
-            )}
-            {
-              isConnectionMeteringEnabled &&
-              <Row key={'Connection Metering'}>
-                <Col span={7}>
-                  <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                    {$t({ defaultMessage: 'Connection Metering' })}:
-                  </Typography.Paragraph>
-                </Col>
-                <Col span={12}>{connectionMetering ?
-                  <ConnectionMeteringLink
-                    id={connectionMetering.id}
-                    name={connectionMetering.name}/> :
-                  noDataDisplay}
-                </Col>
-              </Row>
-            }
-          </Col>
+          {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+            <Col span={12}>
+              {netSeg.map(item =>
+                <Row key={item.label}>
+                  <Col span={7}>
+                    <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                      {item.label}:
+                    </Typography.Paragraph>
+                  </Col>
+                  <Col span={12}>{item.value ?? noDataDisplay}</Col>
+                </Row>
+              )}
+              {
+                isConnectionMeteringEnabled &&
+                <Row key={'Data Usage Metering'}>
+                  <Col span={7}>
+                    <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                      {$t({ defaultMessage: 'Data Usage Metering' })}:
+                    </Typography.Paragraph>
+                  </Col>
+                  <Col span={12}>{connectionMetering ?
+                    <ConnectionMeteringLink
+                      id={connectionMetering.id}
+                      name={connectionMetering.name}/> :
+                    noDataDisplay}
+                  </Col>
+                </Row>
+              }
+            </Col>
+          }
         </Row>
 
 
@@ -331,6 +335,7 @@ function PersonaDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, revoked: { allowed, status: revokedStatus, onRevoke }, onClick } = props
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const getRevokedTitle = () => {
     return $t({
@@ -403,7 +408,18 @@ function PersonaDetailsPageHeader (props: {
           </Tag>
         </>}
       extra={extra}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        {
+          text: $t({ defaultMessage: 'Clients' })
+        },
+        {
+          text: $t({ defaultMessage: 'Persona Management' })
+        },
+        {
+          text: $t({ defaultMessage: 'Personas' }),
+          link: 'users/persona-management/persona'
+        }
+      ] : [
         {
           text: $t({ defaultMessage: 'Persona' }),
           link: 'users/persona-management/persona'

@@ -32,6 +32,7 @@ describe('StatusLight', () => {
       <StatusLight config={config} data='IN_SETUP_PHASE' />
       <StatusLight config={config} data='OFFLINE' />
       <StatusLight config={config} data='OPERATIONAL' />
+      <StatusLight config={config} data='OPERATIONAL' showText={false} />
     </>)
     expect(asFragment()).toMatchSnapshot()
   })

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider  }    from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Provider  }                      from '@acx-ui/store'
 import {
   render,
   screen,
@@ -78,6 +78,7 @@ describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
   beforeEach(() => {
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
@@ -95,7 +96,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Account Settings' })
+    const tab = screen.getByRole('tab', { name: 'Settings' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -127,7 +128,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('Notifications'))
+    fireEvent.click(screen.getByText('Notifications (0)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/administration/notifications`,
       hash: '',
@@ -149,7 +150,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Notifications' })
+    const tab = screen.getByRole('tab', { name: 'Notifications (0)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -167,7 +168,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Administrators' })
+    const tab = screen.getByRole('tab', { name: 'Administrators (0)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -258,5 +259,26 @@ describe('Administration page', () => {
 
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render administrator title with count', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    params.activeTab = 'administrators'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const adminTab = screen.getByRole('tab', { name: 'Administrators (0)' })
+    expect(adminTab.getAttribute('aria-selected')).toBeTruthy()
+    const notificationTab = screen.getByRole('tab', { name: 'Notifications (0)' })
+    expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
   })
 })
