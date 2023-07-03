@@ -62,7 +62,7 @@ describe('EdgeDhcpTable', () => {
         route: { params, path: tablePath }
       })
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
-    expect(row.length).toBe(3)
+    expect(row.length).toBe(4)
   })
 
   it('should render breadcrumb correctly when feature flag is off', async () => {
