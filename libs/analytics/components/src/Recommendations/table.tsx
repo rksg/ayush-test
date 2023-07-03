@@ -109,7 +109,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       render: (_, value) => {
         return <DateLink value={value}/>
       },
-      sorter: { compare: sortProp('endTime', dateSort) },
+      sorter: { compare: sortProp('updatedAt', dateSort) },
       fixed: 'left'
     },
     {
@@ -118,7 +118,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       dataIndex: 'summary',
       key: 'summary',
       render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
-      sorter: { compare: sortProp('description', defaultSort) },
+      sorter: { compare: sortProp('summary', defaultSort) },
       ellipsis: true,
       searchable: true
     },
@@ -141,7 +141,7 @@ export function RecommendationTable ({ filters, showCrrm }:
           <UI.UnderlinedSpan>{highlightFn(value.sliceValue)}</UI.UnderlinedSpan>
         </Tooltip>
       },
-      sorter: { compare: sortProp('scope', defaultSort) },
+      sorter: { compare: sortProp('sliceValue', defaultSort) },
       searchable: true
     },
     {
