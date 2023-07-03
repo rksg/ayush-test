@@ -21,7 +21,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   isUserProfilePresent && setUserProfile(profile)
 
   return isUserProfilePresent ? <UserProfileContext.Provider
-    value={{ data: isUserProfilePresent ? profile : undefined }}
+    value={{ data: isUserProfilePresent }}
     children={props.children}
   /> : null
 }
