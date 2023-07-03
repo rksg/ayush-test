@@ -29,7 +29,7 @@ const useTabs = (): Tab[] => {
   const aiOps = {
     key: RecommendationTabEnum.AIOPS,
     title: $t({ defaultMessage: 'AI Operations' }),
-    component: <RecommendationTable filters={filters} />
+    component: <RecommendationTable filters={filters} showCrrm={false} />
   }
   return [
     crrmTab,

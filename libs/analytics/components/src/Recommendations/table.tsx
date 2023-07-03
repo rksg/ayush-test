@@ -42,7 +42,7 @@ const DateLink = ({ value }: { value: RecommendationRow }) => {
 }
 
 export function RecommendationTable ({ filters, showCrrm }:
-  { filters: IncidentFilter, showCrrm?: boolean }) {
+  { filters: IncidentFilter, showCrrm: boolean }) {
   const intl = useIntl()
   const { $t } = intl
 
