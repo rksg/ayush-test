@@ -223,7 +223,6 @@ export function PropertyManagementTab () {
 
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const {
-      isPropertyEnable: enableProperty,
       unitConfig,
       residentPortalType,
       ...formValues
