@@ -767,6 +767,9 @@ export function EditPortDrawer ({
             {...getFormItemLayout(isMultipleEdit)}
             name='name'
             label={$t({ defaultMessage: 'Port Name' })}
+            rules={[
+              { max: 255 }
+            ]}
             initialValue=''
             children={<Input />}
           />,
