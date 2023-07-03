@@ -7,12 +7,14 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { useGetVLANPoolPolicyDetailQuery, useAddVLANPoolPolicyMutation, useUpdateVLANPoolPolicyMutation } from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -34,6 +36,7 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
   const { data } = useGetVLANPoolPolicyDetailQuery({ params }, { skip: !edit })
   const [ createVLANPoolPolicy ] = useAddVLANPoolPolicyMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ updateVLANPoolPolicy ] = useUpdateVLANPoolPolicyMutation()
 
@@ -71,7 +74,14 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
         title={edit
           ? $t({ defaultMessage: 'Edit VLAN Pool' })
           : $t({ defaultMessage: 'Add VLAN Pool' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ]}
       />

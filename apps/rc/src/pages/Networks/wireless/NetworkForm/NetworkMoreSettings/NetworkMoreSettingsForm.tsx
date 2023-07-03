@@ -637,7 +637,7 @@ export function MoreSettingsForm (props: {
             <UI.FieldLabel width='250px'>
               {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
               <Form.Item
-                name={['wlan', 'advancedCustomization', 'apHostNameAdvertisementInBeacon']}
+                name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
@@ -646,7 +646,7 @@ export function MoreSettingsForm (props: {
             <UI.FieldLabel width='250px'>
               {$t({ defaultMessage: 'GTK Rekey' })}
               <Form.Item
-                name={['wlan', 'advancedCustomization', 'GTKRekey']}
+                name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}

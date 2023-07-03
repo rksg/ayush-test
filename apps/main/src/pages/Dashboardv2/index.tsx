@@ -138,7 +138,7 @@ function DashboardPageHeader () {
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'Dashboard' })}
+      title={useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? '' : 'Dashboard'}
       extra={filterByAccess([
         <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
           <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
