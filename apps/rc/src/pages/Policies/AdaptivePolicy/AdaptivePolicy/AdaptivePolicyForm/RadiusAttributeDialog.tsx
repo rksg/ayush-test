@@ -15,12 +15,14 @@ interface RadiusAttributeDialogProps {
   setAttributeAssignments: (attributeAssignments: AttributeAssignment) => void,
   isEdit?: boolean
   editAttribute?: AttributeAssignment,
+  getAttributeAssignments: () => AttributeAssignment[]
 }
 
 export function RadiusAttributeDialog (props: RadiusAttributeDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
-  const { visible, onCancel, setAttributeAssignments, isEdit, editAttribute } = props
+  // eslint-disable-next-line max-len
+  const { visible, onCancel, setAttributeAssignments, isEdit, editAttribute, getAttributeAssignments } = props
 
   useEffect(() => {
     if (editAttribute && visible) {
@@ -55,7 +57,9 @@ export function RadiusAttributeDialog (props: RadiusAttributeDialogProps) {
       }
       onOk={triggerSubmit}
       onCancel={onModalCancel}>
-      <RadiusAttributeForm form={form} editAttribute={editAttribute}/>
+      <RadiusAttributeForm form={form}
+        editAttribute={editAttribute}
+        getAttributeAssignments={getAttributeAssignments}/>
     </Modal>
   )
 }

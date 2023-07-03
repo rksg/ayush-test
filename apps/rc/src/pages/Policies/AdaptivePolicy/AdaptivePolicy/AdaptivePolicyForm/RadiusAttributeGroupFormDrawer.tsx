@@ -74,6 +74,10 @@ export function RadiusAttributeGroupFormDrawer (props: RadiusAttributeGroupFormD
     form?.setFieldValue('attributeAssignments', newAttribute)
   }
 
+  const getAttributeAssignments = () => {
+    return form?.getFieldValue('attributeAssignments') ?? [] as AttributeAssignment []
+  }
+
   const footer = (
     <Drawer.FormFooter
       onCancel={() => {
@@ -129,7 +133,8 @@ export function RadiusAttributeGroupFormDrawer (props: RadiusAttributeGroupFormD
         visible={attributeDialogVisible}
         setAttributeAssignments={setAttributeAssignments}
         editAttribute={editAttribute}
-        isEdit={editAttributeMode}/>
+        isEdit={editAttributeMode}
+        getAttributeAssignments={getAttributeAssignments}/>
     </>
   )
 }

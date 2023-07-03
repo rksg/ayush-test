@@ -121,6 +121,10 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
     formRef.current?.setFieldValue('attributeAssignments', newAttribute)
   }
 
+  const getAttributeAssignments = () => {
+    return formRef.current?.getFieldValue('attributeAssignments') ?? [] as AttributeAssignment []
+  }
+
   const onAddClick = () => {
     setEditAttributeMode(false)
     setEditAttribute({
@@ -184,7 +188,8 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
               setVisible={setVisible}
               isEdit={editAttributeMode}
               editAttribute={editAttribute}
-              setAttributeAssignments={setAttributeAssignments}/>
+              setAttributeAssignments={setAttributeAssignments}
+              getAttributeAssignments={getAttributeAssignments}/>
           </Loader>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>

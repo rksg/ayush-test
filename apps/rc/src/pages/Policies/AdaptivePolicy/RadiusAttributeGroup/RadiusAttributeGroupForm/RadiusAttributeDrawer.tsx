@@ -14,12 +14,13 @@ interface RadiusAttributeDrawerProps {
   isEdit?: boolean
   editAttribute?: AttributeAssignment,
   setAttributeAssignments: (attribute: AttributeAssignment) => void
+  getAttributeAssignments: () => AttributeAssignment []
 }
 
 export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { visible, setVisible, isEdit, editAttribute, setAttributeAssignments } = props
+  const { visible, setVisible, isEdit, editAttribute, setAttributeAssignments, getAttributeAssignments } = props
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
 
@@ -67,7 +68,10 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
         $t({ defaultMessage: 'Add RADIUS Attribute' })}
       visible={visible}
       onClose={onClose}
-      children={<RadiusAttributeForm form={form} editAttribute={editAttribute} isEdit={isEdit}/>}
+      children={<RadiusAttributeForm form={form}
+        editAttribute={editAttribute}
+        isEdit={isEdit}
+        getAttributeAssignments={getAttributeAssignments}/>}
       footer={footer}
       destroyOnClose={resetField}
       width={600}
