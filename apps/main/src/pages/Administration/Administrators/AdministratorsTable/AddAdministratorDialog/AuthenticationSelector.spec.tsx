@@ -1,12 +1,7 @@
-// import userEvent from '@testing-library/user-event'
-
-// import { ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen
-  // waitFor,
-  // fireEvent
 } from '@acx-ui/test-utils'
 
 import AuthenticationSelector from './AuthenticationSelector'

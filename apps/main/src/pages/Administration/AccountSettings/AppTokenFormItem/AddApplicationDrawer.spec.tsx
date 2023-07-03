@@ -1,6 +1,5 @@
 import userEvent from '@testing-library/user-event'
-// import { ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { rest } from 'msw'
+import { rest }  from 'msw'
 
 import { AdministrationUrlsInfo, ApplicationAuthenticationStatus, TenantAuthenticationType } from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
