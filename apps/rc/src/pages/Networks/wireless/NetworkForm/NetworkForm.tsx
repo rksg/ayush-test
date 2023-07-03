@@ -406,7 +406,6 @@ export default function NetworkForm (props:{
     }
   }
 
-
   const handleAddNetwork = async () => {
     try {
       const saveData = handleGuestMoreSetting(saveState)
@@ -424,15 +423,7 @@ export default function NetworkForm (props:{
     }
   }
 
-
-  const deleteUnnecessaryFields = function () {
-    if(saveState.enableAccountingService === false) {
-      delete saveState.accountingRadius
-    }
-  }
-
   const processData = function (data: NetworkSaveData) {
-    deleteUnnecessaryFields()
     handleSettings(data)
 
     if(data?.type === NetworkTypeEnum.CAPTIVEPORTAL){
@@ -458,9 +449,18 @@ export default function NetworkForm (props:{
           'guestPortal.wisprPage.authRadiusId'
         ]
       )
-    }
-    else {
-      saveContextRef.current = { ...saveState, ...data }
+    } else {
+      if(!saveState.enableAccountingService){
+        saveContextRef.current = _.omit({ ...saveState, ...data },
+          [
+            'accountingRadius',
+            'enableAccountingService',
+            'accountingRadiusId'
+          ]
+        )
+      }else{
+        saveContextRef.current = { ...saveState, ...data }
+      }
     }
   }
 

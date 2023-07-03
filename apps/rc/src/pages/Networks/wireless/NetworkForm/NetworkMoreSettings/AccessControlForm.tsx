@@ -70,7 +70,7 @@ export function AccessControlForm () {
       setEnabledProfile(!_.isEmpty(
         get(data, 'wlan.advancedCustomization.accessControlProfileId')))
     }
-  }, [data])
+  }, [])
 
   return (
     <div style={{ marginBottom: '30px' }}>

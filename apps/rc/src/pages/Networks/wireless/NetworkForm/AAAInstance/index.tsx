@@ -56,7 +56,6 @@ const AAAInstance = (props:{
               { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
               ...aaaList
             ]}
-            data-testid='authRadiusId'
           />}
         />
         <Tooltip>
