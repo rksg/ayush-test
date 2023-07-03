@@ -9,6 +9,7 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
@@ -43,6 +44,7 @@ export default function CliProfileForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks/wired/profiles')
   const editMode = params.action === 'edit'
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [form] = Form.useForm()
   const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
@@ -112,7 +114,14 @@ export default function CliProfileForm () {
         title={editMode
           ? $t({ defaultMessage: 'Edit CLI Configuration Profile' })
           : $t({ defaultMessage: 'Add CLI Configuration Profile' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Configuration Profiles' }),
+            link: '/networks/wired/profiles'
+          }
+        ] : [
           { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired/profiles' }
         ]}
       />

@@ -119,5 +119,5 @@ export const ImpactedRuleDetailsItem = styled.div`
   margin: 2px 0;
   display: grid;
   align-items: center;
-  grid-template-columns: 195px 130px;
+  grid-template-columns: 195px 100px;
 `
