@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import { Checkbox } from 'antd'
-import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -22,7 +21,9 @@ import {
   Recommendation,
   useMuteRecommendationMutation
 } from './services'
-import * as UI                                        from './styledComponents'
+import * as UI from './styledComponents'
+
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 
 export interface RecommendationRow extends Recommendation {

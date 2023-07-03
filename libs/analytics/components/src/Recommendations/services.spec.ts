@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { recommendationUrl, store, Provider } from '@acx-ui/store'
+import { recommendationUrl, store, Provider }                              from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, act, renderHook, waitFor } from '@acx-ui/test-utils'
 import {
   DateRange,
@@ -9,52 +9,10 @@ import {
   NetworkPath
 } from '@acx-ui/utils'
 
-import { api, MutationResponse, useMuteRecommendationMutation } from './services'
+import { apiResult }                          from './__tests__/fixtures'
+import { api, useMuteRecommendationMutation } from './services'
 
-export const mockResult = {
-  recommendations: [
-    {
-      id: '1',
-      code: 'c-crrm-channel5g-auto',
-      status: 'applied',
-      createdAt: '2023-06-13T07:05:08.638Z',
-      updatedAt: '2023-06-16T06:05:02.839Z',
-      sliceType: 'zone',
-      sliceValue: 'zone-1',
-      metadata: {},
-      isMuted: false,
-      path: [
-        { type: 'system', name: 'vsz611' },
-        { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ]
-    },
-    {
-      id: '2',
-      code: 'c-txpower-same',
-      status: 'revertfailed',
-      createdAt: '2023-06-13T07:05:08.638Z',
-      updatedAt: '2023-06-16T06:06:02.839Z',
-      sliceType: 'zone',
-      sliceValue: 'zone-2',
-      metadata: {
-        error: {
-          details: [{
-            apName: 'AP',
-            apMac: 'MAC',
-            configKey: 'radio5g',
-            message: 'unknown error'
-          }]
-        }
-      },
-      isMuted: false,
-      path: [
-        { type: 'system', name: 'vsz6' },
-        { type: 'zone', name: 'EDU' }
-      ]
-    }
-  ]
-}
-describe('RecommendationTable: services', () => {
+describe('Recommendation services', () => {
   const props = {
     startDate: '2023-06-10T00:00:00+08:00',
     endDate: '2023-06-17T00:00:00+08:00',
@@ -131,7 +89,7 @@ describe('RecommendationTable: services', () => {
 
   it('should return correct data', async () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: mockResult
+      data: apiResult
     })
 
     const { status, data, error } = await store.dispatch(
@@ -144,7 +102,7 @@ describe('RecommendationTable: services', () => {
   })
 
   it('should mutate correct data', async () => {
-    const resp =  { toggleMute: { success: true, errorMsg: '' , errorCode: '' } }
+    const resp = { toggleMute: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
 
     const { result } = renderHook(
@@ -157,7 +115,6 @@ describe('RecommendationTable: services', () => {
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)
       .toEqual(resp)
-   
   })
 
 })
