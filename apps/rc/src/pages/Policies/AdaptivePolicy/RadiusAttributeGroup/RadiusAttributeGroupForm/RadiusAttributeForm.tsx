@@ -12,7 +12,7 @@ import {
   DataType,
   OperatorType,
   RadiusAttribute,
-  treeNode
+  treeNode, checkObjectNotExists
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -134,15 +134,13 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
 
     const operator = form.getFieldValue('operator')
     const attributeValue = form.getFieldValue('attributeValue')
-    const list = attributeAssignments.filter(a =>
-      a.id !== editAttribute?.id &&
-        a.attributeName === attributeName &&
-        a.operator === operator &&
-        a.attributeValue === attributeValue
-    )
-    return list.length > 0 ?
-    // eslint-disable-next-line max-len
-      Promise.reject($t({ defaultMessage: 'The attribute with the condition value already exists.' })) : Promise.resolve()
+    const list = attributeAssignments.filter(a => a.id !== editAttribute?.id)
+      .map(n => ({ attributeName: n.attributeName,
+        operator: n.operator, attributeValue: n.attributeValue }))
+
+    return checkObjectNotExists(list,
+      { attributeName: attributeName, operator: operator, attributeValue: attributeValue },
+      $t({ defaultMessage: 'Attribute' }), 'value')
   }
 
   return (
