@@ -9,13 +9,13 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   EdgeDhcpSettingForm, EdgeDhcpSettingFormData
 } from '@acx-ui/rc/components'
-import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
-import { LeaseTimeType }                                                from '@acx-ui/rc/utils'
-import { useTenantLink }                                                from '@acx-ui/react-router-dom'
-
+import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation }                               from '@acx-ui/rc/services'
+import { LeaseTimeType, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                              from '@acx-ui/react-router-dom'
 
 
 const EditDhcp = () => {
@@ -30,6 +30,9 @@ const EditDhcp = () => {
     isLoading: isEdgeDhcpDataLoading
   } = useGetEdgeDhcpServiceQuery({ params: { id: params.serviceId } })
   const [updateEdgeDhcp, { isLoading: isFormSubmitting }] = useUpdateEdgeDhcpServiceMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getServiceRoutePath(
+    { type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })
 
   useEffect(() => {
     if(edgeDhcpData) {
@@ -66,7 +69,11 @@ const EditDhcp = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit DHCP for SmartEdge Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />

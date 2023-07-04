@@ -128,7 +128,7 @@ describe('ConnectionMeteringForm', () => {
     )
   })
 
-  it('should render correctly for creating connection metering', async () => {
+  it('should render correctly for creating data usage metering', async () => {
     render(<Provider>
       <ConnectionMeteringForm
         mode={ConnectionMeteringFormMode.CREATE}
@@ -183,7 +183,7 @@ describe('ConnectionMeteringForm', () => {
     await waitFor(() => expect(createConnectionMeteringApi).toHaveBeenCalled())
   })
 
-  it('should render correctly for creating connection metering in modal mode with callback',
+  it('should render correctly for creating data usage metering in modal mode with callback',
     async () => {
       const modalCallback = jest.fn()
       render(<Provider>
@@ -243,7 +243,7 @@ describe('ConnectionMeteringForm', () => {
       await waitFor(() => expect(modalCallback).toHaveBeenCalled())
     })
 
-  it('should render correctly for editing connection metering', async () => {
+  it('should render correctly for editing data usage metering', async () => {
     render(
       <Provider>
         <ConnectionMeteringForm
@@ -269,7 +269,7 @@ describe('ConnectionMeteringForm', () => {
     await waitFor(() => expect(updateConnectionMeteringApi).toHaveBeenCalled())
   })
 
-  it('should cancel correctly for editing connection metering', async () => {
+  it('should cancel correctly for editing data usage metering', async () => {
     render(
       <Provider>
         <ConnectionMeteringForm

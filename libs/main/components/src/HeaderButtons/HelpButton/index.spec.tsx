@@ -202,7 +202,7 @@ describe('HelpPage menus Button', () => {
     </Provider>, { route: { params } })
     const helpBtn = screen.getByRole('button')
     await userEvent.click(helpBtn)
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Documentation Center' }))
+    await userEvent.click(screen.getByRole('menuitem', { name: 'What’s New' }))
 
     await userEvent.click(helpBtn)
     await userEvent.click(screen.getByRole('menuitem', { name: 'My Open Cases' }))

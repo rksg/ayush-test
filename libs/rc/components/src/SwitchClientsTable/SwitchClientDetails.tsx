@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                   from '@acx-ui/rc/services'
 import { exportCSV, SWITCH_CLIENT_TYPE }                                        from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
@@ -18,7 +19,7 @@ export function SwitchClientDetails () {
   const { $t } = useIntl()
   const params = useParams()
   const [isManaged, setIsManaged] = useState(false)
-
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const { data, isLoading } = useGetSwitchClientDetailsQuery({ params })
 
 
@@ -143,9 +144,11 @@ export function SwitchClientDetails () {
     <Loader states={[{ isLoading }]}>
       <PageHeader
         title={data?.clientName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Clients' }) },
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Wired Clients List' }), link: '/users/switch' }
+        ] : [{ text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }]}
         extra={filterByAccess([
           <Button key='DownloadSwitchUsers' type='link' onClick={exportClientToCSV}>
             {$t({ defaultMessage: 'Download Information' })}</Button>

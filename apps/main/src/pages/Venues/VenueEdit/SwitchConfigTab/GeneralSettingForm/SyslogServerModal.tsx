@@ -26,14 +26,18 @@ export function SyslogServerModal (props: {
   }, [])
 
   const onOk = async () => {
-    try {
-      const valid = await form.validateFields()
-      if (valid) {
-        setFormState({ ...formState, syslogModalvisible: false })
-        setFormData({ ...formData, ...form.getFieldsValue(), syslogEnabled: true })
+    if (!formState?.cliApplied) {
+      try {
+        const valid = await form.validateFields()
+        if (valid) {
+          setFormState({ ...formState, syslogModalvisible: false })
+          setFormData({ ...formData, ...form.getFieldsValue(), syslogEnabled: true })
+        }
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+    } else {
+      setFormState({ ...formState, syslogModalvisible: false })
     }
   }
 
@@ -73,7 +77,7 @@ export function SyslogServerModal (props: {
         ]}
         initialValue={formData.syslogPrimaryServer}
         validateFirst
-        children={<Input />}
+        children={<Input disabled={formState?.cliApplied} />}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Server 2 IP Address' })}
@@ -83,7 +87,7 @@ export function SyslogServerModal (props: {
           { validator: () => validatorUniqueServerIp() }
         ]}
         initialValue={formData.syslogSecondaryServer}
-        children={<Input />}
+        children={<Input disabled={formState?.cliApplied} />}
       />
     </Form>
   </Modal>

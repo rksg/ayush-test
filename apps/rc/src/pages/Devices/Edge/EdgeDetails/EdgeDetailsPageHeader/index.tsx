@@ -94,7 +94,7 @@ export const EdgeDetailsPageHeader = () => {
   return (
     <PageHeader
       title={currentEdge?.name || ''}
-      titleExtra={<EdgeStatusLight data={status} />}
+      titleExtra={<EdgeStatusLight data={status} showText={!currentEdgeOperational}/>}
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
