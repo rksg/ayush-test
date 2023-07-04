@@ -106,7 +106,7 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
       </div>
       <div style={{ marginTop: '4px' }}>
         <StepsForm.Title style={{ fontSize: '12px' }}>
-          {$t({ defaultMessage: 'Data comsumption' })}
+          {$t({ defaultMessage: 'Data consumption' })}
         </StepsForm.Title>
       </div>
       <div style={{ display: 'flex', fontSize: '10px' }}>
