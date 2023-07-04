@@ -416,7 +416,8 @@ export default function NetworkForm (props:{
 
   const handleAddNetwork = async () => {
     try {
-      const saveData = handleGuestMoreSetting(saveState)
+      const dataConnection = handleUserConnection(saveState)
+      const saveData = handleGuestMoreSetting(dataConnection)
       const payload = updateClientIsolationAllowlist(_.omit(saveData, 'id')) // omit id to handle clone
       const result = await addNetwork({ params, payload }).unwrap()
       if (result && result.response && payload.venues) {
@@ -438,17 +439,17 @@ export default function NetworkForm (props:{
       handleOnboarding(data)
     }
 
-    handleGuestMoreSetting(data)
-    handleUserConnection(data)
+    const dataConnection = handleUserConnection(data)
+    const dataMore = handleGuestMoreSetting(dataConnection)
 
-    if(isPortalWebRender(data)){
-      handlePortalWebPage(data)
+    if(isPortalWebRender(dataMore)){
+      handlePortalWebPage(dataMore)
     }
 
-    if (data.guestPortal?.wisprPage?.authType &&
-      data.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
-      data.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
-      saveContextRef.current = _.omit({ ...saveState, ...data },
+    if (dataMore.guestPortal?.wisprPage?.authType &&
+      dataMore.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
+      dataMore.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      saveContextRef.current = _.omit({ ...saveState, ...dataMore },
         ['authRadius',
           'accountingRadius',
           'enableAccountingService',
@@ -460,7 +461,7 @@ export default function NetworkForm (props:{
       )
     } else {
       if(!saveState.enableAccountingService){
-        saveContextRef.current = _.omit({ ...saveState, ...data },
+        saveContextRef.current = _.omit({ ...saveState, ...dataMore },
           [
             'accountingRadius',
             'enableAccountingService',
@@ -468,7 +469,7 @@ export default function NetworkForm (props:{
           ]
         )
       }else{
-        saveContextRef.current = { ...saveState, ...data }
+        saveContextRef.current = { ...saveState, ...dataMore }
       }
     }
   }

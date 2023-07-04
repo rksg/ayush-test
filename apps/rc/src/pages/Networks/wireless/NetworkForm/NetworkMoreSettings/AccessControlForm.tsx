@@ -462,7 +462,6 @@ function AccessControlConfigForm () {
     enableLayer2,
     enableLayer3,
     enableDeviceOs,
-    enableDeviceOs,
     enableApplications,
     enableClientRateLimit
   ])

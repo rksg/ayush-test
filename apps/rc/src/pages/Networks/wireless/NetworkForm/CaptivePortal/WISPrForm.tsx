@@ -173,9 +173,11 @@ export function WISPrForm () {
         }
       }
     }
-  },[providerData.data,data,isMspEc])
+  },[providerData.data,isMspEc])
   useEffect(()=>{
-    form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
+    if(!data?.guestPortal?.wisprPage?.integrationKey){
+      form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
+    }
     if ([
       (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
       (!data?.wlan?.bypassCPUsingMacAddressAuthentication)

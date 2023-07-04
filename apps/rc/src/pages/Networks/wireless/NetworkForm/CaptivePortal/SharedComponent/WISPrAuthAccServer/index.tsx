@@ -53,8 +53,15 @@ export function WISPrAuthAccServer (props : {
   const onChange = (value: boolean, fieldName: string) => {
     if(!value){
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], undefined)
+      form.setFieldValue(['guestPortal','wisprPage','accountingRadiusId'], undefined)
     }
-    setData && setData({ ...(!value?_.omit(data, 'guestPortal.wisprPage.accountingRadius'):data),
+    setData && setData({
+      ...(!value?
+        _.omit(data,
+          [
+            'guestPortal.wisprPage.accountingRadius',
+            'guestPortal.wisprPage.accountingRadiusId'
+          ]):data),
       [fieldName]: value })
   }
 
