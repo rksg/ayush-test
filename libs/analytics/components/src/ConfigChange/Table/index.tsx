@@ -1,5 +1,5 @@
-import moment                                        from 'moment'
-import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import moment                         from 'moment'
+import { useIntl, MessageDescriptor } from 'react-intl'
 
 import { defaultSort, sortProp, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
@@ -27,7 +27,7 @@ export function Table (props: {
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
       key: 'timestamp',
-      title: $t(defineMessage({ defaultMessage: 'Timestamp' })),
+      title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
       render: (value) => formatter(DateFormatEnum.DateTimeFormat)(moment(Number(value))),
       sorter: { compare: sortProp('timestamp', defaultSort) },
@@ -35,7 +35,7 @@ export function Table (props: {
     },
     {
       key: 'type',
-      title: $t(defineMessage({ defaultMessage: 'Entity Type' })),
+      title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
       render: (value, row) => {
         const config = getConfigChangeEntityTypeMapping().find(type => type.key === value)
@@ -48,7 +48,7 @@ export function Table (props: {
     },
     {
       key: 'name',
-      title: $t(defineMessage({ defaultMessage: 'Entity Name' })),
+      title: $t({ defaultMessage: 'Entity Name' }),
       dataIndex: 'name',
       render: (value, row, _, highlightFn) => highlightFn(String(value)),
       searchable: true,
@@ -56,7 +56,7 @@ export function Table (props: {
     },
     {
       key: 'key',
-      title: $t(defineMessage({ defaultMessage: 'Configuration' })),
+      title: $t({ defaultMessage: 'Configuration' }),
       dataIndex: 'key',
       render: (_, { type, key }) => {
         const value = jsonMapping[type as EntityType].configMap.get(key, key)
@@ -66,7 +66,7 @@ export function Table (props: {
     },
     {
       key: 'oldValues',
-      title: $t(defineMessage({ defaultMessage: 'Change From' })),
+      title: $t({ defaultMessage: 'Change From' }),
       dataIndex: ['oldValues'],
       align: 'center',
       ellipsis: true,
@@ -83,7 +83,7 @@ export function Table (props: {
     },
     {
       key: 'newValues',
-      title: $t(defineMessage({ defaultMessage: 'Change To' })),
+      title: $t({ defaultMessage: 'Change To' }),
       dataIndex: ['newValues'],
       align: 'center',
       ellipsis: true,
