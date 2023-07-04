@@ -3,6 +3,7 @@ import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
 import {
+  getFilterPayload,
   IncidentFilter,
   incidentCodes,
   Incident,
@@ -172,13 +173,12 @@ export const api = dataApi.injectEndpoints({
           }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
           includeMuted: payload.includeMuted ?? true,
           severity: [{ gt: 0, lte: 1 }],
-          filter: payload?.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<IncidentNodeData>) => {

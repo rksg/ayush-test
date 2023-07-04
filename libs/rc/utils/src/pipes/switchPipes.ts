@@ -67,9 +67,6 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.ADMIN_PASSWORD:
       transform = $t({ defaultMessage: 'Admin Password' })
       break
-    case ConfigTypeEnum.COLLECT_CONFIG:
-      transform = $t({ defaultMessage: 'Collect Config' })
-      break
     case 'VLAN':
       transform = $t({ defaultMessage: 'VLAN' })
       break
