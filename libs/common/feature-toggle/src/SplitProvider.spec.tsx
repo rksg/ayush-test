@@ -37,13 +37,14 @@ describe('SplitProvider', () => {
     expect(screen.queryByText('rendered')).toBeNull()
   })
   it('provides for R1', async () => {
-    render(<TestSplitProvider IS_MLISA_SA='' tenant='tenantId' />)
+    const tenant = 'f91b36cbfb9941e8b45b337a37f330c0'
+    render(<TestSplitProvider IS_MLISA_SA='' tenant={tenant} />)
     await screen.findByText('rendered')
     expect(split.SplitSdk).toHaveBeenCalledWith({
       scheduler: { featuresRefreshRate: 30 },
-      core: { authorizationKey: '0123456789', key: 'tenantId' },
+      core: { authorizationKey: '0123456789', key: tenant },
       storage: { type: 'LOCALSTORAGE', prefix: 'ACX01234' },
-      debug: false // set this value to true for running in debug mode for debugging in local development only
+      debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
   })
@@ -54,7 +55,7 @@ describe('SplitProvider', () => {
       scheduler: { featuresRefreshRate: 30 },
       core: { authorizationKey: '0123456789', key: '0015000000GlI7SAAV' },
       storage: { type: 'LOCALSTORAGE', prefix: 'MLISA01234' },
-      debug: false // set this value to true for running in debug mode for debugging in local development only
+      debug: false
     })
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
   })
