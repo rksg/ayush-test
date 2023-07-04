@@ -11,8 +11,8 @@ import { venueDetailHeaderData } from '../__tests__/fixtures'
 import VenuePageHeader from './VenuePageHeader'
 
 const mockNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate
 }))
 

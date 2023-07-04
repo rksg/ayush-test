@@ -16,8 +16,8 @@ import { apDetailData } from './__tests__/fixtures'
 import ApPageHeader     from './ApPageHeader'
 
 const mockNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate
 }))
 
