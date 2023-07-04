@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { Divider, Space } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import {
   Button,
@@ -7,7 +8,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -26,7 +27,8 @@ import {
   displayDeviceCountLimit
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { RolesEnum }                                               from '@acx-ui/types'
+import { filterByAccess, hasRoles }                                from '@acx-ui/user'
 
 import { displayDefaultAccess } from '../utils'
 
@@ -43,6 +45,7 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
@@ -83,15 +86,33 @@ export default function DpskTable () {
     }
   ]
 
+  const breadCrumb = !hasRoles(RolesEnum.DPSK_ADMIN)
+    ? (isNavbarEnhanced ? [
+      { text: intl.$t({ defaultMessage: 'Network Control' }) },
+      {
+        text: intl.$t({ defaultMessage: 'My Services' }),
+        link: getServiceListRoutePath(true)
+      }
+    ] : [{
+      text: intl.$t({ defaultMessage: 'My Services' }),
+      link: getServiceListRoutePath(true)
+    }])
+    : []
+
+  const title = !hasRoles(RolesEnum.DPSK_ADMIN)
+    ? intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
+    : <Space split={<Divider type='vertical'/>}>
+      <span>{intl.$t({ defaultMessage: 'DPSK Management' })}</span>
+      <span>{intl.$t({ defaultMessage: 'DPSK Services ({count})' },
+        { count: tableQuery.data?.totalCount })}
+      </span>
+    </Space>
+
   return (
     <>
       <PageHeader
-        title={
-          intl.$t({ defaultMessage: 'DPSK ({count})' }, { count: tableQuery.data?.totalCount })
-        }
-        breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        title={title}
+        breadcrumb={breadCrumb}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>

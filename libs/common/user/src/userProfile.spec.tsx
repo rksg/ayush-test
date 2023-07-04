@@ -15,6 +15,8 @@ describe('hasAccess', () => {
       expect(hasAccess()).toBe(true)
       setRole(RolesEnum.ADMINISTRATOR)
       expect(hasAccess()).toBe(true)
+      setRole(RolesEnum.DPSK_ADMIN)
+      expect(hasAccess()).toBe(true)
     })
     it('block guest manager & read-only', () => {
       setRole(RolesEnum.GUEST_MANAGER)
@@ -52,7 +54,8 @@ describe('hasRoles', () => {
 
     expect(hasRoles([
       RolesEnum.PRIME_ADMIN,
-      RolesEnum.ADMINISTRATOR
+      RolesEnum.ADMINISTRATOR,
+      RolesEnum.DPSK_ADMIN
     ])).toBe(true)
     expect(hasRoles([
       RolesEnum.ADMINISTRATOR,

@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -123,6 +124,64 @@ describe('RadiusAttributeGroupForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockServer.use(
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.createAttributeGroup.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <RadiusAttributeGroupForm/>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 'tenant-id' },
+          path: createPath
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Attribute Groups'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.createAttributeGroup.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <RadiusAttributeGroupForm/>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 'tenant-id' },
+          path: createPath
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Attribute Groups'
+    })).toBeVisible()
   })
 
   it('should edit group successfully', async () => {

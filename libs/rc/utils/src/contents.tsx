@@ -135,6 +135,9 @@ export const VenueMessages = {
   }),
   SNR_THRESHOLD_TOOLTIP: defineMessage({
     defaultMessage: 'SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100.'
+  }),
+  CLI_APPLIED: defineMessage({
+    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.'
   })
 }
 
@@ -305,4 +308,12 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
   [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
   [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+}
+
+export const EditPropertyConfigMessages = {
+  /* eslint-disable max-len */
+  DISABLE_PROPERTY_MESSAGE: defineMessage({ defaultMessage: 'This will delete all related configurations and currently connected clients will lose their connectivity to networking services.' }),
+  ENABLE_PROPERTY_TOOLTIP: defineMessage({ defaultMessage: 'Switching property management OFF will delete the entire related configuration and will cause clients to lose their networking service.' }),
+  BIND_PERSONA_GROUP_TOOLTIP: defineMessage({ defaultMessage: 'Please note that once property management has been enabled, changing the persona group is not allowed.' })
+  /* eslint-enable */
 }
