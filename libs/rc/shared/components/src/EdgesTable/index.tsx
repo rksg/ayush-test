@@ -22,11 +22,10 @@ import {
   useSendOtpMutation,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeStatus }             from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                         from '@acx-ui/types'
-import { filterByAccess }                         from '@acx-ui/user'
-import { TABLE_QUERY, TableQuery, useTableQuery } from '@acx-ui/utils'
+import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, TableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                             from '@acx-ui/react-router-dom'
+import { RequestPayload }                                                     from '@acx-ui/types'
+import { filterByAccess }                                                     from '@acx-ui/user'
 
 import { seriesMappingAP } from '../DevicesWidget'
 

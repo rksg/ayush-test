@@ -9,9 +9,9 @@ import { useParams } from 'react-router-dom'
 import { Table, TableProps, Card, Loader }            from '@acx-ui/components'
 import { useVenuesListQuery, useGetDHCPProfileQuery } from '@acx-ui/rc/services'
 import { Venue }                                      from '@acx-ui/rc/utils'
+import { useTableQuery }                              from '@acx-ui/rc/utils'
 import { DHCPUsage }                                  from '@acx-ui/rc/utils'
 import { TenantLink }                                 from '@acx-ui/react-router-dom'
-import { useTableQuery }                              from '@acx-ui/utils'
 
 
 export default function DHCPInstancesTable (){

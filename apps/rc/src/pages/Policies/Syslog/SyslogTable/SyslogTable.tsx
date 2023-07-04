@@ -12,6 +12,7 @@ import {
   FacilityEnum,
   FlowLevelEnum,
   PolicyType,
+  useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
   SyslogPolicyListType,
@@ -20,7 +21,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
-import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
 import { PROFILE_MAX_COUNT }                           from '../constants'

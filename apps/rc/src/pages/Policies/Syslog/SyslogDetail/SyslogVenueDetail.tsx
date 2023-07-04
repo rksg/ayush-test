@@ -7,9 +7,8 @@ import {
   useVenueSyslogPolicyQuery ,
   useGetSyslogPolicyQuery
 } from '@acx-ui/rc/services'
-import { VenueSyslogPolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }            from '@acx-ui/react-router-dom'
-import { useTableQuery }         from '@acx-ui/utils'
+import { useTableQuery, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
+import { TenantLink }                           from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',

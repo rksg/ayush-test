@@ -13,6 +13,7 @@ import { SimpleListTooltip }                                                    
 import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
+  useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
@@ -28,7 +29,6 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
 import { filterByAccess, hasRoles }                                from '@acx-ui/user'
-import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { displayDefaultAccess } from '../utils'
 

@@ -40,9 +40,9 @@ const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
 }))
-const utils = require('@acx-ui/utils')
-jest.mock('@acx-ui/utils', () => ({
-  ...jest.requireActual('@acx-ui/utils')
+const utils = require('@acx-ui/rc/utils')
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils')
 }))
 
 describe('AssignEcDrawer', () => {

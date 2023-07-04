@@ -20,17 +20,18 @@ import {
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
+  FILTER,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   MacRegistrationDetailsTabKey,
   MacRegistrationPool,
   PolicyOperation,
-  PolicyType
+  PolicyType, SEARCH,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
-import { FILTER, SEARCH, useTableQuery }                           from '@acx-ui/utils'
 
 import { returnExpirationString } from '../MacRegistrationListUtils'
 

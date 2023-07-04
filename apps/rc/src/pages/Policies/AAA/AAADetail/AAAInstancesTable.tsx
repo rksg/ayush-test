@@ -1,10 +1,9 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                            from '@acx-ui/components'
-import { useAaaNetworkInstancesQuery }                                                                from '@acx-ui/rc/services'
-import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                 from '@acx-ui/react-router-dom'
-import { useTableQuery }                                                                              from '@acx-ui/utils'
+import { Table, TableProps, Card, Loader }                                                                           from '@acx-ui/components'
+import { useAaaNetworkInstancesQuery }                                                                               from '@acx-ui/rc/services'
+import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                from '@acx-ui/react-router-dom'
 
 export default function AAAInstancesTable (){
 

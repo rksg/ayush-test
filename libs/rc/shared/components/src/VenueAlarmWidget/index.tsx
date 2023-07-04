@@ -8,9 +8,8 @@ import {
   Alarm,
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { useTableQuery }  from '@acx-ui/utils'
+import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   url: CommonUrlsInfo.getAlarmsList.url,

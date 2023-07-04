@@ -10,8 +10,7 @@ import {
   useGetGenerateLicenseUsageRptQuery,
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
-import { useTableQuery } from '@acx-ui/utils'
-
+import { useTableQuery } from '@acx-ui/rc/utils'
 interface SubscriptionUsageReportDialogProps {
   visible: boolean
   setVisible: (visible: boolean) => void

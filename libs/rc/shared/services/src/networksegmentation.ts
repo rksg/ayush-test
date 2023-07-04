@@ -8,18 +8,16 @@ import {
   NetworkSegmentationGroup,
   NetworkSegmentationGroupViewData,
   NetworkSegmentationUrls,
+  NewTableResult,
   SwitchLite,
+  TableResult,
+  transferToTableResult,
   WebAuthTemplate,
   WebAuthTemplateTableData
 } from '@acx-ui/rc/utils'
-import { baseNsgApi }     from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
-import {
-  createHttpRequest,
-  NewTableResult,
-  TableResult,
-  transferToTableResult
-} from '@acx-ui/utils'
+import { baseNsgApi }        from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 export const nsgApi = baseNsgApi.injectEndpoints({
   endpoints: (build) => ({

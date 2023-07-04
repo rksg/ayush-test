@@ -14,6 +14,7 @@ import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                     
 import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
+  useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceListRoutePath,
@@ -23,7 +24,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
-import { useTableQuery }                                           from '@acx-ui/utils'
 
 const defaultPayload = {
   fields: ['id', 'name', 'rules', 'venueIds'],

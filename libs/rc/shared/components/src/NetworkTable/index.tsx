@@ -8,13 +8,14 @@ import {
   NetworkTypeEnum,
   Network,
   NetworkType,
+  TableQuery,
   GuestNetworkTypeEnum,
   checkVenuesNotInSetup
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }            from '@acx-ui/types'
 import { filterByAccess }            from '@acx-ui/user'
-import { getIntl, TableQuery }       from '@acx-ui/utils'
+import { getIntl }                   from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []

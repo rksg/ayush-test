@@ -20,11 +20,11 @@ import {
 import {
   isOperationalSwitch,
   VenueMessages,
+  useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-import { useTableQuery }  from '@acx-ui/utils'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 

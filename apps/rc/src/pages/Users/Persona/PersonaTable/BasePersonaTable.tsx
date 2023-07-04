@@ -17,12 +17,14 @@ import {
   useGetPersonaGroupByIdQuery
 } from '@acx-ui/rc/services'
 import {
+  FILTER,
   Persona,
   PersonaErrorResponse,
-  PersonaGroup
+  PersonaGroup,
+  SEARCH,
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { filterByAccess }                from '@acx-ui/user'
-import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { PersonasContext }                                        from '..'
 import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'

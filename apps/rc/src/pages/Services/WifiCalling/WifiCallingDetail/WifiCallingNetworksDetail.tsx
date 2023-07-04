@@ -2,10 +2,9 @@ import React, { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }  from '@acx-ui/components'
-import { useNetworkListQuery }      from '@acx-ui/rc/services'
-import { Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { useTableQuery }            from '@acx-ui/utils'
+import { Card, Table, TableProps }                 from '@acx-ui/components'
+import { useNetworkListQuery }                     from '@acx-ui/rc/services'
+import { Network, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
 
 import { networkTypes } from '../../../Networks/wireless/NetworkForm/contentsMap'
 

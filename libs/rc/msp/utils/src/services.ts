@@ -7,16 +7,17 @@ import {
 } from '@acx-ui/components'
 import {
   CommonResult,
+  TableResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
   EntitlementBanner,
   MspEntitlement,
   downloadFile
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                               from '@acx-ui/store'
-import { RequestPayload }                           from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }                from '@acx-ui/user'
-import { createHttpRequest, PverName, TableResult } from '@acx-ui/utils'
+import { baseMspApi }                  from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }   from '@acx-ui/user'
+import { createHttpRequest, PverName } from '@acx-ui/utils'
 
 import { AssignedEc, BaseUrl, MspAdministrator, MspAssignmentHistory, MspAssignmentSummary, MspEntitlementSummary, MspEc, EcDeviceInventory, TenantDetail, MspEcData, MspEcDelegatedAdmins, SupportDelegation, VarCustomer, MspProfile, MspEcProfile, MspPortal, ParentLogoUrl } from './types'
 import { MspUrlsInfo }                                                                                                                                                                                                                                                           from './urls'

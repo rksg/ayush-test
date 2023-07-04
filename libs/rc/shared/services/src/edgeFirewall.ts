@@ -1,7 +1,10 @@
 import {
+  TableResult,
   CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
+  NewAPITableResult,
+  transferNewResToTableResult,
   EdgeFirewallUrls,
   EdgeFirewallSetting,
   EdgeFirewallViewData,
@@ -11,14 +14,9 @@ import {
   EdgeFirewallBaseStatsPayload,
   EdgeFirewallACLStatsPayload
 } from '@acx-ui/rc/utils'
-import { baseEdgeFirewallApi }  from '@acx-ui/store'
-import { RequestPayload }       from '@acx-ui/types'
-import {
-  createHttpRequest,
-  TableResult,
-  NewAPITableResult,
-  transferNewResToTableResult
-}   from '@acx-ui/utils'
+import { baseEdgeFirewallApi } from '@acx-ui/store'
+import { RequestPayload }      from '@acx-ui/types'
+import { createHttpRequest }   from '@acx-ui/utils'
 
 import { serviceApi } from './service'
 

@@ -3,10 +3,9 @@ import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps } from '@acx-ui/components'
 // import { formatter }               from '@acx-ui/formatter'
-import { useApListQuery } from '@acx-ui/rc/services'
-import { AP }             from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { useTableQuery }  from '@acx-ui/utils'
+import { useApListQuery }    from '@acx-ui/rc/services'
+import { AP, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }        from '@acx-ui/react-router-dom'
 
 interface MdnsProxyInstancesTableProps {
   apList: string[] | null

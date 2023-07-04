@@ -4,9 +4,9 @@ import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   APExtended,
   APExtendedGrouped,
-  ApExtraParams
+  ApExtraParams,
+  TableQuery
 } from '@acx-ui/rc/utils'
-import { TableQuery } from '@acx-ui/utils'
 
 export const defaultApPayload = {
   fields: [

@@ -1,18 +1,17 @@
 import {
+  TableResult,
   PropertyUrlsInfo,
-  ResidentPortal
+  ResidentPortal,
+  NewTableResult,
+  transferToTableResult,
+  RequestFormData,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 import { baseResidentPortalApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
-import {
-  createHttpRequest,
-  createNewTableHttpRequest,
-  NewTableResult,
-  RequestFormData,
-  TableChangePayload,
-  TableResult,
-  transferToTableResult
-} from '@acx-ui/utils'
+import { createHttpRequest }     from '@acx-ui/utils'
+
 
 export const residentPortalApi = baseResidentPortalApi.injectEndpoints({
   endpoints: (build) => ({

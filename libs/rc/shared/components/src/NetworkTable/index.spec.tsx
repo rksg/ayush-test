@@ -1,11 +1,10 @@
 import { Modal } from 'antd'
 
-import { networkApi, useNetworkListQuery }             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, Network,WifiUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider, store }                             from '@acx-ui/store'
-import { fireEvent, mockRestApiQuery, render, screen } from '@acx-ui/test-utils'
-import { RequestPayload }                              from '@acx-ui/types'
-import { TABLE_QUERY, useTableQuery }                  from '@acx-ui/utils'
+import { networkApi, useNetworkListQuery }                                   from '@acx-ui/rc/services'
+import { CommonUrlsInfo, Network, TABLE_QUERY, useTableQuery, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
+import { fireEvent, mockRestApiQuery, render, screen }                       from '@acx-ui/test-utils'
+import { RequestPayload }                                                    from '@acx-ui/types'
 
 import { NetworkTable, defaultNetworkPayload  } from '.'
 

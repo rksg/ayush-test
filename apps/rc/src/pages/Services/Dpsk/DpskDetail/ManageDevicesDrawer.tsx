@@ -13,11 +13,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DPSKDeviceInfo,
+  FILTER,
+  SEARCH,
   NewDpskPassphrase,
-  MacRegistrationFilterRegExp
+  MacRegistrationFilterRegExp, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }                    from '@acx-ui/react-router-dom'
-import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export interface ManageDeviceDrawerProps {
   visible: boolean;

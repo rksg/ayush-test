@@ -1,19 +1,17 @@
 
 import {
+  TableResult,
+  createNewTableHttpRequest,
   ConnectionMetering,
   ConnectionMeteringUrls,
+  TableChangePayload,
+  NewTableResult,
+  transferToTableResult,
   QosStats
 } from '@acx-ui/rc/utils'
 import { baseConnectionMeteringApi } from '@acx-ui/store'
 import { RequestPayload }            from '@acx-ui/types'
-import {
-  createHttpRequest,
-  createNewTableHttpRequest,
-  TableChangePayload,
-  TableResult,
-  NewTableResult,
-  transferToTableResult
-} from '@acx-ui/utils'
+import { createHttpRequest }         from '@acx-ui/utils'
 
 
 export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({

@@ -9,6 +9,7 @@ import { LineChartOutline, ListSolid, MeshSolid }                          from 
 import { ApTable }                                                         from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery } from '@acx-ui/rc/services'
 import {
+  useTableQuery,
   APMesh,
   APMeshRole
 } from '@acx-ui/rc/utils'
@@ -17,7 +18,6 @@ import { EmbeddedReport } from '@acx-ui/reports/components'
 import {
   ReportType
 } from '@acx-ui/reports/components'
-import { useTableQuery } from '@acx-ui/utils'
 
 import {
   ArrowCornerIcon,

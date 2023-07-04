@@ -11,13 +11,12 @@ import {
   UseQueryResult,
   UseQueryOptions
 } from '@acx-ui/types'
-
 import {
   ApiInfo,
   createHttpRequest,
   TABLE_DEFAULT_PAGE_SIZE,
   TABLE_MAX_PAGE_SIZE
-} from '..'
+} from '@acx-ui/utils'
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000

@@ -6,9 +6,8 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { Alert, Loader, Collapse }                                 from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
-import { AAAServerTypeEnum }                                       from '@acx-ui/rc/utils'
+import { useTableQuery, AAAServerTypeEnum }                        from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
-import { useTableQuery }                                           from '@acx-ui/utils'
 
 import { AAAServerTable }  from './AAAServerTable'
 import { AAANotification } from './contentsMap'

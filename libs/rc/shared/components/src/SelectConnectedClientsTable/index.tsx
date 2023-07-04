@@ -3,10 +3,9 @@ import { Key } from 'react'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useGetClientListQuery }              from '@acx-ui/rc/services'
-import { ClientList, getOsTypeIcon }          from '@acx-ui/rc/utils'
-import { useTableQuery }                      from '@acx-ui/utils'
+import { Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
+import { useGetClientListQuery }                    from '@acx-ui/rc/services'
+import { ClientList, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
 
 
 export const OSIconContainer = styled.div`

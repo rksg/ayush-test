@@ -1,8 +1,10 @@
+
+
+
 import { useVenuesListQuery, venueApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                    from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, useTableQuery }     from '@acx-ui/rc/utils'
 import { Provider, store }                   from '@acx-ui/store'
 import { act, mockRestApiQuery, renderHook } from '@acx-ui/test-utils'
-import { useTableQuery }                     from '@acx-ui/utils'
 
 describe('useTableQuery', () => {
   beforeEach(() => store.dispatch(venueApi.util.resetApiState()))

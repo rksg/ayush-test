@@ -29,6 +29,7 @@ import {
   useGetHistoricalClientListQuery
 } from '@acx-ui/rc/services'
 import {
+  useTableQuery,
   Network,
   Venue,
   AP,
@@ -39,7 +40,6 @@ import {
   Client
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
-import { useTableQuery }  from '@acx-ui/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 

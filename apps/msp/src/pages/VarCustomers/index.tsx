@@ -27,12 +27,12 @@ import {
 } from '@acx-ui/msp/utils'
 import {
   EntitlementNetworkDeviceType,
-  EntitlementUtil
+  EntitlementUtil,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { useTableQuery }                   from '@acx-ui/utils'
 
 const transformApUtilization = (row: VarCustomer) => {
   if (row.entitlements) {

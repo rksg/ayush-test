@@ -19,7 +19,7 @@ import {
 import {
   MspEc
 } from '@acx-ui/msp/utils'
-import { useTableQuery } from '@acx-ui/utils'
+import { useTableQuery } from '@acx-ui/rc/utils'
 import {
   AccountType
 } from '@acx-ui/utils'

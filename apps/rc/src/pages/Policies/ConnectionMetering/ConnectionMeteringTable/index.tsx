@@ -21,8 +21,11 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
+  useTableQuery,
   ConnectionMetering,
-  getPolicyDetailsLink
+  getPolicyDetailsLink,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -30,8 +33,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess }                from '@acx-ui/user'
-import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel

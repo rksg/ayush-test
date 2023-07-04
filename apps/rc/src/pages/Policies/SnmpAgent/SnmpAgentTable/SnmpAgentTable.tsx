@@ -12,10 +12,10 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  SnmpColumnData } from '@acx-ui/rc/utils'
+  SnmpColumnData,
+  useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }            from '@acx-ui/user'
-import { useTableQuery }             from '@acx-ui/utils'
 
 const defaultPayload = {
   searchString: '',

@@ -37,12 +37,12 @@ import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
-  EntitlementNetworkDeviceType
+  EntitlementNetworkDeviceType,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
-import { useTableQuery }                                                          from '@acx-ui/utils'
 import { AccountType }                                                            from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {

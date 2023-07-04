@@ -1,23 +1,21 @@
 import {
   PersonaUrls,
   PersonaGroup,
+  TableResult,
   Persona,
   PersonaDevice,
+  NewTableResult,
+  transferToTableResult,
+  createNewTableHttpRequest,
+  TableChangePayload,
   downloadFile,
+  RequestFormData,
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-import { basePersonaApi } from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
-import {
-  createHttpRequest,
-  createNewTableHttpRequest,
-  NewTableResult,
-  RequestFormData,
-  TableChangePayload,
-  TableResult,
-  transferToTableResult
-} from '@acx-ui/utils'
+import { basePersonaApi }    from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({

@@ -54,6 +54,7 @@ import {
   emailRegExp,
   roleDisplayText,
   EntitlementUtil,
+  useTableQuery,
   EntitlementDeviceType,
   EntitlementDeviceSubType
 } from '@acx-ui/rc/utils'
@@ -64,7 +65,6 @@ import {
 } from '@acx-ui/react-router-dom'
 import { RolesEnum }              from '@acx-ui/types'
 import { useGetUserProfileQuery } from '@acx-ui/user'
-import { useTableQuery }          from '@acx-ui/utils'
 import { AccountType  }           from '@acx-ui/utils'
 
 import { AssignEcDrawer }     from '../AssignEcDrawer'

@@ -19,9 +19,8 @@ import {
   useMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }                  from '@acx-ui/rc/utils'
-import { filterByAccess }                from '@acx-ui/user'
-import { FILTER, useTableQuery, SEARCH } from '@acx-ui/utils'
+import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                              from '@acx-ui/user'
 
 import { PersonaGroupContext } from '..'
 import {

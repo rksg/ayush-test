@@ -15,9 +15,10 @@ import { MspEc, VarCustomer } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
-import { Link, useParams  }                               from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                          from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, useTableQuery } from '@acx-ui/utils'
+import { useTableQuery }                   from '@acx-ui/rc/utils'
+import { Link, useParams  }                from '@acx-ui/react-router-dom'
+import { useUserProfileContext }           from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

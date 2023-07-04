@@ -1,13 +1,12 @@
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                        from '@acx-ui/feature-toggle'
-import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery, useGetEdgeListQuery }                                  from '@acx-ui/rc/services'
-import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                                        from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                from '@acx-ui/user'
-import { useTableQuery }                                                                                                 from '@acx-ui/utils'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                       from '@acx-ui/feature-toggle'
+import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery, useGetEdgeListQuery }                                                 from '@acx-ui/rc/services'
+import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                                                                       from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                               from '@acx-ui/user'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 

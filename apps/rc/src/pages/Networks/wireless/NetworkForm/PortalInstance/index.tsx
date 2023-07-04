@@ -7,8 +7,8 @@ import { useParams }    from 'react-router-dom'
 
 import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
 import { useGetPortalLangMutation, useGetPortalProfileListQuery } from '@acx-ui/rc/services'
-import { Demo, Portal }                                           from '@acx-ui/rc/utils'
-import { loadImageWithJWT, TableResult }                          from '@acx-ui/utils'
+import { Demo, Portal, TableResult }                              from '@acx-ui/rc/utils'
+import { loadImageWithJWT }                                       from '@acx-ui/utils'
 
 import Photo                 from '../../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered               from '../../../../../assets/images/portal-demo/PoweredLogo.svg'

@@ -18,15 +18,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   Venue,
-  ApVenueStatusEnum
+  ApVenueStatusEnum,
+  TableQuery,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { RequestPayload }                     from '@acx-ui/types'
 import { filterByAccess }                     from '@acx-ui/user'
-import {
-  TableQuery,
-  usePollingTableQuery
-} from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,

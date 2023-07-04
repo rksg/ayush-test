@@ -4,14 +4,12 @@ import { useAdminLogsQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
   Event,
   CommonUrlsInfo,
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  usePollingTableQuery,
   AdminLog
 } from '@acx-ui/rc/utils'
 import { useUserProfileContext } from '@acx-ui/user'
-import {
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
-  usePollingTableQuery,
-  useDateFilter
-}         from '@acx-ui/utils'
+import { useDateFilter }         from '@acx-ui/utils'
 
 import { adminLogTypeMapping, eventTypeMapping } from './mapping'
 

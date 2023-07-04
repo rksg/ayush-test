@@ -16,11 +16,11 @@ import {
   getServiceRoutePath,
   NetworkSegmentationGroupViewData,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                      from '@acx-ui/user'
-import { useTableQuery }                                       from '@acx-ui/utils'
 
 const getNetworkSegmentationPayload = {
   fields: [

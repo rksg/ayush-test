@@ -5,9 +5,8 @@ import { SimpleListTooltip }               from '@acx-ui/rc/components'
 import {
   useGetVenueUsageByClientIsolationQuery
 } from '@acx-ui/rc/services'
-import { VenueUsageByClientIsolation }   from '@acx-ui/rc/utils'
-import { TenantLink }                    from '@acx-ui/react-router-dom'
-import { FILTER, SEARCH, useTableQuery } from '@acx-ui/utils'
+import { SEARCH, FILTER, useTableQuery, VenueUsageByClientIsolation } from '@acx-ui/rc/utils'
+import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 export function ClientIsolationInstancesTable () {
   const { $t } = useIntl()

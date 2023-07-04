@@ -3,11 +3,10 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                     from '@acx-ui/components'
-import { useGetPortalProfileDetailQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum }               from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                               from '@acx-ui/react-router-dom'
-import { useTableQuery }                                       from '@acx-ui/utils'
+import { Table, TableProps, Card, Loader }                      from '@acx-ui/components'
+import { useGetPortalProfileDetailQuery, useNetworkListQuery }  from '@acx-ui/rc/services'
+import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                from '@acx-ui/react-router-dom'
 
 export default function PortalInstancesTable (){
 

@@ -11,15 +11,14 @@ import {
   useLazyGetPrioritizedPoliciesQuery, useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicySet,
+  AdaptivePolicySet, FILTER,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
-import { FILTER, SEARCH, useTableQuery }                from '@acx-ui/utils'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()

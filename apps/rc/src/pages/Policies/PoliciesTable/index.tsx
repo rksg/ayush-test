@@ -20,11 +20,11 @@ import {
   PolicyOperation,
   PolicyTechnology,
   PolicyType,
-  RogueApConstant
+  RogueApConstant,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
-import { useTableQuery }                                from '@acx-ui/utils'
 
 import { policyTechnologyLabelMapping, policyTypeLabelMapping } from '../contentsMap'
 

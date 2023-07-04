@@ -17,9 +17,8 @@ import {
   getPoeUsage,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
-import { CommonUrlsInfo }        from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { useTableQuery }         from '@acx-ui/utils'
+import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }         from '@acx-ui/react-router-dom'
 
 import { AlarmsDrawer } from '../AlarmsDrawer'
 

@@ -7,16 +7,14 @@ import { useIntl }    from 'react-intl'
 import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
 import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
 import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
-import { Client }                                      from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                       from '@acx-ui/react-router-dom'
-import { RequestPayload }                              from '@acx-ui/types'
 import {
-  encodeParameter,
-  DateFilter,
-  DateRange,
+  Client,
   TableQuery,
   useTableQuery
-} from '@acx-ui/utils'
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { RequestPayload }                         from '@acx-ui/types'
+import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter(DateFormatEnum.DateTimeFormat)

@@ -6,9 +6,8 @@ import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Table, Loader, TableProps } from '@acx-ui/components'
 import { useVenuesListQuery }                         from '@acx-ui/rc/services'
-import { Venue, MdnsProxyScopeData }                  from '@acx-ui/rc/utils'
+import { useTableQuery, Venue, MdnsProxyScopeData }   from '@acx-ui/rc/utils'
 import { filterByAccess }                             from '@acx-ui/user'
-import { useTableQuery }                              from '@acx-ui/utils'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 

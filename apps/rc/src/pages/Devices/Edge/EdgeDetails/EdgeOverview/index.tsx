@@ -11,7 +11,7 @@ import {
   useEdgeBySerialNumberQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import { EdgePortStatus } from '@acx-ui/rc/utils'
+import {  EdgePortStatus } from '@acx-ui/rc/utils'
 
 import { MonitorTab }   from './MonitorTab'
 import { PortsTab }     from './PortsTab'

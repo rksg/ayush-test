@@ -9,8 +9,8 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import { SpaceWrapper }            from '@acx-ui/rc/components'
+import { useTableQuery }           from '@acx-ui/rc/utils'
 import { RolesEnum }               from '@acx-ui/types'
-import { useTableQuery }           from '@acx-ui/utils'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',

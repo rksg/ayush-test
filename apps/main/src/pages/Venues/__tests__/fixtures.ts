@@ -14,16 +14,14 @@ import {
   PriorityEnum,
   ProtocolEnum,
   PersonaGroup,
+  NewTableResult,
+  NewTablePageable,
   ResidentPortal,
   ConnectionMetering,
   BillingCycleType,
   TemplateScope,
   MessageType
 } from '@acx-ui/rc/utils'
-import {
-  NewTableResult,
-  NewTablePageable
-} from '@acx-ui/utils'
 
 export const successResponse = {
   requestId: 'request-id'

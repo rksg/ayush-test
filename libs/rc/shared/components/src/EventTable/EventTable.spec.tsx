@@ -2,12 +2,11 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { Event, EventBase, EventMeta }       from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { findTBody, render, screen, within } from '@acx-ui/test-utils'
-import { RequestPayload }                    from '@acx-ui/types'
-import { TableQuery }                        from '@acx-ui/utils'
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { Event, EventBase, EventMeta, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { findTBody, render, screen, within }       from '@acx-ui/test-utils'
+import { RequestPayload }                          from '@acx-ui/types'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 

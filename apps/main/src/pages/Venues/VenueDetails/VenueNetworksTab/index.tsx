@@ -28,6 +28,7 @@ import {
   useVenueDetailsHeaderQuery
 } from '@acx-ui/rc/services'
 import {
+  useTableQuery,
   NetworkType,
   NetworkTypeEnum,
   RadioTypeEnum,
@@ -41,7 +42,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
-import { useTableQuery }                                     from '@acx-ui/utils'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 

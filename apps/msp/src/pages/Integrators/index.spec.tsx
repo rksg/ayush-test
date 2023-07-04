@@ -51,13 +51,13 @@ const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
+const utils = require('@acx-ui/rc/utils')
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils')
+}))
 const user = require('@acx-ui/user')
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
-}))
-const utils = require('@acx-ui/utils')
-jest.mock('@acx-ui/utils', () => ({
-  ...jest.requireActual('@acx-ui/utils')
 }))
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
