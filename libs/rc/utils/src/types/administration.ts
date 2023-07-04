@@ -1,10 +1,10 @@
 import { defineMessage } from 'react-intl'
 
-import { RolesEnum } from '@acx-ui/types'
-import { getIntl }   from '@acx-ui/utils'
+import { RolesEnum }   from '@acx-ui/types'
+import { getIntl }     from '@acx-ui/utils'
+import { AccountTier } from '@acx-ui/utils'
 
 import { EntitlementUtil } from '../msp.utils'
-import { AccountTier } from '@acx-ui/utils'
 
 import {
   EntitlementDeviceType,
@@ -66,7 +66,7 @@ export interface TenantPreferenceSettings {
   edgeBeta?: TenantPreferenceSettingValue;
 }
 
-export interface TenantAccountTierValue  {
+export interface TenantAccountTierValue {
   acx_account_tier: AccountTier
 }
 

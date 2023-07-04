@@ -8,7 +8,7 @@ import {
   TenantDelegationResponse,
   RecoveryPassphrase,
   TenantPreferenceSettings,
-  TenantAccountTierValue,
+  // TenantAccountTierValue,
   Administrator,
   onActivityMessageReceived,
   onSocketActivityChanged,
@@ -28,24 +28,24 @@ import {
   Entitlement,
   NewEntitlementSummary
 } from '@acx-ui/rc/utils'
-import { AccountTier } from '@acx-ui/utils'
-
 import { baseAdministrationApi } from '@acx-ui/store'
+import { AccountTier }           from '@acx-ui/utils'
 
-enum tierType {
-  Platinum,
-  Gold
-}
 
-type TTier = keyof typeof tierType
+// enum tierType {
+//   Platinum,
+//   Gold
+// }
 
-type AccountTierResponse = {
-  [key in AccountTier]: 'Platinum' | 'Gold'
-}
-
-interface ATier {
-  TTier: string
-}
+// type TTier = keyof typeof tierType
+//
+// type AccountTierResponse = {
+//   [key in AccountTier]: 'Platinum' | 'Gold'
+// }
+//
+// interface ATier {
+//   TTier: string
+// }
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -543,7 +543,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
-    getAccountTier: build.query<tierType, RequestPayload>({
+    getAccountTier: build.query<AccountTier, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getAccountTier, params)
         return {

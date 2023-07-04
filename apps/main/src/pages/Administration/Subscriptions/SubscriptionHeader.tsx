@@ -5,10 +5,10 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { SpaceWrapper, SubscriptionUtilizationWidget }        from '@acx-ui/rc/components'
 import {
-  useGetEntitlementSummaryQuery,
-  useGetAccountTierQuery
+  useGetEntitlementSummaryQuery
+  // useGetAccountTierQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementDeviceType,
@@ -16,7 +16,7 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { useParams }                       from '@acx-ui/react-router-dom'
 import { getJwtTokenPayload, AccountTier } from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
@@ -69,10 +69,10 @@ export const SubscriptionHeader = () => {
     .filter(o => !o.value.startsWith('MSP'))
 
   const queryResults = useGetEntitlementSummaryQuery({ params })
-  const tierVal = useGetAccountTierQuery({ params })
-  const tierVal2 = {
-    acx_account_tier: 'Platinum'
-  }
+  // const tierVal = useGetAccountTierQuery({ params })
+  // const tierVal2 = {
+  //   acx_account_tier: 'Platinum'
+  // }
 
   // console.log(`tierVal: ${tierVal2.acx_account_tier}`)
 
