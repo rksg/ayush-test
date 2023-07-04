@@ -94,7 +94,7 @@ function ConnectionMeteringLink (props:{
     }
   }
   return (
-    <div style={{ fontSize: '16px' }}>
+    <div>
       <div style={{ float: 'left', marginLeft: '5%' }}>
         <TenantLink to={
           getPolicyDetailsLink({
