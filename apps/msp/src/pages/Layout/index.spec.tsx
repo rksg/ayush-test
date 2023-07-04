@@ -66,9 +66,9 @@ const mspEcProfile = {
   service_expiration_date: ''
 }
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
 }))
 const user = require('@acx-ui/user')
 jest.mock('@acx-ui/user', () => ({
