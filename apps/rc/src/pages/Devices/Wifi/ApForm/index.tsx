@@ -53,7 +53,7 @@ import {
 import {
   useNavigate,
   useTenantLink,
-  useParams
+  useParams, TenantLink
 } from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -102,6 +102,7 @@ export function ApForm () {
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
+  const [venueFwVersion, setVenueFwVersion] = useState('-')
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
@@ -120,6 +121,38 @@ export function ApForm () {
       const result = dhcpApResponse as DhcpApResponse
       return result.response?.[0]
     }
+  }
+
+  const venueInfos = () => {
+    return <span>
+      {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
+        fwVersion: venueFwVersion
+      })}
+      {
+        checkBelowFwVersion(venueFwVersion) ? <><br/><br/>{$t({
+          defaultMessage: 'If you are adding an <b>R560 or R570</b> AP, ' +
+            'please update the firmware in this venue to <b>6.2.1</b> or greater. ' +
+            'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
+          b: chunks => <strong>{chunks}</strong>,
+          fwManagementLink: (<TenantLink
+            to={'/administration/fwVersionMgmt'}>{
+              $t({ defaultMessage: 'Firmware Management' })
+            }</TenantLink>)
+        })}</> : ''
+      }
+    </span>
+  }
+
+  const checkBelowFwVersion = (version: string) => {
+    if (version === null) return false
+
+    const baseVersion = [6, 2, 1]
+    const compareVersion = version.split('.').map(Number)
+    for (let i = 0; i < baseVersion.length; i++) {
+      if (baseVersion[i] > compareVersion[i])
+        return true
+    }
+    return false
   }
 
   useEffect(() => {
@@ -277,6 +310,9 @@ export function ApForm () {
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
+    if (selectVenue.hasOwnProperty('version')) {
+      setVenueFwVersion(selectVenue.version ?? '-')
+    }
   }
 
   const onSaveCoordinates = (latLng: DeviceGps | null) => {
@@ -384,11 +420,14 @@ export function ApForm () {
                   },
                   message: $t(validationMessages.cellularApDhcpLimitation)
                 }]}
-                children={<Select
-                  disabled={apMeshRoleDisabled || dhcpRoleDisabled}
-                  options={venueOption}
-                  onChange={async (value) => await handleVenueChange(value)}
-                />}
+                children={<>
+                  <Select
+                    disabled={apMeshRoleDisabled || dhcpRoleDisabled}
+                    options={venueOption}
+                    onChange={async (value) => await handleVenueChange(value)}
+                  />
+                  {venueInfos()}
+                </>}
               />
               <Form.Item
                 name='apGroupId'
