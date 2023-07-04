@@ -13,15 +13,8 @@ function AllRoutes () {
     <Route path={MLISA_BASE_PATH}>
       <Route path='dashboard' element={<div>dashboard</div>} />
       <Route path='recommendations'>
-        <Route index element={<Recommendations />} />
-        <Route path='aiOps'>
-          <Route index element={<Recommendations />} />
-          <Route path=':id' element={<RecommendationDetails />} />
-        </Route>
-        <Route path='crrm'>
-          <Route index element={<Recommendations />} />
-          <Route path=':id' element={<RecommendationDetails />} />
-        </Route>
+        <Route path=':activeTab' element={<Recommendations/>} />
+        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />

@@ -42,7 +42,7 @@ const DateLink = ({ value }: { value: RecommendationRow }) => {
 }
 
 export function RecommendationTable ({ filters, showCrrm }:
-  { filters: IncidentFilter, showCrrm: boolean }) {
+  { filters: IncidentFilter, showCrrm?: boolean }) {
   const intl = useIntl()
   const { $t } = intl
 
@@ -85,80 +85,85 @@ export function RecommendationTable ({ filters, showCrrm }:
   //   }
   // ]
 
-  const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => [
-    {
-      title: $t(defineMessage({ defaultMessage: 'Priority' })),
-      width: 90,
-      dataIndex: 'priorityLabel',
-      key: 'priorityLabel',
-      render: (_, value) => {
-        return <UI.Priority>
-          <UI.PriorityIcon value={value.priorityLabel} />
-          <span>{value.priorityLabel}</span>
-        </UI.Priority>
+  const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => {
+    const columns: TableProps<RecommendationRow>['columns'] = [
+      {
+        title: $t(defineMessage({ defaultMessage: 'Priority' })),
+        width: 90,
+        dataIndex: 'priorityLabel',
+        key: 'priorityLabel',
+        render: (_, value) => {
+          return <UI.Priority>
+            <UI.PriorityIcon value={value.priorityLabel} />
+            <span>{value.priorityLabel}</span>
+          </UI.Priority>
+        },
+        sorter: { compare: sortProp('priority', severitySort) },
+        fixed: 'left',
+        filterable: true
       },
-      sorter: { compare: sortProp('priority', severitySort) },
-      fixed: 'left',
-      filterable: true
-    },
-    {
-      title: $t(defineMessage({ defaultMessage: 'Date' })),
-      width: 130,
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (_, value) => {
-        return <DateLink value={value}/>
+      {
+        title: $t(defineMessage({ defaultMessage: 'Date' })),
+        width: 130,
+        dataIndex: 'updatedAt',
+        key: 'updatedAt',
+        render: (_, value) => {
+          return <DateLink value={value}/>
+        },
+        sorter: { compare: sortProp('updatedAt', dateSort) },
+        fixed: 'left'
       },
-      sorter: { compare: sortProp('updatedAt', dateSort) },
-      fixed: 'left'
-    },
-    {
-      title: $t(defineMessage({ defaultMessage: 'Summary' })),
-      width: 250,
-      dataIndex: 'summary',
-      key: 'summary',
-      render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
-      sorter: { compare: sortProp('summary', defaultSort) },
-      ellipsis: true,
-      searchable: true
-    },
-    {
-      title: $t(defineMessage({ defaultMessage: 'Category' })),
-      width: 130,
-      dataIndex: 'category',
-      key: 'category',
-      sorter: { compare: sortProp('category', defaultSort) },
-      fixed: 'left',
-      filterable: true
-    },
-    {
-      title: scopeType,
-      width: 150,
-      dataIndex: 'scope',
-      key: 'scope',
-      render: (_, value, __, highlightFn ) => {
-        return <Tooltip placement='top' title={value.scope}>
-          <UI.UnderlinedSpan>{highlightFn(value.sliceValue)}</UI.UnderlinedSpan>
-        </Tooltip>
+      {
+        title: $t(defineMessage({ defaultMessage: 'Summary' })),
+        width: 250,
+        dataIndex: 'summary',
+        key: 'summary',
+        render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
+        sorter: { compare: sortProp('summary', defaultSort) },
+        ellipsis: true,
+        searchable: true
       },
-      sorter: { compare: sortProp('sliceValue', defaultSort) },
-      searchable: true
-    },
-    {
-      title: $t(defineMessage({ defaultMessage: 'Status' })),
-      width: 90,
-      dataIndex: 'status',
-      key: 'status',
-      render: (_, value ) => {
-        return <Tooltip placement='top' title={value.statusTooltip}>
-          <UI.UnderlinedSpan>{value.status}</UI.UnderlinedSpan>
-        </Tooltip>
+      {
+        title: $t(defineMessage({ defaultMessage: 'Category' })),
+        width: 130,
+        dataIndex: 'category',
+        key: 'category',
+        sorter: { compare: sortProp('category', defaultSort) },
+        fixed: 'left',
+        filterable: true
       },
-      sorter: { compare: sortProp('status', defaultSort) },
-      filterable: true
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], []) // '$t' 'basePath' 'intl' are not changing
+      {
+        title: scopeType,
+        width: 150,
+        dataIndex: 'scope',
+        key: 'scope',
+        render: (_, value, __, highlightFn ) => {
+          return <Tooltip placement='top' title={value.scope}>
+            <UI.UnderlinedSpan>{highlightFn(value.sliceValue)}</UI.UnderlinedSpan>
+          </Tooltip>
+        },
+        sorter: { compare: sortProp('sliceValue', defaultSort) },
+        searchable: true
+      },
+      {
+        title: $t(defineMessage({ defaultMessage: 'Status' })),
+        width: 90,
+        dataIndex: 'status',
+        key: 'status',
+        render: (_, value ) => {
+          return <Tooltip placement='top' title={value.statusTooltip}>
+            <UI.UnderlinedSpan>{value.status}</UI.UnderlinedSpan>
+          </Tooltip>
+        },
+        sorter: { compare: sortProp('status', defaultSort) },
+        filterable: true
+      }
+    ]
+    return showCrrm
+      ? columns.filter((val) => val.key !== 'category')
+      : columns
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showCrrm]) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]}>

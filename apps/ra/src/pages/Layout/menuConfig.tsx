@@ -68,8 +68,12 @@ export function useMenuConfig () {
                 ...(hasManageRecommendationPermission
                   ? [
                     {
-                      uri: '/recommendations',
-                      label: $t({ defaultMessage: 'Recommendations' })
+                      uri: '/recommendations/crrm',
+                      label: $t({ defaultMessage: 'AI-Driven RRM' })
+                    },
+                    {
+                      uri: '/recommendations/aiOps',
+                      label: $t({ defaultMessage: 'AI Operations' })
                     }
                   ]
                   : []),
