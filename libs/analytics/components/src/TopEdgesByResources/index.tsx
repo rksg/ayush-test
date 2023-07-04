@@ -9,7 +9,7 @@ import { AnalyticsFilter, BarChartData, calculateGranularity, getBarChartSeriesD
 import { BarChart, EventParams, HistoricalCard, Loader, NoData, cssNumber, cssStr }   from '@acx-ui/components'
 import { formatter, intlFormats }                                                     from '@acx-ui/formatter'
 import { useGetEdgesTopResourcesQuery }                                               from '@acx-ui/rc/services'
-import { EdgeTimeSeriesPayload, EdgesTopResources }                                   from '@acx-ui/rc/utils'
+import { EdgesTopResources }                                                          from '@acx-ui/rc/utils'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
 
 export { TopEdgesByResourcesWidget as TopEdgesByResources }
@@ -81,8 +81,9 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
     payload: {
       start: filters?.startDate,
       end: filters?.endDate,
-      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M')
-    } as EdgeTimeSeriesPayload
+      granularity: calculateGranularity(filters?.startDate, filters?.endDate, 'PT15M'),
+      venueIds: filters?.filter?.networkNodes?.flatMap(item => item.map(t => t.name))
+    }
   },
   {
     selectFromResult: ({ data, ...rest }) => {
