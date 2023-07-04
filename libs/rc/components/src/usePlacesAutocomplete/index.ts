@@ -23,7 +23,7 @@ export function usePlacesAutocomplete ( props:
   const [mapReady, setMapReady] = useState(false)
 
   useEffect(() => {
-    if (!isMapEnabled || !currentMapRegion) return
+    if (!isMapEnabled) return
     if (!!window.google?.maps?.places) {
       setMapReady(true)
     } else {

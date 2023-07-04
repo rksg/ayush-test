@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { useDashboardFilter, NetworkNodePath }   from '@acx-ui/utils'
+import { useDashboardFilter }                    from '@acx-ui/utils'
 
 import { AlarmList } from './AlarmList'
 
@@ -133,9 +133,7 @@ export function AlarmWidgetV2 () {
   const { $t } = useIntl()
 
   // Dashboard overview query
-  const { filters } = useDashboardFilter()
-  const { filter: { networkNodes } } = filters
-  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+  const { venueIds } = useDashboardFilter()
 
   const overviewV2Query = useDashboardV2OverviewQuery({
     params: useParams(),

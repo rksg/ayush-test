@@ -54,7 +54,7 @@ export default function PortalViewHostApproval (props:{
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={portalLang.login} key='login'>
           <UI.FieldTextBig>{portalLang.loginNote}</UI.FieldTextBig>
-          <UI.FieldInput></UI.FieldInput>
+          <UI.FieldInput disabled={true}></UI.FieldInput>
           <UI.ViewSectionLink>
             {portalLang.forgotPswdLink}</UI.ViewSectionLink>
           <PortalButtonContent

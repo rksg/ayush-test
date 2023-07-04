@@ -197,4 +197,23 @@ describe('Layout', () => {
       search: ''
     })
   })
+
+  it('should navigate correctly if dpsk admin', async () => {
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <Layout />
+      </Provider>, { route: { params } })
+
+    await waitFor(async () => {
+      expect(await screen.findByText('My Customers')).toBeVisible()
+    })
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/users/dpskAdmin`,
+      hash: '',
+      search: ''
+    })
+  })
 })

@@ -51,7 +51,7 @@ Object {
     },
     Object {
       "name": "70:CA:97:01:A0:C0",
-      "type": "ap",
+      "type": "AP",
     },
   ],
   "start": "2022-07-18T23:15:00.000Z",

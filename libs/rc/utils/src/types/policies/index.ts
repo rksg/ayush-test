@@ -31,7 +31,7 @@ export enum PolicyType {
   RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
   TUNNEL_PROFILE = 'Tunnel Profile',
-  CONNECTION_METERING = 'Connection Metering'
+  CONNECTION_METERING = 'Data Usage Metering'
 }
 
 export enum PolicyTechnology {
