@@ -28,10 +28,6 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string }) {
 }
 
 describe('SplitProvider', () => {
-  beforeEach(() => {
-  })
-  afterEach(() => {
-  })
   it('renders nothing if no tenant provided', async () => {
     render(<TestSplitProvider IS_MLISA_SA='' tenant='' />)
     expect(screen.queryByText('rendered')).toBeNull()
