@@ -38,7 +38,7 @@ const HealthDrillDown = (props: {
     cssStr('--acx-accents-blue-50')
   ]
   const payload = {
-    path: filters.path,
+    filter: filters.filter,
     start: filters.startDate,
     end: filters.endDate
   }
@@ -51,7 +51,7 @@ const HealthDrillDown = (props: {
   const connectionFailureResults = useConnectionDrilldownQuery(payload, {
     selectFromResult: (result) => {
       const { data, ...rest } = result
-      const connectionDrilldown = data?.connectionDrilldown
+      const connectionDrilldown = data?.network?.connectionDrilldown
       const auth = connectionDrilldown?.authSuccessAndAttemptCount?.[0]
       const assoc = connectionDrilldown?.assocSuccessAndAttemptCount?.[0]
       const eap = connectionDrilldown?.eapSuccessAndAttemptCount?.[0]

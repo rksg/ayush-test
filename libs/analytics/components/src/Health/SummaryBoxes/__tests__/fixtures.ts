@@ -1,9 +1,9 @@
 export const fakeSummary = {
-  timeSeries: {
-    connectionSuccessAndAttemptCount: [[50762, 107231]]
-  },
-  avgTTC: {
-    hierarchyNode: {
+  network: {
+    timeSeries: {
+      connectionSuccessAndAttemptCount: [[50762, 107231]]
+    },
+    avgTTC: {
       incidentCharts: {
         ttc: [39502.44053058643]
       }
@@ -12,11 +12,11 @@ export const fakeSummary = {
 }
 
 export const fakeEmptySummary = {
-  timeSeries: {
-    connectionSuccessAndAttemptCount: [[null, null]]
-  },
-  avgTTC: {
-    hierarchyNode: {
+  network: {
+    timeSeries: {
+      connectionSuccessAndAttemptCount: [[null, null]]
+    },
+    avgTTC: {
       incidentCharts: {
         ttc: [null]
       }
