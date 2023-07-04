@@ -72,6 +72,11 @@ const EdgeDhcpTable = () => {
   const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
   const [patchDhcp, { isLoading: isPatchDhcpUpdating }] = usePatchEdgeDhcpServiceMutation()
 
+  const isUpdateAvailable = (data: DhcpStats) => {
+    return Boolean(data?.currentVersion && data?.targetVersion &&
+      data?.currentVersion !== data?.targetVersion)
+  }
+
   const columns: TableProps<DhcpStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -133,7 +138,7 @@ const EdgeDhcpTable = () => {
       dataIndex: 'targetVersion',
       sorter: true,
       render (data, row) {
-        if(row.currentVersion && row.targetVersion && row.currentVersion !== row.targetVersion) {
+        if(isUpdateAvailable(row)) {
           return $t({ defaultMessage: 'Yes' })
         }
         return $t({ defaultMessage: 'No' })
@@ -198,7 +203,7 @@ const EdgeDhcpTable = () => {
       }
     },
     {
-      visible: (selectedRows) => (selectedRows[0]?.edgeNum || 0) > 0,
+      visible: (selectedRows) => isUpdateAvailable(selectedRows[0]),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows, clearSelection) => {
         showActionModal({

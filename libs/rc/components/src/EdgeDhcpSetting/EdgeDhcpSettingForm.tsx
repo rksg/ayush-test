@@ -7,7 +7,6 @@ import {
   EdgeDhcpSetting,
   LeaseTimeType,
   LeaseTimeUnit,
-  domainNameRegExp,
   networkWifiIpRegExp
 } from '@acx-ui/rc/utils'
 
