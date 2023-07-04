@@ -75,11 +75,11 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="sc-kDDrLX OZWZo"
+              class="sc-evZas kVzYYu"
               style="width: 1280px; height: 800px;"
             >
               <div
-                class="ant-row Grid__GridRow-sc-5irhjd-2 sc-jqUVSM  kAxCIQ"
+                class="ant-row Grid__GridRow-sc-5irhjd-2 sc-crXcEl  ciWkcV"
                 style="margin: -5px -5px -5px -5px;"
               >
                 <div
@@ -87,26 +87,26 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
+                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi fLvOfG"
+                        class="sc-ftvSup ctIXjK"
                       />
                     </div>
                     <div>
                       <h2
-                        class="ant-typography sc-gKXOVf ceboJB"
+                        class="ant-typography sc-papXJ hZOGdZ"
                       >
                         1
                       </h2>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-iBkjds fPbHyn doZwwY"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-jqUVSM fPbHyn jWAVtf"
                       >
                         Incident P1
                       </h5>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-ftvSup fPbHyn kDCDGw"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-kDDrLX fPbHyn hMIGYr"
                       >
                         2 clients impacted
                       </h5>
@@ -118,26 +118,26 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
+                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi cUTJpv"
+                        class="sc-ftvSup cyrFgv"
                       />
                     </div>
                     <div>
                       <h2
-                        class="ant-typography sc-gKXOVf ceboJB"
+                        class="ant-typography sc-papXJ hZOGdZ"
                       >
                         30K
                       </h2>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-iBkjds fPbHyn doZwwY"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-jqUVSM fPbHyn jWAVtf"
                       >
                         Incident P2
                       </h5>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-ftvSup fPbHyn kDCDGw"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-kDDrLX fPbHyn hMIGYr"
                       >
                         4K clients impacted
                       </h5>
@@ -149,26 +149,26 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
+                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi fvCsOc"
+                        class="sc-ftvSup bDZPrQ"
                       />
                     </div>
                     <div>
                       <h2
-                        class="ant-typography sc-gKXOVf ceboJB"
+                        class="ant-typography sc-papXJ hZOGdZ"
                       >
                         5
                       </h2>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-iBkjds fPbHyn doZwwY"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-jqUVSM fPbHyn jWAVtf"
                       >
                         Incident P3
                       </h5>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-ftvSup fPbHyn kDCDGw"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-kDDrLX fPbHyn hMIGYr"
                       >
                         6 clients impacted
                       </h5>
@@ -180,26 +180,26 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   style="padding: 5px 5px 5px 5px;"
                 >
                   <div
-                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-papXJ iZPNKw"
+                    class="Grid__Container-sc-5irhjd-1 zzbxI sc-iqcoie iugpin"
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi dkoUNd"
+                        class="sc-ftvSup eAUnBx"
                       />
                     </div>
                     <div>
                       <h2
-                        class="ant-typography sc-gKXOVf ceboJB"
+                        class="ant-typography sc-papXJ hZOGdZ"
                       >
                         7
                       </h2>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-iBkjds fPbHyn doZwwY"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-jqUVSM fPbHyn jWAVtf"
                       >
                         Incident P4
                       </h5>
                       <h5
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-ftvSup fPbHyn kDCDGw"
+                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 sc-kDDrLX fPbHyn hMIGYr"
                       >
                         8 clients impacted
                       </h5>

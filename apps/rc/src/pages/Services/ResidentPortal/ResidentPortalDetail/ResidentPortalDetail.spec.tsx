@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   getServiceRoutePath,
   PropertyUrlsInfo,
@@ -96,5 +97,39 @@ describe('ResidentPortalDetail', () => {
     const helpInput =
       await screen.findByText(mockedResidentPortal.uiConfiguration?.text.helpText)
     expect(helpInput).toBeInTheDocument()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <ResidentPortalDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Resident Portals'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <ResidentPortalDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Resident Portals'
+    })).toBeVisible()
   })
 })

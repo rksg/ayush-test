@@ -8,12 +8,13 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeDhcpSettingForm
 } from '@acx-ui/rc/components'
-import { useAddEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
-import { EdgeDhcpSetting }               from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }    from '@acx-ui/react-router-dom'
+import { useAddEdgeDhcpServiceMutation }                                                                from '@acx-ui/rc/services'
+import { EdgeDhcpSetting, ServiceOperation, ServiceType, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                                                   from '@acx-ui/react-router-dom'
 
 const AddDhcp = () => {
 
@@ -22,10 +23,13 @@ const AddDhcp = () => {
   const linkToServices = useTenantLink('/services')
   const formRef = useRef<StepsFormLegacyInstance<EdgeDhcpSetting>>()
   const [addEdgeDhcp, { isLoading: isFormSubmitting }] = useAddEdgeDhcpServiceMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getServiceRoutePath(
+    { type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })
 
-  const handleAddEdgeDhcp = async (data: EdgeDhcpSetting) => {
+  const handleAddEdgeDhcp = async () => {
     try {
-      const payload = { ...data }
+      const payload = formRef.current?.getFieldsValue(true)
       await addEdgeDhcp({ payload: payload }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {
@@ -37,7 +41,11 @@ const AddDhcp = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add DHCP for SmartEdge Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />

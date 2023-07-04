@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
@@ -61,6 +62,38 @@ describe('EditEdgeDhcp', () => {
     const hostsRow = await screen.findAllByRole('row', { name: /HostTest/i })
     expect(poolsRow.length).toBe(1)
     expect(hostsRow.length).toBe(1)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <EditDhcp />
+      </Provider>, {
+        route: { params, path: editPagePath }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <EditDhcp />
+      </Provider>, {
+        route: { params, path: editPagePath }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DHCP for SmartEdge'
+    })).toBeVisible()
   })
 
   it.skip('should be blcoked when required field is empty', async () => {

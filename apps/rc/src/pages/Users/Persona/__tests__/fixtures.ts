@@ -157,9 +157,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     name: 'Class C',
     description: '',
     macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-100',
-    propertyId: 'propertyId-600'
+    dpskPoolId: 'dpsk-pool-1'
   }]
 }
 

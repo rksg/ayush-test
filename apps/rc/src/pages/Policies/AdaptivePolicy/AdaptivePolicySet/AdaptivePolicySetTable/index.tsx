@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                     from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListQuery, useAdaptivePolicySetLisByQueryQuery,
@@ -29,8 +29,7 @@ export default function AdaptivePolicySetTable () {
   const [assignedMacPools, setAssignedMacPools] = useState(new Map())
   const [assignedDpsks, setAssignedDpsks] = useState(new Map())
 
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetLisByQueryQuery,
@@ -50,7 +49,7 @@ export default function AdaptivePolicySetTable () {
 
   const { data: macRegList, isLoading: getMacListLoading } = useMacRegListsQuery({
     payload: { pageSize: 10000 }
-  }, { skip: !isMacRegistrationEnabled })
+  }, { skip: !isCloudpathEnabled })
 
   const { data: dpskList, isLoading: getDpsksLoading } = useGetDpskListQuery({
     payload: { pageSize: 10000 }

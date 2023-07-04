@@ -339,7 +339,7 @@ describe('DeviceOSDrawer Component setting II', () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(queryDevice)
+        ctx.json(queryDeviceUpdate)
       )
     ), rest.post(
       AccessControlUrls.addDevicePolicy.url,

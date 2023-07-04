@@ -16,18 +16,30 @@ export type HeaderData = {
 }
 
 type useHeaderExtraProps = {
-  shouldQuerySwitch: boolean,
-  withIncidents?: boolean
+  shouldQuerySwitch?: boolean,
+  withIncidents?: boolean,
+  excludeNetworkFilter?: boolean
 }
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & useHeaderExtraProps
+
+const Filter = (
+  { shouldQuerySwitch, withIncidents, excludeNetworkFilter }: useHeaderExtraProps
+) => {
+  return excludeNetworkFilter
+    ? null
+    : <NetworkFilter
+      key='network-filter'
+      shouldQuerySwitch={Boolean(shouldQuerySwitch)}
+      withIncidents={withIncidents}
+    />
+}
 
 export const useHeaderExtra = (props: useHeaderExtraProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   return [
-    <NetworkFilter
+    <Filter
       key='network-filter'
-      shouldQuerySwitch={props.shouldQuerySwitch}
-      withIncidents={props.withIncidents}
+      {...props}
     />,
     <RangePicker
       key='range-picker'

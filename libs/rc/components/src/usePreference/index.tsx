@@ -1,16 +1,23 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { showActionModal }                                      from '@acx-ui/components'
-import { useGetPreferencesQuery, useUpdatePreferenceMutation }  from '@acx-ui/rc/services'
-import { COUNTRY_CODE, TenantPreferenceSettings, CommonResult } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                               from '@acx-ui/react-router-dom'
+import { showActionModal }                                                         from '@acx-ui/components'
+import { useGetPreferencesQuery, useUpdatePreferenceMutation }                     from '@acx-ui/rc/services'
+import { WIFI_COUNTRY_CODE, COUNTRY_CODE, TenantPreferenceSettings, CommonResult } from '@acx-ui/rc/utils'
+import { useNavigate, useParams }                                                  from '@acx-ui/react-router-dom'
+
+export const DEFAULT_MAP_REGION = 'US'
 
 export const getMapRegion = (data: TenantPreferenceSettings | undefined): string => {
-  return data?.global?.mapRegion as string
+  return data?.global?.mapRegion as string || DEFAULT_MAP_REGION
 }
 
 export const countryCodes = COUNTRY_CODE.map(item=> ({
+  label: item.name,
+  value: item.code
+}))
+
+export const wifiCountryCodes = WIFI_COUNTRY_CODE.map(item=> ({
   label: item.name,
   value: item.code
 }))

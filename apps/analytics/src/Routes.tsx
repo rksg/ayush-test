@@ -3,17 +3,19 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import {
+  AIAnalytics,
+  AIAnalyticsTabEnum,
   HealthPage,
+  IncidentDetails,
   IncidentListPage,
   IncidentListPageLegacy
 }                                                   from '@acx-ui/analytics/components'
+import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-dom'
 import { Provider }                                 from '@acx-ui/store'
 import { hasAccess }                                from '@acx-ui/user'
 
-import { AIAnalytics, AIAnalyticsTabEnum }              from './pages/AIAnalytics'
-import IncidentDetailsPage                              from './pages/IncidentDetails'
 import { NetworkAssurance, NetworkAssuranceTabEnum }    from './pages/NetworkAssurance'
 import { ServiceGuard }                                 from './pages/ServiceGuard'
 import ServiceGuardDetails                              from './pages/ServiceGuard/ServiceGuardDetails'
@@ -35,6 +37,7 @@ export default function AnalyticsRoutes () {
 
   const routes = rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
         element={isNavbarEnhanced
@@ -45,7 +48,7 @@ export default function AnalyticsRoutes () {
       />
       {!isNavbarEnhanced &&
         <Route path='analytics/incidents/tab/:activeTab' element={<IncidentListPageLegacy />} />}
-      <Route path='analytics/incidents/:incidentId' element={<IncidentDetailsPage />} />
+      <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
       <Route path='analytics/recommendations'
         element={<div>{ $t({ defaultMessage: 'Recommendations' }) } </div>} />
       <Route path='analytics/health'

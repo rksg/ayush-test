@@ -11,7 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
 import {
@@ -30,14 +30,16 @@ import {
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
+import { RolesEnum }                from '@acx-ui/types'
+import { filterByAccess, hasRoles } from '@acx-ui/user'
+import { getIntl }                  from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
+
 
 
 interface UploadPassphrasesFormFields {
@@ -75,7 +77,7 @@ export default function DpskPassphraseManagement () {
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
-  const isCloudpathEnabled = useIsSplitOn(Features.DPSK_CLOUDPATH_FEATURE)
+  const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskPassphraseListQuery,
@@ -262,10 +264,10 @@ export default function DpskPassphraseManagement () {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
     },
-    {
+    ...!hasRoles(RolesEnum.DPSK_ADMIN) ? [{
       label: $t({ defaultMessage: 'Add DPSK Network' }),
       onClick: () => setNetworkModalVisible(true)
-    }
+    }]: []
   ]
 
   const networkForm = <NetworkForm modalMode={true}
