@@ -52,7 +52,6 @@ beforeAll(() => {
   setUpIntl({ locale: 'en-US', messages: {} })
 })
 beforeEach(async () => {
-  document.body.innerHTML = ''
   mockDOMSize(1280, 800)
   const env = require('./apps/main/src/env.json')
   mockServer.use(
