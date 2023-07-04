@@ -103,14 +103,6 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
             !dhcpRelay &&
             <>
               <Form.Item
-                name='domainName'
-                label={$t({ defaultMessage: 'Domain Name' })}
-                children={<Input />}
-                rules={[
-                  { validator: (_, value) => domainNameRegExp(value) }
-                ]}
-              />
-              <Form.Item
                 name='primaryDnsIp'
                 label={$t({ defaultMessage: 'Primary DNS Server' })}
                 children={<Input />}

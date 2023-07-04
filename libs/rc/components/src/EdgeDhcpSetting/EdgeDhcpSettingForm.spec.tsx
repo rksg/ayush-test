@@ -44,23 +44,6 @@ describe('EdgeDhcpSettingForm', () => {
     expect(await screen.findByRole('textbox', { name: 'Secondary DNS Server' })).toBeVisible()
   })
 
-  it('should show error when domain name is invalid', async () => {
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeDhcpSettingForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>, { route: { params } }
-    )
-
-    await userEvent.type(screen.getByRole('textbox', { name: 'Domain Name' }), 'test')
-    expect(
-      await screen.findByText('Please enter a valid domain' )
-    ).toBeVisible()
-  })
-
   it('should show error dns ip is invalid', async () => {
     render(
       <Provider>
