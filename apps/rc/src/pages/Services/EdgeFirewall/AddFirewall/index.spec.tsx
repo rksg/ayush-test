@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { AddressType, CommonUrlsInfo, EdgeFirewallUrls, EdgeUrlsInfo, ProtocolType } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -156,6 +157,34 @@ describe('Add edge firewall service', () => {
     })
 
     cleanup()
+  }, 30000)
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<AddFirewall />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Firewall'
+    })).toBeVisible()
+  }, 30000)
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<AddFirewall />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Firewall'
+    })).toBeVisible()
   }, 30000)
 
   it('should correctly create with stateful ACL rule', async () => {

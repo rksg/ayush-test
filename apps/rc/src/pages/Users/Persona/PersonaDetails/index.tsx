@@ -287,10 +287,10 @@ function PersonaDetails () {
               )}
               {
                 isConnectionMeteringEnabled &&
-                <Row key={'Connection Metering'}>
+                <Row key={'Data Usage Metering'}>
                   <Col span={7}>
                     <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                      {$t({ defaultMessage: 'Connection Metering' })}:
+                      {$t({ defaultMessage: 'Data Usage Metering' })}:
                     </Typography.Paragraph>
                   </Col>
                   <Col span={12}>{connectionMetering ?
@@ -335,6 +335,7 @@ function PersonaDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, revoked: { allowed, status: revokedStatus, onRevoke }, onClick } = props
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const getRevokedTitle = () => {
     return $t({
@@ -407,7 +408,18 @@ function PersonaDetailsPageHeader (props: {
           </Tag>
         </>}
       extra={extra}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        {
+          text: $t({ defaultMessage: 'Clients' })
+        },
+        {
+          text: $t({ defaultMessage: 'Persona Management' })
+        },
+        {
+          text: $t({ defaultMessage: 'Personas' }),
+          link: 'users/persona-management/persona'
+        }
+      ] : [
         {
           text: $t({ defaultMessage: 'Persona' }),
           link: 'users/persona-management/persona'

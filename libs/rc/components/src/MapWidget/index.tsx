@@ -50,6 +50,7 @@ function ActualMap () {
           cluster={true}
           data={data}
           enableVenueFilter={true}
+          language={'en'}
           region={currentMapRegion} />
       }
     </Loader>
@@ -85,6 +86,7 @@ function ActualMapV2 () {
           cluster={true}
           data={data}
           enableVenueFilter={true}
+          language={'en'}
           region={currentMapRegion}
         />
       }
