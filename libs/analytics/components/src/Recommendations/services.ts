@@ -4,6 +4,7 @@ import { defineMessage } from 'react-intl'
 
 import {
   nodeTypes,
+  getFilterPayload,
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -122,10 +123,9 @@ export const api = recommendationApi.injectEndpoints({
         }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload?.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<Recommendation>) => {

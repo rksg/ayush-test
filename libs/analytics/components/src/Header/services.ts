@@ -1,8 +1,9 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, normalizeNodeType } from '@acx-ui/analytics/utils'
-import { dataApi }                            from '@acx-ui/store'
-import {  NetworkPath, NodeType, pathFilter } from '@acx-ui/utils'
+import { getSelectedNodePath, normalizeNodeType } from '@acx-ui/analytics/utils'
+import type { AnalyticsFilter }                   from '@acx-ui/analytics/utils'
+import { dataApi }                                from '@acx-ui/store'
+import { NetworkPath, NodeType, NodesFilter }     from '@acx-ui/utils'
 
 import { HeaderData, SubTitle } from '.'
 
@@ -28,7 +29,7 @@ type QueryVariables = {
   startDate: string
   endDate: string
   mac?: string
-  filter?: pathFilter
+  filter?: NodesFilter
 }
 
 type AttributesKey =
@@ -70,7 +71,8 @@ const getAttributesByNodeType = (nodeType: NodeType) => {
   return attributes[key as AttributesKey]
 }
 
-const getQuery = (path: NetworkPath) : string => {
+const getQuery = (filter: NodesFilter) : string => {
+  const path = getSelectedNodePath(filter)
   const [{ type }] = path.slice(-1)
   switch (type) {
     case 'AP': return gql`
@@ -116,12 +118,13 @@ const getQuery = (path: NetworkPath) : string => {
 }
 
 const getQueryVariables = (payload: AnalyticsFilter): QueryVariables => {
-  const { path } = payload
-  const [{ type, name }] = path.slice(-1)
-  switch(type) {
-    case 'AP':
-    case 'switch': return { ...payload, mac: name }
-    default:       return payload
+  const path = payload.filter.networkNodes?.[0].slice(-1)[0]
+  switch(path?.type) {
+    case 'apMac':
+    case 'switch':
+      return { ...payload, mac: path.list[0] }
+    default:
+      return payload
   }
 }
 
@@ -146,7 +149,7 @@ export const api = dataApi.injectEndpoints({
       AnalyticsFilter
     >({
       query: (payload) => ({
-        document: getQuery(payload.path),
+        document: getQuery(payload.filter),
         variables: getQueryVariables(payload)
       }),
       transformResponse:

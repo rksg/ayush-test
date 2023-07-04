@@ -24,8 +24,12 @@ export function APDetailsCard (props: {
 
   const filters = {
     ...dateFilter,
-    path: [{ type: 'zone', name: apDetail?.venueId },
-      { type: 'AP', name: apDetail?.apMac as string }]
+    filter: {
+      networkNodes: [[
+        { type: 'zone', name: apDetail?.venueId },
+        { type: 'AP', name: apDetail?.apMac as string }
+      ]]
+    }
   } as AnalyticsFilter
 
   const incidentData = useIncidentsBySeverityQuery(filters, {
