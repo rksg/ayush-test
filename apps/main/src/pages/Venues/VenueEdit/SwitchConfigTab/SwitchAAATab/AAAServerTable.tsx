@@ -9,10 +9,10 @@ import {
   showActionModal,
   PasswordInput
 } from '@acx-ui/components'
-import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           from '@acx-ui/rc/services'
-import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
-import { useParams }                                                            from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                       from '@acx-ui/user'
+import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }                          from '@acx-ui/rc/services'
+import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting, VenueMessages } from '@acx-ui/rc/utils'
+import { useParams }                                                                           from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                      from '@acx-ui/user'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
@@ -147,7 +147,7 @@ function useColumns (type: AAAServerTypeEnum) {
 
 export const AAAServerTable = (props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type:AAAServerTypeEnum, tableQuery: any, aaaSetting?:AAASetting }) => {
+  type:AAAServerTypeEnum, tableQuery: any, aaaSetting?:AAASetting, cliApplied?:boolean }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
@@ -163,7 +163,7 @@ export const AAAServerTable = (props: {
     bulkDeleteAAAServer,
     { isLoading: isBulkDeleting }
   ] = useBulkDeleteAAAServerMutation()
-  const { type, tableQuery, aaaSetting } = props
+  const { type, tableQuery, aaaSetting, cliApplied } = props
 
   const handleAddAction = () => {
     setIsEditMode(false)
@@ -172,6 +172,8 @@ export const AAAServerTable = (props: {
   }
   const actions: TableProps<RadiusServer | TacacsServer | LocalUser>['actions'] = [{
     label: $t({ defaultMessage: 'Add {serverType}' }, { serverType: $t(serversDisplayText[type]) }),
+    disabled: cliApplied,
+    tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
     onClick: handleAddAction
   }]
 
@@ -274,7 +276,7 @@ export const AAAServerTable = (props: {
             customContent: {
               action: 'DELETE',
               entityName: $t(serversDisplayText[type]),
-              entityValue: rows.length === 1 ? rows[0].name : undefined,
+              entityValue: rows.length === 1 ? (rows[0]?.name || rows[0]?.username) : undefined,
               numOfEntities: rows.length
             },
             onOk: () => { rows.length === 1 ?
@@ -307,8 +309,8 @@ export const AAAServerTable = (props: {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
+        rowActions={cliApplied ? undefined : filterByAccess(rowActions)}
+        rowSelection={cliApplied ? undefined : { type: 'checkbox', onChange: onSelectChange }}
       />
     </Loader>
   )

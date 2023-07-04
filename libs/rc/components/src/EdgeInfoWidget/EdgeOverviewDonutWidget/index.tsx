@@ -8,7 +8,7 @@ interface EdgeOverviewDonutWidgetProps {
   title:string,
   data: DonutChartData[] | undefined,
   isLoading: boolean,
-  emptyMessage: string,
+  emptyMessage?: string,
   onClick?: DonutChartProps['onClick']
 }
 
@@ -24,7 +24,7 @@ export function EdgeOverviewDonutWidget (props : EdgeOverviewDonutWidgetProps ) 
   return (
     <Loader states={[{ isLoading }]}>
       <SpaceWrapper full>
-        { Number(data?.length) > 0
+        { (!emptyMessage || Number(data?.length) > 0)
           ? <DonutChart
             title={title}
             style={{ width: 100, height: 100 }}
