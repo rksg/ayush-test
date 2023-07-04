@@ -77,7 +77,7 @@ function Histogram ({
   }, [kpi, setKpiThreshold, thresholds])
   const onButtonApply = async () => {
     const result =
-        await triggerSave({ path: filters.path, name: kpi, value: thresholdValue })
+        await triggerSave({ filter: filters.filter, name: kpi, value: thresholdValue })
           .unwrap() as unknown as { saveThreshold: boolean }
     if (result && result.saveThreshold) {
       showToast({
