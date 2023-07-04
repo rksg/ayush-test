@@ -464,7 +464,7 @@ export function VenuePropertyTab () {
     {
       show: isConnectionMeteringEnabled,
       key: 'connectionMetering',
-      title: $t({ defaultMessage: 'Connection Metering' }),
+      title: $t({ defaultMessage: 'Data Usage Metering' }),
       dataIndex: 'connectionMetering',
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
