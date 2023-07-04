@@ -1,6 +1,6 @@
-import { PageNotFound }                                                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
-import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode } from '@acx-ui/rc/components'
+import { PageNotFound }                                                                                                            from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                                from '@acx-ui/feature-toggle'
+import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode, ResidentPortalForm } from '@acx-ui/rc/components'
 import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -109,7 +109,6 @@ import PortalServiceDetail                  from './pages/Services/Portal/Portal
 import PortalForm                           from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalTable                          from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
-import ResidentPortalForm                   from './pages/Services/ResidentPortal/ResidentPortalForm/ResidentPortalForm'
 import ResidentPortalTable                  from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
 import SelectServiceForm                    from './pages/Services/SelectServiceForm'
 import ServiceCatalog                       from './pages/Services/ServiceCatalog'

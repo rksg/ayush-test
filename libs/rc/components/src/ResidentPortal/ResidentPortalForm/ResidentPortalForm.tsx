@@ -33,11 +33,17 @@ import { CreateResidentPortalFormFields,
   transferSaveDataToFormFields } from './formParsing'
 import ResidentPortalSettingsForm from './ResidentPortalSettingsForm'
 
-interface ResidentPortalFormProps {
-  editMode?: boolean
+interface ResidentPortalSaveData {
+  _links?: { fetch?: { href?: string } }
 }
 
-export default function ResidentPortalForm (props: ResidentPortalFormProps) {
+interface ResidentPortalFormProps {
+  editMode?: boolean,
+  modalMode?: boolean,
+  modalCallBack?: (result?: string) => void
+}
+
+export function ResidentPortalForm (props: ResidentPortalFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tablePath = getServiceRoutePath({
@@ -46,7 +52,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
   })
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
-  const { editMode = false } = props
+  const { editMode = false, modalMode = false, modalCallBack } = props
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ addResidentPortal ] = useAddResidentPortalMutation()
@@ -120,6 +126,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
       const portalConfiguration =
         new Blob([JSON.stringify(residentPortalSaveData)], { type: 'application/json' })
       const formData = new FormData()
+      let result: ResidentPortalSaveData
 
       if (editMode) {
         formData.append('changes', portalConfiguration, '')
@@ -134,7 +141,8 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
         } else if(data.fileFavicon?.file) {
           formData.append('favIcon', data.fileFavicon.file)
         }
-        await updateResidentPortal({ params, payload: formData }).unwrap()
+        result = await updateResidentPortal({ params, payload: formData })
+          .unwrap() as ResidentPortalSaveData
       } else {
         formData.append('portal', portalConfiguration, '')
 
@@ -144,10 +152,13 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
         if(data.fileFavicon?.file) {
           formData.append('favIcon', data.fileFavicon.file)
         }
-        await addResidentPortal({ payload: formData }).unwrap()
+        result = await addResidentPortal({ payload: formData })
+          .unwrap() as ResidentPortalSaveData
       }
 
-      navigate(linkToServices, { replace: true })
+      modalMode
+        ? modalCallBack?.(result?._links?.fetch?.href)
+        : navigate(linkToServices, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -155,7 +166,7 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
 
   return (
     <>
-      <PageHeader
+      {!modalMode && <PageHeader
         title={editMode
           ? $t({ defaultMessage: 'Edit Resident Portal' })
           : $t({ defaultMessage: 'Add Resident Portal' })
@@ -174,11 +185,11 @@ export default function ResidentPortalForm (props: ResidentPortalFormProps) {
             link: tablePath
           }
         ]}
-      />
+      />}
       <Loader states={[{ isLoading: (isLoading || areImagesLoading), isFetching }]}>
         <StepsFormLegacy<CreateResidentPortalFormFields>
           formRef={formRef}
-          onCancel={() => navigate(linkToServices)}
+          onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
           onFinish={saveData}>
           <StepsFormLegacy.StepForm<CreateResidentPortalFormFields>
             name='details'
