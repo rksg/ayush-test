@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -53,7 +53,8 @@ import { useSwitchActions }          from '../useSwitchActions'
 import {
   getGroupableConfig
 } from './config'
-import { useExportCsv } from './useExportCsv'
+import { SwitchTabContext } from './context'
+import { useExportCsv }     from './useExportCsv'
 
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
@@ -89,9 +90,11 @@ export const defaultSwitchPayload = {
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware'
   ]
 }
+
+export type SwitchTableRefType = { openImportDrawer: ()=>void }
 
 interface SwitchTableProps
   extends Omit<TableProps<SwitchRow>, 'columns'> {
@@ -102,16 +105,23 @@ interface SwitchTableProps
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }
 
-export function SwitchTable (props : SwitchTableProps) {
+export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<SwitchTableRefType>) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const { showAllColumns, searchable, filterableKeys } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
+  const { setSwitchCount } = useContext(SwitchTabContext)
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
   const importTemplateLink = 'assets/templates/switches_import_template.csv'
+
+  useImperativeHandle(ref, () => ({
+    openImportDrawer: () => {
+      setImportVisible(true)
+    }
+  }))
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
@@ -127,6 +137,11 @@ export function SwitchTable (props : SwitchTableProps) {
       'model', 'venueId', 'configReady', 'syncedSwitchConfig' ]
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+
+  useEffect(() => {
+    setSwitchCount?.(tableQuery.data?.totalCount || 0)
+  }, [tableQuery.data])
+
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
@@ -171,7 +186,10 @@ export function SwitchTable (props : SwitchTableProps) {
       filterable: filterableKeys ? switchFilterOptions : false,
       render: (data, row) => {
         return row.isFirstLevel ?
-          <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
+          <TenantLink
+            to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
+            style={{ lineHeight: '20px' }}
+          >
             {getSwitchName(row)}
           </TenantLink> :
           <div>
@@ -217,6 +235,11 @@ export function SwitchTable (props : SwitchTableProps) {
       dataIndex: 'ipAddress',
       sorter: true,
       searchable: searchable
+    }, {
+      key: 'firmware',
+      title: $t({ defaultMessage: 'Firmware' }),
+      dataIndex: 'firmware',
+      sorter: true
     },
     // { TODO: Health scope
     //   key: 'incidents',
@@ -292,7 +315,9 @@ export function SwitchTable (props : SwitchTableProps) {
       const token = (await getJwtToken({ params: { tenantId: params.tenantId, serialNumber: row.serialNumber } }, true)
         .unwrap()).access_token || ''
       setCliData({ token, switchName: row.switchName || row.name || row.serialNumber, serialNumber: row.serialNumber })
-      setCliModalOpen(true)
+      setTimeout(() => {
+        setCliModalOpen(true)
+      }, 1000)
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
@@ -426,4 +451,4 @@ export function SwitchTable (props : SwitchTableProps) {
       onClose={() => setImportVisible(false)}
     />
   </Loader>
-}
+})

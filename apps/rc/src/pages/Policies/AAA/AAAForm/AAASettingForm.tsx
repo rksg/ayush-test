@@ -28,7 +28,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
     selectFromResult: function ({ data }) {
       return {
         aaaPolicyList: data,
-        aaaPolicyIpList: data ? data.data.map(
+        aaaPolicyIpList: data && data.data.length > 0 ? data.data.map(
           policy => `${policy.primary!.ip!}:${policy.primary!.port!}`
         ) : []
       }
@@ -57,9 +57,12 @@ const AAASettingForm = (props: AAASettingFormProps) => {
       }))
     }
 
-    const stateValue = isPrimary
-      ? `${saveState.primary!.ip}:${saveState.primary!.port}`
-      : `${saveState.secondary!.ip}:${saveState.secondary!.port}`
+    let stateValue = ''
+    if (saveState && edit) {
+      stateValue = isPrimary
+        ? `${saveState.primary!.ip}:${saveState.primary!.port}`
+        : `${saveState.secondary!.ip}:${saveState.secondary!.port}`
+    }
 
     if (aaaPolicyIpList
       .filter(policy => edit ? policy !== stateValue : true)
@@ -79,6 +82,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
       }
     }
   }, [saveState])
+
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
   const validateRadiusPort = async (value: number)=>{
@@ -178,6 +182,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
               initialValue={''}
               rules={[
                 { required: true },
+                { max: 255 },
                 { validator: (_, value) => networkWifiSecretRegExp(value) }
               ]}
               children={<PasswordInput />}

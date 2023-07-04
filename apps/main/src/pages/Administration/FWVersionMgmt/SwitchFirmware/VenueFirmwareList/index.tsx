@@ -82,7 +82,7 @@ function useColumns (
           versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
         }
         if (enableSwitchRodanFirmware && row.switchFirmwareVersionAboveTen?.id) {
-          versionList.push(row.switchFirmwareVersionAboveTen.id)
+          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
         }
         return versionList.length > 0 ? versionList.join(' ,') : '--'
       }

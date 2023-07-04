@@ -34,7 +34,8 @@ import {
   Vlan,
   Lag,
   LAG_TYPE,
-  sortPortFunction
+  sortPortFunction,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
@@ -491,11 +492,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               children={
                 <Tooltip
                   placement='bottom'
-                  title={
-                    cliApplied ?
-                      // eslint-disable-next-line max-len
-                      $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
-                  }>
+                  title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: '150px 50px'
@@ -520,11 +517,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               children={
                 <Tooltip
                   placement='bottom'
-                  title={
-                    cliApplied ?
-                      // eslint-disable-next-line max-len
-                      $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
-                  }>
+                  title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: '150px 50px'
