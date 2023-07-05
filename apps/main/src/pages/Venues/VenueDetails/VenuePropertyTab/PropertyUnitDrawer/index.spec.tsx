@@ -165,7 +165,7 @@ describe('Property Unit Drawer', () => {
 
     const saveBtn = await screen.findByRole('button', { name: /save/i })
     await screen.findByText('Rate limiting')
-    await screen.findByText('Data comsumption')
+    await screen.findByText('Data consumption')
     await screen.findByText('Expiration Date of Data Consumption')
     await userEvent.click(saveBtn)
   })
@@ -185,7 +185,7 @@ describe('Property Unit Drawer', () => {
     await screen.findByText('Select AP')
     await screen.findByLabelText(/vxlan/i)
     await screen.findByText('Rate limiting')
-    await screen.findByText('Data comsumption')
+    await screen.findByText('Data consumption')
     await screen.findByText('Expiration Date of Data Consumption')
 
     await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
