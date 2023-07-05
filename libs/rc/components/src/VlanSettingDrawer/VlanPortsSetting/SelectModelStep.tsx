@@ -96,7 +96,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setEnableSlot3(selectedEnable3.enable)
       setEnableSlot4(selectedEnable4.enable)
     }
-  }, [])
+  }, [vlanSettingValues])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
