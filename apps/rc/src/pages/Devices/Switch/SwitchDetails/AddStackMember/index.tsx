@@ -234,6 +234,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       const payload = {
         ...switchData,
         enableStack: true,
+        spanningTreePriority: switchData?.spanningTreePriority || '', //Backend need the default value
         stackMembers: [
           ...(switchDetail?.stackMembers.map((item) => ({ id: item.id })) ?? []),
           ...tableData.map((item) => ({ id: item.id }))
@@ -245,10 +246,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       if (switchDetail?.ipFullContentParsed === false) {
         stackPayload = _.omit(payload, [
           'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
-      }
-
-      if (!stackPayload.hasOwnProperty('spanningTreePriority')) { //Backend need the default value
-        stackPayload.spanningTreePriority = ''
       }
 
       await updateSwitch({ params: { tenantId, switchId }, payload: stackPayload }).unwrap()
