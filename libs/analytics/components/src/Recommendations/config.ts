@@ -2,9 +2,9 @@
 import { defineMessage } from 'react-intl'
 
 const priorities = {
-  low: { order: 1, label: defineMessage({ defaultMessage: 'Low' }) },
-  medium: { order: 2, label: defineMessage({ defaultMessage: 'Medium' }) },
-  high: { order: 3, label: defineMessage({ defaultMessage: 'High' }) }
+  low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
+  medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
+  high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
 }
 
 export type Priorities = typeof priorities['low']

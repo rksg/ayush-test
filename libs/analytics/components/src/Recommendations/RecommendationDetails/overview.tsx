@@ -1,28 +1,17 @@
 import { useState } from 'react'
 
-import { Badge }                                            from 'antd'
-import { capitalize }                                       from 'lodash'
-import moment                                               from 'moment-timezone'
-import { useIntl, MessageDescriptor, MessageFormatElement } from 'react-intl'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { DescriptionSection } from '../../DescriptionSection'
+import { DescriptionSection }     from '../../DescriptionSection'
+import { Priority, PriorityIcon } from '../styledComponents'
 
 import detailsConfig, { statusTrailMsgs }                           from './detailsConfig'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
-
-const getPriorityColor = (val: MessageDescriptor ) => {
-  const msg = (val.defaultMessage as MessageFormatElement[])
-  const priority = (msg[0] as unknown as { value: 'High' | 'Low' | 'Medium' })
-  switch (priority.value) {
-    case 'High': return '--acx-semantics-red-50'
-    case 'Medium': return '--acx-semantics-yellow-50'
-    case 'Low': return '--acx-semantics-yellow-20'
-  }
-}
 
 const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
   { id: string, aps: RecommendationAp[], visible: boolean, onClose: () => void }) => {
@@ -68,8 +57,10 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
   const { createdAt } = statusTrail[statusTrail.length - 1]
   const { kpis } = detailsConfig[code]
-  const iconColor = getPriorityColor(priority.label)
-  const Icon = () => <Badge color={`var(${iconColor})`} text={capitalize($t(priority.label))}/>
+  const Icon = () => <Priority>
+    <PriorityIcon value={priority.order} />
+    <span>{$t(priority.label)}</span>
+  </Priority>
   const fields = [
     { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
     { label: $t({ defaultMessage: 'Date' }),

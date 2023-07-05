@@ -82,7 +82,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       key: 'priorityLabel',
       render: (_, value) => {
         return <UI.Priority>
-          <UI.PriorityIcon value={value.priorityLabel} />
+          <UI.PriorityIcon value={value.priority} />
           <span>{value.priorityLabel}</span>
         </UI.Priority>
       },
