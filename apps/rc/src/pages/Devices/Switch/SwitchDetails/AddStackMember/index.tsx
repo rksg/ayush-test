@@ -247,7 +247,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
       }
 
-      if (_.isEmpty(stackPayload.spanningTreePriority)) { //Backend need the default value
+      if (!stackPayload.hasOwnProperty('spanningTreePriority')) { //Backend need the default value
         stackPayload.spanningTreePriority = ''
       }
 
