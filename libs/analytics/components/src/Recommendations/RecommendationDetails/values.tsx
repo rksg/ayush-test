@@ -6,7 +6,7 @@ import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
 import { NodeType }                        from '@acx-ui/utils'
 
 import { states }                 from './configRecommendationData'
-import configRecommendations      from './configRecommendations'
+import configRecommendations      from './recommendationDetails'
 import { EnhancedRecommendation } from './services'
 import {
   DetailsHeader,

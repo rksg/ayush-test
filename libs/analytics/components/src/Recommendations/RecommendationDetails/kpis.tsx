@@ -7,7 +7,7 @@ import { Card, Tooltip, TrendPill, TrendType } from '@acx-ui/components'
 import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
 import { noDataDisplay }                       from '@acx-ui/utils'
 
-import recommendationConfigs      from './configRecommendations'
+import recommendationConfigs      from './recommendationDetails'
 import { EnhancedRecommendation } from './services'
 import { StatusTrail }            from './statusTrail'
 import {

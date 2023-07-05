@@ -7,7 +7,7 @@ import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
 import { states, codes }     from './configRecommendationData'
-import configRecommendations from './configRecommendations'
+import configRecommendations from './recommendationDetails'
 
 
 type RecommendationsDetailsPayload = {

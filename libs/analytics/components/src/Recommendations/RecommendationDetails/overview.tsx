@@ -8,10 +8,10 @@ import { useIntl, MessageDescriptor, MessageFormatElement } from 'react-intl'
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { DescriptionSection } from '../DescriptionSection'
+import { DescriptionSection } from '../../DescriptionSection'
 
 import { statusTrailMsgs }                                          from './configRecommendationData'
-import configRecommendations                                        from './configRecommendations'
+import configRecommendations                                        from './recommendationDetails'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
 
