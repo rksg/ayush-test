@@ -62,7 +62,7 @@ export function loadMessages (locales: readonly string[]): LangKey {
   if (browserLangVal !== DEFAULT_SYS_LANG) {
     const val = browserLangSelection(browserLangVal)
     browserLangVal = (val === 1) ? browserLangVal : DEFAULT_SYS_LANG
-    console.log(`val===========>>>>> ${val}`)
+    // console.log(`val===========>>>>> ${val}`)
   }
   return browserLangVal
 }
