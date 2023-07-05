@@ -14,7 +14,7 @@ import { noDataDisplay }             from '@acx-ui/utils'
 
 import { useConfigChangeQuery } from '../services'
 
-import { Dot }                                  from './styledComponents'
+import { Badge }                                from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
 export function Table (props: {
@@ -39,7 +39,7 @@ export function Table (props: {
       dataIndex: 'type',
       render: (value, row) => {
         const config = getConfigChangeEntityTypeMapping().find(type => type.key === value)
-        return config ? <Dot key={row.id} color={config.color} children={config.label}/> : value
+        return config ? <Badge key={row.id} color={config.color} text={config.label}/> : value
       },
       filterable: getConfigChangeEntityTypeMapping()
         .map(({ label, ...rest }) => ({ ...rest, value: label })),
