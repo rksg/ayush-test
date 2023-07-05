@@ -13,18 +13,17 @@ import { GridCol, GridRow }                                                     
 import { ApInfoWidget, TopologyFloorPlanWidget }                                                                                  from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                                                                                 from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, useApContext } from '@acx-ui/rc/utils'
-import { useDateFilter }                                                                                                          from '@acx-ui/utils'
 
+import { useApFilter } from '../apFilter'
 
 import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
 
 export function ApOverviewTab () {
-  const { dateFilter } = useDateFilter()
-  const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
   const params = useApContext()
+  const apFilter = useApFilter(params)
   const apViewModelPayload = {
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
@@ -45,18 +44,14 @@ export function ApOverviewTab () {
         networkDeviceType: NetworkDeviceType.ap } as NetworkDevice
       _currentApDevice.position=apDetails?.position
       setCurrentApDevice(_currentApDevice)
-      setApFilter({
-        ...dateFilter,
-        path: [{ type: 'AP', name: currentAP.apMac as string }]
-      })
     }
-  }, [currentAP, dateFilter])
+  }, [currentAP])
 
 
   return (
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '152px' }}>
-        { apFilter && <ApInfoWidget currentAP={currentAP as ApViewModel} filters={apFilter} /> }
+        { currentAP && <ApInfoWidget currentAP={currentAP as ApViewModel} filters={apFilter} /> }
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ height: '152px' }}>
         <ApPhoto />
@@ -79,7 +74,7 @@ export function ApOverviewTab () {
           }
         />
       </GridCol>
-      { apFilter && <ApWidgets filters={apFilter}/> }
+      { currentAP && <ApWidgets filters={apFilter}/> }
     </GridRow>
   )
 }

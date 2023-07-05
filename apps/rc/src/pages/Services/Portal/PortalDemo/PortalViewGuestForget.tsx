@@ -25,7 +25,9 @@ export default function PortalViewGuestForget (props: {
           <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
             {portalLang.forgotPswdTextDesc}</UI.FieldTextMiddle>
           <UI.FieldInput
-            placeholder={portalLang.mobilePhone}></UI.FieldInput>
+            disabled={true}
+            placeholder={portalLang.mobilePhone}
+          ></UI.FieldInput>
           <PortalButtonContent
             demoValue={demoValue}
             isPreview={isPreview}
@@ -36,6 +38,7 @@ export default function PortalViewGuestForget (props: {
           <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
             {portalLang.forgotPswdEmailDesc}</UI.FieldTextMiddle>
           <UI.FieldInput
+            disabled={true}
             placeholder={portalLang.email}></UI.FieldInput>
           <PortalButtonContent
             demoValue={demoValue}

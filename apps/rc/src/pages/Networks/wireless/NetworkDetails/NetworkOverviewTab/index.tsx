@@ -11,7 +11,6 @@ import {
 } from '@acx-ui/analytics/components'
 import {
   AnalyticsFilter,
-  defaultNetworkPath,
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import {
@@ -34,7 +33,7 @@ export function NetworkOverviewTab ({ selectedVenues }: { selectedVenues?: strin
   if (selectedVenues?.length) {
     filter = { ...filter, ...generateVenueFilter(selectedVenues) }
   }
-  const filters = { ...dateFilter, path: defaultNetworkPath, filter } as AnalyticsFilter
+  const filters = { ...dateFilter, filter } as AnalyticsFilter
   const title = network.data?.type
     ? $t(networkTypes[network.data?.type as NetworkTypeEnum])
     : ''
