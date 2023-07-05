@@ -1,7 +1,7 @@
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -21,8 +21,8 @@ export function Table (props: {
   onRowClick?: (params: unknown) => void,
 }) {
   const { $t } = useIntl()
-  const { filters: { path, startDate, endDate } } = useAnalyticsFilter()
-  const queryResults = useConfigChangeQuery({ path, start: startDate, end: endDate })
+  const { filters: { filter, startDate: start, endDate: end } } = useAnalyticsFilter()
+  const queryResults = useConfigChangeQuery({ ...getFilterPayload({ filter }), start, end })
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
