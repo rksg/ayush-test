@@ -4,6 +4,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
+import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
 import { DescriptionSection }     from '../../DescriptionSection'
@@ -66,7 +67,9 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     { label: $t({ defaultMessage: 'Category' }), children: $t(category) },
-    { label: $t({ defaultMessage: 'Venue' }), children: sliceValue },
+    { label: get('IS_MLISA_SA')
+      ? $t({ defaultMessage: 'Zone' })
+      : $t({ defaultMessage: 'Venue' }), children: sliceValue },
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
   ]
 
