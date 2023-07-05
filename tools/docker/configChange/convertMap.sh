@@ -1,5 +1,5 @@
 # Before start this script, please make sure you have copied the mapping files to dir.
-dir="./libs/analytics/components/src/ConfigChange/ConfigChangeTable/mapping"
+dir="./libs/analytics/components/src/ConfigChange/Table/mapping"
 
 for input_file in ${dir}/*.json; do
   filename=$(basename "$input_file" .json)
