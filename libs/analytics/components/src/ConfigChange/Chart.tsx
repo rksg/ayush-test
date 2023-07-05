@@ -3,14 +3,18 @@ import { memo } from 'react'
 import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
-import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
+import { useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
+import { Card, ConfigChangeChart, Loader }      from '@acx-ui/components'
 
 import { useConfigChangeQuery } from './services'
 
 function BasicChart (props: { onBrushPositionsChange: (params: number[][]) => void }){
-  const { filters: { path, startDate, endDate } } = useAnalyticsFilter()
-  const queryResults = useConfigChangeQuery({ path, start: startDate, end: endDate })
+  const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
+  const queryResults = useConfigChangeQuery({
+    ...getFilterPayload({ filter }),
+    start: startDate,
+    end: endDate
+  })
 
   return <Loader states={[queryResults]}>
     <Card type='no-border'>

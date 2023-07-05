@@ -1,9 +1,9 @@
 import { gql }  from 'graphql-request'
 import { omit } from 'lodash'
 
-import type { ConfigChange } from '@acx-ui/components'
-import { dataApi }           from '@acx-ui/store'
-import { PathNode }          from '@acx-ui/utils'
+import type { ConfigChange }     from '@acx-ui/components'
+import { dataApi }               from '@acx-ui/store'
+import { PathNode, NodesFilter } from '@acx-ui/utils'
 
 interface KpiChangesParams {
   kpis: string[],
@@ -17,13 +17,18 @@ interface KpiChangesParams {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     configChange: build.query<
-      ConfigChange[], { path: PathNode[], start: string, end: string }
+      ConfigChange[], { path: PathNode[], filter: NodesFilter, start: string, end: string }
     >({
       query: (variables) => ({
         variables,
         document: gql`
-          query ConfigChange($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
-            network(start: $start, end: $end) {
+          query ConfigChange(
+            $path: [HierarchyNodeInput],
+            $start: DateTime,
+            $end: DateTime,
+            $filter: FilterInput
+          ) {
+            network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
                 configChanges {
                   timestamp

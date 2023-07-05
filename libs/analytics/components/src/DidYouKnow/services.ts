@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 import moment  from 'moment'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }         from '@acx-ui/store'
+import { getFilterPayload, AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { dataApi }                           from '@acx-ui/store'
 
 import { DidYouKnowData } from './facts'
 
@@ -23,9 +23,9 @@ export const api = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query Facts(
-          $path: [HierarchyNodeInput], 
-          $start: DateTime, 
-          $end: DateTime, 
+          $path: [HierarchyNodeInput],
+          $start: DateTime,
+          $end: DateTime,
           $filter: FilterInput
         ) {
           network(start: $start, end: $end, filter : $filter) {
@@ -38,10 +38,9 @@ export const api = dataApi.injectEndpoints({
         }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<DidYouKnowData[]>) =>

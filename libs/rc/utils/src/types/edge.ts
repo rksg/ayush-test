@@ -188,6 +188,7 @@ export interface EdgeTimeSeriesPayload {
     start : string,
     end : string,
     granularity : string
+    venueIds?: string[]
 }
 
 export interface EdgeService {

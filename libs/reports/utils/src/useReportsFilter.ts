@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { RadioBand }    from '@acx-ui/components'
+import { defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { RadioBand }          from '@acx-ui/components'
 import {
-  NetworkPath,
   useEncodedParameter
 } from '@acx-ui/utils'
-
-const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
+import type {
+  NetworkPath
+} from '@acx-ui/utils'
 
 export type ReportsFilter = { paths: NetworkPath[], bands: RadioBand[] }
 
@@ -33,7 +34,6 @@ export function useReportsFilter () {
         ...networkFilter
       } as ReportsFilter,
       setNetworkPath,
-      getNetworkFilter,
       raw
     }
   }, [read, write])
