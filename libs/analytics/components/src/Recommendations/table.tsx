@@ -123,8 +123,8 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
     {
       title: scopeType,
       width: 150,
-      dataIndex: 'scope',
-      key: 'scope',
+      dataIndex: 'sliceValue',
+      key: 'sliceValue',
       render: (_, value, __, highlightFn ) => {
         return <Tooltip placement='top' title={value.scope}>
           <UI.UnderlinedSpan>{highlightFn(value.sliceValue)}</UI.UnderlinedSpan>
