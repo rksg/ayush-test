@@ -225,11 +225,10 @@ export function VenuesForm () {
 
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
-    const newAddress = formRef.current?.getFieldValue('address')
-    const isSameValue = value === newAddress?.addressLine
-    const isSameCountry = (data && (data?.address.country === newAddress?.country)) || false
+    const isSameValue = value === formRef.current?.getFieldValue('address')?.addressLine
+    const isSameCountry = (data && (data?.address.country === address?.country)) || false
 
-    if(Object.keys(newAddress).length === 0){
+    if(!address.addressLine){
       return Promise.reject(
         intl.$t({ defaultMessage: 'Please select address from suggested list' })
       )
@@ -248,7 +247,8 @@ export function VenuesForm () {
 
   const addressOnChange = async (place: google.maps.places.PlaceResult) => {
     const { latlng, address } = await addressParser(place)
-    formRef.current?.setFieldValue('address', address)
+    formRef.current?.setFieldValue('address',
+      action === 'edit' ? { ...address, countryCode } : address) // Keep countryCode for edit mode
     setMarker(latlng)
     setCenter(latlng.toJSON())
     updateAddress(address)
