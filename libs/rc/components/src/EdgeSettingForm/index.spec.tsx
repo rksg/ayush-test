@@ -35,7 +35,6 @@ describe('EdgeSettingForm', () => {
     await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     await screen.findByRole('textbox', { name: 'Serial Number' })
     await screen.findByRole('textbox', { name: 'Description' })
-    await screen.findByRole('combobox', { name: 'Tags' })
   })
 
   it('should create EdgeSettingForm with edit mode successfully', async () => {

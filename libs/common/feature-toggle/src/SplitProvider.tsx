@@ -11,17 +11,15 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 let factory: SplitIO.IBrowserSDK
 const splitKey = get('SPLIT_IO_KEY')
-const isMLISA =get('IS_MLISA_SA')
+const isMLISA = get('IS_MLISA_SA')
 const suffix = splitKey.substring(0, 5)
-
-
 
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { tenantId } = useParams() as { tenantId: string }
   const { data: userProfile } = useUserProfileContext()
   const prefixKey = isMLISA ? 'MLISA' : 'ACX'
   const tenantKey = isMLISA ? userProfile?.accountId as string : tenantId
-  if (!factory && userProfile?.accountId) {
+  if (!factory && tenantKey) {
     factory = SplitSdk({
       scheduler: {
         featuresRefreshRate: 30 // 30 sec

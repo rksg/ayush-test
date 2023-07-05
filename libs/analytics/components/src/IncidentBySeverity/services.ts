@@ -1,6 +1,7 @@
 import { gql } from 'graphql-request'
 
 import {
+  getFilterPayload,
   IncidentFilter,
   incidentSeverities,
   incidentCodes
@@ -44,11 +45,10 @@ export const api = dataApi.injectEndpoints({
         }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           code: payload.code ?? incidentCodes,
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<IncidentsBySeverityData>) =>
