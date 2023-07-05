@@ -16,7 +16,6 @@ import {
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
 import { get }                      from '@acx-ui/config'
-import { useApContext }             from '@acx-ui/rc/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -38,24 +37,20 @@ export const defaultThreshold: KpiThresholdType = {
   ...(isMLISA ? { clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold } : {})
 }
 
-
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { kpis } = kpisForTab(isMLISA)[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
   const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const apContext = useApContext()
-  const path = apContext?.venueId
-    ? [{ type: 'zone' as 'zone', name: apContext.venueId as string }, filters.path[0]]
-    : filters.path
+  const { filter } = filters
   const customThresholdQuery = useGetKpiThresholdsQuery({
-    ...filters, path, kpis: thresholdKeys })
+    ...filters, kpis: thresholdKeys })
   const { data, fulfilledTimeStamp } = customThresholdQuery
   const thresholds = thresholdKeys.reduce((kpis, kpi) => {
     kpis[kpi] = data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
     return kpis
   }, {} as KpiThresholdType)
-  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ path })
+  const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
   const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
   return <Loader states={[customThresholdQuery, thresholdPermissionQuery]}>
     {fulfilledTimeStamp && <KpiSection
@@ -63,7 +58,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
       kpis={kpis}
       thresholds={thresholds}
       mutationAllowed={mutationAllowed}
-      filters={{ ...filters, path }}
+      filters={{ ...filters }}
     />}
   </Loader>
 }
@@ -76,7 +71,6 @@ function KpiSection (props: {
 }) {
   const { kpis, filters, thresholds } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
-  const isNetwork = filters.path.length === 1
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -124,7 +118,7 @@ function KpiSection (props: {
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
-                isNetwork={isNetwork}
+                isNetwork={!filters.filter.networkNodes}
               />
             ) : (
               <BarChart

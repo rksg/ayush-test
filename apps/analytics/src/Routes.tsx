@@ -10,6 +10,7 @@ import {
   IncidentListPage,
   IncidentListPageLegacy
 }                                                   from '@acx-ui/analytics/components'
+import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-dom'
 import { Provider }                                 from '@acx-ui/store'
@@ -36,6 +37,7 @@ export default function AnalyticsRoutes () {
 
   const routes = rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
         element={isNavbarEnhanced

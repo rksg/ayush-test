@@ -36,4 +36,9 @@ describe('AllRoutes', () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/health' }, wrapper: Provider })
     expect(await screen.findByText('Health')).toBeVisible()
   })
+  it('should render recommendations correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/recommendations' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
+  })
 })

@@ -1,7 +1,6 @@
-import { defaultNetworkPath } from '@acx-ui/analytics/utils'
-import { dataApiURL, store }  from '@acx-ui/store'
-import { mockGraphqlQuery }   from '@acx-ui/test-utils'
-import { DateRange }          from '@acx-ui/utils'
+import { dataApiURL, store } from '@acx-ui/store'
+import { mockGraphqlQuery }  from '@acx-ui/test-utils'
+import { DateRange }         from '@acx-ui/utils'
 
 import * as fixtures from './__tests__/fixtures'
 import { api }       from './services'
@@ -10,9 +9,9 @@ describe('networkFilter', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: defaultNetworkPath,
     range: DateRange.last24Hours,
-    querySwitch: true
+    querySwitch: true,
+    filter: {}
   }
 
   afterEach(() =>
@@ -51,8 +50,8 @@ describe('recentNetworkFilter', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: defaultNetworkPath,
-    range: DateRange.last24Hours
+    range: DateRange.last24Hours,
+    filter: {}
   }
 
   afterEach(() =>
