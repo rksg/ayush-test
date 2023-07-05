@@ -1,29 +1,18 @@
 import { useState } from 'react'
 
-import { Badge }                                            from 'antd'
-import { capitalize }                                       from 'lodash'
-import moment                                               from 'moment-timezone'
-import { useIntl, MessageDescriptor, MessageFormatElement } from 'react-intl'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import { Drawer, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
+import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
-import { DescriptionSection } from '../DescriptionSection'
+import { DescriptionSection }     from '../../DescriptionSection'
+import { Priority, PriorityIcon } from '../styledComponents'
 
-import { statusTrailMsgs }                                          from './configRecommendationData'
-import configRecommendations                                        from './configRecommendations'
+import detailsConfig, { statusTrailMsgs }                           from './detailsConfig'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
-
-const getPriorityColor = (val: MessageDescriptor ) => {
-  const msg = (val.defaultMessage as MessageFormatElement[])
-  const priority = (msg[0] as unknown as { value: 'high' | 'low' | 'medium' })
-  switch (priority.value) {
-    case 'high': return '--acx-semantics-red-50'
-    case 'medium': return '--acx-semantics-yellow-50'
-    case 'low': return '--acx-semantics-yellow-20'
-  }
-}
 
 const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
   { id: string, aps: RecommendationAp[], visible: boolean, onClose: () => void }) => {
@@ -68,15 +57,19 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const [visible, setVisible] = useState(false)
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
   const { createdAt } = statusTrail[statusTrail.length - 1]
-  const { kpis } = configRecommendations[code]
-  const iconColor = getPriorityColor(priority)
-  const Icon = () => <Badge color={`var(${iconColor})`} text={capitalize($t(priority))}/>
+  const { kpis } = detailsConfig[code]
+  const Icon = () => <Priority>
+    <PriorityIcon value={priority.order} />
+    <span>{$t(priority.label)}</span>
+  </Priority>
   const fields = [
     { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     { label: $t({ defaultMessage: 'Category' }), children: $t(category) },
-    { label: $t({ defaultMessage: 'Venue' }), children: sliceValue },
+    { label: get('IS_MLISA_SA')
+      ? $t({ defaultMessage: 'Zone' })
+      : $t({ defaultMessage: 'Venue' }), children: sliceValue },
     { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
   ]
 

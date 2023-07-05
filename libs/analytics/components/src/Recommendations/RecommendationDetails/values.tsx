@@ -5,8 +5,7 @@ import { impactedArea, nodeTypes }         from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
 import { NodeType }                        from '@acx-ui/utils'
 
-import { states }                 from './configRecommendationData'
-import configRecommendations      from './configRecommendations'
+import detailsConfig              from './detailsConfig'
 import { EnhancedRecommendation } from './services'
 import {
   DetailsHeader,
@@ -29,12 +28,12 @@ const getValues = (details: EnhancedRecommendation) => {
     code,
     appliedOnce
   } = details
-  const { valueFormatter, recommendedValueTooltipContent } = configRecommendations[code]
+  const { valueFormatter, recommendedValueTooltipContent } = detailsConfig[code]
   return {
     status,
     code,
     appliedOnce,
-    heading: configRecommendations[code].valueText,
+    heading: detailsConfig[code].valueText,
     original: valueFormatter(originalValue),
     current: valueFormatter(currentValue),
     recommended: valueFormatter(recommendedValue),
@@ -52,7 +51,7 @@ function extractBeforeAfter (value: EnhancedRecommendation['kpis']) {
 }
 
 const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
-  return configRecommendations[recommendation.code]
+  return detailsConfig[recommendation.code]
     .kpis
     .find(kpi => kpi.key === key)
 }
@@ -91,7 +90,7 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
     .fromPairs()
     .value()
 
-  const recommendationInfo = configRecommendations[code]
+  const recommendationInfo = detailsConfig[code]
   const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
 
   let parameters: Record<string, string | JSX.Element> = {
@@ -120,7 +119,7 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
   const {
     heading, appliedOnce, status, original, current, recommended, tooltipContent
   } = getValues(details)
-  const applied = appliedOnce && status !== states.reverted
+  const applied = appliedOnce && status !== 'reverted'
   const firstValue = applied ? original : current
   const firstLabel = applied
     ? $t({ defaultMessage: 'Original Configuration' })

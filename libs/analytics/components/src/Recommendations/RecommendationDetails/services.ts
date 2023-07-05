@@ -6,8 +6,9 @@ import { MessageDescriptor }     from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { states, codes }     from './configRecommendationData'
-import configRecommendations from './configRecommendations'
+import { states, codes, Priorities } from '../config'
+
+import configRecommendations from './detailsConfig'
 
 
 type RecommendationsDetailsPayload = {
@@ -37,7 +38,7 @@ export type RecommendationDetails = {
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
-  priority: MessageDescriptor;
+  priority: Priorities;
   summary: MessageDescriptor;
   category: MessageDescriptor;
   pathTooltip: string;

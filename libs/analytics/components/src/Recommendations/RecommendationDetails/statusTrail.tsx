@@ -4,8 +4,10 @@ import { defineMessage, IntlShape, useIntl } from 'react-intl'
 import { GridCol, GridRow }          from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { states, statusTrailMsgs } from './configRecommendationData'
-import { EnhancedRecommendation }  from './services'
+import { states } from '../config'
+
+import { statusTrailMsgs }        from './detailsConfig'
+import { EnhancedRecommendation } from './services'
 import {
   DetailsHeader,
   StatusTrailDateLabel,
@@ -19,11 +21,11 @@ const trailFormatter = (
   const set = trail.slice(trailIndex, trailIndex + 2)
   const patterns = [
     {
-      pattern: [states.applied, states.revertScheduled],
+      pattern: ['applied', 'revertscheduled'],
       replacement: defineMessage({ defaultMessage: 'Applied (Revert Canceled)' })
     },
     {
-      pattern: [states.new, states.applyScheduled],
+      pattern: ['new', 'applyscheduled'],
       replacement: defineMessage({ defaultMessage: 'New (Apply Canceled)' })
     }
   ]
