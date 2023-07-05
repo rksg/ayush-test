@@ -249,7 +249,8 @@ export function VenuesForm () {
     setZoom(16)
   }
   const { ref: placeInputRef } = usePlacesAutocomplete({
-    onPlaceSelected: addressOnChange
+    onPlaceSelected: addressOnChange,
+    currentAddress: data?.address || {}
   })
 
   const handleAddVenue = async (values: VenueExtended) => {
