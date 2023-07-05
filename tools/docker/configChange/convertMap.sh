@@ -1,4 +1,4 @@
-# Before start this script, please make sure you have copyed the mapping files to dir.
+# Before start this script, please make sure you have copied the mapping files to dir.
 dir="./libs/analytics/components/src/ConfigChange/ConfigChangeTable/mapping"
 
 for input_file in ${dir}/*.json; do
