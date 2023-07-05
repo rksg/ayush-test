@@ -247,6 +247,10 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
       }
 
+      if (_.isEmpty(stackPayload.spanningTreePriority)) { //Backend need the default value
+        stackPayload.spanningTreePriority = ''
+      }
+
       await updateSwitch({ params: { tenantId, switchId }, payload: stackPayload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
