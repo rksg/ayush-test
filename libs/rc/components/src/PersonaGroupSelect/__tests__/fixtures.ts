@@ -22,6 +22,11 @@ export const personaGroupList: NewTableResult<PersonaGroup> = {
     {
       id: 'persona-group-id-1',
       name: 'persona-group-name-1'
+    },
+    {
+      id: 'persona-group-id-2',
+      name: 'persona-group-name-2',
+      propertyId: 'property-id-2'
     }
   ]
 }

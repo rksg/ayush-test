@@ -16,7 +16,7 @@ describe('Persona Group selector', () => {
     mockServer.use(
       rest.get(
         NewPersonaBaseUrl,
-        (req, res, ctx) => res(ctx.json(personaGroupList ))
+        (req, res, ctx) => res(ctx.json(personaGroupList))
       )
     )
   })
@@ -26,6 +26,16 @@ describe('Persona Group selector', () => {
 
     const selector = await screen.findByRole('combobox')
     await userEvent.click(selector)
-    await screen.findByTitle(personaGroupList.content[0].name)
+    await screen.findByText(personaGroupList.content[0].name)
+  })
+
+  it('should render Persona Group selector without assigned group',async () => {
+    render(<Provider><PersonaGroupSelect filterProperty whiteList={['other-group-id']}/></Provider>)
+
+    const selector = await screen.findByRole('combobox')
+    await userEvent.click(selector)
+
+    // this group has bound with Venue, so it would not show
+    expect(screen.queryByText(personaGroupList.content[1].name)).not.toBeInTheDocument()
   })
 })
