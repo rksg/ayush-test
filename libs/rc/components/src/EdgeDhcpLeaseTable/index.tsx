@@ -43,6 +43,22 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     }
   )
 
+  const genExpireTimeString = (seconds?: number) => {
+    const days = seconds && seconds > 0 ? Math.floor(seconds/86400) : 0
+    const lessThanADaySec = seconds && seconds > 0 ? Math.floor(seconds%86400) : 0
+    if(days >= 1440 && lessThanADaySec > 0) {
+      // rather than 1440 days means infinite
+      return $t({ defaultMessage: 'Infinite' })
+    }
+    return $t(
+      { defaultMessage: '{days, plural, =0 {} one {# Day} other {# Days}} {time}' },
+      {
+        days,
+        time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
+      }
+    )
+  }
+
   const statusOptions = [
     {
       key: EdgeDhcpHostStatus.ONLINE,
@@ -96,17 +112,7 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
       title: $t({ defaultMessage: 'Lease expires in...' }),
       key: 'hostRemainingTime',
       dataIndex: 'hostRemainingTime',
-      render: (data) => {
-        const days = data && data > 0 ? Math.floor(data as number/86400) : 0
-        const lessThanADaySec = data && data > 0 ? Math.floor(data as number%86400) : 0
-        return $t(
-          { defaultMessage: '{days, plural, =0 {} one {# Day} other {# Days}} {time}' },
-          {
-            days,
-            time: new Date(lessThanADaySec * 1000).toISOString().slice(11, 19)
-          }
-        )
-      }
+      render: (data) => genExpireTimeString(data as number)
     }
   ]
 
@@ -114,6 +120,7 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     <Loader states={[hostTableQuery]}>
       <Table
         settingsId='edge-dhcp-leases-table'
+        rowKey='hostMac'
         columns={columns}
         dataSource={hostTableQuery?.data?.data}
         pagination={hostTableQuery.pagination}

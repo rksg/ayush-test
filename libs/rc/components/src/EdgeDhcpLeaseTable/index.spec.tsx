@@ -18,7 +18,7 @@ describe('EdgeDhcpLeaseTable', () => {
         EdgeDhcpUrls.getDhcpHostStats.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpHostStats))
       ),
-      rest.post(
+      rest.get(
         EdgeDhcpUrls.getDhcpByEdgeId.url,
         (req, res, ctx) => res(ctx.json(mockedEdgeDhcpData))
       )
@@ -32,5 +32,16 @@ describe('EdgeDhcpLeaseTable', () => {
       </Provider>)
     const row = await screen.findAllByRole('row', { name: /TestHost/i })
     expect(row.length).toBe(2)
+  })
+
+  it('Should render expired time correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDhcpLeaseTable edgeId='testId' />
+      </Provider>)
+    const infiniteText = await screen.findByText('Infinite')
+    const timeText = await screen.findByText('1,440 Days 00:00:00')
+    expect(infiniteText).toBeVisible()
+    expect(timeText).toBeVisible()
   })
 })
