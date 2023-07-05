@@ -8,7 +8,8 @@ import {
   categoryTabs as kpiCatergories,
   kpisForTab,
   kpiConfig,
-  useAnalyticsFilter
+  useAnalyticsFilter,
+  getFilterPayload
 } from '@acx-ui/analytics/utils'
 import { Loader, Tabs, TrendTypeEnum } from '@acx-ui/components'
 import { FormatterType, formatter }    from '@acx-ui/formatter'
@@ -85,12 +86,13 @@ export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
       return agg
     }, {} as Record<string, Omit<KPIProps, 'values'>>)
 
-  const { filters: { path } } = useAnalyticsFilter()
+  const { filters: { filter } } = useAnalyticsFilter()
   const [beforeStart, beforeEnd, afterStart, afterEnd] =
     props.kpiTimeRanges.flat().map(time => moment(time).toISOString())
   const queryResults = useKPIChangesQuery({
+    ...getFilterPayload({ filter }),
     kpis: Object.values(kpis).map(({ apiMetric }) => apiMetric),
-    path, beforeStart, beforeEnd, afterStart, afterEnd
+    beforeStart, beforeEnd, afterStart, afterEnd
   })
 
   return <Tabs
