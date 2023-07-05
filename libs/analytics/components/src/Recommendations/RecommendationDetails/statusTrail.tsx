@@ -21,11 +21,11 @@ const trailFormatter = (
   const set = trail.slice(trailIndex, trailIndex + 2)
   const patterns = [
     {
-      pattern: ['applied', 'revertScheduled'],
+      pattern: ['applied', 'revertscheduled'],
       replacement: defineMessage({ defaultMessage: 'Applied (Revert Canceled)' })
     },
     {
-      pattern: ['new', 'applyScheduled'],
+      pattern: ['new', 'applyscheduled'],
       replacement: defineMessage({ defaultMessage: 'New (Apply Canceled)' })
     }
   ]
