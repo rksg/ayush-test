@@ -36,7 +36,7 @@ describe('ConnectionMeteringInstanceTable', () => {
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
 
-  it('should render the connection metering detail view', async () => {
+  it('should render the data usage metering detail view', async () => {
     mockServer.use(
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringDetail.url,
