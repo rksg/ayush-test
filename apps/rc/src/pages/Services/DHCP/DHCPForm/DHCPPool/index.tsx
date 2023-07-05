@@ -179,6 +179,9 @@ export default function DHCPPoolTable ({
         <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Description' })}
+          rules={[
+            { max: 255 }
+          ]}
           children={<TextArea />}
         />
         <Form.Item
