@@ -10,18 +10,17 @@ import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
 import { DescriptionSection } from '../../DescriptionSection'
 
-import { statusTrailMsgs }                                          from './configRecommendationData'
-import configRecommendations                                        from './recommendationDetails'
+import detailsConfig, { statusTrailMsgs }                           from './detailsConfig'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
 
 const getPriorityColor = (val: MessageDescriptor ) => {
   const msg = (val.defaultMessage as MessageFormatElement[])
-  const priority = (msg[0] as unknown as { value: 'high' | 'low' | 'medium' })
+  const priority = (msg[0] as unknown as { value: 'High' | 'Low' | 'Medium' })
   switch (priority.value) {
-    case 'high': return '--acx-semantics-red-50'
-    case 'medium': return '--acx-semantics-yellow-50'
-    case 'low': return '--acx-semantics-yellow-20'
+    case 'High': return '--acx-semantics-red-50'
+    case 'Medium': return '--acx-semantics-yellow-50'
+    case 'Low': return '--acx-semantics-yellow-20'
   }
 }
 
@@ -68,9 +67,9 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const [visible, setVisible] = useState(false)
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
   const { createdAt } = statusTrail[statusTrail.length - 1]
-  const { kpis } = configRecommendations[code]
-  const iconColor = getPriorityColor(priority)
-  const Icon = () => <Badge color={`var(${iconColor})`} text={capitalize($t(priority))}/>
+  const { kpis } = detailsConfig[code]
+  const iconColor = getPriorityColor(priority.label)
+  const Icon = () => <Badge color={`var(${iconColor})`} text={capitalize($t(priority.label))}/>
   const fields = [
     { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
     { label: $t({ defaultMessage: 'Date' }),

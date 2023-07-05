@@ -5,33 +5,41 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { compareVersion } from '@acx-ui/analytics/utils'
 import { formatter }      from '@acx-ui/formatter'
 
-import { states, codes, CodeInfo } from './configRecommendationData'
+import { states, codes, Priorities } from '../config'
 
-
-type FormatterReturn = ReturnType<typeof formatter>
+type CodeInfo = {
+  category: MessageDescriptor;
+  summary: MessageDescriptor;
+  priority: Priorities;
+}
 
 type RecommendationKPIConfig = {
   key: string;
   label: MessageDescriptor;
   tooltipContent?: MessageDescriptor;
-  format: FormatterReturn;
+  format: ReturnType<typeof formatter>;
   deltaSign: '+' | '-' | 'none';
   valueAccessor?: (value: number[]) => number;
-  valueFormatter?: FormatterReturn;
+  valueFormatter?: ReturnType<typeof formatter>;
   showAps?: boolean;
 }
 
 type RecommendationConfig = {
-  valueFormatter: FormatterReturn;
+  valueFormatter: ReturnType<typeof formatter>;
   valueText: MessageDescriptor;
-  recommendedValueTooltipContent?:
-    string | ((status: keyof typeof states, currentValue: string, recommendedValue: string) => MessageDescriptor);
   actionText: MessageDescriptor;
   reasonText: MessageDescriptor;
   tradeoffText: MessageDescriptor;
   appliedReasonText?: MessageDescriptor;
   kpis: RecommendationKPIConfig[]
+  recommendedValueTooltipContent?:
+    string | ((status: keyof typeof states, currentValue: string, recommendedValue: string) => MessageDescriptor);
 }
+
+export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
+  acc[key as keyof typeof states] = val.text
+  return acc
+}, {} as Record<keyof typeof states, MessageDescriptor>)
 
 const bandbalancingEnable: RecommendationConfig = {
   valueFormatter: formatter('enabledFormat'),
@@ -149,12 +157,12 @@ const configs: Record<string, RecommendationConfig> = {
     valueText: defineMessage({ defaultMessage: 'AP Firmware Version' }),
     recommendedValueTooltipContent: (status, currentValue, recommendedValue) =>
       (![
-        states.applied,
-        states.afterApplyInterrupted,
-        states.applyWarning,
-        states.revertScheduled,
-        states.revertScheduleInProgress,
-        states.revertFailed
+        'applied',
+        'afterapplyinterrupted',
+        'applywarning',
+        'revertscheduled',
+        'revertscheduleinprogress',
+        'revertfailed'
       ].includes(status) && currentValue && compareVersion(currentValue, recommendedValue) > -1)
         ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this recommendation is still valid.' })
         : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this recommendation is applied.' }),

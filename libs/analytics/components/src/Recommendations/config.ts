@@ -6,6 +6,9 @@ const priorities = {
   medium: { order: 2, label: defineMessage({ defaultMessage: 'Medium' }) },
   high: { order: 3, label: defineMessage({ defaultMessage: 'High' }) }
 }
+
+export type Priorities = typeof priorities['low']
+
 const categories = {
   'Wi-Fi Client Experience': defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
   'Security': defineMessage({ defaultMessage: 'Security' }),
