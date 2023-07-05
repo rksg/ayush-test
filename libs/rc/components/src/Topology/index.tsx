@@ -253,6 +253,10 @@ export function TopologyGraph (props:{ venueId?: string,
 
       hoverNode(selectedNode)
 
+      onNodeClick()
+
+      onLinkClick()
+
       if (showTopologyOn !== ShowTopologyFloorplanOn.VENUE_OVERVIEW) {
         searchNodeByid(svg, zoom, selectedNode)
       }
@@ -352,15 +356,11 @@ export function TopologyGraph (props:{ venueId?: string,
     allpathes
       .on('mouseout', function (){
         highlightNodeOnMouseout(selectedNode)
-        setShowLinkTooltip(false)
 		 })
 
       .on('mouseover',function (d: MouseEvent, edge: any): void {
         if (edge.from === 'cloud_id')
           return
-        setShowLinkTooltip(true)
-        setTooltipEdge(edge)
-        setTooltipPosition({ x: d.offsetX, y: d.offsetY })
 	      lowVisibleAll()
 	     d3.select(this).style('opacity', 1)    // just set the actual edge to opacity 1
 		 allnodes.each(function (d: any){
@@ -376,28 +376,34 @@ export function TopologyGraph (props:{ venueId?: string,
 		 })
   }
 
+  function onLinkClick () {
+    const onmousepath = d3.selectAll('g.edgePath')
+
+    const allpathes = onmousepath.select('.path')
+
+    allpathes
+      .on('click',function (d: MouseEvent, edge: any): void {
+        if (edge.from === 'cloud_id')
+          return
+        setShowLinkTooltip(true)
+        setShowDeviceTooltip(false) // close device detail tooltip if already opened.
+        setTooltipEdge(edge)
+        setTooltipPosition({ x: d.offsetX, y: d.offsetY })
+	    })
+  }
+
+  function closeLinkTooltipHandler () {
+    setShowLinkTooltip(false)
+  }
+
   // Highlight Node on mouseover
 
   function hoverNode (selectedNode: any) {
     const svg = d3.select(graphRef.current)
     const allnodes = svg.selectAll('g.node')
 
-    const debouncedHandleMouseEnter = debounce(function (node, d, self){
-      setShowDeviceTooltip(true)
-      setTooltipNode(node.config)
-      setTooltipPosition({ x: d?.layerX + 30
-        , y: d?.layerY })
-      lowVisibleAll()
-      if (selectedNode) {
-        (selectedNode as SVGGElement).style.opacity = '1'
-      }
-      d3.select(self).style('opacity', 1)    /*  just set the actual node to opacity 1 */
-    }, 500)
-
     const handleOnMouseLeave = () => {
       highlightNodeOnMouseout(selectedNode)
-      setShowDeviceTooltip(false)
-      debouncedHandleMouseEnter.cancel()
     }
 
     allnodes
@@ -408,9 +414,36 @@ export function TopologyGraph (props:{ venueId?: string,
         if (node.id === 'cloud_id')
           return
         const self = this
-        // delay 500s to avoid multiple calls
-        debouncedHandleMouseEnter.call(this, node, d, self)
+        lowVisibleAll()
+        d3.select(self).style('opacity', 1)    /*  just set the actual node to opacity 1 */
       })
+  }
+
+  const debouncedHandleMouseEnter = debounce(function (node, d){
+    setShowDeviceTooltip(true)
+    setTooltipNode(node.config)
+    setTooltipPosition({ x: d?.layerX + 30
+      , y: d?.layerY })
+  }, 100)
+
+  function onNodeClick () {
+    const svg = d3.select(graphRef.current)
+    const allnodes = svg.selectAll('g.node')
+
+    setShowLinkTooltip(false) // close link detials tooltip if already opened.
+
+    allnodes
+      .on('click',function (d: any, node: any){
+        if (node.id === 'cloud_id')
+          return
+        // delay 100s to avoid multiple calls
+        debouncedHandleMouseEnter.call(this, node, d)
+      })
+  }
+
+  function closeTooltipHandler () {
+    setShowDeviceTooltip(false)
+    debouncedHandleMouseEnter.cancel()
   }
 
   function highlightNodeOnMouseout (selectedNode: SVGGElement) {
@@ -593,12 +626,14 @@ export function TopologyGraph (props:{ venueId?: string,
           tooltipPosition={tooltipPosition}
           tooltipSourceNode={tooltipSourceNode as Node}
           tooltipTargetNode={tooltipTargetNode as Node}
-          tooltipEdge={tooltipEdge as Link} />
+          tooltipEdge={tooltipEdge as Link}
+          onClose={closeLinkTooltipHandler} />
       }
 
       { showDeviceTooltip && <NodeTooltip
         tooltipPosition={tooltipPosition}
-        tooltipNode={tooltipNode as Node} />
+        tooltipNode={tooltipNode as Node}
+        closeTooltip={closeTooltipHandler} />
       }
 
       {
