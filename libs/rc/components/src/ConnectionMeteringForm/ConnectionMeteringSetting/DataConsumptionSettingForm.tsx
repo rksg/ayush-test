@@ -71,19 +71,17 @@ export function DataConsumptionSettingForm () {
     value: true
   }]
 
-  const cycleTypeOptions = [{
-    label: $t({ defaultMessage: 'Select...' }),
-    value: 'CYCLE_UNSPECIFIED'
-  },{
-    label: $t({ defaultMessage: 'Weekly' }),
-    value: 'CYCLE_WEEKLY'
-  }, {
-    label: $t({ defaultMessage: 'Monthly' }),
-    value: 'CYCLE_MONTHLY'
-  },{
-    label: $t({ defaultMessage: 'Custom' }),
-    value: 'CYCLE_NUM_DAYS'
-  }]
+  const cycleTypeOptions = [
+    {
+      label: $t({ defaultMessage: 'Weekly' }),
+      value: 'CYCLE_WEEKLY'
+    }, {
+      label: $t({ defaultMessage: 'Monthly' }),
+      value: 'CYCLE_MONTHLY'
+    },{
+      label: $t({ defaultMessage: 'Custom' }),
+      value: 'CYCLE_NUM_DAYS'
+    }]
 
   const dataCapacityEnforcedOptions = [{
     label: $t({ defaultMessage: 'Ignore' }),
@@ -145,6 +143,12 @@ export function DataConsumptionSettingForm () {
                   style={{ float: 'left' }}
                   name={'billingCycleType'}
                   label={$t({ defaultMessage: 'Recurring Schedule' })}
+                  required={true}
+                  rules={
+                    [
+                      { required: true }
+                    ]
+                  }
                 >
                   <Select
                     placeholder={$t({ defaultMessage: 'Select...' })}
@@ -190,7 +194,7 @@ export function DataConsumptionSettingForm () {
               <Form.Item
                 name='dataCapacityThreshold'
                 required={true}
-                label={$t({ defaultMessage: 'Notify when data volume reaches:(%)' })}
+                label={$t({ defaultMessage: 'Notify when data volume reaches(%):' })}
                 initialValue={form.getFieldValue('dataCapacityThreshold') ?? 80}
               >
                 <Slider
