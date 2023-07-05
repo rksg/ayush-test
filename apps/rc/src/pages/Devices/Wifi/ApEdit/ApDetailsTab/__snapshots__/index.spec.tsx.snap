@@ -91,6 +91,7 @@ exports[`ApDetailsTab should render correctly 1`] = `
                     >
                       <div
                         class="ant-form-item"
+                        style="margin-bottom: 0px;"
                       >
                         <div
                           class="ant-row ant-form-item-row"
@@ -172,6 +173,31 @@ exports[`ApDetailsTab should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <span
+                                  id="0_venueInfos"
+                                >
+                                  Venue Firmware Version: -
+                                </span>
                               </div>
                             </div>
                           </div>

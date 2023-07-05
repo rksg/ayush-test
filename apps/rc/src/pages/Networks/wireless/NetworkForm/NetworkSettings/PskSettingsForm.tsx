@@ -320,7 +320,7 @@ function SettingsForm () {
                 <Space direction='vertical'>
                   <Radio value={true}
                     disabled={
-                      !isCloudpathBetaEnabled ||
+                      // !isCloudpathBetaEnabled ||
                       wlanSecurity !== WlanSecurityEnum.WPA2Personal
                     }>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }

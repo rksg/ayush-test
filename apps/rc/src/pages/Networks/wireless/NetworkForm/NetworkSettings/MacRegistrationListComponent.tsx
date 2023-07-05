@@ -36,6 +36,8 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
       }
     } })
 
+  console.log(macRegListOption)
+
   useEffect(() => {
     if (macId) {
       form.setFieldValue([...inputName, 'macRegistrationListId'], macId)

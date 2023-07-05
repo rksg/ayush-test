@@ -11,41 +11,60 @@ import { mockServer, render, screen }                                    from '@
 import { WifiCallingDetailContext } from './WifiCallingDetailView'
 import WifiCallingNetworksDetail    from './WifiCallingNetworksDetail'
 
-const wifiCallingNetworksDetail = [
-  {
-    name: 'wlan1',
-    id: '44c5604da90443968e1ee91706244e63',
-    nwSubType: 'psk',
-    venues: {
-      count: 1,
-      names: [
-        'wlan1'
-      ]
+const wifiCallingNetworksDetail = {
+  fields: [
+    'clients',
+    'aps',
+    'description',
+    'check-all',
+    'ssid',
+    'captiveType',
+    'vlan',
+    'name',
+    'venues',
+    'cog',
+    'vlanPool',
+    'id',
+    'nwSubType'
+  ],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      name: 'wlan1',
+      id: '44c5604da90443968e1ee91706244e63',
+      nwSubType: 'psk',
+      venues: {
+        count: 1,
+        names: [
+          'wlan1'
+        ]
+      }
+    },
+    {
+      name: 'wlan2',
+      id: 'c8cd8bbcb8cc42caa33c991437ecb983',
+      nwSubType: 'open',
+      venues: {
+        count: 1,
+        names: [
+          'wlan2'
+        ]
+      }
+    },
+    {
+      name: 'wlan3',
+      id: '5cae9e28662447008ea86ec7c339661b',
+      nwSubType: 'psk',
+      venues: {
+        count: 1,
+        names: [
+          'wlan3'
+        ]
+      }
     }
-  },
-  {
-    name: 'wlan2',
-    id: 'c8cd8bbcb8cc42caa33c991437ecb983',
-    nwSubType: 'open',
-    venues: {
-      count: 1,
-      names: [
-        'wlan2'
-      ]
-    }
-  },
-  {
-    name: 'wlan3',
-    id: '5cae9e28662447008ea86ec7c339661b',
-    nwSubType: 'psk',
-    venues: {
-      count: 1,
-      names: [
-        'wlan3'
-      ]
-    }
-  }
-]
+  ]
+}
 
 const wifiCallingDetail = {
   networkIds: [
@@ -115,6 +134,8 @@ describe('WifiCallingNetworksDetail', () => {
     expect(screen.getByRole('columnheader', {
       name: /venues/i
     })).toBeTruthy()
+
+    await screen.findByText('Open Network')
   })
 
   it('should render wifiCallingNetworksDetail error', async () => {
@@ -122,6 +143,11 @@ describe('WifiCallingNetworksDetail', () => {
       WifiCallingUrls.getWifiCalling.url,
       (_, res, ctx) => res(
         ctx.status(500)
+      )
+    ),rest.post(
+      CommonUrlsInfo.getVMNetworksList.url,
+      (_, res, ctx) => res(
+        ctx.json(wifiCallingNetworksDetail)
       )
     ))
 

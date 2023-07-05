@@ -378,6 +378,7 @@ export function ApForm () {
             }]}>
               <Form.Item
                 name='venueId'
+                style={{ marginBottom: '0px' }}
                 label={<>
                   {$t({ defaultMessage: 'Venue' })}
                   {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip.Question
@@ -420,15 +421,17 @@ export function ApForm () {
                   },
                   message: $t(validationMessages.cellularApDhcpLimitation)
                 }]}
-                children={<>
-                  <Select
-                    disabled={apMeshRoleDisabled || dhcpRoleDisabled}
-                    options={venueOption}
-                    onChange={async (value) => await handleVenueChange(value)}
-                  />
-                  {venueInfos()}
-                </>}
+                children={<Select
+                  disabled={apMeshRoleDisabled || dhcpRoleDisabled}
+                  options={venueOption}
+                  onChange={async (value) => await handleVenueChange(value)}
+                />}
               />
+              <Form.Item
+                name='venueInfos'
+              >
+                {venueInfos()}
+              </Form.Item>
               <Form.Item
                 name='apGroupId'
                 label={$t({ defaultMessage: 'AP Group' })}

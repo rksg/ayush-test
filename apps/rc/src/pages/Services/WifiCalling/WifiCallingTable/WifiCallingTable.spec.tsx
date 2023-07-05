@@ -33,7 +33,7 @@ const mockTableResult = {
     'tenantId',
     'id'
   ],
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
@@ -47,6 +47,56 @@ const mockTableResult = {
           domain: 'a.b.comd'
         }
       ]
+    },
+    {
+      id: 'a6ebdcae345c42c1935ddaf946f5c341',
+      name: 'wifi-2',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      networkIds: [
+        '28ebc4915a94407faf8885bcd1fe7f0b'
+      ],
+      tenantId: '2347da24c7824b0b975d2d02406e091f',
+      epdgs: [
+        {
+          domain: 'a.b.com'
+        }
+      ]
+    }
+  ]
+}
+
+const mockNetworkResult = {
+  fields: [
+    'clients',
+    'aps',
+    'description',
+    'check-all',
+    'ssid',
+    'captiveType',
+    'vlan',
+    'name',
+    'venues',
+    'cog',
+    'vlanPool',
+    'id',
+    'nwSubType'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'Open-Network',
+      id: '28ebc4915a94407faf8885bcd1fe7f0b',
+      vlan: 1,
+      nwSubType: 'open',
+      ssid: 'Open-Network',
+      venues: {
+        count: 0,
+        names: [],
+        ids: []
+      },
+      aps: 0,
+      clients: 0
     }
   ]
 }
@@ -81,6 +131,10 @@ describe('WifiCallingTable', () => {
       rest.post(
         WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
     )
   })
