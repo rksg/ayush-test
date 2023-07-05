@@ -4,7 +4,7 @@ import { rest } from 'msw'
 import { venueApi }                                                                                               from '@acx-ui/rc/services'
 import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                        from '@acx-ui/store'
-import { fireEvent, logRoles, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
 
@@ -341,8 +341,6 @@ describe('Topology', () => {
     // hide tooltip on close
     fireEvent.click(screen.getByTestId(/CloseSymbol/i))
     expect(apCard).not.toBeInTheDocument()
-
-    logRoles(document.body)
 
     fireEvent.click(switchDevices[0])
     expect(await screen.findByTestId('nodeTooltip')).not.toBeNull()
