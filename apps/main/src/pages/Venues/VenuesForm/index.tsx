@@ -188,6 +188,23 @@ export function VenuesForm () {
     }
   }, [data, isMapEnabled, window.google])
 
+  useEffect(() => {
+    if (action === 'edit' && address.country && data ) {
+      const isSameCountry = (data.address.country === address.country) || false
+      let errors = []
+      if (!isSameCountry) {
+        errors.push(intl.$t(
+          { defaultMessage: 'Address must be in {country}' },
+          { country: data.address.country }
+        ))
+      }
+      formRef.current?.setFields([{
+        name: ['address', 'addressLine'],
+        errors
+      }])
+    }
+  }, [data, address, action])
+
   const venuesListPayload = {
     searchString: '',
     fields: ['name', 'id'],
@@ -196,7 +213,6 @@ export function VenuesForm () {
     pageSize: 10000
   }
   const [venuesList] = useLazyVenuesListQuery()
-  const [sameCountry, setSameCountry] = useState(true)
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject(intl.$t(validationMessages.name))
@@ -209,18 +225,22 @@ export function VenuesForm () {
 
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
-    const isSameValue = value ===
-      formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+    const newAddress = formRef.current?.getFieldValue('address')
+    const isSameValue = value === newAddress?.addressLine
+    const isSameCountry = (data && (data?.address.country === newAddress?.country)) || false
 
-    if(Object.keys(address).length === 0){
+    if(Object.keys(newAddress).length === 0){
       return Promise.reject(
         intl.$t({ defaultMessage: 'Please select address from suggested list' })
       )
     }
 
-    if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
+    if (isEdit && !_.isEmpty(value) && isSameValue && !isSameCountry) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`
+        intl.$t(
+          { defaultMessage: 'Address must be in {country}' },
+          { country: data?.address.country }
+        )
       )
     }
     return Promise.resolve()
@@ -228,29 +248,14 @@ export function VenuesForm () {
 
   const addressOnChange = async (place: google.maps.places.PlaceResult) => {
     const { latlng, address } = await addressParser(place)
-    const isSameCountry = (data && (data?.address.country === address.country)) || false
-    setSameCountry(isSameCountry)
-    let errorList = []
-
-    if (action === 'edit' && !isSameCountry) {
-      errorList.push(
-        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
-    }
-
-    formRef.current?.setFields([{
-      name: ['address', 'addressLine'],
-      value: place.formatted_address,
-      errors: errorList
-    }])
-
+    formRef.current?.setFieldValue('address', address)
     setMarker(latlng)
     setCenter(latlng.toJSON())
     updateAddress(address)
     setZoom(16)
   }
   const { ref: placeInputRef } = usePlacesAutocomplete({
-    onPlaceSelected: addressOnChange,
-    currentAddress: data?.address || {}
+    onPlaceSelected: addressOnChange
   })
 
   const handleAddVenue = async (values: VenueExtended) => {
@@ -357,7 +362,6 @@ export function VenuesForm () {
                     data-testid='address-input'
                     ref={placeInputRef}
                     disabled={!isMapEnabled}
-                    value={address.addressLine}
                   />
                 </Form.Item>
                 {isMapEnabled ?

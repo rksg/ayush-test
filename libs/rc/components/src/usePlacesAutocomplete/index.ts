@@ -5,7 +5,6 @@ import { InputRef }            from 'antd'
 
 import { get }                    from '@acx-ui/config'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { Address }                from '@acx-ui/rc/utils'
 
 import { usePreference } from '../usePreference'
 
@@ -13,20 +12,18 @@ import { usePreference } from '../usePreference'
 export function usePlacesAutocomplete ( props:
   {
     onPlaceSelected?: (place: google.maps.places.PlaceResult)=>void
-    currentAddress?: Address
   }
 ) {
   const { currentMapRegion } = usePreference()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const inputRef = useRef<InputRef>(null)
   const autocompleteRef = useRef<google.maps.places.Autocomplete>()
-  const { onPlaceSelected, currentAddress } = props
+  const { onPlaceSelected } = props
 
   const [mapReady, setMapReady] = useState(false)
 
   useEffect(() => {
     if (!isMapEnabled) return
-    if (currentAddress && !currentAddress.addressLine) return // for Edit mode: waiting for editing value
     if (!!window.google?.maps?.places) {
       setMapReady(true)
     } else {
@@ -40,7 +37,7 @@ export function usePlacesAutocomplete ( props:
         setMapReady(true)
       })
     }
-  }, [isMapEnabled, currentMapRegion, currentAddress])
+  }, [isMapEnabled, currentMapRegion])
 
   useEffect(() => {
     if (mapReady && inputRef.current?.input && !autocompleteRef.current) {
