@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form,  InputNumber,  Switch , Select, Slider } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm, Tooltip } from '@acx-ui/components'
 
 
 
@@ -107,7 +107,15 @@ export function DataConsumptionSettingForm () {
               <Form.Item
                 name='dataCapacity'
                 required={true}
-                label={$t({ defaultMessage: 'Max Data Comsumption' })}
+                label={
+                  <>
+                    {$t({ defaultMessage: 'Max Data Comsumption' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage: `Count the aggregated outbound and inbound
+                       data usage for the wireless or wired network from all devices
+                       that belong to this unit` })}/>
+                  </>
+                }
                 validateTrigger={['onBlur']}
                 rules={
                   [
@@ -179,7 +187,16 @@ export function DataConsumptionSettingForm () {
               <Form.Item
                 name='dataCapacityEnforced'
                 required={true}
-                label={$t({ defaultMessage: 'Action for overage data' })}
+                label={
+                  <>
+                    {$t({ defaultMessage: 'Action for overage data' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage: `"ignore" is to continue the service as
+                       if nothing happened; "discard" to stop all WAN bound traffic until
+                       next billing cycle starts` })}/>
+                  </>
+
+                }
                 initialValue={form.getFieldValue('dataCapacityEnforced')}
                 rules={
                   [
@@ -194,7 +211,14 @@ export function DataConsumptionSettingForm () {
               <Form.Item
                 name='dataCapacityThreshold'
                 required={true}
-                label={$t({ defaultMessage: 'Notify when data volume reaches(%):' })}
+                label={
+                  <>
+                    {$t({ defaultMessage: 'Notify when data volume reaches(%):' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage: `When data volume reaches the threshold,
+                       an event will be generated and notify the customer` })}/>
+                  </>
+                }
                 initialValue={form.getFieldValue('dataCapacityThreshold') ?? 80}
               >
                 <Slider
