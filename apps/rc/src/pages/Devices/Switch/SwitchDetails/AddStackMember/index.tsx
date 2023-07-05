@@ -231,7 +231,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const onSaveStackMember = async () => {
     try {
-      let payload = {
+      const payload = {
         ...switchData,
         enableStack: true,
         stackMembers: [
@@ -239,8 +239,14 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           ...tableData.map((item) => ({ id: item.id }))
         ]
       }
-      const stackPayload = _.omit(payload, [
-        'dhcpClientEnabled', 'dhcpServerEnabled', 'ipAddressInterface', 'ipAddressInterfaceType', 'rearModule' ])
+      let stackPayload = _.omit(payload, [
+        'dhcpClientEnabled', 'dhcpServerEnabled', 'ipAddressInterface', 'ipAddressInterfaceType', 'rearModule'])
+
+      if (switchDetail?.ipFullContentParsed === false) {
+        stackPayload = _.omit(payload, [
+          'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
+      }
+
       await updateSwitch({ params: { tenantId, switchId }, payload: stackPayload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
