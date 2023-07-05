@@ -2,17 +2,18 @@ import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
 import { dataApiURL }       from '@acx-ui/store'
 import { store }            from '@acx-ui/store'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { DateRange }        from '@acx-ui/utils'
 
 import { expectedResult } from './__tests__/fixtures'
 import { api }            from './services'
 
 describe('factsApi', () => {
-  const props = {
+  const props: AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }],
+    range: DateRange.last24Hours,
     filter: {}
-  } as AnalyticsFilter
+  }
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )

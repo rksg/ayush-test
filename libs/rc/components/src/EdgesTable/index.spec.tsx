@@ -163,7 +163,7 @@ describe('Edge Table', () => {
 
     await screen.findByRole('row', { name: /Smart Edge 2/i })
     expect(screen.queryByRole('columnheader', { name: /Venue/i })).not.toBeInTheDocument()
-    expect((await screen.findAllByRole('columnheader')).length).toBe(9)
+    expect((await screen.findAllByRole('columnheader')).length).toBe(8)
   })
 
   it('should delete selected row(multiple)', async () => {
