@@ -24,10 +24,6 @@ jest.mock('@acx-ui/utils', () => ({
     messages: { 'en-US': { lang: 'Language' } },
     lang: 'en-US'
   })
-// useLocaleContext: () => ({
-//   messages: { 'en-US': { lang: 'Language' } },
-//   lang: 'en-US'
-// })
 }))
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),

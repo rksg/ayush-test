@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Incidents Page render when feature toggle is disabled 1`] = `
+exports[`Health Page render when feature toggle is disabled 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -152,7 +152,7 @@ exports[`Incidents Page render when feature toggle is disabled 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Incidents Page should match snapshot 1`] = `
+exports[`Health Page should match snapshot 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -320,7 +320,7 @@ exports[`Incidents Page should match snapshot 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Incidents Page should show - when no data 1`] = `
+exports[`Health Page should show - when no data 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
