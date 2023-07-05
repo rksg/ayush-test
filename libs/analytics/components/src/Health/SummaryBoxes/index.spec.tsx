@@ -2,7 +2,6 @@ import userEvent         from '@testing-library/user-event'
 import { defineMessage } from 'react-intl'
 
 import { AnalyticsFilter }                                                  from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { BrowserRouter as Router }                                          from '@acx-ui/react-router-dom'
 import { Provider, store, dataApiURL }                                      from '@acx-ui/store'
 import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, act } from '@acx-ui/test-utils'
@@ -24,7 +23,6 @@ describe('box', () => {
     value: '100'
   }
   it('should render correctly with toggle enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const onClick = jest.fn()
     const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
     expect(asFragment()).toMatchSnapshot()
@@ -33,7 +31,6 @@ describe('box', () => {
   })
 
   it('should render correctly with toggle disabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const onClick = jest.fn()
     const falseToggleBoxProps = { ...boxProps }
     const { asFragment } = render(<Box {...falseToggleBoxProps} isOpen onClick={onClick}/>)
@@ -55,7 +52,6 @@ describe('Health Page', () => {
   it('should match snapshot', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
     const drilldownSelection = null
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes
         filters={filters}
@@ -69,7 +65,6 @@ describe('Health Page', () => {
   it('should show - when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
     const drilldownSelection = null
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes filters={filters}
         drilldownSelection={drilldownSelection}
@@ -83,7 +78,6 @@ describe('Health Page', () => {
   it('render when feature toggle is disabled', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
     const drilldownSelection = null
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes filters={filters}
         drilldownSelection={drilldownSelection}
@@ -101,7 +95,6 @@ describe('Health Page', () => {
       const setDrilldownSelection = jest.fn(
         (val: typeof drilldownSelection) => drilldownSelection = val
       )
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
       const { rerender } = render(<Router><Provider><SummaryBoxes
         filters={filters}
         drilldownSelection={drilldownSelection}
@@ -136,7 +129,6 @@ describe('Health Page', () => {
       const setDrilldownSelection = jest.fn(
         (val: typeof drilldownSelection) => drilldownSelection = val
       )
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
       const { rerender } = render(<Router><Provider><SummaryBoxes
         filters={filters}
         drilldownSelection={drilldownSelection}

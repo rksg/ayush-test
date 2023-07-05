@@ -17,7 +17,7 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 YMnXT"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 jaCLvj"
             type="button"
           >
             <div
@@ -43,6 +43,10 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -54,7 +58,7 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 gJqSmj"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 kna-Drr"
             type="button"
           >
             <div
@@ -80,6 +84,10 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -91,7 +99,7 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 edTYcN"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 paFir"
             type="button"
           >
             <div
@@ -112,6 +120,10 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 dstOsp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -123,7 +135,7 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 jorAeo"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 cvxmAo"
             type="button"
           >
             <div
@@ -144,6 +156,10 @@ exports[`Health Page render when feature toggle is disabled 1`] = `
                 </span>
               </div>
             </div>
+            <svg
+              class="styledComponents__DownArrow-sc-1tt9ql2-3 eVDFEp"
+              data-testid="CaretDoubleDownOutlined"
+            />
           </button>
         </div>
       </div>
@@ -491,7 +507,7 @@ exports[`Health Page should show - when no data 1`] = `
 exports[`box should render correctly with toggle disabled 1`] = `
 <DocumentFragment>
   <button
-    class="styledComponents__Wrapper-sc-1tt9ql2-0 bDTrgb"
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 kfCiuv"
     type="button"
   >
     <div
@@ -521,6 +537,10 @@ exports[`box should render correctly with toggle disabled 1`] = `
         </span>
       </div>
     </div>
+    <svg
+      class="styledComponents__UpArrow-sc-1tt9ql2-2 dKUscz"
+      data-testid="CaretDoubleUpOutlined"
+    />
   </button>
 </DocumentFragment>
 `;

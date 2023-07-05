@@ -23,12 +23,10 @@ interface BoxProps {
 }
 
 export const Box = (props: BoxProps) => {
-  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
   const { $t } = useIntl()
   const box = <Wrapper
     $type={props.type}
     $isOpen={props.isOpen}
-    $disabled={!toggleEnable}
     onClick={props.onClick}
   >
     <Statistic
@@ -37,11 +35,10 @@ export const Box = (props: BoxProps) => {
       value={props.value}
       suffix={props.suffix}
     />
-    {toggleEnable
-      ? (props.isOpen)
-        ? <UpArrow $type={props.type}/>
-        : <DownArrow $type={props.type}/>
-      : null}
+    {props.isOpen
+      ? <UpArrow $type={props.type}/>
+      : <DownArrow $type={props.type}/>
+    }
   </Wrapper>
   return box
 }
