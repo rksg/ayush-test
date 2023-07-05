@@ -14,7 +14,7 @@ export type PathNode = {
 export type NetworkPath = PathNode[]
 
 // filter sent to data api (xNodes + SSIDs), uses resource group format
-type FilterNameNode = {
+export type FilterNameNode = {
   type: 'zone' | 'switchGroup'
   name: string
 }

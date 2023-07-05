@@ -38,7 +38,7 @@ const categoryMapping = {
     color: '--acx-semantics-green-60'
   },
   edge: {
-    text: defineMessage({ defaultMessage: 'Edge' }),
+    text: defineMessage({ defaultMessage: 'SmartEdge' }),
     color: '--acx-semantics-yellow-60'
   }
 }

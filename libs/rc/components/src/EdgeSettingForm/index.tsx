@@ -103,11 +103,11 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         label={$t({ defaultMessage: 'Description' })}
         children={<TextArea rows={4} maxLength={255} />}
       />
-      <Form.Item
+      {/* <Form.Item
         name='tags'
         label={$t({ defaultMessage: 'Tags' })}
         children={<Select mode='tags' />}
-      />
+      /> */}
       {showOtpMessage ?
         <Alert message={
           $t({ defaultMessage: `The one-time-password (OTP) will be automatically sent to
