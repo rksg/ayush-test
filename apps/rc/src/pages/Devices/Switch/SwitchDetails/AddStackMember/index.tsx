@@ -234,6 +234,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
       const payload = {
         ...switchData,
         enableStack: true,
+        spanningTreePriority: switchData?.spanningTreePriority || '', //Backend need the default value
         stackMembers: [
           ...(switchDetail?.stackMembers.map((item) => ({ id: item.id })) ?? []),
           ...tableData.map((item) => ({ id: item.id }))
