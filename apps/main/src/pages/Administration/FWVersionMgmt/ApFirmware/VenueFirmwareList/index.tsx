@@ -47,9 +47,9 @@ import {
   compareVersions,
   getApVersion,
   getApNextScheduleTpl,
-  getNextScheduleTplTooltip,
-  isNextScheduleTooltipDisabled,
-  toUserDate
+  getNextSchedulesTooltip,
+  toUserDate,
+  getApSchedules
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
@@ -128,13 +128,17 @@ function useColumns (
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        return (!isNextScheduleTooltipDisabled(row)
-          ? getApNextScheduleTpl(intl, row)
-          // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(intl, row)}</UI.ScheduleTooltipText>} placement='bottom'>
-            <UI.ScheduleText>{getApNextScheduleTpl(intl, row)}</UI.ScheduleText>
+        const schedules = getApSchedules(row)
+
+        return schedules.length === 0
+          ? getApNextScheduleTpl(row)
+          : <Tooltip
+            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(row)}</UI.ScheduleTooltipText>}
+            placement='bottom'
+            overlayStyle={{ minWidth: '280px' }}
+          >
+            <UI.ScheduleText>{getApNextScheduleTpl(row)}</UI.ScheduleText>
           </Tooltip>
-        )
       }
     }
   ]
