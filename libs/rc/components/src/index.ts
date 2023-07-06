@@ -50,7 +50,12 @@ export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
 export { NetworkTabContext } from './NetworkTable/context'
 export { MapWidget, MapWidgetV2 } from './MapWidget'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
-export { RadioSettingsChannels320Mhz } from './RadioSettingsChannels/RadioSettingsChannels320Mhz'
+export {
+  RadioSettingsChannels320Mhz
+} from './RadioSettingsChannels/R770/RadioSettingsChannels320Mhz'
+export {
+  RadioSettingsChannelsManual320Mhz
+} from './RadioSettingsChannels/R770/RadioSettingsChannelsManual320Mhz'
 export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
 export { StatusLight } from './StatusLight'
 export { SwitchConfigHistoryTable } from './SwitchConfigHistoryTable'
