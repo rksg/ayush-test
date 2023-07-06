@@ -4,14 +4,17 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { apApi }                        from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { Provider, store }              from '@acx-ui/store'
 import {
+  cleanup,
   findTBody,
   mockServer,
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -223,8 +226,12 @@ jest.mock('../ImportFileDrawer', () => ({
 }))
 
 describe('Aps', () => {
-  afterEach(() => mockedUsedNavigate.mockClear())
+  afterEach(() => {
+    mockedUsedNavigate.mockClear()
+    cleanup()
+  })
   beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
@@ -284,7 +291,7 @@ describe('Aps', () => {
     expect(await within(row1).findByRole('checkbox')).toBeChecked()
 
     const downloadButton = await screen.findByRole('button', { name: 'Download Log' })
-    await userEvent.click(downloadButton)
+    await userEvent.click(downloadButton) // TODO: Fix error > Not implemented: navigation (except hash changes)
 
     const toast = await screen.findByText('Preparing log', { exact: false })
     expect(toast).toBeVisible()
@@ -295,6 +302,7 @@ describe('Aps', () => {
     const rebootDialog = await waitFor(async () => screen.findByRole('dialog'))
     await userEvent.click(await within(rebootDialog).findByRole('button', { name: 'Reboot' }))
     expect(rebootSpy).toHaveBeenCalled()
+    await waitFor(async () => expect(rebootDialog).not.toBeVisible())
   })
 
   it('Table action bar Delete', async () => {
@@ -354,6 +362,7 @@ describe('Aps', () => {
     await userEvent.click(await within(dialog2).findByRole('button', { name: 'Delete' }))
 
     expect(deleteSpy).toHaveBeenCalled()
+    await waitFor(async () => expect(dialog2).not.toBeVisible())
   }, 60000)
 
   it('Table action bar Edit', async () => {
@@ -407,8 +416,9 @@ describe('Aps', () => {
 
     await userEvent.click(combos[3])
     await userEvent.click(await screen.findByTitle('AP Group'))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    await waitFor(() => expect(screen.getByText('Ungrouped APs')).toBeVisible())
+    await waitFor(async () => expect(await screen.findByText('Ungrouped APs')).toBeVisible())
   })
 
   it('should import correctly', async () => {

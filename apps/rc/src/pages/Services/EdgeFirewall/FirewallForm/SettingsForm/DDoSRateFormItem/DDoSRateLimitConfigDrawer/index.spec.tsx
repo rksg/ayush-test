@@ -1,16 +1,8 @@
-/* eslint-disable max-len */
-import { useState } from 'react'
+import { within } from '@testing-library/react'
+import userEvent  from '@testing-library/user-event'
 
-import { renderHook, within } from '@testing-library/react'
-import userEvent              from '@testing-library/user-event'
-import { Form }               from 'antd'
-
-import { StepsForm } from '@acx-ui/components'
-import { Provider }  from '@acx-ui/store'
-import {
-  render,
-  screen
-} from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { DDoSRateLimitConfigDrawer } from './'
 
@@ -41,36 +33,33 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-
 const mockedSetFieldValue = jest.fn()
+const mockedGetFieldValue = jest.fn()
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  useStepFormContext: () => ({
+    form: {
+      getFieldValue: mockedGetFieldValue.mockReturnValue([]),
+      setFieldValue: mockedSetFieldValue
+    }
+  })
+}))
+
 const { click, type, selectOptions } = userEvent
 
 describe('DDos rate limit config drawer', () => {
   beforeEach(() => {
+    mockedGetFieldValue.mockReset()
     mockedSetFieldValue.mockReset()
   })
 
   it('should correctly render', async () => {
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-      return form
-    })
-    const { result: visibleRef } = renderHook(() => {
-      const [ visible, setVisible ] = useState(true)
-      return { visible, setVisible }
-    })
-
     render(
       <Provider>
-        <StepsForm
-          form={stepFormRef.current}
-        >
-          <DDoSRateLimitConfigDrawer
-            visible={visibleRef.current.visible}
-            setVisible={visibleRef.current.setVisible}
-          />
-        </StepsForm>
+        <DDoSRateLimitConfigDrawer
+          visible={true}
+          setVisible={() => {}}
+        />
       </Provider>)
 
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
@@ -121,26 +110,12 @@ describe('DDos rate limit config drawer', () => {
   })
 
   it('should reset data when click cancel', async () => {
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-      return form
-    })
-    const { result: visibleRef } = renderHook(() => {
-      const [ visible, setVisible ] = useState(true)
-      return { visible, setVisible }
-    })
-
     render(
       <Provider>
-        <StepsForm
-          form={stepFormRef.current}
-        >
-          <DDoSRateLimitConfigDrawer
-            visible={visibleRef.current.visible}
-            setVisible={visibleRef.current.setVisible}
-          />
-        </StepsForm>
+        <DDoSRateLimitConfigDrawer
+          visible={true}
+          setVisible={() => {}}
+        />
       </Provider>)
 
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()

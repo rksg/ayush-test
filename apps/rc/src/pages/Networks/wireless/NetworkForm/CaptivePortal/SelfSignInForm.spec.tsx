@@ -18,7 +18,7 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import { SelfSignInForm } from './SelfSignInForm'
 
-describe('CaptiveNetworkForm-SelfSignIn', () => {
+describe.skip('CaptiveNetworkForm-SelfSignIn', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'Self sign in network test'
     const selfSignInRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',

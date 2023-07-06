@@ -86,35 +86,35 @@ RUN chmod a+x ./cicd_tool/run_test_cases_tool.sh
 FROM acx-ui-base-test as acx-ui-group1-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
+RUN if [ "true" ];then \
 	    ./cicd_tool/run_test_cases_tool.sh Group1; \
 	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group2-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
+RUN if [ "true" ];then \
         ./cicd_tool/run_test_cases_tool.sh Group2; \
 	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group3-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
+RUN if [ "true" ];then \
         ./cicd_tool/run_test_cases_tool.sh Group3; \
 	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group4-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
+RUN if [ "true" ];then \
         ./cicd_tool/run_test_cases_tool.sh Group4; \
 	else mkdir -p /app/coverage; fi
 
 FROM acx-ui-base-test as acx-ui-group5-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
+RUN if [ "true" ];then \
         ./cicd_tool/run_test_cases_tool.sh Group5; \
 	else mkdir -p /app/coverage; fi
 

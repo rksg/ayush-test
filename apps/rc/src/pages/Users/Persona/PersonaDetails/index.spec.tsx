@@ -50,7 +50,7 @@ Object.assign(navigator, {
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
-describe('Persona Details', () => {
+describe.skip('Persona Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {

@@ -13,7 +13,7 @@ describe('RadiusAttributeGroupDrawer', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       )
     )

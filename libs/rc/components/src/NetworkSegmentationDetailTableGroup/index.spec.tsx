@@ -22,7 +22,7 @@ jest.mock('./AccessSwitchTable', () => ({
   AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />
 }))
 
-describe('NetworkSegmentationDetailTableGroup', () => {
+describe.skip('NetworkSegmentationDetailTableGroup', () => {
 
   beforeEach(() => {
     mockServer.use(

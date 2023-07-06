@@ -89,13 +89,13 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'ports'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Ports')).toBeVisible()
   })
 
   it('should navigate to VLANs tab correctly', async () => {
@@ -112,6 +112,8 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
+    expect(await screen.findByText('VLANs')).toBeVisible()
+    // expect(await screen.findByTestId('SwitchVeTable')).toBeTruthy()
 
   })
 
@@ -129,6 +131,8 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
+
+    expect(await screen.findByText('ACLs')).toBeVisible()
   })
 }
 )

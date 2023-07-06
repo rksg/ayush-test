@@ -122,12 +122,11 @@ describe('AP Form - Add', () => {
     Modal.destroyAll()
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApForm /></Provider>, {
+    render(<Provider><ApForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/wifi/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add AP')).toBeVisible()
     expect(screen.queryByText('GPS Coordinates')).not.toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))

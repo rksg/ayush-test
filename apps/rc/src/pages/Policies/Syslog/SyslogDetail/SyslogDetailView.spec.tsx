@@ -125,6 +125,12 @@ describe('SyslogDetailView', () => {
 
   it('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockServer.use(rest.get(
+      SyslogUrls.getSyslogPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(detailContent)
+      )
+    ))
     render(
       <SyslogDetailView />
       , {
@@ -144,6 +150,12 @@ describe('SyslogDetailView', () => {
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(rest.get(
+      SyslogUrls.getSyslogPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(detailContent)
+      )
+    ))
     render(
       <SyslogDetailView />
       , {

@@ -35,8 +35,8 @@ describe('ApPingForm', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApPingForm /></Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    render(<Provider><ApPingForm /></Provider>, { route: { params } })
+    expect(await screen.findByText('Target host or IP address')).toBeVisible()
   })
 
   it('should run validation correctly', async () => {

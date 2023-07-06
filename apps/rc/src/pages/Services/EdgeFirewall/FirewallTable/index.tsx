@@ -103,7 +103,7 @@ const FirewallTable = () => {
             () => (
               row.ddosRateLimitingRules &&
               Object.keys(row.ddosRateLimitingRules).map(key => (
-                <Row>
+                <Row key={key}>
                   <Col>
                     {
                       row.ddosRateLimitingRules &&
@@ -132,7 +132,7 @@ const FirewallTable = () => {
           title={
             () => (
               row.statefulAcls?.map(item => (
-                <Row>
+                <Row key={item.aclDirection}>
                   <Col>
                     {`${item.aclName} (${item.aclDirection.toLowerCase()})`}
                   </Col>

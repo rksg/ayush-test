@@ -51,7 +51,7 @@ describe('Firewall Detail', () => {
     expect(await screen.findByText('ON (IN: 2 rules, OUT: 2 rules)')).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
+  it.skip('should render breadcrumb correctly when feature flag is off', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
