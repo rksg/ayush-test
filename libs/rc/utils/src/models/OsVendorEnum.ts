@@ -48,5 +48,5 @@ export enum OsVendorEnum {
   BoseSpeakers = 'BoseSpeakers',
   SonosSpeakers = 'SonosSpeakers',
   RokuStreamingStick = 'RokuStreamingStick',
-  TelnetCpe = 'TelnetCpe',
+  TelenetCpe = 'TelenetCpe',
 }
