@@ -6,6 +6,7 @@ import {
   FormInstance,
   Input
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, Button, TableProps } from '@acx-ui/components'
@@ -13,7 +14,8 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }                from '@acx-ui/icons'
 import {
   useUpdateSwitchMutation,
-  useSwitchDetailHeaderQuery
+  useSwitchDetailHeaderQuery,
+  useGetSwitchQuery
 } from '@acx-ui/rc/services'
 import { Switch, SwitchTable, SWITCH_SERIAL_PATTERN, getSwitchModel, SWITCH_SERIAL_PATTERN_SUPPORT_RODAN } from '@acx-ui/rc/utils'
 import {
@@ -88,6 +90,8 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [maxMembers, setMaxMembers] = useState(12)
 
   const [updateSwitch] = useUpdateSwitchMutation()
+  const { data: switchData } =
+    useGetSwitchQuery({ params: { tenantId, switchId } })
   const { data: switchDetail } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
 
@@ -227,15 +231,24 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const onSaveStackMember = async () => {
     try {
-      let payload = {
-        ...switchDetail,
+      const payload = {
+        ...switchData,
         enableStack: true,
+        spanningTreePriority: switchData?.spanningTreePriority || '', //Backend need the default value
         stackMembers: [
           ...(switchDetail?.stackMembers.map((item) => ({ id: item.id })) ?? []),
           ...tableData.map((item) => ({ id: item.id }))
         ]
       }
-      await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
+      let stackPayload = _.omit(payload, [
+        'dhcpClientEnabled', 'dhcpServerEnabled', 'ipAddressInterface', 'ipAddressInterfaceType', 'rearModule'])
+
+      if (switchDetail?.ipFullContentParsed === false) {
+        stackPayload = _.omit(payload, [
+          'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
+      }
+
+      await updateSwitch({ params: { tenantId, switchId }, payload: stackPayload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

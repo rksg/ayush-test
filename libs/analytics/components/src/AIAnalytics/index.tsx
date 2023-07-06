@@ -6,13 +6,15 @@ import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }             from '@acx-ui/user'
 
-import { ConfigChange }       from '../ConfigChange'
-import { useHeaderExtra }     from '../Header'
-import { IncidentTabContent } from '../Incidents'
+import { ConfigChange }             from '../ConfigChange'
+import { useHeaderExtra }           from '../Header'
+import { IncidentTabContent }       from '../Incidents'
+import { RecommendationTabContent } from '../Recommendations'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
-  CONFIG_CHANGE = 'configChange'
+  CONFIG_CHANGE = 'configChange',
+  RECOMMENDATIONS = 'recommendations'
 }
 
 interface Tab {
@@ -37,8 +39,15 @@ const useTabs = () : Tab[] => {
     component: <ConfigChange/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: false })
   }
+  const recommendationTab = [{
+    key: AIAnalyticsTabEnum.RECOMMENDATIONS,
+    title: $t({ defaultMessage: 'Recommendations' }),
+    component: <RecommendationTabContent />,
+    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+  }]
   return [
     incidentsTab,
+    ...(get('IS_MLISA_SA') ? recommendationTab : []),
     ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : [])
   ]
 }
@@ -63,7 +72,9 @@ export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
-      extra={filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
+      extra={get('IS_MLISA_SA')
+        ? tabs.find(({ key }) => key === tab)?.headerExtra
+        : filterByAccess(tabs.find(({ key }) => key === tab)?.headerExtra)}
     />
     {TabComp}
   </>

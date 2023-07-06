@@ -69,7 +69,7 @@ describe('Edge Detail Drawer', () => {
     </Provider>, { route: { params } })
 
     const emptyLabel = await screen.findAllByText('--')
-    expect(emptyLabel.length).toBe(8)
+    expect(emptyLabel.length).toBe(7)
   })
 
   it('should have correct link to venue detail page', async () => {
