@@ -135,3 +135,61 @@ export const mockedFWService = {
     }
   ] // end of statefulAcls
 }
+
+export const mockedDefaultValue = [
+  {
+    name: 'Inbound ACL',
+    direction: 'INBOUND',
+    rules: [
+      {
+        priority: 1,
+        description: 'Default rule',
+        accessAction: 'BLOCK',
+        protocolType: 'ANY',
+        protocolValue: 0,
+        sourceAddressType: 'ANY_IP_ADDRESS',
+        destinationAddressType: 'ANY_IP_ADDRESS'
+      }
+    ]
+  }, {
+    name: 'Outbound ACL',
+    direction: 'OUTBOUND',
+    rules: [
+      {
+        priority: 1,
+        description: 'Cloud mgmt. (Default)',
+        accessAction: 'INSPECT',
+        protocolType: 'ANY',
+        sourceAddressType: 'ANY_IP_ADDRESS',
+        destinationAddressType: 'IP_ADDRESS',
+        destinationAddress: 'RuckusOne IP'
+      },
+      {
+        priority: 2,
+        description: 'Cloud mgmt.(https) (Default)',
+        accessAction: 'INSPECT',
+        protocolType: 'TCP',
+        sourceAddressType: 'ANY_IP_ADDRESS',
+        destinationAddressType: 'ANY_IP_ADDRESS',
+        destinationPort: 443
+      },
+      {
+        priority: 3,
+        description: 'Cloud mgmt.(ntp) (Default)',
+        accessAction: 'INSPECT',
+        protocolType: 'UDP',
+        sourceAddressType: 'ANY_IP_ADDRESS',
+        destinationAddressType: 'ANY_IP_ADDRESS',
+        destinationPort: 123
+      },
+      {
+        priority: 4,
+        description: 'Default rule',
+        accessAction: 'INSPECT',
+        protocolType: 'ANY',
+        sourceAddressType: 'ANY_IP_ADDRESS',
+        destinationAddressType: 'ANY_IP_ADDRESS'
+      }
+    ]
+  }
+]
