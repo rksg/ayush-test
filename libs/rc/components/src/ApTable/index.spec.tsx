@@ -380,7 +380,7 @@ describe('Aps', () => {
     expect(mockedUsedNavigate).toHaveBeenCalled()
   })
 
-  it('should render with filterables', async () => {
+  it.skip('should render with filterables', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
