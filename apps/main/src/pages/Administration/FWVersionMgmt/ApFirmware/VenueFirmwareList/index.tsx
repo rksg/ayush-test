@@ -203,10 +203,7 @@ export const VenueFirmwareTable = (
 
   const handleUpdateModalSubmit = async (data: UpdateNowRequest[]) => {
     try {
-      updateNow({
-        params: { ...params },
-        payload: data
-      }).unwrap()
+      await updateNow({ params: { ...params }, payload: data }).unwrap()
       clearSelection()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
