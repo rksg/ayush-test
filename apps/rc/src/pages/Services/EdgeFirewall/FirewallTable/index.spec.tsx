@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { Provider }                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }               from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitForElementToBeRemoved, within }                        from '@acx-ui/test-utils'
 
 import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
 import { mockedFirewallDataList } from '../__tests__/fixtures'

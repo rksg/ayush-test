@@ -1,16 +1,8 @@
-/* eslint-disable max-len */
-import { useState } from 'react'
+import { within } from '@testing-library/react'
+import userEvent  from '@testing-library/user-event'
 
-import { renderHook, within } from '@testing-library/react'
-import userEvent              from '@testing-library/user-event'
-import { Form }               from 'antd'
-
-import { StepsForm } from '@acx-ui/components'
-import { Provider }  from '@acx-ui/store'
-import {
-  render,
-  screen
-} from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { DDoSRateLimitConfigDrawer } from './'
 
