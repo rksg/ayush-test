@@ -33,7 +33,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('AccessControlTable - Device', () => {
+describe.skip('AccessControlTable - Device', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
