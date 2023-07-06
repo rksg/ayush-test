@@ -21,7 +21,7 @@ jest.mock('@googlemaps/js-api-loader', () => ({
   Loader: function () { return { load: mockedLoadAsync } }
 }))
 
-describe.skip('Test usePlacesAutocomplete', () => {
+describe('Test usePlacesAutocomplete', () => {
   afterAll(()=>{ mockInstances.clearAll() })
 
   beforeEach(()=>{
