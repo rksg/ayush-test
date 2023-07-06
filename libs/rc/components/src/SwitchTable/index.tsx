@@ -373,7 +373,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
     } else {
-      delete customFilters.syncedSwitchConfig
+      customFilters.syncedSwitchConfig = []
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
