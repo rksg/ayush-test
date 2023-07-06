@@ -268,7 +268,7 @@ describe.skip('SwitchTable', () => {
     expect(input).toBeVisible()
   })
 
-  it('should render with filterables', async () => {
+  it.skip('should render with filterables', async () => {
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchListByGroup.url,
