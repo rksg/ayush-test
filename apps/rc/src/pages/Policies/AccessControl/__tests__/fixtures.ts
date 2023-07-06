@@ -214,3 +214,193 @@ export const devicePolicyListResponse = [
     networksCount: 0
   }
 ]
+
+export const networkListResponse = {
+  fields: [
+    'clientRateUpLinkLimit',
+    'l3AclPolicyId',
+    'applicationPolicyName',
+    'clientRateDownLinkLimit',
+    'devicePolicyName',
+    'l2AclPolicyId',
+    'networkIds',
+    'name',
+    'applicationPolicyId',
+    'id',
+    'l3AclPolicyName',
+    'l2AclPolicyName',
+    'devicePolicyId'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      name: 'test1',
+      id: '42c47e5505914752a41625b7dafca1c7'
+    },
+    {
+      name: 'test2',
+      id: 'ed345f9b052543bf8eef90e169227668'
+    },
+    {
+      name: 'test3',
+      id: '3cc8f9dc12334e5da69a8f06aef84dc4'
+    },
+    {
+      name: 'test4',
+      id: 'ed4ed15bd6fc42b6bcf9286e1cccd97b'
+    },
+    {
+      name: 'test5',
+      id: 'e38c875409364926a97c44a4882cb8e7'
+    }
+  ]
+}
+
+export const deviceDetailResponse = {
+  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
+  name: 'device1-another',
+  defaultAccess: 'ALLOW',
+  rules: [
+    {
+      name: 'vlan101',
+      action: 'ALLOW',
+      deviceType: 'Tablet',
+      osVendor: 'Ios'
+    },
+    {
+      name: 'rule_f',
+      action: 'ALLOW',
+      deviceType: 'Smartphone',
+      osVendor: 'Ios',
+      downloadRateLimit: 107.7,
+      uploadRateLimit: 200,
+      vlan: 12
+    }
+  ],
+  id: 'fdd2bc421cb445daac8937dbb2366f5e'
+}
+
+export const avcCat = [
+  {
+    catName: 'Web',
+    catId: 30
+  },
+  {
+    catName: 'Printer',
+    catId: 21
+  },
+  {
+    catName: 'Audio/Video',
+    catId: 3
+  }
+]
+
+export const avcApp = [{
+  appName: 'BBC',
+  avcAppAndCatId: {
+    catId: 30,
+    appId: 1754
+  }
+}, {
+  appName: 'AppsFlyer',
+  avcAppAndCatId: {
+    catId: 30,
+    appId: 2334
+  }
+}, {
+  appName: 'BJNP',
+  avcAppAndCatId: {
+    catId: 21,
+    appId: 2481
+  }
+}, {
+  appName: '050 plus',
+  avcAppAndCatId: {
+    catId: 3,
+    appId: 1123
+  }
+}]
+
+export const queryApplication = [
+  {
+    id: 'edac8b0c22e140cd95e63a9e81421576',
+    name: 'app1',
+    rulesCount: 2,
+    networksCount: 0
+  },
+  {
+    id: 'e51edc33a9764b1284c0fd201806e4d4',
+    name: 'app2',
+    description: 'sdfasdf',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '02f18ac24a504cd88ed6a94025b64d44',
+    name: 'app3',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '9ad95d4741b44fbfbab55914c104eea4',
+    name: 'app4',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: '8403ff88c526465b8070f50ca4547281',
+    name: 'app5',
+    rulesCount: 1,
+    networksCount: 0
+  },
+  {
+    id: 'e1ba3e5ca73b4bbf8c53bb5feff31f9b',
+    name: 'app6-activityMsg',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
+
+export const queryApplicationUpdate = [
+  ...queryApplication,
+  {
+    id: '6ab1a781711e492eb05a70f9f9ba253a',
+    name: 'app1-test',
+    rulesCount: 1,
+    networksCount: 0
+  }
+]
+
+export const applicationDetail = {
+  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
+  name: 'app1',
+  rules: [
+    {
+      name: 'appRule2',
+      ruleType: 'USER_DEFINED',
+      accessControl: 'DENY',
+      priority: 2,
+      applicationName: 'userDefinedAppName',
+      applicationId: 1,
+      portMapping: 'IP_WITH_PORT',
+      destinationIp: '1.1.1.1',
+      netmask: '255.255.255.0',
+      destinationPort: 20,
+      protocol: 'TCP',
+      id: 'd0c06ec39bac4515b150ca4dac7e9b30'
+    },
+    {
+      name: 'appRule1',
+      ruleType: 'SIGNATURE',
+      accessControl: 'DENY',
+      priority: 1,
+      category: 'Audio/Video',
+      categoryId: 3,
+      applicationName: '050 plus',
+      applicationId: 1123,
+      id: 'bcbcb881099946f5aad7841e2ca0d73f'
+    }
+  ],
+  id: 'edac8b0c22e140cd95e63a9e81421576'
+}
