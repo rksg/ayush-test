@@ -290,7 +290,7 @@ function Table <RecordType extends Record<string, any>> ({
   })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
-  const hasHeader = !hasRowSelected &&
+  const hasHeader = (!hasRowSelected || !props.tableAlertRender) &&
     (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
   const selectAllRowSelection = {
     columnWidth: '45px',

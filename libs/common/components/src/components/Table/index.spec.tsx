@@ -138,6 +138,23 @@ describe('Table component', () => {
     expect(alert).not.toBeVisible()
   })
 
+  it('renders search/filter when no selected bar', async () => {
+    const props: TableProps<TestRow> = {
+      columns: [
+        { ...testColumns[0], searchable: true },
+        ...testColumns.slice(1, 3)
+      ],
+      dataSource: testData,
+      rowSelection: { type: 'radio' },
+      tableAlertRender: false
+    }
+    render(<Table {...props} />)
+    expect(await screen.findByPlaceholderText('Search Name')).not.toBeNull()
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    await userEvent.click(within(row1).getByRole('radio'))
+    expect(await screen.findByPlaceholderText('Search Name')).not.toBeNull()
+  })
+
   it('renders table with ellipsis column', async () => {
     const columns = testColumns.map((column, i) => {
       column = { ...column }
@@ -548,7 +565,6 @@ describe('Table component', () => {
     }
 
     render(<Component />)
-
 
     const editButton = screen.getByRole('button', { name: /edit/i })
     expect(editButton).toBeVisible()
