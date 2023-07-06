@@ -18,7 +18,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
@@ -34,8 +34,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { AssignedSubscriptions } from './AssignedSubscriptions'
-import * as UI                   from './styledComponent'
+import { AssignedSubscriptionTable } from './AssignedSubscriptionTable'
+import * as UI                       from './styledComponent'
 
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'Show All' }) },
@@ -208,18 +208,22 @@ export function Subscriptions () {
         <Subtitle level={4} style={{ marginBottom: '12px' }}>
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
-        <SpaceWrapper fullWidth size={40} justifycontent='flex-start'>
-          <SubscriptionUtilizationWidget
+        <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
+          <MspSubscriptionUtilizationWidget
             deviceType={EntitlementDeviceType.MSP_WIFI}
             title={$t({ defaultMessage: 'Wi-Fi' })}
             total={totalWifiCount}
+            assigned={20}
             used={usedWifiCount}
+            tooltip='purchased:100, cortsey:5'
           />
-          <SubscriptionUtilizationWidget
+          <MspSubscriptionUtilizationWidget
             deviceType={EntitlementDeviceType.MSP_SWITCH}
             title={$t({ defaultMessage: 'Switch' })}
             total={totalSwitchCount}
+            assigned={8}
             used={usedSwitchCount}
+            tooltip='purchased:10, cortsey:1'
           />
         </SpaceWrapper>
       </>
@@ -268,7 +272,7 @@ export function Subscriptions () {
       <PageHeader
         title={$t({ defaultMessage: 'Subscriptions' })}
         extra={[
-          <MspTenantLink to='/dashboard/msplicenses/create'>
+          <MspTenantLink to='/msplicenses/assign'>
             <Button
               hidden={!isAssignedActive}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
@@ -291,7 +295,7 @@ export function Subscriptions () {
       </Tabs>
 
       <SubscriptionUtilization />
-      {isAssignedActive ? <AssignedSubscriptions /> : <SubscriptionTable />}
+      {isAssignedActive ? <AssignedSubscriptionTable /> : <SubscriptionTable />}
     </>
   )
 }

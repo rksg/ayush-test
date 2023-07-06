@@ -5,7 +5,7 @@ import { MspUrlsInfo }                                            from '@acx-ui/
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
-import { AssignedSubscriptions } from '.'
+import { AssignedSubscriptionTable } from '.'
 
 const entitlement =
   [
@@ -14,7 +14,7 @@ const entitlement =
       deviceSubType: 'ICX76',
       deviceType: 'MSP_SWITCH',
       effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
-      expirationDate: 'Tue Dec 06 23:59:59 UTC 2023',
+      expirationDate: 'Tue July 06 23:59:59 UTC 2023',
       id: '358889502-1',
       isTrial: false,
       lastNotificationDate: null,
@@ -70,7 +70,7 @@ const summary =
     }
   ]
 
-describe('AssignedSubscriptions', () => {
+describe('AssignedSubscriptionTable', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
@@ -102,7 +102,7 @@ describe('AssignedSubscriptions', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <AssignedSubscriptions />
+        <AssignedSubscriptionTable />
       </Provider>, {
         route: { params, path: '/:tenantId/mspLicenses' }
       })

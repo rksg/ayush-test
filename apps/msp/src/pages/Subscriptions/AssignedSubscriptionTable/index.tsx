@@ -22,7 +22,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from '../styledComponent'
 
-export function AssignedSubscriptions () {
+export function AssignedSubscriptionTable () {
   const { $t } = useIntl()
 
   const columns: TableProps<MspEntitlement>['columns'] = [
@@ -103,7 +103,7 @@ export function AssignedSubscriptions () {
     }
   ]
 
-  const AssignedSubscriptionTable = () => {
+  const AssignedTable = () => {
     const queryResults = useMspEntitlementListQuery({
       params: useParams()
     },{
@@ -133,6 +133,6 @@ export function AssignedSubscriptions () {
   }
 
   return (
-    <AssignedSubscriptionTable />
+    <AssignedTable />
   )
 }
