@@ -207,7 +207,6 @@ export function DataConsumptionSettingForm () {
                   <Select placeholder={'Select...'}
                     options={dataCapacityEnforcedOptions}
                   />}/>
-              <Form.Item/>
               <Form.Item
                 name='dataCapacityThreshold'
                 required={true}

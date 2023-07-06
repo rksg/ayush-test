@@ -148,17 +148,22 @@ describe('ConnectionMeteringForm', () => {
     expect(switches.length).toEqual(2)
 
     await userEvent.click(switches[0]) //enable data rate setting
+    const enableDownloadSetting = await screen.findByRole(
+      'checkbox',
+      { name: 'Total Download Limit' }
+    )
+    await userEvent.click(enableDownloadSetting)
+    const downloadLimitInput = await screen.findAllByRole('spinbutton')
+    expect(downloadLimitInput.length).toEqual(1)
+    await userEvent.click(downloadLimitInput[0])
+    await userEvent.type(downloadLimitInput[0], '1')
+
     const enableUploadSetting = await screen.findByRole(
       'checkbox',
-      { name: 'Total Upload limit' }
+      { name: 'Total Upload Limit' }
     )
     await userEvent.click(enableUploadSetting)
 
-    const enableDownloadSetting = await screen.findByRole(
-      'checkbox',
-      { name: 'Total Download limit' }
-    )
-    await userEvent.click(enableDownloadSetting)
     await userEvent.click(switches[1]) //enable data consumption setting
 
     const inputNumbers = await screen.findAllByRole('spinbutton')
@@ -208,13 +213,16 @@ describe('ConnectionMeteringForm', () => {
       await userEvent.click(switches[0]) //enable data rate setting
       const enableUploadSetting = await screen.findByRole(
         'checkbox',
-        { name: 'Total Upload limit' }
+        { name: 'Total Upload Limit' }
       )
       await userEvent.click(enableUploadSetting)
-
+      const uploadLimitInput = await screen.findAllByRole('spinbutton')
+      expect(uploadLimitInput.length).toEqual(1)
+      await userEvent.click(uploadLimitInput[0])
+      await userEvent.type(uploadLimitInput[0], '1')
       const enableDownloadSetting = await screen.findByRole(
         'checkbox',
-        { name: 'Total Download limit' }
+        { name: 'Total Download Limit' }
       )
       await userEvent.click(enableDownloadSetting)
 

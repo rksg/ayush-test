@@ -31,7 +31,7 @@ export function ConnectionMeteringSettingForm () {
   return (
     <>
       <GridRow>
-        <GridCol col={{ span: 6 }}>
+        <GridCol col={{ span: 8 }}>
           <Form.Item
             name='name'
             label={$t({ defaultMessage: 'Profile Name' })}
@@ -52,11 +52,11 @@ export function ConnectionMeteringSettingForm () {
         </GridCol>
       </GridRow>
       <GridRow>
-        <GridCol col={{ span: 6 }}>
+        <GridCol col={{ span: 7 }}>
           <DataRateSettingForm/>
         </GridCol>
       </GridRow>
-      <GridRow>
+      <GridRow style={{ marginTop: '10px' }}>
         <GridCol col={{ span: 6 }}>
           <DataConsumptionSettingForm/>
         </GridCol>
