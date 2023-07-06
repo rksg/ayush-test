@@ -53,11 +53,6 @@ export function RecommendationTable ({ filters, showCrrm }:
 
   const queryResults = useRecommendationListQuery(filters)
 
-  const dataSource = useMemo(() => queryResults.data?.filter((val) => showCrrm
-    ? val.code.includes('crrm')
-    : !val.code.includes('crrm')
-  ), [queryResults, showCrrm])
-
   const scopeType = get('IS_MLISA_SA')
     ? $t({ defaultMessage: 'Zone' })
     : $t({ defaultMessage: 'Venue' })
@@ -70,9 +65,15 @@ export function RecommendationTable ({ filters, showCrrm }:
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
-  const data = (showMuted)
-    ? dataSource
-    : dataSource?.filter((r: Recommendation) => !r.isMuted)
+
+  const data = (() => {
+    const filterCrrm = queryResults.data?.filter((val) => showCrrm
+      ? val.code.includes('crrm')
+      : !val.code.includes('crrm'))
+    return (showMuted)
+      ? filterCrrm
+      : filterCrrm?.filter((r: Recommendation) => !r.isMuted)
+  })()
 
   const rowActions: TableProps<Recommendation>['rowActions'] = [
     {

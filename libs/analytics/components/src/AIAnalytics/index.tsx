@@ -44,13 +44,13 @@ const useTabs = () : Tab[] => {
     {
       key: AIAnalyticsTabEnum.CRRM,
       title: $t({ defaultMessage: 'AI-Driven RRM' }),
-      component: <RecommendationTabContent showCrrm/>,
+      component: <RecommendationTabContent />,
       headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
     },
     {
       key: AIAnalyticsTabEnum.AIOPS,
       title: $t({ defaultMessage: 'AI Operations' }),
-      component: <RecommendationTabContent showCrrm={false} />,
+      component: <RecommendationTabContent />,
       headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
     }
   ]

@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { get }                                from '@acx-ui/config'
 import { BrowserRouter as Router }            from '@acx-ui/react-router-dom'
 import { recommendationUrl, Provider, store } from '@acx-ui/store'
 import {
-  fireEvent,
   mockGraphqlQuery,
   render, screen,
   waitForElementToBeRemoved
@@ -22,18 +23,17 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-<<<<<<< HEAD
 const mockedUsedNavigate = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
-=======
+}))
+
 const mockedUseMuteRecommendationMutation = useMuteRecommendationMutation as jest.Mock
 const mockedMuteRecommendation = jest.fn()
 jest.mock('./services', () => ({
   ...jest.requireActual('./services'),
   useMuteRecommendationMutation: jest.fn()
->>>>>>> origin/master
 }))
 
 describe('RecommendationTabContent', () => {
@@ -63,11 +63,11 @@ describe('RecommendationTabContent', () => {
       data: apiResult
     })
     mockGet.mockReturnValue(false) // get('IS_MLISA) => false
-    render(<Provider><RecommendationTabContent showCrrm /></Provider>, {
+    render(<RecommendationTabContent/>, {
       route: {
-        path: '/tenantId/t/analytics/recommendations/crrm',
-        wrapRoutes: false
-      }
+        params: { activeTab: 'crrm' }
+      },
+      wrapper: Provider
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -81,29 +81,19 @@ describe('RecommendationTabContent', () => {
       data: apiResult
     })
     mockGet.mockReturnValue(true) // get('IS_MLISA) => true
-    render(<Provider><RecommendationTabContent showCrrm/></Provider>, {
+    render(<RecommendationTabContent />, {
       route: {
-        path: '/analytics/next/recommendations/crrm',
-        wrapRoutes: false
-      }
+        params: { activeTab: 'aiOps' }
+      },
+      wrapper: Provider
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-    await screen.findAllByText('High')
-    expect(screen.getAllByText('High')).toHaveLength(1)
+    await screen.findAllByText('Medium')
+    expect(screen.getAllByText('Medium')).toHaveLength(1)
     expect(screen.getByText('Zone')).toHaveTextContent('Zone')
   })
-<<<<<<< HEAD
-  it('should render table for aiOps for RA SA', async () => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendation', {
-      data: mockResult
-    })
-    mockGet.mockReturnValue(true) // get('IS_MLISA) => true
-    render(<Provider><RecommendationTabContent showCrrm={false} /></Provider>, {
-      route: {
-        path: '/analytics/next/recommendations/aiOps',
-=======
   it('should render muted recommendations & reset correctly', async () => {
     const { recommendations } = apiResult
     const [ muted, unmuted ] = recommendations
@@ -114,8 +104,8 @@ describe('RecommendationTabContent', () => {
 
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/analytics/next/recommendations',
-        wrapRoutes: false
+        path: '/analytics/next/recommendations/aiOps',
+        params: { activeTab: 'aiOps' }
       }
     })
 
@@ -124,23 +114,23 @@ describe('RecommendationTabContent', () => {
 
     const settingsButton = await screen.findByTestId('SettingsOutlined')
     expect(settingsButton).toBeDefined()
-    fireEvent.click(settingsButton)
+    await userEvent.click(settingsButton)
 
     const showMutedRecommendations = await screen.findByText('Show Muted Recommendations')
     expect(showMutedRecommendations).toBeDefined()
-    fireEvent.click(showMutedRecommendations)
+    await userEvent.click(showMutedRecommendations)
 
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterShowMuted).toHaveLength(2)
+    expect(afterShowMuted).toHaveLength(1)
 
     // check the action says unmute:
-    fireEvent.click(afterShowMuted[0])
-    await screen.findByRole('button', { name: 'Unmute' })
+    await userEvent.click(afterShowMuted[0])
+    await screen.findByRole('button', { name: 'Mute' })
 
-    fireEvent.click(settingsButton)
+    await userEvent.click(settingsButton)
     const resetButton = await screen.findByText('Reset to default')
     expect(resetButton).toBeDefined()
-    fireEvent.click(resetButton)
+    await userEvent.click(resetButton)
 
     const afterReset = await screen.findAllByRole('radio', { hidden: false, checked: false })
     expect(afterReset).toHaveLength(1)
@@ -160,30 +150,23 @@ describe('RecommendationTabContent', () => {
 
     render(<Provider><RecommendationTabContent /></Provider>, {
       route: {
-        path: '/analytics/next/recommendations',
->>>>>>> origin/master
+        path: '/analytics/next/recommendations/aiOps',
+        params: { activeTab: 'aiOps' },
         wrapRoutes: false
       }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
-<<<<<<< HEAD
-    await screen.findAllByText('Medium')
-    expect(screen.getAllByText('Medium')).toHaveLength(1)
-    expect(screen.getByText('Zone')).toHaveTextContent('Zone')
-  })
-})
-=======
     const selectRecommendation = await screen.findAllByRole(
       'radio',
       { hidden: false, checked: false }
     )
-    fireEvent.click(selectRecommendation[0])
+    await userEvent.click(selectRecommendation[0])
     const mute = await screen.findByRole('button', { name: 'Mute' })
+    expect(mute).toBeVisible()
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(0)
-    fireEvent.click(mute)
+    await userEvent.click(mute)
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(1)
   })
 })
->>>>>>> origin/master
