@@ -278,6 +278,17 @@ export function validateUserPassword (value: string) {
     return Promise.resolve()
   }
 }
+
+export function generalSubnetMskRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(((255\.){3}(255|254|252|248|240|224|192|128|0+))|((255\.){2}(255|254|252|248|240|224|192|128|0+)\.0)|((255\.)(255|254|252|248|240|224|192|128|0+)(\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\.0+){3}))$')
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMask))
+  }
+  return Promise.resolve()
+}
+
 export function subnetMaskIpRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len

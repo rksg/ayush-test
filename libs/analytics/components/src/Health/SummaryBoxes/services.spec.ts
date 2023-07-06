@@ -9,7 +9,7 @@ describe('incidentDetailsApi', () => {
     store.dispatch(api.util.resetApiState())
   )
   const payload: RequestPayload = {
-    path: [{ name: 'Network', type: 'network' }],
+    filter: {},
     start: '2021-12-31T00:00:00+00:00',
     end: '2022-01-01T00:00:00+00:00'
   }
