@@ -6,9 +6,7 @@ import { MessageDescriptor }     from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { states, codes, Priorities } from '../config'
-
-import configRecommendations from './detailsConfig'
+import { states, codes, Priorities  } from '../config'
 
 
 type RecommendationsDetailsPayload = {
@@ -72,7 +70,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   } = details
   const {
     priority, category, summary, recommendedValueTooltipContent
-  } = configRecommendations[code]
+  } = codes[code]
   const appliedPlus24h = moment(appliedTime).add(24, 'hours')
   const monitoring = (
     status === 'applied' &&
@@ -98,7 +96,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
 
 const kpiHelper = ({ code }: { code?: string }) => {
   if (!code) return ''
-  const data = configRecommendations[code as keyof typeof configRecommendations]
+  const data = codes[code]
   return get(data, ['kpis'])
     .map(kpi => {
       const name = `kpi_${snakeCase(kpi.key)}`
