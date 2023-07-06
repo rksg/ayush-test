@@ -21,8 +21,10 @@ export function SwitchDetailsCard (props: {
 
   const filters = {
     ...dateFilter,
-    path: [{ type: 'switch', name: switchDetail?.switchMac?.toUpperCase() as string },
-      { type: 'switchGroup', name: switchDetail?.venueId }]
+    filter: {
+      switchNodes: [[{ type: 'switch', name: switchDetail?.switchMac?.toUpperCase() as string },
+        { type: 'switchGroup', name: switchDetail?.venueId }]]
+    }
   } as AnalyticsFilter
 
   const incidentData = useIncidentsBySeverityQuery(filters, {
