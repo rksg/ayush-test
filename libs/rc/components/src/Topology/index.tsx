@@ -430,10 +430,9 @@ export function TopologyGraph (props:{ venueId?: string,
     const svg = d3.select(graphRef.current)
     const allnodes = svg.selectAll('g.node')
 
-    setShowLinkTooltip(false) // close link detials tooltip if already opened.
-
     allnodes
       .on('click',function (d: any, node: any){
+        setShowLinkTooltip(false) // close link details tooltip if already opened.
         if (node.id === 'cloud_id')
           return
         // delay 100s to avoid multiple calls
