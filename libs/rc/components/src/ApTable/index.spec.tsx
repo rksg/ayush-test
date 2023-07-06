@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
-import { prettyDOM } from '@testing-library/react'
-import userEvent     from '@testing-library/user-event'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { apApi }                        from '@acx-ui/rc/services'
@@ -421,14 +420,8 @@ describe('Aps', () => {
     await userEvent.click(combos[3])
     await userEvent.click(await screen.findByTitle('AP Group'))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     expect(row1).not.toBeVisible()
-
-    const tbody2 = await findTBody()
-    expect(tbody2).toBeVisible()
-
-    console.log( prettyDOM(tbody2) ) // eslint-disable-line no-console
-
-    // await waitFor(async () => expect(await screen.findByText('Ungrouped APs')).toBeVisible())
     expect(await screen.findByText(/Ungrouped APs/i)).toBeVisible()
   })
 

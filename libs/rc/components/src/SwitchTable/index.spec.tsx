@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
-import { prettyDOM } from '@testing-library/react'
-import userEvent     from '@testing-library/user-event'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { switchApi }              from '@acx-ui/rc/services'
@@ -342,6 +341,9 @@ describe('SwitchTable', () => {
       route: { params, path: '/:tenantId/t' }
     })
 
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+
     const combos = await screen.findAllByRole('combobox')
     expect(combos).toHaveLength(5)
 
@@ -349,12 +351,6 @@ describe('SwitchTable', () => {
     await userEvent.click(await screen.findByTitle('Model'))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const tbody = await findTBody()
-    expect(tbody).toBeVisible()
-
-    console.log( prettyDOM(tbody) ) // eslint-disable-line no-console
-
-    // await waitFor(async () => expect(await screen.findAllByText('Members: 1')).toHaveLength(2))
-    expect(await screen.findAllByText(/Members: 1/i)).toHaveLength(2)
+    expect(await screen.findAllByText(/Members\: 1/i)).toHaveLength(2)
   })
 })
