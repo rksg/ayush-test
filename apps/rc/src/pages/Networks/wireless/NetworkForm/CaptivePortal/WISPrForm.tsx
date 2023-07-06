@@ -173,7 +173,7 @@ export function WISPrForm () {
         }
       }
     }
-  },[providerData.data,isMspEc])
+  },[providerData.data,data,isMspEc])
   useEffect(()=>{
     if(!data?.guestPortal?.wisprPage?.integrationKey){
       form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
