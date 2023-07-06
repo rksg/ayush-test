@@ -477,23 +477,27 @@ export function PropertyManagementTab () {
                   <>
                     <Form.Item
                       hidden
-                      name={['communicationConfig', 'type']}/><Subtitle level={4}>
+                      name={['communicationConfig', 'type']}/>
+                    <Subtitle level={4} style={{ paddingTop: '8px' }}>
                       {$t({ defaultMessage: 'Communication Templates' })}
-                    </Subtitle><StepsFormLegacy.FieldLabel width={'190px'}>
+                    </Subtitle>
+                    <StepsFormLegacy.FieldLabel width={'190px'}>
                       {$t({ defaultMessage: 'Enable Email Notification' })}
                       <Form.Item
                         name={['communicationConfig', 'sendEmail']}
                         rules={[{ required: true }]}
                         valuePropName={'checked'}
                         children={<Switch/>}/>
-                    </StepsFormLegacy.FieldLabel><StepsFormLegacy.FieldLabel width={'190px'}>
+                    </StepsFormLegacy.FieldLabel>
+                    <StepsFormLegacy.FieldLabel width={'190px'}>
                       {$t({ defaultMessage: 'Enable SMS Notification' })}
                       <Form.Item
                         name={['communicationConfig', 'sendSms']}
                         rules={[{ required: true }]}
                         valuePropName={'checked'}
                         children={<Switch/>}/>
-                    </StepsFormLegacy.FieldLabel><Tabs
+                    </StepsFormLegacy.FieldLabel>
+                    <Tabs
                       defaultActiveKey={'email'}
                     >
                       <Tabs.TabPane
@@ -505,7 +509,9 @@ export function PropertyManagementTab () {
                           key={id}
                           formItemProps={{ name: id }}
                           scopeId={id}
-                          registrationId={venueId}/>)}/>
+                          registrationId={venueId}
+                        />)}
+                      />
                       <Tabs.TabPane
                         forceRender
                         key={'sms'}
@@ -515,7 +521,9 @@ export function PropertyManagementTab () {
                           key={id}
                           formItemProps={{ name: id }}
                           scopeId={id}
-                          registrationId={venueId}/>)}/>
+                          registrationId={venueId}
+                        />)}
+                      />
                     </Tabs>
                   </>
                 }
