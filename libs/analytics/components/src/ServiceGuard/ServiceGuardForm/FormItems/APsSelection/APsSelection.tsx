@@ -5,11 +5,13 @@ import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
-import { getNetworkFilterData, useRecentNetworkFilterQuery, HierarchyNodeChild } from '@acx-ui/analytics/components'
-import { meetVersionRequirements }                                               from '@acx-ui/analytics/utils'
-import { Loader, StepsForm, useStepFormContext }                                 from '@acx-ui/components'
-import { FilterListNode, DateRange }                                             from '@acx-ui/utils'
 
+import { meetVersionRequirements }               from '@acx-ui/analytics/utils'
+import { Loader, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { FilterListNode, DateRange }             from '@acx-ui/utils'
+
+import { getNetworkFilterData }                                        from '../../../../NetworkFilter'
+import { useRecentNetworkFilterQuery, Child as HierarchyNodeChild }    from '../../../../NetworkFilter/services'
 import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum } from '../../../types'
 import { ClientType }                                                  from '../ClientType'
 

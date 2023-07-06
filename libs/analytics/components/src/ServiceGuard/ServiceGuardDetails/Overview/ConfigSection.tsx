@@ -3,9 +3,9 @@ import React from 'react'
 import _                                     from 'lodash'
 import { IntlShape, useIntl, defineMessage } from 'react-intl'
 
-import { DescriptionSection } from '@acx-ui/analytics/components'
-import { formatter }          from '@acx-ui/formatter'
+import { formatter } from '@acx-ui/formatter'
 
+import { DescriptionSection }   from '../../../DescriptionSection'
 import { authMethodsByCode }    from '../../authMethods'
 import { AuthenticationMethod } from '../../ServiceGuardForm/FormItems/AuthenticationMethod'
 import { DnsServer }            from '../../ServiceGuardForm/FormItems/DnsServer'
