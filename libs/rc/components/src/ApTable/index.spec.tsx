@@ -411,17 +411,22 @@ describe('Aps', () => {
       route: { params, path: '/:tenantId' }
     })
 
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+    const row1 = await within(tbody).findByRole('row', { name: /10.00.000.101/i })
+
     const combos = await screen.findAllByRole('combobox')
     expect(combos).toHaveLength(4)
 
     await userEvent.click(combos[3])
     await userEvent.click(await screen.findByTitle('AP Group'))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(row1).not.toBeVisible()
 
-    const tbody = await findTBody()
-    expect(tbody).toBeVisible()
+    const tbody2 = await findTBody()
+    expect(tbody2).toBeVisible()
 
-    console.log( prettyDOM(tbody) ) // eslint-disable-line no-console
+    console.log( prettyDOM(tbody2) ) // eslint-disable-line no-console
 
     // await waitFor(async () => expect(await screen.findByText('Ungrouped APs')).toBeVisible())
     expect(await screen.findByText(/Ungrouped APs/i)).toBeVisible()
