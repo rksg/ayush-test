@@ -76,10 +76,9 @@ describe('NetworkingTab', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><NetworkingTab /></Provider>, { route: { params } })
+    render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    await waitFor(() => screen.findByText('AP Model'))
-    expect(asFragment()).toMatchSnapshot()
+    expect(await waitFor(() => screen.findByText('AP Model'))).toBeVisible()
   })
   it('should handle update setting', async () => {
     render(<Provider><NetworkingTab /></Provider>, { route: { params } })

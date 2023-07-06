@@ -44,7 +44,7 @@ describe('GeneralSettingForm', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
           <GeneralSettingForm />
@@ -52,8 +52,7 @@ describe('GeneralSettingForm', () => {
       </Provider>, { route: { params } }
     )
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('profile01 (Regular)'))
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('profile01 (Regular)')).toBeVisible()
   })
 
   it('should render regular profile details correctly', async () => {

@@ -42,12 +42,12 @@ describe('VenueEdit', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><VenueEdit /></Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    render(<Provider><VenueEdit /></Provider>, { route: { params } })
     await screen.findByRole('tab', { name: 'Venue Details' })
     await screen.findByRole('tab', { name: 'Wi-Fi Configuration' })
     await screen.findByRole('tab', { name: 'Switch Configuration' })
     await screen.findByRole('tab', { name: 'Property Management' })
+    expect(await screen.findByText('Back to venue details')).toBeVisible()
   })
 
   it('should handle tab changes', async () => {

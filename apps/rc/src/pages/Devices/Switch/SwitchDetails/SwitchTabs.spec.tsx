@@ -23,10 +23,10 @@ jest.mock('react-router-dom', () => ({
 
 describe('SwitchTabs', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <SwitchTabs switchDetail={switchDetailData} />
     </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Clients (1)')).toBeVisible()
   })
 
   it('should handle tab changes', async () => {

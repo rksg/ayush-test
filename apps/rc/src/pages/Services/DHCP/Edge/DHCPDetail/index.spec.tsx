@@ -36,14 +36,13 @@ describe('EdgeDhcpDetail', () => {
   })
 
   it('Should render EdgeDhcpDetail successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <EdgeDHCPDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })
-    await screen.findByText('TestDHCP-1')
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is off', () => {

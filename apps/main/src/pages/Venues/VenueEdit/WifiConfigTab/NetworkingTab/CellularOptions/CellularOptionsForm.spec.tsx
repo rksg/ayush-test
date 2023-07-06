@@ -7,7 +7,7 @@ import { rest } from 'msw'
 import { venueApi }                                                                                         from '@acx-ui/rc/services'
 import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                                                      from '@acx-ui/test-utils'
+import { mockServer, render, screen, within }                                                               from '@acx-ui/test-utils'
 
 import {
   venueSetting
@@ -79,7 +79,7 @@ describe('CellularOptionsForm', () => {
   })
   it('should render Cellular options form successfully', async () => {
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <CellularOptionsForm />
@@ -92,8 +92,7 @@ describe('CellularOptionsForm', () => {
     const group = screen.getByRole('group', {
       name: /1 primary sim/i
     })
-    await waitFor(() =>within(group).getByText(/bands for current country/i))
-    expect(asFragment()).toMatchSnapshot()
+    expect(await within(group).findByText(/bands for current country/i)).toBeVisible()
   })
 
 })

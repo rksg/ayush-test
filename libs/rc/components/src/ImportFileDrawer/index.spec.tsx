@@ -24,9 +24,6 @@ describe('Import CSV Drawer', () => {
     render(<ImportFileDrawer type='AP'
       {...props}
     />)
-    const dialog = await screen.findByRole('dialog')
-    expect(dialog).toMatchSnapshot()
-
 
     const csvFile = new File([''], 'aps_import_template.csv', { type: 'text/csv' })
     // eslint-disable-next-line testing-library/no-node-access

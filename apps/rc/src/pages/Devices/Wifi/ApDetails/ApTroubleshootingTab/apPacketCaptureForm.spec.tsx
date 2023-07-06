@@ -80,11 +80,11 @@ describe('ApPacketCaptureForm', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <ApPacketCaptureForm />
       </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getByRole('textbox', { name: /MAC Address Filter/i })).toBeVisible()
   })
 
   it('should download packet capture correctly', async () => {

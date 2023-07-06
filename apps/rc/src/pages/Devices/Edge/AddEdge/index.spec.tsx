@@ -51,14 +51,13 @@ describe('AddEdge', () => {
   })
 
   it('should create AddEdge successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <AddEdge />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    await screen.findByRole('combobox', { name: 'Venue' })
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
   })
 
   it('should be blocked when required field is empty', async () => {

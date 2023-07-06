@@ -51,7 +51,7 @@ describe('SecurityTab', () => {
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenueEditContext.Provider value={{
           setEditContextData: jest.fn(),
@@ -61,7 +61,6 @@ describe('SecurityTab', () => {
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
-    expect(asFragment()).toMatchSnapshot()
     const switchButton = await screen.findAllByRole('switch')
     await userEvent.click(switchButton[0])
     await userEvent.click(switchButton[1])

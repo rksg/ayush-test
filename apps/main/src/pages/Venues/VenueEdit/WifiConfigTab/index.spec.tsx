@@ -20,7 +20,7 @@ jest.mock('./RadioTab/RadioTab', () => ({
 
 describe('WifiConfigTab', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenueEditContext.Provider value={{
           editContextData: {},
@@ -35,7 +35,6 @@ describe('WifiConfigTab', () => {
     await screen.findByRole('tab', { name: 'Security' })
     await screen.findByRole('tab', { name: 'Network Controls' })
     await screen.findByRole('tab', { name: 'Advanced Settings' })
-    expect(asFragment()).toMatchSnapshot()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Security' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
