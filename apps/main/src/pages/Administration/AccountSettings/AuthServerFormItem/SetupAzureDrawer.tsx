@@ -28,7 +28,9 @@ import {
   SamlFileType,
   UploadUrlResponse
 } from '@acx-ui/rc/utils'
+
 // import { loadImageWithJWT } from '@acx-ui/utils'
+import { reloadAuthTable } from '../AppTokenFormItem'
 
 import * as UI from './styledComponents'
 
@@ -76,7 +78,6 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [formData, setFormData] = useState<FormData>()
   const [file, setFile] = useState<UploadFile>()
   const [metadata, setMetadata] = useState<string>()
-  // const [fileName, setFileName] = useState<string>()
 
   const [uploadFile, setUploadFile] = useState(false)
 
@@ -202,11 +203,9 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           samlFileType: SamlFileType.file,
           samlFileURL: fileURL.data.fileId
         }
-        const result =
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
-        if (result) {
-        }
+        reloadAuthTable(2)
       } else {
         const ssoData: TenantAuthentications = {
           name: fileURL.fileName,
@@ -214,10 +213,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           samlFileType: SamlFileType.file,
           samlFileURL: fileURL.data.fileId
         }
-        const result =
         await addSso({ payload: ssoData }).unwrap()
-        if (result) {
-        }
+        reloadAuthTable(2)
       }
       setVisible(false)
       setEditMode(true)
@@ -231,7 +228,6 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     keyboard={false}
     closable={true}
     width={550}
-    // footer={footer}
     footer={<div>
       <Button
         disabled={!formData}
@@ -243,7 +239,6 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       </Button>
       <Button onClick={() => {
         setVisible(false)
-        // props?.onClose
       }}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>

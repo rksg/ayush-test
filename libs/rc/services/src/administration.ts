@@ -534,7 +534,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'AUTHENTICATION_LIST' }]
     }),
     deleteTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

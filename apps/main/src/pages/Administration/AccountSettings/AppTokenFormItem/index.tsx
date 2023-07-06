@@ -7,7 +7,8 @@ import { Button, Card, PasswordInput, showActionModal, Table, TableProps } from 
 import { CopyOutlined }                                                    from '@acx-ui/icons'
 import {
   useDeleteTenantAuthenticationsMutation,
-  useUpdateTenantAuthenticationsMutation
+  useUpdateTenantAuthenticationsMutation,
+  administrationApi
 } from '@acx-ui/rc/services'
 import {
   TenantAuthentications,
@@ -15,6 +16,7 @@ import {
   ApplicationAuthenticationStatus,
   roleDisplayText
 } from '@acx-ui/rc/utils'
+import { store }     from '@acx-ui/store'
 import { RolesEnum } from '@acx-ui/types'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
@@ -22,6 +24,16 @@ import { AddApplicationDrawer } from './AddApplicationDrawer'
 interface AppTokenFormItemProps {
   className?: string;
   tenantAuthenticationData?: TenantAuthentications[];
+}
+
+export const reloadAuthTable = (timeoutSec?: number) => {
+  const milisec = timeoutSec ? timeoutSec*1000 : 1000
+  setTimeout(() => {
+    store.dispatch(
+      administrationApi.util.invalidateTags([
+        { type: 'Administration', id: 'AUTHENTICATION_LIST' }
+      ]))
+  }, milisec)
 }
 
 const AppTokenFormItem = (props: AppTokenFormItemProps) => {
@@ -217,6 +229,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               updateTenantAuthentications({ params: { authenticationId: rows[0].id },
                 payload: payload })
                 .then(clearSelection)
+              reloadAuthTable(2)
             }
           })
         }
@@ -253,6 +266,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
               updateTenantAuthentications({ params: { authenticationId: rows[0].id },
                 payload: payload })
                 .then(clearSelection)
+              reloadAuthTable(2)
             }
           })
         }
@@ -270,6 +284,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             onOk: () => {
               deleteTenantAuthentications({ params: { authenticationId: rows[0].id } })
                 .then(clearSelection)
+              reloadAuthTable(2)
             }
           })
         }

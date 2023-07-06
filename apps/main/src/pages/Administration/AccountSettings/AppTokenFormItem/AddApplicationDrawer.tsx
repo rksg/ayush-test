@@ -15,6 +15,8 @@ import {
   getRoles
 } from '@acx-ui/rc/utils'
 
+import { reloadAuthTable } from '.'
+
 interface AddApplicationDrawerProps {
   visible: boolean
   isEditMode: boolean
@@ -72,8 +74,10 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
       if(isEditMode) {
         await updateApiToken({ params: { authenticationId: editData?.id },
           payload: apiTokenEditData }).unwrap()
+        reloadAuthTable(2)
       } else {
         await addApiToken({ payload: apiTokenData }).unwrap()
+        reloadAuthTable(1)
       }
       onClose()
     } catch (error) {

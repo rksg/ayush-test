@@ -14,6 +14,8 @@ import {  TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/uti
 import { useNavigate, useTenantLink, useParams }            from '@acx-ui/react-router-dom'
 import { loadImageWithJWT }                                 from '@acx-ui/utils'
 
+import { reloadAuthTable } from '../AppTokenFormItem/'
+
 import { SetupAzureDrawer } from './SetupAzureDrawer'
 import { ButtonWrapper }    from './styledComponents'
 import { ViewXmlModal }     from './ViewXmlModal'
@@ -53,6 +55,8 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
     if (ssoData && ssoData.length > 0) {
       setSsoConfigured(true)
       setAuthenticationData(ssoData[0])
+    } else {
+      setSsoConfigured(false)
     }
   }, [ssoData])
 
@@ -110,10 +114,13 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                           // entityValue: name,
                           confirmationText: $t({ defaultMessage: 'Delete' })
                         },
-                        onOk: () =>
+                        onOk: () => {
                           deleteTenantAuthentications({
                             params: { authenticationId: authenticationData?.id } })
-                            .then() })
+                            .then()
+                          reloadAuthTable(2)
+                        }
+                      })
                     }
                   }}>
                   {$t({ defaultMessage: 'Delete' })}
