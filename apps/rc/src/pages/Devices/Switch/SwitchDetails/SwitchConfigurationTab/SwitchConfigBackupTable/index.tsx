@@ -72,8 +72,8 @@ export function SwitchConfigBackupTable () {
     useQuery: useGetSwitchConfigBackupListQuery,
     defaultPayload: {},
     sorter: {
-      sortField: 'name',
-      sortOrder: 'ASC'
+      sortField: 'createdDate',
+      sortOrder: 'DESC'
     },
     option: { pollingInterval: 60_000 }
   })
@@ -110,12 +110,12 @@ export function SwitchConfigBackupTable () {
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
     disable: true,
-    defaultSortOrder: 'ascend',
     sorter: true
   }, {
     key: 'createdDate',
     title: $t({ defaultMessage: 'Date' }),
     dataIndex: 'createdDate',
+    defaultSortOrder: 'descend',
     sorter: true
   }, {
     key: 'backupType',
