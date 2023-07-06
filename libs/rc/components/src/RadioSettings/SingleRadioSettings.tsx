@@ -9,7 +9,11 @@ import { useIntl }                from 'react-intl'
 import { Button, cssStr }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { RadioSettingsChannels } from '../RadioSettingsChannels'
+import { RadioSettingsChannels }       from '../RadioSettingsChannels'
+import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/R770/RadioSettingsChannels320Mhz'
+import {
+  RadioSettingsChannelsManual320Mhz
+} from '../RadioSettingsChannels/R770/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
 import {
@@ -318,6 +322,55 @@ export function SingleRadioSettings (props:{
     combinChannelOnChanged.current = true
   }
 
+  const selectRadioChannelSelectionType = () => {
+    if(!(channelBandwidth === '320MHz')) {
+      return (
+        <Row gutter={20}>
+          <Col span={channelColSpan}>
+            <RadioSettingsChannels
+              formName={allowedChannelsFieldName}
+              groupSize={groupSize}
+              channelList={channelList}
+              displayBarSettings={displayRadioBarSettings}
+              channelBars={channelBars}
+              disabled={inherit5G || disable || isUseVenueSettings}
+              editContext={editContext}
+            />
+          </Col>
+        </Row>
+      )
+    } else {
+      if (channelMethod === 'MANUAL' && context === 'ap') {
+        return (
+          <Row gutter={20}>
+            <Col span={channelColSpan}>
+              <RadioSettingsChannelsManual320Mhz
+                context={context}
+                formName={allowedChannelsFieldName}
+                channelList={channelList}
+                disabled={inherit5G || disable || isUseVenueSettings}
+                editContext={editContext}
+              />
+            </Col>
+          </Row>
+        )
+      }
+      return (
+        <Row gutter={20}>
+          <Col span={channelColSpan}>
+            <RadioSettingsChannels320Mhz
+              context={context}
+              formName={allowedChannelsFieldName}
+              channelList={channelList}
+              disabled={inherit5G || disable || isUseVenueSettings}
+              editContext={editContext}
+            />
+          </Col>
+        </Row>
+      )
+    }
+  }
+
   return (
     <>
       {
@@ -390,21 +443,12 @@ export function SingleRadioSettings (props:{
             </Col>
           </Row>
         }
-        {!hasIndoorBandwidth && !hasOutdoorBandwidth &&
-          <Row gutter={20}>
-            <Col span={channelColSpan}>
-              <RadioSettingsChannels
-                formName={allowedChannelsFieldName}
-                groupSize={groupSize}
-                channelList={channelList}
-                displayBarSettings={displayRadioBarSettings}
-                channelBars={channelBars}
-                disabled={inherit5G || disable || isUseVenueSettings}
-                editContext={editContext}
-              />
-            </Col>
-          </Row>
+
+        {
+          // Channel Selection Component
+          !hasIndoorBandwidth && !hasOutdoorBandwidth && selectRadioChannelSelectionType()
         }
+
         {hasIndoorBandwidth && !combinChannels &&
         <>
           <Row gutter={20} style={{ paddingTop: '10px' }}>
