@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom'
-
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -411,6 +410,10 @@ describe('Aps', () => {
       route: { params, path: '/:tenantId' }
     })
 
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+    const row1 = await within(tbody).findByRole('row', { name: /10.00.000.101/i })
+
     const combos = await screen.findAllByRole('combobox')
     expect(combos).toHaveLength(4)
 
@@ -418,7 +421,8 @@ describe('Aps', () => {
     await userEvent.click(await screen.findByTitle('AP Group'))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    await waitFor(async () => expect(await screen.findByText('Ungrouped APs')).toBeVisible())
+    expect(row1).not.toBeVisible()
+    expect(await screen.findByText(/Ungrouped APs/i)).toBeVisible()
   })
 
   it('should import correctly', async () => {
