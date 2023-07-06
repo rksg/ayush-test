@@ -9,7 +9,7 @@ import type { DonutChartData }                                   from '@acx-ui/c
 import { useDashboardOverviewQuery,useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                  from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }              from '@acx-ui/react-router-dom'
-import { useDashboardFilter, NetworkNodePath }                   from '@acx-ui/utils'
+import { useDashboardFilter }                                    from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'
 
@@ -150,9 +150,7 @@ export function ClientsWidget () {
 export function ClientsWidgetV2 () {
   const onArrowClick = useNavigateToPath('/users/')
   const intl = useIntl()
-  const { filters } = useDashboardFilter()
-  const { filter: { networkNodes } } = filters
-  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+  const { venueIds } = useDashboardFilter()
 
   const queryResults = useDashboardV2OverviewQuery({
     params: useParams(),

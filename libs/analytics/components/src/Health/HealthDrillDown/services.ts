@@ -1,10 +1,12 @@
 import { gql }  from 'graphql-request'
 import { find } from 'lodash'
 
-import { dataApi }     from '@acx-ui/store'
-import { NetworkPath } from '@acx-ui/utils'
+import { getFilterPayload, getSelectedNodePath } from '@acx-ui/analytics/utils'
+import { dataApi }                               from '@acx-ui/store'
+import { NodesFilter }                           from '@acx-ui/utils'
 
 export interface ConnectionDrilldown {
+  network: {
     connectionDrilldown: {
         assocSuccessAndAttemptCount: [[number,number]],
         authSuccessAndAttemptCount: [[number,number]],
@@ -12,6 +14,7 @@ export interface ConnectionDrilldown {
         radiusSuccessAndAttemptCount: [[number,number]],
         dhcpSuccessAndAttemptCount: [[number,number]],
     }
+  }
 }
 
 export interface TtcDrilldown {
@@ -44,13 +47,13 @@ export interface ImpactedClient {
   username: string | string[]
 }
 export interface RequestPayload {
-  path: NetworkPath
+  filter: NodesFilter
   start: string
   end: string
 }
 
 export interface PieChartPayload {
-  path: NetworkPath
+  filter: NodesFilter
   start: string
   end: string
   queryType: string
@@ -67,23 +70,24 @@ export type ImpactedNodesAndWlans = {
 }
 
 export const pieChartQuery = (
-  path: NetworkPath,
+  filter: NodesFilter,
   type: string,
-  filter: string
+  stageFilter: string
 ) => {
+  const path = getSelectedNodePath(filter)
   const apNode = find(path, { type: 'AP' })
   switch (type) {
     case 'connectionFailure': {
       return apNode
-        ? `wlans: topNSSIDbyConnFailure(n: 6, stage: "${filter}") { key value }`
-        : `nodes: topNNodebyConnFailure(n: 6, stage: "${filter}") { key value name }
-      wlans: topNSSIDbyConnFailure(n: 6, stage: "${filter}") { key value }`
+        ? `wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
+        : `nodes: topNNodebyConnFailure(n: 6, stage: "${stageFilter}") { key value name }
+      wlans: topNSSIDbyConnFailure(n: 6, stage: "${stageFilter}") { key value }`
     }
     case 'ttc': {
       return apNode
-        ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${filter}") { key value }`
-        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${filter}") { key value name }
-        wlans: topNSSIDbyAvgTTC(n: 6, stage: "${filter}") { key value }`
+        ? `wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
+        : `nodes: topNNodebyAvgTTC(n: 6, stage: "${stageFilter}") { key value name }
+        wlans: topNSSIDbyAvgTTC(n: 6, stage: "${stageFilter}") { key value }`
     }
     default: {
       return ''
@@ -101,23 +105,27 @@ export const api = dataApi.injectEndpoints({
             $start: DateTime
             $end: DateTime
             $granularity: String
+            $filter: FilterInput
           ) {
-            connectionDrilldown: timeSeries(
-              path: $path
-              start: $start
-              end: $end
-              granularity: $granularity
-            ) {
-              assocSuccessAndAttemptCount
-              authSuccessAndAttemptCount
-              eapSuccessAndAttemptCount
-              radiusSuccessAndAttemptCount
-              dhcpSuccessAndAttemptCount
+            network(start: $start, end: $end, filter: $filter) {
+              connectionDrilldown: timeSeries(
+                path: $path
+                start: $start
+                end: $end
+                granularity: $granularity
+              ) {
+                assocSuccessAndAttemptCount
+                authSuccessAndAttemptCount
+                eapSuccessAndAttemptCount
+                radiusSuccessAndAttemptCount
+                dhcpSuccessAndAttemptCount
+              }
             }
           }
         `,
         variables: {
           ...payload,
+          ...getFilterPayload(payload),
           granularity: 'all'
         }
       })
@@ -125,13 +133,14 @@ export const api = dataApi.injectEndpoints({
     ttcDrilldown: build.query<TtcDrilldown, RequestPayload>({
       query: (payload) => ({
         document: gql`
-          query ConnectionDrilldown(
+          query TTCDrilldown(
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
             $granularity: String
+            $filter: FilterInput
           ) {
-            network(start: $start, end: $end) {
+            network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
                 ttcDrilldown: timeSeries(granularity: $granularity) {
                   ttcByFailureTypes {
@@ -148,6 +157,7 @@ export const api = dataApi.injectEndpoints({
         `,
         variables: {
           ...payload,
+          ...getFilterPayload(payload),
           granularity: 'all'
         }
       })
@@ -168,37 +178,53 @@ export const api = dataApi.injectEndpoints({
                 username
               }`
         }
-        return { document: gql`
-          query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
-            network(start: $start, end: $end) {
-              hierarchyNode(path: $path) {
-                ${impactedClientQuery(payload.field, payload.stage)}
+        return {
+          document: gql`
+            query Network(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $filter: FilterInput
+            ) {
+              network(start: $start, end: $end, filter: $filter) {
+                hierarchyNode(path: $path) {
+                  ${impactedClientQuery(payload.field, payload.stage)}
                 }
+              }
             }
+          `,
+          variables: {
+            ...payload,
+            ...getFilterPayload(payload)
           }
-        `,
-        variables: payload
-        }}
+        }
+      }
     }),
 
     pieChart: build.query<ImpactedNodesAndWlans, PieChartPayload>({
       query: payload => {
-        const { path, queryType, queryFilter } = payload
-        const innerQuery = pieChartQuery(path, queryType, queryFilter)
+        const { filter, queryType, queryFilter } = payload
+        const innerQuery = pieChartQuery(filter, queryType, queryFilter)
         return ({
           document: gql`
-            query Network($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
-              network(start: $start, end: $end) {
+            query Network(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $filter: FilterInput
+            ) {
+              network(start: $start, end: $end, filter: $filter) {
                 hierarchyNode(path: $path) {
                   ${innerQuery}
-                    }
-                  }
                 }
+              }
+            }
           `,
           variables: {
+            ...getFilterPayload(payload),
+            path: getSelectedNodePath(payload.filter),
             start: payload.start,
-            end: payload.end,
-            path: payload.path
+            end: payload.end
           }
         })
       }

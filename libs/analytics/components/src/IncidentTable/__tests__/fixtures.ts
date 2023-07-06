@@ -1,4 +1,4 @@
-import { NodeType, PathNode } from '@acx-ui/utils'
+import { NodeType, NetworkPath } from '@acx-ui/utils'
 
 export const incidentTests = [
   {
@@ -22,7 +22,7 @@ export const incidentTests = [
         type: 'ap',
         name: '60:D0:2C:22:6B:90'
       }
-    ] as PathNode[],
+    ] as NetworkPath,
     metadata: {},
     clientCount: 3,
     impactedClientCount: 2,
@@ -51,7 +51,7 @@ export const incidentTests = [
         type: 'ap',
         name: '70:CA:97:3A:3A:40'
       }
-    ] as PathNode[],
+    ] as NetworkPath,
     metadata: {},
     clientCount: 4,
     impactedClientCount: 2,
@@ -80,7 +80,7 @@ export const incidentTests = [
             type: 'ap',
             name: '60:D0:2C:22:6B:90'
           }
-        ] as PathNode[],
+        ] as NetworkPath,
         metadata: {},
         clientCount: 3,
         impactedClientCount: 2,
@@ -109,7 +109,7 @@ export const incidentTests = [
             type: 'ap',
             name: '60:D0:2C:22:6B:90'
           }
-        ] as PathNode[],
+        ] as NetworkPath,
         metadata: {},
         clientCount: 3,
         impactedClientCount: 2,
@@ -140,7 +140,7 @@ export const incidentTests = [
         type: 'ap',
         name: '60:D0:2C:22:6B:90'
       }
-    ] as PathNode[],
+    ] as NetworkPath,
     metadata: {
       dominant: {
         ssid: 'test'
@@ -181,7 +181,7 @@ export const incidentTests = [
             type: 'ap',
             name: '60:D0:2C:22:6B:90'
           }
-        ] as PathNode[],
+        ] as NetworkPath,
         metadata: {},
         clientCount: 3,
         impactedClientCount: 2,
@@ -210,7 +210,7 @@ export const incidentTests = [
             type: 'ap',
             name: '60:D0:2C:22:6B:90'
           }
-        ] as PathNode[],
+        ] as NetworkPath,
         metadata: {},
         clientCount: 3,
         impactedClientCount: 2,
