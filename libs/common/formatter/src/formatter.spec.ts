@@ -377,6 +377,13 @@ describe('formatter', () => {
         channelMode: 'CHANNEL_FLY'
       }])
       expect(test_normal).toMatch('ChannelFly and 80 MHz for 5.0 GHz')
+
+      const test_null = formatter('crrmFormat')([{
+        radio: '5.0',
+        channelWidth: undefined,
+        channelMode: undefined
+      }])
+      expect(test_null).toMatch('undefined and undefined MHz for 5.0 GHz')
     })
   })
 
