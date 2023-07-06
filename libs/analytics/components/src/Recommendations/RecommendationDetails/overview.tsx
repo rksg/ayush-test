@@ -8,9 +8,9 @@ import { get }                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
 import { DescriptionSection }     from '../../DescriptionSection'
+import { codes, statusTrailMsgs } from '../config'
 import { Priority, PriorityIcon } from '../styledComponents'
 
-import detailsConfig, { statusTrailMsgs }                           from './detailsConfig'
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 import { RecommendationApImpacted }                                 from './styledComponents'
 
@@ -57,7 +57,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const [visible, setVisible] = useState(false)
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
   const { createdAt } = statusTrail[statusTrail.length - 1]
-  const { kpis } = detailsConfig[code]
+  const { kpis } = codes[code]
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
     <span>{$t(priority.label)}</span>

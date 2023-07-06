@@ -4,9 +4,8 @@ import { defineMessage, IntlShape, useIntl } from 'react-intl'
 import { GridCol, GridRow }          from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { states } from '../config'
+import { states, statusTrailMsgs } from '../config'
 
-import { statusTrailMsgs }        from './detailsConfig'
 import { EnhancedRecommendation } from './services'
 import {
   DetailsHeader,

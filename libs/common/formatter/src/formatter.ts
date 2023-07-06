@@ -219,7 +219,7 @@ const crrmText = (value: CrrmTextType) => {
       defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection' })
   }
   return value.map(config => {
-    const channelMode = enumTextMap.get(`${enumMode}-${config.channelMode}`)
+    const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
     const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
     const radio = formats.radioFormat(config.radio)
     return $t({

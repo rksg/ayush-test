@@ -5,7 +5,8 @@ import { impactedArea, nodeTypes }         from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
 import { NodeType }                        from '@acx-ui/utils'
 
-import detailsConfig              from './detailsConfig'
+import { codes } from '../config'
+
 import { EnhancedRecommendation } from './services'
 import {
   DetailsHeader,
@@ -28,12 +29,12 @@ const getValues = (details: EnhancedRecommendation) => {
     code,
     appliedOnce
   } = details
-  const { valueFormatter, recommendedValueTooltipContent } = detailsConfig[code]
+  const { valueFormatter, recommendedValueTooltipContent } = codes[code]
   return {
     status,
     code,
     appliedOnce,
-    heading: detailsConfig[code].valueText,
+    heading: codes[code].valueText,
     original: valueFormatter(originalValue),
     current: valueFormatter(currentValue),
     recommended: valueFormatter(recommendedValue),
@@ -51,7 +52,7 @@ function extractBeforeAfter (value: EnhancedRecommendation['kpis']) {
 }
 
 const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
-  return detailsConfig[recommendation.code]
+  return codes[recommendation.code]
     .kpis
     .find(kpi => kpi.key === key)
 }
@@ -90,7 +91,7 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
     .fromPairs()
     .value()
 
-  const recommendationInfo = detailsConfig[code]
+  const recommendationInfo = codes[code]
   const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
 
   let parameters: Record<string, string | JSX.Element> = {
