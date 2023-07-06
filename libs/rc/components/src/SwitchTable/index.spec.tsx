@@ -314,7 +314,7 @@ describe('SwitchTable', () => {
     expect(input).toBeVisible()
   })
 
-  it.skip('should render with filterables', async () => {
+  it('should render with filterables', async () => {
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchListByGroup.url,
@@ -347,7 +347,8 @@ describe('SwitchTable', () => {
 
     await userEvent.click(combos[4])
     await userEvent.click(await screen.findByTitle('Model'))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    await waitFor(() => expect(screen.getAllByText('Members: 1')).toHaveLength(2))
+    await waitFor(async () => expect(await screen.findAllByText('Members: 1')).toHaveLength(2))
   })
 })
