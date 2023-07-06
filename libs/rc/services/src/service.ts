@@ -879,6 +879,7 @@ export const {
   useDeleteDpskPassphraseListMutation,
   useRevokeDpskPassphraseListMutation,
   useGetDpskPassphraseDevicesQuery,
+  useLazyGetDpskPassphraseDevicesQuery,
   useUpdateDpskPassphraseDevicesMutation,
   useDeleteDpskPassphraseDevicesMutation,
   useUploadPassphrasesMutation,
