@@ -4,7 +4,7 @@ import { Loader, GoogleMap }                                      from '@acx-ui/
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { useParams }                                              from '@acx-ui/react-router-dom'
-import { useDashboardFilter, NetworkNodePath }                    from '@acx-ui/utils'
+import { useDashboardFilter }                                     from '@acx-ui/utils'
 
 import { usePreference } from '../usePreference'
 
@@ -58,9 +58,7 @@ function ActualMap () {
 }
 
 function ActualMapV2 () {
-  const { filters } = useDashboardFilter()
-  const { filter: { networkNodes } } = filters
-  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+  const { venueIds } = useDashboardFilter()
 
   const queryResults = useDashboardV2OverviewQuery({
     params: useParams(),
