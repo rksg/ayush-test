@@ -1,5 +1,5 @@
-import { HealthPage as HealthPageComponent } from '@acx-ui/analytics/components'
+import { NetworkAssurance, NetworkAssuranceTabEnum } from '@acx-ui/analytics/components'
 
 export const HealthPage = () => {
-  return <HealthPageComponent />
+  return <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />
 }

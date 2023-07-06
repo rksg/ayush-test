@@ -3,7 +3,6 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
-import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }   from '@acx-ui/formatter'
 import { noDataDisplay }            from '@acx-ui/utils'
 

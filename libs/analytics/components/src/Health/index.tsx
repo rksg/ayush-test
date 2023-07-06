@@ -4,10 +4,11 @@ import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed }                       from '@acx-ui/feature-toggle'
+import { get }                                                            from '@acx-ui/config'
+import {  useIsTierAllowed }                                              from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
 
-import { Header, HeaderLegacy } from '../Header'
+import { Header } from '../Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
 import { HealthDrillDown }           from './HealthDrillDown'
@@ -19,8 +20,8 @@ import { SummaryBoxes }              from './SummaryBoxes'
 
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
+  const isMLISA = get('IS_MLISA_SA')
   const { filters: widgetFilters } = props
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
@@ -37,19 +38,16 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     })
   return (
     <>
-      {!widgetFilters && (isNavbarEnhanced
-        ? !canUseAnltAdv && <Header
-          title={$t({ defaultMessage: 'Health' })}
-          breadcrumb={[
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'Network Assurance' }) }
-          ]}
-          shouldQuerySwitch={false}
-          withIncidents={false} />
-        : <HeaderLegacy
-          title={$t({ defaultMessage: 'Health' })}
-          shouldQuerySwitch={false}
-          withIncidents={false} />)}
+      {!widgetFilters && !canUseAnltAdv && !isMLISA &&
+      <Header
+        title={$t({ defaultMessage: 'Health' })}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'Network Assurance' }) }
+        ]}
+        shouldQuerySwitch={false}
+        withIncidents={false} />
+      }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes
