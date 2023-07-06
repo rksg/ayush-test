@@ -1,7 +1,7 @@
-import { AnalyticsFilter }   from '@acx-ui/analytics/utils'
-import { dataApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery }  from '@acx-ui/test-utils'
-import { NetworkPath }       from '@acx-ui/utils'
+import { AnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
+import { dataApiURL, store }             from '@acx-ui/store'
+import { mockGraphqlQuery }              from '@acx-ui/test-utils'
+import { DateRange, NetworkPath }        from '@acx-ui/utils'
 
 import * as fixtures from './__tests__/fixtures'
 import { api }       from './services'
@@ -16,12 +16,12 @@ const input = [
 ]
 
 describe('NetworkNodeInfo', () => {
-  const props = {
+  const props: AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }],
+    range: DateRange.last24Hours,
     filter: {}
-  } as AnalyticsFilter
+  }
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
@@ -32,7 +32,8 @@ describe('NetworkNodeInfo', () => {
         data: queryResult
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.networkNodeInfo.initiate({ ...props, path: path as NetworkPath })
+        api.endpoints.networkNodeInfo.initiate({
+          ...props, filter: pathToFilter(path as NetworkPath) })
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(transformedResult)
