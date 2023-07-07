@@ -139,6 +139,8 @@ describe('PoliciesTable', () => {
 
     const delBtn = screen.queryByText('delete')
 
+
+
     expect(delBtn).not.toBeInTheDocument()
   })
 })
