@@ -56,35 +56,16 @@ declare global {
   }
   function pendoInitalization (): void
 }
-
-// const callBrowserLang = (locale: string) => {
-//   return browserLangSelection(locale)
-// }
-
-async function setBrowserLang () {
-  const locales = navigator.languages
-  const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  let browserLangVal = supportedLocales[locale as keyof typeof supportedLocales]
-  if (browserLangVal !== DEFAULT_SYS_LANG) {
-    const val: boolean = await browserLangSelection(browserLangVal)
-    // console.log(`val===========>>>>> ${val}`)
-    browserLangVal = (val) ? browserLangVal : DEFAULT_SYS_LANG
-    return String(browserLangVal) as LangKey
-  }
-  return String(browserLangVal) as LangKey
-}
-
 export function loadMessages (locales: readonly string[]): LangKey {
   const locale = locales.find(locale =>
     supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  let browserLangVal = supportedLocales[locale as keyof typeof supportedLocales]
-  // if (browserLangVal !== DEFAULT_SYS_LANG) {
-  //   // const val = browserLangSelection(browserLangVal)
-  //   // browserLangVal = (val) ? browserLangVal : DEFAULT_SYS_LANG
-  //   // console.log(`val===========>>>>> ${val}`)
-  // }
-  return browserLangVal
+  let browserLang = supportedLocales[locale as keyof typeof supportedLocales]
+  if (browserLang !== DEFAULT_SYS_LANG) {
+    const isConfirm = browserDialog(browserLang)
+    // console.log(`isConfirm ${isConfirm}`)
+    browserLang = isConfirm ? browserLang : DEFAULT_SYS_LANG
+  }
+  return browserLang
 }
 
 export function renderPendoAnalyticsTag () {
@@ -145,23 +126,8 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
-// type BLang = {
-//   langChange: boolean
-// }
-
-async function browserLangSet () {
-  // const val = await new Promise((resolve, reject) => { resolve(true) })
-  const val = await Promise.resolve({
-    langChange: true
-  })
-  // const result: boolean = val
-  console.log('inside browserLangSet', val)
-  return val?.langChange
-}
-
-
-const browserLangSelection = ( broswerLang: string ): boolean => {
-  const BLang = broswerLang.slice(0, 2)
+const browserDialog = ( broswerLang: LangKey, callback?: (event: boolean) => boolean) => {
+  const bLang = broswerLang.slice(0, 2)
   const browserLangDisplay = new Intl.DisplayNames(['en'], { type: 'language' })
   let intl: IntlShape
   try {
@@ -173,7 +139,7 @@ const browserLangSelection = ( broswerLang: string ): boolean => {
   }
   // const [promise, setPromise] = useState(null)
   const { $t } = intl
-  const BLangDisplay = browserLangDisplay.of(BLang)
+  const bLangDisplay = browserLangDisplay.of(bLang)
 
   showActionModal({
     type: 'confirm',
@@ -183,44 +149,36 @@ const browserLangSelection = ( broswerLang: string ): boolean => {
         text: $t({ defaultMessage: 'Cancel' }),
         type: 'default',
         key: 'cancel',
+        closeAfterAction: true,
         handler () { }
       }, {
-        text: $t({ defaultMessage: 'Change to {BLangDisplay}' }, { BLangDisplay }),
+        text: $t({ defaultMessage: 'Change to {bLangDisplay}' }, { bLangDisplay }),
         type: 'primary',
         key: 'ok',
         closeAfterAction: true,
-        // handler () { return new Promise((resolve, reject) => { resolve(true) }) }
         handler () {
-          browserLangSet().then( value => {
-            const result: boolean = value
-            console.log('browserLangSet returns value ', result)
-            return result
-          }) }
+          callback?.(true)
+        }
       }]
     },
     title: $t({ defaultMessage: 'Change System Language?' }),
-    content: $t({ defaultMessage: 'We noticed that your browser is set to {BLangDisplay}'
-          + ' Would you like to change the system\'s language to {BLangDisplay}?' },
-    { BLangDisplay })
+    content: $t({ defaultMessage: 'We noticed that your browser is set to {bLangDisplay}'
+          + ' Would you like to change the system\'s language to {bLangDisplay}?' },
+    { bLangDisplay })
   })
   return false
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const browserLang = loadMessages(navigator.languages)// browser detection
-  const browserLang2 = setBrowserLang() // browser detection
-  console.log('browserLang2===>>>>>', browserLang2)
-
+  let browserLang = loadMessages(navigator.languages) as LangKey// browser detection
   const result = useGetUserProfileQuery({})
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const userPreflang = String(userProfile?.preferredLanguage) as LangKey
   const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
 
-  // console.log(`userProfile: ${userPreflang} ${defaultLang} browserLang: ${browserLang}`)
   const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang :
     userPreflang? userPreflang : defaultLang
-  // console.log(`lang: ${lang}`)
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}

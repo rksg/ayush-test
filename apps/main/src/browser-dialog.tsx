@@ -23,21 +23,6 @@ export type FullfilledAction = {
   }
 }
 
-// Needed for Browser language detection
-const supportedLocales: Record<string, LangKey> = {
-  'en-US': 'en-US',
-  'en': 'en-US',
-  'es': 'es-ES',
-  'es-ES': 'es-ES',
-  'ja': 'ja-JP',
-  'ja-JP': 'ja-JP',
-  'fr': 'fr-FR',
-  'fr-FR': 'fr-FR',
-  'ko': 'ko-KR',
-  'ko-KR': 'ko-KR',
-  'pt': 'pt-BR',
-  'pt-BR': 'pt-BR'
-}
 let isModalShown = false
 
 function getBrowserLangName (langKey: string) {
@@ -65,7 +50,7 @@ export const getBrowserModelContent = (browserLang: string) => {
   }
 
   let type: ActionModalType = 'confirm'
-  let isBrowerLangChange = false
+  let isBrowerLangChange = true
   let callback = undefined
 
   return {
@@ -84,7 +69,7 @@ export const showBrowserModal = (browserLang: string, details: {
   title: string,
   content: JSX.Element,
   type: ActionModalType,
-  callback?: () => void
+  callback?: (isBrowerLangChange: boolean) => boolean
 }) => {
   let intl: IntlShape
   try {
@@ -117,7 +102,7 @@ export const showBrowserModal = (browserLang: string, details: {
             key: 'ok',
             closeAfterAction: true,
             handler () {
-              callback?.()
+              callback?.(true)
               isModalShown = false
             }
           }
@@ -127,19 +112,16 @@ export const showBrowserModal = (browserLang: string, details: {
   }
 }
 
-export const browserDialog = (locales: readonly string[]) => {
-  // const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
-  // let browserLang = action?.meta?.arg?.browserLang || DEFAULT_SYS_LANG
-  const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  let browserLangVal = supportedLocales[locale as keyof typeof supportedLocales]
-  // console.log('In browser dialog ... ')
-  const { isBrowerLangChange, ...details } = getBrowserModelContent(browserLangVal)
+export const browserDialog = (browserLangVal: LangKey) => {
+  // console.log('In browser dialog ... ', browserLangVal)
+  let isBrowerLangChange = false
   if (browserLangVal !== DEFAULT_SYS_LANG) {
+    const { isBrowerLangChange, ...details } = getBrowserModelContent(browserLangVal)
     showBrowserModal(browserLangVal, details)
   }
 
-  if (isBrowerLangChange) {
+  if (!isBrowerLangChange) {
+    // console.log('==========', isBrowerLangChange)
     return browserLangVal as LangKey
   }
   return DEFAULT_SYS_LANG
