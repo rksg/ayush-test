@@ -1265,6 +1265,7 @@ export const {
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
   useSwitchPortlistQuery,
+  useLazySwitchPortlistQuery,
   useGetPortSettingQuery,
   useLazyGetPortSettingQuery,
   useGetPortsSettingQuery,

@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -6,6 +7,8 @@ import { Tooltip }          from '@acx-ui/components'
 import { SwitchPortStatus } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
+
+import { SwitchPannelContext } from '.'
 
 export function FrontViewPort (props:{
   portData: SwitchPortStatus
@@ -17,7 +20,7 @@ export function FrontViewPort (props:{
 }) {
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable } = props
-
+  const { setEditPortDrawerVisible, setSelectedPorts } = useContext(SwitchPannelContext)
   const getTooltip = (port: SwitchPortStatus) => {
     const speedNoData = 'link down or no traffic'
     const isUnTaggedVlanValid = port.unTaggedVlan !== '' && port.unTaggedVlan !== undefined
@@ -92,7 +95,12 @@ export function FrontViewPort (props:{
     </div>
   }
 
-  const portElement = <UI.PortWrapper>
+  const onClick = () => {
+    setSelectedPorts([portData])
+    setEditPortDrawerVisible(true)
+  }
+
+  const portElement = <UI.PortWrapper onClick={onClick}>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <UI.Port portColor={portColor}>
       { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }

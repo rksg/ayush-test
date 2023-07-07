@@ -1,7 +1,8 @@
-import { useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
-import { StackMember, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
+import { EditPortDrawer }                                  from '@acx-ui/rc/components'
+import { StackMember, SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { useParams }                                       from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '../../..'
 
@@ -13,17 +14,26 @@ interface SlotMember {
   data: StackMember[]
 }
 
+export const SwitchPannelContext = createContext({} as {
+  editPortDrawerVisible: boolean,
+  setEditPortDrawerVisible: (data: boolean) => void,
+  selectedPorts: SwitchPortStatus[]
+  setSelectedPorts: (data: SwitchPortStatus[]) => void
+})
+
 export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
 }) {
   const { stackMember } = props
-  const { serialNumber } = useParams()
+  const params = useParams()
+  const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
+  const { serialNumber } = params
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
-
 
   useEffect(() => {
     if (stackMember && switchDetail) {
@@ -56,7 +66,12 @@ export function SwitchFrontRearView (props:{
     }
   }
 
-  return <>
+  return <SwitchPannelContext.Provider value={{
+    editPortDrawerVisible,
+    setEditPortDrawerVisible,
+    selectedPorts,
+    setSelectedPorts
+  }}>
     {
       slotMember && slotMember.data.map((member, index) => (
         <UI.SwitchFrontRearViewWrapper key={index}>
@@ -67,5 +82,15 @@ export function SwitchFrontRearView (props:{
         </UI.SwitchFrontRearViewWrapper>
       ))
     }
-  </>
+    { editPortDrawerVisible && <EditPortDrawer
+      key='edit-port'
+      visible={editPortDrawerVisible}
+      setDrawerVisible={setEditPortDrawerVisible}
+      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
+      isMultipleEdit={selectedPorts?.length > 1}
+      isVenueLevel={false}
+      selectedPorts={selectedPorts}
+    />
+    }
+  </SwitchPannelContext.Provider>
 }

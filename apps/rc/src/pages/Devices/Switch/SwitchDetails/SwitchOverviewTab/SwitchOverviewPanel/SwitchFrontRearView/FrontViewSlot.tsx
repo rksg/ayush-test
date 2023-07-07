@@ -52,7 +52,7 @@ export function FrontViewSlot (props:{
       {
         slot.portStatus
           .filter((item: SwitchPortStatus) => {
-            const portNumber = item.portnumber
+            const portNumber = Number(item.portnumber)
             if (enableBreakourtPortFlag &&
               String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
               return Number(String(portNumber).split(':')[0]) % 2 === 1
@@ -90,12 +90,12 @@ export function FrontViewSlot (props:{
       {
         slot.portStatus
           .filter((item: SwitchPortStatus) => {
-            const portNumber = item.portnumber
+            const portNumber = Number(item.portnumber)
             if (enableBreakourtPortFlag &&
               String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
               return Number(String(portNumber).split(':')[0]) % 2 === 0
             }
-            return item.portnumber % 2 === 0
+            return portNumber % 2 === 0
           })
           .map((port: SwitchPortStatus) => {
             const isBreakOutPort = enableBreakourtPortFlag && String(port.portnumber).includes(':')
