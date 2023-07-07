@@ -185,7 +185,7 @@ export const tooltipFormatter = (
   }
   const formattedValue = dataFormatter ? dataFormatter(toolTipValue) : toolTipValue
   const tooltipFormat = format ?? defineMessage({
-    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
+    defaultMessage: '{name} <space><b>{formattedValue}</b></space>',
     description: 'StackedBarChart: default tooltip format for stacked bar chart'
   })
   const text = <FormattedMessage {...tooltipFormat}
