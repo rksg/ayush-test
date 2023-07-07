@@ -100,13 +100,7 @@ export const EdgeServices = () => {
       key: 'currentVersion',
       dataIndex: 'currentVersion',
       sorter: true,
-      render: (_, row) => {
-        if (row.currentVersion) {
-          return row.currentVersion
-        }
-
-        return $t({ defaultMessage: 'NA' })
-      }
+      render: (_, row) => (row.currentVersion || $t({ defaultMessage: 'NA' }))
     }
   ]
 
