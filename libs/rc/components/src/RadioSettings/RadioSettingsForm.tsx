@@ -78,6 +78,7 @@ export function RadioSettingsForm (props:{
   }
 
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
+  const multicastRateLimitFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
 
   return (
     <>
@@ -183,106 +184,109 @@ export function RadioSettingsForm (props:{
             onChange={() => onChangedByCustom('mgmtTxRate')}
           />
         </Form.Item>
-        <UI.FieldLabel width='175px'>
-          {$t({ defaultMessage: 'Multicast Rate Limiting' })}
-          <Form.Item
-            name='enableMulticastRateLimiting'
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-          >
-            {!isUseVenueSettings ? (
-              <Switch
-                disabled={disabled}
-                onChange={function (checked: boolean) {
-                  if (!checked) {
-                    form.setFieldValue(
-                      ['radioSettings', 'downloadLimit'], 0)
-                    form.setFieldValue(
-                      ['radioSettings', 'uploadLimit'], 0)
-                  }
-                }} />
-            ) : <span>ON</span>}
-          </Form.Item>
-        </UI.FieldLabel>
-        {enableMulticastRateLimiting && <>
-          <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
-            <UI.FormItemNoLabel
-              name='enableUploadLimit'
-              valuePropName='checked'
-              initialValue={false}
-              style={{ lineHeight: '50px' }}
-            >
-              {
-                <Checkbox data-testid='enableUploadLimit'
-                  onChange={function (e: CheckboxChangeEvent) {
-                    const value = e.target.checked ? 20 : 0
-                    form.setFieldValue(
-                      ['radioSettings', 'uploadLimit'], value)
-                  }}
-                  children={$t({ defaultMessage: 'Upload Limit' })}
-                  disabled={disabled || isUseVenueSettings}/>}
-            </UI.FormItemNoLabel>
-            {
-              enableUploadLimit ?
-                <UI.FormItemNoLabel
-                  name={['radioSettings', 'uploadLimit']}
-                  children={
-                    <Slider
-                      disabled={disabled || isUseVenueSettings}
-                      tooltipVisible={false}
-                      style={{ width: '245px' }}
-                      defaultValue={20}
-                      min={1}
-                      max={100}
-                      marks={{
-                        1: { label: '1 Mbps' },
-                        100: { label: '100 Mbps' }
-                      }}
-                    />
-                  }
-                /> :
-                <Unlimited />
-            }
-          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
-            <UI.FormItemNoLabel
-              name='enableDownloadLimit'
+        {multicastRateLimitFlag && <>
+          <UI.FieldLabel width='175px'>
+            {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+            <Form.Item
+              name='enableMulticastRateLimiting'
+              style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              style={{ lineHeight: '50px' }}
-              children={
-                <Checkbox data-testid='enableDownloadLimit'
-                  disabled={disabled || isUseVenueSettings}
-                  onChange={function (e: CheckboxChangeEvent) {
-                    const value = e.target.checked ? 20 : 0
-                    form.setFieldValue(
-                      ['radioSettings', 'downloadLimit'], value)
-                  }}
-                  children={$t({ defaultMessage: 'Download Limit' })} />}
-            />
-            {
-              enableDownloadLimit ?
-                <UI.FormItemNoLabel
-                  name={['radioSettings', 'downloadLimit']}
-                  children={
-                    <Slider
-                      disabled={disabled || isUseVenueSettings}
-                      tooltipVisible={false}
-                      style={{ width: '245px' }}
-                      defaultValue={20}
-                      min={1}
-                      max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
-                      marks={{
-                        1: { label: '1 Mbps' },
-                        [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
-                      }}
-                    />
-                  }
-                /> : <Unlimited />
-            }
-          </div>
+            >
+              {!isUseVenueSettings ? (
+                <Switch
+                  disabled={disabled}
+                  onChange={function (checked: boolean) {
+                    if (!checked) {
+                      form.setFieldValue(
+                        ['radioSettings', 'downloadLimit'], 0)
+                      form.setFieldValue(
+                        ['radioSettings', 'uploadLimit'], 0)
+                    }
+                  }} />
+              ) : <span>ON</span>}
+            </Form.Item>
+          </UI.FieldLabel>
+          {enableMulticastRateLimiting && <>
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <UI.FormItemNoLabel
+                name='enableUploadLimit'
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+              >
+                {
+                  <Checkbox data-testid='enableUploadLimit'
+                    onChange={function (e: CheckboxChangeEvent) {
+                      const value = e.target.checked ? 20 : 0
+                      form.setFieldValue(
+                        ['radioSettings', 'uploadLimit'], value)
+                    }}
+                    children={$t({ defaultMessage: 'Upload Limit' })}
+                    disabled={disabled || isUseVenueSettings}/>}
+              </UI.FormItemNoLabel>
+              {
+                enableUploadLimit ?
+                  <UI.FormItemNoLabel
+                    name={['radioSettings', 'uploadLimit']}
+                    children={
+                      <Slider
+                        disabled={disabled || isUseVenueSettings}
+                        tooltipVisible={false}
+                        style={{ width: '245px' }}
+                        defaultValue={20}
+                        min={1}
+                        max={100}
+                        marks={{
+                          1: { label: '1 Mbps' },
+                          100: { label: '100 Mbps' }
+                        }}
+                      />
+                    }
+                  /> :
+                  <Unlimited />
+              }
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <UI.FormItemNoLabel
+                name='enableDownloadLimit'
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+                children={
+                  <Checkbox data-testid='enableDownloadLimit'
+                    disabled={disabled || isUseVenueSettings}
+                    onChange={function (e: CheckboxChangeEvent) {
+                      const value = e.target.checked ? 20 : 0
+                      form.setFieldValue(
+                        ['radioSettings', 'downloadLimit'], value)
+                    }}
+                    children={$t({ defaultMessage: 'Download Limit' })} />}
+              />
+              {
+                enableDownloadLimit ?
+                  <UI.FormItemNoLabel
+                    name={['radioSettings', 'downloadLimit']}
+                    children={
+                      <Slider
+                        disabled={disabled || isUseVenueSettings}
+                        tooltipVisible={false}
+                        style={{ width: '245px' }}
+                        defaultValue={20}
+                        min={1}
+                        max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
+                        marks={{
+                          1: { label: '1 Mbps' },
+                          [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
+                        }}
+                      />
+                    }
+                  /> : <Unlimited />
+              }
+            </div>
+          </>}
         </>}
       </>
       }
