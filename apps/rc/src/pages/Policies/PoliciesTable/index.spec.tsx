@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { AccessControlUrls, CommonUrlsInfo, RogueApUrls, getPolicyListRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                            from '@acx-ui/store'
+import { Provider }                                                               from '@acx-ui/store'
 import {
   mockServer,
   render,
