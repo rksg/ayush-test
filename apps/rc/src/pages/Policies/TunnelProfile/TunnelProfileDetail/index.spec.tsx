@@ -5,7 +5,7 @@ import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, Tunnel
 import { Provider }                                                                           from '@acx-ui/store'
 import { mockServer, render, screen }                                                         from '@acx-ui/test-utils'
 
-import { mockedNetworkViewData, mockedTunnelProfileViewData } from '../__tests__/fixtures'
+import { mockedNetworkViewData, mockedTunnelProfileViewData, mockedDefaultTunnelProfileViewData } from '../__tests__/fixtures'
 
 import TunnelProfileDetail from '.'
 
@@ -80,5 +80,22 @@ describe('TunnelProfileDetail', () => {
     expect(screen.getByRole('link', {
       name: 'Tunnel Profile'
     })).toBeVisible()
+  })
+
+  it('Should disable Configure button in Default Tunnel Profile', async () => {
+    mockServer.use(
+      rest.post(
+        TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(mockedDefaultTunnelProfileViewData))
+      )
+    )
+    render(
+      <Provider>
+        <TunnelProfileDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
+    await screen.findByText('Default')
+    expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
   })
 })
