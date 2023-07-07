@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeStatus,
   ApVenueStatusEnum,
@@ -51,6 +52,7 @@ describe('Edge Details Tabs', () => {
   { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: currentEdge.serialNumber }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,

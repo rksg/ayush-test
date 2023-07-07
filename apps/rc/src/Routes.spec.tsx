@@ -17,23 +17,42 @@ import {
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import RcRoutes from './Routes'
+import { WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
+import RcRoutes             from './Routes'
 
-jest.mock('./pages/Devices/Wifi/ApsTable', () => () => {
-  return <div data-testid='ApsTable' />
-})
+jest.mock('./pages/Devices/Wifi/ApsTable', () => ({
+  ...jest.requireActual('./pages/Devices/Wifi/ApsTable'),
+  __esModule: true,
+  default: () => ({
+    title: 'ApsTable',
+    headerExtra: [],
+    component: <div data-testid='ApsTable' />
+  })
+}))
 
 jest.mock('./pages/Devices/Wifi/ApDetails', () => () => {
   return <div data-testid='ApDetails' />
 })
 
-jest.mock('./pages/Devices/Switch/SwitchesTable', () => () => {
-  return <div data-testid='SwitchesTable' />
-})
+jest.mock('./pages/Devices/Switch/SwitchesTable', () => ({
+  ...jest.requireActual('./pages/Devices/Switch/SwitchesTable'),
+  __esModule: true,
+  default: () => ({
+    title: 'SwitchesTable',
+    headerExtra: [],
+    component: <div data-testid='SwitchesTable' />
+  })
+}))
 
-jest.mock('./pages/Networks/wireless/NetworksTable', () => () => {
-  return <div data-testid='NetworksTable' />
-})
+jest.mock('./pages/Networks/wireless/NetworksTable', () => ({
+  ...jest.requireActual('./pages/Networks/wireless/NetworksTable'),
+  __esModule: true,
+  default: () => ({
+    title: 'NetworksTable',
+    headerExtra: [],
+    component: <div data-testid='NetworksTable' />
+  })
+}))
 
 jest.mock('./pages/Networks/wireless/NetworkForm/NetworkForm', () => () => {
   return <div data-testid='NetworkForm' />
@@ -151,9 +170,10 @@ jest.mock('./pages/Services/DHCP/Edge/EditDHCP', () => () => {
   return <div data-testid='EdgeDHCPDetail' />
 })
 
-jest.mock('./pages/Users/Wifi/ClientList', () => () => {
-  return <div data-testid='UserClientList' />
-})
+jest.mock('./pages/Users/Wifi/ClientList', () => ({
+  ...jest.requireActual('./pages/Users/Wifi/ClientList'),
+  WifiClientList: (props: { tab: WirelessTabsEnum }) => <div data-testid={props.tab} />
+}))
 
 jest.mock('./pages/Users/Wifi/ClientDetails', () => () => {
   return <div data-testid='UserClientDetails' />
@@ -272,6 +292,7 @@ jest.mock('./pages/Policies/ConnectionMetering/ConnectionMeteringPageForm', () =
 })
 
 describe('RcRoutes: Devices', () => {
+  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -843,32 +864,32 @@ describe('RcRoutes: Policies', () => {
 })
 
 describe('RcRoutes: User', () => {
-  test('should redirect user to user/wifi/clients', async () => {
+  test('should redirect user to users/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/users/',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserClientList')).toBeVisible()
+    expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
   })
-  test('should redirect user/wifi to user/wifi/clients', async () => {
+  test('should redirect users/wifi to users/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/users/wifi',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserClientList')).toBeVisible()
+    expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
   })
-  test('should redirect to user/wifi/clients correctly', async () => {
+  test('should redirect to users/wifi/clients correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/users/wifi/clients',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserClientList')).toBeVisible()
+    expect(screen.getByTestId(WirelessTabsEnum.CLIENTS)).toBeVisible()
   })
   test('should redirect details to details/overview', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -1059,7 +1080,7 @@ describe('RcRoutes: Timeline', () => {
   })
 })
 
-test('should navigate to Connection Metering table', async () => {
+test('should navigate to Data Usage Metering table', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   render(<Provider><RcRoutes /></Provider>, {
     route: {
@@ -1070,7 +1091,7 @@ test('should navigate to Connection Metering table', async () => {
   expect(screen.getByTestId('ConnectionMeteringTable')).toBeVisible()
 })
 
-test('should navigate to Connection Metering Detail', async () => {
+test('should navigate to Data Usage Metering Detail', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
   path = path.replace(':policyId', 'policyId')
@@ -1083,7 +1104,7 @@ test('should navigate to Connection Metering Detail', async () => {
   expect(screen.getByTestId('ConnectionMeteringDetail')).toBeVisible()
 })
 
-test('should navigate to Connection Metering Page create form', async () => {
+test('should navigate to Data Usage Metering Page create form', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   render(<Provider><RcRoutes /></Provider>, {
     route: {
@@ -1094,7 +1115,7 @@ test('should navigate to Connection Metering Page create form', async () => {
   expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
 })
 
-test('should navigate to Connection Metering Page edit form', async () => {
+test('should navigate to Data Usage Metering Page edit form', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })
   path = path.replace(':policyId', 'policyId')

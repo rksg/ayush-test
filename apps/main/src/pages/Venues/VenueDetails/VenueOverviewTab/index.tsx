@@ -17,8 +17,7 @@ import {
   VenueHealth
 } from '@acx-ui/analytics/components'
 import {
-  AnalyticsFilter,
-  defaultNetworkPath
+  AnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import {
   GridRow,
@@ -40,7 +39,6 @@ export function VenueOverviewTab () {
   const { venueId } = useParams()
   const venueFilter = {
     ...dateFilter,
-    path: defaultNetworkPath,
     filter: generateVenueFilter([venueId as string])
   }
   const tabDetails: ContentSwitcherProps['tabDetails'] = [

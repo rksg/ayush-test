@@ -39,6 +39,24 @@ export interface Persona {
   expirationDate?: string | null
 }
 
+export interface PersonaErrorResponse {
+  status: number,
+  data: {
+    status: string,
+    timestamp?: string,
+    message?: string,
+    debugMessage?: string,
+    subErrors?: PersonaSubError[]
+  }
+}
+
+export interface PersonaSubError {
+  object: string,
+  field?: string,
+  rejectedValue?: string,
+  message: string
+}
+
 export interface PersonaSwitch {
   macAddress: string,
   portId: string,
@@ -53,8 +71,7 @@ export interface PersonaDevice {
   hasDpskRegistered?: boolean,    // detect whether the device is connected by DPSK passphrase or not (DPSK service provided)
   lastSeenAt?: string,
   createdAt?: string,
-  updatedAt?: string,
-  identityId?: string
+  updatedAt?: string
 }
 
 export interface PersonaEthernetPort {

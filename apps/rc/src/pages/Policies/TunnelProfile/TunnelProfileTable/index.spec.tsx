@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -75,6 +76,34 @@ describe('TunnelProfileList', () => {
       })
     const row = await screen.findAllByRole('row', { name: /tunnelProfile/i })
     expect(row.length).toBe(2)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <TunnelProfileTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <TunnelProfileTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
   })
 
   it('TunnelProfile detail page link should be correct', async () => {
@@ -159,5 +188,18 @@ describe('TunnelProfileList', () => {
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Policy"?')
     await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
+  })
+
+  it('edit button will remove when select Default Tunnel Profile', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <TunnelProfileTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    const row = await screen.findAllByRole('row', { name: /Default/i })
+    await user.click(within(row[0]).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 })

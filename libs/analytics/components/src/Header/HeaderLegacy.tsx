@@ -4,9 +4,9 @@ import { omit }                   from 'lodash'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
-import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
-import { useDateFilter, NodeType }                                            from '@acx-ui/utils'
+import { getSelectedNodePath, nodeTypes, useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
+import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary }   from '@acx-ui/components'
+import { useDateFilter, NodeType }                                              from '@acx-ui/utils'
 
 import { NetworkFilter }                from '../NetworkFilter'
 import { useNetworkFilterQuery, Child } from '../NetworkFilter/services'
@@ -60,22 +60,24 @@ function getVenueName (name: string, data: Child[] | undefined): string {
 }
 
 export const HeaderLegacy = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
-  const { filters, getNetworkFilter } = useAnalyticsFilter()
+  const { filters } = useAnalyticsFilter()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const results = useNetworkNodeInfoQuery(filters)
+  const results = useNetworkNodeInfoQuery({
+    ...filters,
+    ...getFilterPayload({ filter: filters.filter })
+  })
   const networkFilter = omit({ ...filters, shouldQuerySwitch }, 'path', 'filter')
   const filterResult = useNetworkFilterQuery(networkFilter)
   const state = { ...results, ...filterResult, isLoading: false } // isLoading to false to prevent blank header on load
-  const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
-  const { networkFilter: { path } } = getNetworkFilter()
-  const { name, type } = (filter || path).slice(-1)[0]
+  const path = getSelectedNodePath(filters.filter)
+  const { name, type } = path.slice(-1)[0]
   return <PageHeader
     {...props}
     subTitle={<Loader states={[state]} fallback={<Spinner size='small' />}>
       {useSubTitle(results.data?.subTitle || [], type)}
     </Loader>}
     title={<Loader states={[state]} fallback={<Spinner size='default' />}>
-      {filter || path.length > 1 ?
+      {type !== 'network' ?
         results.data?.name || getVenueName(name, filterResult?.data)
         : props.title}
     </Loader>}

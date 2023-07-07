@@ -134,6 +134,46 @@ describe('Persona Details', () => {
     await screen.findByRole('link', { name: mockConnectionMeterings[0].name })
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <PersonaDetails />
+      </Provider>, {
+        route: {
+          params,
+          // eslint-disable-next-line max-len
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+        }
+      }
+    )
+    expect(screen.queryByText('Clients')).toBeNull()
+    expect(screen.queryByText('Persona Management')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Persona'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <PersonaDetails />
+      </Provider>, {
+        route: {
+          params,
+          // eslint-disable-next-line max-len
+          path: '/:tenantId/t/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+        }
+      }
+    )
+    expect(await screen.findByText('Clients')).toBeVisible()
+    expect(await screen.findByText('Persona Management')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Personas'
+    })).toBeVisible()
+  })
+
   it('should add devices', async () => {
     render(
       <Provider>

@@ -35,4 +35,17 @@ describe('Analytics header', () => {
     expect(await screen.findByTestId('NetworkFilter')).toBeVisible()
     expect(await screen.findByTestId('RangePicker')).toBeVisible()
   })
+  it('should not render network filter', async () => {
+    const Component = () => {
+      const component = useHeaderExtra({
+        shouldQuerySwitch: true,
+        withIncidents: true,
+        excludeNetworkFilter: true
+      })
+      return <span>{component}</span>
+    }
+    render(<BrowserRouter><Provider><Component/></Provider></BrowserRouter>)
+    expect(screen.queryByTestId('NetworkFilter')).toBeNull()
+    expect(await screen.findByTestId('RangePicker')).toBeVisible()
+  })
 })

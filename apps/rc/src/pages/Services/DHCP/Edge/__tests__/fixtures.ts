@@ -180,7 +180,7 @@ export const mockDhcpStatsData = {
       venueNum: 3,
       leaseTime: '24 hours',
       health: 'Good',
-      currentVersion: '',
+      currentVersion: '1.0.1, 1.0.2',
       targetVersion: '1.0.2',
       tags: ['Tag1']
     },{
@@ -195,6 +195,19 @@ export const mockDhcpStatsData = {
       leaseTime: '24 hours',
       health: 'Good',
       currentVersion: '1.0.2',
+      targetVersion: '1.0.2',
+      tags: ['Tag1']
+    },{
+      tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+      id: '4',
+      serviceName: 'TestDHCP-4',
+      serviceType: 'DHCP',
+      dhcpRelay: 'false',
+      dhcpPoolNum: 3,
+      edgeNum: 3,
+      venueNum: 3,
+      leaseTime: '24 hours',
+      health: 'Good',
       targetVersion: '1.0.2',
       tags: ['Tag1']
     }

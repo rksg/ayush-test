@@ -183,9 +183,7 @@ describe('ApEdit', () => {
     })
 
     it('should handle error occurred', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff !== Features.WIFI_EDA_READY_TOGGLE
-      )
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       mockServer.use(
         rest.put(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => {
@@ -286,6 +284,31 @@ describe('ApEdit', () => {
       await screen.findByText(/Currently using LAN port settings of the venue/)
       expect(asFragment()).toMatchSnapshot()
       await fireEvent.click(await screen.findByRole('button', { name: 'My-Venue' }))
+    })
+
+    it('should render breadcrumb correctly when feature flag is off', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NAVBAR_ENHANCEMENT)
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByRole('link', {
+        name: /access points/i
+      })).toBeTruthy()
+    })
+
+    it('should render breadcrumb correctly when feature flag is on', async () => {
+      render(<Provider><ApEdit /></Provider>, {
+        route: { params },
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
+      })
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText('Wi-Fi')).toBeVisible()
+      expect(await screen.findByText('Access Points')).toBeVisible()
+      expect(screen.getByRole('link', {
+        name: /ap list/i
+      })).toBeTruthy()
     })
 
     it('should handle customized setting updated', async () => {

@@ -34,7 +34,6 @@ export const Badge = styled(AntBadge)`
   .ant-badge-status-dot {
     height: 6px;
     width: 6px;
-    top: unset;
   }
   .ant-badge-status-text {
     margin-left: 4px;

@@ -1,16 +1,14 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
-import { useParams }  from 'react-router-dom'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { useRoguePolicyQuery }            from '@acx-ui/rc/services'
+import { Loader, SummaryCard } from '@acx-ui/components'
+import { useRoguePolicyQuery } from '@acx-ui/rc/services'
 
 import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
 const RogueAPDetectionDetailContent = () => {
-  const { Paragraph } = Typography
   const { $t } = useIntl()
 
   const { data, isLoading } = useRoguePolicyQuery({
@@ -27,24 +25,19 @@ const RogueAPDetectionDetailContent = () => {
     }
   }, [data])
 
-  return <Loader states={[{ isLoading }]}>
-    <Card>
-      { data && <GridRow>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Description' })}
-          </Card.Title>
-          <Paragraph>{data.description}</Paragraph>
-        </GridCol>
+  const rogueAPInfo = [
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      content: data?.description
+    },
+    {
+      title: $t({ defaultMessage: 'Classification Rules' }),
+      content: data?.rules.length
+    }
+  ]
 
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Classification Rules' })}
-          </Card.Title>
-          <Paragraph>{data.rules.length}</Paragraph>
-        </GridCol>
-      </GridRow> }
-    </Card>
+  return <Loader states={[{ isLoading }]}>
+    <SummaryCard data={rogueAPInfo} />
   </Loader>
 }
 

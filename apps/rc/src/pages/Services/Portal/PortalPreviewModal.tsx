@@ -55,7 +55,7 @@ export default function PortalPreviewModal (props:{
     })
   }
   return (
-    <UI.Button onClick={()=>openModal()} type='default' size='small'>
+    <UI.Button onClick={()=>openModal()} type='link' size='small'>
       <UI.ModalStyle />
       {props.fromPortalList?<UI.EyeOpenPreview/>:$t({ defaultMessage: 'Preview' })}
     </UI.Button>

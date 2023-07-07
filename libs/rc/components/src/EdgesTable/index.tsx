@@ -137,7 +137,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       filterKey: 'deviceStatusSeverity',
       render: (data, row) => {
         return (
-          <EdgeStatusLight data={row.deviceStatus} />
+          <EdgeStatusLight data={row.deviceStatus} showText={true} />
         )
       }
     },
@@ -188,15 +188,15 @@ export const EdgesTable = (props: EdgesTableProps) => {
         )
       }
     },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
-      sorter: true,
-      render: (data) => {
-        return `${data}`
-      }
-    },
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   sorter: true,
+    //   render: (data) => {
+    //     return `${data}`
+    //   }
+    // },
     {
       title: $t({ defaultMessage: 'Version' }),
       key: 'firmwareVersion',
