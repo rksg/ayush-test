@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Button, Loader, Tabs }                  from '@acx-ui/components'
+import { Button, Loader, NoData, Tabs }          from '@acx-ui/components'
 import { EdgePortStatus }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }                             from '@acx-ui/user'
@@ -35,8 +35,8 @@ export const EdgeSubInterfacesTab = ({ ports, isLoading }:
 
     <Col span={24}>
       <Loader states={[{ isLoading }]}>
-        {serialNumber &&
-          <Tabs type='third'>
+        {serialNumber && ports.length > 0
+          ? <Tabs type='third'>
             {ports?.map((item) => {
               // subinterfaces mac === physical port mac
               return <Tabs.TabPane
@@ -47,6 +47,7 @@ export const EdgeSubInterfacesTab = ({ ports, isLoading }:
               </Tabs.TabPane>
             })}
           </Tabs>
+          : <NoData />
         }
       </Loader>
     </Col>

@@ -89,4 +89,18 @@ describe('Edge overview sub-interfaces tab', () => {
         search: ''
       })
   })
+
+  it('should display no data when no port', async () => {
+    render(
+      <Provider>
+        <EdgeSubInterfacesTab
+          isLoading={false}
+          ports={[]}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('No data to display')
+  })
 })
