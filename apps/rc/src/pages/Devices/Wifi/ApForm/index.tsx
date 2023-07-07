@@ -17,8 +17,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { GoogleMapWithPreference }                        from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -27,7 +27,7 @@ import {
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
-  useWifiCapabilitiesQuery
+  useWifiCapabilitiesQuery, useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -74,6 +74,7 @@ const defaultApPayload = {
 }
 
 export function ApForm () {
+  const params = useParams()
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
   const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
@@ -94,6 +95,7 @@ export function ApForm () {
     // eslint-disable-next-line max-len
     = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
   const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
+  const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
 
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
@@ -112,6 +114,8 @@ export function ApForm () {
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
 
+  const BASE_VERSION = '6.3.1'
+
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
     if (wifiEdaflag || wifiEdaGatewayflag) {
@@ -123,7 +127,7 @@ export function ApForm () {
     }
   }
 
-  const venueInfos = () => {
+  const venueInfos = (venueFwVersion: string) => {
     return <span>
       {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
         fwVersion: venueFwVersion
@@ -131,9 +135,10 @@ export function ApForm () {
       {
         checkBelowFwVersion(venueFwVersion) ? <><br/><br/>{$t({
           defaultMessage: 'If you are adding an <b>R560 or R570</b> AP, ' +
-            'please update the firmware in this venue to <b>6.2.1</b> or greater. ' +
+            'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
             'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
           b: chunks => <strong>{chunks}</strong>,
+          baseVersion: BASE_VERSION,
           fwManagementLink: (<TenantLink
             to={'/administration/fwVersionMgmt'}>{
               $t({ defaultMessage: 'Firmware Management' })
@@ -144,9 +149,9 @@ export function ApForm () {
   }
 
   const checkBelowFwVersion = (version: string) => {
-    if (version === null) return false
+    if (version === '-') return false
 
-    const baseVersion = [6, 2, 1]
+    const baseVersion = BASE_VERSION.split('.').map(Number)
     const compareVersion = version.split('.').map(Number)
     for (let i = 0; i < baseVersion.length; i++) {
       if (baseVersion[i] > compareVersion[i])
@@ -310,8 +315,9 @@ export function ApForm () {
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
-    if (selectVenue.hasOwnProperty('version')) {
-      setVenueFwVersion(selectVenue.version ?? '-')
+    if (venueVersionList?.data.some(venue => venue.id === value)) {
+      const venueInfo = venueVersionList.data.find(venue => venue.id === value)
+      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
     }
   }
 
@@ -430,7 +436,7 @@ export function ApForm () {
               <Form.Item
                 name='venueInfos'
               >
-                {venueInfos()}
+                {venueInfos(venueFwVersion)}
               </Form.Item>
               <Form.Item
                 name='apGroupId'

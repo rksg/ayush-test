@@ -166,6 +166,8 @@ describe('NetworkForm', () => {
     )
 
     await userEvent.click(buttons[1])
+
+    expect(await screen.findByText(/add mac registration list/i)).not.toBeVisible()
   })
 
 
