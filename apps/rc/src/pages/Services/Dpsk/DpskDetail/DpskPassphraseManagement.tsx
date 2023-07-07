@@ -13,7 +13,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -104,7 +103,7 @@ export default function DpskPassphraseManagement () {
       defaultSortOrder: 'descend',
       fixed: 'left',
       render: function (data) {
-        return formatter(DateFormatEnum.DateTimeFormat)(data)
+        return moment(data as string).format(EXPIRATION_TIME_FORMAT)
       }
     },
     {
