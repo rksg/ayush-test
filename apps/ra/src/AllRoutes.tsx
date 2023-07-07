@@ -1,7 +1,7 @@
+import { NetworkAssurance, NetworkAssuranceTabEnum }    from '@acx-ui/analytics/components'
 import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
 import ConfigChange    from './pages/ConfigChange'
-import { HealthPage }  from './pages/Health'
 import IncidentDetails from './pages/IncidentDetails'
 import Incidents       from './pages/Incidents'
 import Layout          from './pages/Layout'
@@ -25,8 +25,10 @@ function AllRoutes () {
       <Route path='reports' element={<div>Reports</div>} />
       <Route path='admin/*' element={<div>Admin</div>} />
       <Route path='health'>
-        <Route index={true} element={<HealthPage />} />
-        <Route index={false} path='tab/:categoryTab' element={<HealthPage />} />
+        <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+        <Route index={false}
+          path='tab/:categoryTab'
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
       </Route>
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
       <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
