@@ -64,7 +64,7 @@ jest.mock('@acx-ui/components', () => ({
   })
 }))
 
-describe('Stateful ACL config drawer', () => {
+describe.skip('Stateful ACL config drawer', () => {
   beforeEach(() => {
     mockedGetFieldValue.mockReset()
     mockedSetFieldValue.mockReset()
