@@ -4,19 +4,21 @@ import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { renderToString }                  from 'react-dom/server'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { TooltipWrapper }    from '../Chart/styledComponents'
 
 import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
+
 export type ConfigChange = {
   id?: number
   timestamp: string
   type: string
   name: string
   key: string
-  oldValues: unknown[]
-  newValues: unknown[]
+  oldValues: string[]
+  newValues: string[]
 }
 
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
@@ -29,12 +31,31 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 
 type ChartRowMappingType = { key: string, label: string, color: string }
-export const chartRowMapping = [
-  { key: 'ap', label: 'AP', color: cssStr('--acx-viz-qualitative-4') },
-  { key: 'apGroup', label: 'AP Group', color: cssStr('--acx-viz-qualitative-3') },
-  { key: 'wlan', label: 'WLAN', color: cssStr('--acx-viz-qualitative-2') },
-  { key: 'venue', label: 'Venue', color: cssStr('--acx-viz-qualitative-1') }
-] as ChartRowMappingType[]
+export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
+  const { $t } = getIntl()
+  return [
+    {
+      key: 'ap',
+      label: $t({ defaultMessage: 'AP' }),
+      color: cssStr('--acx-viz-qualitative-4')
+    },
+    {
+      key: 'apGroup',
+      label: $t({ defaultMessage: 'AP Group' }),
+      color: cssStr('--acx-viz-qualitative-3')
+    },
+    {
+      key: 'wlan',
+      label: $t({ defaultMessage: 'WLAN' }),
+      color: cssStr('--acx-viz-qualitative-2')
+    },
+    {
+      key: 'zone',
+      label: $t({ defaultMessage: 'Venue' }),
+      color: cssStr('--acx-viz-qualitative-1')
+    }
+  ]
+}
 
 const rowHeight = 16, rowGap = 4
 export const getChartLayoutConfig = (
@@ -412,4 +433,5 @@ export const getSelectedDot = (color: string) =>
 export const getSymbol = (selected: number) =>
   (value: [number, string, ConfigChange]) => (value[2].id !== selected)
     ? 'circle'
-    : getSelectedDot(hexToRGB(chartRowMapping.filter(({ key }) => key === value[2].type)[0].color))
+    : getSelectedDot(hexToRGB(getConfigChangeEntityTypeMapping()
+      .filter(({ key }) => key === value[2].type)[0].color))
