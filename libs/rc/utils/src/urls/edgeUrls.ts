@@ -109,6 +109,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/edges/:serialNumber/ports',
     newApi: true
   },
+  getEdgeSubInterfacesStatusList: {
+    method: 'post',
+    url: '/edges/subInterfaces/query',
+    newApi: true
+  },
   getLatestEdgeFirmware: {
     method: 'get',
     url: '/edges/upgrade/version/latest',

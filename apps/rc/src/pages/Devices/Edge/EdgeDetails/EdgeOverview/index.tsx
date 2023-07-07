@@ -13,9 +13,10 @@ import {
 } from '@acx-ui/rc/services'
 import {  EdgePortStatus } from '@acx-ui/rc/utils'
 
-import { MonitorTab }   from './MonitorTab'
-import { PortsTab }     from './PortsTab'
-import { wrapperStyle } from './styledComponents'
+import { MonitorTab }           from './MonitorTab'
+import { PortsTab }             from './PortsTab'
+import { wrapperStyle }         from './styledComponents'
+import { EdgeSubInterfacesTab } from './SubInterfacesTab'
 
 enum OverviewInfoType {
     MONITOR = 'monitor',
@@ -75,7 +76,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'sort_idx'
     ],
     filters: { serialNumber: [serialNumber] },
-    sortField: 'sort_idx',
+    sortField: 'sortIdx',
     sortOrder: 'ASC'
   }
 
@@ -112,7 +113,10 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   }, {
     label: $t({ defaultMessage: 'Sub-Interfaces' }),
     value: 'subInterfaces',
-    children: 'Sub-Interfaces'
+    children: <EdgeSubInterfacesTab
+      isLoading={isPortListLoading}
+      ports={portStatusList as EdgePortStatus[]}
+    />
   }].filter(i => i.value !== 'monitor' || isEdgeReady)
 
   return (
