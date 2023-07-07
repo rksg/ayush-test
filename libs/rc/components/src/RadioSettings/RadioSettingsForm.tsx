@@ -77,6 +77,8 @@ export function RadioSettingsForm (props:{
     onGUIChanged?.(fieldName)
   }
 
+  const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
+
   return (
     <>
       <Form.Item
@@ -274,7 +276,7 @@ export function RadioSettingsForm (props:{
                       max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
                       marks={{
                         1: { label: '1 Mbps' },
-                        100: { label: getDLMax(form.getFieldValue(bssMinRate6gFieldName)).toString() + ' Mbps' }
+                        [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
                       }}
                     />
                   }
