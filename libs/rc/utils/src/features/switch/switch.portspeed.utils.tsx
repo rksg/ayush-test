@@ -360,7 +360,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
     }, {
       start: '1/2/1', end: '1/2/8',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -398,7 +398,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'FIVE_G_FULL_MASTER', 'FIVE_G_FULL_SLAVE', 'TEN_G_FULL', 'TEN_G_FULL_MASTER', 'TEN_G_FULL_SLAVE']
     }, {
       start: '1/3/1', end: '1/3/4',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
