@@ -161,12 +161,12 @@ describe('HealthPieChart', () => {
     })
 
     it('should return correct title for ACX', () => {
-      mockGet.mockReturnValue(undefined) // get('IS_MLISA) => false
+      mockGet.mockReturnValue(undefined)
       const venue = pieNodeMap(pathToFilter([]))
       expect(venue.defaultMessage?.[0].options.one.value[0].value).toEqual('Venue')
     })
     it('should return correct title for RA', () => {
-      mockGet.mockReturnValue('true') // get('IS_MLISA) => false
+      mockGet.mockReturnValue('true')
       const venue = pieNodeMap(pathToFilter([]))
       expect(venue.defaultMessage?.[0].options.one.value[0].value).toEqual('Zone')
     })
