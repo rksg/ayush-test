@@ -105,8 +105,8 @@ function ConnectionMeteringLink (props:{
         </TenantLink>
       </div>
       {showWarning &&
-        <div style={{ float: 'left', marginLeft: '10%' }} title={tooltip}>
-          <WarningTriangle expired={expired}/>
+        <div style={{ float: 'left' }} title={tooltip}>
+          <WarningTriangle expired={expired} style={{ height: '16px' }}/>
         </div>
       }
     </div>
