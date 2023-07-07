@@ -8,7 +8,6 @@ import { formatter }              from '@acx-ui/formatter'
 
 import * as UI from './styledComponents'
 
-const isMLISA = get('IS_MLISA_SA')
 const thresholdDescText = {
   goal: defineMessage({ defaultMessage: 'Goal' }),
   metGoal: defineMessage({ defaultMessage: 'met goal' }),
@@ -16,7 +15,7 @@ const thresholdDescText = {
   applyBtn: defineMessage({ defaultMessage: 'Apply' })
 }
 
-const getDisabledToolTip = (isNetwork?: boolean) =>
+export const getDisabledToolTip = (isNetwork?: boolean, isMLISA?: string) =>
   isNetwork
     ? !isMLISA
       ?
@@ -56,7 +55,8 @@ function ThresholdConfig ({
 }) {
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
-  const disabledMsg = $t(getDisabledToolTip(isNetwork))
+  const isMLISA = get('IS_MLISA_SA')
+  const disabledMsg = $t(getDisabledToolTip(isNetwork, isMLISA))
   const resetCallback = () => onReset()
   const applyCallback: MouseEventHandler<HTMLElement> = (e) => {
     onApply()

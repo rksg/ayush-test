@@ -27,7 +27,6 @@ import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
 import * as UI                                     from './styledComponents'
 
 const topCount = 5
-const isMLISA = get('IS_MLISA_SA')
 
 type PieChartData = {
   key: string
@@ -63,6 +62,7 @@ const transformData = (
 }
 
 export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
+  const isMLISA = get('IS_MLISA_SA')
   const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
     case 'zone':

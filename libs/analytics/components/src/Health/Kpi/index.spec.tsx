@@ -17,7 +17,17 @@ import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import KpiSection from '.'
+import KpiSection, { defaultThreshold } from '.'
+
+const defaultThresholdValues = {
+  apCapacity: 50,
+  apServiceUptime: 0.995,
+  apToSZLatency: 200,
+  clientThroughput: 10000,
+  rss: -75,
+  switchPoeUtilization: 0.8,
+  timeToConnect: 2000
+}
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -230,5 +240,10 @@ describe('Kpi Section', () => {
 
     expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
   })
-
+  it('should return correct defaultThreshold for ACX', async () => {
+    expect(defaultThreshold(undefined)).toEqual(defaultThresholdValues)
+  })
+  it('should return correct defaultThreshold for RA', async () => {
+    expect(defaultThreshold('true')).toEqual({ ...defaultThresholdValues,clusterLatency: 10 })
+  })
 })
