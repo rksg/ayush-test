@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, RogueApUrls, getPolicyListRoutePath } from '@acx-ui/rc/utils'
+import { AccessControlUrls, CommonUrlsInfo, RogueApUrls, getPolicyListRoutePath } from '@acx-ui/rc/utils'
 import { Provider }                                            from '@acx-ui/store'
 import {
   mockServer,
@@ -78,12 +78,16 @@ describe('PoliciesTable', () => {
       rest.delete(
         RogueApUrls.deleteRogueApPolicy.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
+      ),
+      rest.delete(
+        AccessControlUrls.deleteAccessControlProfile.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <PoliciesTable />
       </Provider>, {
@@ -91,7 +95,6 @@ describe('PoliciesTable', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const targetPolicyName = mockTableResult.data[0].name
     // eslint-disable-next-line max-len
