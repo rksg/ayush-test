@@ -73,7 +73,7 @@ describe('Venue Firewall Service', () => {
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
     expect(within(aclWrapper).queryByText('ON (IN: 1 rule, OUT: 5 rules)')).toBeValid()
 
-    const edgeInfo = screen.queryByText('Smart Edge')
+    const edgeInfo = screen.queryByText('SmartEdge')
     // eslint-disable-next-line testing-library/no-node-access
     const edgeWrapper = edgeInfo?.closest('div.ant-space')! as HTMLDivElement
     expect(within(edgeWrapper).queryByText('mock-SmartEdge')).toBeValid()

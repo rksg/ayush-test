@@ -79,7 +79,7 @@ const EdgeFirewall = ({ className, edgeData }: EdgeFirewallServiceProps) => {
       )
     },
     {
-      title: $t({ defaultMessage: 'Smart Edge' }),
+      title: $t({ defaultMessage: 'SmartEdge' }),
       content: (
         <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
           {edgeData?.name}
