@@ -220,6 +220,10 @@ export function MoreSettingsForm (props: {
 
   }
 
+  const UserConnectionComponent = () => {
+    return (<UserConnectionForm />)
+  }
+
   return (
     <UI.CollapsePanel
       defaultActiveKey={['1', '2', '3', '4', '5']}
@@ -742,7 +746,7 @@ export function MoreSettingsForm (props: {
       </Panel>
       }
       {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&<Panel header='User Connection' key='5'>
-        <UserConnectionForm/>
+        <UserConnectionComponent/>
       </Panel>}
     </UI.CollapsePanel>
   )
