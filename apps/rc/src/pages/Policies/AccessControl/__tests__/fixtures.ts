@@ -1,6 +1,27 @@
 export const aclDetail = {
   name: 'acl-test',
-  id: 'c9c0667abfe74ab7803999a793fd2bbe'
+  id: 'c9c0667abfe74ab7803999a793fd2bbe',
+  devicePolicy: {
+    id: '0ad092ad70854801849b56b9402e8d57',
+    enabled: true
+  },
+  l2AclPolicy: {
+    id: 'e621cd8aa3f84f2faf04635e59a5db7b',
+    enabled: true
+  },
+  l3AclPolicy: {
+    id: 'c0f516233e9346df8f9f93bf7d799326',
+    enabled: true
+  },
+  applicationPolicy: {
+    id: '8139f9da75c64cd48582b40897df1609',
+    enabled: true
+  },
+  rateLimiting: {
+    uplinkLimit: 85,
+    downlinkLimit: 26,
+    enabled: true
+  }
 }
 
 export const enhancedAccessControlList = {
@@ -27,11 +48,16 @@ export const enhancedAccessControlList = {
       name: 'My Access Control 1',
       l2AclPolicyName: 'layer2-1',
       l2AclPolicyId: 'e621cd8aa3f84f2faf04635e59a5db7b',
-      devicePolicyName: 'deviceos-policy-1',
-      devicePolicyId: '77821b31782148b4ace261257166554e',
-      clientRateUpLinkLimit: 138,
-      clientRateDownLinkLimit: 0,
-      networkIds: []
+      l3AclPolicyName: 'layer3-1',
+      l3AclPolicyId: 'c0f516233e9346df8f9f93bf7d799326',
+      devicePolicyName: 'device-1',
+      devicePolicyId: '0ad092ad70854801849b56b9402e8d57',
+      applicationPolicyName: 'application-1',
+      applicationPolicyId: '8139f9da75c64cd48582b40897df1609',
+      clientRateUpLinkLimit: 85,
+      clientRateDownLinkLimit: 26,
+      networkIds: [],
+      networkCount: 0
     }
   ]
 }

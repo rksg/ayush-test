@@ -24,14 +24,15 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, options, ...otherProps }) => {
+  // eslint-disable-next-line max-len
+  const Select = ({ children, onChange, options, showSearch, filterOption, optionFilterProp, defaultValue, ...otherProps }) => {
     if (options) {
       return <select
         role='combobox'
         onChange={e => onChange(e.target.value)}
         {...otherProps}>
         {options.map((option: { value: string }) =>
-          <option value={option.value}>{option.value}</option>)}
+          <option key={option.value} value={option.value}>{option.value}</option>)}
       </select>
     }
     return <select
@@ -155,7 +156,7 @@ describe('ApplicationDrawer Component', () => {
       )
     ))
 
-    await screen.findByRole('option', { name: 'app1-test' })
+    expect(await screen.findByRole('option', { name: 'app1-test' })).toBeVisible()
 
   })
 
@@ -240,6 +241,8 @@ describe('ApplicationDrawer Component', () => {
     await screen.findByText(/rules \(1\)/i)
 
     await userEvent.click(screen.getAllByText('Save')[0])
+
+    expect(await screen.findByText('Application Access Settings')).toBeVisible()
   })
 
   it('Render ApplicationDrawer component successfully with edit and del action', async () => {
@@ -348,7 +351,7 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.click(screen.getByText(/delete rule/i))
 
-    await screen.findByText(/rules \(0\)/i)
+    expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
 
   })
 
@@ -441,7 +444,7 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await screen.findByText('app1rule1')
+    expect(await screen.findByText('app1rule1')).toBeInTheDocument()
 
   })
 
@@ -522,6 +525,8 @@ describe('ApplicationDrawer Component', () => {
       screen.getAllByRole('combobox')[5],
       screen.getAllByRole('option', { name: 'VOICE' })[1]
     )
+
+    expect(await screen.findByText('Audio/Video')).toBeInTheDocument()
   })
 
   it('Render ApplicationDrawer component in viewMode successfully', async () => {
@@ -572,5 +577,7 @@ describe('ApplicationDrawer Component', () => {
     await screen.findByText(/rules/i)
 
     await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    expect(screen.queryByText('Application Access Settings')).toBeNull()
   })
 })
