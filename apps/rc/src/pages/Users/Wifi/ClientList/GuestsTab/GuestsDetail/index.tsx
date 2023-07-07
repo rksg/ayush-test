@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Divider,
-  Dropdown,
   Menu,
   MenuProps,
   Space } from 'antd'
@@ -9,6 +8,8 @@ import { useIntl } from 'react-intl'
 
 
 import {
+  Dropdown,
+  CaretDownSolidIconReverse,
   Button,
   cssStr,
   Table,
@@ -16,7 +17,6 @@ import {
   Descriptions
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { ArrowExpand }               from '@acx-ui/icons'
 import { ClientHealthIcon }          from '@acx-ui/rc/components'
 import { useGetGuestsListQuery }     from '@acx-ui/rc/services'
 import {
@@ -256,14 +256,14 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
   return (<>
     <div style={{ textAlign: 'right' }}>
-      <Dropdown overlay={menu} key='actions'>
+      <Dropdown overlay={menu} key='actions'>{()=>
         <Button type='secondary'>
           <Space>
             {$t({ defaultMessage: 'Actions' })}
-            <ArrowExpand />
+            <CaretDownSolidIconReverse />
           </Space>
         </Button>
-      </Dropdown>
+      }</Dropdown>
     </div>
 
     <Descriptions>

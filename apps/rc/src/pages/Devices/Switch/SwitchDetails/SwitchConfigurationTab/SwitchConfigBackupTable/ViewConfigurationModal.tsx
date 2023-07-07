@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import { useIntl }                          from 'react-intl'
+import { Menu, MenuProps, Space } from 'antd'
+import { useIntl }                from 'react-intl'
 
-import { Button, Descriptions } from '@acx-ui/components'
-import { ArrowExpand }          from '@acx-ui/icons'
-import { CodeMirrorWidget }     from '@acx-ui/rc/components'
-import { ConfigurationBackup }  from '@acx-ui/rc/utils'
+import { Dropdown, CaretDownSolidIcon, Button, Descriptions } from '@acx-ui/components'
+import { CodeMirrorWidget }                                   from '@acx-ui/rc/components'
+import { ConfigurationBackup }                                from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -98,14 +97,14 @@ export function ViewConfigurationModal (props:{
                 />
               }
               key='viewCliMenu'
-            >
-              <Button>
-                <Space>
-                  {$t({ defaultMessage: 'Actions' })}
-                  <ArrowExpand />
-                </Space>
-              </Button>
-            </Dropdown>
+            >{()=>
+                <Button>
+                  <Space>
+                    {$t({ defaultMessage: 'Actions' })}
+                    <CaretDownSolidIcon />
+                  </Space>
+                </Button>
+              }</Dropdown>
           </div>
           <div className='code-mirror-container'>
             <CodeMirrorWidget type='single' data={{ ...data, clis: data.config }} />

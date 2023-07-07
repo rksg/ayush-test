@@ -4,8 +4,8 @@ import { Divider, Input, Menu, Space, Typography } from 'antd'
 import { remove }                                  from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
-import { Button, Dropdown }                                         from '@acx-ui/components'
-import { ArrowExpand, SearchOutlined }                              from '@acx-ui/icons'
+import { Button, Dropdown, CaretDownSolidIcon }                     from '@acx-ui/components'
+import { SearchOutlined }                                           from '@acx-ui/icons'
 import { NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { getIntl }                                                  from '@acx-ui/utils'
 
@@ -130,7 +130,7 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
                   ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)
                   : $t({ defaultMessage: 'All' }) }
               </Typography.Paragraph>
-              <ArrowExpand />
+              <CaretDownSolidIcon />
             </Space>
           </Button>
         }</Dropdown>

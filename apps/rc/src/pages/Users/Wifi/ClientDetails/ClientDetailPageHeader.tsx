@@ -1,12 +1,11 @@
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import moment                               from 'moment-timezone'
-import { useIntl }                          from 'react-intl'
+import { Menu, MenuProps, Space } from 'antd'
+import moment                     from 'moment-timezone'
+import { useIntl }                from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { ArrowExpand }                                           from '@acx-ui/icons'
-import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
-import { ClientStatusEnum, ClientUrlsInfo }                      from '@acx-ui/rc/utils'
+import { Dropdown, CaretDownSolidIconReverse, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { useDisconnectClientMutation, useGetClientDetailsQuery }                from '@acx-ui/rc/services'
+import { ClientStatusEnum, ClientUrlsInfo }                                     from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -116,14 +115,14 @@ function ClientDetailPageHeader () {
       ] : [{ text: $t({ defaultMessage: 'Wi-Fi Users' }), link: '/users/wifi/clients' }]}
       extra={filterByAccess([
         <DatePicker key='date-filter' />,
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu}>{()=>
           <Button type='secondary'>
             <Space>
               {$t({ defaultMessage: 'Actions' })}
-              <ArrowExpand />
+              <CaretDownSolidIconReverse />
             </Space>
           </Button>
-        </Dropdown>
+        }</Dropdown>
       ])}
       footer={<ClientDetailTabs />}
     />

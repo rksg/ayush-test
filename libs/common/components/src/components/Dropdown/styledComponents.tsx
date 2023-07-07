@@ -1,6 +1,8 @@
 import { Dropdown as AntDropdown } from 'antd'
 import styled                      from 'styled-components/macro'
 
+import { CaretDownSolid } from '@acx-ui/icons'
+
 import { Subtitle } from '../Subtitle'
 
 export const Dropdown = styled(AntDropdown)`
@@ -18,3 +20,17 @@ export const OverlayContainer = styled.div`
 `
 
 export const OverlayTitle = styled(Subtitle).attrs({ level: 4 })``
+
+const IconWrapper = styled.div`display: flex;`
+export const CaretDownSolidIcon = () => <IconWrapper><CaretDownSolid/></IconWrapper>
+
+const IconReverseWrapper = styled.div`
+  display: flex;
+  svg {
+    fill: var(--acx-primary-white);
+    stroke: var(--acx-primary-white);
+  }
+`
+
+export const CaretDownSolidIconReverse = () =>
+  <IconReverseWrapper><CaretDownSolid/></IconReverseWrapper>

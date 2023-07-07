@@ -13,6 +13,7 @@ import modifyVars from '../../theme/modify-vars'
 import bgImageUrl from './background.svg'
 
 export const Wrapper = styled.div<{ showScreen: boolean }>`
+  --acx-header-caret-width: 8px;
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
@@ -437,6 +438,17 @@ export const LayoutUI = {
       }
     }
   `,
+  DropdownCaretIcon: styled.span`{
+    svg {
+      width: var(--acx-header-caret-width);
+      height: 100%;
+      vertical-align: baseline;
+      path {
+        stroke: var(--acx-primary-white);
+        fill: var(--acx-primary-white);
+      }
+    }
+  }`,
   DropdownText: styled.span.attrs(props => ({ children: <Space>{props.children}</Space> }))`
     font-size: var(--acx-body-3-font-size);
     line-height: 1;
