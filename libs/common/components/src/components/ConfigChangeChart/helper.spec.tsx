@@ -24,8 +24,13 @@ import {
   getSymbol,
   hexToRGB,
   ConfigChange,
-  chartRowMapping
+  getConfigChangeEntityTypeMapping
 }  from './helper'
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getIntl: () => ({ $t: jest.fn() })
+}))
 
 describe('getChartLayoutConfig', () => {
   it('should return correct chart layout config', () => {
@@ -112,7 +117,7 @@ describe('getDrawPosition',() => {
 })
 
 describe('draw', () => {
-  const chartLayoutConfig = getChartLayoutConfig(100, chartRowMapping)
+  const chartLayoutConfig = getChartLayoutConfig(100, getConfigChangeEntityTypeMapping())
   const areas = { actual: [[0, 50], [950, 1000]], show: [[0, 50], [950, 1000]] }
   const boundary = { min: 0, max: 1000 }
   it('should handle echart ref unavailable', () => {
