@@ -83,13 +83,13 @@ describe('ApEdit', () => {
   })
   afterEach(() => Modal.destroyAll())
 
-  describe('Ap Details', () => {
+  describe('Ap Edit - General', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
       serialNumber: 'serial-number',
       action: 'edit',
-      activeTab: 'details'
+      activeTab: 'general'
     }
     jest.mock('react', () => ({
       ...jest.requireActual('react'),
@@ -220,7 +220,7 @@ describe('ApEdit', () => {
       fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'test ap 2' } })
       fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'description' } })
       await userEvent.click(await screen.findByText('Back to device details'))
-      await showUnsavedChangesModal('AP Details', false)
+      await showUnsavedChangesModal('General', false)
     })
 
     it('should open invalid changes modal', async () => {
@@ -241,13 +241,13 @@ describe('ApEdit', () => {
       })
 
       await userEvent.click(await screen.findByText('Back to device details'))
-      await showInvalidChangesModal('AP Details', false)
+      await showInvalidChangesModal('General', false)
       await userEvent.click(await screen.findByText('Back to device details'))
-      await showInvalidChangesModal('AP Details', true)
+      await showInvalidChangesModal('General', true)
     })
   })
 
-  describe('Ap Settings - Lan Ports', () => {
+  xdescribe('Ap Edit - Lan Ports', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',

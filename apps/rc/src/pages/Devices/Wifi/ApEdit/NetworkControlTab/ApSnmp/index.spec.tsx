@@ -3,18 +3,18 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls }                                                                from '@acx-ui/rc/utils'
+import { ApSnmpUrls, CommonUrlsInfo, getUrlForTest }                                 from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 
-import { ApDataContext }           from '..'
-import { ApEditContext }           from '../..'
+import { ApDataContext, ApEditContext } from '../..'
 import {
   resultOfGetApSnmpAgentSettings,
   resultOfGetVenueApSnmpAgentSettings,
   resultOfUpdateApSnmpAgentSettings,
-  resultOfGetApSnmpAgentProfiles } from '../../../../__tests__/fixtures'
+  resultOfGetApSnmpAgentProfiles,
+  venueData } from '../../../../__tests__/fixtures'
 import { apDetails } from '../../../ApDetails/__tests__/fixtures'
 
 import { ApSnmp } from './index'
@@ -41,7 +41,10 @@ describe('Ap Snmp', () => {
       }),
       rest.post(ApSnmpUrls.updateVenueApSnmpSettings.url, (req, res, ctx) => {
         return res(ctx.json(resultOfUpdateApSnmpAgentSettings))
-      })
+      }),
+      rest.get(
+        getUrlForTest(CommonUrlsInfo.getVenue),
+        (_, res, ctx) => res(ctx.json(venueData)))
     )
   })
   it('Should Retrive Initial Data From Server and Render', async () => {
@@ -71,17 +74,18 @@ describe('Ap Snmp', () => {
             updateChanges: jest.fn(),
             discardChanges: jest.fn()
           },
-          setEditContextData: jest.fn()
+          setEditContextData: jest.fn(),
+          setEditNetworkControlContextData: jest.fn()
         }}>
           <ApDataContext.Provider value={{ apData: apDetails }}>
             <ApSnmp />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/snmp' }
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networkControl' }
       })
 
-    const customizeButton = await screen.findByTestId('use-venue-true')
+    const customizeButton = await screen.findByRole('button', { name: 'Customize' })
     expect(customizeButton).toBeTruthy()
     expect(await screen.findByRole('switch')).toBeDisabled()
     expect(await screen.findByRole('combobox')).toBeDisabled()
@@ -89,7 +93,8 @@ describe('Ap Snmp', () => {
     await userEvent.click(customizeButton)
 
     // await waitFor(() => screen.findByText('Use Venue Settings'))
-    expect(await screen.findByTestId('use-venue-false')).toBeTruthy()
+    const useVenueButton = await screen.findByRole('button', { name: 'Use Venue Settings' })
+    expect(useVenueButton).toBeTruthy()
     expect(await screen.findByRole('switch')).toBeEnabled()
     expect(await screen.findByRole('combobox')).toBeEnabled()
 
@@ -109,23 +114,24 @@ describe('Ap Snmp', () => {
             updateChanges: jest.fn(),
             discardChanges: jest.fn()
           },
-          setEditContextData: jest.fn()
+          setEditContextData: jest.fn(),
+          setEditNetworkControlContextData: jest.fn()
         }}>
           <ApDataContext.Provider value={{ apData: apDetails }}>
             <ApSnmp />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/snmp' }
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networkControl' }
       })
 
-    const customizeButton = await screen.findByTestId('use-venue-true')
-    expect(customizeButton).toBeTruthy()
+    const customizeButton = await screen.findByRole('button', { name: 'Customize' })
     await userEvent.click(customizeButton)
+    const useVenueButton = await screen.findByRole('button', { name: 'Use Venue Settings' })
+    expect(useVenueButton).toBeTruthy()
 
     expect(await screen.findByRole('switch')).toBeEnabled()
     await userEvent.click(await screen.findByRole('switch'))
-    //expect(await screen.findByRole('switch')).not.toBeChecked()
-    //expect(screen.queryByTestId('hidden-block')).toBeNull()
+    expect(await screen.findByRole('switch')).not.toBeChecked()
   })
 })

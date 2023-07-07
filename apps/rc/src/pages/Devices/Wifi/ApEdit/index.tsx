@@ -31,8 +31,8 @@ export interface ApEditContextType {
   unsavedTabKey?: string
   isDirty: boolean
   hasError?: boolean
-  updateChanges: (data?: unknown) => void | Promise<void>
-  discardChanges: (data?: unknown) => void | Promise<void>
+  updateChanges?: (data?: unknown) => void | Promise<void>
+  discardChanges?: (data?: unknown) => void | Promise<void>
 }
 
 export interface ApEditContextProps {
@@ -148,7 +148,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
       editNetworkControlContextData.updateMdnsProxy?.()
       editNetworkControlContextData.updateApSnmp?.()
       break
-    default:
+    default: // General
       editContextData?.updateChanges?.()
       break
   }
@@ -176,8 +176,8 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
       editNetworkControlContextData.discardMdnsProxyChanges?.()
       editNetworkControlContextData.discardApSnmpChanges?.()
       break
-    default:
-      editContextData?.updateChanges?.()
+    default: // General
+      editContextData?.discardChanges?.()
       break
   }
 }
@@ -194,11 +194,15 @@ const resetApEditContextData = (props: ApEditContextProps) => {
     setEditNetworkControlContextData
   } = props
 
-  setEditContextData({
+  const newEditContextData = {
     ...editContextData,
     isDirty: false,
     hasError: false
-  })
+  }
+  delete newEditContextData.updateChanges
+  delete newEditContextData.discardChanges
+
+  setEditContextData(newEditContextData)
 
   switch(editContextData?.unsavedTabKey){
     case 'radio':

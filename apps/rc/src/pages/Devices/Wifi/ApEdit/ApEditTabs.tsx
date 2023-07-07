@@ -79,6 +79,9 @@ function ApEditTabs () {
     if (editContextData?.isDirty) {
       unblockRef.current?.()
       unblockRef.current = blockNavigator.block((tx: Transition) => {
+        if (tx.location.hash) {
+          return
+        }
         // do not trigger modal twice
         setEditContextData({
           ...editContextData,

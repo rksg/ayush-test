@@ -75,6 +75,20 @@ export function ApMesh () {
   const [uplinkMode, setUplinkMode] = useState(UplinkModeEnum.SMART)
   const [uplinkMac, setUplinkMac] = useState<string[] | undefined>()
 
+  const updateStates = (data: APMeshSettings) => {
+    const {
+      venueMeshEnabled=false,
+      meshMode,
+      uplinkMode=UplinkModeEnum.SMART,
+      uplinkMacAddresses
+    } = data
+
+    setVenueMeshEnabled(venueMeshEnabled)
+    setMeshMode(meshMode)
+    setUplinkMode(uplinkMode)
+    setUplinkMac(uplinkMacAddresses)
+    uplinkMacRef.current = uplinkMacAddresses
+  }
 
   useEffect(() => {
     const meshData = getApMesh?.data
@@ -102,22 +116,9 @@ export function ApMesh () {
         const uplinkAp = (await getMeshUplinkAps({ params, payload }, true).unwrap())
         setMeshUplinkAps(uplinkAp.neighbors)
 
-
-        // mesh data
-        const {
-          venueMeshEnabled=false,
-          meshMode,
-          uplinkMode=UplinkModeEnum.SMART,
-          uplinkMacAddresses
-        } = meshData
-
-        setVenueMeshEnabled(venueMeshEnabled)
-        setMeshMode(meshMode)
-        setUplinkMode(uplinkMode)
+        updateStates(meshData)
         setInitData(meshData)
         setFormInitializing(false)
-        setUplinkMac(uplinkMacAddresses)
-        uplinkMacRef.current = uplinkMacAddresses
       }
 
       setData()

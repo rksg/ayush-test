@@ -11,16 +11,14 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { LanPortSettings }     from '@acx-ui/rc/components'
+import { LanPortSettings }          from '@acx-ui/rc/components'
 import {
   useGetApLanPortsQuery,
   useLazyGetVenueQuery,
   useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
-  //useUpdateApCustomizationMutation,
-  //useResetApCustomizationMutation,
-  useUpdateApLanPortsMutation,
-  useResetApLanPortsMutation
+  useUpdateApCustomizationMutation,
+  useResetApCustomizationMutation
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -57,16 +55,12 @@ export function LanPorts () {
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const [getVenueSettings] = useLazyGetVenueSettingsQuery()
 
-  const [updateApCustomization, {
-    isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
-  const [resetApCustomization, {
-    isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
-  /*
+
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApCustomizationMutation()
   const [resetApCustomization, {
     isLoading: isApLanPortsResetting }] = useResetApCustomizationMutation()
-    */
+
 
   const [venue, setVenue] = useState({} as VenueExtended)
   const [venueLanPorts, setVenueLanPorts] = useState({})
@@ -136,12 +130,44 @@ export function LanPorts () {
     updateEditContext(formRef?.current as StepsFormLegacyInstance, useVenueSettings)
   }
 
+  const handleFinish = async (values: WifiApSetting) => {
+    try {
+      setEditContextData && setEditContextData({
+        ...editContextData,
+        isDirty: false,
+        hasError: false
+      })
+      setUseVenueSettings(values?.useVenueSettings)
 
+      if (values?.useVenueSettings) {
+        await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
+      } else {
+        const payload = {
+          lanPorts: values?.lan,
+          useVenueSettings: false
+        }
+        await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const handleDiscard = async () => {
+    setUseVenueSettings(apLanPorts?.useVenueSettings ?? false)
+    setSelectedModel((apLanPorts?.useVenueSettings
+      ? venueLanPorts : apLanPorts) as WifiApSetting)
+
+    formRef?.current?.setFieldsValue({
+      lan: apLanPorts?.lanPorts,
+      useVenueSettings: apLanPorts?.useVenueSettings
+    })
+  }
 
   const handleFormChange = async (formName: string, info: FormChangeInfo) => {
     const index = Number(info?.changedFields?.[0].name.toString().split(',')[1])
     const newLanData = (lanData?.map((item, idx) => {
-      return idx == index
+      return idx === index
         ? formRef?.current?.getFieldsValue()?.lan?.[idx]
         : lanData?.[idx]})) as LanPort[]
 
@@ -149,29 +175,18 @@ export function LanPorts () {
   }
 
   const updateEditContext = (form: StepsFormLegacyInstance, useVenueSettings: boolean) => {
-    /*
-    setEditContextData && setEditContextData({
-      ...editContextData,
-      tabTitle: $t({ defaultMessage: 'LAN Port' }),
-      isDirty: checkFormIsDirty(form as StepsFormLegacyInstance, useVenueSettings),
-      hasError: checkFormIsInvalid(form as StepsFormLegacyInstance),
-      updateChanges: () => handleFinish(form?.getFieldsValue() as WifiApSetting),
-      discardChanges: () => handleDiscard()
-    })
-
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'networking',
       tabTitle: $t({ defaultMessage: 'Networking' }),
-      isDirty: checkFormIsDirty(form as StepsFormLegacyInstance, useVenueSettings)
+      isDirty: true
     })
 
     setEditNetworkingContextData && setEditNetworkingContextData({
       ...editNetworkingContextData,
-      updateMesh: () => handleFinish(form?.getFieldsValue() as WifiApSetting),
-      discardMeshChanges: () => handleDiscard()
+      updateLanPorts: () => handleFinish(form?.getFieldsValue() as WifiApSetting),
+      discardLanPortsChanges: () => handleDiscard()
     })
-    */
   }
 
 
