@@ -1,35 +1,86 @@
+import {
+  Band,
+  ClientType,
+  TestType,
+  NetworkPaths,
+  stages
+} from '@acx-ui/analytics/components'
 import { useIsSplitOn, useIsTierAllowed }                       from '@acx-ui/feature-toggle'
 import { serviceGuardApiURL, Provider }                         from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                       from '@acx-ui/user'
 
-import { fetchServiceGuardSpec, fetchServiceGuardTest } from './pages/ServiceGuard/__tests__/fixtures'
-import AnalyticsRoutes                                  from './Routes'
+import AnalyticsRoutes from './Routes'
 
-jest.mock('./pages/ServiceGuard/ServiceGuardForm', () => ({
-  default: () => <div data-testid='ServiceGuardForm' />,
-  __esModule: true
-}))
+export const fetchServiceGuardSpec = {
+  serviceGuardSpec: {
+    id: 'spec-id',
+    clientType: ClientType.VirtualWirelessClient,
+    type: TestType.OnDemand,
+    name: 'Test Name',
+    configs: [{
+      authenticationMethod: 'WPA3_PERSONAL',
+      dnsServer: '10.10.10.10',
+      pingAddress: '10.10.10.10',
+      radio: Band.Band6,
+      tracerouteAddress: '10.10.10.10',
+      wlanName: 'WLAN Name',
+      wlanPassword: '12345',
+      wlanUsername: 'user',
+      networkPaths: {
+        networkNodes: [[
+          { type: 'zone', name: 'VENUE' },
+          { type: 'apMac', list: ['00:00:00:00:00:00'] }
+        ]] as NetworkPaths
+      }
+    }]
+  }
+}
 
-jest.mock('./pages/ServiceGuard/ServiceGuardDetails',() => ({
-  default: () => <div data-testid='ServiceGuardDetails'/>,
-  __esModule: true
-}))
+export const fetchServiceGuardTest = {
+  serviceGuardTest: {
+    id: 1,
+    createdAt: '2023-02-03T11:00:00.000Z',
+    previousTest: null,
+    spec: {
+      id: 'specId',
+      name: 'name',
+      type: 'on-demand',
+      clientType: 'virtual-client',
+      apsCount: 0
+    },
+    config: {
+      authenticationMethod: 'WPA2_PERSONAL',
+      radio: '2.4',
+      speedTestEnabled: true,
+      tracerouteAddress: 'google.com',
+      pingAddress: 'google.com',
+      dnsServer: '1.1.1.1',
+      wlanName: 'Wifi Name',
+      wlanUsername: 'my-user-name'
+    },
+    summary: {
+      apsErrorCount: 0,
+      apsFailureCount: 0,
+      apsPendingCount: 0,
+      apsSuccessCount: 2,
+      apsTestedCount: 1,
+      ...Object.keys(stages).reduce((acc, stage) => ({
+        ...acc,
+        [`${stage}Error`]: 0,
+        [`${stage}Failure`]: 0,
+        [`${stage}NA`]: 0,
+        [`${stage}Pending`]: 0,
+        [`${stage}Success`]: 2
+      }), {})
+    },
+    wlanAuthSettings: {
+      wpaVersion: 'WPA2'
+    }
+  }
+}
 
-jest.mock('./pages/ServiceGuard', () => ({
-  ServiceGuard: () => <div data-testid='ServiceGuardPage' />,
-  useServiceGuard: () => ({
-    component: <div data-testid='ServiceGuardPage' />
-  })
-}))
-
-jest.mock('./pages/VideoCallQoe', () => ({
-  VideoCallQoe: () => <div data-testid='VideoCallQoePage' />,
-  useVideoCallQoe: () => ({
-    component: <div data-testid='VideoCallQoePage' />
-  })
-}))
 
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
@@ -37,12 +88,18 @@ jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentDetails: () => <div data-testid='incidentDetails' />,
   IncidentListPage: () => <div data-testid='incidentListPage' />,
-  IncidentListPageLegacy: () => <div data-testid='incidentListPageLegacy' />
-}))
-
-jest.mock('./pages/NetworkAssurance', () => ({
-  ...jest.requireActual('./pages/NetworkAssurance'),
-  NetworkAssurance: () => <div data-testid='networkAssurance' />
+  IncidentListPageLegacy: () => <div data-testid='incidentListPageLegacy' />,
+  VideoCallQoe: () => <div data-testid='VideoCallQoePage' />,
+  useVideoCallQoe: () => ({
+    component: <div data-testid='VideoCallQoePage' />
+  }),
+  ServiceGuard: () => <div data-testid='ServiceGuardPage' />,
+  useServiceGuard: () => ({
+    component: <div data-testid='ServiceGuardPage' />
+  }),
+  NetworkAssurance: () => <div data-testid='networkAssurance' />,
+  ServiceGuardForm: () => <div data-testid='ServiceGuardForm' />,
+  ServiceGuardDetails: () => <div data-testid='ServiceGuardDetails'/>
 }))
 
 beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
