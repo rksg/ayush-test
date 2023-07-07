@@ -29,8 +29,8 @@ export interface TunnelProfileFormType extends TunnelProfile {
   ageTimeUnit? : string
 }
 
-export const TunnelProfileForm = () => {
-
+export const TunnelProfileForm = (props: { isDefaultTunnelProfile?: boolean }) => {
+  const isDefaultTunnelProfile = !!props.isDefaultTunnelProfile
   const ageTimeUnit = useWatch<string>('ageTimeUnit')
   const mtuType = useWatch('mtuType')
   const { $t } = useIntl()
@@ -51,7 +51,7 @@ export const TunnelProfileForm = () => {
             { min: 2 },
             { max: 32 }
           ]}
-          children={<Input />}
+          children={<Input disabled={isDefaultTunnelProfile}/>}
         />
       </Col>
       {/* <Col span={14}>
@@ -75,7 +75,7 @@ export const TunnelProfileForm = () => {
             </Space>
           }
           children={
-            <Radio.Group>
+            <Radio.Group disabled={isDefaultTunnelProfile}>
               <Space direction='vertical' size={40}>
                 <Radio value={MtuTypeEnum.AUTO}>
                   {$t({ defaultMessage: 'Auto' })}
@@ -115,7 +115,7 @@ export const TunnelProfileForm = () => {
           <Form.Item
             name='forceFragmentation'
             valuePropName='checked'
-            children={<Switch />}
+            children={<Switch disabled={isDefaultTunnelProfile}/>}
           />
         </StepsFormLegacy.FieldLabel>
       </Col>
@@ -123,12 +123,13 @@ export const TunnelProfileForm = () => {
         <Form.Item
           name='ageTimeMinutes'
           label={$t({ defaultMessage: 'Idle Period' })}
+          initialValue={20}
           rules={[
             { required: true },
             { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
           ]}
           validateFirst
-          children={<InputNumber />}
+          children={<InputNumber disabled={isDefaultTunnelProfile}/>}
         />
       </Col>
       <Col span={5}>
@@ -137,7 +138,7 @@ export const TunnelProfileForm = () => {
           label={<div></div>}
           initialValue={'minutes'}
         >
-          <Select options={ageTimeOptions} />
+          <Select options={ageTimeOptions} disabled={isDefaultTunnelProfile}/>
         </Form.Item>
       </Col>
     </Row>
