@@ -35,7 +35,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
   'ICX7750-48F': [
     {
       start: '1/1/1', end: '1/1/48',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }, {
       start: '1/2/1', end: '1/2/6',
       capacity: ['NONE', 'FORTY_G_FULL']
@@ -63,7 +63,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     {
       start: '1/1/1', end: '1/1/24',
       capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'ONE_HUNDRED_M_FULL',
-        'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE']
+        'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE', 'FORTY_G_FULL']
     }, {
       start: '1/2/1', end: '1/2/4',
       capacity: ['NONE', 'ONE_G_FULL']
@@ -77,7 +77,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL_SLAVE']
     }, {
       start: '1/2/1', end: '1/2/8',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -89,7 +89,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     },
     {
       start: '1/2/1', end: '1/2/8',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -111,7 +111,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL_SLAVE']
     }, {
       start: '1/2/1', end: '1/2/8',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
   'ICX7450-24': [
@@ -242,7 +242,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
 
   'ICX7550-24F': [{
     start: '1/1/1', end: '1/1/24',
-    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
   }, {
     start: '1/2/1', end: '1/2/2',
     capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
@@ -253,7 +253,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     capacity: ['NONE', 'ONE_G_FULL']
   }, {
     start: '1/1/37', end: '1/1/48',
-    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
   }, {
     start: '1/2/1', end: '1/2/2',
     capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
@@ -270,7 +270,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
     ]
   }, {
     start: '1/3/1', end: '1/3/2',
-    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+    capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
   }],
 
   'ICX7150-24': [
@@ -284,7 +284,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL_SLAVE']
     }, {
       start: '1/3/1', end: '1/3/4',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -314,7 +314,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL_SLAVE']
     }, {
       start: '1/3/1', end: '1/3/4',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -329,7 +329,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL_SLAVE']
     }, {
       start: '1/3/1', end: '1/3/4',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -344,7 +344,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL_SLAVE']
     }, {
       start: '1/3/1', end: '1/3/4',
-      capacity: ['ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -412,7 +412,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
         'ONE_G_FULL_SLAVE']
     }, {
       start: '1/3/1', end: '1/3/4',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -456,7 +456,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
       capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'TWENTY_FIVE_G_FULL']
     }, {
       start: '1/1/25', end: '1/1/48',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }
   ],
 
@@ -489,7 +489,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
   'ICX7850-48FS': [
     {
       start: '1/1/1', end: '1/1/48',
-      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL']
+      capacity: ['NONE', 'ONE_G_FULL', 'TEN_G_FULL', 'OPTIC']
     }, {
       start: '1/2/1', end: '1/2/8',
       capacity: ['NONE', 'FORTY_G_FULL', 'ONE_HUNDRED_G_FULL']
