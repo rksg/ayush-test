@@ -3,12 +3,10 @@ import { rest }  from 'msw'
 
 import { apApi }                       from '@acx-ui/rc/services'
 import { MdnsProxyUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { useTenantLink }               from '@acx-ui/react-router-dom'
 import { Provider, store }             from '@acx-ui/store'
 import {
   mockServer,
   render,
-  renderHook,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
@@ -199,9 +197,5 @@ describe('MdnsProxy', () => {
 
     // Verify Cancel form behavior
     await userEvent.click(await screen.findByRole('button', { name: /Cancel/ }))
-    const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink('/devices/')
-    })
-    //expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
   })
 })

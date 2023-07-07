@@ -108,7 +108,7 @@ export function LanPorts () {
       ...selectedModel,
       lanPorts: formRef?.current?.getFieldsValue()?.lan as LanPort[]
     })
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, useVenueSettings)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }, [lanData])
 
   const onTabChange = (tab: string) => {
@@ -127,7 +127,7 @@ export function LanPorts () {
       lan: lanPorts?.lanPorts,
       useVenueSettings: useVenueSettings
     })
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, useVenueSettings)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
 
   const handleFinish = async (values: WifiApSetting) => {
@@ -174,7 +174,7 @@ export function LanPorts () {
     setLanData(newLanData)
   }
 
-  const updateEditContext = (form: StepsFormLegacyInstance, useVenueSettings: boolean) => {
+  const updateEditContext = (form: StepsFormLegacyInstance) => {
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'networking',
@@ -188,8 +188,6 @@ export function LanPorts () {
       discardLanPortsChanges: () => handleDiscard()
     })
   }
-
-
 
   const navigateToVenue = (venueId: string | undefined) => {
     navigate(`../venues/${venueId}/venue-details/overview`)
