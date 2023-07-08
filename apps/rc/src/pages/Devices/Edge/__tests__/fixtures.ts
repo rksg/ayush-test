@@ -431,7 +431,7 @@ export const mockedEdgeServiceList = {
       serviceId: 'dhcp-1',
       serviceType: EdgeServiceTypeEnum.DHCP,
       status: 'Up',
-      currentVersion: '1.1.1',
+      currentVersion: '',
       targetVersion: ''
     },
     {
