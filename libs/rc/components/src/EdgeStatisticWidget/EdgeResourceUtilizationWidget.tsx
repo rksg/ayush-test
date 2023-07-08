@@ -171,6 +171,7 @@ export function EdgeResourceUtilizationWidget () {
               <MultiLineTimeSeriesChart
                 style={{ width, height }}
                 data={queryResults}
+                dataFormatter={formatter('percent')}
                 echartOptions={defaultOption}
               />
           }

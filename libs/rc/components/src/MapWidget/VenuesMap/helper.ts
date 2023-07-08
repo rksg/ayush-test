@@ -146,7 +146,6 @@ export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[
         switchesCount,
         edgeStat,
         edgesCount,
-        edgeClientsCount: getEdgeClientCountByVenue(overviewData, venueId),
         visible: true
       })
     })

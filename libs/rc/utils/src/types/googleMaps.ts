@@ -14,5 +14,4 @@ export interface VenueMarkerOptions extends google.maps.MarkerOptions {
   switchClientsCount?: number;
   edgeStat: ChartData[];
   edgesCount: number;
-  edgeClientsCount?: number;
 }

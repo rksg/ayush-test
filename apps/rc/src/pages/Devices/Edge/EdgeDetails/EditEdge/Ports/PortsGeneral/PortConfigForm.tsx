@@ -47,7 +47,6 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const form = useFormInstance<PortConfigFormType>()
   const mac = useWatch([`port_${index}`, 'mac'])
   const portType = useWatch([`port_${index}`, 'portType'])
-  const enabled = useWatch([`port_${index}`, 'enabled'])
   const ipMode = useWatch([`port_${index}`, 'ipMode'])
   const statusIp = useWatch([`port_${index}`, 'statusIp'])
 
@@ -232,12 +231,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                       children={<Switch />}
                     />
                   </StepsFormLegacy.FieldLabel>
-                  {enabled &&
-                    <>
-                      <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
-                      {getFieldsByPortType(portType)}
-                    </>
-                  }
+                  <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
+                  {getFieldsByPortType(portType)}
                 </>
           }
         </Col>
