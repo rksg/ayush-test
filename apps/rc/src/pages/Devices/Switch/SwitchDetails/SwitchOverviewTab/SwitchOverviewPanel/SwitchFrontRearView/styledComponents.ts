@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
-import { Descriptions }                                                                                                                             from '@acx-ui/components'
-import { ConfigurationOutlined, FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid, BreakoutPortSolid, LagMemberSolid } from '@acx-ui/icons'
+import { Descriptions }                                                                                                                          from '@acx-ui/components'
+import { FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid, BreakoutPortSolid, LagMemberSolid, ConfigurationSolid } from '@acx-ui/icons'
 
 export const TitleBar = styled.div`
   background: var(--acx-neutrals-10);
@@ -106,7 +106,7 @@ const getPortColor = (portColor: string) => {
 }
 
 export const Port = styled.div<{ portColor: string }>`
-  border-width: ${(props) => props.portColor === 'green' ? '2px' : '1px'};
+  border-width: 1px;
   border-style: solid;
   border-color: ${(props) => getPortColor(props.portColor)};
   height: 20px;
@@ -179,7 +179,7 @@ export const TagsSolidIcon = styled(TagsSolid)`
   }
 `
 
-export const SettingsIcon = styled(ConfigurationOutlined)`
+export const SettingsIcon = styled(ConfigurationSolid)`
   height: 18px;
 `
 
@@ -227,7 +227,8 @@ export const RearDescrption = styled.div<{ labelColor: string }>`
 `
 
 export const RearPowerIcon = styled(PoeUsage)`
-  height: 16px;
+  height: 18px;
+  width: 18px;
   path {
     fill: var(--acx-primary-black);
   }
@@ -273,5 +274,16 @@ export const BreadkoutPortContainer = styled.div`
   font-size: 10px;
   svg {
     margin-top: 3px;
+  }
+`
+
+export const RegularPortContainer = styled.div`
+  position: relative;
+  cursor: pointer;
+  font-size: 10px;
+  div {
+    margin-top: 3px;
+    left: 4px;
+    top: 2px;
   }
 `

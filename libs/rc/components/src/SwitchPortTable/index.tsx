@@ -350,7 +350,7 @@ function transformData (data?: SwitchPortViewModel[]) {
   })
 }
 
-function getInactiveTooltip (port: SwitchPortViewModel): string {
+export function getInactiveTooltip (port: SwitchPortViewModel): string {
   const { $t } = getIntl()
 
   if (!isOperationalSwitchPort(port)) {

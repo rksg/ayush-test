@@ -5,7 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Descriptions, Drawer, showActionModal, Tooltip }                                                                                                                                                  from '@acx-ui/components'
-import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchPortlistQuery, useLazySwitchRearViewQuery }                                                         from '@acx-ui/rc/services'
+import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchPortlistQuery, useLazySwitchRearViewQuery }                                                                                      from '@acx-ui/rc/services'
 import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
 
@@ -113,7 +113,6 @@ export function Unit (props:{
     powerSlots: 0
   })
 
-  const [ switchFrontView ] = useLazySwitchFrontViewQuery()
   const [ switchRearView ] = useLazySwitchRearViewQuery()
   const [ switchPortlist ] = useLazySwitchPortlistQuery()
   const { tenantId, switchId } = useParams()
@@ -139,7 +138,6 @@ export function Unit (props:{
   }
 
   const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
-    const { data: portStatus } = await switchFrontView({ params: { tenantId, switchId: switchMac || serialNumber, unitId } })
     const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })
     const { data: portsData } = await switchPortlist({
       params: { tenantId },
@@ -164,21 +162,29 @@ export function Unit (props:{
     const portStatusData = {
       slots: [] as SwitchSlot[]
     }
-    portsData?.data.forEach(item => {
-      const port = { ...item }
-      port.portnumber = port.portIdentifier.split('/')[2]
-      const slot = Number(port.portIdentifier.split('/')[1])
+    const tmpSlots: { [key:string]:SwitchSlot } = {}
 
-      if(portStatusData.slots[slot-1]){
-        portStatusData.slots[slot-1].portStatus.push(port)
-        portStatusData.slots[slot-1].portCount++
-      }else {
-        portStatusData.slots.push({
-          portStatus: [port],
-          portCount: 1
-        })
-      }
+    portsData?.data
+      .filter(port => port.portIdentifier.split('/')[0] === unitId)
+      .forEach(item => {
+        const port = { ...item }
+        port.portnumber = port.portIdentifier.split('/')[2]
+        const slot = Number(port.portIdentifier.split('/')[1])
+
+        if(tmpSlots[slot]){
+          tmpSlots[slot].portStatus.push(port)
+          tmpSlots[slot].portCount++
+        }else {
+          tmpSlots[slot] = {
+            portStatus: [port],
+            portCount: 1
+          }
+        }
+      })
+    Object.keys(tmpSlots).forEach(key => {
+      portStatusData.slots.push(tmpSlots[key])
     })
+
     // handle front view data
     const tmpPortView = JSON.parse(JSON.stringify(portStatusData))
     tmpPortView.unitNumber = unitId

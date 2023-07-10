@@ -4,8 +4,9 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }          from '@acx-ui/components'
-import { SwitchPortStatus } from '@acx-ui/rc/utils'
+import { Tooltip }            from '@acx-ui/components'
+import { getInactiveTooltip } from '@acx-ui/rc/components'
+import { SwitchPortStatus }   from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -96,19 +97,38 @@ export function FrontViewPort (props:{
     </div>
   }
 
-  const onClick = () => {
+  const onPortClick = () => {
+    if(getInactiveTooltip(portData)) {
+      return
+    }
     setSelectedPorts([portData])
     setEditPortDrawerVisible(true)
   }
 
-  const portElement = <UI.PortWrapper onClick={onClick}>
+  const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
-    <UI.Port portColor={portColor}>
-      { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
-      { portIcon ==='Stack' && <UI.StackingPortIcon/> }
-      { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
-      { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
-    </UI.Port>
+    <div>
+      <UI.Port portColor={portColor} onClick={onPortClick}>
+        {
+          portIcon
+            ? (
+              <UI.BreadkoutPortContainer data-testid='RegularPort'>
+                { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
+                { portIcon ==='Stack' && <UI.StackingPortIcon/> }
+                { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
+                { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
+                { !getInactiveTooltip(portData) && <UI.BreakOutPortFlag portColor={portColor} />}
+              </UI.BreadkoutPortContainer>
+            )
+            : (
+              <UI.RegularPortContainer>
+                { !getInactiveTooltip(portData) && <UI.BreakOutPortFlag portColor={portColor} />}
+              </UI.RegularPortContainer>
+            )
+        }
+
+      </UI.Port>
+    </div>
     { labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel> }
   </UI.PortWrapper>
 
