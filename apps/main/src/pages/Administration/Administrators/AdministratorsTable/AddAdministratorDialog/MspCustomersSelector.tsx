@@ -55,9 +55,9 @@ const MspCustomerSelector = () => {
   const role = Form.useWatch('role', form)
 
   useEffect(() => {
-    (role === RolesEnum.DPSK_ADMIN || role === RolesEnum.GUEST_MANAGER)
-      ? form.setFieldValue('ecType', 'none')
-      : form.setFieldValue('ecType', 'all')
+    (role === RolesEnum.PRIME_ADMIN)
+      ? form.setFieldValue('ecType', 'all')
+      : form.setFieldValue('ecType', 'none')
   }, [role])
 
   const ecTypesList = getEcTypes().map((item) => ({
