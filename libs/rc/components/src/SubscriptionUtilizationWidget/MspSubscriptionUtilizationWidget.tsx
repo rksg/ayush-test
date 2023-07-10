@@ -5,6 +5,8 @@ import { EntitlementDeviceType }   from '@acx-ui/rc/utils'
 
 import { SpaceWrapper } from '../SpaceWrapper'
 
+import * as UI from './styledComponent'
+
 interface MspSubscriptionUtilizationWidgetProps {
   deviceType: EntitlementDeviceType;
   title: string;
@@ -68,9 +70,12 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
         </Typography.Text>}
     </SpaceWrapper>
     <div style={{ marginTop: '15px' }}>
-      <span style={{ marginLeft: '15px' }}>MSP EC ({used})</span>
-      <span style={{ marginLeft: '15px' }}>MSP Assigned ({assigned})</span>
-      <span style={{ marginLeft: '15px' }}>Pending ({total - used - assigned})</span>
+      <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[0] }} />
+      <span >MSP EC ({used})</span>
+      <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
+      <span >MSP Assigned ({assigned})</span>
+      <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
+      <span >Pending ({total - used - assigned})</span>
     </div>
 
   </>

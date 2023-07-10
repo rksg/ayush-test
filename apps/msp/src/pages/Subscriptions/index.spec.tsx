@@ -70,6 +70,35 @@ const summary =
     }
   ]
 
+const entitlementSummary =
+{
+  mspEntitlementSummaries:
+  [
+    {
+      courtesyQuantity: 5,
+      deviceType: 'MSP_WIFI',
+      effectiveDate: '2022-03-29T00:00:00.000+00:00',
+      expirationDate: '2023-03-29T23:59:59.000+00:00',
+      licenseType: 'MSP_WIFI',
+      quantity: 100,
+      remainingDays: 0,
+      remainingLicenses: 105,
+      trial: false
+    },
+    {
+      courtesyQuantity: 1,
+      deviceType: 'MSP_SWITCH',
+      effectiveDate: '2022-03-29T00:00:00.000+00:00',
+      expirationDate: '2023-03-29T23:59:59.000+00:00',
+      licenseType: 'MSP_ICX',
+      quantity: 10,
+      remainingDays: 0,
+      remainingLicenses: 11,
+      trial: false
+    }
+  ]
+}
+
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -81,6 +110,10 @@ describe('Subscriptions', () => {
       rest.get(
         MspUrlsInfo.getMspAssignmentSummary.url,
         (req, res, ctx) => res(ctx.json(summary))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspEntitlementSummary.url,
+        (req, res, ctx) => res(ctx.json(entitlementSummary))
       ),
       rest.get(
         MspUrlsInfo.refreshMspEntitlement.url.split('?').at(0) as Path,

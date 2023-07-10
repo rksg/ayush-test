@@ -230,7 +230,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         })
       }
     }),
-    mspEntitlementSummary: build.query<MspEntitlementSummary[], RequestPayload>({
+    mspEntitlementSummary: build.query<MspEntitlementSummary, RequestPayload>({
       query: ({ params }) => {
         const mspEntitlementSummaryReq =
           createHttpRequest(MspUrlsInfo.getMspEntitlementSummary, params)

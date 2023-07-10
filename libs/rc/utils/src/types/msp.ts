@@ -215,6 +215,10 @@ export interface MspEntitlement {
 }
 
 export interface MspEntitlementSummary {
+  mspEntitlementSummaries: MspEntitlementSummaries[]
+}
+
+export interface MspEntitlementSummaries {
   deviceType: EntitlementDeviceType;
   deviceSubType?: EntitlementDeviceSubType;
   derivedLicenseType: string;
