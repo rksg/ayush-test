@@ -33,7 +33,7 @@ export const defaultThreshold = (isMLISA? : string) : KpiThresholdType => {
     clientThroughput: kpiConfig.clientThroughput.histogram.initialThreshold,
     apCapacity: kpiConfig.apCapacity.histogram.initialThreshold,
     apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
-    apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
+    apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold as number,
     switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
     ...(isMLISA ? { clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold } : {})
   }

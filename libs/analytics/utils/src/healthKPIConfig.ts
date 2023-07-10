@@ -24,6 +24,25 @@ export const multipleBy1000 = (ms: number) => ms * 1000
 export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 
+export const apToSZLatencyConfig = (type: 'text'|'initialThreshold'|'splits'|'tooltip') => {
+  const isMLISA = get('IS_MLISA_SA')
+  switch(type){
+    case 'text': return !isMLISA ? defineMessage({ defaultMessage: 'AP-to-RUCKUS One Latency' }) : defineMessage({ defaultMessage: 'AP-to-SZ Latency' })
+    case 'initialThreshold': return !isMLISA ? 200 : 40
+    case 'splits': return !isMLISA ? [50, 100, 150, 200, 250, 300, 350, 400] : [5, 10, 20, 40, 60, 100, 200, 500]
+    case 'tooltip': return !isMLISA ?
+      defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      : defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+  }
+}
+export const apServiceUptimeConfig = (type: 'text'|'tooltip') => {
+  const isMLISA = get('IS_MLISA_SA')
+  switch(type){
+    case 'text': return !isMLISA ? defineMessage({ defaultMessage: 'AP-RUCKUS One Connection Uptime' }) : defineMessage({ defaultMessage: 'AP-Controller Connection Uptime' })
+    case 'tooltip': return !isMLISA ? defineMessage({ defaultMessage: 'AP-RUCKUS One connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-RUCKUS One connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      :defineMessage({ defaultMessage: 'AP-Controller connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-Controller connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+  }
+}
 export const kpiConfig = {
   connectionSuccess: {
     text: defineMessage({ defaultMessage: 'Connection Success' }),
@@ -241,7 +260,7 @@ export const kpiConfig = {
     }
   },
   apServiceUptime: {
-    text: !get('IS_MLISA_SA') ? defineMessage({ defaultMessage: 'AP-RUCKUS One Connection Uptime' }) : defineMessage({ defaultMessage: 'AP-Controller Connection Uptime' }),
+    text: apServiceUptimeConfig('text'),
     timeseries: {
       apiMetric: 'apUptimeCountAndApCount',
       minGranularity: 'PT3M'
@@ -264,22 +283,21 @@ export const kpiConfig = {
       ],
       thresholdFormatter: formatter('percentFormat'),
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: !get('IS_MLISA_SA') ? defineMessage({ defaultMessage: 'AP-RUCKUS One connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-RUCKUS One connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
-        :defineMessage({ defaultMessage: 'AP-Controller connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-Controller connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: apServiceUptimeConfig('tooltip')
       //thresholdFormat: x => formatter('percentFormat')(x)
     }
   },
   apToSZLatency: {
-    text: !get('IS_MLISA_SA') ? defineMessage({ defaultMessage: 'AP-to-RUCKUS One Latency' }) : defineMessage({ defaultMessage: 'AP-to-SZ Latency' }),
+    text: apToSZLatencyConfig('text'),
     timeseries: {
       apiMetric: 'apSzLatencyCountAndAPCount',
       minGranularity: 'PT3M'
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: !get('IS_MLISA_SA') ? 200 : 40,
+      initialThreshold: apToSZLatencyConfig('initialThreshold'),
       apiMetric: 'apSzLatency',
-      splits: !get('IS_MLISA_SA') ? [50, 100, 150, 200, 250, 300, 350, 400] : [5, 10, 20, 40, 60, 100, 200, 500],
+      splits: apToSZLatencyConfig('splits'),
       xUnit: defineMessage({ defaultMessage: 'ms' }),
       yUnit: 'APs',
       shortXFormat: (x : number) => x,
@@ -293,9 +311,7 @@ export const kpiConfig = {
       ],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: !get('IS_MLISA_SA') ?
-        defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
-        : defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: apToSZLatencyConfig('tooltip')
     }
   },
   clusterLatency: {

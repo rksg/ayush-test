@@ -47,9 +47,9 @@ import {
   compareVersions,
   getApVersion,
   getApNextScheduleTpl,
-  getNextScheduleTplTooltip,
-  isNextScheduleTooltipDisabled,
-  toUserDate
+  getNextSchedulesTooltip,
+  toUserDate,
+  getApSchedules
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
@@ -128,13 +128,17 @@ function useColumns (
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        return (!isNextScheduleTooltipDisabled(row)
-          ? getApNextScheduleTpl(intl, row)
-          // eslint-disable-next-line max-len
-          : <Tooltip title={<UI.ScheduleTooltipText>{getNextScheduleTplTooltip(intl, row)}</UI.ScheduleTooltipText>} placement='bottom'>
-            <UI.ScheduleText>{getApNextScheduleTpl(intl, row)}</UI.ScheduleText>
+        const schedules = getApSchedules(row)
+
+        return schedules.length === 0
+          ? getApNextScheduleTpl(row)
+          : <Tooltip
+            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(row)}</UI.ScheduleTooltipText>}
+            placement='bottom'
+            overlayStyle={{ minWidth: '280px' }}
+          >
+            <UI.ScheduleText>{getApNextScheduleTpl(row)}</UI.ScheduleText>
           </Tooltip>
-        )
       }
     }
   ]
@@ -149,13 +153,12 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type VenueTableProps = {
   tableQuery: TableQuery<FirmwareVenue, RequestPayload<unknown>, unknown>,
-  rowSelection?: TableProps<FirmwareVenue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
 export const VenueFirmwareTable = (
-  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
+  { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params })
@@ -171,6 +174,7 @@ export const VenueFirmwareTable = (
   const [eolApFirmwareList, setEolApFirmwareList] = useState<EolApFirmware[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
   const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
@@ -199,10 +203,8 @@ export const VenueFirmwareTable = (
 
   const handleUpdateModalSubmit = async (data: UpdateNowRequest[]) => {
     try {
-      updateNow({
-        params: { ...params },
-        payload: data
-      }).unwrap()
+      await updateNow({ params: { ...params }, payload: data }).unwrap()
+      clearSelection()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -224,17 +226,6 @@ export const VenueFirmwareTable = (
 
   const handleRevertModalCancel = () => {
     setRevertModelVisible(false)
-  }
-
-  const handleRevertModalSubmit = (data: UpdateNowRequest[]) => {
-    try {
-      updateNow({
-        params: { ...params },
-        payload: data
-      }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
   }
 
   const processEolApFirmwares = (selectedRows: FirmwareVenue[]) => {
@@ -513,6 +504,9 @@ export const VenueFirmwareTable = (
     }
   }]
 
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
 
   return (
     <Loader states={[
@@ -527,7 +521,7 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={rowSelection}
+        rowSelection={{ type: 'checkbox', selectedRowKeys }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
@@ -553,7 +547,7 @@ export const VenueFirmwareTable = (
         data={venues}
         availableVersions={revertVersions}
         onCancel={handleRevertModalCancel}
-        onSubmit={handleRevertModalSubmit}
+        onSubmit={handleUpdateModalSubmit}
       />
       <PreferencesDialog
         visible={modelVisible}
@@ -589,7 +583,6 @@ export function VenueFirmwareList () {
 
   return (
     <VenueFirmwareTable tableQuery={tableQuery}
-      rowSelection={{ type: 'checkbox' }}
       searchable={true}
       filterables={{
         version: versionFilterOptions,

@@ -41,14 +41,22 @@ const basicData = [
 
 export function NoSelectedBarTable () {
   return (<>
-    No Selected Bar Table
+    <p>No Selected Bar Table</p>
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      rowSelection={{
-        type: 'radio',
-        defaultSelectedRowKeys: ['1']
-      }}
+      rowSelection={{ type: 'radio' }}
+      tableAlertRender={false}
+    />
+    <br />
+    <p>No Selected Bar Table with filters</p>
+    <Table
+      columns={[
+        { ...basicColumns[0], searchable: true },
+        ...basicColumns.slice(1, 3)
+      ]}
+      dataSource={basicData}
+      rowSelection={{ type: 'radio' }}
       tableAlertRender={false}
     />
   </>)
