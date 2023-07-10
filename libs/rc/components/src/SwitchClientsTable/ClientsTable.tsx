@@ -2,9 +2,12 @@ import { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Loader, ColumnType } from '@acx-ui/components'
-import { useGetSwitchClientListQuery }           from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader, ColumnType } from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { useGetSwitchClientListQuery }                    from '@acx-ui/rc/services'
 import {
+  getOsTypeIcon,
+  getDeviceTypeIcon,
   SwitchClient,
   usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
@@ -14,6 +17,7 @@ import {
 import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 
 import { SwitchClientContext } from './context'
+import * as UI                 from './styledComponents'
 
 export const defaultSwitchClientPayload = {
   searchString: '',
@@ -21,7 +25,8 @@ export const defaultSwitchClientPayload = {
     'venueName', 'switchName', 'clientVlan', 'switchPort'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
     'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
-    'switchName', 'venueName' ,'cog','id','switchPortFormatted'],
+    'switchName', 'venueName' ,'cog','id','switchPortFormatted',
+    'dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
@@ -35,6 +40,7 @@ export function ClientsTable (props: {
   const params = useParams()
   const { searchable, filterableKeys } = props
   const { setSwitchCount } = useContext(SwitchClientContext)
+  const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
@@ -57,6 +63,7 @@ export function ClientsTable (props: {
   }, [tableQuery.data])
 
   function getCols (intl: ReturnType<typeof useIntl>) {
+    const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -67,13 +74,34 @@ export function ClientsTable (props: {
       render: (data, row) => {
         return <TenantLink to={`users/switch/clients/${row.id}`}>{data || '--'}</TenantLink>
       }
-    },
-    {
+    }, {
+      key: 'dhcpClientOsVendorName',
+      title: intl.$t({ defaultMessage: 'OS' }),
+      dataIndex: 'dhcpClientOsVendorName',
+      align: 'center',
+      sorter: true,
+      render: (data) => {
+        return <UI.IconContainer>
+          <Tooltip title={data}>
+            { getOsTypeIcon(data as string) }
+          </Tooltip>
+        </UI.IconContainer>
+      }
+    }, {
       key: 'clientMac',
       title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'clientMac',
       sorter: true,
+      disable: true,
       searchable: searchable,
+      render: (data) => {
+        return data || '--'
+      }
+    }, {
+      key: 'clientIpv4Addr',
+      title: intl.$t({ defaultMessage: 'IP Address' }),
+      dataIndex: 'clientIpv4Addr',
+      sorter: true,
       render: (data) => {
         return data || '--'
       }
@@ -85,22 +113,6 @@ export function ClientsTable (props: {
       searchable: searchable,
       render: (data) => {
         return data || '--'
-      }
-    }, {
-      key: 'clientType',
-      title: intl.$t({ defaultMessage: 'Device Type' }),
-      dataIndex: 'deviceType',
-      sorter: true,
-      searchable: searchable,
-      render: (data, row) => {
-        switch(row.clientType){
-          case SWITCH_CLIENT_TYPE.AP:
-            return 'AP'
-          case SWITCH_CLIENT_TYPE.ROUTER:
-            return 'Router'
-          default:
-            return row.clientType || '--'
-        }
       }
     },
     ...(params.switchId || params.venueId ? [] : [{
@@ -150,8 +162,48 @@ export function ClientsTable (props: {
         return row.vlanName === 'DEFAULT-VLAN'
           ? `${data} (${intl.$t({ defaultMessage: 'Default VLAN' })})` : (data ?? '--')
       }
+    }, {
+      key: 'clientType',
+      title: intl.$t({ defaultMessage: 'Device Type' }),
+      dataIndex: 'deviceType',
+      sorter: true,
+      align: 'center',
+      searchable: searchable,
+      render: (data, row) => {
+        const type = row?.dhcpClientDeviceTypeName || row?.clientType
+        const convertType = (type: string) => {
+          switch(type){
+            case SWITCH_CLIENT_TYPE.AP:
+              return 'AP'
+            case SWITCH_CLIENT_TYPE.ROUTER:
+              return 'Router'
+            default:
+              return type || '--'
+          }
+        }
+        const deviceType = convertType(type)
+
+        if (isDhcpClientsEnabled) {
+          return <UI.IconContainer>
+            <Tooltip title={deviceType}>{ getDeviceTypeIcon(deviceType as string) }</Tooltip>
+          </UI.IconContainer>
+        } else {
+          return deviceType
+        }
+      }
+    }, {
+      key: 'dhcpClientModelName',
+      title: intl.$t({ defaultMessage: 'Model Name' }),
+      dataIndex: 'dhcpClientModelName',
+      sorter: true,
+      render: (data) => {
+        return data || '--'
+      }
     }]
-    return columns
+
+    return columns.filter(({ key }) => {
+      return isDhcpClientsEnabled ? key : !dhcpClientsColumns.includes(key)
+    })
   }
 
   return (

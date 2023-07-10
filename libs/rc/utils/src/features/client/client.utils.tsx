@@ -6,6 +6,7 @@ import {
   Amazon,
   Android,
   Apple,
+  ApOutlined,
   Blackberry,
   Chrome,
   GamingOutlined,
@@ -17,7 +18,11 @@ import {
   Linux,
   Microsoft,
   MobilePhoneOutlined,
+  MonitoringDevicesOutlined,
   PrinterOutlined,
+  PoSDeviceOutlined,
+  RouterOutlined,
+  StorageDeviceOutlined,
   TabletOutlined,
   Ubuntu,
   VoIpOutlined,
@@ -39,7 +44,16 @@ export const getDeviceTypeIcon = (deviceType: string) => {
     'wds': <WdsOutlined />,
     'iot device': <IotOutlined />,
     'home av equipment': <HomeAvOutlined />,
-    'wds device': <WdsOutlined />
+    'wds device': <WdsOutlined />,
+    'ap': <ApOutlined />,
+    'router': <RouterOutlined />,
+    'storage': <StorageDeviceOutlined />,
+    'storage device': <StorageDeviceOutlined />,
+    'monitoring': <MonitoringDevicesOutlined />,
+    'monitoring device': <MonitoringDevicesOutlined />,
+    'pos': <PoSDeviceOutlined />,
+    'point of sale': <PoSDeviceOutlined />,
+    'point of sale device': <PoSDeviceOutlined />
   }
   return deviceIconMap[type as Type] || defaultIcon
 }

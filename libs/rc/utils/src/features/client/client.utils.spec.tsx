@@ -64,6 +64,13 @@ describe('Test getDeviceTypeIcon function', () => {
       { getDeviceTypeIcon('iot device') }
       { getDeviceTypeIcon('home av equipment') }
       { getDeviceTypeIcon('wds device') }
+      { getDeviceTypeIcon('ap') }
+      { getDeviceTypeIcon('router') }
+      { getDeviceTypeIcon('storage') }
+      { getDeviceTypeIcon('monitoring') }
+      { getDeviceTypeIcon('pos') }
+      { getDeviceTypeIcon('other') }
+      { getDeviceTypeIcon('') }
     </>)
     expect(asFragment()).toMatchSnapshot()
   })

@@ -1,7 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { clientApi }                      from '@acx-ui/rc/services'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { clientApi, switchApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
@@ -95,7 +96,9 @@ const apList = {
 describe('SwitchClientsTable', () => {
   beforeEach(() => {
     store.dispatch(clientApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
+    HTMLAnchorElement.prototype.click = jest.fn()
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
         res(ctx.json(clientList))
@@ -164,6 +167,10 @@ describe('SwitchClientsTable', () => {
 
     const searchInput = await screen.findByRole('textbox')
     fireEvent.change(searchInput, { target: { value: '34:' } })
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('img', { name: 'loader' })
+    )
     await screen.findByText('34:20:E3:2C:B5:B0')
   })
 
@@ -303,5 +310,93 @@ describe('SwitchClientsTable', () => {
     await waitForElementToBeRemoved(() =>
       screen.queryByRole('img', { name: 'loader' })
     )
+  })
+
+  it('should render correctly when feature flag SWITCH_DHCP_CLIENTS is on', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switch-id',
+      serialNumber: 'serialNumber'
+    }
+
+    const clientListWithEmpty = { ...clientList,
+      data: [
+        {
+          ...clientList.data?.[0],
+          clientIpv4Addr: '1.1.1.1'
+        }
+      ]
+    }
+
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
+        res(ctx.json(clientListWithEmpty))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <SwitchClientsTable />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/clients'
+        }
+      }
+    )
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('img', { name: 'loader' })
+    )
+    await screen.findByText('34:20:E3:2C:B5:B0')
+    await screen.findByText('1.1.1.1')
+
+    expect(await screen.findByTestId('GenericOs')).toBeVisible()
+    expect(await screen.findByTestId('GenericDeviceOutlined')).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should render switch client detail page correctly when feature flag SWITCH_DHCP_CLIENTS is on', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switch-id',
+      serialNumber: 'serialNumber',
+      clientId: 'client-id'
+    }
+
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getSwitchClientDetail.url, (_, res, ctx) =>
+        res(ctx.json({
+          ...clientDetail,
+          dhcpClientOsVendorName: 'windows'
+        }))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <SwitchClientDetails />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/switch/clients/:clientId'
+        }
+      }
+    )
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('img', { name: 'loader' })
+    )
+    await screen.findByRole('heading', { level: 1, name: 'RuckusAP' })
+    expect(await screen.findByTestId('Microsoft')).toBeVisible()
+
+    const exportCSVButton = await screen.findByRole('button', { name: 'Download Information' })
+    await userEvent.click(exportCSVButton)
   })
 })
