@@ -123,7 +123,7 @@ const config: LayoutProps['menuConfig'] = [
           },
           {
             uri: '/reports/wlans',
-            label: 'WLAN Report',
+            label: 'WLANs Report',
             isActiveCheck: IsActiveCheck.IGNORE_ACTIVE_CHECK
           },
           {
