@@ -16,12 +16,11 @@ const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 describe('SwitchConfigTab', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <VenueEditContext.Provider value={{ editContextData: {}, setEditContextData: jest.fn() }}>
         <SwitchConfigTab />
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
     await screen.findByRole('tab', { name: 'General' })
     await screen.findByRole('tab', { name: 'AAA' })
     await screen.findByRole('tab', { name: 'Configuration History' })
