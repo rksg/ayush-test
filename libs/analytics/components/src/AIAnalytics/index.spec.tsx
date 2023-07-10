@@ -35,7 +35,10 @@ jest.mock('../Recommendations', () => ({
 
 jest.mock('../ConfigChange', () => ({
   ...jest.requireActual('../ConfigChange'),
-  ConfigChange: () => <div data-testid='ConfigChange' />
+  useConfigChange: () => ({
+    headerExtra: [<div data-testid='HeaderExtra' />],
+    component: <div data-testid='ConfigChange' />
+  })
 }))
 
 describe('NetworkAssurance', () => {

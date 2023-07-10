@@ -1,19 +1,57 @@
 import { useState } from 'react'
 
-import { GridRow, GridCol } from '@acx-ui/components'
+import { Button, Menu, MenuProps, Space } from 'antd'
+import { ItemType }                       from 'antd/lib/menu/hooks/useItems'
+import { useIntl }                        from 'react-intl'
+
+import { GridRow, GridCol, Dropdown, CaretDownSolidIcon } from '@acx-ui/components'
+import { DateRange, dateRangeMap, defaultRanges }         from '@acx-ui/utils'
+
+import { NetworkFilter } from '../NetworkFilter'
 
 import { Chart } from './Chart'
 import { KPIs }  from './KPI'
 import { Table } from './Table'
 
-export function ConfigChange () {
+export function useConfigChange () {
+  const { $t } = useIntl()
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([])
+  const [dateRange, setDateRange] = useState(DateRange.last7Days)
 
-  return <GridRow>
+  const timeRanges = defaultRanges()[dateRange]
+  const handleMenuClick: MenuProps['onClick'] = (e) => setDateRange(e.key as DateRange)
+
+  const headerExtra = [
+    <NetworkFilter
+      key='network-filter'
+      shouldQuerySwitch={true}
+      withIncidents={false}
+    />,
+    <Dropdown
+      key='date-dropdown'
+      overlay={<Menu
+        onClick={handleMenuClick}
+        items={[DateRange.last7Days, DateRange.last30Days
+        ].map((key)=>({ key, label: $t(dateRangeMap[key]) })) as ItemType[]}
+      />}>{() =>
+        <Button>
+          <Space>
+            {dateRange}
+            <CaretDownSolidIcon />
+          </Space>
+        </Button>
+      }</Dropdown>
+  ]
+
+  const component = <GridRow>
     <GridCol col={{ span: 24 }} style={{ height: '170px' }}>
-      <Chart onBrushPositionsChange={setKpiTimeRanges}/>
+      <Chart timeRanges={timeRanges!} onBrushPositionsChange={setKpiTimeRanges}/>
     </GridCol>
     <GridCol col={{ span: 8 }}><KPIs kpiTimeRanges={kpiTimeRanges}/></GridCol>
-    <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}><Table /></GridCol>
+    <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}>
+      <Table timeRanges={timeRanges!}/>
+    </GridCol>
   </GridRow>
+
+  return { headerExtra, component }
 }

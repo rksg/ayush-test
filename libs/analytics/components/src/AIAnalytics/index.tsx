@@ -6,7 +6,7 @@ import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }             from '@acx-ui/user'
 
-import { ConfigChange }             from '../ConfigChange'
+import { useConfigChange }          from '../ConfigChange'
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
 import { RecommendationTabContent } from '../Recommendations'
@@ -36,8 +36,7 @@ const useTabs = () : Tab[] => {
   const configChangeTab = {
     key: AIAnalyticsTabEnum.CONFIG_CHANGE,
     title: $t({ defaultMessage: 'Config Change' }),
-    component: <ConfigChange/>,
-    headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: false })
+    ...useConfigChange()
   }
   const recommendationTab = [{
     key: AIAnalyticsTabEnum.RECOMMENDATIONS,
