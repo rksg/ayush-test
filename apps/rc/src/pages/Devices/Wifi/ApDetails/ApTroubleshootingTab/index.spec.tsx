@@ -20,11 +20,11 @@ jest.mock('react-router-dom', () => ({
 
 describe('ApSettingsTab', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <ApTroubleshootingTab />
       </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Traceroute')).toBeInTheDocument()
   })
 
   it('should handle tab changes', async () => {
