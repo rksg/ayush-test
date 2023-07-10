@@ -67,7 +67,8 @@ function useColumns (
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       key: 'propertyId',
