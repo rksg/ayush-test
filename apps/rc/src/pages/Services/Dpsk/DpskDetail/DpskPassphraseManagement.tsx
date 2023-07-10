@@ -146,7 +146,7 @@ export default function DpskPassphraseManagement () {
       sorter: true
     },
     {
-      key: 'expirationDate',
+      key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'expirationDate',
       sorter: false,
@@ -170,27 +170,26 @@ export default function DpskPassphraseManagement () {
         return transformAdvancedDpskExpirationText(intl, { expirationType: null })
       }
     },
-    {
-      key: 'revocationReason',
-      title: $t({ defaultMessage: 'Revocation Reason' }),
-      dataIndex: 'revocationReason',
-      show: isCloudpathEnabled,
-      sorter: true
-    },
-    {
-      key: 'email',
-      title: $t({ defaultMessage: 'Contact Email Address' }),
-      dataIndex: 'email',
-      show: isCloudpathEnabled,
-      sorter: true
-    },
-    {
-      key: 'phoneNumber',
-      title: $t({ defaultMessage: 'Contact Phone Number' }),
-      dataIndex: 'phoneNumber',
-      show: isCloudpathEnabled,
-      sorter: true
-    }
+    ...(isCloudpathEnabled
+      ? [{
+        key: 'revocationReason',
+        title: $t({ defaultMessage: 'Revocation Reason' }),
+        dataIndex: 'revocationReason',
+        sorter: true
+      },
+      {
+        key: 'email',
+        title: $t({ defaultMessage: 'Contact Email Address' }),
+        dataIndex: 'email',
+        sorter: true
+      },
+      {
+        key: 'phoneNumber',
+        title: $t({ defaultMessage: 'Contact Phone Number' }),
+        dataIndex: 'phoneNumber',
+        sorter: true
+      }]
+      : [])
   ]
 
   const doDelete = (selectedRows: NewDpskPassphrase[], callback: () => void) => {
