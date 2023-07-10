@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+import React from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -14,7 +16,7 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  mockMacRegistrationPoolList
+  mockMacRegistrationPoolList, mockUpdatedMacRegistrationPoolList
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -112,7 +114,7 @@ describe('NetworkForm', () => {
 
     mockServer.use(
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
-        .replace('?size=:pageSize&page=:page&sort=:sort', ''),
+        .split('?')[0],
       (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
     )
 
@@ -142,7 +144,29 @@ describe('NetworkForm', () => {
       name: /cancel/i
     })
 
+    await userEvent.click(await screen.findByRole('button', {
+      name: /add/i
+    }))
+
+    await screen.findByText(/add mac registration list/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /name/i
+    }), 'macReg6')
+
+    await userEvent.click(await screen.findByRole('button', {
+      name: /apply/i
+    }))
+
+    mockServer.use(
+      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
+        .split('?')[0],
+      (_, res, ctx) => res(ctx.json(mockUpdatedMacRegistrationPoolList)))
+    )
+
     await userEvent.click(buttons[1])
+
+    expect(await screen.findByText(/add mac registration list/i)).not.toBeVisible()
   })
 
 
