@@ -1,3 +1,4 @@
+import { PageNotFound }                                                                                        from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
 import { RogueAPDetectionDetailView, RogueAPDetectionForm, RogueAPDetectionTable, ConnectionMeteringFormMode } from '@acx-ui/rc/components'
 import {
@@ -144,6 +145,7 @@ export default function RcRoutes () {
 function DeviceRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='devices' element={<TenantNavigate replace to='/devices/wifi' />} />
       <Route path='devices/wifi' element={<AccessPointList tab={WifiTabsEnum.LIST} />} />
       <Route
@@ -208,10 +210,11 @@ function DeviceRoutes () {
 function NetworkRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='networks' element={<TenantNavigate replace to='/networks/wireless' />} />
       <Route path='networks/wireless' element={<NetworksList tab={NetworkTabsEnum.LIST} />} />
       <Route path='networks/wireless/reports/wlans'
-        element={<NetworksList tab={NetworkTabsEnum.WLAN_REPORT} />} />
+        element={<NetworksList tab={NetworkTabsEnum.WLANS_REPORT} />} />
       <Route path='networks/wireless/reports/applications'
         element={<NetworksList tab={NetworkTabsEnum.APPLICATIONS_REPORT} />} />
       <Route path='networks/wireless/reports/wireless'
@@ -256,6 +259,7 @@ function NetworkRoutes () {
 function ServiceRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='services'
         element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
       />
@@ -455,6 +459,7 @@ function PolicyRoutes () {
 
   return rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
       <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
@@ -712,6 +717,7 @@ function UserRoutes () {
 
   return rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='users/guestsManager' element={<GuestManagerPage />} />
       <Route path='users/dpskAdmin' element={<DpskTable />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
@@ -748,6 +754,7 @@ function UserRoutes () {
 function TimelineRoutes () {
   return rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
       <Route path='timeline/:activeTab' element={<Timeline />} />
     </Route>

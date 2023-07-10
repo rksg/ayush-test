@@ -97,4 +97,15 @@ describe('Edge Detail Services Tab', () => {
     within(removeDialog).getByText('Remove "2 Services"?')
     await user.click(within(removeDialog).getByRole('button', { name: 'Remove' }))
   })
+
+  it('should show "NA" in [Service Version] field correctly', async () => {
+    render(
+      <Provider>
+        <EdgeServices />
+      </Provider>, {
+        route: { params }
+      })
+    const row1 = await screen.findByRole('row', { name: /DHCP-1/i })
+    expect(await within(row1).findByText('NA')).toBeValid()
+  })
 })

@@ -8,7 +8,8 @@ import { Provider, store, dataApiURL }                                      from
 import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, act } from '@acx-ui/test-utils'
 import { DateRange }                                                        from '@acx-ui/utils'
 
-import { DrilldownSelection } from '..'
+
+import { DrilldownSelection } from '../HealthDrillDown/config'
 
 import { fakeSummary, fakeEmptySummary } from './__tests__/fixtures'
 import { api }                           from './services'
@@ -43,11 +44,11 @@ describe('box', () => {
 const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
-  path: [{ type: 'network', name: 'Network' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filter: {}
 }
 
-describe('Incidents Page', () => {
+describe('Health Page', () => {
   beforeEach(()=>{
     store.dispatch(api.util.resetApiState())
   })

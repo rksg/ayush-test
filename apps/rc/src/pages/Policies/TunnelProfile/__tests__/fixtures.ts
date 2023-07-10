@@ -21,6 +21,33 @@ export const mockedTunnelProfileViewData = {
       forceFragmentation: false,
       networkSegmentationIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2']
+    },
+    {
+      id: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      name: 'Default',
+      tags: ['tag2'],
+      mtuType: 'AUTO',
+      mtuSize: 0,
+      forceFragmentation: false,
+      networkSegmentationIds: ['nsg1', 'nsg2'],
+      networkIds: ['network1', 'network2']
+    }
+  ]
+}
+
+export const mockedDefaultTunnelProfileViewData = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      name: 'Default',
+      tags: ['tag2'],
+      mtuType: 'AUTO',
+      mtuSize: 0,
+      forceFragmentation: false,
+      networkSegmentationIds: ['nsg1', 'nsg2'],
+      networkIds: ['network1', 'network2']
     }
   ]
 }

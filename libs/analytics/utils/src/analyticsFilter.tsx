@@ -2,21 +2,18 @@ import { useMemo } from 'react'
 
 import { useLocation }  from '@acx-ui/react-router-dom'
 import {
-  generateVenueFilter,
   DateFilter,
-  pathFilter,
-  ssidFilter,
-  NetworkPath,
   NodeType,
+  NodeFilter,
+  NodesFilter,
+  SSIDFilter,
+  NetworkPath,
   useDateFilter,
   useEncodedParameter
 } from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
-
-export type AnalyticsFilter = DateFilter & { path: NetworkPath }
-& { filter? : pathFilter & ssidFilter } & { mac?: string }
-
+export type AnalyticsFilter = DateFilter & { filter : NodesFilter & SSIDFilter } & { mac?: string }
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
@@ -34,44 +31,70 @@ export function useAnalyticsFilter () {
   }
 
   return useMemo(() => {
+    const { path, raw: rawPath } = read() || { path: [], raw: [] }
+    const isSwitchPath = path.some(({ type }: { type: NodeType }) => type === 'switchGroup')
     const isHealthPage = pathname.includes('/analytics/health')
-    const getNetworkFilter = () => {
-      let networkFilter = read() || { path: defaultNetworkPath, raw: [] }
-      const { path: currentPath, raw: rawVal } = networkFilter
-      let path, filter, raw
-      if (isHealthPage) {
-        if (currentPath.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
-          path = defaultNetworkPath
-          raw = []
-        } else {
-          path = currentPath
-          raw = rawVal
-        }
-      } else { // incident page, ...
-        if (currentPath.length === 2) { // venues
-          filter = generateVenueFilter([currentPath[1].name])
-          path = defaultNetworkPath
-        } else {
-          path = currentPath
-        }
-        raw = rawVal
-      }
-      return { networkFilter: { filter, path }, raw }
-    }
-
-    const setNetworkPath = (path: NetworkPath, raw: object) => {
-      write({ path, raw })
-    }
-
-    const { networkFilter, raw } = getNetworkFilter()
+    const { filter, raw } = (isHealthPage && isSwitchPath)
+      ? { filter: {}, raw: [] }
+      : { filter: pathToFilter(path), raw: rawPath }
     return {
-      filters: {
-        ...dateFilter,
-        ...networkFilter
-      } as AnalyticsFilter,
-      setNetworkPath,
-      getNetworkFilter,
-      raw
+      raw,
+      filters: { ...dateFilter, filter } as AnalyticsFilter,
+      setNetworkPath: (path: NetworkPath, raw: object) => write({ raw, path })
     }
   }, [dateFilter, pathname, read, write])
+}
+
+export const getFilterPayload = (
+  { filter }: { filter: NodesFilter & SSIDFilter }
+): { path: NetworkPath, filter: NodesFilter & SSIDFilter } => {
+  return {
+    path: defaultNetworkPath, // to avoid error from legacy api
+    filter
+  }
+}
+
+export const pathToFilter = (networkPath: NetworkPath): NodesFilter => {
+  const path = networkPath.filter(({ type }: { type: NodeType }) => type !== 'network')
+  switch (path.length) {
+    case 0:
+      return {}
+    case 1: // at venue level we want to see both its switches and aps
+      const { type, name } = path[0]
+      if (['zone', 'switchGroup'].includes(type)) {
+        return {
+          networkNodes: [[{ type: 'zone', name }]],
+          switchNodes: [[{ type: 'switchGroup', name }]]
+        }
+      }
+  }
+  const filter = path.reduce((filter, { type, name }) => {
+    if (type === 'zone' || type === 'switchGroup') {
+      filter.push({ type, name })
+    } else if (type === 'AP') {
+      filter.push({ type: 'apMac', list: [name] })
+    } else if (type === 'switch') {
+      filter.push({ type, list: [name] })
+    }
+    return filter
+  }, [] as NodeFilter)
+  return { // at ap/switch level we want to see only data for that device, so we set the other path to filter everything out
+    networkNodes: [filter],
+    switchNodes: [filter]
+  }
+}
+
+export const getSelectedNodePath = (filter: NodesFilter): NetworkPath => {
+  const { networkNodes, switchNodes } = filter
+  return (networkNodes?.[0] || switchNodes?.[0] || []).reduce((path, node) => {
+    const { type } = node
+    if (type === 'zone' || type === 'switchGroup') {
+      path.push({ type, name: node.name })
+    } else if (type === 'apMac') {
+      path.push({ type: 'AP', name: node.list[0] })
+    } else if (type === 'switch') {
+      path.push({ type, name: node.list[0] })
+    }
+    return path
+  }, defaultNetworkPath.slice())
 }
