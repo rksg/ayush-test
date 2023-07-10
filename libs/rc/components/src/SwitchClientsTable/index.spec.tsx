@@ -323,7 +323,8 @@ describe('SwitchClientsTable', () => {
       data: [
         {
           ...clientList.data?.[0],
-          clientIpv4Addr: '1.1.1.1'
+          clientIpv4Addr: '1.1.1.1',
+          clientType: 'OTHER'
         }
       ]
     }
