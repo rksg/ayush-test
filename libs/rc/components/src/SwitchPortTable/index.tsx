@@ -274,7 +274,6 @@ export function SwitchPortTable ({ isVenueLevel }: {
       : item
   )
 
-  // TODO
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
