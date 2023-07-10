@@ -16,9 +16,7 @@ import {
   apChannelSelectionMethodsOptions,
   apChannelSelectionMethods6GOptions
 } from './RadioSettingsContents'
-import { RadioFormSelect } from './styledComponents'
-import * as UI             from './styledComponents'
-
+import { Label, FieldLabel, FormItemNoLabel, RadioFormSelect } from './styledComponents'
 
 const { useWatch } = Form
 
@@ -186,7 +184,7 @@ export function RadioSettingsForm (props:{
         </Form.Item>
 
         {multicastRateLimitFlag && <>
-          <UI.FieldLabel width='175px'>
+          <FieldLabel width='175px'>
             {$t({ defaultMessage: 'Multicast Rate Limiting' })}
             <Form.Item
               name='enableMulticastRateLimiting'
@@ -207,10 +205,10 @@ export function RadioSettingsForm (props:{
                   }} />
               ) : <span>ON</span>}
             </Form.Item>
-          </UI.FieldLabel>
+          </FieldLabel>
           {enableMulticastRateLimiting && <>
             <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
-              <UI.FormItemNoLabel
+              <FormItemNoLabel
                 name='enableUploadLimit'
                 valuePropName='checked'
                 initialValue={false}
@@ -225,10 +223,10 @@ export function RadioSettingsForm (props:{
                     }}
                     children={$t({ defaultMessage: 'Upload Limit' })}
                     disabled={disabled || isUseVenueSettings}/>}
-              </UI.FormItemNoLabel>
+              </FormItemNoLabel>
               {
                 enableUploadLimit ?
-                  <UI.FormItemNoLabel
+                  <FormItemNoLabel
                     name={['radioSettings', 'uploadLimit']}
                     children={
                       <Slider
@@ -250,7 +248,7 @@ export function RadioSettingsForm (props:{
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
-              <UI.FormItemNoLabel
+              <FormItemNoLabel
                 name='enableDownloadLimit'
                 valuePropName='checked'
                 initialValue={false}
@@ -267,14 +265,14 @@ export function RadioSettingsForm (props:{
               />
               {
                 enableDownloadLimit ?
-                  <UI.FormItemNoLabel
+                  <FormItemNoLabel
                     name={['radioSettings', 'downloadLimit']}
                     children={
                       <Slider
                         disabled={disabled || isUseVenueSettings}
                         tooltipVisible={false}
                         style={{ width: '245px' }}
-                        defaultValue={20}
+                        defaultValue={getDownloadMaxValue()}
                         min={1}
                         max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
                         marks={{
@@ -297,10 +295,10 @@ export function RadioSettingsForm (props:{
 function Unlimited () {
   const { $t } = useIntl()
   return (
-    <UI.Label
+    <Label
       style={{ lineHeight: '50px' }}>
       {$t({ defaultMessage: 'Unlimited' })}
-    </UI.Label>
+    </Label>
   )
 }
 

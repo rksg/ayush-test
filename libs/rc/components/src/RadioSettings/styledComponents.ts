@@ -14,7 +14,7 @@ export const RadioFormSelect = styled(Select)`
 export const FieldLabel = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  line-height: 32px;
+  line-height: 34px;
   grid-template-columns: ${props => props.width} 1fr;
 `
 
