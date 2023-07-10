@@ -18,7 +18,6 @@ import {
   Linux,
   Microsoft,
   MobilePhoneOutlined,
-  MonitoringDevicesOutlined,
   PrinterOutlined,
   PoSDeviceOutlined,
   RouterOutlined,
@@ -49,8 +48,6 @@ export const getDeviceTypeIcon = (deviceType: string) => {
     'router': <RouterOutlined />,
     'storage': <StorageDeviceOutlined />,
     'storage device': <StorageDeviceOutlined />,
-    'monitoring': <MonitoringDevicesOutlined />,
-    'monitoring device': <MonitoringDevicesOutlined />,
     'pos': <PoSDeviceOutlined />,
     'point of sale': <PoSDeviceOutlined />,
     'point of sale device': <PoSDeviceOutlined />

@@ -67,7 +67,6 @@ describe('Test getDeviceTypeIcon function', () => {
       { getDeviceTypeIcon('ap') }
       { getDeviceTypeIcon('router') }
       { getDeviceTypeIcon('storage') }
-      { getDeviceTypeIcon('monitoring') }
       { getDeviceTypeIcon('pos') }
       { getDeviceTypeIcon('other') }
       { getDeviceTypeIcon('') }

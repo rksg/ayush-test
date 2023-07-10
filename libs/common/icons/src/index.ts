@@ -183,7 +183,6 @@ export { ReactComponent as MinusSquareOutlined } from './icons/MinusSquareOutlin
 export { ReactComponent as MinusSquareSolid } from './icons/MinusSquareSolid.svg'
 export { ReactComponent as MobilePhoneOutlined } from './icons/MobilePhoneOutlined.svg'
 export { ReactComponent as MobilePhoneSolid } from './icons/MobilePhoneSolid.svg'
-export { ReactComponent as MonitoringDevicesOutlined } from './icons/MonitoringDevicesOutlined.svg'
 export { ReactComponent as MoreVertical } from './icons/MoreVertical.svg'
 export { ReactComponent as MspSubscriptionOutlined } from './icons/MspSubscriptionOutlined.svg'
 export { ReactComponent as MspSubscriptionSolid } from './icons/MspSubscriptionSolid.svg'
