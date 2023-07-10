@@ -39,6 +39,8 @@ const EditTunnelProfile = () => {
   const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
+  const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
+
   useEffect(() => {
     form.setFieldValue('name', tunnelProfileData?.name)
     form.setFieldValue('mtuSize', tunnelProfileData?.mtuSize)
@@ -114,7 +116,7 @@ const EditTunnelProfile = () => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
-              <TunnelProfileForm />
+              <TunnelProfileForm isDefaultTunnelProfile={isDefaultTunnelProfile}/>
             </Col>
           </Row>
         </StepsForm.StepForm>

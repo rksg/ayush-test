@@ -42,6 +42,8 @@ const TunnelProfileDetail = () => {
     }
   )
 
+  const isDefaultTunnelProfile = tunnelProfileData.id === params.tenantId
+
   const tunnelInfo = [
     // {
     //   title: $t({ defaultMessage: 'Tags' }),
@@ -96,7 +98,7 @@ const TunnelProfileDetail = () => {
               oper: PolicyOperation.EDIT,
               policyId: params.policyId as string
             })}>
-              <Button key={'configure'} type={'primary'}>
+              <Button key={'configure'} type={'primary'} disabled={isDefaultTunnelProfile}>
                 {$t({ defaultMessage: 'Configure' })}
               </Button></TenantLink>
           ])

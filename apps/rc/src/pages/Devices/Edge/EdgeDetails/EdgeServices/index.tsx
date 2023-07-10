@@ -99,7 +99,8 @@ export const EdgeServices = () => {
       title: $t({ defaultMessage: 'Service Version' }),
       key: 'currentVersion',
       dataIndex: 'currentVersion',
-      sorter: true
+      sorter: true,
+      render: (_, row) => (row.currentVersion || $t({ defaultMessage: 'NA' }))
     }
   ]
 

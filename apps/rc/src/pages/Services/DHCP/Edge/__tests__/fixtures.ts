@@ -180,7 +180,7 @@ export const mockDhcpStatsData = {
       venueNum: 3,
       leaseTime: '24 hours',
       health: 'Good',
-      currentVersion: '',
+      currentVersion: '1.0.1, 1.0.2',
       targetVersion: '1.0.2',
       tags: ['Tag1']
     },{

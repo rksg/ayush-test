@@ -165,14 +165,14 @@ export const ActionsContainer = styled.div`
   }
 `
 interface ActionsButtonsProps {
-  editMode: boolean
-  multipleSteps: boolean
+  $editMode: boolean
+  $multipleSteps: boolean
 }
 export const ActionsButtons = styled(Space).attrs((props: ActionsButtonsProps) => ({
   size: 12,
-  align: props.editMode ? 'start' : 'center'
+  align: props.$editMode ? 'start' : 'center'
 }))<ActionsButtonsProps>`
-  ${props => props.editMode && props.multipleSteps && `
+  ${props => props.$editMode && props.$multipleSteps && `
     // col span=4/24, gutter=20px
     margin-left: calc((100% + 20px) * 4 / 24);
   `}
