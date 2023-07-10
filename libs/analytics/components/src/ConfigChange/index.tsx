@@ -4,6 +4,7 @@ import { GridRow, GridCol } from '@acx-ui/components'
 
 import { Chart } from './Chart'
 import { KPIs }  from './KPI'
+import { Table } from './Table'
 
 export function ConfigChange () {
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([])
@@ -13,6 +14,6 @@ export function ConfigChange () {
       <Chart onBrushPositionsChange={setKpiTimeRanges}/>
     </GridCol>
     <GridCol col={{ span: 8 }}><KPIs kpiTimeRanges={kpiTimeRanges}/></GridCol>
-    <GridCol col={{ span: 16 }}><div>table</div></GridCol>
+    <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}><Table /></GridCol>
   </GridRow>
 }

@@ -189,4 +189,17 @@ describe('TunnelProfileList', () => {
     await screen.findByText('Delete "2 Policy"?')
     await user.click((await screen.findAllByRole('button', { name: 'Delete' }))[1])
   })
+
+  it('edit button will remove when select Default Tunnel Profile', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <TunnelProfileTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    const row = await screen.findAllByRole('row', { name: /Default/i })
+    await user.click(within(row[0]).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+  })
 })
