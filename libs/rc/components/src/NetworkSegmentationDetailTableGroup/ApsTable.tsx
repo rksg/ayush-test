@@ -11,12 +11,13 @@ import {
 export const defaultApPayload = {
   fields: [
     'name', 'model', 'apMac', 'apStatusData.lanPortStatus', 'apStatusData.vxlanStatus.vxlanMtu'
-  ]
+  ],
+  pageSize: 10000
 }
 
 export interface ApTableProps extends Omit<TableProps<APExtended>, 'columns'> {
   tableQuery?: TableQuery<APExtended | APExtendedGrouped,
-  { filters: { venueId: string[]; }; fields: string[]; },
+  { filters: { venueId: string[]; }; fields: string[]; pageSize : number },
   ApExtraParams>
 }
 

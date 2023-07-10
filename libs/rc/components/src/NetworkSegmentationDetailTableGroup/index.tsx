@@ -97,7 +97,7 @@ export const NetworkSegmentationDetailTableGroup = (
   const tabs = {
     aps: {
       title: $t({ defaultMessage: 'APs ({num})' },
-        { num: apListTableQuery?.data?.data?.length??0 }),
+        { num: apListTableQuery?.data?.totalCount??0 }),
       content: <ApsTable tableQuery={apListTableQuery}/>
     },
     distSwitches: {
