@@ -675,7 +675,8 @@ export function MoreSettingsForm (props: {
             rules={[{
               type: 'number', max: 255, min: 1,
               message: $t({
-                defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval must be between 1 and 255'
+                defaultMessage: 
+                  'DTIM (Delivery Traffic Indication Message) Interval must be between 1 and 255'
               })
             }]}
             style={{ marginBottom: '15px', width: '300px' }}
@@ -763,7 +764,7 @@ export function MoreSettingsForm (props: {
           />
         </>
         }
-  
+
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>
         <RadiusOptionsForm context='network'
