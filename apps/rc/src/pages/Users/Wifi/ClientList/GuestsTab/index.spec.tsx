@@ -32,7 +32,7 @@ describe('AP Guest Tab', () => {
         <GuestsTab dateFilter={mockDateFilter} />
       </GuestTabContext.Provider>
     </Provider>, { route: { params } })
-    expect(screen.queryByTestId('rc-GuestsTable')).toBeInTheDocument()
+    expect(screen.queryByTestId('rc-GuestsTable')).toBeVisible()
   })
 
 })
