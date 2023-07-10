@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 import { TrendTypeEnum }            from '@acx-ui/components'
 import { FormatterType, formatter } from '@acx-ui/formatter'
-import { getIntl, noDataDisplay }   from '@acx-ui/utils'
+import { noDataDisplay }            from '@acx-ui/utils'
 
 export function kpiDelta (
   before: number | null,
@@ -10,7 +10,6 @@ export function kpiDelta (
   sign: string,
   format: FormatterType | ((x: number) => string)
 ) {
-  const { $t } = getIntl()
   const tolerance = 5 / 100 // 5%
 
   if (!_.isNumber(before) || !_.isNumber(after)){
@@ -22,13 +21,9 @@ export function kpiDelta (
   const percentChange = (isPercentFormat || before === 0) ? delta : (delta / before)
 
   const prefix = delta > 0 ? '+' : (delta < 0 ? '-' : '=')
-  const value = $t({
-    defaultMessage: '{equal, select, true {{prefix}} other {{prefix}{value}}}'
-  }, {
-    prefix,
-    equal: prefix === '=',
-    value: formatter('percentFormat')(Math.abs(percentChange))
-  })
+  const value = prefix === '='
+    ? prefix
+    : `${prefix}${formatter('percentFormat')(Math.abs(percentChange))}`
 
   let trend = null
   switch (true) {

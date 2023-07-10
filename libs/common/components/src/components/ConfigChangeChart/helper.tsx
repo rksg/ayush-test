@@ -376,6 +376,13 @@ export const useBoundaryChange = (
   const debouncedBrushChange = useRef(debounce((brush)=>{
     onBrushPositionsChange?.(brush)
   }, 1000))
+
+  useEffect(()=>{
+    debouncedBrushChange.current = debounce((brush)=>{
+      onBrushPositionsChange?.(brush)
+    }, 1000)
+  }, [ onBrushPositionsChange ])
+
   const [boundary, setBoundary] = useState(getInitBoundary(chartBoundary))
   const [brushPositions, setBrushPositions] =
     useState(getInitBrushPositions(chartBoundary, brushWidth))
@@ -399,7 +406,7 @@ export const useBoundaryChange = (
 
   useEffect(() => {
     debouncedBrushChange.current(brushPositions.actual)
-  }, [debouncedBrushChange, brushPositions])
+  }, [brushPositions])
 
   return { boundary, brushPositions, setBoundary, setBrushPositions }
 }
