@@ -42,6 +42,9 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'p-cov-clientrssi-low': 'rss',
   'p-load-sz-cpu-load': 'sz-cpu-load',
   'p-switch-memory-high': 'switch-memory-high',
+  'p-channeldist-suboptimal-plan-24g': 'channel-dist-24g',
+  'p-channeldist-suboptimal-plan-50g-outdoor': 'channel-dist-50g',
+  'p-channeldist-suboptimal-plan-50g-indoor': 'channel-dist-50g',
   'i-net-time-future': 'time-future',
   'i-net-time-past': 'time-past',
   'i-net-sz-net-latency': 'sz-net-latency',
@@ -812,7 +815,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
-  'channel-dist-5g': {
+  'channel-dist-50g': {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `

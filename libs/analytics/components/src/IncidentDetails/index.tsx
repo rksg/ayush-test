@@ -18,6 +18,7 @@ import { SwitchPoePd }             from './Details/SwitchPoePd'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
 import { useIncident }             from './services'
+import { ChannelDist }             from './Details/ChannelDist'
 
 export const incidentDetailsMap = {
   'radius-failure': RadiusFailure,
@@ -34,7 +35,10 @@ export const incidentDetailsMap = {
   'i-apserv-downtime-high': ApservDowntimeHigh,
   'i-apserv-high-num-reboots': ApservHighNumReboots,
   'i-switch-poe-pd': SwitchPoePd,
-  'i-switch-vlan-mismatch': SwitchVlanMismatch
+  'i-switch-vlan-mismatch': SwitchVlanMismatch,
+  'p-channeldist-suboptimal-plan-24g': ChannelDist,
+  'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
+  'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist
 }
 
 export function IncidentDetails () {

@@ -13,6 +13,7 @@ import rebootedAPsCountChart              from './Charts/RebootedAPsCountChart'
 import rssQualityByClientsChart           from './Charts/RssQualityByClientsChart'
 import ttcByFailureTypeChart              from './Charts/TtcByFailureTypeChart'
 import ttcFailureChart                    from './Charts/TtcFailureChart'
+import channelChangeCount                 from './Charts/ChannelChangeCount'
 
 import type { TimeSeriesChartProps } from './types'
 
@@ -34,7 +35,8 @@ export enum TimeSeriesChartTypes {
   ConnectedClientsChart,
   RebootedApsCountChart,
   ApPoeImpactChart,
-  ApWanThroughputImpactChart
+  ApWanThroughputImpactChart,
+  ChannelChangeCount
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -50,5 +52,6 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.ConnectedClientsChart]: connectedClientsChartChart,
   [TimeSeriesChartTypes.RebootedApsCountChart]: rebootedAPsCountChart,
   [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactChart,
-  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart
+  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart,
+  [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount
 }
