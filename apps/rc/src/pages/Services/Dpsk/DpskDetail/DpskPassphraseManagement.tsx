@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Modal as AntModal, Form, Input } from 'antd'
+import moment                             from 'moment'
 import { RawIntlProvider, useIntl }       from 'react-intl'
 
 import {
@@ -23,6 +24,7 @@ import {
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
 import {
+  EXPIRATION_TIME_FORMAT,
   ExpirationType,
   NetworkTypeEnum,
   NewDpskPassphrase,
@@ -142,6 +144,15 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlanId',
       sorter: true
+    },
+    {
+      key: 'expirationDate',
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'expirationDate',
+      sorter: false,
+      render: function (data, row) {
+        return renderPassphraseStatus(row, isCloudpathEnabled)
+      }
     },
     {
       key: 'expirationDate',
@@ -348,6 +359,20 @@ export default function DpskPassphraseManagement () {
       />
     </Loader>
   </>)
+}
+
+// eslint-disable-next-line max-len
+function renderPassphraseStatus (passphrase: NewDpskPassphrase, isCloudpathEnabled = false): string {
+  const { $t } = getIntl()
+
+  if (isCloudpathEnabled && passphrase.revocationDate) {
+    const revocationDate = moment(passphrase.revocationDate).format(EXPIRATION_TIME_FORMAT)
+    return $t({ defaultMessage: 'Revoked ({revocationDate})' }, { revocationDate })
+  // eslint-disable-next-line max-len
+  } else if (passphrase.expirationDate && moment(passphrase.expirationDate).isSameOrBefore(new Date())) {
+    return $t({ defaultMessage: 'Expired' })
+  }
+  return $t({ defaultMessage: 'Active' })
 }
 
 // eslint-disable-next-line max-len

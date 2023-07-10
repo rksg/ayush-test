@@ -64,7 +64,19 @@ export const mockedDpskPassphraseList = {
       vlanId: 3,
       mac: undefined,
       numberOfDevices: 2,
-      createdDate: '2022-12-22T14:20:00'
+      expirationDate: '2022-12-25T08:39:00',
+      createdDate: '2022-12-22T14:20:00',
+      revocationDate: '2022-12-24T08:00:00.000+0000',
+      revocationReason: 'Revoked by Jacky'
+    },
+    {
+      id: '__PASSPHRASE_ID_4__',
+      passphrase: 'zxcvb123!@#$%',
+      username: 'DPSK_USER_4',
+      vlanId: 4,
+      mac: 'AA:BB:CC:11:22:44',
+      numberOfDevices: 1,
+      createdDate: '2022-12-08T09:00:00'
     }
   ],
   page: 1,
