@@ -3,6 +3,7 @@ import { createElement } from 'react'
 import { Divider, Space } from 'antd'
 import styled             from 'styled-components'
 
+import { Button }       from '@acx-ui/components'
 import { DeviceStatus } from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from './utils'
@@ -94,4 +95,15 @@ export const TextNumber = styled.div`
       margin-bottom: 0;
     }
   }
+`
+
+export const NodeTitle = styled(Button)`
+span {
+    width: 288px;
+    display: inline-block;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 `
