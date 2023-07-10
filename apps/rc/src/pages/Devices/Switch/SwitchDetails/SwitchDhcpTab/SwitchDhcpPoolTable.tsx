@@ -16,8 +16,8 @@ import {
   isOperationalSwitch,
   VenueMessages
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 
@@ -142,7 +142,7 @@ export function SwitchDhcpPoolTable () {
         }])}
         rowKey='id'
         rowActions={!!switchDetail?.cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={!!switchDetail?.cliApplied ? undefined : {
+        rowSelection={!!switchDetail?.cliApplied || !hasAccess() ? undefined : {
           type: 'checkbox',
           selectedRowKeys: selected ? [selected]:[]
         }} />

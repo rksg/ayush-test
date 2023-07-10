@@ -5,7 +5,7 @@ import { useIntl }                            from 'react-intl'
 
 import { Table, TableProps }                                from '@acx-ui/components'
 import { ACLDirection, getACLDirectionString, StatefulAcl } from '@acx-ui/rc/utils'
-import { filterByAccess }                                   from '@acx-ui/user'
+import { filterByAccess, hasAccess }                        from '@acx-ui/user'
 
 import { StatefulACLConfigDrawer }                   from './StatefulACLConfigDrawer'
 import { InboundDefaultRules, OutboundDefaultRules } from './StatefulACLConfigDrawer/defaultRules'
@@ -84,7 +84,7 @@ const StatefulACLTable = (props: StatefulACLTableProps) => {
       dataSource={data}
       rowKey='direction'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={hasAccess() && { type: 'radio' }}
     />
     <StatefulACLConfigDrawer
       visible={drawerVisible}

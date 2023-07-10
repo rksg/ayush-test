@@ -5,6 +5,7 @@ import { Table, TableProps }                                                    
 import { useLazyRadiusAttributeGroupListByQueryQuery }                                    from '@acx-ui/rc/services'
 import { AttributeAssignment, checkObjectNotExists, defaultSort, OperatorType, sortProp } from '@acx-ui/rc/utils'
 import { useParams }                                                                      from '@acx-ui/react-router-dom'
+import { hasAccess }                                                                      from '@acx-ui/user'
 
 import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
@@ -115,7 +116,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
             columns={useColumns()}
             dataSource={attributeAssignments}
             rowActions={rowActions}
-            rowSelection={{ type: 'radio' }}
+            rowSelection={hasAccess() && { type: 'radio' }}
             actions={[{
               label: $t({ defaultMessage: 'Add' }),
               onClick: () => {

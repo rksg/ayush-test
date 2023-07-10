@@ -8,6 +8,7 @@ import { PlusSquareOutlined, MinusSquareOutlined }                          from
 import { useGetVenuesQuery, useLazyGetSwitchListQuery }                     from '@acx-ui/rc/services'
 import { ApplySwitch, CliTemplateVenueSwitches, SwitchViewModel }           from '@acx-ui/rc/utils'
 import { useParams }                                                        from '@acx-ui/react-router-dom'
+import { hasAccess }                                                        from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -171,7 +172,7 @@ export function CliStepSwitches () {
               }]}>
                 <Table
                   rowKey='id'
-                  rowSelection={{
+                  rowSelection={hasAccess() ? {
                     type: 'checkbox',
                     ...(selectedSwitches?.hasOwnProperty(v?.id)
                       && { selectedRowKeys: (
@@ -199,7 +200,7 @@ export function CliStepSwitches () {
                         form?.setFieldValue('applyNow', false)
                       }
                     }
-                  }}
+                  } : undefined}
                   tableAlertRender={false}
                   dataSource={getVenueSwitches(v.id, venueSwitches)}
                   columns={columns}

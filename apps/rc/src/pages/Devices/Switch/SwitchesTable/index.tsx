@@ -90,7 +90,7 @@ export default function useSwitchesTable () {
   })
 
   const extra = [
-    <Dropdown overlay={addMenu} key='add'>{() =>
+    <Dropdown overlay={addMenu}>{() =>
       <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
     }</Dropdown>
   ]

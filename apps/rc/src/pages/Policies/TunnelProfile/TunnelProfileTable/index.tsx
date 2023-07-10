@@ -10,7 +10,7 @@ import {
 }                                    from '@acx-ui/rc/services'
 import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                   from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                                                                                                        from '@acx-ui/user'
 
 const defaultTunnelProfileTablePayload = {}
 
@@ -201,7 +201,7 @@ const TunnelProfileTable = () => {
           rowKey='id'
           columns={columns}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

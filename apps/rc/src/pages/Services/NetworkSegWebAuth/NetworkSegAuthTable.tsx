@@ -14,7 +14,7 @@ import {
   WebAuthTemplateTableData
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 const getNetworkSegAuthPayload = {
   fields: [
@@ -166,7 +166,7 @@ export default function NetworkSegAuthTable () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }} />
+        rowSelection={hasAccess() && { type: 'radio' }} />
     </Loader>
   </>)
 }
