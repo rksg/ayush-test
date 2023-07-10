@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+
 import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -106,6 +107,7 @@ export function FrontViewPort (props:{
       { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
       { portIcon ==='Stack' && <UI.StackingPortIcon/> }
       { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
+      { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
     </UI.Port>
     { labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel> }
   </UI.PortWrapper>

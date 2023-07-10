@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
-import { Descriptions }                                                                                          from '@acx-ui/components'
-import { ConfigurationOutlined, FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
+import { Descriptions }                                                                                                                             from '@acx-ui/components'
+import { ConfigurationOutlined, FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid, BreakoutPortSolid, LagMemberSolid } from '@acx-ui/icons'
 
 export const TitleBar = styled.div`
   background: var(--acx-neutrals-10);
@@ -123,8 +123,8 @@ export const BreakOutPortFlag = styled.div<{ portColor: string }>`
   border-style: solid;
   border-width: 0 0 5px 5px;
   border-color: transparent transparent  ${(props) => getPortColor(props.portColor)} transparent;
-  left: 8px;
-  top: 12px;
+  left: 12px;
+  top: 16px;
   position: absolute;
 `
 
@@ -138,8 +138,19 @@ export const UplinkPortIcon = styled(UplinkPortSolid)`
   width: 16px;
 `
 
+export const BreakoutPortIcon = styled(BreakoutPortSolid)`
+  height: 16px;
+  width: 16px;
+`
+
+export const LagMemberIcon = styled(LagMemberSolid)`
+  height: 16px;
+  width: 16px;
+`
+
 export const PoeUsageIcon = styled(PoeUsage)`
-  height: 10px;
+  height: 16px;
+  width: 16px;
 `
 
 export const TooltipStyle = styled(Descriptions)`
@@ -260,4 +271,7 @@ export const BreadkoutPortContainer = styled.div`
   position: relative;
   cursor: pointer;
   font-size: 10px;
+  svg {
+    margin-top: 3px;
+  }
 `

@@ -1,4 +1,5 @@
 import { useIsSplitOn, Features }                         from '@acx-ui/feature-toggle'
+import { isLAGMemberPort }                                from '@acx-ui/rc/components'
 import { SwitchPortStatus, SwitchSlot, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { FrontViewBreakoutPort } from './FrontViewBreakoutPort'
@@ -28,6 +29,9 @@ export function FrontViewSlot (props:{
     if (port.poeUsed) {
       return 'PoeUsed'
     }
+    if(isLAGMemberPort(port)) {
+      return 'LagMember'
+    }
     return ''
   }
 
@@ -52,7 +56,7 @@ export function FrontViewSlot (props:{
       {
         slot.portStatus
           .filter((item: SwitchPortStatus) => {
-            const portNumber = Number(item.portnumber)
+            const portNumber = item.portnumber as unknown as number
             if (enableBreakourtPortFlag &&
               String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
               return Number(String(portNumber).split(':')[0]) % 2 === 1
@@ -90,7 +94,7 @@ export function FrontViewSlot (props:{
       {
         slot.portStatus
           .filter((item: SwitchPortStatus) => {
-            const portNumber = Number(item.portnumber)
+            const portNumber = item.portnumber as unknown as number
             if (enableBreakourtPortFlag &&
               String(portNumber).includes(':') && String(portNumber).split(':')[1] === '1') {
               return Number(String(portNumber).split(':')[0]) % 2 === 0

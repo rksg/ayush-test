@@ -63,8 +63,6 @@ export function FrontViewBreakoutPort (props:{
     return 'gray'
   }
 
-
-
   const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <div>
@@ -75,7 +73,7 @@ export function FrontViewBreakoutPort (props:{
           onClick={() => {
             setDrawerVisible(true)
           }}>
-          B  {/* Phase 2 will change text to icon */}
+          <UI.BreakoutPortIcon />
           <UI.BreakOutPortFlag
             portColor={getPortColorEnum()}
           ></UI.BreakOutPortFlag>
