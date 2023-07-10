@@ -675,7 +675,7 @@ export function MoreSettingsForm (props: {
             rules={[{
               type: 'number', max: 255, min: 1,
               message: $t({
-                defaultMessage: 
+                defaultMessage:
                   'DTIM (Delivery Traffic Indication Message) Interval must be between 1 and 255'
               })
             }]}
