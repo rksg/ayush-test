@@ -12,8 +12,13 @@ import {
   Table,
   TableProps,
   Subtitle,
-  Loader
+  Loader,
+  cssStr,
+  StackedBarChart
 } from '@acx-ui/components'
+import {
+  SpaceWrapper
+} from '@acx-ui/rc/components'
 import {
   useLazyGetZdConfigurationQuery
 } from '@acx-ui/rc/services'
@@ -35,6 +40,21 @@ const SummaryForm = (props: SummaryFormProps) => {
   // eslint-disable-next-line max-len
   const [ getZdConfiguration, { data: migrateResult }] = useLazyGetZdConfigurationQuery()
 
+  let usedBarColors = [
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-neutrals-30')
+  ]
+
+  let defaultSeries = [
+    { name: 'used',
+      value: 0 },
+    { name: 'available',
+      value: 100 }
+  ]
+
+  const [ series, setSeries ] = useState(defaultSeries)
+  const [ progress, setProgress ] = useState(0)
+
   useEffect(() => {
     const interval = setInterval(() => {
       getZdConfiguration({ params: { ...params, id: taskId } })
@@ -48,8 +68,23 @@ const SummaryForm = (props: SummaryFormProps) => {
     if (migrateResult && migrateResult.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0) {
       // eslint-disable-next-line max-len
       setValidateZdApsResult(migrateResult.data[0].migrationTaskList[0].apImportResultList ? migrateResult.data[0].migrationTaskList[0].apImportResultList : [])
+      const total = migrateResult.data[0].migrationTaskList[0].apImportResultList?.length
+      // eslint-disable-next-line max-len
+      const used = migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(apCompleted).length
+      let series = [
+        { name: 'used',
+          value: (used / total)*100 },
+        { name: 'available',
+          value: ((total-used) / total)*100 }
+      ]
+      setSeries(series)
+      setProgress(Math.floor((used/total) * 100))
     }
   },[migrateResult])
+
+  const apCompleted = (item: MigrationResultType) => {
+    return item.state === 'Completed' || item.state === 'Invalid'
+  }
 
   const callbackfn = (item: MigrationResultType) => {
     return item.state === 'Completed'
@@ -125,6 +160,24 @@ const SummaryForm = (props: SummaryFormProps) => {
             {// eslint-disable-next-line max-len
               $t({ defaultMessage: 'Completed' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(callbackfn).length) ?? '--'}
           </Subtitle>
+        </Col>
+        <Col span={7}>
+          <SpaceWrapper full size='small' justifycontent='flex-start'>
+            <Subtitle level={5}>{$t({ defaultMessage: 'Progress' })}:</Subtitle>
+            <StackedBarChart
+              style={{ height: 16, width: 135 }}
+              showLabels={false}
+              showTotal={false}
+              showTooltip={false}
+              barWidth={12}
+              data={[{
+                category: 'AP Migrations ',
+                series
+              }]}
+              barColors={usedBarColors}
+            />
+            <Subtitle level={5}>{progress}%</Subtitle>
+          </SpaceWrapper>
         </Col>
       </Row>
       <Table
