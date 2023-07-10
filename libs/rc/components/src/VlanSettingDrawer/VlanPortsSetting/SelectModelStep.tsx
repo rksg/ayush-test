@@ -4,7 +4,7 @@ import { useState, useEffect, SetStateAction, useContext } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
-import { Card, Descriptions, Tooltip }             from '@acx-ui/components'
+import { Card, Tooltip }                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
@@ -72,11 +72,14 @@ export function SelectModelStep (props: { editMode: boolean }) {
       const selectedFamily = vlanSettingValues.family
       const selectedModel = vlanSettingValues.model
       const slots = vlanSettingValues.switchFamilyModels?.slots
-      const selectedEnable2 = slots?.filter(item => item.slotNumber === 2)[0] ||
+      const selectedEnable2 = slots?.filter(
+        (item: { slotNumber: number }) => item.slotNumber === 2)[0] ||
         { enable: false, option: '' }
-      const selectedEnable3 = slots?.filter(item => item.slotNumber === 3)[0] ||
+      const selectedEnable3 = slots?.filter(
+        (item: { slotNumber: number }) => item.slotNumber === 3)[0] ||
         { enable: false, option: '' }
-      const selectedEnable4 = slots?.filter(item => item.slotNumber === 4)[0] ||
+      const selectedEnable4 = slots?.filter(
+        (item: { slotNumber: number }) => item.slotNumber === 4)[0] ||
         { enable: false, option: '' }
       form.setFieldsValue({
         family: selectedFamily,
@@ -282,7 +285,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
         option = optionList[0] ? optionList[0].value : option
       }
 
-      const index = switchFamilyModels?.slots?.findIndex(s => s.slotNumber === slotNumber) || -1
+      const index = switchFamilyModels?.slots?.findIndex(
+        (s: { slotNumber: number }) => s.slotNumber === slotNumber) || -1
       if (!enable && index !== -1) {
         switchFamilyModels?.slots?.splice(index, 1)
       }
@@ -408,7 +412,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
           <Typography.Title level={3}>{$t({ defaultMessage: 'Select Modules' })}</Typography.Title>
           <Row style={{ paddingTop: '5px' }}
             hidden={!(slots && slots?.length > 1 && module2SelectionEnable)}>
-            <Col span={7} >
+            <Col span={optionListForSlot2.length===1 ? 24 : 7} >
               <Form.Item
                 name={'enableSlot2'}
                 initialValue={false}
@@ -416,13 +420,16 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 children={
                   <Checkbox
                     data-testid='module2Checkbox'
-                    children={$t({ defaultMessage: 'Module 2:' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot2') }}
-                  />
+                  >
+                    {$t({ defaultMessage: 'Module 2:' })}
+                    {optionListForSlot2.length===1 &&
+                      ' ' + optionListForSlot2[0]?.value.split('X').join(' X ')}
+                  </Checkbox>
                 }
               />
             </Col>
-            <Col span={17} >
+            <Col span={10}>
               <Form.Item
                 name={'selectedOptionOfSlot2'}
                 initialValue={optionListForSlot2[0]?.value}
@@ -434,17 +441,10 @@ export function SelectModelStep (props: { editMode: boolean }) {
                   onChange={onModuleChange}
                 />
               </Form.Item>
-              {optionListForSlot2.length===1 &&
-                <Descriptions>
-                  <Descriptions.Item
-                    children={optionListForSlot2[0]?.value.split('X').join(' X ')}
-                  />
-                </Descriptions>
-              }
             </Col>
           </Row>
           <Row hidden={!(slots && slots?.length > 2 && module3SelectionEnable)}>
-            <Col span={7} >
+            <Col span={optionListForSlot3.length===1 ? 24 : 7} >
               <Form.Item
                 name={'enableSlot3'}
                 initialValue={false}
@@ -452,13 +452,16 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 children={
                   <Checkbox
                     data-testid='module3Checkbox'
-                    children={$t({ defaultMessage: 'Module 3:' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot3') }}
-                  />
+                  >
+                    {$t({ defaultMessage: 'Module 3:' })}
+                    {optionListForSlot3.length===1 &&
+                      ' ' + optionListForSlot3[0]?.value.split('X').join(' X ')}
+                  </Checkbox>
                 }
               />
             </Col>
-            <Col span={17} >
+            <Col span={10} >
               <Form.Item
                 name={'selectedOptionOfSlot3'}
                 initialValue={optionListForSlot3[0]?.value}
@@ -470,30 +473,26 @@ export function SelectModelStep (props: { editMode: boolean }) {
                   onChange={onModuleChange}
                 />
               </Form.Item>
-              {optionListForSlot3.length===1 &&
-                <Descriptions>
-                  <Descriptions.Item
-                    children={optionListForSlot3[0]?.value.split('X').join(' X ')}
-                  />
-                </Descriptions>
-              }
             </Col>
           </Row>
           <Row hidden={!(slots && slots?.length > 3)}>
-            <Col span={7}>
+            <Col span={optionListForSlot4.length===1 ? 24 : 7}>
               <Form.Item
                 name={'enableSlot4'}
                 initialValue={false}
                 valuePropName='checked'
                 children={
                   <Checkbox
-                    children={$t({ defaultMessage: 'Module 4:' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot4') }}
-                  />
+                  >
+                    {$t({ defaultMessage: 'Module 4:' })}
+                    {optionListForSlot4.length===1 &&
+                      ' ' + optionListForSlot4[0]?.value.split('X').join(' X ')}
+                  </Checkbox>
                 }
               />
             </Col>
-            <Col span={17} >
+            <Col span={10} >
               <Form.Item
                 name={'selectedOptionOfSlot4'}
                 initialValue={optionListForSlot4[0]?.value}
@@ -505,13 +504,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
                   onChange={onModuleChange}
                 />
               </Form.Item>
-              {optionListForSlot4.length===1 &&
-                <Descriptions>
-                  <Descriptions.Item
-                    children={optionListForSlot4[0]?.value.split('X').join(' X ')}
-                  />
-                </Descriptions>
-              }
             </Col>
           </Row>
         </Col>
