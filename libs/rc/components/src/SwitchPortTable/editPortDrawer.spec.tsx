@@ -786,7 +786,7 @@ describe('EditPortDrawer', () => {
       const checkboxs = await screen.findAllByRole('checkbox')
       // eslint-disable-next-line testing-library/no-unnecessary-act
       act(() => {
-        fireEvent.click(checkboxs[5]) // Port VLANs
+        fireEvent.click(checkboxs[0]) // Port VLANs
       })
 
       expect(await screen.findByText('Edit')).toBeVisible()

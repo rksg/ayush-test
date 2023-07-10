@@ -41,6 +41,7 @@ export function useMenuConfig () {
 
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -189,9 +190,7 @@ export function useMenuConfig () {
             },
             {
               uri: isNavbarEnhanced ? '/networks/wireless/reports/wlans' : '/reports/wlans',
-              label: isNavbarEnhanced
-                ? $t({ defaultMessage: 'WLAN Report' })
-                : $t({ defaultMessage: 'WLANs Report' }),
+              label: $t({ defaultMessage: 'WLANs Report' }),
               isActiveCheck: isNavbarEnhanced ? undefined : IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
@@ -344,6 +343,6 @@ export function useMenuConfig () {
       ]
     }
   ]
-  if (isGuestManager) { return [] }
+  if (isGuestManager || isDPSKAdmin) { return [] }
   return config
 }

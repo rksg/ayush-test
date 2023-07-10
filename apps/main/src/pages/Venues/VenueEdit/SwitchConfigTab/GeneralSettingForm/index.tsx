@@ -1,7 +1,7 @@
 import { useContext, useState, useRef, useEffect, Key } from 'react'
 
-import { Col, Divider, Form, Input, Space, Switch } from 'antd'
-import { isEqual }                                  from 'lodash'
+import { Col, Divider, Form, Input, Space, Switch, Tooltip } from 'antd'
+import { isEqual }                                           from 'lodash'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { ConfigurationOutlined }                                    from '@acx-ui/icons'
@@ -16,6 +16,7 @@ import {
   VenueSwitchConfiguration,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
+import { VenueMessages }                         from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }                               from '@acx-ui/utils'
 
@@ -243,14 +244,19 @@ export function GeneralSettingForm () {
               <Form.Item
                 label={$t({ defaultMessage: 'DNS' })}
                 children={<Space direction='vertical' style={{ width: '100%' }}>
-                  <Button
-                    type='link'
-                    size='small'
-                    style={{ float: 'right' }}
-                    disabled={formData?.dns?.length === 4}
-                    onClick={() => {
-                      setFormData({ ...formData, dns: [...(formData?.dns ?? []), ''] })
-                    }}>{$t({ defaultMessage: 'Add IP Address' })}</Button>
+                  <Tooltip title={formState?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+                    <Space direction='vertical' style={{ width: '100%' }}>
+                      <Button
+                        type='link'
+                        size='small'
+                        style={{ float: 'right' }}
+                        disabled={formData?.dns?.length === 4 || formState?.cliApplied}
+                        onClick={() => {
+                          setFormData({ ...formData, dns: [...(formData?.dns ?? []), ''] })
+                        }}>{$t({ defaultMessage: 'Add IP Address' })}
+                      </Button>
+                    </Space>
+                  </Tooltip>
                   {
                     formData?.dns?.map((dns, index) => <Form.Item key={dns}
                       name={['dns', index]}
@@ -268,8 +274,9 @@ export function GeneralSettingForm () {
                       children={
                         <Input
                           size='small'
+                          disabled={formState?.cliApplied}
                           suffix={
-                            <DeleteOutlinedIcon
+                            !formState?.cliApplied && <DeleteOutlinedIcon
                               role='deleteBtn'
                               onClick={() => {
                                 const dns = formRef?.current?.getFieldsValue()?.dns
@@ -289,14 +296,17 @@ export function GeneralSettingForm () {
                 valuePropName='checked'
                 initialValue={formData.syslogEnabled}
                 children={<Space>
-                  <Switch
-                    defaultChecked={formData.syslogEnabled}
-                    checked={formData.syslogEnabled}
-                    onClick={(checked, event) => {
-                      event.stopPropagation()
-                      handleSyslogServer(checked)
-                    }}
-                  />
+                  <Tooltip title={formState?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+                    <Switch
+                      defaultChecked={formData.syslogEnabled}
+                      checked={formData.syslogEnabled}
+                      disabled={formState?.cliApplied}
+                      onClick={(checked, event) => {
+                        event.stopPropagation()
+                        handleSyslogServer(checked)
+                      }}
+                    />
+                  </Tooltip>
                   <Button ghost
                     role='configBtn'
                     icon={<ConfigurationOutlined />}

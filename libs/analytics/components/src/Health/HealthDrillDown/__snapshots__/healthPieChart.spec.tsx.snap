@@ -85,7 +85,7 @@ exports[`HealthPieChart should render correctly for many connectionFailures 1`] 
                 <div
                   _echarts_instance_="ec_mock"
                   class="echarts-for-react "
-                  size-sensor-id="1"
+                  size-sensor-id="sensor-mock"
                   style="height: 800px; width: 1280px; position: relative;"
                 >
                   <div
@@ -372,7 +372,7 @@ exports[`HealthPieChart should render correctly for missing nodes data 1`] = `
                   <div
                     _echarts_instance_="ec_mock"
                     class="echarts-for-react "
-                    size-sensor-id="3"
+                    size-sensor-id="sensor-mock"
                     style="height: 800px; width: 1280px; position: relative;"
                   >
                     <div
@@ -576,7 +576,7 @@ exports[`HealthPieChart should render correctly for single ttc failures 1`] = `
                 <div
                   _echarts_instance_="ec_mock"
                   class="echarts-for-react "
-                  size-sensor-id="2"
+                  size-sensor-id="sensor-mock"
                   style="height: 800px; width: 1280px; position: relative;"
                 >
                   <div

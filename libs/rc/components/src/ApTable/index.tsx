@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from 'react'
+import React, { useState, useEffect, useMemo, useContext, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -102,6 +102,8 @@ export const APStatus = (
   )
 }
 
+export type ApTableRefType = { openImportDrawer: ()=>void }
+
 interface ApTableProps
   extends Omit<TableProps<APExtended>, 'columns'> {
   tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
@@ -110,7 +112,7 @@ interface ApTableProps
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
-export function ApTable (props: ApTableProps) {
+export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
@@ -438,6 +440,12 @@ export function ApTable (props: ApTableProps) {
     }
   },[importResult])
 
+  useImperativeHandle(ref, () => ({
+    openImportDrawer: () => {
+      setImportVisible(true)
+    }
+  }))
+
   const basePath = useTenantLink('/devices')
   const handleTableChange: TableProps<APExtended>['onChange'] = (
     pagination, filters, sorter, extra
@@ -518,4 +526,4 @@ export function ApTable (props: ApTableProps) {
         onClose={() => setImportVisible(false)}/>
     </Loader>
   )
-}
+})

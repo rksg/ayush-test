@@ -262,6 +262,7 @@ export interface SwitchRow {
   syncDataId?: string
   operationalWarning?: boolean
   switchName?: string
+  firmware?: string
   xPercent?: number
   yPercent?: number
   switches?: SwitchRow[]

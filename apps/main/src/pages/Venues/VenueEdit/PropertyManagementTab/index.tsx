@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { FetchBaseQueryError }                                      from '@reduxjs/toolkit/dist/query/react'
-import { Col, Form, Row, Select, Switch, Modal, Input, Typography } from 'antd'
+import { FetchBaseQueryError }                                             from '@reduxjs/toolkit/dist/query/react'
+import { Col, Form, Row, Select, Switch, Modal, Input, Typography, Space } from 'antd'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -11,6 +11,7 @@ import { useIntl }            from 'react-intl'
 
 import {
   Button,
+  Card,
   Loader,
   ModalRef,
   StepsFormLegacy,
@@ -20,6 +21,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { InformationSolid }                     from '@acx-ui/icons'
 import { PersonaGroupSelect, TemplateSelector } from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
@@ -36,6 +38,7 @@ import {
   getServiceDetailsLink,
   PropertyConfigs,
   PropertyConfigStatus,
+  ResidentPortalType,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
@@ -47,12 +50,14 @@ import { VenueEditContext } from '../index'
 
 const defaultPropertyConfigs: PropertyConfigs = {
   status: PropertyConfigStatus.DISABLED,
+  residentPortalType: ResidentPortalType.NO_PORTAL,
   unitConfig: {
     type: 'unitConfig',
     maxUnitCount: 0,
     useMaxUnitCount: false,
     guestAllowed: false,
-    residentPortalAllowed: false
+    residentPortalAllowed: false,
+    residentApiAllowed: false
   },
   communicationConfig: {
     type: 'communicationConfig',
@@ -105,7 +110,6 @@ export function PropertyManagementTab () {
   })
   const hasUnits = (unitQuery?.totalCount ?? -1) > 0
   const personaGroupHasBound = formRef?.current?.getFieldValue('personaGroupId') && hasUnits
-  const residentPortalHasBound = !!propertyConfigsQuery?.data?.residentPortalId && hasUnits
 
   const { data: residentPortalList } = useGetResidentPortalListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
@@ -113,8 +117,24 @@ export function PropertyManagementTab () {
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
+  const residentPortalTypeOptions = [
+    {
+      value: ResidentPortalType.NO_PORTAL,
+      label: $t({ defaultMessage: 'No Resident Portal' })
+    },
+    {
+      value: ResidentPortalType.RUCKUS_PORTAL,
+      label: $t({ defaultMessage: 'Use RUCKUS Portal' })
+    },
+    {
+      value: ResidentPortalType.OWN_PORTAL,
+      label: $t({ defaultMessage: 'Use Your Own Portal' })
+    }
+  ]
+
   useEffect(() => {
     if (propertyConfigsQuery.isLoading || !formRef.current || !propertyConfigsQuery.data) return
+    let residentPortalType = ResidentPortalType.NO_PORTAL
     let enabled
 
     // If the user disable the Property, it will get 404 for this venue.
@@ -125,7 +145,27 @@ export function PropertyManagementTab () {
       enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
       formRef?.current.setFieldsValue(propertyConfigsQuery.data)
 
-      const groupId = propertyConfigsQuery.data?.personaGroupId
+      const {
+        personaGroupId: groupId,
+        unitConfig,
+        residentPortalId
+      } = propertyConfigsQuery.data
+
+      if (unitConfig) {
+        const { residentPortalAllowed = false, residentApiAllowed = false } = unitConfig
+        if (residentPortalId) {
+          residentPortalType = ResidentPortalType.RUCKUS_PORTAL
+        } else {
+          if (residentApiAllowed) {
+            if (residentPortalAllowed) {
+              residentPortalType = ResidentPortalType.RUCKUS_PORTAL
+            } else {
+              residentPortalType = ResidentPortalType.OWN_PORTAL
+            }
+          }
+        }
+      }
+
       if (groupId) {
         setSelectedGroupId(groupId)
         getPersonaGroupById({ params: { groupId } })
@@ -134,6 +174,7 @@ export function PropertyManagementTab () {
           })
       }
     }
+    formRef?.current.setFieldValue('residentPortalType', residentPortalType)
     setIsPropertyEnable(enabled)
   }, [propertyConfigsQuery.data, formRef])
 
@@ -164,20 +205,46 @@ export function PropertyManagementTab () {
     await Promise.all(registerPromises)
   }
 
+  const toResidentPortalPayload = (type: ResidentPortalType) => {
+    const payload = {
+      residentPortalAllowed: false,
+      residentApiAllowed: false
+    }
+
+    if (type === ResidentPortalType.RUCKUS_PORTAL) {
+      payload.residentApiAllowed = true
+      payload.residentPortalAllowed = true
+    } else if (type === ResidentPortalType.OWN_PORTAL){
+      payload.residentApiAllowed = true
+    }
+
+    return payload
+  }
+
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
+    const {
+      unitConfig,
+      residentPortalType,
+      ...formValues
+    } = info.values
+
     try {
       if (isPropertyEnable) {
         await registerMessageTemplates()
         await updatePropertyConfigs({
           params: { venueId },
           payload: {
-            ...info.values,
+            ...formValues,
             venueName: venueData?.name ?? venueId,
             description: venueData?.description,
             address: venueData?.address,
             status: isPropertyEnable
               ? PropertyConfigStatus.ENABLED
-              : PropertyConfigStatus.DISABLED
+              : PropertyConfigStatus.DISABLED,
+            unitConfig: {
+              ...unitConfig,
+              ...toResidentPortalPayload(residentPortalType)
+            }
           }
         }).unwrap()
       } else {
@@ -336,23 +403,25 @@ export function PropertyManagementTab () {
                     children={<Switch disabled={hasUnits} />}
                   />
                 </StepsFormLegacy.FieldLabel>
-                <StepsFormLegacy.FieldLabel width={'190px'} hidden={residentPortalHasBound}>
-                  {$t({ defaultMessage: 'Enable Resident Portal' })}
-                  <Form.Item
-                    hidden={residentPortalHasBound}
-                    name={['unitConfig', 'residentPortalAllowed']}
-                    rules={[{ required: true }]}
-                    valuePropName={'checked'}
-                    children={<Switch />}
-                  />
-                </StepsFormLegacy.FieldLabel>
-                {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
+                <Form.Item
+                  name='residentPortalType'
+                  label={$t({ defaultMessage: 'Resident Portal' })}
+                  rules={[{ required: true }]}
+                  children={
+                    <Select
+                      disabled={hasUnits}
+                      options={residentPortalTypeOptions}
+                    />
+                  }
+                />
+                {/* eslint-disable-next-line max-len */}
+                {formRef?.current?.getFieldValue( 'residentPortalType') === ResidentPortalType.RUCKUS_PORTAL &&
                     <Form.Item
                       name='residentPortalId'
                       label={$t({ defaultMessage: 'Resident Portal profile' })}
                       rules={[{ required: true }]}
                       children={
-                        residentPortalHasBound
+                        hasUnits
                           ? <ResidentPortalLink
                             id={formRef?.current?.getFieldValue('residentPortalId')}
                             name={residentPortalList?.data
@@ -365,6 +434,22 @@ export function PropertyManagementTab () {
                           />
                       }
                     />
+                }
+                {/* eslint-disable-next-line max-len */}
+                {formRef?.current?.getFieldValue( 'residentPortalType') === ResidentPortalType.OWN_PORTAL &&
+                  <Form.Item
+                    // Once the Resident Portal document ready, it needs to show the text
+                    hidden
+                    children={<Card type={'solid-bg'}>
+                      <Space align='start'>
+                        <InformationSolid />
+                        {$t({
+                          // eslint-disable-next-line max-len
+                          defaultMessage: 'Please refer to the resident portal documentation for more information about how to set up your own portal via API'
+                        })}
+                      </Space>
+                    </Card>}
+                  />
                 }
 
                 {msgTemplateEnabled &&

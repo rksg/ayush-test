@@ -113,10 +113,10 @@ describe('Property Unit Drawer', () => {
     await screen.findByText('Unit Name')
     await screen.findByText('VLAN')
     await screen.findByText('Resident Name')
-    await screen.findByLabelText('Connection Metering')
+    await screen.findByLabelText('Data Usage Metering')
     const buttons = await screen.findAllByRole('button', { name: 'Add' })
     expect(buttons.length).toEqual(2)
-    await userEvent.click(buttons[0]) //click to add connection metering
+    await userEvent.click(buttons[0]) //click to add Data Usage Metering
   })
 
   it('should add no nsg drawer', async () => {
@@ -138,7 +138,7 @@ describe('Property Unit Drawer', () => {
     const residentField = await screen.findByLabelText(/resident name/i)
     await userEvent.type(residentField, 'new resident name test')
 
-    await screen.findByLabelText('Connection Metering')
+    await screen.findByLabelText('Data Usage Metering')
 
     const buttons = await screen.findAllByRole('button', { name: 'Add' })
     expect(buttons.length).toEqual(2)

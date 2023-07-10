@@ -132,6 +132,9 @@ function DashboardPageHeader () {
       }, {
         key: 'add-switch',
         label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+      }, {
+        key: 'add-edge',
+        label: <TenantLink to='devices/edge/add'>{$t({ defaultMessage: 'SmartEdge' })}</TenantLink>
       }]
     }]}
   />

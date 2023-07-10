@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                               from '@acx-ui/store'
+import { getFilterPayload, AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                                 from '@acx-ui/store'
 
 export type SwitchStatusTimeSeries = {
   time: string[];
@@ -49,11 +49,10 @@ export const api = dataApi.injectEndpoints({
           }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<SwitchStatusTimeSeries>) =>

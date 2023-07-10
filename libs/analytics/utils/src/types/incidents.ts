@@ -1,4 +1,4 @@
-import { PathNode, NodeType } from '@acx-ui/utils'
+import { NetworkPath, NodeType } from '@acx-ui/utils'
 
 import { AnalyticsFilter } from '../analyticsFilter'
 import incidentSeverities  from '../incidentSeverities.json'
@@ -24,7 +24,7 @@ export interface IncidentMetadata {
 export interface Incident extends IncidentInformation {
   id: string
   code: IncidentCode
-  path: PathNode[]
+  path: NetworkPath
   sliceType: NodeType
   sliceValue: string
   startTime: string

@@ -230,7 +230,7 @@ export function SwitchConfigHistoryTable (props: {
               selectedConfigRow?.clis &&
               <div className='code-mirror-container'>
                 <div className='header'>
-                  {$t({ defaultMessage: 'Commands Applied' })}
+                  {$t({ defaultMessage: 'Configuration Applied' })}
                 </div>
                 <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedConfigRow} />
               </div>

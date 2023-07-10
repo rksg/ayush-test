@@ -6,7 +6,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Button, Drawer }   from '@acx-ui/components'
+import { Alert, Button, Drawer } from '@acx-ui/components'
 import {
   useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
@@ -22,7 +22,8 @@ import {
   SwitchViewModel,
   VeForm,
   VeViewModel,
-  VlanVePort
+  VlanVePort,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import { useParams }                   from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
@@ -32,12 +33,13 @@ interface SwitchVeProps {
   setVisible: (visible: boolean) => void
   isEditMode: boolean
   isVenueLevel: boolean
-  editData: VeViewModel
+  editData: VeViewModel,
+  readOnly: boolean
 }
 
 export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, isEditMode, isVenueLevel, editData } = props
+  const { visible, setVisible, isEditMode, isVenueLevel, editData, readOnly } = props
 
   const [form] = Form.useForm()
   const [loading, setLoading] = useState<boolean>(false)
@@ -233,16 +235,25 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   }
 
   const footer = [
-    <Button loading={loading} key='saveBtn' onClick={() => form.submit()} type={'primary'} >
-      {isEditMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })}
-    </Button>,
-    <Button disabled={loading} key='cancelBtn' onClick={resetFields}>
-      {$t({ defaultMessage: 'Cancel' })}
-    </Button>
+    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='ve-port-footer'>
+      <Button
+        disabled={loading}
+        key='cancelBtn'
+        onClick={resetFields}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+      <Button
+        loading={loading}
+        key='saveBtn'
+        type='secondary'
+        onClick={() => form.submit()}
+      >
+        {isEditMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })}
+      </Button>
+    </Space>
   ]
 
   return (
-
     <Drawer
       title={isEditMode
         ? $t({ defaultMessage: 'Edit VE Port' })
@@ -252,11 +263,17 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
       width={443}
       footer={footer}
       destroyOnClose={resetField}
-      children={
+      children={<>
+        { readOnly &&
+          <Alert type='info'
+            style={{ marginBottom: '10px' }}
+            message={$t(VenueMessages.CLI_APPLIED)}
+          />
+        }
         <Form
           layout='vertical'
           form={form}
-          onFinish={onSubmit}
+          onFinish={readOnly ? onClose : onSubmit}
         >
           { isVenueLevel && !isEditMode && <Form.Item
             label={$t({ defaultMessage: 'Switch' })}
@@ -288,7 +305,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
                 e && form.resetFields(['veId'])
                 form.setFieldValue('veId', e || '')
               }}
-              disabled={isEditMode || (isVenueLevel && !switchId) || isIncludeIpSetting}
+              disabled={isEditMode || (isVenueLevel && !switchId) || isIncludeIpSetting || readOnly}
               options={[
                 {
                   label: $t({ defaultMessage: 'Select...' }),
@@ -313,7 +330,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             }}>
           VE- */}
             <InputNumber
-              disabled={isEditMode}
+              disabled={isEditMode || readOnly}
               style={{ marginLeft: '5px' }}
               min={1}
               max={4095}
@@ -330,7 +347,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               { validator: (_, value) => NameRegExp(value) }
             ]}
           >
-            <Input />
+            <Input disabled={readOnly} />
           </Form.Item>
 
 
@@ -342,7 +359,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               { validator: (_, value) => OspfRegExp(value) }
             ]}
           >
-            <Input />
+            <Input disabled={readOnly} />
           </Form.Item>
 
 
@@ -354,7 +371,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               { validator: (_, value) => DhcpRelayAgentRegExp(value) }
             ]}
           >
-            <Input />
+            <Input disabled={readOnly} />
           </Form.Item>
 
 
@@ -366,12 +383,14 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               <Radio.Group
                 onChange={onIpAddressTypeChange} >
                 <Space direction='vertical'>
-                  <Radio key='dynamic' value='dynamic'>
+                  <Radio key='dynamic'
+                    value='dynamic'
+                    disabled={readOnly}>
                     {$t({ defaultMessage: 'DHCP' })}
                   </Radio>
                   <Radio key='static'
                     value='static'
-                    disabled={(!enableDhcp && dhcpServerEnabled) || disableIpSetting}>
+                    disabled={readOnly || (!enableDhcp && dhcpServerEnabled) || disableIpSetting}>
                     {$t({ defaultMessage: 'Static/Manual' })}
                   </Radio>
                 </Space>
@@ -389,7 +408,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             ]}
           >
             <Input
-              disabled={enableDhcp || disableIpSetting} />
+              disabled={readOnly || enableDhcp || disableIpSetting} />
           </Form.Item>
 
           <Form.Item
@@ -401,7 +420,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               { validator: (_, value) => IpSubnetMaskRegExp(value) }
             ]}
           >
-            <Input disabled={enableDhcp || disableIpSetting} />
+            <Input disabled={readOnly || enableDhcp || disableIpSetting} />
           </Form.Item>
 
           <Form.Item
@@ -410,6 +429,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             initialValue={''}
           >
             <Select
+              disabled={readOnly}
               options={[
                 {
                   label: $t({ defaultMessage: 'NONE' }),
@@ -427,6 +447,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             initialValue={''}
           >
             <Select
+              disabled={readOnly}
               options={[
                 {
                   label: $t({ defaultMessage: 'NONE' }),
@@ -437,7 +458,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             />
           </Form.Item>
 
-        </Form>}
+        </Form>
+      </>}
     />
 
   )

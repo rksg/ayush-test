@@ -78,7 +78,8 @@ export default function FacebookSetting (props:{
     <Form.Item
       name={['guestPortal','socialIdentities','facebook','config','appSecret']}
       rules={[
-        { required: true }
+        { required: true },
+        { max: 255 }
       ]}
       initialValue=''
       label={$t({ defaultMessage: 'App Secret' })}

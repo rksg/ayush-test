@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { Form, Input } from 'antd'
 import flat            from 'flat'
 
+import { defaultNetworkPath }                 from '@acx-ui/analytics/utils'
 import { createStepsFormContext }             from '@acx-ui/components'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, within, renderHook } from '@acx-ui/test-utils'
-import { defaultNetworkPath }                 from '@acx-ui/utils'
 
 import { stages }       from '../contents'
 import {

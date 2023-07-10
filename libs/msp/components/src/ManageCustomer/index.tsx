@@ -674,6 +674,7 @@ export function ManageCustomer () {
   }
 
   const CustomerAdminsForm = () => {
+
     if (isEditMode) {
       return <><Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
@@ -722,7 +723,8 @@ export function ManageCustomer () {
             <Select>
               {
                 Object.entries(RolesEnum).map(([label, value]) => (
-                  <Option
+                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER )
+                  && <Option
                     key={label}
                     value={value}>{intl.$t(roleDisplayText[value])}
                   </Option>

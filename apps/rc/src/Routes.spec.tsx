@@ -1080,7 +1080,7 @@ describe('RcRoutes: Timeline', () => {
   })
 })
 
-test('should navigate to Connection Metering table', async () => {
+test('should navigate to Data Usage Metering table', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   render(<Provider><RcRoutes /></Provider>, {
     route: {
@@ -1091,7 +1091,7 @@ test('should navigate to Connection Metering table', async () => {
   expect(screen.getByTestId('ConnectionMeteringTable')).toBeVisible()
 })
 
-test('should navigate to Connection Metering Detail', async () => {
+test('should navigate to Data Usage Metering Detail', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
   path = path.replace(':policyId', 'policyId')
@@ -1104,7 +1104,7 @@ test('should navigate to Connection Metering Detail', async () => {
   expect(screen.getByTestId('ConnectionMeteringDetail')).toBeVisible()
 })
 
-test('should navigate to Connection Metering Page create form', async () => {
+test('should navigate to Data Usage Metering Page create form', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   render(<Provider><RcRoutes /></Provider>, {
     route: {
@@ -1115,7 +1115,7 @@ test('should navigate to Connection Metering Page create form', async () => {
   expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
 })
 
-test('should navigate to Connection Metering Page edit form', async () => {
+test('should navigate to Data Usage Metering Page edit form', async () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   let path = getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })
   path = path.replace(':policyId', 'policyId')

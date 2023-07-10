@@ -22,7 +22,7 @@ export function ConnectionMeteringSettingForm () {
       }, true)
         .unwrap()).data.filter(g => g.id !== form.getFieldValue('id') ?? '')
         .map(g => ({ name: g.name }))
-      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Connection Metering' }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Data Usage Metering' }))
     } catch (e) {
       return Promise.resolve()
     }

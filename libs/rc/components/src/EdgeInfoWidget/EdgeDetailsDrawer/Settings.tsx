@@ -56,7 +56,7 @@ export const Settings = (props: SettingsProps) => {
       />
 
       <Form.Item
-        label={$t({ defaultMessage: 'DNS Server' })}
+        label={$t({ defaultMessage: 'Primary DNS Server' })}
         children={
           dnsSetting?.primary || '--'
         }

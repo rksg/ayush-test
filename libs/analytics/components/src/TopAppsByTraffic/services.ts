@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }         from '@acx-ui/store'
+import { getFilterPayload, AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { dataApi }                           from '@acx-ui/store'
 
 export type HierarchyNodeData = {
   topNAppByTotalTraffic: TopAppsByTrafficData[]
@@ -39,11 +39,10 @@ export const api = dataApi.injectEndpoints({
         }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           n: 5,
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<HierarchyNodeData>) =>{

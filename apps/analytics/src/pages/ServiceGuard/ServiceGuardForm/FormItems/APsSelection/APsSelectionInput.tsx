@@ -1,11 +1,10 @@
 import _                   from 'lodash'
 import { SingleValueType } from 'rc-cascader/lib/Cascader'
 
-import { normalizeNodeType }                      from '@acx-ui/analytics/utils'
+import { normalizeNodeType, defaultNetworkPath }  from '@acx-ui/analytics/utils'
 import { FlattenCascader }                        from '@acx-ui/components'
 import type { BaseCascaderProps, CascaderOption } from '@acx-ui/components'
-import { defaultNetworkPath }                     from '@acx-ui/utils'
-import type { APListNode, PathNode }              from '@acx-ui/utils'
+import type { FilterListNode, PathNode }          from '@acx-ui/utils'
 
 import { isAPListNodes, isNetworkNodes } from '../../../types'
 
@@ -58,7 +57,7 @@ function networkPathsToValue (
   if (!value) return []
 
   const aps = value.filter(isAPListNodes)
-    .map(([node, aps]) => ({ node: node as PathNode, aps: aps as APListNode }))
+    .map(([node, aps]) => ({ node: node as PathNode, aps: aps as FilterListNode }))
     // explode APs list into AP paths
     .flatMap(({ node, aps }) => aps.list.map((mac) => [node, ap(mac)]))
     // explode paths into value

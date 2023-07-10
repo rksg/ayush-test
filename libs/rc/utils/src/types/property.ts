@@ -14,16 +14,24 @@ export enum PropertyConfigStatus {
   ENABLED = 'ENABLED', DISABLED = 'DISABLED'
 }
 
+export enum ResidentPortalType {
+  NO_PORTAL = 'NoPortal',
+  RUCKUS_PORTAL = 'RuckusPortal',
+  OWN_PORTAL = 'UseOwnPortal'
+}
+
 export interface PropertyConfigs {
   status: PropertyConfigStatus,
   personaGroupId?: string,
   residentPortalId?: string,
   venueId?: string,
   venueName?: string,
+  residentPortalType?: ResidentPortalType, // only used in PropertyConfig setting form
   unitConfig?: {
     type: string,
     guestAllowed: boolean
     residentPortalAllowed: boolean,
+    residentApiAllowed: boolean,
     useMaxUnitCount: boolean,
     maxUnitCount: number
   },

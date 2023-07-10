@@ -265,6 +265,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           data-testid='aclName'
           rules={[
             { required: true },
+            { max: 255 },
             { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) }
           ]}
           children={<Input style={{ width: '400px' }} />}

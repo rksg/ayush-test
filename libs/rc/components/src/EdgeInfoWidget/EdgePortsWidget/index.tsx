@@ -59,7 +59,6 @@ export const EdgePortsWidget = (props: EdgePortsWidgetProps) => {
     title={$t({ defaultMessage: 'Ports' })}
     data={chartData}
     isLoading={isLoading}
-    emptyMessage={$t({ defaultMessage: 'No data' })}
     onClick={handleClick}
   />
 }

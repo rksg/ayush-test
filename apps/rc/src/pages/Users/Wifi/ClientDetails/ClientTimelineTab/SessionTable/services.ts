@@ -56,7 +56,6 @@ export const api = dataApi.injectEndpoints({
           mac: payload.mac,
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter,
           granularity: calculateGranularity(payload.startDate, payload.endDate)
         }
       }),

@@ -187,7 +187,7 @@ export const onApply = (
   setNetworkPath: CallableFunction
 ) => {
   const path = !value || value.length === 0
-    ? defaultNetworkPath
+    ? []
     : JSON.parse(value?.slice(-1)[0] as string)
   setNetworkPath(path, value || [])
 }
@@ -213,9 +213,7 @@ function ConnectedNetworkFilter (
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
-    omit({
-      ...filters, path: defaultNetworkPath, includeMuted: false
-    }, 'filter'),
+    { ...filters, includeMuted: false },
     {
       skip: !Boolean(withIncidents),
       selectFromResult: ({ data }) => ({

@@ -45,15 +45,36 @@ exports[`Topology AP Card should render correctly 1`] = `
         <div
           class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
         >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm"
-            style="padding: 0px;"
-            type="button"
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
           >
-            <span>
-              R760-181-66
-            </span>
-          </button>
+            <div
+              class="ant-space-item"
+              style="margin-right: 8px;"
+            >
+              <button
+                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-jIZahH dvaVdU"
+                style="padding: 0px;"
+                type="button"
+              >
+                <span>
+                  R760-181-66
+                </span>
+              </button>
+            </div>
+            <div
+              class="ant-space-item"
+            >
+              <button
+                class="ant-btn ant-btn-link ant-btn-sm ant-btn-icon-only"
+                type="button"
+              >
+                <svg
+                  data-testid="CloseSymbol"
+                />
+              </button>
+            </div>
+          </div>
         </div>
         <div
           class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -292,10 +313,10 @@ exports[`Topology AP Card should render correctly 1`] = `
                             class="styledComponents__NoLabel-sc-xapams-1 hllmcF"
                           >
                             <div
-                              class="sc-llJcti enhDvL"
+                              class="sc-bZkfAO zGJzY"
                             >
                               <div
-                                class="sc-iIPllB gbTbwL"
+                                class="sc-kLLXSd cyngpp"
                               >
                                 <label />
                                 <label>
@@ -321,7 +342,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </label>
                               </div>
                               <div
-                                class="sc-gicCDI kVaZiA"
+                                class="sc-ikZpkk cEIjvT"
                               >
                                 <label>
                                   <h5
@@ -341,7 +362,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-gicCDI kVaZiA"
+                                class="sc-ikZpkk cEIjvT"
                               >
                                 <label>
                                   <h5
@@ -361,7 +382,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-gicCDI kVaZiA"
+                                class="sc-ikZpkk cEIjvT"
                               >
                                 <label>
                                   <h5
@@ -381,7 +402,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-gicCDI kVaZiA"
+                                class="sc-ikZpkk cEIjvT"
                               >
                                 <label>
                                   <h5
@@ -401,7 +422,7 @@ exports[`Topology AP Card should render correctly 1`] = `
                                 </span>
                               </div>
                               <div
-                                class="sc-gicCDI kVaZiA"
+                                class="sc-ikZpkk cEIjvT"
                               >
                                 <label>
                                   <h5

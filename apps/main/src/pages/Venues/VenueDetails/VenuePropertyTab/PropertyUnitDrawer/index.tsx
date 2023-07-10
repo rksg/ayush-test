@@ -153,10 +153,10 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
         <Row>
           <Col span={21}>
             <Form.Item
-              label={$t({ defaultMessage: 'Connection Metering' })}
+              label={$t({ defaultMessage: 'Data Usage Metering' })}
               name={'meteringProfileId'}
               // eslint-disable-next-line max-len
-              tooltip={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected connection metering policy' })}
+              tooltip={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected data usage metering policy' })}
             >
               <Select
                 allowClear
@@ -207,7 +207,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
       </Space>
 
       <Modal
-        title={$t({ defaultMessage: 'Add Connection Metering' })}
+        title={$t({ defaultMessage: 'Add Data Usage Metering' })}
         visible={modalVisible}
         type={ModalType.ModalStepsForm}
         children={<ConnectionMeteringForm
