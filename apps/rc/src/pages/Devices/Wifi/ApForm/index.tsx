@@ -114,7 +114,7 @@ export function ApForm () {
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
 
-  const BASE_VERSION = '6.3.1'
+  const BASE_VERSION = '6.2.1'
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -315,10 +315,8 @@ export function ApForm () {
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
-    if (venueVersionList?.data.some(venue => venue.id === value)) {
-      const venueInfo = venueVersionList.data.find(venue => venue.id === value)
-      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
-    }
+    const venueInfo = venueVersionList?.data.find(venue => venue.id === value)
+    setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
   }
 
   const onSaveCoordinates = (latLng: DeviceGps | null) => {
