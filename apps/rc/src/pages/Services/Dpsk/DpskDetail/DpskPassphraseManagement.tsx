@@ -27,6 +27,7 @@ import {
   ExpirationType,
   NetworkTypeEnum,
   NewDpskPassphrase,
+  getPassphraseStatus,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
   useTableQuery
@@ -150,7 +151,7 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'expirationDate',
       sorter: false,
       render: function (data, row) {
-        return renderPassphraseStatus(row, isCloudpathEnabled)
+        return getPassphraseStatus(row, isCloudpathEnabled)
       }
     },
     {
@@ -358,20 +359,6 @@ export default function DpskPassphraseManagement () {
       />
     </Loader>
   </>)
-}
-
-// eslint-disable-next-line max-len
-function renderPassphraseStatus (passphrase: NewDpskPassphrase, isCloudpathEnabled = false): string {
-  const { $t } = getIntl()
-
-  if (isCloudpathEnabled && passphrase.revocationDate) {
-    const revocationDate = moment(passphrase.revocationDate).format(EXPIRATION_TIME_FORMAT)
-    return $t({ defaultMessage: 'Revoked ({revocationDate})' }, { revocationDate })
-  // eslint-disable-next-line max-len
-  } else if (passphrase.expirationDate && moment(passphrase.expirationDate).isSameOrBefore(new Date())) {
-    return $t({ defaultMessage: 'Expired' })
-  }
-  return $t({ defaultMessage: 'Active' })
 }
 
 // eslint-disable-next-line max-len
