@@ -155,7 +155,7 @@ function PersonaDetails () {
       />
     },
     { label: $t({ defaultMessage: 'VLAN' }), value: personaDetailsQuery.data?.vlan },
-    { label: $t({ defaultMessage: 'DPSK Pool' }),
+    { label: $t({ defaultMessage: 'DPSK Service' }),
       value:
         <DpskPoolLink
           name={dpskPoolData?.name}

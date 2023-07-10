@@ -73,7 +73,7 @@ export const PersonaGroupTable = (props: PersonaGroupTableProps) => {
       dataIndex: 'personaCount'
     },
     {
-      title: $t({ defaultMessage: 'DPSK Pool' }),
+      title: $t({ defaultMessage: 'DPSK Service' }),
       key: 'dpskName',
       dataIndex: 'dpskName',
       render: (data, row) => {
