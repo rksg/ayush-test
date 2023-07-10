@@ -42,11 +42,11 @@ import { VenueEditContext } from '../..'
 const displayWidth = '40px'
 const RadioLegends = styled.div`
   position: relative;
-  padding-top: 2em;
+  padding-top: 1em;
   .legends {
     position: absolute;
     display: grid;
-    grid-template-columns: 204px 290px 92px;
+    grid-template-columns: 190px 314px 90px;
     grid-column-gap: 8px;
     height: 16px;
 
@@ -71,7 +71,8 @@ const RadioLegends = styled.div`
   }
 `
 const RadioLable = styled.div`
-  text-align: center;
+  display: flex;
+  justify-content: center;
 `
 
 export function RadioSettings () {
@@ -560,23 +561,23 @@ export function RadioSettings () {
             type='third'
           >
             <Tabs.TabPane key='Normal24GHz'
-              tab={<RadioLable style={{ width: '48px' }}>
+              tab={<RadioLable style={{ width: '36px' }}>
                 {$t({ defaultMessage: '2.4 GHz' })}</RadioLable>}/>
             <Tabs.TabPane key='Normal5GHz'
-              tab={<RadioLable style={{ width: '38px' }}>
+              tab={<RadioLable style={{ width: '36px' }}>
                 {$t({ defaultMessage: '5 GHz' })}</RadioLable>}/>
             { isTriBandRadio && isDual5gMode && <>
               <Tabs.TabPane key='Lower5GHz'
-                tab={<RadioLable style={{ width: '88px' }}>
+                tab={<RadioLable style={{ width: '100px' }}>
                   {$t({ defaultMessage: 'Lower 5 GHz' })}</RadioLable>}/>
               <Tabs.TabPane key='Upper5GHz'
-                tab={<RadioLable style={{ width: '88px' }}>
+                tab={<RadioLable style={{ width: '100px' }}>
                   {$t({ defaultMessage: 'Upper 5 GHz' })}</RadioLable>}/>
             </>
             }
             { isTriBandRadio &&
               <Tabs.TabPane key='Normal6GHz'
-                tab={<RadioLable style={{ width: '38px' }}>
+                tab={<RadioLable style={{ width: '36px' }}>
                   {$t({ defaultMessage: '6 GHz' })}</RadioLable>}/>
             }
           </Tabs>
