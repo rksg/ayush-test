@@ -204,17 +204,17 @@ export const mockedFirewallDataList = {
           aclRuleNum: 2
         }
       ],
-      edgeIds: ['edge1']
+      edgeIds: ['0000000001']
     },
     {
       id: '2',
       firewallName: 'TestFirewall2',
-      ddosEnabled: true,
+      ddosEnabled: false,
       ddosRateLimitingRules: {
         [DdosAttackType.ALL]: 220,
         [DdosAttackType.ICMP]: 200
       },
-      statefulAclEnabled: true,
+      statefulAclEnabled: false,
       statefulAcls: [
         {
           aclName: 'ACL1',
@@ -227,7 +227,7 @@ export const mockedFirewallDataList = {
           aclRuleNum: 2
         }
       ],
-      edgeIds: ['edge2']
+      edgeIds: ['0000000002']
     }
   ]
 }
