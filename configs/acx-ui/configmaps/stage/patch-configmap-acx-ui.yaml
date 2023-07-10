@@ -7,6 +7,6 @@ data:
   split.io.key: "mlbj64qb8lgfji5upnedt4lo7h5c4ik65m95"
   captive.portal.domain.name: "stage.ruckus.cloud"
   change.password: "https://support.ruckuswireless.com/edit_my_profile"
-  manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"  
+  manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"
   new.api.domain.name: "api.stage.ruckus.cloud"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"

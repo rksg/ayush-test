@@ -40,8 +40,8 @@ describe('NetworksList with feature toggle', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('NetworksTable')).toBeVisible()
   })
-  it('should render wlan report tab', async () => {
-    render(<NetworksList tab={NetworkTabsEnum.WLAN_REPORT}/>,
+  it('should render wlans report tab', async () => {
+    render(<NetworksList tab={NetworkTabsEnum.WLANS_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId(ReportType.WLAN)).toBeVisible()
   })
@@ -59,7 +59,7 @@ describe('NetworksList with feature toggle', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<NetworksList tab={NetworkTabsEnum.WIRELESS_REPORT}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    userEvent.click(await screen.findByText('WLAN Report'))
+    userEvent.click(await screen.findByText('WLANs Report'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/networks/wireless/reports/wlans', hash: '', search: ''
     }))
