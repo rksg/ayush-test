@@ -174,7 +174,7 @@ function BrowserDialog ( broswerLang: LangKey) {
       title: $t({ defaultMessage: 'Change System Language?' }),
       content: $t({ defaultMessage: 'We noticed that your browser is set to {bLangDisplay}'
             + ' Would you like to change the system\'s language to {bLangDisplay}?' },
-        { bLangDisplay })
+      { bLangDisplay })
     })
   }
 
