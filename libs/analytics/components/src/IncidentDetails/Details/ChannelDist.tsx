@@ -3,7 +3,6 @@ import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
-import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
 
 import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
 import { Insights }                          from '../Insights'
@@ -36,16 +35,20 @@ export const ChannelDist = (incident: Incident) => {
     back: { value: 6, unit: 'hours' as unitOfTime.Base }
   }
 
+  // TODO
+  const heatMapCharts = [
+    'AP DISTRIBUTION BY CHANNEL',
+    'ROGUE DISTRIBUTION BY CHANNEL',
+    ...(incident.code === 'p-channeldist-suboptimal-plan-24g') ? [] : ['DFS EVENTS BY CHANNEL']
+  ]
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Incident Details' })}
         titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
-          ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'AI Analytics' }) }
-          ]:[]),
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'AI Analytics' }) },
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}
@@ -56,22 +59,18 @@ export const ChannelDist = (incident: Incident) => {
           <UI.FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IncidentAttributes incident={incident} visibleFields={attributeList} />
-              CONFIGURATION SECTION
+              CONFIGURATION SECTION TBD
             </div>)}
           </UI.FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '228px' }}>
-        AP DISTRIBUTION BY CHANNEL
-        </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '180px' }}>
-        ROGUE DISTRIBUTION BY CHANNEL
-        </GridCol>
-        <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '180px' }}>
-        DFS EVENTS BY CHANNEL (for 5G INDOOR/OUTDOOR)
-        </GridCol>
+        {heatMapCharts.map(heatMap =>
+          <GridCol col={{ offset: 4, span: 20 }}>
+            {heatMap}
+          </GridCol>
+        )}
         <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '250px' }}>
           <TimeSeries
             incident={incident}
@@ -80,7 +79,6 @@ export const ChannelDist = (incident: Incident) => {
             buffer={buffer}
           />
         </GridCol>
-        
       </GridRow>
     </>
   )
