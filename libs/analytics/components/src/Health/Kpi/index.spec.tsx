@@ -12,22 +12,12 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }                                  from '@acx-ui/types'
-import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
+import { TimeStampRange }                                            from '@acx-ui/types'
+import { DateRange, NetworkPath, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
-import KpiSection, { defaultThreshold } from '.'
-
-const defaultThresholdValues = {
-  apCapacity: 50,
-  apServiceUptime: 0.995,
-  apToSZLatency: 200,
-  clientThroughput: 10000,
-  rss: -75,
-  switchPoeUtilization: 0.8,
-  timeToConnect: 2000
-}
+import KpiSection from '.'
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -175,7 +165,7 @@ describe('Kpi Section', () => {
       data: { network: { timeSeries: sampleTS } }
     })
 
-    const path = [{ type: 'ap', name: 'z1' }] as NetworkPath
+    const path = [{ type: 'ap' as NodeType, name: 'z1' }] as NetworkPath
     const filter = pathToFilter(path)
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
@@ -239,11 +229,5 @@ describe('Kpi Section', () => {
     </Provider></Router>)
 
     expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
-  })
-  it('should return correct defaultThreshold for ACX', async () => {
-    expect(defaultThreshold(undefined)).toEqual(defaultThresholdValues)
-  })
-  it('should return correct defaultThreshold for RA', async () => {
-    expect(defaultThreshold('true')).toEqual({ ...defaultThresholdValues,clusterLatency: 10 })
   })
 })
