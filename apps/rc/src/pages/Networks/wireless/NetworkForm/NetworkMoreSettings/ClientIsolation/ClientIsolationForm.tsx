@@ -33,7 +33,7 @@ export default function ClientIsolationForm () {
   const enableVxLan = hasVxLanTunnelProfile(data)
 
   return (<>
-    <UI.FieldLabel width='125px'>
+    <UI.FieldLabel width='250px'>
       {$t({ defaultMessage: 'Client Isolation:' })}
 
       <Form.Item
@@ -65,7 +65,7 @@ export default function ClientIsolationForm () {
           </Option>
         </Select>
       </Form.Item>
-      <UI.FieldLabel width='230px'>
+      <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Automatic support for VRRP/HSRP:' })}
         <Form.Item
           name={['wlan','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
@@ -74,7 +74,7 @@ export default function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      {isPoliciesEnabled ? <UI.FieldLabel width='230px'>
+      {isPoliciesEnabled ? <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
         <Form.Item
           name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}

@@ -51,6 +51,7 @@ export function LoadControlForm () {
 
   return(
     <>
+      <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
       <Form.Item
         label={$t({ defaultMessage: 'Max Rate:' })}
         name='maxRate'>

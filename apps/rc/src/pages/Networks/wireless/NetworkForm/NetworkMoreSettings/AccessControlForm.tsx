@@ -341,7 +341,7 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   }, [enableAccessControlProfile, accessControlProfileId])
 
   return (<>
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width='250px'>
       {$t({ defaultMessage: 'Access Control' })}
       <Form.Item
         name='accessControlProfileEnable'
