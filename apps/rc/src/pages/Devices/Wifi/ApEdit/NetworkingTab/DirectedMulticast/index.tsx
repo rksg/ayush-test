@@ -213,7 +213,7 @@ export function DirectedMulticast () {
               style={{ marginTop: '-5px' }}
               children={
                 isUseVenueSettings ?
-                  <span>{formRef?.current?.getFieldValue(fieldName)?
+                  <span data-testid={key+'-span'}>{formRef?.current?.getFieldValue(fieldName)?
                     $t({ defaultMessage: 'On' }): $t({ defaultMessage: 'Off' })}</span> :
                   <Switch
                     data-testid={key+'-switch'}

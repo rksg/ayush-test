@@ -69,9 +69,9 @@ describe('AP Directed Multicast', () => {
     await waitFor(() => screen.findByText('Multicast Traffic from:'))
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
-    expect(await screen.findByTestId('wired-switch')).toBeVisible()
-    expect(await screen.findByTestId('wireless-switch')).toBeVisible()
-    expect(await screen.findByTestId('network-switch')).toBeVisible()
+    expect(await screen.findByTestId('wired-span')).toBeVisible()
+    expect(await screen.findByTestId('wireless-span')).toBeVisible()
+    expect(await screen.findByTestId('network-span')).toBeVisible()
   })
 
   it('should handle click Customize/Use Venue settings link', async () => {
@@ -99,9 +99,9 @@ describe('AP Directed Multicast', () => {
     await waitFor(() => screen.findByText('Multicast Traffic from:'))
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
-    expect(await screen.findByTestId('wired-switch')).toBeDisabled()
-    expect(await screen.findByTestId('wireless-switch')).toBeDisabled()
-    expect(await screen.findByTestId('network-switch')).toBeDisabled()
+    expect(await screen.findByTestId('wired-span')).toBeVisible()
+    expect(await screen.findByTestId('wireless-span')).toBeVisible()
+    expect(await screen.findByTestId('network-span')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
 
@@ -113,9 +113,9 @@ describe('AP Directed Multicast', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ }))
 
-    expect(await screen.findByTestId('wired-switch')).toBeDisabled()
-    expect(await screen.findByTestId('wireless-switch')).toBeDisabled()
-    expect(await screen.findByTestId('network-switch')).toBeDisabled()
+    expect(await screen.findByTestId('wired-span')).toBeVisible()
+    expect(await screen.findByTestId('wireless-span')).toBeVisible()
+    expect(await screen.findByTestId('network-span')).toBeVisible()
 
   })
 
@@ -137,7 +137,7 @@ describe('AP Directed Multicast', () => {
           </ApDataContext.Provider>
         </ApEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
@@ -154,6 +154,7 @@ describe('AP Directed Multicast', () => {
     expect(await screen.findByTestId('network-switch')).toBeChecked()
     await userEvent.click(await screen.findByTestId('network-switch'))
     expect(await screen.findByTestId('network-switch')).not.toBeChecked()
+
   })
 
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
@@ -163,7 +164,7 @@ describe('AP Directed Multicast', () => {
           <DirectedMulticast />
         </ApDataContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
@@ -182,9 +183,9 @@ describe('AP Directed Multicast', () => {
     expect(await screen.findByTestId('network-switch')).not.toBeChecked()
 
     await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ }))
-    expect(await screen.findByTestId('wired-switch')).toBeChecked()
-    expect(await screen.findByTestId('wireless-switch')).toBeChecked()
-    expect(await screen.findByTestId('network-switch')).toBeChecked()
+    expect((await screen.findByTestId('wired-span')).innerHTML).toBe('On')
+    expect((await screen.findByTestId('wireless-span')).innerHTML).toBe('On')
+    expect((await screen.findByTestId('network-span')).innerHTML).toBe('On')
 
     await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
     expect(await screen.findByTestId('wired-switch')).not.toBeChecked()
