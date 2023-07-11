@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Root }          from 'react-dom/client'
 import { IntlShape }     from 'react-intl'
@@ -49,6 +49,7 @@ const supportedLocales: Record<string, LangKey> = {
   'pt': 'pt-BR',
   'pt-BR': 'pt-BR'
 }
+
 declare global {
   /* eslint-disable no-var */
   var pendo: {
@@ -61,8 +62,7 @@ export function loadMessages (locales: readonly string[]): LangKey {
     supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
   let browserLang = supportedLocales[locale as keyof typeof supportedLocales]
   if (browserLang !== DEFAULT_SYS_LANG) {
-    const isConfirm = browserDialog(browserLang)
-    // console.log(`isConfirm ${isConfirm}`)
+    const isConfirm = BrowserDialog(browserLang)
     browserLang = isConfirm ? browserLang : DEFAULT_SYS_LANG
   }
   return browserLang
@@ -126,7 +126,14 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
-const browserDialog = ( broswerLang: LangKey, callback?: (event: boolean) => boolean) => {
+const isNonProdEnv = ( window.location.hostname === 'ruckus.cloud' ||
+  window.location.hostname === 'eu.ruckus.cloud' ||
+  window.location.hostname === 'asia.ruckus.cloud' ||
+  window.location.hostname === 'stage.ruckus.cloud' )
+
+function BrowserDialog ( broswerLang: LangKey) {
+  const [isOpen, setIsOpen] = useState(true)
+  const [isActionConfirmed, setIsActionConfirmed] = useState(false)
   const bLang = broswerLang.slice(0, 2)
   const browserLangDisplay = new Intl.DisplayNames(['en'], { type: 'language' })
   let intl: IntlShape
@@ -137,36 +144,41 @@ const browserDialog = ( broswerLang: LangKey, callback?: (event: boolean) => boo
     setUpIntl({ locale: DEFAULT_SYS_LANG })
     intl = getIntl()
   }
-  // const [promise, setPromise] = useState(null)
   const { $t } = intl
   const bLangDisplay = browserLangDisplay.of(bLang)
+  if (isOpen && !isNonProdEnv) {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel',
+          closeAfterAction: true,
+          handler () {
+            setIsActionConfirmed(false)
+            setIsOpen(false)
+          }
+        }, {
+          text: $t({ defaultMessage: 'Change to {bLangDisplay}' }, { bLangDisplay }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler () {
+            setIsActionConfirmed(true)
+            setIsOpen(false)
+          }
+        }]
+      },
+      title: $t({ defaultMessage: 'Change System Language?' }),
+      content: $t({ defaultMessage: 'We noticed that your browser is set to {bLangDisplay}'
+            + ' Would you like to change the system\'s language to {bLangDisplay}?' },
+        { bLangDisplay })
+    })
+  }
 
-  showActionModal({
-    type: 'confirm',
-    customContent: {
-      action: 'CUSTOM_BUTTONS',
-      buttons: [{
-        text: $t({ defaultMessage: 'Cancel' }),
-        type: 'default',
-        key: 'cancel',
-        closeAfterAction: true,
-        handler () { }
-      }, {
-        text: $t({ defaultMessage: 'Change to {bLangDisplay}' }, { bLangDisplay }),
-        type: 'primary',
-        key: 'ok',
-        closeAfterAction: true,
-        handler () {
-          callback?.(true)
-        }
-      }]
-    },
-    title: $t({ defaultMessage: 'Change System Language?' }),
-    content: $t({ defaultMessage: 'We noticed that your browser is set to {bLangDisplay}'
-          + ' Would you like to change the system\'s language to {bLangDisplay}?' },
-    { bLangDisplay })
-  })
-  return false
+  return isActionConfirmed
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
@@ -183,7 +195,7 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading: result.isLoading || result.isFetching
-    || request.isLoading || request.isFetching }]}
+        || request.isLoading || request.isFetching }]}
     children={<ConfigProvider {...props} lang={lang} />}
   />
 }
@@ -195,8 +207,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
-      !Boolean(locale.messages) ||
-      !Boolean(userProfile.allowedOperations.length)
+        !Boolean(locale.messages) ||
+        !Boolean(userProfile.allowedOperations.length)
     }]}
     children={props.children}
   />
