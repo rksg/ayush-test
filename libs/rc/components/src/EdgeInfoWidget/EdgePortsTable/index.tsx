@@ -9,20 +9,22 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
 
   const columns: TableProps<EdgePortStatus>['columns'] = [
     {
-      title: $t({ defaultMessage: '#' }),
       key: 'sortIdx',
       dataIndex: 'sortIdx',
       defaultSortOrder: 'ascend',
-      sorter: { compare: sortProp('sortIdx', defaultSort) },
-      render: (id, record, index) => {
-        return index + 1
-      }
+      show: false
     },
     {
-      title: $t({ defaultMessage: 'Port' }),
+      title: $t({ defaultMessage: 'Port Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      key: 'description',
+      dataIndex: 'description'
+      // sorter: { compare: sortProp('description', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Status' }),
