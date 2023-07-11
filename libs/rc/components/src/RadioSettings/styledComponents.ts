@@ -1,5 +1,5 @@
-import {Form, Select} from 'antd'
-import styled     from 'styled-components/macro'
+import { Form, Select } from 'antd'
+import styled           from 'styled-components/macro'
 
 export const RadioFormSelect = styled(Select)`
  &.readOnly {
