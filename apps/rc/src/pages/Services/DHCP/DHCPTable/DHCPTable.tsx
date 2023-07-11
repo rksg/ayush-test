@@ -38,6 +38,7 @@ export default function DHCPTable () {
         'name',
         'dhcpPools',
         'venueIds',
+        'venueCount',
         'technology'
       ]
     },
@@ -236,7 +237,7 @@ function useColumns () {
     {
       key: 'venues',
       title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venueIds',
+      dataIndex: 'venueCount',
       filterable: venueNameMap,
       align: 'center',
       sorter: true,

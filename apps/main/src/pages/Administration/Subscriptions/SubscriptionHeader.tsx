@@ -7,8 +7,7 @@ import {
 } from '@acx-ui/components'
 import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
-  useGetEntitlementSummaryQuery,
-  useGetAccountTierQuery
+  useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementDeviceType,
@@ -16,8 +15,8 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { AccountTier } from '@acx-ui/utils'
+import { useParams }                       from '@acx-ui/react-router-dom'
+import { getJwtTokenPayload, AccountTier } from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
@@ -61,8 +60,7 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const request = useGetAccountTierQuery({ params })
-  const subscriptionVal = (request?.data?.acx_account_tier
+  const subscriptionVal = (getJwtTokenPayload().acx_account_tier
   === AccountTier.PLATINUM? SubscriptionTierType.Platinum : SubscriptionTierType.Gold)
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
