@@ -116,6 +116,17 @@ export function VlanPortsModal (props: {
       title: '',
       vlanConfigName: ''
     }
+
+    const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
+      .filter((value: string) => value.startsWith('1/1/') ||
+        (data.enableSlot2 && value.startsWith('1/2/')) ||
+        (data.enableSlot3 && value.startsWith('1/3/')))
+
+    const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
+      .filter((value: string) => value.startsWith('1/1/') ||
+        (data.enableSlot2 && value.startsWith('1/2/')) ||
+        (data.enableSlot3 && value.startsWith('1/3/')))
+
     switchFamilyModelsData.model = data.family + '-' + data.model
     switchFamilyModelsData.slots = data.switchFamilyModels.slots.map(
       (slot: { slotNumber: number; enable: boolean }) => ({
@@ -123,8 +134,8 @@ export function VlanPortsModal (props: {
         enable: slot.enable,
         option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
       }))
-    switchFamilyModelsData.untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
-    switchFamilyModelsData.taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
+    switchFamilyModelsData.untaggedPorts = untaggedPorts
+    switchFamilyModelsData.taggedPorts = taggedPorts
     onSave(switchFamilyModelsData)
   }
 
