@@ -1,9 +1,10 @@
-import { Button, Col, Row } from 'antd'
-import { useIntl }          from 'react-intl'
+import { Button, Space, Typography } from 'antd'
+import { useIntl }                   from 'react-intl'
 
-import { Card }               from '@acx-ui/components'
-import { BiDirectionalArrow } from '@acx-ui/icons'
-import { Link, Node }         from '@acx-ui/rc/utils'
+import { Card, Descriptions }              from '@acx-ui/components'
+import { BiDirectionalArrow, CloseSymbol } from '@acx-ui/icons'
+import { Link, Node }                      from '@acx-ui/rc/utils'
+import { noDataDisplay }                   from '@acx-ui/utils'
 
 
 export default function LinkTooltip (props: { tooltipPosition: {
@@ -12,17 +13,18 @@ export default function LinkTooltip (props: { tooltipPosition: {
 },
 tooltipSourceNode: Node,
 tooltipTargetNode: Node,
-tooltipEdge: Link
+tooltipEdge: Link,
+onClose: () => void
 }) {
 
-  const { tooltipPosition, tooltipSourceNode, tooltipTargetNode, tooltipEdge } = props
+  const { tooltipPosition, tooltipSourceNode, tooltipTargetNode, tooltipEdge, onClose } = props
   const { $t } = useIntl()
 
   return <div
     data-testid='edgeTooltip'
     style={{
       position: 'absolute',
-      width: '280px',
+      width: '348px',
       minHeight: '350px',
       zIndex: 9999,
       top: tooltipPosition.y - 100,
@@ -32,91 +34,66 @@ tooltipEdge: Link
       type='no-border'
     >
       <Card.Title>
-        {tooltipSourceNode?.type} <span><BiDirectionalArrow /></span> {tooltipTargetNode?.type}
+        <Space style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <div>
+            {tooltipSourceNode?.type} <span><BiDirectionalArrow /></span> {tooltipTargetNode?.type}
+          </div>
+          <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>
+        </Space>
       </Card.Title>
-      <Row
-        gutter={[12, 24]}
+
+      <Descriptions labelWidthPercent={50}
         style={{
-          lineHeight: '24px'
+          alignItems: 'center'
         }}>
-        <Col span={12} >
-          {tooltipSourceNode?.type}:
-        </Col>
-        <Col span={12} >
-          <Button
-            style={{
-              padding: 0
-            }}
-            size='small'
-            type='link'>
-            {tooltipSourceNode?.name || tooltipSourceNode?.mac || tooltipSourceNode?.id}
-          </Button>
-        </Col>
-      </Row>
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          {tooltipTargetNode?.type}:
-        </Col>
-        <Col span={12} >
-          <Button
-            style={{
-              padding: 0
-            }}
-            size='small'
-            type='link'>
-            {tooltipTargetNode?.name || tooltipTargetNode?.mac || tooltipTargetNode?.id}
-          </Button>
-        </Col>
-      </Row>
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          {$t({ defaultMessage: 'Link Speed' })}:
-        </Col>
-        <Col span={12} >
-          {tooltipEdge?.linkSpeed || '--'}
-        </Col>
-      </Row>
-      {
-        /* TODO: does we get PoE usage if poe disabled?
-        How to calculate and set unit for PoE? */
-      }
-      { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) && <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          {$t({ defaultMessage: 'PoE' })}:
-        </Col>
-        <Col span={12} >
-          { tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
+        <Descriptions.Item
+          label={tooltipSourceNode?.type}
+          children={
+            <Typography.Link
+              style={{
+                width: '156px'
+              }}
+              ellipsis={true}>
+              {tooltipSourceNode?.name || tooltipSourceNode?.mac || tooltipSourceNode?.id}
+            </Typography.Link>
+          } />
+
+        <Descriptions.Item
+          label={tooltipTargetNode?.type}
+          children={
+            <Typography.Link
+              style={{
+                width: '156px'
+              }}
+              ellipsis={true}>
+              {tooltipTargetNode?.name || tooltipTargetNode?.mac || tooltipTargetNode?.id}
+            </Typography.Link>
+          } />
+
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Link Speed' })}
+          children={tooltipEdge?.linkSpeed || noDataDisplay} />
+
+        {
+          /* TODO: does we get PoE usage if poe disabled?
+          How to calculate and set unit for PoE? */
+        }
+
+        { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) &&
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'PoE' })}
+            children={tooltipEdge?.poeEnabled ? $t({ defaultMessage: 'On' })
             +'('+ tooltipEdge?.poeUsed +' / '+ tooltipEdge?.poeTotal +')'
-            : $t({ defaultMessage: 'Off' })}
-        </Col>
-      </Row>
-      }
-      {
-        <Row
-          gutter={[12, 24]}
-          style={{
-            lineHeight: '24px'
-          }}>
-          <Col span={12} >
-            {$t({ defaultMessage: 'Port' })}:
-          </Col>
-          <Col span={12} >
-            { tooltipEdge?.connectedPort || '--'}
-          </Col>
-        </Row>
-      }
+              : $t({ defaultMessage: 'Off' })} />
+        }
+
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Port' })}
+          children={tooltipEdge?.connectedPort || noDataDisplay} />
+      </Descriptions>
     </Card>
   </div>
 }
