@@ -488,7 +488,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
             })
           }
         }, {
-          label: $t({ defaultMessage: 'Import from file' }),
+          label: $t({ defaultMessage: 'Import APs' }),
           onClick: () => {
             setImportVisible(true)
           }
@@ -499,7 +499,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
       />
       <ImportFileDrawer type='AP'
-        title={$t({ defaultMessage: 'Import from file' })}
+        title={$t({ defaultMessage: 'Import APs from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
         acceptType={['csv']}
