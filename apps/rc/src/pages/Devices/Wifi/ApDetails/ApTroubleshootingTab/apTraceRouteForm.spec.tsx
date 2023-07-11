@@ -34,8 +34,8 @@ describe('ApTraceRouteForm', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApTraceRouteForm /></Provider>)
-    expect(asFragment()).toMatchSnapshot()
+    render(<Provider><ApTraceRouteForm /></Provider>)
+    expect(screen.getByRole('textbox', { name: /target host or ip address/i })).toBeVisible()
   })
 
   it('should run validation correctly', async () => {

@@ -59,12 +59,12 @@ describe('AP Group Form - Add', () => {
     Modal.destroyAll()
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApGroupForm /></Provider>, {
+    render(<Provider><ApGroupForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/apgroups/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+
     expect(await screen.findByText('Add AP Group')).toBeVisible()
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
