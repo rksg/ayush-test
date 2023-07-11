@@ -1,18 +1,17 @@
-
-import { get } from '@acx-ui/config'
-
-import { kpiConfig, multipleBy1000, divideBy100, noFormat, kpisForTab, apToSZLatencyConfig, apServiceUptimeConfig } from './healthKPIConfig'
-
-const mockGet = get as jest.Mock
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
-}))
+import { multipleBy1000, divideBy100, noFormat, kpisForTab } from './healthKPIConfig'
 
 describe('Health KPI', () => {
-  it('should format correctly', () => {
+  const mockGet = jest.fn()
+  beforeEach(() => {
+    jest.resetModules()
+    require('@acx-ui/utils').setUpIntl({ locale: 'en-US', messages: {} })
+    jest.doMock('@acx-ui/config', () => ({ get: mockGet }))
+  })
+  it('returns config for R1', () => {
+    mockGet.mockReturnValue(undefined)
+    const { kpiConfig } = require('./healthKPIConfig')
     const { histogram } = kpiConfig.timeToConnect
     const { barChart } = kpiConfig.connectionSuccess
-
     expect(histogram.shortXFormat(2000)).toBe(2)
     expect(barChart.shortXFormat('2022-10-01')).toBe('01')
     expect(barChart.longYFormat(10)).toBe('10%')
@@ -26,28 +25,17 @@ describe('Health KPI', () => {
     expect(multipleBy1000(10)).toBe(10000)
     expect(divideBy100(100)).toBe(1)
     expect(noFormat(100)).toBe(100)
-
+    expect(kpiConfig.apToSZLatency.histogram.initialThreshold).toBe(200)
+    expect(kpiConfig.apToSZLatency.histogram.splits)
+      .toEqual([50, 100, 150, 200, 250, 300, 350, 400])
   })
-  it('apToSZLatencyConfig should return correct values for RA', () => {
+  it('returns config for RA', () => {
     mockGet.mockReturnValue('true')
-    expect(apToSZLatencyConfig('text').defaultMessage)
-      .toEqual([{ type: 0, value: 'AP-to-SZ Latency' }])
-    expect(apToSZLatencyConfig('initialThreshold'))
-      .toEqual(40)
-    expect(apToSZLatencyConfig('splits'))
+    const { kpiConfig } = require('./healthKPIConfig')
+    expect(kpiConfig.apToSZLatency.histogram.initialThreshold).toBe(40)
+    expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([5, 10, 20, 40, 60, 100, 200, 500])
-    expect(apToSZLatencyConfig('tooltip').defaultMessage)
-    /* eslint-disable max-len */
-      .toEqual([{ type: 0, value: 'The time-series graph on the left displays the percentage of APs that have AP-to-SZ control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' }])
   })
-
-  it('apServiceUptimeConfig should return correct values for RA', () => {
-    mockGet.mockReturnValue('true')
-    expect(apServiceUptimeConfig('text').defaultMessage)
-      .toEqual([{ type: 0, value: 'AP-Controller Connection Uptime' }])
-    expect(apServiceUptimeConfig('tooltip').defaultMessage)
-    /* eslint-disable max-len */
-      .toEqual([{ type: 0, value: 'AP-Controller connection uptime measures the percentage of time the AP radios are fully available for client service. The time-series graph on the left displays the percentage of AP-Controller connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' }])})
 
   it('should return correct config for RA', () => {
     expect(kpisForTab('true')).toMatchObject({
