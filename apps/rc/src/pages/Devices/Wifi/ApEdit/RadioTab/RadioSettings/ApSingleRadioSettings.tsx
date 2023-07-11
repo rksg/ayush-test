@@ -17,7 +17,6 @@ export interface ApSingleRadioSettingsPorps {
   radioType: ApRadioTypeEnum,
   bandwidthOptions: SelectItemOption[],
   supportChannels: any,
-  //editContext: React.Context<any>,
   handleChanged?: () => void,
   onResetDefaultValue?: Function,
   testId?: string,

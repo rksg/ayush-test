@@ -91,8 +91,12 @@ export function DirectedMulticast () {
         setIsUseVenueSettings(directedMulticastData.useVenueSettings)
         isUseVenueSettingsRef.current = directedMulticastData.useVenueSettings
 
-        setInitData(directedMulticastData)
-        setFormInitializing(false)
+        if (formInitializing) {
+          setInitData(directedMulticastData)
+          setFormInitializing(false)
+        } else {
+          formRef?.current?.setFieldsValue(directedMulticastData)
+        }
       }
 
       setData()
@@ -208,10 +212,13 @@ export function DirectedMulticast () {
               valuePropName='checked'
               style={{ marginTop: '-5px' }}
               children={
-                <Switch
-                  data-testid={key+'-switch'}
-                  disabled={isUseVenueSettings}
-                />
+                isUseVenueSettings ?
+                  <span>{formRef?.current?.getFieldValue(fieldName)?
+                    $t({ defaultMessage: 'On' }): $t({ defaultMessage: 'Off' })}</span> :
+                  <Switch
+                    data-testid={key+'-switch'}
+                    disabled={isUseVenueSettings}
+                  />
               }
             />
           </FieldLabel>
