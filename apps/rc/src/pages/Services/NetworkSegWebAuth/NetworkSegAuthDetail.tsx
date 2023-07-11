@@ -13,7 +13,8 @@ import {
   WebAuthTemplate,
   getServiceDetailsLink,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                     from '@acx-ui/user'
@@ -110,7 +111,9 @@ export default function NetworkSegAuthDetail () {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId as string
             })}>
-            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            <Button key='configure'
+              disabled={isDefaultWebAuth(params.serviceId as string)}
+              type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}
       />

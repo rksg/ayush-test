@@ -11,7 +11,8 @@ import {
   getServiceRoutePath,
   getServiceListRoutePath,
   useTableQuery,
-  WebAuthTemplateTableData
+  WebAuthTemplateTableData,
+  isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                      from '@acx-ui/user'
@@ -44,7 +45,7 @@ export default function NetworkSegAuthTable () {
 
   const columns: TableProps<WebAuthTemplateTableData>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Service Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -93,7 +94,7 @@ export default function NetworkSegAuthTable () {
 
   const rowActions: TableProps<WebAuthTemplateTableData>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -106,7 +107,7 @@ export default function NetworkSegAuthTable () {
         }, { state: { from: location } })
       }
     }, {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
