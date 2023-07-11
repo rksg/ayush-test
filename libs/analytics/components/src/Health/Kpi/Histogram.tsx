@@ -7,12 +7,15 @@ import AutoSizer    from 'react-virtualized-auto-sizer'
 import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig, productNames }                              from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
+import { get }                                                                   from '@acx-ui/config'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
 import { defaultThreshold } from '../Kpi'
 
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
+
+const isMLISA = get('IS_MLISA_SA')
 
 const getGoalPercent = (
   { data, kpi, thresholdValue }: KPIHistogramResponse & { kpi: string, thresholdValue: number }
@@ -71,7 +74,7 @@ function Histogram ({
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
   const [ triggerSave ] = healthApi.useSaveThresholdMutation()
   const onButtonReset = useCallback(() => {
-    const defaultConfig = defaultThreshold[kpi as keyof typeof defaultThreshold]
+    const defaultConfig = defaultThreshold(isMLISA)[kpi as keyof typeof defaultThreshold]
     setThresholdValue(defaultConfig)
     setKpiThreshold({ ...thresholds, [kpi]: defaultConfig })
   }, [kpi, setKpiThreshold, thresholds])
