@@ -54,7 +54,7 @@ describe('Edge overview sub-interfaces tab', () => {
     const portTabs = await screen.findAllByRole('tab')
     expect(portTabs.length).toBe(2)
     const portsRow = await screen.findAllByRole('row')
-    expect(screen.getByRole('row', { name: 'LAN Up 192.168.5.3/25 255.255.255.128 4' })).toBeValid()
+    expect(screen.getByRole('row', { name: 'LAN Up 192.168.5.3 255.255.255.128 4' })).toBeValid()
     expect(screen.getByRole('row', { name: 'LAN Up 3' })).toBeValid()
     expect(portsRow.filter(elem => elem.classList.contains('ant-table-row')).length).toBe(2)
   })

@@ -49,7 +49,11 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        // remove the subnet mask in ip if exists
+        return row.ip.replace(/\/\d*/, '')
+      }
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
