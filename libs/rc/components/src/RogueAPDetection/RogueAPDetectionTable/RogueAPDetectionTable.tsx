@@ -65,7 +65,8 @@ const defaultPayload = {
     'name',
     'description',
     'numOfRules',
-    'venueIds'
+    'venueIds',
+    'venueCount'
   ]
 }
 
@@ -249,9 +250,9 @@ function useColumns (venueIds: string[]) {
       sorter: true
     },
     {
-      key: 'venueIds',
+      key: 'venueCount',
       title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venueIds',
+      dataIndex: 'venueCount',
       filterable: venueFilterOptions,
       align: 'center',
       sorter: true,
