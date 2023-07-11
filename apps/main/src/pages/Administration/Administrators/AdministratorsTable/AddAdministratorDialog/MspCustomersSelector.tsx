@@ -56,8 +56,8 @@ const MspCustomerSelector = () => {
 
   useEffect(() => {
     (role === RolesEnum.PRIME_ADMIN)
-      ? form.setFieldValue('ecType', 'all')
-      : form.setFieldValue('ecType', 'none')
+      ? form.setFieldValue('ecType', ECCustomerRadioButtonEnum.all)
+      : form.setFieldValue('ecType', ECCustomerRadioButtonEnum.none)
   }, [role])
 
   const ecTypesList = getEcTypes().map((item) => ({
