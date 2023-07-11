@@ -78,6 +78,9 @@ export function DistributionSwitchDrawer (props: {
       destroyOnClose={true}
       width={450}
       footer={<Drawer.FormFooter
+        buttonLabel={{
+          save: editRecord ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
+        }}
         onCancel={onClose}
         onSave={async () => {
           const values: DistributionSwitchSaveData = form.getFieldsValue()

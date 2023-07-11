@@ -3,9 +3,11 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import {
+  Button,
   Table,
   TableProps
 } from '@acx-ui/components'
+import { ConfigurationSolid }                from '@acx-ui/icons'
 import { useWebAuthTemplateListQuery }       from '@acx-ui/rc/services'
 import { AccessSwitch, defaultTemplateData } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
@@ -16,11 +18,14 @@ export interface AccessSwitchTableDataType extends AccessSwitch {
   distributionSwitchName: string
 }
 
-interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitchTableDataType>, 'columns'> {}
+interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitchTableDataType>, 'columns'> {
+  editHandler?: ( as: AccessSwitch )=>void;
+}
 
 export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const { editHandler } = props
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
@@ -52,13 +57,21 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: ['uplinkInfo', 'uplinkId'],
       sorter: true,
       render: (data, row) => {
-        return row.uplinkInfo ? `${row.uplinkInfo.uplinkType} ${data}` : ''
+        return row.uplinkInfo ?
+          `${row.uplinkInfo.uplinkType} ${data}` :
+          <Button type='link'
+            onClick={()=>{editHandler && editHandler(row)}}> - <ConfigurationSolid /></Button>
       }
     }, {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN ID' }),
       dataIndex: 'vlanId',
-      sorter: true
+      sorter: true,
+      render: (data, row) => {
+        return row.vlanId ? data :
+          <Button type='link'
+            onClick={()=>{editHandler && editHandler(row)}}> - <ConfigurationSolid /></Button>
+      }
     }, {
       key: 'templateId',
       title: $t({ defaultMessage: 'Net Seg Auth Page' }),

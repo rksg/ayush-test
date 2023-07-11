@@ -72,11 +72,14 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
     { name: keyof typeof defaultTemplateData, label: string }
   ) => {
     return (
-      <UI.TextAreaWithReset label={label}>
+      <UI.TextAreaWithReset label={label} required={true}>
         <Space size='middle'>
           <Form.Item name={name}
             validateTrigger='onBlur'
-            rules={[getWebAuthLabelValidator()]}
+            rules={[getWebAuthLabelValidator(), {
+              required: true,
+              message: $t({ defaultMessage: 'Please enter {label}' }, { label })
+            }]}
             children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{
@@ -113,7 +116,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
           <StepsFormLegacy.Title>
             {$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
           <Form.Item name='name'
-            label={$t({ defaultMessage: 'Name' })}
+            label={$t({ defaultMessage: 'Service Name' })}
             rules={[{ required: true }]} >
             <Input style={{ width: '360px' }}/>
           </Form.Item>

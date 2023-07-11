@@ -58,6 +58,14 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
   return <SummaryCard data={networkSegAuthInfo} colPerRow={4} />
 }
 
+type WebAuthSwitchType = {
+  switchId: string,
+  switchModel: string,
+  switchName: string,
+  venueId: string,
+  venueName: string
+}
+
 export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
@@ -66,14 +74,20 @@ export default function NetworkSegAuthDetail () {
   const { data } = useGetWebAuthTemplateQuery({ params })
   const { data: switches } = useGetWebAuthTemplateSwitchesQuery({ params })
 
-  const columns: TableProps<{}>['columns'] = React.useMemo(() => {
+  const columns: TableProps<WebAuthSwitchType>['columns'] = React.useMemo(() => {
     return [{
       key: 'switchName',
       title: $t({ defaultMessage: 'Access Switches' }),
       dataIndex: 'switchName',
       sorter: true,
       width: 360,
-      fixed: 'left'
+      fixed: 'left',
+      render: (data, row) => (
+        <TenantLink
+          to={`/devices/switch/${row.switchId}/${row.switchId}/details/overview`}>
+          {data}
+        </TenantLink>
+      )
     }, {
       key: 'switchModel',
       title: $t({ defaultMessage: 'Model' }),
@@ -83,7 +97,10 @@ export default function NetworkSegAuthDetail () {
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
-      sorter: true
+      sorter: true,
+      render: (data, row) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      )
     }]
   }, [$t])
 
@@ -124,7 +141,7 @@ export default function NetworkSegAuthDetail () {
         { count: switches?.switchVenueInfos?.length || 0 })}>
         <Table
           columns={columns}
-          dataSource={switches?.switchVenueInfos}
+          dataSource={switches?.switchVenueInfos as unknown as WebAuthSwitchType[]}
           type='form'
           rowKey='switchId' />
       </Card>
