@@ -53,7 +53,7 @@ function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
   const { uploadRate, downloadRate } = props
   const { $t } = useIntl()
   return (<div style={{ display: 'flex' }}>
-    <div style={{ display: 'flex', fontSize: '10px' }}>
+    <div style={{ display: 'flex' }}>
       <div><ArrowDownOutlined /></div>
       <div>
         <Info>
