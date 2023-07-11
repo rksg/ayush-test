@@ -73,8 +73,16 @@ const EdgeDhcpTable = () => {
   const [patchDhcp, { isLoading: isPatchDhcpUpdating }] = usePatchEdgeDhcpServiceMutation()
 
   const isUpdateAvailable = (data: DhcpStats) => {
-    return Boolean(data?.currentVersion && data?.targetVersion &&
-      data?.currentVersion !== data?.targetVersion)
+    let isReadyToUpdate = false
+    if (data?.currentVersion && data?.targetVersion) {
+      data?.currentVersion.split(',').forEach(currentVersion=>{
+        if (currentVersion.trim() !== data?.targetVersion) {
+          isReadyToUpdate = true
+        }
+      })
+    }
+
+    return isReadyToUpdate
   }
 
   const columns: TableProps<DhcpStats>['columns'] = [

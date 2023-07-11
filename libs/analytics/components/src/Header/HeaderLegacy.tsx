@@ -4,9 +4,9 @@ import { omit }                   from 'lodash'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { getSelectedNodePath, nodeTypes, useAnalyticsFilter }                 from '@acx-ui/analytics/utils'
-import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
-import { useDateFilter, NodeType }                                            from '@acx-ui/utils'
+import { getSelectedNodePath, nodeTypes, useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
+import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary }   from '@acx-ui/components'
+import { useDateFilter, NodeType }                                              from '@acx-ui/utils'
 
 import { NetworkFilter }                from '../NetworkFilter'
 import { useNetworkFilterQuery, Child } from '../NetworkFilter/services'
@@ -62,7 +62,10 @@ function getVenueName (name: string, data: Child[] | undefined): string {
 export const HeaderLegacy = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
   const { filters } = useAnalyticsFilter()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const results = useNetworkNodeInfoQuery(filters)
+  const results = useNetworkNodeInfoQuery({
+    ...filters,
+    ...getFilterPayload({ filter: filters.filter })
+  })
   const networkFilter = omit({ ...filters, shouldQuerySwitch }, 'path', 'filter')
   const filterResult = useNetworkFilterQuery(networkFilter)
   const state = { ...results, ...filterResult, isLoading: false } // isLoading to false to prevent blank header on load

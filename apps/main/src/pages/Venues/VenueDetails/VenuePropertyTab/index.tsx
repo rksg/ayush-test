@@ -94,7 +94,7 @@ function ConnectionMeteringLink (props:{
     }
   }
   return (
-    <div style={{ fontSize: '16px' }}>
+    <div>
       <div style={{ float: 'left', marginLeft: '5%' }}>
         <TenantLink to={
           getPolicyDetailsLink({
@@ -105,8 +105,8 @@ function ConnectionMeteringLink (props:{
         </TenantLink>
       </div>
       {showWarning &&
-        <div style={{ float: 'left', marginLeft: '10%' }} title={tooltip}>
-          <WarningTriangle expired={expired}/>
+        <div style={{ float: 'left' }} title={tooltip}>
+          <WarningTriangle expired={expired} style={{ height: '16px' }}/>
         </div>
       }
     </div>
@@ -464,7 +464,7 @@ export function VenuePropertyTab () {
     {
       show: isConnectionMeteringEnabled,
       key: 'connectionMetering',
-      title: $t({ defaultMessage: 'Connection Metering' }),
+      title: $t({ defaultMessage: 'Data Usage Metering' }),
       dataIndex: 'connectionMetering',
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)

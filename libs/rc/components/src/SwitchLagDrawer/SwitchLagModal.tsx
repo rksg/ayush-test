@@ -196,7 +196,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const onSubmit = async () => {
     const value = form.getFieldsValue()
-    if(isEditMode) {
+    if (isEditMode) {
       const taggedVlans = Array.isArray(value.taggedVlans) ? value.taggedVlans :
         _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
 
@@ -207,7 +207,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           id: editData[0].id,
           realRemove: editData[0].realRemove,
           switchId: editData[0].switchId,
-          taggedVlans
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
         delete payload.portsType
         await updateLag({ params: { tenantId, switchId, lagId: editData[0].id }, payload }).unwrap()
@@ -217,10 +217,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }
     } else {
       try {
+        const taggedVlans = _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
         let payload = {
           ...value,
           id: '',
-          taggedVlans: _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
         delete payload.portsType
         await addLag({ params: { tenantId, switchId }, payload }).unwrap()
