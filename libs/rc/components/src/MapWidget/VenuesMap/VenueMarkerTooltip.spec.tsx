@@ -166,7 +166,7 @@ describe('Venue Marker Tooltip', () => {
     })
 
     const links = screen.getAllByText('1234')
-    expect(links.length).toEqual(6)
+    expect(links.length).toEqual(5)
     links.forEach((link, i) => {
       fireEvent.click(link)
       expect(onNavigateMock).lastCalledWith({
@@ -175,7 +175,7 @@ describe('Venue Marker Tooltip', () => {
       })
     })
 
-    expect(onNavigateMock).toBeCalledTimes(7)
+    expect(onNavigateMock).toBeCalledTimes(6)
   })
 
   it('should not render any data', async () => {

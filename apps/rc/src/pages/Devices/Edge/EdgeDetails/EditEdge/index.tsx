@@ -4,7 +4,8 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, CustomButtonProps, PageHeader, Tabs, showActionModal }                          from '@acx-ui/components'
-import { useGetEdgeQuery }                                                                       from '@acx-ui/rc/services'
+import { useEdgeBySerialNumberQuery, useGetEdgeQuery }                                           from '@acx-ui/rc/services'
+import { EdgeStatus, EdgeStatusEnum }                                                            from '@acx-ui/rc/utils'
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                        from '@acx-ui/user'
 import { getIntl }                                                                               from '@acx-ui/utils'
@@ -16,25 +17,31 @@ import StaticRoutes    from './StaticRoutes'
 
 import type { History, Transition } from 'history'
 
-const getTabs = () => {
+const getTabs = (currentEdge?: EdgeStatus) => {
   const { $t } = getIntl()
   return {
     'general-settings': {
       title: $t({ defaultMessage: 'General Settings' }),
       content: <GeneralSettings />
     },
-    'ports': {
-      title: $t({ defaultMessage: 'Ports' }),
-      content: <Ports />
-    },
-    'dns': {
-      title: $t({ defaultMessage: 'DNS Server' }),
-      content: <DnsServer />
-    },
-    'routes': {
-      title: $t({ defaultMessage: 'Static Routes' }),
-      content: <StaticRoutes />
-    }
+    ...(
+      currentEdge?.deviceStatus &&
+      currentEdge?.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD &&
+      {
+        ports: {
+          title: $t({ defaultMessage: 'Ports' }),
+          content: <Ports />
+        },
+        dns: {
+          title: $t({ defaultMessage: 'DNS Server' }),
+          content: <DnsServer />
+        },
+        routes: {
+          title: $t({ defaultMessage: 'Static Routes' }),
+          content: <StaticRoutes />
+        }
+      }
+    )
   }
 }
 
@@ -48,7 +55,13 @@ export const EditEdgeTabs = () => {
   const unblockRef = useRef<Function>()
   const editEdgeContext = useContext(EdgeEditContext)
   const { formControl } = editEdgeContext
-  const tabs = getTabs()
+  const { data: currentEdge } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: {
+      fields: ['deviceStatus'],
+      filters: { serialNumber: [serialNumber] } }
+  })
+  const tabs = getTabs(currentEdge)
 
   useEffect(() => {
     if (formControl?.isDirty) {
@@ -99,7 +112,7 @@ export const EditEdgeTabs = () => {
   return (
     <Tabs onChange={onTabChange} activeKey={activeTab}>
       {Object.keys(tabs)
-        .map((key) => <Tabs.TabPane tab={tabs[key as keyof typeof tabs].title} key={key} />)}
+        .map((key) => <Tabs.TabPane tab={tabs[key as keyof typeof tabs]?.title} key={key} />)}
     </Tabs>
   )
 }
@@ -115,7 +128,7 @@ const EditEdge = () => {
   const tabs = getTabs()
 
   useEffect(() => {
-    setActiveTabContent(tabs[activeTab as keyof typeof tabs].content)
+    setActiveTabContent(tabs[activeTab as keyof typeof tabs]?.content)
   }, [activeTab])
 
   return (
