@@ -26,3 +26,8 @@ export enum EdgeDhcpOptionsEnum {
   SERVER_NAME = '66',
   BOOTFILE_NAME = '67'
 }
+
+export enum LeaseTimeType {
+  LIMITED = 'Limited',
+  INFINITE = 'Infinite'
+}

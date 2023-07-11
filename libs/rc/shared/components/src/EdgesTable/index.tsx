@@ -189,15 +189,15 @@ export const EdgesTable = (props: EdgesTableProps) => {
         )
       }
     },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
-      sorter: true,
-      render: (data) => {
-        return `${data}`
-      }
-    },
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   sorter: true,
+    //   render: (data) => {
+    //     return `${data}`
+    //   }
+    // },
     {
       title: $t({ defaultMessage: 'Version' }),
       key: 'firmwareVersion',

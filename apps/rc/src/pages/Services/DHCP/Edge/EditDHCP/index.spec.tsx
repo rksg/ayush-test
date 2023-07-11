@@ -120,6 +120,8 @@ describe('EditEdgeDhcp', () => {
         route: { params, path: editPagePath }
       })
     await screen.findAllByRole('row', { name: /PoolTest/i })
+    fireEvent.click(screen.getByRole('switch', { name: 'DHCP Relay:' }))
+    fireEvent.click(await screen.findByRole('radio', { name: 'Infinite' }))
     await user.click(screen.getByRole('button', { name: 'Apply' }))
   })
 

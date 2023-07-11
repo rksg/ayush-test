@@ -56,6 +56,8 @@ export function VlanPortsModal (props: {
       const family = editRecord.model.split('-')[0]
       const model = editRecord.model.split('-')[1]
       setVlanSettingValues({ family, model, switchFamilyModels: editRecord, trustedPorts: [] })
+    } else {
+      setVlanSettingValues({ family: '', model: '', trustedPorts: [] })
     }
   }, [form, open, editRecord])
 

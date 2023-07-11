@@ -109,7 +109,7 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: height/2 - 30 }}>
-                    {filterByAccess([<TenantLink key='add-wifi' to={'/devices/wifi/add'}>
+                    {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>])}
                   </UI.LinkContainer>
@@ -141,7 +141,7 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
-                    {filterByAccess([<TenantLink key='add-switch' to={'/devices/switch/add'}>
+                    {filterByAccess([<TenantLink to={'/devices/switch/add'}>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>])}
                   </UI.LinkContainer>
@@ -174,7 +174,7 @@ export function DevicesWidgetv2 (props: {
                       </TenantLink>
                     </Space>
                     : <UI.LinkContainer style={{ height: (height/2) - 30 }}>
-                      {filterByAccess([<TenantLink key='add-edge' to={'/devices/edge/add'}>
+                      {filterByAccess([<TenantLink to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add SmartEdge' })}
                       </TenantLink>])}
                     </UI.LinkContainer>

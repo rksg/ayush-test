@@ -10,7 +10,7 @@ import useNetworksTable from './NetworksTable'
 
 export enum NetworkTabsEnum {
   LIST = 'wireless',
-  WLAN_REPORT = 'wireless/reports/wlans',
+  WLANS_REPORT = 'wireless/reports/wlans',
   APPLICATIONS_REPORT = 'wireless/reports/applications',
   WIRELESS_REPORT = 'wireless/reports/wireless'
 }
@@ -36,8 +36,8 @@ const useTabs = () : NetworkTab[] => {
     ...useNetworksTable()
   }
   const wlanReportTab = {
-    key: NetworkTabsEnum.WLAN_REPORT,
-    title: $t({ defaultMessage: 'WLAN Report' }),
+    key: NetworkTabsEnum.WLANS_REPORT,
+    title: $t({ defaultMessage: 'WLANs Report' }),
     component: <EmbeddedReport
       reportName={ReportType.WLAN}
       hideHeader={false}

@@ -727,7 +727,7 @@ export function ManageCustomer () {
             <Select>
               {
                 Object.entries(RolesEnum).map(([label, value]) => (
-                  !(value === RolesEnum.DPSK_ADMIN)
+                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER )
                   && <Option
                     key={label}
                     value={value}>{intl.$t(roleDisplayText[value])}

@@ -6,6 +6,7 @@ import {
   TenantDelegationResponse,
   RecoveryPassphrase,
   TenantPreferenceSettings,
+  TenantAccountTierValue,
   Administrator,
   onActivityMessageReceived,
   onSocketActivityChanged,
@@ -523,6 +524,15 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getAccountTier, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ACCOUNT_TIER' }]
     })
   })
 })
@@ -574,5 +584,6 @@ export const {
   useConvertNonVARToMSPMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
-  useGetRadiusServerSettingQuery
+  useGetRadiusServerSettingQuery,
+  useGetAccountTierQuery
 } = administrationApi

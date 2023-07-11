@@ -68,15 +68,16 @@ export function SelectModelStep (props: { editMode: boolean }) {
       })
       setFamilies(familiesData)
     }
-    if(ICX_MODELS_MODULES && vlanSettingValues && editMode){
+    if(ICX_MODELS_MODULES && vlanSettingValues.family && vlanSettingValues.model){
       const selectedFamily = vlanSettingValues.family
       const selectedModel = vlanSettingValues.model
-      const selectedEnable2 = vlanSettingValues.switchFamilyModels?.slots
-        .filter(item => item.slotNumber === 2)[0] || { enable: false, option: '' }
-      const selectedEnable3 = vlanSettingValues.switchFamilyModels?.slots
-        .filter(item => item.slotNumber === 3)[0] || { enable: false, option: '' }
-      const selectedEnable4 = vlanSettingValues.switchFamilyModels?.slots
-        .filter(item => item.slotNumber === 4)[0] || { enable: false, option: '' }
+      const slots = vlanSettingValues.switchFamilyModels?.slots
+      const selectedEnable2 = slots?.filter(item => item.slotNumber === 2)[0] ||
+        { enable: false, option: '' }
+      const selectedEnable3 = slots?.filter(item => item.slotNumber === 3)[0] ||
+        { enable: false, option: '' }
+      const selectedEnable4 = slots?.filter(item => item.slotNumber === 4)[0] ||
+        { enable: false, option: '' }
       form.setFieldsValue({
         family: selectedFamily,
         model: selectedModel,
@@ -94,17 +95,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setEnableSlot2(selectedEnable2.enable)
       setEnableSlot3(selectedEnable3.enable)
       setEnableSlot4(selectedEnable4.enable)
-      checkIfModuleFixed(selectedFamily, selectedModel)
     }
-
-    if(family){
-      setModel('')
-    }
-
-    if(family !=='' && model !== ''){
-      modelChangeAction(family, model)
-    }
-  }, [ICX_MODELS_MODULES, vlanSettingValues, family, model])
+  }, [vlanSettingValues])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -177,13 +169,23 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
+    form.resetFields([
+      'model',
+      'enableSlot2',
+      'enableSlot3',
+      'enableSlot4',
+      'selectedOptionOfSlot2',
+      'selectedOptionOfSlot3',
+      'selectedOptionOfSlot4'
+    ])
     setFamily(e.target.value)
     familyChangeAction(e.target.value)
+    form.setFieldValue('model', '')
+    setModuleSelectionEnable(false)
   }
 
   const familyChangeAction = (family: string) => {
-    if(!editMode){
-      form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
+    if(editMode){
       setModuleSelectionEnable(false)
     }
     const index = family as keyof typeof ICX_MODELS_MODULES
@@ -196,16 +198,26 @@ export function SelectModelStep (props: { editMode: boolean }) {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
+    form.resetFields([
+      'enableSlot2',
+      'enableSlot3',
+      'enableSlot4',
+      'selectedOptionOfSlot2',
+      'selectedOptionOfSlot3',
+      'selectedOptionOfSlot4'
+    ])
+    setEnableSlot2(false)
+    setEnableSlot3(false)
+    setEnableSlot4(false)
+    setModuleSelectionEnable(true)
+    setModule2SelectionEnable(true)
+    setModule3SelectionEnable(true)
     setModel(e.target.value)
     modelChangeAction(family, e.target.value)
   }
 
   const modelChangeAction = (family: string, model: string) => {
     if(!editMode){
-      form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
-      setEnableSlot2(false)
-      setEnableSlot3(false)
-      setEnableSlot4(false)
       setModuleSelectionEnable(true)
       setModule2SelectionEnable(true)
       setModule3SelectionEnable(true)

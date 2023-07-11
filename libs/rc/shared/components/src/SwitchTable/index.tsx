@@ -86,7 +86,7 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
@@ -373,7 +373,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
     } else {
-      delete customFilters.syncedSwitchConfig
+      customFilters.syncedSwitchConfig = []
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }

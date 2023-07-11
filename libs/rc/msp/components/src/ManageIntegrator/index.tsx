@@ -629,7 +629,7 @@ export function ManageIntegrator () {
         rules={[{ required: true }]}
         initialValue={RolesEnum.PRIME_ADMIN}
         children={
-          <Select>
+          <Select disabled>
             {
               Object.entries(RolesEnum).map(([label, value]) => (
                 <Option

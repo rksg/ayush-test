@@ -30,7 +30,9 @@ describe('TopEdgesByTrafficWidget', () => {
     endDate: '2022-01-02T00:00:00+08:00',
     path: [{ type: 'network', name: 'Network' }],
     range: DateRange.last24Hours,
-    filter: {}
+    filter: {
+      networkNodes: [[{ type: 'zone', name: 'testVenue' }]]
+    }
   }
   const wrapper = (<BrowserRouter>
     <Provider>

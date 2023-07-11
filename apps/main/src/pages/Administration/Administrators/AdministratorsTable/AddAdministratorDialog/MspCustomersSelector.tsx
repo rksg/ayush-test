@@ -52,7 +52,7 @@ const MspCustomerSelector = () => {
   const role = Form.useWatch('role', form)
 
   useEffect(() => {
-    (role === RolesEnum.DPSK_ADMIN)
+    (role === RolesEnum.DPSK_ADMIN || role === RolesEnum.GUEST_MANAGER)
       ? form.setFieldValue('ecType', 'none')
       : form.setFieldValue('ecType', 'all')
   }, [role])
@@ -91,7 +91,7 @@ const MspCustomerSelector = () => {
       rules={[{ required: true }]}
     >
       <Radio.Group style={{ width: '100%' }}
-        disabled={role === RolesEnum.DPSK_ADMIN}>
+        disabled={role === RolesEnum.DPSK_ADMIN || role === RolesEnum.GUEST_MANAGER}>
         <SpaceWrapper full direction='vertical' size='middle'>
           {ecTypesList.map((item) => {
             return (

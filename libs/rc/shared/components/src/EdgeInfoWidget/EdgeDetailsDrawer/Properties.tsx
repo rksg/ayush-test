@@ -41,12 +41,12 @@ export const Properties = (props: PropertiesProps) => {
           currentEdge?.description || $t({ defaultMessage: 'None' })
         }
       />
-      <Form.Item
+      {/* <Form.Item
         label={$t({ defaultMessage: 'Tags' })}
         children={
           currentEdge?.tags || '--'
         }
-      />
+      /> */}
 
       <Divider/>
 

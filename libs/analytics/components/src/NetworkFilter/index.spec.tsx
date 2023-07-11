@@ -349,7 +349,7 @@ describe('Network Filter', () => {
   it('should correctly call setNetworkPath', () => {
     const setNetworkPath = jest.fn()
     onApply(undefined, setNetworkPath)
-    expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, [])
+    expect(setNetworkPath).toBeCalledWith([], [])
     const path = [JSON.stringify(defaultNetworkPath)]
     onApply(path, setNetworkPath)
     expect(setNetworkPath).toBeCalledWith(defaultNetworkPath, path)
