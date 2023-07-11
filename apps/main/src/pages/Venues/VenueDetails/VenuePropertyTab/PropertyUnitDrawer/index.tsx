@@ -46,7 +46,7 @@ import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 const Info = styled(Typography.Text)`
   overflow-wrap: anywhere;
-  font-size: 10px;
+  font-size: 12px;
 `
 
 function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
@@ -106,7 +106,7 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
         <div style={{ width: '40%' }}>
           <Info>{$t({ defaultMessage: 'Rate limit:' })}</Info>
         </div>
-        <div style={{ width: '60%', fontSize: '10px' }}>
+        <div style={{ width: '60%', fontSize: '12px' }}>
           <RateLimitLabel uploadRate={data.uploadRate} downloadRate={data.downloadRate} />
         </div>
       </div>
@@ -115,7 +115,7 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
           {$t({ defaultMessage: 'Data consumption' })}
         </Subtitle>
       </div>
-      <div style={{ display: 'flex', fontSize: '10px' }}>
+      <div style={{ display: 'flex', fontSize: '12px' }}>
         <div style={{ width: '40%' }}>
           <Info>{$t({ defaultMessage: 'MaxData:' })}</Info>
         </div>
@@ -124,7 +124,7 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
             $t({ defaultMessage: 'Unlimited' })}</Info>
         </div>
       </div>
-      <div style={{ display: 'flex', fontSize: '10px' }}>
+      <div style={{ display: 'flex', fontSize: '12px' }}>
         <div style={{ width: '40%' }}>
           <Info>{$t({ defaultMessage: 'Consumption cycle:' })}</Info>
         </div>
