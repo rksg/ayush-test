@@ -4,10 +4,10 @@ import { useIntl }    from 'react-intl'
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
-import { IncidentAttributes, Attributes }    from '../IncidentAttributes'
-import { Insights }                          from '../Insights'
-import { TimeSeries }                        from '../TimeSeries'
-import { TimeSeriesChartTypes }              from '../TimeSeries/config'
+import { IncidentAttributes, Attributes } from '../IncidentAttributes'
+import { Insights }                       from '../Insights'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 import * as UI      from './styledComponents'
@@ -66,8 +66,8 @@ export const ChannelDist = (incident: Incident) => {
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
         </GridCol>
-        {heatMapCharts.map(heatMap =>
-          <GridCol col={{ offset: 4, span: 20 }}>
+        {heatMapCharts.map((heatMap, index) =>
+          <GridCol key={index} col={{ offset: 4, span: 20 }}>
             {heatMap}
           </GridCol>
         )}

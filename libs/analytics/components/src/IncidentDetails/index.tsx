@@ -9,6 +9,7 @@ import { ApservDowntimeHigh }      from './Details/ApservDowntimeHigh'
 import { ApservHighNumReboots }    from './Details/ApservHighNumReboots'
 import { AssocFailure }            from './Details/AssocFailure'
 import { AuthFailure }             from './Details/AuthFailure'
+import { ChannelDist }             from './Details/ChannelDist'
 import { CovClientrssiLow }        from './Details/CovClientrssiLow'
 import { DhcpFailure }             from './Details/DhcpFailure'
 import { EapFailure }              from './Details/EapFailure'
@@ -18,7 +19,6 @@ import { SwitchPoePd }             from './Details/SwitchPoePd'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
 import { useIncident }             from './services'
-import { ChannelDist }             from './Details/ChannelDist'
 
 export const incidentDetailsMap = {
   'radius-failure': RadiusFailure,

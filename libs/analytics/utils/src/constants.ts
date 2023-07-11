@@ -1,5 +1,6 @@
 import { defineMessage } from 'react-intl'
-import { get }           from '@acx-ui/config'
+
+import { get } from '@acx-ui/config'
 
 // commented codes acc to prod rc config
 export const incidentCodes = [
@@ -13,9 +14,9 @@ export const incidentCodes = [
   'p-load-sz-cpu-load',
   'p-switch-memory-high',
   ...get('IS_MLISA_SA') ? [
-  'p-channeldist-suboptimal-plan-24g',
-  'p-channeldist-suboptimal-plan-50g-outdoor',
-  'p-channeldist-suboptimal-plan-50g-indoor'
+    'p-channeldist-suboptimal-plan-24g',
+    'p-channeldist-suboptimal-plan-50g-outdoor',
+    'p-channeldist-suboptimal-plan-50g-indoor'
   ] : [],
   'i-net-time-future',
   'i-net-time-past',
