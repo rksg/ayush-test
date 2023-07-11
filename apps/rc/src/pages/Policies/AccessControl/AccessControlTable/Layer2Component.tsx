@@ -26,7 +26,8 @@ const defaultPayload = {
     'name',
     'description',
     'macAddressCount',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1,
   sortField: 'macAddressCount',
@@ -191,13 +192,12 @@ function useColumns (
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       filterable: networkFilterOptions,
       align: 'center',
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]
