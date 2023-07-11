@@ -636,7 +636,7 @@ export function MoreSettingsForm (props: {
 
         }
         <UI.FieldLabel width='250px'>
-          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE):' }) }
+          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE)' }) }
           <Form.Item
             name={['wlan','advancedCustomization','enableOptimizedConnectivityExperience']}
             style={{ marginBottom: '10px' }}
@@ -670,7 +670,7 @@ export function MoreSettingsForm (props: {
         {ssidRateLimitingFeatureBundleFlag &&
           <Form.Item
             name={['wlan','advancedCustomization','dtimInterval']}
-            label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval:' })}
+            label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
             initialValue={1}
             rules={[{
               type: 'number', max: 255, min: 1,
