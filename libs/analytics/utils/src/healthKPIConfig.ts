@@ -243,7 +243,7 @@ export const kpiConfig = {
     }
   },
   apServiceUptime: {
-    text: defineMessage({ defaultMessage: 'AP-{controller} Connection Uptime' }),
+    text: defineMessage({ defaultMessage: 'AP-{smartZone} Connection Uptime' }),
     timeseries: {
       apiMetric: 'apUptimeCountAndApCount',
       minGranularity: 'PT3M'
@@ -266,12 +266,12 @@ export const kpiConfig = {
       ],
       thresholdFormatter: formatter('percentFormat'),
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: defineMessage({ defaultMessage: 'AP-{controller} connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-{controller} connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'AP-{smartZone} connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-{smartZone} connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
       //thresholdFormat: x => formatter('percentFormat')(x)
     }
   },
   apToSZLatency: {
-    text: defineMessage({ defaultMessage: 'AP-to-{SZ} Latency' }),
+    text: defineMessage({ defaultMessage: 'AP-to-{smartZone} Latency' }),
     timeseries: {
       apiMetric: 'apSzLatencyCountAndAPCount',
       minGranularity: 'PT3M'
@@ -296,7 +296,7 @@ export const kpiConfig = {
       ],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-{SZ} control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-{smartZone} control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
   clusterLatency: {

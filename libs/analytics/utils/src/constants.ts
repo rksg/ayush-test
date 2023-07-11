@@ -3,8 +3,8 @@ import { defineMessage } from 'react-intl'
 import { get } from '@acx-ui/config'
 
 export const productNames = get('IS_MLISA_SA')
-  ? { controller: 'Controller', SZ: 'SZ', smartZone: 'Smart Zone' }
-  : { controller: 'RUCKUS One', SZ: 'RUCKUS One', smartZone: 'RUCKUS One' }
+  ? { smartZone: 'Smart Zone' }
+  : { smartZone: 'RUCKUS One' }
 
 // commented codes acc to prod rc config
 export const incidentCodes = [
