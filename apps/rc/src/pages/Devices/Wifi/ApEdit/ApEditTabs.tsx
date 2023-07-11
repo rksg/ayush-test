@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                   from '@acx-ui/components'
+import { Tabs, cssStr }                           from '@acx-ui/components'
 import { useApViewModelQuery }                    from '@acx-ui/rc/services'
 import { LocationExtended }                       from '@acx-ui/rc/utils'
 import {
@@ -69,7 +69,10 @@ function ApEditTabs () {
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
     return editContextData?.isDirty && params?.activeTab === tabkey
-      ? `${title} *` : title
+      ? (<>{title}
+        <span style={{ color: cssStr('--acx-accents-orange-50') }}> *</span>
+      </>)
+      : title
   }
 
   const location = useLocation()
