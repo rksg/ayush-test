@@ -1,4 +1,5 @@
 import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
 
 import { clientApi, switchApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
@@ -96,6 +97,7 @@ describe('SwitchClientsTable', () => {
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
+    HTMLAnchorElement.prototype.click = jest.fn()
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
         res(ctx.json(clientList))
@@ -224,9 +226,8 @@ describe('SwitchClientsTable', () => {
     )
     await screen.findByRole('heading', { level: 1, name: 'RuckusAP' })
 
-    // const exportCSVButton = await screen.findByRole('button', { name: 'Download Information' })
-    // await userEvent.click(exportCSVButton)
-    // TODO
+    const exportCSVButton = await screen.findByRole('button', { name: 'Download Information' })
+    await userEvent.click(exportCSVButton)
   })
 
   it('should render blank fields correctly', async () => {
