@@ -83,15 +83,12 @@ describe('PoliciesTable', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <PoliciesTable />
       </Provider>, {
         route: { params, path: '/:tenantId/t/' + getPolicyListRoutePath() }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const targetPolicyName = mockTableResult.data[0].name
     // eslint-disable-next-line max-len

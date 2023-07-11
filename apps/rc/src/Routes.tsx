@@ -214,7 +214,7 @@ function NetworkRoutes () {
       <Route path='networks' element={<TenantNavigate replace to='/networks/wireless' />} />
       <Route path='networks/wireless' element={<NetworksList tab={NetworkTabsEnum.LIST} />} />
       <Route path='networks/wireless/reports/wlans'
-        element={<NetworksList tab={NetworkTabsEnum.WLAN_REPORT} />} />
+        element={<NetworksList tab={NetworkTabsEnum.WLANS_REPORT} />} />
       <Route path='networks/wireless/reports/applications'
         element={<NetworksList tab={NetworkTabsEnum.APPLICATIONS_REPORT} />} />
       <Route path='networks/wireless/reports/wireless'

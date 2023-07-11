@@ -40,6 +40,20 @@ export type Recommendation = {
   mutedAt: string
   path: []
 }
+export interface MutationPayload {
+  id: string
+  mute: boolean
+}
+
+export interface MutationResponse {
+  data: {
+    toggleMute: {
+      success: boolean
+      errorMsg: string
+      errorCode: string
+    }
+  }
+}
 const radioConfigMap = {
   radio24g: '2.4 GHz',
   radio5g: '5 GHz',
@@ -134,6 +148,25 @@ export const api = recommendationApi.injectEndpoints({
         return transformResponse(response.recommendations)
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+    }),
+    muteRecommendation: build.mutation<MutationResponse, MutationPayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation MutateRecommendation($id: String, $mute: Boolean) {
+            toggleMute(id: $id, mute: $mute) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          mute: payload.mute
+        }
+      }),
+      transformResponse: (response: MutationResponse) => response,
+      invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     })
   })
 })
@@ -142,4 +175,4 @@ export interface Response<Recommendation> {
   recommendations: Recommendation[]
 }
 
-export const { useRecommendationListQuery } = api
+export const { useRecommendationListQuery, useMuteRecommendationMutation } = api

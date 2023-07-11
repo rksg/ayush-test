@@ -1,10 +1,11 @@
-import { Badge, Button, Divider } from 'antd'
-import { useIntl }                from 'react-intl'
+import { Badge, Button, Divider, Space } from 'antd'
+import { useIntl }                       from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery }                                     from '@acx-ui/analytics/components'
 import { AnalyticsFilter }                                                                          from '@acx-ui/analytics/utils'
 import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
+import { CloseSymbol }                                                                              from '@acx-ui/icons'
 import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
 import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
 
@@ -15,9 +16,10 @@ import { getDeviceColor, getMeshRole } from './utils'
 
 export function APDetailsCard (props: {
     apDetail: ApViewModel,
-    isLoading: boolean
+    isLoading: boolean,
+    onClose: () => void
   }) {
-  const { apDetail, isLoading } = props
+  const { apDetail, isLoading, onClose } = props
   const { $t } = useIntl()
 
   const { dateFilter } = useDateFilter()
@@ -43,17 +45,20 @@ export function APDetailsCard (props: {
   return <Card
     type='no-border'
   ><Card.Title>
-      <Button
-        style={{
-          padding: 0
-        }}
-        size='small'
-        type='link'>
-        {apDetail?.name
-        || apDetail?.apMac
-        || $t({ defaultMessage: 'Unknown' }) // for unknown device
-        }
-      </Button>
+      <Space>
+        <UI.NodeTitle
+          style={{
+            padding: 0
+          }}
+          size='small'
+          type='link'>
+          {apDetail?.name
+          || apDetail?.apMac
+          || $t({ defaultMessage: 'Unknown' }) // for unknown device
+          }
+        </UI.NodeTitle>
+        <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>
+      </Space>
     </Card.Title>
     <Loader states={[
       { isLoading }

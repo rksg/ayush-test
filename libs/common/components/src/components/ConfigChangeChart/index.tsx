@@ -14,14 +14,13 @@ import {
   toolboxDataZoomOptions
 } from '../Chart/helper'
 
-
 import {
   ConfigChangeChartProps,
   useDataZoom,
   useDotClick,
   useLegendSelectChanged,
   useBoundaryChange,
-  chartRowMapping,
+  getConfigChangeEntityTypeMapping,
   getSymbol,
   getChartLayoutConfig,
   tooltipFormatter,
@@ -42,6 +41,7 @@ export function ConfigChangeChart ({
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
 
+  const chartRowMapping = getConfigChangeEntityTypeMapping()
   const chartLayoutConfig = getChartLayoutConfig(props.style?.width as number, chartRowMapping)
   const {
     chartPadding, legendHeight, brushTextHeight, rowHeight, rowGap,
