@@ -18,11 +18,13 @@ import { Badge }                                from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
 export function Table (props: {
-  onRowClick?: (params: unknown) => void,
+  selectedRow: ConfigChange | null,
+  onRowClick: (params: ConfigChange) => void,
 }) {
   const { $t } = useIntl()
   const { filters: { filter, startDate: start, endDate: end } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({ ...getFilterPayload({ filter }), start, end })
+  const { selectedRow, onRowClick } = props
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -101,10 +103,10 @@ export function Table (props: {
   ]
 
   const rowSelection = {
-    // TODO: need to handle sync betweem chart and table
-    onChange: (selectedRowKeys: React.Key[], selectedRows: ConfigChange[]) => {
-      props.onRowClick?.({ id: selectedRowKeys[0], value: selectedRows[0] })
-    }
+    onChange: (_: React.Key[], selectedRows: ConfigChange[]) => {
+      onRowClick?.(selectedRows[0])
+    },
+    ...(selectedRow && { selectedRowKeys: [selectedRow.id!] })
   }
 
   return (

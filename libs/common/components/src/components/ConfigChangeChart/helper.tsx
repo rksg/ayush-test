@@ -25,7 +25,7 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
   data: ConfigChange[]
   chartBoundary: [ number, number],
   selectedData?: number,
-  onDotClick?: (params: unknown) => void
+  onDotClick?: (params: ConfigChange) => void
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
@@ -328,7 +328,7 @@ export function useDataZoom (
 export function useDotClick (
   eChartsRef: RefObject<ReactECharts>,
   setSelected: Dispatch<SetStateAction<number | undefined>>,
-  onDotClick: ((param:unknown) => void) | undefined
+  onDotClick: ((param: ConfigChange) => void) | undefined
 ){
   const onDotClickCallback = useCallback(function (params: {
     componentSubType: string

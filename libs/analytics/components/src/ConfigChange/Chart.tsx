@@ -3,11 +3,16 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
 import { Card, ConfigChangeChart, Loader }      from '@acx-ui/components'
+import type { ConfigChange }                    from '@acx-ui/components'
 
 import { useConfigChangeQuery } from './services'
 
-export function Chart (){
+export function Chart (props: {
+  selectedRow: ConfigChange | null,
+  onClick: (params: ConfigChange) => void,
+}){
   const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
+  const { selectedRow, onClick } = props
   const queryResults = useConfigChangeQuery({
     ...getFilterPayload({ filter }),
     start: startDate,
@@ -25,8 +30,10 @@ export function Chart (){
               moment(startDate).valueOf(),
               moment(endDate).valueOf()
             ]}
-            // TODO: need to handle sync betweem chart and table
-            // onDotClick={(params) => console.log(params)}
+            onDotClick={(params) => {
+              onClick(params)
+            }}
+            selectedData={selectedRow?.id}
           />}
       </AutoSizer>
     </Card>

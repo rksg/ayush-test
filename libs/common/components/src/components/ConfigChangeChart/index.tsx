@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
@@ -49,6 +49,11 @@ export function ConfigChangeChart ({
   } = chartLayoutConfig
 
   const [selected, setSelected] = useState<number|undefined>(selectedData)
+
+  useEffect(() => {
+    setSelected(selectedData)
+  }, [selectedData])
+
   const [selectedLegend, setSelectedLegend] = useState(
     chartRowMapping.map(({ label }) => label).reduce((selected, label) => {
       selected[label as string] = true
