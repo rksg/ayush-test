@@ -125,11 +125,17 @@ const EditEdge = () => {
   const [activeTabContent, setActiveTabContent] = useState<ReactNode>()
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
   const [formControl, setFormControl] = useState({} as EditEdgeFormControlType)
-  const tabs = getTabs()
+  const { data: currentEdge } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: {
+      fields: ['deviceStatus'],
+      filters: { serialNumber: [serialNumber] } }
+  })
+  const tabs = getTabs(currentEdge)
 
   useEffect(() => {
     setActiveTabContent(tabs[activeTab as keyof typeof tabs]?.content)
-  }, [activeTab])
+  }, [currentEdge, activeTab])
 
   return (
     <EdgeEditContext.Provider value={{
