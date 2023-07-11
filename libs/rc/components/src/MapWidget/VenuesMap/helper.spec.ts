@@ -234,7 +234,6 @@ describe('Venues Map Helper', () => {
           switchesCount: 4,
           edgesCount: 4,
           clientsCount: undefined,
-          edgeClientsCount: 0,
           visible: true
         },
         {
@@ -317,7 +316,6 @@ describe('Venues Map Helper', () => {
           switchesCount: 0,
           edgesCount: 0,
           clientsCount: undefined,
-          edgeClientsCount: 0,
           visible: true
         }
       ])
@@ -468,7 +466,6 @@ describe('Venues Map Helper', () => {
           switchesCount: 0,
           edgesCount: 0,
           clientsCount: undefined,
-          edgeClientsCount: 0,
           visible: true
         }
       ])
