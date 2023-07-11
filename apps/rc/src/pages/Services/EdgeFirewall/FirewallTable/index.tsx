@@ -24,7 +24,8 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  useTableQuery
+  useTableQuery,
+  DdosAttackType
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -102,11 +103,34 @@ const FirewallTable = () => {
       align: 'center',
       sorter: true,
       render: (data, row) => {
-        return (
-          row.ddosEnabled && row.ddosRateLimitingRules
-            ? Object.keys(row.ddosRateLimitingRules).length
-            : '--'
-        )
+        return row.ddosEnabled
+          ? <Tooltip
+            placement='bottom'
+            title={
+              () => (
+                row.ddosRateLimitingRules &&
+                  Object.keys(row.ddosRateLimitingRules).map(key => (
+                    <Row>
+                      <Col>
+                        {
+                          // eslint-disable-next-line max-len
+                          `${key}: ${row.ddosRateLimitingRules![key as keyof typeof DdosAttackType]}`
+                        }
+                      </Col>
+                    </Row>
+                  ))
+              )
+            }
+          >
+            <span data-testid={`ddos-info-${row.id}`}>
+              {
+                row.ddosRateLimitingRules
+                  ? Object.keys(row.ddosRateLimitingRules).length
+                  : 0
+              }
+            </span>
+          </Tooltip>
+          : '--'
       }
     },
     {
@@ -135,18 +159,20 @@ const FirewallTable = () => {
       align: 'center',
       filterable: edgeOptions,
       render: (data, row) => {
-        return row.edgeIds && <Tooltip
-          placement='bottom'
-          title={
-            row.edgeIds.map(edgeSN => (
-              <Row>
-                { _.find(edgeOptions, { key: edgeSN })?.value || '' }
-              </Row>
-            ))
-          }
-        >
-          <span data-testid={`edge-names-${row.id}`}>{row.edgeIds.length}</span>
-        </Tooltip>
+        return (row.edgeIds && row.edgeIds.length)
+          ? <Tooltip
+            placement='bottom'
+            title={
+              row.edgeIds.map(edgeSN => (
+                <Row>
+                  { _.find(edgeOptions, { key: edgeSN })?.value || '' }
+                </Row>
+              ))
+            }
+          >
+            <span data-testid={`edge-names-${row.id}`}>{row.edgeIds.length}</span>
+          </Tooltip>
+          : row.edgeIds?.length
       }
     },
     {

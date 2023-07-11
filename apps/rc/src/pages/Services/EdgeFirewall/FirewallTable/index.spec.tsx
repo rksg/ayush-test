@@ -56,7 +56,12 @@ describe('Firewall Table', () => {
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     expect(row.length).toBe(2)
     await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 1 No' })
-    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 1 No' })
+    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 No' })
+    const ddosInfo = await screen.findByTestId('ddos-info-1')
+    await user.hover(ddosInfo)
+    await screen.findByText('ALL: 220')
+    await screen.findByText('ICMP: 200')
+
     const edgeNumStr = await screen.findByTestId('edge-names-1')
     await user.hover(edgeNumStr)
     await screen.findByText('Smart Edge 1')

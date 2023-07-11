@@ -227,7 +227,7 @@ export const mockedFirewallDataList = {
           aclRuleNum: 2
         }
       ],
-      edgeIds: ['0000000002']
+      edgeIds: []
     }
   ]
 }
