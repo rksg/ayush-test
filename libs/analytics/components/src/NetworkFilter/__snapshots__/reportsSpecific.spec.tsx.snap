@@ -383,7 +383,7 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
                     type="button"
                   >
                     <span>
@@ -784,7 +784,7 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
                     type="button"
                   >
                     <span>

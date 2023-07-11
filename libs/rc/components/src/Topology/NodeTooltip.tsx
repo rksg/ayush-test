@@ -8,12 +8,13 @@ import { SwitchDetailsCard } from './SwitchDetailsCard'
 
 export default function NodeTooltip (props: { tooltipPosition: {
     x: number,
-    y: number
+    y: number,
 },
 tooltipNode: Node,
+closeTooltip: Function
 }) {
 
-  const { tooltipPosition, tooltipNode } = props
+  const { tooltipPosition, tooltipNode, closeTooltip } = props
   const params = useParams()
 
   const defaultApPayload = {
@@ -75,6 +76,9 @@ tooltipNode: Node,
       .includes(deviceType)
   }
 
+  const closeHandler = () => {
+    closeTooltip(tooltipNode)
+  }
 
   return <div
     data-testid='nodeTooltip'
@@ -90,10 +94,12 @@ tooltipNode: Node,
       (tooltipNode?.type === DeviceTypes.Switch || tooltipNode?.type === DeviceTypes.SwitchStack)
         ? <SwitchDetailsCard
           switchDetail={switchDetail as SwitchViewModel}
-          isLoading={switchLoading}/>
+          isLoading={switchLoading}
+          onClose={closeHandler}/>
         : <APDetailsCard
           apDetail={apList as ApViewModel}
-          isLoading={apLoading}/>
+          isLoading={apLoading}
+          onClose={closeHandler}/>
     }
   </div>
 }
