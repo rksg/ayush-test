@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }         from '@acx-ui/store'
+import { getFilterPayload, AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { dataApi }                           from '@acx-ui/store'
 
 export type SwitchesByPoEUsageData = {
   name: string
@@ -45,10 +45,9 @@ export const api = dataApi.injectEndpoints({
           }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (response: Response<SwitchesByPoEUsageData>) =>

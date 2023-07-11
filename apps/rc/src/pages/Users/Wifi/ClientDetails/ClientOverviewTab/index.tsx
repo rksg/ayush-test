@@ -3,7 +3,6 @@ import { useEffect, useState, useMemo } from 'react'
 
 
 import { TrafficByBand, TrafficByUsage }       from '@acx-ui/analytics/components'
-import { defaultNetworkPath }                  from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                    from '@acx-ui/components'
 import {
   useLazyGetApQuery,
@@ -55,7 +54,7 @@ const historicalPayload = {
 export function ClientOverviewTab () {
   const { dateFilter } = useDateFilter()
   const filters = useMemo(() => ({
-    path: defaultNetworkPath,
+    filter: {},
     ...dateFilter
   }), [dateFilter])
   const { tenantId, clientId } = useParams()

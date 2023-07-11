@@ -40,8 +40,11 @@ export function usePlacesAutocomplete ( props:
   }, [isMapEnabled, currentMapRegion])
 
   useEffect(() => {
-    if (mapReady && inputRef.current?.input && !autocompleteRef.current) {
-      autocompleteRef.current = new google.maps.places.Autocomplete(inputRef.current.input)
+    if (mapReady && inputRef.current?.input) {
+      if (!autocompleteRef.current) {
+        autocompleteRef.current = new google.maps.places.Autocomplete(inputRef.current.input)
+      }
+      google.maps.event.clearListeners(autocompleteRef.current, 'place_changed')
       autocompleteRef.current.addListener('place_changed', async () => {
         if (autocompleteRef.current && onPlaceSelected) {
           const place = autocompleteRef.current.getPlace()

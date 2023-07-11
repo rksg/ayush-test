@@ -12,7 +12,7 @@ export const mockEdgeDhcpHostStats = {
       hostMac: '00:0c:29:26:dd:24',
       hostStatus: 'ONLINE',
       hostExpireDate: '2023-04-07 10:39:36',
-      hostRemainingTime: 1234567,
+      hostRemainingTime: 124416000,
       edgeId: '96B341ADD6C16C11ED8B8B000C296600F2'
     },
     {
@@ -22,7 +22,7 @@ export const mockEdgeDhcpHostStats = {
       hostMac: '00:0c:29:26:dd:20',
       hostStatus: 'OFFLINE',
       hostExpireDate: '2023-04-07 10:39:36',
-      hostRemainingTime: 1234567,
+      hostRemainingTime: 124416001,
       edgeId: '96B341ADD6C16C11ED8B8B000C296600F2'
     }
   ]

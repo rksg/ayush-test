@@ -7,15 +7,12 @@ import { networkHierarchy } from '../__tests__/fixtures'
 
 import { IncidentListPageLegacy as Incidents, IncidentTabContentLegacy } from './incidentListPageLegacy'
 
+
+
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }] },
-    getNetworkFilter: jest
-      .fn()
-      .mockReturnValueOnce({
-        networkFilter: { path: [{ type: 'network', name: 'Network' }] }
-      })
+    filters: { filter: {} }
   })
 }))
 jest.mock('../NetworkHistory', () => ({ NetworkHistory: () => <div>Network</div> }))

@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 import moment  from 'moment-timezone'
 
-import { incidentCodes, IncidentFilter, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                                             from '@acx-ui/store'
+import { getFilterPayload, incidentCodes, IncidentFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                                               from '@acx-ui/store'
 
 export type NetworkHistoryData = {
   connectedClientCount: number[]
@@ -57,7 +57,6 @@ export const api = dataApi.injectEndpoints({
             }
         `,
         variables: {
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.hideIncidents
@@ -65,7 +64,7 @@ export const api = dataApi.injectEndpoints({
             : calcGranularity(payload.startDate, payload.endDate),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: payload.code ?? incidentCodes,
-          filter: payload.filter
+          ...getFilterPayload(payload)
         }
       }),
       providesTags: [
