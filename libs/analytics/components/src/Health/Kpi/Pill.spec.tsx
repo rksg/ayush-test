@@ -192,7 +192,7 @@ describe('Pill without kpi threshold', () => {
     const infoIcon = await screen.findByTestId('InformationOutlined')
     await userEvent.hover(infoIcon)
     expect(await screen.findByRole('tooltip', { hidden: true })).toHaveTextContent(
-      $t(tooltip, { ...productNames,  br: '\n' }).replace('\n', '').replace('\n', ' ')
+      $t(tooltip, { ...productNames, br: '\n' }).replace('\n', '').replace('\n', ' ')
     )
   })
   it('should calculate results according to time window', async () => {
