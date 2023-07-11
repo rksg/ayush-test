@@ -215,6 +215,26 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Operational Data (Current)')).toBeVisible()
+        expect(screen.queryByText('VNI')).toBeNull()
+      })
+
+      it('should render client VNI correctly', async () => {
+        const clientData = {
+          ...clientList[0],
+          vni: 9527
+        }
+        render(<Provider>
+          <ClientProperties
+            clientStatus='connected'
+            clientDetails={clientData}
+          />
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
+        })
+
+        expect(await screen.findByText('Client Details')).toBeVisible()
+        expect(await screen.findByText('VNI')).toBeVisible()
+        expect(await screen.findByText('9527')).toBeVisible()
       })
 
       it('should render client without some data correctly', async () => {

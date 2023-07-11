@@ -117,13 +117,13 @@ export function VlanPortsModal (props: {
       vlanConfigName: ''
     }
 
-    const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts.
-      filter((value: string) => value.startsWith('1/1/') ||
+    const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
+      .filter((value: string) => value.startsWith('1/1/') ||
         (data.enableSlot2 && value.startsWith('1/2/')) ||
         (data.enableSlot3 && value.startsWith('1/3/')))
 
-    const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts.
-      filter((value: string) => value.startsWith('1/1/') ||
+    const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
+      .filter((value: string) => value.startsWith('1/1/') ||
         (data.enableSlot2 && value.startsWith('1/2/')) ||
         (data.enableSlot3 && value.startsWith('1/3/')))
 
