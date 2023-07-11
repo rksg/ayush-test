@@ -1,6 +1,6 @@
-import { userApi }                   from '@acx-ui/store'
-import { RequestPayload, RolesEnum } from '@acx-ui/types'
-import { createHttpRequest }         from '@acx-ui/utils'
+import { userApi }           from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
 
 import {
   CloudVersion,
@@ -179,8 +179,6 @@ export const {
           userProfile.initials = `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
           userProfile.fullName = `${firstName} ${lastName}`
         }
-
-        userProfile.roles = [RolesEnum.READ_ONLY]
         return userProfile
       },
       providesTags: ['UserProfile']
