@@ -1,5 +1,5 @@
-import { rest } from 'msw'
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { clientApi, switchApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
