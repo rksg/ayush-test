@@ -11,7 +11,8 @@ export enum RolesEnum {
   PRIME_ADMIN = 'PRIME_ADMIN',
   ADMINISTRATOR = 'ADMIN',
   GUEST_MANAGER = 'OFFICE_ADMIN',
-  READ_ONLY = 'READ_ONLY'
+  READ_ONLY = 'READ_ONLY',
+  DPSK_ADMIN = 'DPSK_ADMIN'
 }
 
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {

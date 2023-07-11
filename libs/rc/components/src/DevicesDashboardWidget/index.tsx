@@ -1,7 +1,7 @@
 import {  Loader }                                                from '@acx-ui/components'
 import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import {  useParams }                                             from '@acx-ui/react-router-dom'
-import { useDashboardFilter, NetworkNodePath }                    from '@acx-ui/utils'
+import { useDashboardFilter }                                     from '@acx-ui/utils'
 
 import {
   getApDonutChartData,
@@ -40,9 +40,7 @@ export function DevicesDashboardWidget () {
 }
 
 export function DevicesDashboardWidgetV2 () {
-  const { filters } = useDashboardFilter()
-  const { filter: { networkNodes } } = filters
-  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+  const { venueIds } = useDashboardFilter()
 
   const queryResults = useDashboardV2OverviewQuery({
     params: useParams(),

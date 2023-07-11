@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { TunnelProfileForm } from './index'
 
@@ -29,5 +29,22 @@ describe('TunnelProfileForm', () => {
     )
     user.click(screen.getByRole('radio', { name: 'Manual' }))
     expect(await screen.findByRole('spinbutton')).toBeVisible()
+  })
+
+  it('should show error when ageTime is invalid', async () => {
+    render(
+      <Form>
+        <TunnelProfileForm />
+      </Form>
+    )
+    const ageTimeInput = await screen.findByRole('spinbutton', { name: 'Idle Period' })
+    fireEvent.change(ageTimeInput, { target: { value: 1 } })
+
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
+
+    fireEvent.change(ageTimeInput, { target: { value: 10081 } })
+    expect(await screen.findByText('Value must between 5-10080 minutes or 1-7 days or 1 week'))
+      .toBeVisible()
   })
 })

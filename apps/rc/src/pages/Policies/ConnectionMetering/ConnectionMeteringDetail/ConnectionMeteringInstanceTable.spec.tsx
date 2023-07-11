@@ -107,7 +107,7 @@ describe('ConnectionMeteringInstanceTable', () => {
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })
 
-  it('should render the connection metering instance table view', async () => {
+  it('should render the data usage metering instance table view', async () => {
     mockServer.use(
       rest.post(
         PersonaUrls.searchPersonaGroupList.url.replace('?size=:pageSize&page=:page&sort=:sort', ''),

@@ -47,7 +47,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'memoryUsedKb',
       'memoryTotalKb',
       'diskUsedKb',
-      'diskTotalKb'
+      'diskTotalKb',
+      'description'
     ],
     filters: { serialNumber: [serialNumber] } }
 

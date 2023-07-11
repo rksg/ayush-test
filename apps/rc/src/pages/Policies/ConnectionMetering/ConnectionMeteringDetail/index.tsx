@@ -1,11 +1,10 @@
 
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
-import { useParams }  from 'react-router-dom'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader,  GridRow, GridCol } from '@acx-ui/components'
-import { useGetConnectionMeteringByIdQuery }                   from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader,  GridRow, GridCol, SummaryCard } from '@acx-ui/components'
+import { useGetConnectionMeteringByIdQuery }                                from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
   getPolicyDetailsLink,
@@ -29,16 +28,18 @@ export default function ConnectionMeteringDetail () {
   const basicInfo = [
     {
       title: $t({ defaultMessage: 'Rate Limiting' }),
-      value: profileQuery.data && <RateLimitingTableCell
+      content: profileQuery.data && <RateLimitingTableCell
         uploadRate={profileQuery.data.uploadRate}
         downloadRate={profileQuery.data.downloadRate}
-      />
+      />,
+      colSpan: 5
     },
     {
       title: $t({ defaultMessage: 'Data Consumption' }),
-      value: profileQuery.data && <DataConsumptionLabel
+      content: profileQuery.data && <DataConsumptionLabel
         {...profileQuery.data}
-      />
+      />,
+      colSpan: 5
     }
   ]
 
@@ -52,7 +53,7 @@ export default function ConnectionMeteringDetail () {
             link: getPolicyListRoutePath(true)
           },
           {
-            text: $t({ defaultMessage: 'Connection Metering' }),
+            text: $t({ defaultMessage: 'Data Usage Metering' }),
             link: getPolicyRoutePath({
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.LIST
@@ -71,20 +72,11 @@ export default function ConnectionMeteringDetail () {
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <Card>
-            <GridRow>
-              {
-                basicInfo.map(({ title, value }) => {
-                  return (
-                    <GridCol col={{ span: 8 }} key={title}>
-                      <Card.Title>{title}</Card.Title>
-                      <Typography.Paragraph>{value}</Typography.Paragraph>
-                    </GridCol>
-                  )
-                })
-              }
-            </GridRow>
-          </Card>
+          <SummaryCard
+            isLoading={profileQuery.isLoading}
+            isFetching={profileQuery.isFetching}
+            data={basicInfo}
+          />
         </GridCol>
         <GridCol col={{ span: 24 }}>
           <Card>

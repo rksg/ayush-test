@@ -9,7 +9,6 @@ describe('networkHistoryWidgetApi', () => {
   const props: AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }],
     range: DateRange.last24Hours,
     filter: {}
   }

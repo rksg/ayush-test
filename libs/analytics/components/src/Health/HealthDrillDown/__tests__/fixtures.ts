@@ -1,12 +1,14 @@
 import { NetworkPath } from '@acx-ui/utils'
 
 export const mockConnectionDrillDown = {
-  connectionDrilldown: {
-    assocSuccessAndAttemptCount: [[24, 25]],
-    authSuccessAndAttemptCount: [[54, 54]],
-    eapSuccessAndAttemptCount: [[25, 27]],
-    radiusSuccessAndAttemptCount: [[0, 2]],
-    dhcpSuccessAndAttemptCount: [[972, 980]]
+  network: {
+    connectionDrilldown: {
+      assocSuccessAndAttemptCount: [[24, 25]],
+      authSuccessAndAttemptCount: [[54, 54]],
+      eapSuccessAndAttemptCount: [[25, 27]],
+      radiusSuccessAndAttemptCount: [[0, 2]],
+      dhcpSuccessAndAttemptCount: [[972, 980]]
+    }
   }
 }
 

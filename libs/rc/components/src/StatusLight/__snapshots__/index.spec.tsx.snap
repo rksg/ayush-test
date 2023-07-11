@@ -62,5 +62,15 @@ exports[`StatusLight should render correctly 1`] = `
       Operational
     </span>
   </span>
+  <span
+    class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+  >
+    <span
+      class="ant-badge-status-dot"
+    />
+    <span
+      class="ant-badge-status-text"
+    />
+  </span>
 </DocumentFragment>
 `;

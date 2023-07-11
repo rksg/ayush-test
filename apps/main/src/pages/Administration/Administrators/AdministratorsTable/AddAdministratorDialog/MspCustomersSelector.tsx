@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {
   Form,
@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import { useTableQuery
 } from '@acx-ui/rc/utils'
+import { RolesEnum } from '@acx-ui/types'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',
@@ -51,6 +52,13 @@ const MspCustomerSelector = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const ecType = Form.useWatch('ecType', form)
+  const role = Form.useWatch('role', form)
+
+  useEffect(() => {
+    (role === RolesEnum.DPSK_ADMIN || role === RolesEnum.GUEST_MANAGER)
+      ? form.setFieldValue('ecType', 'none')
+      : form.setFieldValue('ecType', 'all')
+  }, [role])
 
   const ecTypesList = getEcTypes().map((item) => ({
     label: $t(item.label),
@@ -85,7 +93,8 @@ const MspCustomerSelector = () => {
       initialValue={ECCustomerRadioButtonEnum.all}
       rules={[{ required: true }]}
     >
-      <Radio.Group style={{ width: '100%' }}>
+      <Radio.Group style={{ width: '100%' }}
+        disabled={role === RolesEnum.DPSK_ADMIN || role === RolesEnum.GUEST_MANAGER}>
         <SpaceWrapper full direction='vertical' size='middle'>
           {ecTypesList.map((item) => {
             return (

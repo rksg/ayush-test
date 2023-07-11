@@ -34,7 +34,8 @@ import {
   Vlan,
   Lag,
   LAG_TYPE,
-  sortPortFunction
+  sortPortFunction,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
@@ -195,7 +196,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const onSubmit = async () => {
     const value = form.getFieldsValue()
-    if(isEditMode) {
+    if (isEditMode) {
       const taggedVlans = Array.isArray(value.taggedVlans) ? value.taggedVlans :
         _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
 
@@ -206,7 +207,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           id: editData[0].id,
           realRemove: editData[0].realRemove,
           switchId: editData[0].switchId,
-          taggedVlans
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
         delete payload.portsType
         await updateLag({ params: { tenantId, switchId, lagId: editData[0].id }, payload }).unwrap()
@@ -216,10 +217,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }
     } else {
       try {
+        const taggedVlans = _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
         let payload = {
           ...value,
           id: '',
-          taggedVlans: _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
+          taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
         delete payload.portsType
         await addLag({ params: { tenantId, switchId }, payload }).unwrap()
@@ -491,11 +493,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               children={
                 <Tooltip
                   placement='bottom'
-                  title={
-                    cliApplied ?
-                      // eslint-disable-next-line max-len
-                      $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
-                  }>
+                  title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: '150px 50px'
@@ -520,11 +518,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               children={
                 <Tooltip
                   placement='bottom'
-                  title={
-                    cliApplied ?
-                      // eslint-disable-next-line max-len
-                      $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
-                  }>
+                  title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: '150px 50px'

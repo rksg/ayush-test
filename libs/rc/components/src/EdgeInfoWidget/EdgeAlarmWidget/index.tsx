@@ -20,7 +20,13 @@ const alarmListPayload = {
     'serialNumber',
     'entityType',
     'entityId'
-  ]
+  ],
+  page: 1,
+  pageSize: 10000,
+  defaultPageSize: 10000,
+  total: 0,
+  sortField: 'startTime',
+  sortOrder: 'DESC'
 }
 
 export const getAlarmChartData = (alarms: Alarm[] | undefined): DonutChartData[] => {
@@ -75,15 +81,6 @@ export const EdgeAlarmWidget = (props:EdgeAlarmWidgetProps) => {
       filters: {
         serialNumber: [serialNumber]
       }
-    },
-    sorter: {
-      sortField: 'startTime',
-      sortOrder: 'DESC'
-    },
-    pagination: {
-      pageSize: 10000,
-      page: 1,
-      total: 0
     },
     option: { skip: !serialNumber }
   })

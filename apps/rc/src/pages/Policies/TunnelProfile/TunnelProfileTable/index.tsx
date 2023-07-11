@@ -9,9 +9,8 @@ import {
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
 import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                     from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useTenantLink, useParams }                                                                                          from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                                                                                   from '@acx-ui/user'
-
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
@@ -19,6 +18,7 @@ const TunnelProfileTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
+  const params = useParams()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
@@ -134,7 +134,8 @@ const TunnelProfileTable = () => {
 
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1
+        && selectedRows[0].id !== params.tenantId, // Default Tunnel profile cannot Edit
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({

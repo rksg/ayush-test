@@ -1,25 +1,26 @@
 import { useMemo } from 'react'
 
-import { DateFilter, useDateFilter } from './dateFilter'
-import { useEncodedParameter }       from './encodedParameter'
-import { generateVenueFilter }       from './filters'
-import { NetworkPath, pathFilter }   from './types/networkFilter'
+import { useDateFilter }       from './dateFilter'
+import { useEncodedParameter } from './encodedParameter'
+import { generateVenueFilter } from './filters'
 
-export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
+import type { DateFilter }  from './dateFilter'
+import type { NodesFilter } from './types/networkFilter'
 
-export type DashboardFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
+export type DashboardFilter = DateFilter & { venueIds: string[], filter : NodesFilter }
 
 export function useDashboardFilter () {
   const { read, write } = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const { dateFilter } = useDateFilter()
   return useMemo(() => {
     const { nodes } = read() || { nodes: [] }
+    const venueIds = nodes.map(([name]:string[]) => name)
     return {
+      venueIds,
       filters: {
-        path: defaultNetworkPath,
         ...dateFilter,
         filter: nodes.length
-          ? generateVenueFilter(nodes.map(([name]:string[]) => name))
+          ? generateVenueFilter(venueIds)
           : {}
       },
       setNodeFilter: (nodes: string[][]) => {

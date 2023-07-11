@@ -20,6 +20,7 @@ export function TestName () {
     label={$t(label)}
     rules={[
       { required: true },
+      { max: 255 },
       { validator: duplicateNameValidator }
     ]}
     children={<Input />}

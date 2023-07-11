@@ -1,28 +1,34 @@
-import { Badge, Button } from 'antd'
-import { useIntl }       from 'react-intl'
+import { Badge, Button, Space } from 'antd'
+import { useIntl }              from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
 import { AnalyticsFilter }                                      from '@acx-ui/analytics/utils'
 import { Card, Descriptions, Loader }                           from '@acx-ui/components'
 import { DateFormatEnum, formatter }                            from '@acx-ui/formatter'
+import { CloseSymbol }                                          from '@acx-ui/icons'
 import { SwitchStatusEnum, SwitchViewModel }                    from '@acx-ui/rc/utils'
 import { noDataDisplay, useDateFilter }                         from '@acx-ui/utils'
 
 import IncidentStackedBar               from './IncidentStackedBar'
+import * as UI                          from './styledComponents'
 import { getDeviceColor, switchStatus } from './utils'
 
+
 export function SwitchDetailsCard (props: {
-    switchDetail: SwitchViewModel
-    isLoading: boolean
+    switchDetail: SwitchViewModel,
+    isLoading: boolean,
+    onClose: () => void
   }) {
-  const { switchDetail, isLoading } = props
+  const { switchDetail, isLoading, onClose } = props
   const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
 
   const filters = {
     ...dateFilter,
-    path: [{ type: 'switch', name: switchDetail?.switchMac?.toUpperCase() as string },
-      { type: 'switchGroup', name: switchDetail?.venueId }]
+    filter: {
+      switchNodes: [[{ type: 'switch', name: switchDetail?.switchMac?.toUpperCase() as string },
+        { type: 'switchGroup', name: switchDetail?.venueId }]]
+    }
   } as AnalyticsFilter
 
   const incidentData = useIncidentsBySeverityQuery(filters, {
@@ -36,18 +42,21 @@ export function SwitchDetailsCard (props: {
   return <Card
     type='no-border'
   ><Card.Title>
-      <Button
-        style={{
-          padding: 0
-        }}
-        size='small'
-        type='link'>
-        {switchDetail?.name
-        || switchDetail?.id
-        || switchDetail?.switchMac
-        || $t({ defaultMessage: 'Unknown' }) // for unknown device
-        }
-      </Button>
+      <Space>
+        <UI.NodeTitle
+          style={{
+            padding: 0
+          }}
+          size='small'
+          type='link'>
+          {switchDetail?.name
+          || switchDetail?.id
+          || switchDetail?.switchMac
+          || $t({ defaultMessage: 'Unknown' }) // for unknown device
+          }
+        </UI.NodeTitle>
+        <Button size='small' type='link' onClick={onClose} icon={<CloseSymbol />}/>
+      </Space>
     </Card.Title>
     <Loader states={[
       { isLoading }

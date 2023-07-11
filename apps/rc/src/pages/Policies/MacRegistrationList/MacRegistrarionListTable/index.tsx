@@ -77,7 +77,9 @@ export default function MacRegistrationListsTable () {
     getNetworkList({
       params,
       payload: {
-        fields: [ 'venues', 'id' ]
+        fields: [ 'venues', 'id' ],
+        page: 1,
+        pageSize: 10000
       } }).then(result => {
       const networkList = new Map()
       result.data?.data.forEach(n => networkList.set(n.id, n.venues.names))

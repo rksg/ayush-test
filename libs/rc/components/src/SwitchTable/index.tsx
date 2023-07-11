@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -39,7 +39,8 @@ import {
   transformSwitchUnitStatus,
   FILTER,
   SEARCH,
-  GROUPBY
+  GROUPBY,
+  getSwitchModel
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -86,13 +87,15 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
 
 export const defaultSwitchPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber'],
+  searchTargetFields: ['name', 'model', 'switchMac', 'ipAddress', 'serialNumber', 'firmware'],
   fields: [
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware'
   ]
 }
+
+export type SwitchTableRefType = { openImportDrawer: ()=>void }
 
 interface SwitchTableProps
   extends Omit<TableProps<SwitchRow>, 'columns'> {
@@ -103,7 +106,7 @@ interface SwitchTableProps
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }
 
-export function SwitchTable (props : SwitchTableProps) {
+export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<SwitchTableRefType>) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -114,6 +117,12 @@ export function SwitchTable (props : SwitchTableProps) {
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
   const importTemplateLink = 'assets/templates/switches_import_template.csv'
+
+  useImperativeHandle(ref, () => ({
+    openImportDrawer: () => {
+      setImportVisible(true)
+    }
+  }))
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
@@ -178,7 +187,10 @@ export function SwitchTable (props : SwitchTableProps) {
       filterable: filterableKeys ? switchFilterOptions : false,
       render: (data, row) => {
         return row.isFirstLevel ?
-          <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
+          <TenantLink
+            to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
+            style={{ lineHeight: '20px' }}
+          >
             {getSwitchName(row)}
           </TenantLink> :
           <div>
@@ -203,7 +215,10 @@ export function SwitchTable (props : SwitchTableProps) {
       filterable: filterableKeys ? filterableKeys['model'] : false,
       sorter: true,
       searchable: searchable,
-      groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions
+      groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions,
+      render: (data, row) => {
+        return data || getSwitchModel(row.serialNumber)
+      }
     }, {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -224,6 +239,11 @@ export function SwitchTable (props : SwitchTableProps) {
       dataIndex: 'ipAddress',
       sorter: true,
       searchable: searchable
+    }, {
+      key: 'firmware',
+      title: $t({ defaultMessage: 'Firmware' }),
+      dataIndex: 'firmware',
+      sorter: true
     },
     // { TODO: Health scope
     //   key: 'incidents',
@@ -357,7 +377,7 @@ export function SwitchTable (props : SwitchTableProps) {
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
     } else {
-      delete customFilters.syncedSwitchConfig
+      customFilters.syncedSwitchConfig = null
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
@@ -435,4 +455,4 @@ export function SwitchTable (props : SwitchTableProps) {
       onClose={() => setImportVisible(false)}
     />
   </Loader>
-}
+})

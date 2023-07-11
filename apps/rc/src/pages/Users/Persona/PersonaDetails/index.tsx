@@ -52,7 +52,7 @@ function PersonaDetails () {
 
   // TODO: isLoading state?
   const [updatePersona] = useUpdatePersonaMutation()
-  const [allocatePersonaVni] = useAllocatePersonaVniMutation()
+  const [allocatePersonaVni, { isLoading: isVniAllocating }] = useAllocatePersonaVniMutation()
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
@@ -168,6 +168,7 @@ function PersonaDetails () {
           <PasswordInput
             readOnly
             bordered={false}
+            style={{ paddingLeft: 0 }}
             value={personaDetailsQuery.data?.dpskPassphrase}
           />
           <Button
@@ -200,9 +201,14 @@ function PersonaDetails () {
     { label: $t({ defaultMessage: 'Assigned VNI' }),
       value: personaDetailsQuery.data?.vni ??
         (vniRetryable ?
-          <Space size={'middle'}>
+          <Space size={'middle'} align={'center'}>
             <Typography.Text>{noDataDisplay}</Typography.Text>
-            <Button size={'small'} type={'default'} onClick={allocateVni}>
+            <Button
+              size={'small'}
+              type={'default'}
+              onClick={allocateVni}
+              loading={isVniAllocating}
+            >
               {$t({ defaultMessage: 'Retry VNI' })}
             </Button>
           </Space> : undefined)
@@ -262,9 +268,11 @@ function PersonaDetails () {
           <Col span={12}>
             <Loader >
               {details.map(item =>
-                <Row key={item.label}>
+                <Row key={item.label} align={'middle'}>
                   <Col span={7}>
-                    <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                    <Typography.Paragraph
+                      style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
+                    >
                       {item.label}:
                     </Typography.Paragraph>
                   </Col>
@@ -276,9 +284,11 @@ function PersonaDetails () {
           {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
             <Col span={12}>
               {netSeg.map(item =>
-                <Row key={item.label}>
+                <Row key={item.label} align={'middle'}>
                   <Col span={7}>
-                    <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
+                    <Typography.Paragraph
+                      style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
+                    >
                       {item.label}:
                     </Typography.Paragraph>
                   </Col>
@@ -287,10 +297,12 @@ function PersonaDetails () {
               )}
               {
                 isConnectionMeteringEnabled &&
-                <Row key={'Connection Metering'}>
+                <Row key={'Data Usage Metering'} align={'middle'}>
                   <Col span={7}>
-                    <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-70') }}>
-                      {$t({ defaultMessage: 'Connection Metering' })}:
+                    <Typography.Paragraph
+                      style={{ margin: 0, padding: '6px 0px', color: cssStr('--acx-neutrals-70') }}
+                    >
+                      {$t({ defaultMessage: 'Data Usage Metering' })}:
                     </Typography.Paragraph>
                   </Col>
                   <Col span={12}>{connectionMetering ?

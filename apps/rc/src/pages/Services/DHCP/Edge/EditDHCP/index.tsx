@@ -1,21 +1,21 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
+import { Form }                   from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   Loader,
   PageHeader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
-  EdgeDhcpSettingForm
+  EdgeDhcpSettingForm, EdgeDhcpSettingFormData
 } from '@acx-ui/rc/components'
-import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation }                                 from '@acx-ui/rc/services'
-import { EdgeDhcpSetting, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                from '@acx-ui/react-router-dom'
+import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation }                               from '@acx-ui/rc/services'
+import { LeaseTimeType, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                              from '@acx-ui/react-router-dom'
 
 
 const EditDhcp = () => {
@@ -24,7 +24,7 @@ const EditDhcp = () => {
   const params = useParams()
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')
-  const formRef = useRef<StepsFormLegacyInstance<EdgeDhcpSetting>>()
+  const [form] = Form.useForm()
   const {
     data: edgeDhcpData,
     isLoading: isEdgeDhcpDataLoading
@@ -36,19 +36,28 @@ const EditDhcp = () => {
 
   useEffect(() => {
     if(edgeDhcpData) {
-      formRef.current?.resetFields()
-      formRef.current?.setFieldsValue(edgeDhcpData)
-      formRef.current?.setFieldValue(
+      form.resetFields()
+      form.setFieldsValue(edgeDhcpData)
+      form.setFieldValue(
         'enableSecondaryDNSServer',
-        !!formRef.current?.getFieldValue('secondaryDnsIp')
+        !!form.getFieldValue('secondaryDnsIp')
+      )
+      form.setFieldValue(
+        'leaseTimeType',
+        edgeDhcpData.leaseTime === -1 ? LeaseTimeType.INFINITE : LeaseTimeType.LIMITED
       )
     }
   }, [edgeDhcpData])
 
-  const handleEditEdgeDhcp = async (data: EdgeDhcpSetting) => {
+  const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
       const payload = { ...edgeDhcpData, ...data }
       const pathVar = { id: params.serviceId }
+      if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
+        payload.leaseTime = -1 // -1 means infinite
+      }
+      delete payload.enableSecondaryDNSServer
+      delete payload.leaseTimeType
       await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {
@@ -69,16 +78,16 @@ const EditDhcp = () => {
         ]}
       />
       <Loader states={[{ isLoading: isEdgeDhcpDataLoading, isFetching: isFormSubmitting }]}>
-        <StepsFormLegacy
-          formRef={formRef}
+        <StepsForm
+          form={form}
           onFinish={handleEditEdgeDhcp}
           onCancel={() => navigate(linkToServices)}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         >
-          <StepsFormLegacy.StepForm>
+          <StepsForm.StepForm>
             <EdgeDhcpSettingForm />
-          </StepsFormLegacy.StepForm>
-        </StepsFormLegacy>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Loader>
     </>
   )

@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageNotFound should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__PageStyle-sc-1tx3svs-0 hyRhcV"
+  >
+    <h2
+      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+    >
+      Oops. Something is going wrong...
+    </h2>
+    <div
+      class="text"
+    >
+      It is probably our fault, but let’s try again or go to left menu
+    </div>
+  </div>
+</DocumentFragment>
+`;

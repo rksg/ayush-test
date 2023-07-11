@@ -1,9 +1,9 @@
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { RadiusServerForm } from './RadiusServerForm'
 
 const LocalRadiusServer = () => {
-  const radiusClientEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const radiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   return (
     !radiusClientEnabled ? <></> : <RadiusServerForm/>
   )

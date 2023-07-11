@@ -99,6 +99,7 @@ describe('AddEdgeDhcp', () => {
     fireEvent.change(endIpInput, { target: { value: '1.1.1.5' } })
     fireEvent.change(gatewayInput, { target: { value: '1.2.3.4' } })
     await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    fireEvent.click(screen.getByRole('radio', { name: 'Infinite' }))
     await user.click(screen.getByRole('button', { name: 'Add' }))
   })
 

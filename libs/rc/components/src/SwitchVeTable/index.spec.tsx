@@ -2,8 +2,8 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   render,
   screen,
@@ -16,6 +16,16 @@ import {
 import { aclList, freeVePortVlans, routedList, successResponse, switchDetailHeader, switchList, switchesList, venueRoutedList } from './__tests__/fixtures'
 
 import { SwitchVeTable } from '.'
+
+const venueSwitchSetting = {
+  cliApplied: false,
+  id: '45aa5ab71bd040be8c445be8523e0b6c',
+  name: 'My-Venue',
+  profileId: ['6a757409dc1f47c2ad48689db4a0846a'],
+  switchLoginPassword: 'xxxxxxxxx',
+  switchLoginUsername: 'admin',
+  syslogEnabled: false
+}
 
 describe('Switch VE Table', () => {
   const params = {
@@ -56,7 +66,9 @@ describe('Switch VE Table', () => {
         (_, res, ctx) => res(ctx.json(venueRoutedList))),
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json(switchesList)))
+        (_, res, ctx) => res(ctx.json(switchesList))),
+      rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
+        (_, res, ctx) => res(ctx.json(venueSwitchSetting)))
     )
   })
 

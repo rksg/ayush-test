@@ -8,8 +8,8 @@ import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams }        from '@acx-ui/react-router-dom'
-import { useDashboardFilter, NetworkNodePath } from '@acx-ui/utils'
+import { useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
+import { useDashboardFilter }           from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
@@ -76,9 +76,7 @@ export function VenuesDashboardWidgetV2 () {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/venues/')
 
-  const { filters } = useDashboardFilter()
-  const { filter: { networkNodes } } = filters
-  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+  const { venueIds } = useDashboardFilter()
 
   const queryResults = useDashboardV2OverviewQuery({
     params: useParams(),

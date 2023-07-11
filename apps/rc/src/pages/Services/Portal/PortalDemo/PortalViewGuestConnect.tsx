@@ -14,7 +14,7 @@ export default function PortalViewGuestConnect (props:{
   return (
     <UI.ViewSection>
       <UI.FieldTextBig>{portalLang.loginNote}</UI.FieldTextBig>
-      <UI.FieldInput></UI.FieldInput>
+      <UI.FieldInput disabled={true}></UI.FieldInput>
       <UI.ViewSectionLink>
         {portalLang.forgotPswdLink}</UI.ViewSectionLink>
       <PortalButtonContent

@@ -33,12 +33,12 @@ describe('HealthConnectedClientsOverTime', () => {
     connectedClientCount: [11, 12, 13, 14, 15]
   }
 
-  const filters = {
+  const filters: AnalyticsFilter = {
     startDate: '2022-04-07T09:15:00.000Z',
     endDate: '2022-04-07T10:15:00.000Z',
-    path: [{ type: 'network', name: 'Network' }],
-    range: DateRange.last24Hours
-  } as AnalyticsFilter
+    range: DateRange.last24Hours,
+    filter: {}
+  }
 
   const healthContext = {
     ...filters,

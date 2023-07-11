@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { FetchBaseQueryError }    from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }        from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -8,24 +7,20 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
-import { ApTable, ApsTabContext, CsvSize, ImportFileDrawer, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
+import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
   useApListQuery,
-  useImportApMutation,
-  useImportApOldMutation,
-  useLazyImportResultQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { CommonResult, ImportErrorRes, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                              from '@acx-ui/react-router-dom'
+import { usePollingTableQuery }  from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 export default function useApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [ importVisible, setImportVisible ] = useState(false)
   const [ apsCount, setApsCount ] = useState(0)
+  const apTableRef = useRef<ApTableRefType>(null)
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -72,49 +67,9 @@ export default function useApsTable () {
     setApsCount(apListTableQuery.data?.totalCount!)
   }, [apListTableQuery.data])
 
-  const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
-  const [ importAps, importApsResult ] = useImportApOldMutation()
-  const [ importCsv ] = useImportApMutation()
-  const [ importQuery ] = useLazyImportResultQuery()
-  const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
-  const [ importErrors, setImportErrors ] = useState<ImportErrorRes>({} as ImportErrorRes)
-
-  const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
-  const importTemplateLink = apGpsFlag ?
-    'assets/templates/aps_import_template_with_gps.csv' :
-    'assets/templates/aps_import_template.csv'
-
-  useEffect(()=>{
-    if (wifiEdaFlag) {
-      return
-    }
-
-    setIsImportResultLoading(false)
-    if (importApsResult.isSuccess) {
-      setImportVisible(false)
-    } else if (importApsResult.isError && importApsResult?.error &&
-      'data' in importApsResult.error) {
-      setImportResult(importApsResult?.error.data as ImportErrorRes)
-    }
-  },[importApsResult])
-
-  useEffect(()=>{
-    if (!wifiEdaFlag) {
-      return
-    }
-
-    setIsImportResultLoading(false)
-    if ( importResult?.fileErrorsCount === 0 ) {
-      setImportVisible(false)
-    } else {
-      setImportErrors(importResult)
-    }
-  },[importResult])
-
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'import-from-file') {
-      setImportVisible(true)
+      apTableRef.current?.openImportDrawer()
     }
   }
 
@@ -125,7 +80,7 @@ export default function useApsTable () {
       label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
-      label: $t({ defaultMessage: 'Import from file' })
+      label: $t({ defaultMessage: 'Import APs' })
     }, {
       key: 'ap-group',
       label: <TenantLink to='devices/apgroups/add'>
@@ -139,14 +94,14 @@ export default function useApsTable () {
   })
 
   const extra = [
-    <Dropdown overlay={addMenu}>{() =>
+    <Dropdown overlay={addMenu} key='add'>{() =>
       <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
     }</Dropdown>
   ]
 
-  const component = <>
+  const component =
     <ApsTabContext.Provider value={{ setApsCount }}>
-      <ApTable
+      <ApTable ref={apTableRef}
         searchable={true}
         filterables={{
           venueId: venueFilterOptions,
@@ -157,32 +112,6 @@ export default function useApsTable () {
         }}
       />
     </ApsTabContext.Provider>
-    <ImportFileDrawer
-      type='AP'
-      title={$t({ defaultMessage: 'Import from file' })}
-      maxSize={CsvSize['5MB']}
-      maxEntries={512}
-      acceptType={['csv']}
-      templateLink={importTemplateLink}
-      visible={importVisible}
-      isLoading={isImportResultLoading}
-      importError={{ data: importErrors } as FetchBaseQueryError}
-      importRequest={(formData) => {
-        setIsImportResultLoading(true)
-        if (wifiEdaFlag) {
-          importCsv({ params: { tenantId }, payload: formData,
-            callback: async (response: CommonResult) => {
-              const result = await importQuery(
-                { payload: { requestId: response.requestId } }, true)
-                .unwrap()
-              setImportResult(result)
-            } }).unwrap()
-        } else {
-          importAps({ params: { tenantId }, payload: formData })
-        }
-      }}
-      onClose={() => setImportVisible(false)}/>
-  </>
 
   return {
     title: $t(title, { count: apsCount || 0 }),

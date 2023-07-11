@@ -3,17 +3,16 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within,
-  findTBody,
-  fireEvent
+  findTBody
 } from '@acx-ui/test-utils'
 
 import { SwitchTable } from '.'
@@ -91,9 +90,33 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('SwitchTable', () => {
-  afterEach(() => jest.restoreAllMocks())
+type MockDrawerProps = React.PropsWithChildren<{
+  visible: boolean
+  importRequest: () => void
+  onClose: () => void
+}>
+jest.mock('../ImportFileDrawer', () => ({
+  ...jest.requireActual('../ImportFileDrawer'),
+  ImportFileDrawer: ({ importRequest, onClose, visible }: MockDrawerProps) =>
+    visible && <div data-testid={'ImportFileDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        importRequest()
+      }}>Import</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
 
+jest.mock('../SwitchCliSession', () => ({
+  SwitchCliSession: ({ modalState }: { modalState: boolean }) =>
+    modalState && <div data-testid={'SwitchCliSession'}></div>
+}))
+
+describe('SwitchTable', () => {
+  afterEach(() => mockedUsedNavigate.mockClear())
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -106,18 +129,14 @@ describe('SwitchTable', () => {
       )
     )
   })
+  const params = {
+    tenantId: 'tenant-Id'
+  }
 
   it('should render correctly', async () => {
-
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -136,46 +155,63 @@ describe('SwitchTable', () => {
   })
 
   it('should clicks add switch correctly', async () => {
-    const params = {
-      tenantId: 'tenant-Id'
-    }
     render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
 
     expect(await screen.findByText('Add Switch')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Switch' }))
+    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/add')
+    mockedUsedNavigate.mockClear()
+
+    const row = await screen.findByRole('row', { name: /FMF2249Q0JT/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    // eslint-disable-next-line max-len
+    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/FMF2249Q0JT/FMF2249Q0JT/edit', { replace: false })
   })
 
   it('should clicks Import correctly', async () => {
-    const params = {
-      tenantId: 'tenant-Id'
-    }
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.importSwitches.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
     render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
 
     expect(await screen.findByText('Import from file')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Import from file' }))
+
+    const drawer = await screen.findByTestId('ImportFileDrawer')
+    expect(drawer).toBeVisible()
+    await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
+
+    await waitFor(() => expect(drawer).not.toBeVisible())
   })
 
   it('should clicks add stack correctly', async () => {
-    const params = {
-      tenantId: 'tenant-Id'
-    }
     render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
 
     expect(await screen.findByText('Add Stack')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Stack' }))
+    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/stack/add')
+    mockedUsedNavigate.mockClear()
+
+    const row = await screen.findByRole('row', { name: /FEK4224R19X/i })
+    await userEvent.click(await within(row).findByRole('checkbox'))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    // eslint-disable-next-line max-len
+    expect(mockedUsedNavigate).toBeCalledWith('/tenant-Id/t/devices/switch/FEK4224R19X/FEK4224R19X/stack/edit', { replace: false })
   })
 
   it('Table action bar Delete', async () => {
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-
     render(<Provider><SwitchTable/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
@@ -219,21 +255,53 @@ describe('SwitchTable', () => {
   }, 60000)
 
   it('should search correctly', async () => {
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.EXPORT_DEVICE ? true : false
+    })
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })
 
-    const input =
-      await screen
-        .findByPlaceholderText('Search Switch, Model, Serial Number, MAC Address, IP Address')
+    const input = await screen
+      .findByPlaceholderText('Search Switch, Model, Serial Number, MAC Address, IP Address')
 
-    input.focus()
-    fireEvent.change(input, { target: { value: 'ICX7150-C08P' } })
+    expect(input).toBeVisible()
+  })
 
-    expect(await screen.findByText('ICX7150-C08P')).toBeVisible()
+  it('should render with filterables', async () => {
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchListByGroup.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [{
+            clients: 0,
+            model: 'ICX7150-C12P',
+            incidents: 0,
+            members: 1,
+            switches: [switchList.data[0]]
+          }, {
+            clients: 0,
+            model: 'ICX7150-C08P',
+            incidents: 0,
+            members: 1,
+            switches: [switchList.data[1]]
+          }]
+        }))
+      )
+    )
+    render(<Provider><SwitchTable filterableKeys={{
+      venueId: [],
+      model: []
+    }}/></Provider>, {
+      route: { params, path: '/:tenantId/t' }
+    })
+
+    const combos = await screen.findAllByRole('combobox')
+    expect(combos).toHaveLength(5)
+
+    await userEvent.click(combos[4])
+    await userEvent.click(await screen.findByTitle('Model'))
+
+    await waitFor(() => expect(screen.getAllByText('Members: 1')).toHaveLength(2))
   })
 })

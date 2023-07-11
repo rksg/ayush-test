@@ -88,7 +88,7 @@ export const WirelessNetworkForm = () => {
       filters: { networkIds: networkIds }
     }
   }, {
-    skip: !!!networkIds || networkIds.length === 0,
+    skip: !!!networkIds,
     selectFromResult: ({ data, isLoading }) => {
       return {
         nsgViewData: data,

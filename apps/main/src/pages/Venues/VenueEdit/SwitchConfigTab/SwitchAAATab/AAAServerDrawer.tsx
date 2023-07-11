@@ -291,7 +291,6 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   return (
     <Drawer
       title={getTitle()}
-      onBackClick={onClose}
       visible={visible}
       onClose={onClose}
       children={getServerForm(serverType)}

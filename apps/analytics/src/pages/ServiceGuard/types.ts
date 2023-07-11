@@ -1,8 +1,8 @@
 import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
 import _                          from 'lodash'
 
-import { ServiceGuardBaseQuery } from '@acx-ui/store'
-import { APListNode, PathNode }  from '@acx-ui/utils'
+import { ServiceGuardBaseQuery }       from '@acx-ui/store'
+import { FilterListNode, NetworkPath } from '@acx-ui/utils'
 
 type UUID = string
 
@@ -25,8 +25,8 @@ export enum AuthenticationMethod {
   OPEN_AUTH = 'OPEN_AUTH'
 }
 
-export type APListNodes = [...PathNode[], APListNode]
-export type NetworkNodes = PathNode[]
+export type APListNodes = [...NetworkPath, FilterListNode]
+export type NetworkNodes = NetworkPath
 export type NetworkPaths = Array<APListNodes| NetworkNodes>
 
 export function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {

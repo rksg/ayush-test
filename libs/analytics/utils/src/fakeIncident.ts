@@ -45,7 +45,7 @@ export const fakeIncident1 = fakeIncident({
     { type: 'network', name: 'Network' },
     { type: 'zone', name: 'Edu2-611-Mesh' },
     { type: 'apGroup', name: '255_Edu2-611-group' },
-    { type: 'ap', name: '70:CA:97:01:A0:C0' }
+    { type: 'AP', name: '70:CA:97:01:A0:C0' }
   ],
   sliceValue: 'RuckusAP',
   startTime: '2022-07-19T05:15:00.000Z',
@@ -375,7 +375,7 @@ export const fakeIncidentPoeLow = fakeIncident({
   startTime: '2022-03-25T00:00:00.000Z',
   endTime: '2022-08-08T00:00:00.000Z',
   code: 'i-apinfra-poe-low',
-  sliceType: 'ap',
+  sliceType: 'AP',
   sliceValue: 'Phong_Vegas1',
   id: '2114e956-e003-4489-8cfd-5bdc075505b5',
   path: [
@@ -388,7 +388,7 @@ export const fakeIncidentPoeLow = fakeIncident({
       name: 'default'
     },
     {
-      type: 'ap',
+      type: 'AP',
       name: '20:58:69:08:37:10'
     }
   ],

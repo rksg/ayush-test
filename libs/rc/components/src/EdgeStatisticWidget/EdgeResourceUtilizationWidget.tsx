@@ -122,8 +122,12 @@ export function EdgeResourceUtilizationWidget () {
                 {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
               </time>
               <ul>
-                {_.isEmpty(queryResults[0].data) &&
-                  seriesFragment.map((resource) => {
+                {
+                  (
+                    !_.isEmpty(queryResults[0].data) ||
+                    !_.isEmpty(queryResults[1].data) ||
+                    !_.isEmpty(queryResults[2].data)
+                  ) && seriesFragment.map((resource) => {
                   // eslint-disable-next-line max-len
                     const color = graphParameters.find(p => p.seriesName === resource.key)?.color || ''
                     const fragment = resource.fragment[graphDataIndex]
