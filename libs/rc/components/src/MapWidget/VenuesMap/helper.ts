@@ -322,10 +322,6 @@ function getEdgeStatusDataByVenue (overviewData: Dashboard, venueId: string): {
   }
 }
 
-function getEdgeClientCountByVenue (overviewData: Dashboard, venueId: string): number {
-  return _.get(overviewData, 'summary.edgeClients.summary[' + venueId + ']') || 0
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getMarkerColor = (statuses: any[] | undefined) => {
   // ApVenueStatusEnum.OPERATIONAL
