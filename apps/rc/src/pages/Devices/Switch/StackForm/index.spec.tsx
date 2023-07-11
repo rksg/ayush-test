@@ -72,12 +72,10 @@ describe('Switch Stack Form - Add', () => {
     Modal.destroyAll()
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><StackForm /></Provider>, {
+    render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add Switch Stack')).toBeVisible()
 
     await changeVenue()

@@ -18,6 +18,7 @@ export class Client {
   networkSsid: string
   timeConnectedMs: number
   vlan?: number
+  vni?: number
   bssid?: string
   rfChannel?: number
   status?: string

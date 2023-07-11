@@ -39,7 +39,8 @@ import {
   transformSwitchUnitStatus,
   FILTER,
   SEARCH,
-  GROUPBY
+  GROUPBY,
+  getSwitchModel
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -214,7 +215,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterable: filterableKeys ? filterableKeys['model'] : false,
       sorter: true,
       searchable: searchable,
-      groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions
+      groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions,
+      render: (data, row) => {
+        return data || getSwitchModel(row.serialNumber)
+      }
     }, {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -373,7 +377,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     if (customFilters.deviceStatus?.includes('ONLINE')) {
       customFilters.syncedSwitchConfig = [true]
     } else {
-      customFilters.syncedSwitchConfig = []
+      customFilters.syncedSwitchConfig = null
     }
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }

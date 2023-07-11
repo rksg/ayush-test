@@ -80,7 +80,7 @@ export default function useApsTable () {
       label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
-      label: $t({ defaultMessage: 'Import from file' })
+      label: $t({ defaultMessage: 'Import APs' })
     }, {
       key: 'ap-group',
       label: <TenantLink to='devices/apgroups/add'>
