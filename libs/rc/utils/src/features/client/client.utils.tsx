@@ -41,18 +41,16 @@ export const getDeviceTypeIcon = (deviceType: string) => {
     'printer': <PrinterOutlined />,
     'iot': <IotOutlined />,
     'wds': <WdsOutlined />,
-    'iot device': <IotOutlined />,
     'home av equipment': <HomeAvOutlined />,
-    'wds device': <WdsOutlined />,
     'ap': <ApOutlined />,
     'router': <RouterOutlined />,
     'storage': <StorageDeviceOutlined />,
-    'storage device': <StorageDeviceOutlined />,
     'pos': <PoSDeviceOutlined />,
-    'point of sale': <PoSDeviceOutlined />,
-    'point of sale device': <PoSDeviceOutlined />
+    'point of sale': <PoSDeviceOutlined />
   }
-  return deviceIconMap[type as Type] || defaultIcon
+
+  const matchKey = Object.keys(deviceIconMap).find((key) => (type === key) || type.match(key))
+  return deviceIconMap[matchKey as Type] || defaultIcon
 }
 
 export const getOsTypeIcon = (osType: string) => {

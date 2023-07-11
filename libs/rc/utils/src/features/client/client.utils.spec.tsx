@@ -68,6 +68,7 @@ describe('Test getDeviceTypeIcon function', () => {
       { getDeviceTypeIcon('router') }
       { getDeviceTypeIcon('storage') }
       { getDeviceTypeIcon('pos') }
+      { getDeviceTypeIcon('point of sale') }
       { getDeviceTypeIcon('other') }
       { getDeviceTypeIcon('') }
     </>)

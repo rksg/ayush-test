@@ -310,6 +310,8 @@ describe('SwitchClientsTable', () => {
     await waitForElementToBeRemoved(() =>
       screen.queryByRole('img', { name: 'loader' })
     )
+
+    expect(await screen.findByText('Router')).toBeVisible()
   })
 
   it('should render correctly when feature flag SWITCH_DHCP_CLIENTS is on', async () => {

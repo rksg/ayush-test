@@ -32,8 +32,5 @@ export const OsType = styled(Space)`
     width: 20px;
     height: 20px;
     vertical-align: middle;
-    path {
-      fill: var(--acx-neutrals-70)
-    }
   }
 `
