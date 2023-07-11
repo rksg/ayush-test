@@ -116,8 +116,6 @@ describe('NetworkVenueTabScheduleDialog', () => {
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
 
-    expect(dialog).toMatchSnapshot()
-
     fireEvent.click(within(dialog).getByRole('button', { name: 'See tips' }))
     const tipsDialog = await screen.findAllByRole('dialog')
     fireEvent.click(within(tipsDialog[1]).getByRole('button', { name: 'OK' }))

@@ -84,7 +84,7 @@ describe('ApPacketCaptureForm', () => {
       <Provider>
         <ApPacketCaptureForm />
       </Provider>, { route: { params } })
-    expect(await screen.findByText('MAC Address Filter:')).toBeVisible()
+    expect(screen.getByRole('textbox', { name: /MAC Address Filter/i })).toBeVisible()
   })
 
   it('should download packet capture correctly', async () => {

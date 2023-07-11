@@ -35,7 +35,7 @@ describe('ApTraceRouteForm', () => {
 
   it('should render correctly', async () => {
     render(<Provider><ApTraceRouteForm /></Provider>)
-    expect(await screen.findByText('Target host or IP address')).toBeVisible()
+    expect(screen.getByRole('textbox', { name: /target host or ip address/i })).toBeVisible()
   })
 
   it('should run validation correctly', async () => {

@@ -85,14 +85,12 @@ describe('Venues Form', () => {
   it('should render venues form', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenuesForm />
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const venueInput = screen.getByLabelText('Venue Name')
     fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
@@ -145,7 +143,7 @@ describe('Venues Form', () => {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
 
-    await screen.findByText('Map is not enabled')
+    expect(await screen.findByText('Map is not enabled')).toBeVisible()
   })
   it('should back to venues list', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

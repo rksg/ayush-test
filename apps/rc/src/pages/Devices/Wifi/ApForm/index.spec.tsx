@@ -25,7 +25,7 @@ import {
   apGrouplist,
   successResponse,
   apDetailsList
-} from '../__tests__/fixtures'
+} from '../../__tests__/fixtures'
 
 import { ApForm } from '.'
 
@@ -63,7 +63,7 @@ async function changeVenue () {
   expect(screen.getByLabelText('AP Group')).not.toBeDisabled()
 }
 
-async function changeCoordinates (data, applyData) {
+async function changeCoordinates (data: string, applyData: boolean) {
   await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
   const dialog = await screen.findByRole('dialog')
   await within(dialog).findByText('GPS Coordinates')
@@ -126,7 +126,6 @@ describe('AP Form - Add', () => {
       route: { params, path: '/:tenantId/t/devices/wifi/:action' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Add AP')).toBeVisible()
     expect(screen.queryByText('GPS Coordinates')).not.toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))

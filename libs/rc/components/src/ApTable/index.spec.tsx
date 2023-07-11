@@ -444,8 +444,8 @@ describe('Aps', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add AP Group' }))
     expect(mockedUsedNavigate).toHaveBeenCalledTimes(2)
 
-    expect(await screen.findByText('Import from file')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Import from file' }))
+    expect(await screen.findByText('Import APs')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Import APs' }))
 
     const drawer = await screen.findByTestId('ImportFileDrawer')
     expect(drawer).toBeVisible()

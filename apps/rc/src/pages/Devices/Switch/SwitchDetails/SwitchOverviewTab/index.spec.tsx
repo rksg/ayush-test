@@ -23,8 +23,6 @@ jest.mock('react-router-dom', () => ({
 jest.mock('@acx-ui/rc/components', () => ({
   SwitchInfoWidget: () =>
     <div data-testid={'rc-SwitchInfoWidget'} title='SwitchInfoWidget' />,
-  SwitchPortTable: () =>
-    <div data-testid={'rc-SwitchPortTable'} title='SwitchPortTable' />,
   SwitchVeTable: () =>
     <div data-testid={'rc-SwitchVeTable'} title='SwitchVeTable' />
 }))
@@ -32,6 +30,18 @@ jest.mock('@acx-ui/rc/components', () => ({
 jest.mock('./SwitchOverviewPanel', () => ({
   SwitchOverviewPanel: () =>
     <div data-testid={'rc-SwitchOverviewPanel'} title='SwitchOverviewPanel' />
+}))
+jest.mock('./SwitchOverviewPorts', () => ({
+  SwitchOverviewPorts: () =>
+    <div data-testid={'rc-SwitchOverviewPorts'} title='SwitchOverviewPorts' />
+}))
+jest.mock('./SwitchOverviewVLANs', () => ({
+  SwitchOverviewVLANs: () =>
+    <div data-testid={'rc-SwitchOverviewVLANs'} title='SwitchOverviewVLANs' />
+}))
+jest.mock('./SwitchOverviewACLs', () => ({
+  SwitchOverviewACLs: () =>
+    <div data-testid={'rc-SwitchOverviewACLs'} title='SwitchOverviewACLs' />
 }))
 
 describe('SwitchOverviewTab', () => {
@@ -95,7 +105,7 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(await screen.findByText('Ports')).toBeVisible()
+    expect(await screen.findByTestId('rc-SwitchOverviewPorts')).toBeVisible()
   })
 
   it('should navigate to VLANs tab correctly', async () => {
@@ -112,9 +122,7 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(await screen.findByText('VLANs')).toBeVisible()
-    // expect(await screen.findByTestId('SwitchVeTable')).toBeTruthy()
-
+    expect(await screen.findByTestId('rc-SwitchOverviewVLANs')).toBeVisible()
   })
 
   it('should navigate to ACLs tab correctly', async () => {
@@ -131,8 +139,7 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-
-    expect(await screen.findByText('ACLs')).toBeVisible()
+    expect(await screen.findByTestId('rc-SwitchOverviewACLs')).toBeVisible()
   })
 }
 )

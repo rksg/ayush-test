@@ -94,8 +94,6 @@ describe('PoliciesTable', () => {
         route: { params, path: '/:tenantId/t/' + getPolicyListRoutePath() }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const targetPolicyName = mockTableResult.data[0].name
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add Policy or Profile/i })).toBeInTheDocument()
