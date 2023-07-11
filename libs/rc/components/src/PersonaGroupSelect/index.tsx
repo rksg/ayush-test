@@ -18,6 +18,10 @@ export function PersonaGroupSelect (props: {
   return (
     <Select
       {...customSelectProps}
+      showSearch
+      filterOption={(input, option) =>
+        ((option?.label ?? '') as string).toLowerCase().includes(input.toLowerCase())
+      }
       options={
         personaGroupList.data?.data
           .filter(group =>
