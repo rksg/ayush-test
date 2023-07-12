@@ -31,8 +31,8 @@ export const ChannelDist = (incident: Incident) => {
   ]
 
   const buffer = {
-    front: { value: 6, unit: 'hours' as unitOfTime.Base },
-    back: { value: 6, unit: 'hours' as unitOfTime.Base }
+    front: { value: 0, unit: 'hours' as unitOfTime.Base },
+    back: { value: 0, unit: 'hours' as unitOfTime.Base }
   }
 
   // TODO
