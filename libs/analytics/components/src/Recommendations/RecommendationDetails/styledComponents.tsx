@@ -62,7 +62,8 @@ export const KpiLabelExtra = styled.span`
 `
 
 export const StatusTrailDateLabel = styled.span`
-  color: var(--acx-neutrals-50)
+  color: var(--acx-neutrals-50);
+  margin-right: 10px;
 `
 
 export const StatusTrailItemWrapper = styled.div`

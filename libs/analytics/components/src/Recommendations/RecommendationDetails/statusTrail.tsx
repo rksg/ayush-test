@@ -48,12 +48,8 @@ const getStatusTrail = (details: EnhancedRecommendation, $t: IntlShape['$t']) =>
 const StatusTrailItem = ({ statusTrail }:{ statusTrail: ReturnType<typeof getStatusTrail>[0] }) => {
   const { status, createdAt } = statusTrail
   return <StatusTrailItemWrapper>
-    <GridRow>
-      <GridCol col={{ span: 10 }}>
-        <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel>
-      </GridCol>
-      <GridCol col={{ span: 14 }}>{status}</GridCol>
-    </GridRow>
+    <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel>
+    {status}
   </StatusTrailItemWrapper>
 }
 
