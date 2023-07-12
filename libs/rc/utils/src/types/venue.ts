@@ -276,7 +276,8 @@ export interface VenueExtended {
   mesh: MeshOptions
   dhcp: DhcpOptions
 	id?: string,
-	country: string
+	country: string,
+  version?: string
 }
 
 export interface VenueSettings {
