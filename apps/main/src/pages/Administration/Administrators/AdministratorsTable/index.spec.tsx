@@ -379,15 +379,22 @@ describe('Administrators table with MSP-EC FF enabled', () => {
       rest.get(
         AdministrationUrlsInfo.getRegisteredUsersList.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspProfile.url,
+        (req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
       )
     )
   })
 
-  it.skip('should be able to delete all admin when it is MSP-EC user and FF enabled', async () => {
+  it('should be able to delete all admin when it is MSP-EC user and FF enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.MSPEC_OPTIONAL_ADMIN ? true : false
+      return ff === Features.MSPEC_ALLOW_DELETE_ADMIN ? true : false
     })
-
 
     render(
       <Provider>
@@ -413,6 +420,7 @@ describe('Administrators table with MSP-EC FF enabled', () => {
 
     const rows = await screen.findAllByRole('row')
     expect(rows.length).toBe(2)
-    expect(within(rows[1]).getByRole('checkbox')).not.toBeDisabled()
+    await userEvent.click(within(rows[1]).getByRole('checkbox'))
+    expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
   })
 })
