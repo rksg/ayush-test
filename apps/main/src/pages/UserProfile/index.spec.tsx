@@ -28,6 +28,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./PreferredLanguageFormItem', () => ({
+  PreferredLanguageFormItem: () => <div data-testid={'rc-PreferredLanguageFormItem'}
+    title='PreferredLanguageFormItem' />
+}))
+
 describe('UserProfile', () => {
   it('should render correctly', async () => {
     setUserProfile({ profile: userProfile, allowedOperations: [] })

@@ -29,8 +29,7 @@ import {
 } from '@acx-ui/utils'
 import { getIntl, setUpIntl, IntlSetUpError } from '@acx-ui/utils'
 
-import AllRoutes from './AllRoutes'
-// import { browserDialog }   from './browser-dialog'
+import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
 import '@acx-ui/theme'
 
