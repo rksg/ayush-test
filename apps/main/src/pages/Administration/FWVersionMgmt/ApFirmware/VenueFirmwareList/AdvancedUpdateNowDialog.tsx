@@ -126,8 +126,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             <UI.Section key={eol.name}>
               <ABFSelector
                 categoryId={eol.name}
-                // eslint-disable-next-line max-len
-                abfLabel={$t({ defaultMessage: 'Legacy Device ({eolName})' }, { eolName: eol.name })}
+                abfLabel={intl.$t({ defaultMessage: 'Legacy Device' })}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={eol.latestEolVersion}
                 apModels={eol.apModels?.join(', ')}
