@@ -70,7 +70,7 @@ export function AccessControlForm () {
       setEnabledProfile(!_.isEmpty(
         get(data, 'wlan.advancedCustomization.accessControlProfileId')))
     }
-  }, [data])
+  }, [])
 
   return (
     <div style={{ marginBottom: '30px' }}>
@@ -445,6 +445,26 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableUploadLimit'),
     useWatch<boolean>('enableClientRateLimit')
   ]
+
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    if (enableLayer2 || enableLayer3 || enableDeviceOs || enableApplications || enableClientRateLimit) {
+      form.setFieldsValue({
+        wlan: {
+          advancedCustomization: {
+            accessControlEnable: false,
+            accessControlProfileId: null
+          }
+        }
+      })
+    }
+  }, [
+    enableLayer2,
+    enableLayer3,
+    enableDeviceOs,
+    enableApplications,
+    enableClientRateLimit
+  ])
 
   return (<>
     <UI.FieldLabel width='175px'>

@@ -1,5 +1,11 @@
 import { defineMessage } from 'react-intl'
 
+import { get } from '@acx-ui/config'
+
+export const productNames = get('IS_MLISA_SA')
+  ? { smartZone: 'Smart Zone' }
+  : { smartZone: 'RUCKUS One' }
+
 // commented codes acc to prod rc config
 export const incidentCodes = [
   'ttc',
