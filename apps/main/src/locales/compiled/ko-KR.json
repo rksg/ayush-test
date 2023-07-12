@@ -2026,7 +2026,7 @@
   "QmHS60": "{count, plural, one {\"{entityValue}\"} other {{count}개의 AP} }를 삭제하시겠습니까?",
   "Qo4kOJ": "802.1X 인증 실패",
   "Qph95R": "남은 IP 수",
-  "Qpk8Ou": "TelnetCpe",
+  "Qpk8Ou": "TelenetCpe",
   "Qq9Z7z": "리소스 사용률",
   "QtFGiO": "호스트",
   "QuQfws": "< {threshold}",
