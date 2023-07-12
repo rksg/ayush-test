@@ -31,8 +31,8 @@ export interface AdvancedUpdateNowDialogProps {
 }
 
 export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
-  const { $t } = useIntl()
   const intl = useIntl()
+  const { $t } = intl
   const {
     visible,
     onSubmit,
