@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import { useIntl }          from 'react-intl'
 
 import {
+  productNames,
   getRootCauseAndRecommendations,
   Incident
 } from '@acx-ui/analytics/utils'
@@ -18,6 +19,7 @@ export const Insights = ({ incident }: { incident: Incident }) => {
   const { $t } = useIntl()
   const [{ rootCauses, recommendations }] = getRootCauseAndRecommendations(incident)
   const values = {
+    ...productNames,
     p: (text: string) => <p>{text}</p>,
     ol: (text: string) => <ol>{text}</ol>,
     li: (text: string) => <li>{text}</li>

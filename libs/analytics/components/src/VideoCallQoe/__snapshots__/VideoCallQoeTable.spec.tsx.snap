@@ -1462,7 +1462,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__WithDottedUnderline-sc-1rvydp5-0 isiVrf"
+                                  class="sc-ftvSup blkwvB"
                                 >
                                   Invalid
                                 </span>
