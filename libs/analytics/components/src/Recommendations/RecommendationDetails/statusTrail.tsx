@@ -1,7 +1,6 @@
 import { get }                               from 'lodash'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
-import { GridCol, GridRow }          from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { states, statusTrailMsgs } from '../config'
