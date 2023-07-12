@@ -1,5 +1,5 @@
 
-import { createContext, useState, useEffect, useContext } from 'react'
+import React, { createContext, useState, useEffect, useContext } from 'react'
 
 import {
   Checkbox,
@@ -133,7 +133,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
   return (
     <>
-      <UI.FieldLabel width='125px'>
+      <UI.FieldLabel width='250px'>
         { $t({ defaultMessage: 'DNS Proxy:' }) }
         <UI.FieldLabel width='30px'>
           <Form.Item
@@ -159,7 +159,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       </UI.FieldLabel>
 
 
-      <UI.FieldLabel width='125px'>
+      <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Wi-Fi Calling:' })}
         <UI.FieldLabel width='30px'>
           <Form.Item
@@ -187,7 +187,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
       <ClientIsolationForm/>
       <>
-        <UI.FieldLabel width='125px'>
+        <UI.FieldLabel width='250px'>
           {$t({ defaultMessage: 'Anti-spoofing:' })}
           <Form.Item
             name={['wlan','advancedCustomization','enableAntiSpoofing']}
@@ -198,7 +198,6 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           />
         </UI.FieldLabel>
         {enableAntiSpoofing &&
-
         <>
           <div style={{ display: 'grid', gridTemplateColumns: '170px 60px 1fr', gap: 10 }}>
             <UI.FormItemNoLabel
@@ -254,6 +253,17 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         }
       </>
 
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
+        <Form.Item
+          name={['wlan','advancedCustomization','enableSyslog']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+
       {showSingleSessionIdAccounting &&
         <UI.FormItemNoLabel
           name={['wlan', 'advancedCustomization', 'radiusOptions', 'singleSessionIdAccounting']}
@@ -272,31 +282,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
                 </>
               } />}
         />
-
       }
-
-      <UI.FieldLabel width='125px'>
-        {$t({ defaultMessage: 'Force DHCP' })}
-        <Form.Item
-          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch disabled={enableAntiSpoofing} />}
-        />
-      </UI.FieldLabel>
-
-      <UI.FieldLabel width='250px'>
-        {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
-        <Form.Item
-          name={['wlan','advancedCustomization','enableSyslog']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />}
-        />
-      </UI.FieldLabel>
-
       { showTunnelProfile &&
       <Form.Item
         name={['wlan','advancedCustomization','tunnelProfileId']}
@@ -341,7 +327,29 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           </UI.Description>
         </Space>
       }
+      <DHCPForm enableAntiSpoofing={enableAntiSpoofing}/>
+    </>
+  )
+}
 
+function DHCPForm ({ enableAntiSpoofing }: { enableAntiSpoofing: boolean }): JSX.Element {
+  const { $t } = useIntl()
+
+  return (
+    <>
+      <div style={{ marginTop: '42px' }}>
+        <UI.Subtitle>{ $t({ defaultMessage: 'DHCP' })}</UI.Subtitle>
+      </div>
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Force DHCP' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch disabled={enableAntiSpoofing} />}
+        />
+      </UI.FieldLabel>
     </>
   )
 }

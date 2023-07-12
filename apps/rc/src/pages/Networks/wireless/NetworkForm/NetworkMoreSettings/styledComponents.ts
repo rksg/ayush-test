@@ -1,5 +1,5 @@
-import { Form, Collapse } from 'antd'
-import styled             from 'styled-components/macro'
+import { Form, Collapse, Radio } from 'antd'
+import styled                    from 'styled-components/macro'
 
 import { Subtitle }         from '@acx-ui/components'
 import { InformationSolid } from '@acx-ui/icons'
@@ -18,14 +18,10 @@ export const Label = styled.span`
   font-size: var(--acx-body-4-font-size);
   line-height: 34px;
 `
-
-export const CollapsePanel = styled(Collapse)`
-   &.ant-collapse-ghost
-     > .ant-collapse-item
-       > .ant-collapse-content
-         > .ant-collapse-content-box {
-           padding-left: 85px;
-         }
+export const RadioSwitch = styled(Radio.Group)`
+  border-radius: 0.5rem;
+  justify-content: left;
+  flex-direction: row;
 `
 
 export const LabelOfInput = styled.span`
