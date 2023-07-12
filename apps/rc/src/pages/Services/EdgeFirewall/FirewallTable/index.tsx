@@ -140,23 +140,16 @@ const FirewallTable = () => {
       align: 'center',
       sorter: true,
       render: (data, row) => {
-        return row.statefulAclEnabled &&
-        <Tooltip
-          placement='bottom'
-          title={
-            () => (
-              row.statefulAcls?.map(item => (
-                <Row key={item.aclDirection}>
-                  <Col>
-                    {`${item.aclName} (${item.aclDirection.toLowerCase()})`}
-                  </Col>
-                </Row>
-              ))
-            )
-          }
-        >
-          <UI.StyledCheckMark data-testid={`acl-check-mark-${row.id}`} />
-        </Tooltip>
+        return (
+          row.statefulAclEnabled
+            ? row.statefulAcls?.map((item) => (
+              <Row justify='center'>
+                <Col>
+                  {`${_.upperFirst(item.aclDirection.toLowerCase())}: ${item.aclRuleNum}`}
+                </Col>
+              </Row>))
+            : '--'
+        )
       }
     },
     {
