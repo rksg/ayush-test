@@ -9,7 +9,7 @@ exports[`Topology scale data should render 1`] = `
       style="width: 100%; height: calc(100% - 80px);"
     >
       <svg
-        class="sc-gXmSlM goaYVI"
+        class="sc-iIPllB gKipiS"
         data-testid="topologyGraph"
         height="100%"
         width="100%"
@@ -5500,7 +5500,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -5547,7 +5547,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -5594,7 +5594,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Switch"
@@ -5643,7 +5643,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Switch"
@@ -5692,7 +5692,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -5741,7 +5741,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -5790,7 +5790,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMeshRoot"
@@ -5837,7 +5837,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -5886,7 +5886,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMesh"
@@ -5935,7 +5935,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiPort"
@@ -5984,7 +5984,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMeshRoot"
@@ -6033,7 +6033,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Unknown"
@@ -6082,7 +6082,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="StackDevice"
@@ -6131,7 +6131,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6180,7 +6180,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6229,7 +6229,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6278,7 +6278,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6327,7 +6327,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6376,7 +6376,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6425,7 +6425,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6474,7 +6474,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6523,7 +6523,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6572,7 +6572,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6621,7 +6621,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6670,7 +6670,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6719,7 +6719,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6768,7 +6768,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6817,7 +6817,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6866,7 +6866,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6915,7 +6915,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -6964,7 +6964,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7013,7 +7013,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7062,7 +7062,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7111,7 +7111,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7160,7 +7160,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7209,7 +7209,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7258,7 +7258,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7307,7 +7307,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7356,7 +7356,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7405,7 +7405,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7454,7 +7454,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7503,7 +7503,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7552,7 +7552,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7601,7 +7601,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7650,7 +7650,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7699,7 +7699,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7748,7 +7748,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7797,7 +7797,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7846,7 +7846,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7895,7 +7895,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7944,7 +7944,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -7993,7 +7993,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8042,7 +8042,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8091,7 +8091,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8140,7 +8140,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8189,7 +8189,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8238,7 +8238,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8287,7 +8287,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8336,7 +8336,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8385,7 +8385,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8434,7 +8434,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8483,7 +8483,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8532,7 +8532,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8581,7 +8581,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8630,7 +8630,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8679,7 +8679,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8728,7 +8728,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8777,7 +8777,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8826,7 +8826,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8875,7 +8875,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8924,7 +8924,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -8973,7 +8973,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9022,7 +9022,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9071,7 +9071,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9120,7 +9120,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9169,7 +9169,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9218,7 +9218,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9267,7 +9267,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9316,7 +9316,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9365,7 +9365,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9414,7 +9414,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9463,7 +9463,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9512,7 +9512,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9561,7 +9561,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9610,7 +9610,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9659,7 +9659,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9708,7 +9708,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9757,7 +9757,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9806,7 +9806,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9855,7 +9855,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9904,7 +9904,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -9953,7 +9953,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10002,7 +10002,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10051,7 +10051,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10100,7 +10100,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10149,7 +10149,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10198,7 +10198,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10247,7 +10247,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10296,7 +10296,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10345,7 +10345,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10394,7 +10394,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10443,7 +10443,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10492,7 +10492,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10541,7 +10541,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10590,7 +10590,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10639,7 +10639,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10688,7 +10688,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10737,7 +10737,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10786,7 +10786,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10835,7 +10835,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10884,7 +10884,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10933,7 +10933,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -10982,7 +10982,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -11031,7 +11031,7 @@ exports[`Topology scale data should render 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp liuzyr"
+                      class="sc-gicCDI dUdmPq"
                     >
                       <svg
                         data-testid="CloudSolid"
@@ -11045,7 +11045,7 @@ exports[`Topology scale data should render 1`] = `
         </g>
       </svg>
       <div
-        class="ant-space ant-space-vertical sc-ciZhAO fcVRsL"
+        class="ant-space ant-space-vertical sc-ezWOiH ddptgL"
       >
         <div
           class="ant-space-item"
@@ -11168,7 +11168,7 @@ exports[`Topology should render correctly 1`] = `
         </div>
       </div>
       <svg
-        class="sc-gXmSlM goaYVI"
+        class="sc-iIPllB gKipiS"
         data-testid="topologyGraph"
         height="100%"
         width="100%"
@@ -11859,7 +11859,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -11906,7 +11906,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -11953,7 +11953,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Switch"
@@ -12002,7 +12002,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Switch"
@@ -12051,7 +12051,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -12100,7 +12100,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -12149,7 +12149,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMeshRoot"
@@ -12196,7 +12196,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -12245,7 +12245,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMesh"
@@ -12294,7 +12294,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiPort"
@@ -12343,7 +12343,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMeshRoot"
@@ -12392,7 +12392,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Unknown"
@@ -12441,7 +12441,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="StackDevice"
@@ -12490,7 +12490,7 @@ exports[`Topology should render correctly 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp liuzyr"
+                      class="sc-gicCDI dUdmPq"
                     >
                       <svg
                         data-testid="CloudSolid"
@@ -12622,7 +12622,7 @@ exports[`Topology should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-vertical sc-ciZhAO fcVRsL"
+        class="ant-space ant-space-vertical sc-ezWOiH ddptgL"
       >
         <div
           class="ant-space-item"
@@ -12703,7 +12703,7 @@ exports[`Topology should render topology on AP overview 1`] = `
       style="width: 100%; height: calc(100% - 80px);"
     >
       <svg
-        class="sc-gXmSlM goaYVI"
+        class="sc-iIPllB gKipiS"
         data-testid="topologyGraph"
         height="100%"
         width="100%"
@@ -18081,7 +18081,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18128,7 +18128,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18175,7 +18175,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Switch"
@@ -18224,7 +18224,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Switch"
@@ -18273,7 +18273,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18322,7 +18322,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18371,7 +18371,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMeshRoot"
@@ -18418,7 +18418,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18467,7 +18467,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMesh"
@@ -18516,7 +18516,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiPort"
@@ -18565,7 +18565,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifiMeshRoot"
@@ -18614,7 +18614,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="Unknown"
@@ -18663,7 +18663,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="StackDevice"
@@ -18712,7 +18712,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18761,7 +18761,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18810,7 +18810,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18859,7 +18859,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18908,7 +18908,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -18957,7 +18957,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19006,7 +19006,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19055,7 +19055,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19104,7 +19104,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19153,7 +19153,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19202,7 +19202,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19251,7 +19251,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19300,7 +19300,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19349,7 +19349,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19398,7 +19398,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19447,7 +19447,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19496,7 +19496,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19545,7 +19545,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19594,7 +19594,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19643,7 +19643,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19692,7 +19692,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19741,7 +19741,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19790,7 +19790,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19839,7 +19839,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19888,7 +19888,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19937,7 +19937,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -19986,7 +19986,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20035,7 +20035,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20084,7 +20084,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20133,7 +20133,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20182,7 +20182,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20231,7 +20231,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20280,7 +20280,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20329,7 +20329,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20378,7 +20378,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20427,7 +20427,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20476,7 +20476,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20525,7 +20525,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20574,7 +20574,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20623,7 +20623,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20672,7 +20672,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20721,7 +20721,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20770,7 +20770,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20819,7 +20819,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20868,7 +20868,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20917,7 +20917,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -20966,7 +20966,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21015,7 +21015,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21064,7 +21064,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21113,7 +21113,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21162,7 +21162,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21211,7 +21211,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21260,7 +21260,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21309,7 +21309,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21358,7 +21358,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21407,7 +21407,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21456,7 +21456,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21505,7 +21505,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21554,7 +21554,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21603,7 +21603,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21652,7 +21652,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21701,7 +21701,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21750,7 +21750,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21799,7 +21799,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21848,7 +21848,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21897,7 +21897,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21946,7 +21946,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -21995,7 +21995,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22044,7 +22044,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22093,7 +22093,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22142,7 +22142,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22191,7 +22191,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22240,7 +22240,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22289,7 +22289,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22338,7 +22338,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22387,7 +22387,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22436,7 +22436,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22485,7 +22485,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22534,7 +22534,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22583,7 +22583,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22632,7 +22632,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22681,7 +22681,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22730,7 +22730,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22779,7 +22779,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22828,7 +22828,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22877,7 +22877,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22926,7 +22926,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -22975,7 +22975,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23024,7 +23024,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23073,7 +23073,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23122,7 +23122,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23171,7 +23171,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23220,7 +23220,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23269,7 +23269,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23318,7 +23318,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23367,7 +23367,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23416,7 +23416,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23465,7 +23465,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23514,7 +23514,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23563,7 +23563,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp gdszVS"
+                      class="sc-gicCDI hzvfHj"
                     >
                       <svg
                         data-testid="AccessPointWifi"
@@ -23612,7 +23612,7 @@ exports[`Topology should render topology on AP overview 1`] = `
                     y="-24"
                   >
                     <div
-                      class="sc-cCsOjp liuzyr"
+                      class="sc-gicCDI dUdmPq"
                     >
                       <svg
                         data-testid="CloudSolid"
@@ -23626,7 +23626,7 @@ exports[`Topology should render topology on AP overview 1`] = `
         </g>
       </svg>
       <div
-        class="ant-space ant-space-vertical sc-ciZhAO fcVRsL"
+        class="ant-space ant-space-vertical sc-ezWOiH ddptgL"
       >
         <div
           class="ant-space-item"
