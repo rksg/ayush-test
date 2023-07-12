@@ -171,7 +171,7 @@ describe('Subscriptions', () => {
       })
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
-    await screen.findByRole('row', { name: /Edge/i })
+    await screen.findByRole('row', { name: /SmartEdge/i })
   })
   it('should filter edge data when PLM FF is not denabled', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
@@ -185,6 +185,8 @@ describe('Subscriptions', () => {
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /Wi-Fi/i })
-    expect(screen.queryByRole('row', { name: /Edge/i })).toBeNull()
+    expect(screen.queryByRole('row', { name: /SmartEdge/i })).toBeNull()
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
+    expect(screen.queryAllByText('SmartEdge').length).toBe(0)
   })
 })

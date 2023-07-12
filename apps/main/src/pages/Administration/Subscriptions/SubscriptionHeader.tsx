@@ -5,6 +5,7 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
+import { Features, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
@@ -60,6 +61,8 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+
   const subscriptionVal = (getJwtTokenPayload().acx_account_tier
   === AccountTier.PLATINUM? SubscriptionTierType.Platinum : SubscriptionTierType.Gold)
   // skip MSP data
@@ -97,16 +100,18 @@ export const SubscriptionHeader = () => {
         </Row>
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
-            subscriptionDeviceTypeList.map((item) => {
-              const summary = summaryData[item.value]
-              return summary ? <SubscriptionUtilizationWidget
-                key={item.value}
-                deviceType={item.value}
-                title={item.label}
-                total={summary.total}
-                used={summary.used}
-              /> : ''
-            })
+            subscriptionDeviceTypeList.filter(data =>
+              data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled)
+              .map((item) => {
+                const summary = summaryData[item.value]
+                return summary ? <SubscriptionUtilizationWidget
+                  key={item.value}
+                  deviceType={item.value}
+                  title={item.label}
+                  total={summary.total}
+                  used={summary.used}
+                /> : ''
+              })
           }
         </SpaceWrapper>
       </SpaceWrapper>
