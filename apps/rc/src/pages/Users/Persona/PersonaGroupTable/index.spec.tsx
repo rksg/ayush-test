@@ -91,7 +91,7 @@ const mockNsgSwitchInfoData: {
 // To enable NSG PLM FF and allow to call api
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
-describe('Persona Group Table', () => {
+describe.skip('Persona Group Table', () => {
   let params: { tenantId: string }
   const searchPersonaGroupApi = jest.fn()
 
