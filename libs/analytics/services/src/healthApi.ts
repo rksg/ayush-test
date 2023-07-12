@@ -111,7 +111,14 @@ interface ThresholdsApiResponse {
   switchPoeUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
 }
-
+interface APCountForNode {
+  apCount?: number
+}
+interface APCountResponse <APCountForNode> {
+  network: {
+    node: APCountForNode
+  }
+}
 type KpisHavingThreshold = keyof KpiThresholdType
 
 export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
@@ -232,6 +239,26 @@ export const healthApi = dataApi.injectEndpoints({
         }
       }
       )
+    }),
+    apCountForNode: build.query<APCountResponse<APCountForNode>, Omit<KpiPayload, 'kpi'>>({
+      query: (payload) => ({
+        document: gql`
+        query APCountForNode(
+          $path: [HierarchyNodeInput], $startDate: DateTime,
+          $endDate: DateTime, $filter: FilterInput
+        ){
+          network(start: $startDate, end: $endDate, filter: $filter) {
+            node: hierarchyNode(path:$path) {
+              apCount
+            }
+          }
+        }
+      `,
+        variables: {
+          ...payload,
+          path: getSelectedNodePath(payload.filter)
+        }
+      })
     })
   })
 })
