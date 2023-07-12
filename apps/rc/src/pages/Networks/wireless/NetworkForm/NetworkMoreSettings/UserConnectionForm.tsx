@@ -149,7 +149,7 @@ export function UserConnectionForm () {
         }
       }
     }
-  }, [data])
+  }, [])
   const changeSettings=()=>{
     form.setFieldValue(['guestPortal','lockoutPeriodEnabled'],useDefaultSetting)
     setUseDefaultSetting(!useDefaultSetting)
