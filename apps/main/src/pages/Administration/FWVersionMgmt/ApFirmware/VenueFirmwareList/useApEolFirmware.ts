@@ -66,7 +66,7 @@ export function useApEolFirmware () {
     let result: { [abfName: string]: DefaultOptionType[] } = {}
 
     releasedABFList
-      .filter(abfVersion => {
+      .filter((abfVersion: ABFVersion) => {
         if (abfVersion.abf === 'active') return false
 
         const maxEolABFVersion = maxEolABFVersionMap[abfVersion.abf]

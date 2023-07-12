@@ -5,7 +5,7 @@ import { CheckboxChangeEvent }                                          from 'an
 import { DefaultOptionType }                                            from 'antd/lib/select'
 import { useIntl }                                                      from 'react-intl'
 
-import { Modal }      from '@acx-ui/components'
+import { Modal }     from '@acx-ui/components'
 import {
   EolApFirmware,
   FirmwareCategory,
@@ -103,6 +103,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
           <ABFSelector
             categoryId={'active'}
             abfLabel={intl.$t({ defaultMessage: 'Active Device' })}
+            defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
             otherVersions={otherActiveVersionOptions}
