@@ -125,7 +125,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   style="padding-top: 4px;"
                 >
                   <span
-                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 fqGrmO"
+                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo sc-ftvSup icbMhu"
                     type="positive"
                   >
                     Good
@@ -174,7 +174,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
     >
       Participant Details
     </div>
@@ -632,10 +632,10 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__ChartsContainer-cc9slb-2 jRlbiR"
+    class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -652,12 +652,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 1
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             Participant 1
           </span>
@@ -671,12 +671,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 2
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             Participant 2 (Mac M1)
           </span>
@@ -5089,7 +5089,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   style="padding-top: 4px;"
                 >
                   <span
-                    class="styledComponents__Pill-sc-j61ge1-0 chVxOo styledComponents__BigTrendPill-cc9slb-0 fqGrmO"
+                    class="styledComponents__Pill-sc-j61ge1-0 chVxOo sc-ftvSup icbMhu"
                     type="negative"
                   >
                     Bad
@@ -5118,7 +5118,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
     >
       Participant Details
     </div>
@@ -5660,10 +5660,10 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     </div>
   </div>
   <div
-    class="styledComponents__ChartsContainer-cc9slb-2 jRlbiR"
+    class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -5680,12 +5680,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 1
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             Test
           </span>
@@ -5699,12 +5699,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 2
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             User 2 (Mac M1)
           </span>
@@ -9757,7 +9757,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   style="padding-top: 4px;"
                 >
                   <span
-                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 fqGrmO"
+                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo sc-ftvSup icbMhu"
                     type="positive"
                   >
                     Good
@@ -9786,7 +9786,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
     >
       Participant Details
     </div>
@@ -10344,10 +10344,10 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     </div>
   </div>
   <div
-    class="styledComponents__ChartsContainer-cc9slb-2 jRlbiR"
+    class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -10364,12 +10364,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 1
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             Test
           </span>
@@ -10383,12 +10383,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 2
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             iPhone 13 mini
           </span>
@@ -11235,7 +11235,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   style="padding-top: 4px;"
                 >
                   <span
-                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo styledComponents__BigTrendPill-cc9slb-0 fqGrmO"
+                    class="styledComponents__Pill-sc-j61ge1-0 NKxEo sc-ftvSup icbMhu"
                     type="positive"
                   >
                     Good
@@ -11264,7 +11264,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
     >
       Participant Details
     </div>
@@ -11822,10 +11822,10 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
     </div>
   </div>
   <div
-    class="styledComponents__ChartsContainer-cc9slb-2 jRlbiR"
+    class="sc-jqUVSM dmMTeH"
   >
     <div
-      class="styledComponents__ReportSectionTitle-cc9slb-3 fpRra-d"
+      class="sc-kDDrLX kUhlcE"
       style="padding: 15px 0px;"
     >
       Zoom Call Statistics
@@ -11842,12 +11842,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 1
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             Test
           </span>
@@ -11861,12 +11861,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <span
-            class="styledComponents__Label-cc9slb-4 jbjEqD"
+            class="sc-iqcoie jiXWX"
           >
             Participant 2
           </span>
           <span
-            class="styledComponents__Value-cc9slb-5 hTZLlV"
+            class="sc-crXcEl kkXWjM"
           >
             iPhone 13 mini
           </span>
