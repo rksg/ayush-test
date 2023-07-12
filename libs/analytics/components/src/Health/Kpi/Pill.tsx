@@ -7,12 +7,11 @@ import {
   KPITimeseriesResponse,
   KPIHistogramResponse
 } from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { Tooltip }                    from '@acx-ui/components'
-import { ProgressPill, Loader }       from '@acx-ui/components'
-import { formatter }                  from '@acx-ui/formatter'
-import { InformationOutlined }        from '@acx-ui/icons'
-import { TimeStampRange }             from '@acx-ui/types'
+import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import { Tooltip, ProgressPill, Loader }            from '@acx-ui/components'
+import { formatter }                                from '@acx-ui/formatter'
+import { InformationOutlined }                      from '@acx-ui/icons'
+import { TimeStampRange }                           from '@acx-ui/types'
 
 import * as UI from '../styledComponents'
 
@@ -96,9 +95,11 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   }
   return <Loader states={[queryResults]} key={kpi}>
     <UI.PillTitle>
-      <span>{$t(text)}</span>
+      <span>{$t(text, productNames)}</span>
       <span>
-        <Tooltip placement='top' title={$t(tooltip, { br: '\n' })}><InformationOutlined /></Tooltip>
+        <Tooltip placement='top' title={$t(tooltip, { ...productNames, br: '\n' })}>
+          <InformationOutlined />
+        </Tooltip>
       </span>
     </UI.PillTitle>
     <UI.PillWrap>

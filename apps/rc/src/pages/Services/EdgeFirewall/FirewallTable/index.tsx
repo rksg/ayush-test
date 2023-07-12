@@ -1,4 +1,5 @@
 import { Col, Row } from 'antd'
+import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import {
@@ -17,19 +18,22 @@ import {
   useGetEdgeListQuery
 } from '@acx-ui/rc/services'
 import {
-  DdosAttackType,
   EdgeFirewallViewData,
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  useTableQuery
+  useTableQuery,
+  DdosAttackType
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
-
-import * as UI from './styledComponents'
+import {
+  Path,
+  TenantLink,
+  useNavigate,
+  useTenantLink
+} from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 const edgeOptionsDefaultPayload = {
   fields: ['name', 'serialNumber'],
@@ -39,7 +43,6 @@ const edgeOptionsDefaultPayload = {
 }
 
 const FirewallTable = () => {
-
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
@@ -60,14 +63,16 @@ const FirewallTable = () => {
     {
       selectFromResult: ({ data }) => {
         return {
-          edgeOptions: data?.data.map(item => ({ value: item.name, key: item.serialNumber }))
+          edgeOptions: data?.data.map((item) => ({
+            value: item.name,
+            key: item.serialNumber
+          }))
         }
       }
-    })
-  const [
-    deleteEdgeFirewall,
-    { isLoading: isDeletingEdgeFirewall }
-  ] = useDeleteEdgeFirewallMutation()
+    }
+  )
+  const [deleteEdgeFirewall, { isLoading: isDeletingEdgeFirewall }] =
+    useDeleteEdgeFirewallMutation()
 
   const columns: TableProps<EdgeFirewallViewData>['columns'] = [
     {
@@ -79,11 +84,13 @@ const FirewallTable = () => {
       defaultSortOrder: 'ascend',
       render: (data, row) => {
         return (
-          <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.EDGE_FIREWALL,
-            oper: ServiceOperation.DETAIL,
-            serviceId: row.id!
-          })}>
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_FIREWALL,
+              oper: ServiceOperation.DETAIL,
+              serviceId: row.id!
+            })}
+          >
             {data}
           </TenantLink>
         )
@@ -96,27 +103,34 @@ const FirewallTable = () => {
       align: 'center',
       sorter: true,
       render: (data, row) => {
-        return row.ddosEnabled &&
-        <Tooltip
-          placement='bottom'
-          title={
-            () => (
-              row.ddosRateLimitingRules &&
-              Object.keys(row.ddosRateLimitingRules).map(key => (
-                <Row key={key}>
-                  <Col>
-                    {
-                      row.ddosRateLimitingRules &&
-                    `${key}: ${row.ddosRateLimitingRules[key as keyof typeof DdosAttackType]}`
-                    }
-                  </Col>
-                </Row>
-              ))
-            )
-          }
-        >
-          <UI.StyledCheckMark data-testid={`ddos-check-mark-${row.id}`} />
-        </Tooltip>
+        return row.ddosEnabled
+          ? <Tooltip
+            placement='bottom'
+            title={
+              () => (
+                row.ddosRateLimitingRules &&
+                  Object.keys(row.ddosRateLimitingRules).map(key => (
+                    <Row>
+                      <Col>
+                        {
+                          // eslint-disable-next-line max-len
+                          `${key}: ${row.ddosRateLimitingRules![key as keyof typeof DdosAttackType]}`
+                        }
+                      </Col>
+                    </Row>
+                  ))
+              )
+            }
+          >
+            <span data-testid={`ddos-info-${row.id}`}>
+              {
+                row.ddosRateLimitingRules
+                  ? Object.keys(row.ddosRateLimitingRules).length
+                  : 0
+              }
+            </span>
+          </Tooltip>
+          : '--'
       }
     },
     {
@@ -152,7 +166,20 @@ const FirewallTable = () => {
       align: 'center',
       filterable: edgeOptions,
       render: (data, row) => {
-        return row.edgeIds?.length || 0
+        return (row.edgeIds && row.edgeIds.length)
+          ? <Tooltip
+            placement='bottom'
+            title={
+              row.edgeIds.map(edgeSN => (
+                <Row>
+                  { _.find(edgeOptions, { key: edgeSN })?.value || '' }
+                </Row>
+              ))
+            }
+          >
+            <span data-testid={`edge-names-${row.id}`}>{row.edgeIds.length}</span>
+          </Tooltip>
+          : row.edgeIds?.length
       }
     },
     {
@@ -193,11 +220,13 @@ const FirewallTable = () => {
       onClick: (selectedRows) => {
         navigate({
           ...basePath,
-          pathname: `${basePath.pathname}/` + getServiceDetailsLink({
-            type: ServiceType.EDGE_FIREWALL,
-            oper: ServiceOperation.EDIT,
-            serviceId: selectedRows[0].id!
-          })
+          pathname:
+            `${basePath.pathname}/` +
+            getServiceDetailsLink({
+              type: ServiceType.EDGE_FIREWALL,
+              oper: ServiceOperation.EDIT,
+              serviceId: selectedRows[0].id!
+            })
         })
       }
     },
@@ -213,11 +242,13 @@ const FirewallTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            rows.length === 1 ?
-              deleteEdgeFirewall({ params: { serviceId: rows[0].id } })
-                .then(clearSelection) :
-              deleteEdgeFirewall({ payload: rows.map(item => item.id) })
-                .then(clearSelection)
+            rows.length === 1
+              ? deleteEdgeFirewall({ params: { serviceId: rows[0].id } }).then(
+                clearSelection
+              )
+              : deleteEdgeFirewall({
+                payload: rows.map((item) => item.id)
+              }).then(clearSelection)
           }
         })
       }
@@ -227,29 +258,46 @@ const FirewallTable = () => {
   return (
     <>
       <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Firewall ({count})' },
-            { count: tableQuery.data?.totalCount }
-          )
+        title={$t(
+          { defaultMessage: 'Firewall ({count})' },
+          { count: tableQuery.data?.totalCount }
+        )}
+        breadcrumb={
+          isNavbarEnhanced
+            ? [
+              { text: $t({ defaultMessage: 'Network Control' }) },
+              {
+                text: $t({ defaultMessage: 'My Services' }),
+                link: getServiceListRoutePath(true)
+              }
+            ]
+            : [
+              {
+                text: $t({ defaultMessage: 'My Services' }),
+                link: getServiceListRoutePath(true)
+              }
+            ]
         }
-        breadcrumb={isNavbarEnhanced ? [
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ] : [
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Firewall Service' })}</Button>
+          <TenantLink
+            to={getServiceRoutePath({
+              type: ServiceType.EDGE_FIREWALL,
+              oper: ServiceOperation.CREATE
+            })}
+          >
+            <Button type='primary'>
+              {$t({ defaultMessage: 'Add Firewall Service' })}
+            </Button>
           </TenantLink>
         ])}
       />
-      <Loader states={[
-        tableQuery,
-        { isLoading: false, isFetching: isDeletingEdgeFirewall }
-      ]}>
+      <Loader
+        states={[
+          tableQuery,
+          { isLoading: false, isFetching: isDeletingEdgeFirewall }
+        ]}
+      >
         <Table
           settingsId='services-firewall-table'
           rowKey='id'

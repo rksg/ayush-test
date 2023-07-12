@@ -6,7 +6,8 @@ import { EdgePortStatus }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { hasAccess }                             from '@acx-ui/user'
 
-export const PortsTab = ({ data, isLoading }: { data: EdgePortStatus[], isLoading: boolean }) => {
+export const PortsTab = ({ data, isLoading }:
+  { data: EdgePortStatus[], isLoading: boolean }) => {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const navigate = useNavigate()
