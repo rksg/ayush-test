@@ -90,7 +90,13 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
     .value()
 
   const recommendationInfo = codes[code]
-  const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
+  const {
+    appliedReasonText,
+    valueFormatter,
+    actionText,
+    reasonText,
+    tradeoffText
+  } = recommendationInfo
 
   let parameters: Record<string, string | JSX.Element> = {
     ...metadata,
@@ -108,7 +114,9 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
   }
   return {
     actionText: $t(actionText, parameters),
-    reasonText: $t(reasonText, parameters),
+    reasonText: appliedOnce && appliedReasonText
+      ? $t(appliedReasonText, parameters)
+      : $t(reasonText, parameters),
     tradeoffText: $t(tradeoffText, parameters)
   }
 }
