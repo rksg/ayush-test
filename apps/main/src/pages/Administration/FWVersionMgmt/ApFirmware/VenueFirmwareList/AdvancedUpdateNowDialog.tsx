@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { Select, Radio, RadioChangeEvent, Space, Typography, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                          from 'antd/lib/checkbox'
+import { DefaultOptionType }                                            from 'antd/lib/select'
 import { useIntl }                                                      from 'react-intl'
 
 import { Modal }     from '@acx-ui/components'
@@ -17,6 +18,7 @@ import { getVersionLabel } from '../../FirmwareUtils'
 
 import * as UI                                              from './styledComponents'
 import { firmwareNote1, firmwareNote2, VersionsSelectMode } from './UpdateNowDialog'
+import { useApEolFirmware }                                 from './useApEolFirmware'
 
 type UpdateNowRequestWithoutVenues = Exclude<UpdateNowRequest, 'venueIds'>
 
@@ -25,21 +27,15 @@ export interface AdvancedUpdateNowDialogProps {
   onCancel: () => void,
   onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
-  availableVersions?: FirmwareVersion[],
-  eolApFirmwares?: EolApFirmware[]
+  availableVersions?: FirmwareVersion[]
 }
 
 export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
-  const { $t } = useIntl()
+  const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions } = useApEolFirmware()
   const intl = useIntl()
-  const {
-    visible,
-    onSubmit,
-    onCancel,
-    data: venuesData = [],
-    availableVersions,
-    eolApFirmwares = []
-  } = props
+  const { visible, onSubmit, onCancel, data: venuesData = [], availableVersions } = props
+  const eolApFirmwares = getAvailableEolApFirmwares(venuesData)
+  const eolABFOtherVersion = getEolABFOtherVersionsOptions(venuesData)
   const [disableSave, setDisableSave] = useState(false)
   const [updateNowRequestPayload, setUpdateNowRequestPayload] = useState<
     { [key: string]: UpdateNowRequestWithoutVenues | null }
@@ -50,7 +46,8 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   const otherActiveVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
 
   const getUpdateNowRequestPayload = () => {
-    return Object.values(updateNowRequestPayload ?? {}).filter(value => value !== null)
+    return Object.values(updateNowRequestPayload ?? {})
+      .filter(value => value !== null && value.firmwareVersion !== '')
   }
 
   useEffect(() => {
@@ -80,7 +77,6 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
     onCancel()
   }
 
-  // eslint-disable-next-line max-len
   const updateSelectedABF = (abfId: string, value: UpdateNowRequestWithoutVenues | null) => {
     setUpdateNowRequestPayload((current) => ({
       ...(current ?? {}),
@@ -90,30 +86,30 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Update Now' })}
+      title={intl.$t({ defaultMessage: 'Update Now' })}
       visible={visible}
       width={560}
-      okText={$t({ defaultMessage: 'Run Update' })}
+      okText={intl.$t({ defaultMessage: 'Run Update' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
       okButtonProps={{ disabled: disableSave }}
       destroyOnClose={true}
     >
+      <Typography style={{ fontWeight: 700 }}>
+        {intl.$t({ defaultMessage: 'Choose which version to update the venue to:' })}
+      </Typography>
       { defaultActiveVersion &&
-        <div>
-          <Typography style={{ fontWeight: 700 }}>
-            {$t({ defaultMessage: 'Choose which version to update the venue to:' })}
-          </Typography>
+        <UI.Section>
           <ABFSelector
             categoryId={'active'}
-            abfLabel={$t({ defaultMessage: 'Active Device' })}
+            abfLabel={intl.$t({ defaultMessage: 'Active Device' })}
             defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
             otherVersions={otherActiveVersionOptions}
             update={updateSelectedABF}
           />
-        </div>
+        </UI.Section>
       }
       { eolApFirmwares.length > 0
         ? eolApFirmwares.map((eol: EolApFirmware) => {
@@ -122,16 +118,17 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
               <ABFSelector
                 categoryId={eol.name}
                 // eslint-disable-next-line max-len
-                abfLabel={$t({ defaultMessage: 'Legacy Device ({eolName})' }, { eolName: eol.name })}
+                abfLabel={intl.$t({ defaultMessage: 'Legacy Device ({eolName})' }, { eolName: eol.name })}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={eol.latestEolVersion}
                 defaultVersionExtraComponent={
                   <div style={{ marginLeft: '24px' }}>
-                    {$t({ defaultMessage: 'AP Models: {apModels}' }, {
+                    {intl.$t({ defaultMessage: 'AP Models: {apModels}' }, {
                       apModels: eol.apModels?.join(', ')
                     })}
                   </div>
                 }
+                otherVersions={eolABFOtherVersion[eol.name] ? eolABFOtherVersion[eol.name] : []}
                 update={updateSelectedABF}
               />
             </UI.Section>
@@ -141,8 +138,8 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
       }
       <UI.Section>
         <UI.Ul>
-          <UI.Li>{$t(firmwareNote1)}</UI.Li>
-          <UI.Li>{$t(firmwareNote2)}</UI.Li>
+          <UI.Li>{intl.$t(firmwareNote1)}</UI.Li>
+          <UI.Li>{intl.$t(firmwareNote2)}</UI.Li>
         </UI.Ul>
       </UI.Section>
     </Modal>
@@ -185,7 +182,7 @@ interface ABFSelectorProps {
   defaultVersionId: string
   defaultVersionLabel: string
   defaultVersionExtraComponent?: ReactNode
-  otherVersions?: { label: string, value: string }[]
+  otherVersions?: DefaultOptionType[]
   update: (abfId: string, value: UpdateNowRequestWithoutVenues | null) => void
 }
 
@@ -240,7 +237,6 @@ function ABFSelector (props: ABFSelectorProps) {
       >
         <Space direction={'vertical'}>
           <Radio value={VersionsSelectMode.Radio}>{defaultVersionLabel}</Radio>
-          { defaultVersionExtraComponent }
           { otherVersions.length > 0 ?
             <UI.SelectDiv>
               <Radio value={VersionsSelectMode.Dropdown} />
@@ -255,6 +251,7 @@ function ABFSelector (props: ABFSelectorProps) {
             </UI.SelectDiv>
             : null
           }
+          { defaultVersionExtraComponent }
         </Space>
       </Radio.Group>
     </UI.ValueContainer>
