@@ -27,7 +27,6 @@ export const SettingsForm = () => {
               { min: 2, max: 32 }
             ]}
             validateFirst
-            hasFeedback
             children={<Input />}
           />
           {/*

@@ -396,9 +396,9 @@ describe('Edit edge firewall service', () => {
     const rows = await body.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
     // eslint-disable-next-line max-len
-    expect(within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch')).toBeChecked()
+    expect(within(body.getByRole('row', { name: /Smart Edge 2/i })).getByRole('switch')).toBeChecked()
     await click(
-      within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('checkbox'))
+      within(body.getByRole('row', { name: /Smart Edge 2/i })).getByRole('checkbox'))
     await click(await body.findByRole('button', { name: 'Deactivate' }))
 
 

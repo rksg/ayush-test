@@ -105,7 +105,8 @@ describe('Stateful ACL config drawer', () => {
     await type(within(dialog).getByRole('spinbutton', { name: 'Protocol Value' }), '20')
     const src = await screen.findByRole('group', { name: 'Source' })
     await click(await within(src).findByRole('radio', { name: 'IP Address' }))
-    await type(within(src).getByPlaceholderText('IP Address'), '1.2.3.4')
+    await type(within(src).getAllByRole('textbox')
+      .filter(ele => ele.id === 'sourceAddress')[0], '1.2.3.4')
     let destination = await screen.findByRole('group', { name: 'Destination' })
     await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
     await type(within(destination).getByRole('textbox', { name: 'Port' }), '3100')
@@ -118,7 +119,8 @@ describe('Stateful ACL config drawer', () => {
     await click(await screen.findByRole('button', { name: 'Edit' }))
     destination = await screen.findByRole('group', { name: 'Destination' })
     await click(await within(destination).findByRole('radio', { name: 'IP Address' }))
-    await type(within(destination).getByPlaceholderText('IP Address'), '10.2.3.4')
+    await type(within(destination).getAllByRole('textbox')
+      .filter(ele => ele.id === 'destinationAddress')[0], '10.2.3.4')
     await click(within(dialog).getByRole('button', { name: 'Add' }))
 
     // submit
@@ -212,7 +214,8 @@ describe('Stateful ACL config drawer', () => {
     await click(await within(src).findByRole('radio', { name: 'Any IP Address' }))
     destination = await screen.findByRole('group', { name: 'Destination' })
     await click(await within(destination).findByRole('radio', { name: 'IP Address' }))
-    await type(within(destination).getByPlaceholderText('IP Address'), '10.25.1.1')
+    await type(within(destination).getAllByRole('textbox')
+      .filter(ele => ele.id === 'destinationAddress')[0], '10.25.1.1')
     // uncheck add another
     await click(await within(dialog).findByRole('checkbox', { name: 'Add another rule' }))
     await click(within(dialog).getByRole('button', { name: 'Add' }))

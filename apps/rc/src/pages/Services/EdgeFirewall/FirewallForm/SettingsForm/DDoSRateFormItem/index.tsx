@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { Form, Switch, Button, Typography, Row, Col } from 'antd'
 import { useIntl }                                    from 'react-intl'
 
+import { useStepFormContext }   from '@acx-ui/components'
 import { DdosRateLimitingRule } from '@acx-ui/rc/utils'
+
+import { FirewallFormModel } from '../..'
 
 import { DDoSRateLimitConfigDrawer } from './DDoSRateLimitConfigDrawer'
 import { StyledWrapper }             from './styledComponents'
@@ -11,9 +14,18 @@ import { StyledWrapper }             from './styledComponents'
 export const DDoSRateFormItem = () => {
   const { $t } = useIntl()
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
+  const { form: parentForm } = useStepFormContext<FirewallFormModel>()
+
+  const toggleDrawer = (checked: boolean) => {
+    setDrawerVisible(checked)
+  }
 
   const onChangeDDoSLimit = (checked: boolean) => {
-    setDrawerVisible(checked)
+    // only open drawer when rule is empty
+    const rules = parentForm.getFieldValue('ddosRateLimitingRules')
+    if (checked && rules.length === 0) {
+      toggleDrawer(checked)
+    }
   }
 
   return (
@@ -35,8 +47,6 @@ export const DDoSRateFormItem = () => {
             <Switch
               aria-label='ddos'
               onChange={onChangeDDoSLimit}
-              checkedChildren={$t({ defaultMessage: 'ON' })}
-              unCheckedChildren={$t({ defaultMessage: 'OFF' })}
             />
           </Form.Item>
 
@@ -48,7 +58,7 @@ export const DDoSRateFormItem = () => {
             {({ getFieldValue }) => {
               return getFieldValue('ddosRateLimitingEnabled') && <Button
                 type='link'
-                onClick={() => onChangeDDoSLimit(true)}
+                onClick={() => toggleDrawer(true)}
                 className='changeBtn'
               >
                 { $t({ defaultMessage: 'Change' }) }
