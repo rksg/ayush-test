@@ -23,7 +23,8 @@ export const DDoSRateFormItem = () => {
   const onChangeDDoSLimit = (checked: boolean) => {
     // only open drawer when rule is empty
     const rules = parentForm.getFieldValue('ddosRateLimitingRules')
-    if (checked && rules.length === 0) {
+    // ddosRateLimitingRules might be null
+    if (checked && (!rules || rules.length === 0)) {
       toggleDrawer(checked)
     }
   }
