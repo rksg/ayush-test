@@ -14,9 +14,8 @@ import { StatusTrail }            from './statusTrail'
 import {
   DetailsHeader,
   DetailsWrapper,
-  RecommendationCardWrapper,
   KpiTitle,
-  RecommendationInfoIcon,
+  InfoIcon,
   KpiLabelWrapper,
   KpiContentWrapper,
   KpiLabelValue,
@@ -99,22 +98,20 @@ const getKpis = (details: EnhancedRecommendation) => {
   return { monitoring, kpis }
 }
 
-const KpiCard = ({ children }: { children: ReactNode }) => <RecommendationCardWrapper>
-  <DetailsWrapper>
-    <Card type='solid-bg'>
-      <KpiContentWrapper>
-        {children}
-      </KpiContentWrapper>
-    </Card>
-  </DetailsWrapper>
-</RecommendationCardWrapper>
+const KpiCard = ({ children }: { children: ReactNode }) => <DetailsWrapper>
+  <Card type='solid-bg'>
+    <KpiContentWrapper>
+      {children}
+    </KpiContentWrapper>
+  </Card>
+</DetailsWrapper>
 
 const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
   const { $t } = useIntl()
   const { tooltipContent, label, value, delta, deltaSign } = kpi
   const infoIcon = tooltipContent
     ? <Tooltip title={$t(tooltipContent, { br: <br /> })}>
-      <RecommendationInfoIcon />
+      <InfoIcon />
     </Tooltip>
     : null
 

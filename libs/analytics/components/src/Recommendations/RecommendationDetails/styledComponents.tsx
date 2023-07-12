@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import { InformationSolid } from '@acx-ui/icons'
 
+import { Subtitle }            from '../../IncidentDetails/Insights/styledComponents'
 import { withDottedUnderline } from '../styledComponents'
 
 export const DetailsHeader = styled.div`
@@ -25,20 +26,8 @@ export const DetailsWrapper = styled.div`
   height: auto;
 `
 
-export const RecommendationDivider = styled.div`
-  border-top:  1px solid var(--acx-neutrals-30);
-  margin: 10px 0px;
-`
-
-export const RecommendationTitle = styled.div`
-  color: var(--acx-neutrals-50);
-  font-weight: 700;
-  font-size: 12px;
-  margin-top: 20px;
-`
-
-export const RecommendationCardWrapper = styled.div`
-  margin-bottom: 20px;
+export const Title = styled(Subtitle).attrs({ level: 2 })`
+  margin-top: 40px;
 `
 
 export const KpiTitle = styled.span`
@@ -48,7 +37,7 @@ export const KpiTitle = styled.span`
   font-size: 12px;
 `
 
-export const RecommendationInfoIcon = styled(InformationSolid)`
+export const InfoIcon = styled(InformationSolid)`
   color: var(--acx-neutrals-30);
   vertical-align: middle;
   margin-left: 4px;

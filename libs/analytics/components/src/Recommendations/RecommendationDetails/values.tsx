@@ -12,10 +12,8 @@ import {
   DetailsHeader,
   ValueDetails,
   DetailsWrapper,
-  RecommendationTitle,
-  RecommendationDivider,
-  RecommendationCardWrapper,
-  RecommendationInfoIcon,
+  Title,
+  InfoIcon,
   ValueDetailsWithIcon
 } from './styledComponents'
 
@@ -149,7 +147,7 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
               <ValueDetailsWithIcon>
                 {secondValue}
                 {tooltipText && <Tooltip title={tooltipText}>
-                  <RecommendationInfoIcon />
+                  <InfoIcon />
                 </Tooltip>}
               </ValueDetailsWithIcon>
             </ValueDetails>
@@ -157,30 +155,11 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
         </GridRow>
       </Card>
     </DetailsWrapper>
-    <RecommendationCardWrapper>
-      <GridRow>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'What is the recommendation?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.actionText}
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'Why this recommendation?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.reasonText}
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'What is the potential trade-off?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.tradeoffText}
-        </GridCol>
-      </GridRow>
-    </RecommendationCardWrapper>
+    <Title>{$t({ defaultMessage: 'What is the recommendation?' })}</Title>
+    {recommendationText.actionText}
+    <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
+    {recommendationText.reasonText}
+    <Title>{$t({ defaultMessage: 'What is the potential trade-off?' })}</Title>
+    {recommendationText.tradeoffText}
   </>
 }
