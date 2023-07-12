@@ -429,6 +429,10 @@ export function PropertyManagementTab () {
                                 ?.getFieldValue('residentPortalId'))?.name}
                           />
                           : <Select
+                            showSearch
+                            filterOption={(input, option) =>
+                              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
                             options={residentPortalList?.data
                               .map(r => ({ value: r.id, label: r.name })) ?? []}
                           />
