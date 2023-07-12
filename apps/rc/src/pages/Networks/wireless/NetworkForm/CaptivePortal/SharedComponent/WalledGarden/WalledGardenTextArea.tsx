@@ -163,7 +163,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
       data-testid='walled-garden-fullblock'
       name={['walledGardensString']}
       rules={[
-        { validator: (_, value) => walledGardensRegExp(value) }
+        { validator: (_, value) => walledGardensRegExp(value.toString()) }
       ]}
       label={<>{$t({ defaultMessage: 'Walled Garden' })}
         <Tooltip title={

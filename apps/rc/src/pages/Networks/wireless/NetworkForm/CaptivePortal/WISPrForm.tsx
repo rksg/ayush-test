@@ -175,9 +175,7 @@ export function WISPrForm () {
     }
   },[providerData.data,data,isMspEc])
   useEffect(()=>{
-    if(!data?.guestPortal?.wisprPage?.integrationKey){
-      form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
-    }
+    form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
     if ([
       (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
       (!data?.wlan?.bypassCPUsingMacAddressAuthentication)

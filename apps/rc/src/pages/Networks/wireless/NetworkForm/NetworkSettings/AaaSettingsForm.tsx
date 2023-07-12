@@ -121,8 +121,8 @@ function SettingsForm () {
   function AaaService () {
     const { $t } = useIntl()
     const { setData, data } = useContext(NetworkFormContext)
+    const enableAccountingService = useWatch('enableAccountingService')
     const form = Form.useFormInstance()
-    const enableAccountingService = form.getFieldValue('enableAccountingService')
     const onProxyChange = (value: boolean, fieldName: string) => {
       setData && setData({ ...data, [fieldName]: value })
     }
