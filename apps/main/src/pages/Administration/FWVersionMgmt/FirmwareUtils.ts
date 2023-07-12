@@ -208,7 +208,17 @@ export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) 
 export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
   if (venue.nextSchedule) {
     const versionName = venue.nextSchedule.version?.name
-    return versionName ? parseSwitchVersion(versionName) : versionName
+    const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
+    let names = []
+
+    if (versionName) {
+      names.push(parseSwitchVersion(versionName))
+    }
+
+    if (versionAboveTenName) {
+      names.push(parseSwitchVersion(versionAboveTenName))
+    }
+    return names.join(', ')
   }
   return ''
 }

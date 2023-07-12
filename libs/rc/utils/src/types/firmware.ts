@@ -46,6 +46,7 @@ export interface UpdateScheduleRequest {
   preDownload?: boolean;
   venueIds?: string[] | null
   switchVersion?: string
+  switchVersionAboveTen?: string
 }
 
 export interface UpdateNowRequest {
@@ -154,6 +155,10 @@ export interface switchSchedule {
     name: string;
     category: FirmwareCategory;
   }
+  versionAboveTen?: {
+    name: string;
+    category: FirmwareCategory;
+  }
 }
 
 export interface FirmwareSwitchVenue {
@@ -168,6 +173,8 @@ export interface FirmwareSwitchVenue {
   lastSkippedVersions: SkippedVersion[];
   versionHistory: VersionHistory[];
   lastScheduleUpdateTime: string;
+  switchCount?: number;
+  aboveTenSwitchCount?: number;
 }
 
 export interface CurrentVersions {
