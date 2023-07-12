@@ -7,7 +7,7 @@ import { rest } from 'msw'
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
 import { Provider, store }                                                   from '@acx-ui/store'
-import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor }                               from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -146,9 +146,7 @@ describe('RogueAPDetectionSettingForm', () => {
         state: initStateEditMode,
         dispatch: setRogueAPConfigure
       }}>
-        <Form>
-          <RogueAPDetectionForm edit={true}/>
-        </Form>
+        <RogueAPDetectionForm edit={true}/>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,
@@ -173,5 +171,8 @@ describe('RogueAPDetectionSettingForm', () => {
     })).toBeTruthy()
 
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
+    await waitFor(async () => {
+      expect(await screen.findByLabelText(/Policy Name/i)).toHaveValue('policyName1')
+    })
   })
 })

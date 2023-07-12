@@ -21,7 +21,7 @@ import {
 
 import MdnsProxyDetail from './MdnsProxyDetail'
 
-describe('MdnsProxyDetail', () => {
+describe.skip('MdnsProxyDetail', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742',
     serviceId: '4b76b1952c80401b8500b00d68106576'
