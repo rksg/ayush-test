@@ -167,11 +167,15 @@ describe('RogueAPDetectionTable', () => {
 
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
+    const dialog = await screen.findByRole('dialog')
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
     })
   })
 
