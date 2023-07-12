@@ -141,16 +141,10 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
     <DetailsWrapper>
       <Card type='solid-bg' title={$t(heading)}>
         <GridRow>
-          <GridCol col={{ span: 12 }}>
-            {firstLabel}
-          </GridCol>
-          <GridCol col={{ span: 10, pull: 2 }}>
-            <ValueDetails>{firstValue}</ValueDetails>
-          </GridCol>
-          <GridCol col={{ span: 12 }}>
-            {secondLabel}
-          </GridCol>
-          <GridCol col={{ span: 10, pull: 2 }}>
+          <GridCol col={{ span: 8 }}>{firstLabel}</GridCol>
+          <GridCol col={{ span: 16 }}><ValueDetails>{firstValue}</ValueDetails></GridCol>
+          <GridCol col={{ span: 8 }}>{secondLabel}</GridCol>
+          <GridCol col={{ span: 16 }}>
             <ValueDetails>
               <ValueDetailsWithIcon>
                 {secondValue}
