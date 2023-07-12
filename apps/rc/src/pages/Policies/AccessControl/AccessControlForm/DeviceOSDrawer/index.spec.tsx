@@ -664,7 +664,7 @@ describe('DeviceOSDrawer Component setting III', () => {
 
   })
 
-  it('Render DeviceOSDrawer component successfully with WdsDevice & TelnetCpe', async () => {
+  it('Render DeviceOSDrawer component successfully with WdsDevice & TelenetCpe', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
       (_, res, ctx) => res(
@@ -709,7 +709,7 @@ describe('DeviceOSDrawer Component setting III', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await selectOptionSet('WdsDevice', 'TelnetCpe')
+    await selectOptionSet('WdsDevice', 'TelenetCpe')
 
   })
 })

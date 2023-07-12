@@ -121,6 +121,7 @@ export { DistSwitchesTable } from './NetworkSegmentationDetailTableGroup/DistSwi
 export type {
   AccessSwitchTableDataType
 } from './NetworkSegmentationDetailTableGroup/AccessSwitchTable'
+export { useEdgeActions } from './useEdgeActions'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

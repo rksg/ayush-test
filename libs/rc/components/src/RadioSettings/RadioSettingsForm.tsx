@@ -1,5 +1,7 @@
-import { Form, Slider, InputNumber, Space } from 'antd'
-import { useIntl }                          from 'react-intl'
+/* eslint-disable max-len */
+import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
+import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
+import { useIntl }                                            from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
@@ -14,9 +16,7 @@ import {
   apChannelSelectionMethodsOptions,
   apChannelSelectionMethods6GOptions
 } from './RadioSettingsContents'
-import { RadioFormSelect } from './styledComponents'
-
-
+import { Label, FieldLabel, FormItemNoLabel, RadioFormSelect } from './styledComponents'
 
 const { useWatch } = Form
 
@@ -55,6 +55,16 @@ export function RadioSettingsForm (props:{
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
 
   const [channelMethod] = [useWatch<string>(methodFieldName)]
+  const form = Form.useFormInstance()
+  const [
+    enableDownloadLimit,
+    enableUploadLimit,
+    enableMulticastRateLimiting
+  ] = [
+    useWatch<boolean>('enableDownloadLimit'),
+    useWatch<boolean>('enableUploadLimit'),
+    useWatch<boolean>('enableMulticastRateLimiting')
+  ]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
@@ -64,6 +74,9 @@ export function RadioSettingsForm (props:{
   const onChangedByCustom = (fieldName: string) => {
     onGUIChanged?.(fieldName)
   }
+
+  const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
+  const multicastRateLimitFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
 
   return (
     <>
@@ -169,8 +182,137 @@ export function RadioSettingsForm (props:{
             onChange={() => onChangedByCustom('mgmtTxRate')}
           />
         </Form.Item>
+
+        {multicastRateLimitFlag && <>
+          <FieldLabel width='175px'>
+            {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+            <Form.Item
+              name='enableMulticastRateLimiting'
+              style={{ marginBottom: '10px' }}
+              valuePropName='checked'
+              initialValue={false}
+            >
+              {!isUseVenueSettings ? (
+                <Switch
+                  disabled={disabled}
+                  onChange={function (checked: boolean) {
+                    if (!checked) {
+                      form.setFieldValue(
+                        ['radioSettings', 'downloadLimit'], 0)
+                      form.setFieldValue(
+                        ['radioSettings', 'uploadLimit'], 0)
+                    }
+                  }} />
+              ) : <span>ON</span>}
+            </Form.Item>
+          </FieldLabel>
+          {enableMulticastRateLimiting && <>
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <FormItemNoLabel
+                name='enableUploadLimit'
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+              >
+                {
+                  <Checkbox data-testid='enableUploadLimit'
+                    onChange={function (e: CheckboxChangeEvent) {
+                      const value = e.target.checked ? 20 : 0
+                      form.setFieldValue(
+                        ['radioSettings', 'uploadLimit'], value)
+                    }}
+                    children={$t({ defaultMessage: 'Upload Limit' })}
+                    disabled={disabled || isUseVenueSettings}/>}
+              </FormItemNoLabel>
+              {
+                enableUploadLimit ?
+                  <FormItemNoLabel
+                    name={['radioSettings', 'uploadLimit']}
+                    children={
+                      <Slider
+                        disabled={disabled || isUseVenueSettings}
+                        tooltipVisible={false}
+                        style={{ width: '245px' }}
+                        defaultValue={20}
+                        min={1}
+                        max={100}
+                        marks={{
+                          1: { label: '1 Mbps' },
+                          100: { label: '100 Mbps' }
+                        }}
+                      />
+                    }
+                  /> :
+                  <Unlimited />
+              }
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
+              <FormItemNoLabel
+                name='enableDownloadLimit'
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+                children={
+                  <Checkbox data-testid='enableDownloadLimit'
+                    disabled={disabled || isUseVenueSettings}
+                    onChange={function (e: CheckboxChangeEvent) {
+                      const value = e.target.checked ? 20 : 0
+                      form.setFieldValue(
+                        ['radioSettings', 'downloadLimit'], value)
+                    }}
+                    children={$t({ defaultMessage: 'Download Limit' })} />}
+              />
+              {
+                enableDownloadLimit ?
+                  <FormItemNoLabel
+                    name={['radioSettings', 'downloadLimit']}
+                    children={
+                      <Slider
+                        disabled={disabled || isUseVenueSettings}
+                        tooltipVisible={false}
+                        style={{ width: '245px' }}
+                        defaultValue={getDownloadMaxValue()}
+                        min={1}
+                        max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
+                        marks={{
+                          1: { label: '1 Mbps' },
+                          [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
+                        }}
+                      />
+                    }
+                  /> : <Unlimited />
+              }
+            </div>
+          </>}
+        </>}
       </>
       }
     </>
   )
+}
+
+function Unlimited () {
+  const { $t } = useIntl()
+  return (
+    <Label
+      style={{ lineHeight: '50px' }}>
+      {$t({ defaultMessage: 'Unlimited' })}
+    </Label>
+  )
+}
+
+function getDLMax (value : string) : number {
+  switch (value) {
+    case 'HE_MCS_0':
+      return 3
+    case 'HE_MCS_1':
+      return 7
+    case 'HE_MCS_2':
+      return 10
+    case 'HE_MCS_3':
+      return 14
+    default:
+      return 100
+  }
 }
