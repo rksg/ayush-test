@@ -1334,6 +1334,7 @@ export const {
   useLazyGetTroubleshootingCleanQuery,
   useUpdateDhcpServerStateMutation,
   useGetLagListQuery,
+  useLazyGetLagListQuery,
   useAddLagMutation,
   useUpdateLagMutation,
   useDeleteLagMutation,

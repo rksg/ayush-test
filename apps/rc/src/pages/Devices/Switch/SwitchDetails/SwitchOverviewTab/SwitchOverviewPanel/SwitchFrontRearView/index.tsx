@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { EditPortDrawer }                                  from '@acx-ui/rc/components'
-import { StackMember, SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { useParams }                                       from '@acx-ui/react-router-dom'
+import { EditPortDrawer, SwitchLagModal }                       from '@acx-ui/rc/components'
+import { Lag, StackMember, SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { useParams }                                            from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '../../..'
 
@@ -15,10 +15,14 @@ interface SlotMember {
 }
 
 export const SwitchPannelContext = createContext({} as {
-  editPortDrawerVisible: boolean,
-  setEditPortDrawerVisible: (data: boolean) => void,
+  editPortDrawerVisible: boolean
+  setEditPortDrawerVisible: (data: boolean) => void
   selectedPorts: SwitchPortStatus[]
   setSelectedPorts: (data: SwitchPortStatus[]) => void
+  editLagModalVisible: boolean
+  setEditLagModalVisible: (data: boolean) => void
+  editLag: Lag[]
+  setEditLag: (data: Lag[]) => void
 })
 
 export function SwitchFrontRearView (props:{
@@ -27,6 +31,8 @@ export function SwitchFrontRearView (props:{
   const { stackMember } = props
   const params = useParams()
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [editLagModalVisible, setEditLagModalVisible] = useState(false)
+  const [editLag, setEditLag] = useState([] as Lag[])
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const { serialNumber } = params
   const {
@@ -70,7 +76,11 @@ export function SwitchFrontRearView (props:{
     editPortDrawerVisible,
     setEditPortDrawerVisible,
     selectedPorts,
-    setSelectedPorts
+    setSelectedPorts,
+    editLagModalVisible,
+    setEditLagModalVisible,
+    editLag,
+    setEditLag
   }}>
     {
       slotMember && slotMember.data.map((member, index) => (
@@ -90,6 +100,13 @@ export function SwitchFrontRearView (props:{
       isMultipleEdit={selectedPorts?.length > 1}
       isVenueLevel={false}
       selectedPorts={selectedPorts}
+    />
+    }
+    { editLagModalVisible && <SwitchLagModal
+      isEditMode={true}
+      editData={editLag}
+      visible={editLagModalVisible}
+      setVisible={setEditLagModalVisible}
     />
     }
   </SwitchPannelContext.Provider>

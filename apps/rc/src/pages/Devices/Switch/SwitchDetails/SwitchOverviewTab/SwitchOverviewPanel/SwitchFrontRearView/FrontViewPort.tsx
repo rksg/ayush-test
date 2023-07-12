@@ -4,9 +4,11 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }            from '@acx-ui/components'
-import { getInactiveTooltip } from '@acx-ui/rc/components'
-import { SwitchPortStatus }   from '@acx-ui/rc/utils'
+import { Tooltip }                from '@acx-ui/components'
+import { getInactiveTooltip }     from '@acx-ui/rc/components'
+import { useLazyGetLagListQuery } from '@acx-ui/rc/services'
+import { Lag, SwitchPortStatus }  from '@acx-ui/rc/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -24,7 +26,14 @@ export function FrontViewPort (props:{
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
     disabledClick } = props
-  const { setEditPortDrawerVisible, setSelectedPorts } = useContext(SwitchPannelContext)
+  const {
+    setEditPortDrawerVisible,
+    setSelectedPorts,
+    setEditLagModalVisible,
+    setEditLag
+  } = useContext(SwitchPannelContext)
+  const params = useParams()
+  const [ getLagList ] = useLazyGetLagListQuery()
   const getTooltip = (port: SwitchPortStatus) => {
     const speedNoData = 'link down or no traffic'
     const isUnTaggedVlanValid = port.unTaggedVlan !== '' && port.unTaggedVlan !== undefined
@@ -99,12 +108,30 @@ export function FrontViewPort (props:{
     </div>
   }
 
+  const showEditIcon = () => {
+    if(portIcon ==='LagMember'){
+      return true
+    }
+    return !getInactiveTooltip(portData)
+  }
+
+  const onEditLag = async () => {
+    const { data: lagList } = await getLagList({ params })
+    const lagData = lagList?.find(item => item.lagId?.toString() === portData.lagId) as Lag
+    setEditLagModalVisible(true)
+    setEditLag([lagData])
+  }
+
   const onPortClick = () => {
-    if(getInactiveTooltip(portData) || disabledClick) {
+    if(!showEditIcon() || disabledClick) {
       return
     }
-    setSelectedPorts([portData])
-    setEditPortDrawerVisible(true)
+    if(portIcon ==='LagMember'){
+      onEditLag()
+    }else{
+      setSelectedPorts([portData])
+      setEditPortDrawerVisible(true)
+    }
   }
 
   const portElement = <UI.PortWrapper>
@@ -120,12 +147,12 @@ export function FrontViewPort (props:{
                 { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
                 { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
                 { portIcon ==='Breakout' && <UI.BreakoutPortIcon /> }
-                { !getInactiveTooltip(portData) && <UI.BreakOutPortFlag portColor={portColor} />}
+                { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
               </UI.BreadkoutPortContainer>
             )
             : (
               <UI.RegularPortContainer>
-                { !getInactiveTooltip(portData) && <UI.BreakOutPortFlag portColor={portColor} />}
+                { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
               </UI.RegularPortContainer>
             )
         }
