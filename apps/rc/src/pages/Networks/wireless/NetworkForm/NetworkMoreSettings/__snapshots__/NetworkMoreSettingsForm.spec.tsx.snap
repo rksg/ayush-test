@@ -1843,7 +1843,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
                 width="250px"
               >
-                Optimized Connectivity Experience (OCE):
+                Optimized Connectivity Experience (OCE)
                 <div
                   class="ant-form-item"
                   style="margin-bottom: 10px;"

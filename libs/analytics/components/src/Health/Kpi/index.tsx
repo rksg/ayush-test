@@ -15,6 +15,7 @@ import {
   kpiConfig
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader } from '@acx-ui/components'
+import { get }                      from '@acx-ui/config'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -23,6 +24,8 @@ import Histogram     from './Histogram'
 import HealthPill    from './Pill'
 import KpiTimeseries from './Timeseries'
 
+const isMLISA = get('IS_MLISA_SA')
+
 export const defaultThreshold: KpiThresholdType = {
   timeToConnect: kpiConfig.timeToConnect.histogram.initialThreshold,
   rss: kpiConfig.rss.histogram.initialThreshold,
@@ -30,14 +33,14 @@ export const defaultThreshold: KpiThresholdType = {
   apCapacity: kpiConfig.apCapacity.histogram.initialThreshold,
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
-  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold
+  switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
+  clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
-
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
-  const { kpis } = kpisForTab[tab]
+  const { kpis } = kpisForTab(isMLISA)[tab]
   const { useGetKpiThresholdsQuery, useFetchThresholdPermissionQuery } = healthApi
-  const thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
+  let thresholdKeys = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
   const { filter } = filters
   const customThresholdQuery = useGetKpiThresholdsQuery({
     ...filters, kpis: thresholdKeys })

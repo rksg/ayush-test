@@ -1,16 +1,22 @@
 import userEvent                                    from '@testing-library/user-event'
+import { rest }                                     from 'msw'
 import { IntlProvider }                             from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
-import { Provider } from '@acx-ui/store'
+import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }     from '@acx-ui/store'
 import {
+  mockServer,
   renderHook,
   screen,
   waitFor,
   within
 } from '@acx-ui/test-utils'
 
+import { mockEdgeList } from '../../__tests__/fixtures'
+
 import { EdgeEditContext, EditEdgeTabs } from './index'
+
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -38,6 +44,16 @@ const defaultContextData = {
 }
 
 describe('EditEdge_tab', () => {
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      )
+    )
+  })
+
   it('Unsaved changes modal pop up wihtout error - discard', async () => {
     const user= userEvent.setup()
     const getWrapper = () =>
