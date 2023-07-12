@@ -25,6 +25,9 @@ const wifiCallingDetail = {
     {
       ip: '1.2.3.4',
       domain: 'abc.com'
+    },
+    {
+      domain: 'a.b.c.com'
     }
   ]
 }

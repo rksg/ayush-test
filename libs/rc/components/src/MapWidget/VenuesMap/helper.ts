@@ -146,7 +146,6 @@ export const massageVenuesData = (overviewData?: Dashboard): VenueMarkerOptions[
         switchesCount,
         edgeStat,
         edgesCount,
-        edgeClientsCount: getEdgeClientCountByVenue(overviewData, venueId),
         visible: true
       })
     })
@@ -321,10 +320,6 @@ function getEdgeStatusDataByVenue (overviewData: Dashboard, venueId: string): {
     }],
     edgesCount: edgeStat && edgeStat[venueId] ? edgeStat[venueId].totalCount : 0
   }
-}
-
-function getEdgeClientCountByVenue (overviewData: Dashboard, venueId: string): number {
-  return _.get(overviewData, 'summary.edgeClients.summary[' + venueId + ']') || 0
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
