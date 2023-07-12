@@ -223,7 +223,9 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   }
 
   const EmptyElement = (props: { ruleType: string }) => {
-    drawerForm.setFieldValue('ruleType', props.ruleType)
+    useEffect(() => {
+      drawerForm.setFieldValue('ruleType', props.ruleType)
+    }, [props])
     return <></>
   }
 

@@ -10,7 +10,6 @@ import {
   FirmwareVenueVersion,
   FirmwareType,
   Schedule,
-  EdgeFirmwareVersion,
   LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -105,12 +104,12 @@ export function getReleaseFirmware<T extends FirmwareVersionType> (firmwareVersi
   return firmwareVersions.filter(categoryIsReleaseFunc)
 }
 
-// eslint-disable-next-line max-len
-export const getVersionLabel = (intl: IntlShape, version: FirmwareVersion | EdgeFirmwareVersion): string => {
+type VersionLabelType = { name: string, category: FirmwareCategory, onboardDate?: string }
+export const getVersionLabel = (intl: IntlShape, version: VersionLabelType): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(version?.category)
-  const versionOnboardDate = transformToUserDate(version)
+  const versionOnboardDate = version.onboardDate ? toUserDate(version.onboardDate) : ''
 
   return `${versionName} (${versionType}) ${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
 }
@@ -121,11 +120,6 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
   const versionType = transform(version?.category)
 
   return `${versionName} (${versionType})`
-}
-
-const transformToUserDate = (firmwareVersion: FirmwareVersion | EdgeFirmwareVersion)
-: string | undefined => {
-  return toUserDate(firmwareVersion?.onboardDate as string)
 }
 
 export const toUserDate = (date: string): string => {

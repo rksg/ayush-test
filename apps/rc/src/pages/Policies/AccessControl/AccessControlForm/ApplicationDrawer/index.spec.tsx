@@ -12,148 +12,27 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
+import { applicationDetail, avcApp, avcCat, queryApplication, queryApplicationUpdate } from '../../__tests__/fixtures'
+
 import ApplicationDrawer from './index'
-
-const queryApplication = [
-  {
-    id: 'edac8b0c22e140cd95e63a9e81421576',
-    name: 'app1',
-    rulesCount: 2,
-    networksCount: 0
-  },
-  {
-    id: 'e51edc33a9764b1284c0fd201806e4d4',
-    name: 'app2',
-    description: 'sdfasdf',
-    rulesCount: 1,
-    networksCount: 0
-  },
-  {
-    id: '02f18ac24a504cd88ed6a94025b64d44',
-    name: 'app3',
-    rulesCount: 1,
-    networksCount: 0
-  },
-  {
-    id: '9ad95d4741b44fbfbab55914c104eea4',
-    name: 'app4',
-    rulesCount: 1,
-    networksCount: 0
-  },
-  {
-    id: '8403ff88c526465b8070f50ca4547281',
-    name: 'app5',
-    rulesCount: 1,
-    networksCount: 0
-  },
-  {
-    id: 'e1ba3e5ca73b4bbf8c53bb5feff31f9b',
-    name: 'app6-activityMsg',
-    rulesCount: 1,
-    networksCount: 0
-  }
-]
-
-const queryApplicationUpdate = [
-  ...queryApplication,
-  {
-    id: '6ab1a781711e492eb05a70f9f9ba253a',
-    name: 'app1-test',
-    rulesCount: 1,
-    networksCount: 0
-  }
-]
-
-const applicationDetail = {
-  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
-  name: 'app1',
-  rules: [
-    {
-      name: 'appRule2',
-      ruleType: 'USER_DEFINED',
-      accessControl: 'DENY',
-      priority: 2,
-      applicationName: 'userDefinedAppName',
-      applicationId: 1,
-      portMapping: 'IP_WITH_PORT',
-      destinationIp: '1.1.1.1',
-      netmask: '255.255.255.0',
-      destinationPort: 20,
-      protocol: 'TCP',
-      id: 'd0c06ec39bac4515b150ca4dac7e9b30'
-    },
-    {
-      name: 'appRule1',
-      ruleType: 'SIGNATURE',
-      accessControl: 'DENY',
-      priority: 1,
-      category: 'Audio/Video',
-      categoryId: 3,
-      applicationName: '050 plus',
-      applicationId: 1123,
-      id: 'bcbcb881099946f5aad7841e2ca0d73f'
-    }
-  ],
-  id: 'edac8b0c22e140cd95e63a9e81421576'
-}
 
 const applicationResponse = {
   requestId: '508c529a-0bde-49e4-8179-19366f69f31f'
 }
 
-const avcCat = [
-  {
-    catName: 'Web',
-    catId: 30
-  },
-  {
-    catName: 'Printer',
-    catId: 21
-  },
-  {
-    catName: 'Audio/Video',
-    catId: 3
-  }
-]
-
-const avcApp = [{
-  appName: 'BBC',
-  avcAppAndCatId: {
-    catId: 30,
-    appId: 1754
-  }
-}, {
-  appName: 'AppsFlyer',
-  avcAppAndCatId: {
-    catId: 30,
-    appId: 2334
-  }
-}, {
-  appName: 'BJNP',
-  avcAppAndCatId: {
-    catId: 21,
-    appId: 2481
-  }
-}, {
-  appName: '050 plus',
-  avcAppAndCatId: {
-    catId: 3,
-    appId: 1123
-  }
-}]
-
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, options, ...otherProps }) => {
+  // eslint-disable-next-line max-len
+  const Select = ({ children, onChange, options, showSearch, filterOption, optionFilterProp, defaultValue, ...otherProps }) => {
     if (options) {
       return <select
         role='combobox'
         onChange={e => onChange(e.target.value)}
         {...otherProps}>
         {options.map((option: { value: string }) =>
-          <option value={option.value}>{option.value}</option>)}
+          <option key={option.value} value={option.value}>{option.value}</option>)}
       </select>
     }
     return <select
@@ -277,7 +156,7 @@ describe('ApplicationDrawer Component', () => {
       )
     ))
 
-    await screen.findByRole('option', { name: 'app1-test' })
+    expect(await screen.findByRole('option', { name: 'app1-test' })).toBeVisible()
 
   })
 
@@ -362,6 +241,8 @@ describe('ApplicationDrawer Component', () => {
     await screen.findByText(/rules \(1\)/i)
 
     await userEvent.click(screen.getAllByText('Save')[0])
+
+    expect(await screen.findByText('Application Access Settings')).toBeVisible()
   })
 
   it('Render ApplicationDrawer component successfully with edit and del action', async () => {
@@ -470,7 +351,7 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.click(screen.getByText(/delete rule/i))
 
-    await screen.findByText(/rules \(0\)/i)
+    expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
 
   })
 
@@ -563,7 +444,7 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await screen.findByText('app1rule1')
+    expect(await screen.findByText('app1rule1')).toBeInTheDocument()
 
   })
 
@@ -644,6 +525,8 @@ describe('ApplicationDrawer Component', () => {
       screen.getAllByRole('combobox')[5],
       screen.getAllByRole('option', { name: 'VOICE' })[1]
     )
+
+    expect(await screen.findByText('Audio/Video')).toBeInTheDocument()
   })
 
   it('Render ApplicationDrawer component in viewMode successfully', async () => {
@@ -694,5 +577,7 @@ describe('ApplicationDrawer Component', () => {
     await screen.findByText(/rules/i)
 
     await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    expect(screen.queryByText('Application Access Settings')).toBeNull()
   })
 })
