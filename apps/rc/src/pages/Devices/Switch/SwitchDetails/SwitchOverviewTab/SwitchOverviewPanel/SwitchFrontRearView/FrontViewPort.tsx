@@ -117,6 +117,7 @@ export function FrontViewPort (props:{
                 { portIcon ==='Stack' && <UI.StackingPortIcon/> }
                 { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
                 { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
+                { portIcon ==='Breakout' && <UI.BreakoutPortIcon /> }
                 { !getInactiveTooltip(portData) && <UI.BreakOutPortFlag portColor={portColor} />}
               </UI.BreadkoutPortContainer>
             )

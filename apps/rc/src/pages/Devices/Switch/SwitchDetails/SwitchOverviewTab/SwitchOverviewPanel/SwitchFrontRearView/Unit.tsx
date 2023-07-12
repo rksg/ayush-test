@@ -11,9 +11,10 @@ import { useParams }                                                            
 
 import { SwitchDetailsContext } from '../../..'
 
-import { FrontViewSlot } from './FrontViewSlot'
-import { RearView }      from './RearView'
-import * as UI           from './styledComponents'
+import { FrontViewSlot }    from './FrontViewSlot'
+import { FrontViewTooltip } from './FrontViewTooltip'
+import { RearView }         from './RearView'
+import * as UI              from './styledComponents'
 interface unitType {
   switchUnit: number
   model: string
@@ -424,6 +425,13 @@ export function Unit (props:{
         }
       </div>
     </UI.TitleBar>
+    {
+      (!isRearView && member?.unitId === 1) && (
+        <UI.FrontViewTooltipContainer>
+          <FrontViewTooltip />
+        </UI.FrontViewTooltipContainer>
+      )
+    }
     <UI.UnitWrapper>
       { !isRearView
         ? <>

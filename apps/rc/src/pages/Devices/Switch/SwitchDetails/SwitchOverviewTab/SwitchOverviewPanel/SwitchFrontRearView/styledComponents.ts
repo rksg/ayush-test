@@ -96,6 +96,57 @@ export const RearViewWrapper = styled.div`
   float:left;
 `
 
+export const FrontViewTooltipContainer = styled.div`
+  float: right;
+  margin: 8px 2px 0 0;
+`
+
+export const FrontViewTooltip = styled.div`
+  display: grid;
+  grid-template-columns: 65px 160px 65px 80px;
+  h5.ant-typography {
+    color: var(--acx-primary-white);
+    padding: 2px 0 0 4px;
+  }
+  .title-left {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  .title-right {
+    grid-column-start: 3;
+    grid-column-end: 5;
+  }
+
+  .ports-description{
+    color: var(--acx-primary-white);
+    line-height: 28px;
+    &.right{
+      grid-column-start: 4;
+      grid-column-end: 5;
+    }
+  }
+ 
+  .ports {
+    svg {
+      path {
+        fill: var(--acx-primary-white);
+      }  
+    }
+    &.poe-icon{
+      svg{
+        height: 15px;
+        padding-top: 1px;
+        path {
+          stroke: var(--acx-primary-white);
+        }  
+      }
+    }
+    &.right{
+      grid-column-start: 3;
+      grid-column-end: 4;
+    }
+  }
+`
 const getPortColor = (portColor: string) => {
   const colorMap:{ [key:string]: string } = {
     lightgray: 'var(--acx-neutrals-25)',
