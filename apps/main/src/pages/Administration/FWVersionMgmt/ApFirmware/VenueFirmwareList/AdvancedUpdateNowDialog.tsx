@@ -1,7 +1,8 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Select, Radio, RadioChangeEvent, Space, Typography, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                          from 'antd/lib/checkbox'
+import { DefaultOptionType }                                            from 'antd/lib/select'
 import { useIntl }                                                      from 'react-intl'
 
 import { Modal }     from '@acx-ui/components'
@@ -48,6 +49,9 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
   // eslint-disable-next-line max-len
   const defaultActiveVersion: FirmwareVersion | undefined = getDefaultActiveVersion(availableVersions)
   const otherActiveVersions: FirmwareVersion[] = filteredOtherActiveVersions(availableVersions)
+  // eslint-disable-next-line max-len
+  const activeApModels = venuesData.filter(venue => venue.apModels).map(venue => venue.apModels).flat()
+  const uniqueActiveApModels = [...new Set(activeApModels)].join(', ')
 
   const getUpdateNowRequestPayload = () => {
     return Object.values(updateNowRequestPayload ?? {}).filter(value => value !== null)
@@ -110,6 +114,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
             defaultChecked={true}
             defaultVersionId={defaultActiveVersion.id}
             defaultVersionLabel={getVersionLabel(intl, defaultActiveVersion)}
+            apModels={uniqueActiveApModels}
             otherVersions={otherActiveVersionOptions}
             update={updateSelectedABF}
           />
@@ -125,13 +130,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
                 abfLabel={$t({ defaultMessage: 'Legacy Device ({eolName})' }, { eolName: eol.name })}
                 defaultVersionId={eol.latestEolVersion}
                 defaultVersionLabel={eol.latestEolVersion}
-                defaultVersionExtraComponent={
-                  <div style={{ marginLeft: '24px' }}>
-                    {$t({ defaultMessage: 'AP Models: {apModels}' }, {
-                      apModels: eol.apModels?.join(', ')
-                    })}
-                  </div>
-                }
+                apModels={eol.apModels?.join(', ')}
                 update={updateSelectedABF}
               />
             </UI.Section>
@@ -184,14 +183,14 @@ interface ABFSelectorProps {
   defaultChecked?: boolean
   defaultVersionId: string
   defaultVersionLabel: string
-  defaultVersionExtraComponent?: ReactNode
-  otherVersions?: { label: string, value: string }[]
+  apModels?: string
+  otherVersions?: DefaultOptionType[]
   update: (abfId: string, value: UpdateNowRequestWithoutVenues | null) => void
 }
 
 function ABFSelector (props: ABFSelectorProps) {
   const { categoryId, abfLabel, defaultChecked = false, defaultVersionId, defaultVersionLabel,
-    otherVersions = [], update, defaultVersionExtraComponent } = props
+    otherVersions = [], update, apModels = '' } = props
   const { $t } = useIntl()
   const [ isChecked, setIsChecked ] = useState(defaultChecked)
   const [ selectMode, setSelectMode ] = useState(VersionsSelectMode.Radio)
@@ -240,7 +239,6 @@ function ABFSelector (props: ABFSelectorProps) {
       >
         <Space direction={'vertical'}>
           <Radio value={VersionsSelectMode.Radio}>{defaultVersionLabel}</Radio>
-          { defaultVersionExtraComponent }
           { otherVersions.length > 0 ?
             <UI.SelectDiv>
               <Radio value={VersionsSelectMode.Dropdown} />
@@ -255,6 +253,9 @@ function ABFSelector (props: ABFSelectorProps) {
             </UI.SelectDiv>
             : null
           }
+          <UI.ApModelsContainer>
+            {$t({ defaultMessage: 'AP Models: {apModels}' }, { apModels })}
+          </UI.ApModelsContainer>
         </Space>
       </Radio.Group>
     </UI.ValueContainer>

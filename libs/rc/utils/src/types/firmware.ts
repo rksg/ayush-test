@@ -108,6 +108,7 @@ export interface FirmwareVenue {
   versionHistory: VersionHistory[];
   lastScheduleUpdate: string;
   eolApFirmwares?: EolApFirmware[];
+  apModels?: string[];
 }
 
 export interface FirmwareVenueVersion {
