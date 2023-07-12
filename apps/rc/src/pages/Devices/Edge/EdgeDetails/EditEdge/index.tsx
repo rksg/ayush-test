@@ -1,11 +1,11 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useRef, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, CustomButtonProps, PageHeader, Tabs, showActionModal }                          from '@acx-ui/components'
 import { useEdgeBySerialNumberQuery, useGetEdgeQuery }                                           from '@acx-ui/rc/services'
-import { EdgeStatus, EdgeStatusEnum }                                                            from '@acx-ui/rc/utils'
+import { EdgeStatusEnum }                                                                        from '@acx-ui/rc/utils'
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                        from '@acx-ui/user'
 import { getIntl }                                                                               from '@acx-ui/utils'
@@ -17,8 +17,15 @@ import StaticRoutes    from './StaticRoutes'
 
 import type { History, Transition } from 'history'
 
-const getTabs = (currentEdge?: EdgeStatus) => {
-  const { $t } = getIntl()
+const useTabs = () => {
+  const { $t } = useIntl()
+  const { serialNumber } = useParams()
+  const { data: currentEdge } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: {
+      fields: ['deviceStatus'],
+      filters: { serialNumber: [serialNumber] } }
+  })
   return {
     'general-settings': {
       title: $t({ defaultMessage: 'General Settings' }),
@@ -55,13 +62,7 @@ export const EditEdgeTabs = () => {
   const unblockRef = useRef<Function>()
   const editEdgeContext = useContext(EdgeEditContext)
   const { formControl } = editEdgeContext
-  const { data: currentEdge } = useEdgeBySerialNumberQuery({
-    params: { serialNumber },
-    payload: {
-      fields: ['deviceStatus'],
-      filters: { serialNumber: [serialNumber] } }
-  })
-  const tabs = getTabs(currentEdge)
+  const tabs = useTabs()
 
   useEffect(() => {
     if (formControl?.isDirty) {
@@ -122,14 +123,9 @@ const EditEdge = () => {
   const { $t } = useIntl()
   const { serialNumber, activeTab } = useParams()
   const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: serialNumber } })
-  const [activeTabContent, setActiveTabContent] = useState<ReactNode>()
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
   const [formControl, setFormControl] = useState({} as EditEdgeFormControlType)
-  const tabs = getTabs()
-
-  useEffect(() => {
-    setActiveTabContent(tabs[activeTab as keyof typeof tabs]?.content)
-  }, [activeTab])
+  const tabs = useTabs()
 
   return (
     <EdgeEditContext.Provider value={{
@@ -154,7 +150,7 @@ const EditEdge = () => {
         footer={<EditEdgeTabs />}
       />
 
-      {activeTabContent}
+      {tabs[activeTab as keyof typeof tabs]?.content}
     </EdgeEditContext.Provider>
   )
 }

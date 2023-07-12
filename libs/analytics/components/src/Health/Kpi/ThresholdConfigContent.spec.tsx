@@ -7,8 +7,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import ThresholdConfig from './ThresholdConfigContent'
-
+import ThresholdConfig , { getDisabledToolTip } from './ThresholdConfigContent'
 const shortXFormat = jest.fn()
 describe('Threshold Histogram chart', () => {
   beforeEach(() => {
@@ -29,5 +28,17 @@ describe('Threshold Histogram chart', () => {
       </Provider>
     )
     expect(await screen.findByText('100%')).toBeInTheDocument()
+  })
+  it('should return correct intl for ACX', async () => {
+    expect(getDisabledToolTip(true, undefined)).toEqual(defineMessage({
+      defaultMessage:
+      'Cannot save threshold at organisation level. Please select a Venue or AP to set a threshold.'
+    }))
+  })
+  it('should return correct intl for RA', async () => {
+    expect(getDisabledToolTip(true, 'true')).toEqual(defineMessage({
+      defaultMessage:
+      'Cannot save threshold at network level. Please select a Zone or AP to set a threshold.'
+    }))
   })
 })
