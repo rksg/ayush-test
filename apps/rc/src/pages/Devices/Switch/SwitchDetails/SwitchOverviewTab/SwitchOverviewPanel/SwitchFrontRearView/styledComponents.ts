@@ -103,7 +103,7 @@ export const FrontViewTooltipContainer = styled.div`
 
 export const FrontViewTooltip = styled.div`
   display: grid;
-  grid-template-columns: 65px 160px 65px 80px;
+  grid-template-columns: 35px 160px 65px 80px;
   h5.ant-typography {
     color: var(--acx-primary-white);
     padding: 2px 0 0 4px;
@@ -131,6 +131,9 @@ export const FrontViewTooltip = styled.div`
       path {
         fill: var(--acx-primary-white);
       }  
+    }
+    &.offline {
+      opacity: 0.3;
     }
     &.poe-icon{
       svg{

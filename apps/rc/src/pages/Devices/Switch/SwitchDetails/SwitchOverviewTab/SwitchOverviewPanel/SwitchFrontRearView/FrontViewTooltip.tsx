@@ -41,15 +41,8 @@ export function FrontViewTooltip () {
             portColor='green'
             portIcon=''
             tooltipEnable={false}
-            portData={uneditablePort}
-          />
-          <FrontViewPort
-            labelText={''}
-            labelPosition='top'
-            portColor='green'
-            portIcon=''
-            tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
         </div>
         <div className='ports-description'>
@@ -63,6 +56,7 @@ export function FrontViewTooltip () {
             portIcon=''
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
           <FrontViewPort
             labelText={''}
@@ -71,6 +65,7 @@ export function FrontViewTooltip () {
             portIcon=''
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
         </div>
         <div className='ports-description'>
@@ -83,18 +78,8 @@ export function FrontViewTooltip () {
             portColor='gray'
             portIcon=''
             tooltipEnable={false}
-            portData={{
-              ...editablePort,
-              syncedSwitchConfig: false
-            }}
-          />
-          <FrontViewPort
-            labelText={''}
-            labelPosition='top'
-            portColor='gray'
-            portIcon=''
-            tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
         </div>
         <div className='ports-description'>
@@ -108,6 +93,7 @@ export function FrontViewTooltip () {
             portIcon='PoeUsed'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
           <FrontViewPort
             labelText={''}
@@ -116,12 +102,13 @@ export function FrontViewTooltip () {
             portIcon='PoeUsed'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
         </div>
         <div className='ports-description'>
           { $t({ defaultMessage: 'PoE' }) }
         </div>
-        <div className='ports'>
+        <div className='ports offline'>
           <FrontViewPort
             labelText={''}
             labelPosition='top'
@@ -145,6 +132,7 @@ export function FrontViewTooltip () {
             portIcon='UpLink'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
           <FrontViewPort
             labelText={''}
@@ -153,6 +141,7 @@ export function FrontViewTooltip () {
             portIcon='UpLink'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
         </div>
         <div className='ports-description'>
@@ -166,6 +155,7 @@ export function FrontViewTooltip () {
             portIcon='Breakout'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
           <FrontViewPort
             labelText={''}
@@ -174,6 +164,7 @@ export function FrontViewTooltip () {
             portIcon='Breakout'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
         </div>
         <div className='ports-description right'>
@@ -187,6 +178,7 @@ export function FrontViewTooltip () {
             portIcon='LagMember'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
           <FrontViewPort
             labelText={''}
@@ -195,6 +187,7 @@ export function FrontViewTooltip () {
             portIcon='LagMember'
             tooltipEnable={false}
             portData={editablePort}
+            disabledClick={true}
           />
         </div>
         <div className='ports-description right'>

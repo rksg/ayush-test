@@ -18,10 +18,12 @@ export function FrontViewPort (props:{
   portIcon: string,
   labelText: string,
   labelPosition: 'top' | 'bottom',
-  tooltipEnable: boolean
+  tooltipEnable: boolean,
+  disabledClick?:boolean
 }) {
   const { $t } = useIntl()
-  const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable } = props
+  const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
+    disabledClick } = props
   const { setEditPortDrawerVisible, setSelectedPorts } = useContext(SwitchPannelContext)
   const getTooltip = (port: SwitchPortStatus) => {
     const speedNoData = 'link down or no traffic'
@@ -98,7 +100,7 @@ export function FrontViewPort (props:{
   }
 
   const onPortClick = () => {
-    if(getInactiveTooltip(portData)) {
+    if(getInactiveTooltip(portData) || disabledClick) {
       return
     }
     setSelectedPorts([portData])
