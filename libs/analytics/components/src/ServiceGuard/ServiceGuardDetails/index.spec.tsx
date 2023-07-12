@@ -6,7 +6,7 @@ import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import ServiceGuardDetails from '.'
+import { ServiceGuardDetails } from '.'
 
 const params = { tenantId: 'tenant-id', specId: 'spec-id', testId: 'test-id' }
 const mockedUsedNavigate = jest.fn()

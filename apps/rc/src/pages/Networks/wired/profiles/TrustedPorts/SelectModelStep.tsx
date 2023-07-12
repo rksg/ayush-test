@@ -372,7 +372,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                 initialValue={family}
                 children={<Radio.Group
                   onChange={onFamilyChange}
-                  // defaultValue={family}
                 >
                   {families.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={!!editRecord}>
@@ -397,7 +396,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                 initialValue={model}
                 children={<Radio.Group
                   onChange={onModelChange}
-                  // defaultValue={model}
                 >
                   {models.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={!!editRecord}>
