@@ -19,7 +19,8 @@ import {
   KpiLabelWrapper,
   KpiContentWrapper,
   KpiLabelValue,
-  KpiLabelExtra
+  KpiLabelExtra,
+  KpiWrapper
 } from './styledComponents'
 
 const kpiDelta = (
@@ -29,9 +30,9 @@ const kpiDelta = (
   format: ReturnType<typeof formatter>) => {
   const tolerance = 5 / 100 // 5%
 
-  let value = null
+  let value: '-1' | '0' | '1'
   let label: string = noDataDisplay
-  if (!isNumber(before) || !isNumber(after)) return { value, label }
+  if (!isNumber(before) || !isNumber(after)) return { value: '0', label }
   let d = after - before
   const isPercent = format(d).includes('%')
   if (isPercent) {
@@ -82,9 +83,9 @@ const getKpis = (details: EnhancedRecommendation) => {
     return {
       ...pick(config, ['key', 'label', 'tooltipContent', 'showAps']),
       delta,
-      deltaSign: deltaSign === '+'
+      deltaSign: delta?.value === '1'
         ? 'positive'
-        : deltaSign === '-'
+        : delta?.value === '-1'
           ? 'negative'
           : 'none',
       value: current !== null ? format(current) : noDataDisplay
@@ -98,13 +99,15 @@ const getKpis = (details: EnhancedRecommendation) => {
   return { monitoring, kpis }
 }
 
-const KpiCard = ({ children }: { children: ReactNode }) => <DetailsWrapper>
-  <Card type='solid-bg'>
-    <KpiContentWrapper>
-      {children}
-    </KpiContentWrapper>
-  </Card>
-</DetailsWrapper>
+const KpiCard = ({ children }: { children: ReactNode }) => <KpiWrapper>
+  <DetailsWrapper>
+    <Card type='solid-bg'>
+      <KpiContentWrapper>
+        {children}
+      </KpiContentWrapper>
+    </Card>
+  </DetailsWrapper>
+</KpiWrapper>
 
 const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
   const { $t } = useIntl()
