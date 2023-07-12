@@ -202,7 +202,6 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   return (
     <Drawer
       title={title}
-      onBackClick={onClose}
       visible={visible}
       onClose={onClose}
       children={content}

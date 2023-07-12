@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { BaseUrl, ExternalProviders, MspPortal } from '@acx-ui/rc/utils'
-import { Provider  }                             from '@acx-ui/store'
+import { BaseUrl, CommonUrlsInfo, ExternalProviders, MspPortal, MspUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                                                          from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -91,14 +91,20 @@ const baseUrl: BaseUrl =
 
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useAddMspLabelMutation: () => (''),
-  useUpdateMspLabelMutation: () => (''),
-  useGetUploadURLMutation: () => ('')
+  ...jest.requireActual('@acx-ui/rc/services')
+  // useAddMspLabelMutation: () => Promise.resolve({
+  //   json: () => Promise.resolve({ requestId: '456' }),
+  //   clone: () => Promise.resolve({ requestId: '456' })
+  // })
 }))
 const utils = require('@acx-ui/utils')
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils')
+}))
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
 }))
 
 describe('PortalSettings', () => {
@@ -115,9 +121,41 @@ describe('PortalSettings', () => {
     utils.loadImageWithJWT = jest.fn().mockImplementation((imageId: string) => {
       return Promise.resolve(fileUrl + imageId)
     })
-    // services.useGetUploadURLMutation = jest.fn().mockResolvedValue(uploadUrlResponse)
+    jest.spyOn(services, 'useGetUploadURLMutation')
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getUploadURL.url,
+        (req, res, ctx) => res(ctx.json({ fileId: 'f1-001/xml', signedUrl: 'www.storage.com' }))
+      )
+    )
+    jest.spyOn(services, 'useUpdateMspLabelMutation')
+    mockServer.use(
+      rest.put(
+        MspUrlsInfo.updateMspLabel.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      )
+    )
+    jest.spyOn(services, 'useAddMspLabelMutation')
+    mockServer.use(
+      rest.post(
+        MspUrlsInfo.addMspLabel.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      )
+    )
+    // mockServer.use(
+    //   rest.post(
+    //     MspUrlsInfo.addMspLabel.url,
+    //     (req, res, ctx) => res(ctx.json({ requestId: '456'}, ctx.))
+    //   )
+    // )
     global.URL.createObjectURL = jest.fn()
     jest.spyOn(global.URL, 'createObjectURL')
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({}),
+        text: () => Promise.resolve({})
+      })
+    )
   })
   afterEach(() => {
     jest.clearAllMocks()
@@ -227,7 +265,7 @@ describe('PortalSettings', () => {
 
     userEvent.setup()
     await userEvent.clear(formItem)
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await userEvent.click(screen.getByRole('button', { name: '3rd Party Portal Providers' }))
 
     await waitFor(async () => {
       expect(await screen.findByRole('alert')).toBeVisible()
@@ -260,7 +298,7 @@ describe('PortalSettings', () => {
     userEvent.setup()
     await userEvent.clear(formItem)
     await userEvent.type(formItem, '!')
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await userEvent.click(screen.getByRole('button', { name: '3rd Party Portal Providers' }))
 
     await waitFor(async () => {
       expect(await screen.findByRole('alert')).toBeVisible()
@@ -292,7 +330,7 @@ describe('PortalSettings', () => {
     expect(formItem).toBeVisible()
     expect(formItem).toHaveValue('demo-msp')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    fireEvent.click(screen.getByRole('button', { name: '3rd Party Portal Providers' }))
     await waitFor(() => {
       expect(screen.queryByRole('alert')).toBeNull()
     })
@@ -742,8 +780,10 @@ describe('PortalSettings', () => {
     })
   })
   it('deleting logo from custom logo list removes logo from logo previews and all dropdowns', async () => {
+    const data = mspLabel
+    data.ping_login_logo_uuid = '14e7c2c9797a4c4c9dd6cb85fda654db-001.png'
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
-      return { data: mspLabel }
+      return { data: data }
     })
     mockServer.use(rest.post('',
       (_, res, ctx) => res(ctx.json({})))
@@ -783,6 +823,170 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('img', { name: 'customer login logo' })).toBeVisible()
     expect(screen.getByRole('img', { name: 'customer support logo' })).toBeVisible()
     expect(screen.queryByRole('img', { name: 'alarm logo' })).toBeNull()
+
+    // Delete another custom logo
+    const deleteButton2 = screen.getAllByTitle('Remove file').at(1)!
+    await userEvent.click(deleteButton2)
+
+    // Assert deleted logo is removed from logo preview dropdowns
+    // TODO: check below
+    // const deletedLogo2 = 'img3.png'
+    // const dropdowns2 = screen.getAllByRole('combobox')
+    // expect(dropdowns2).toHaveLength(4)
+    // expect(screen.queryByText(deletedLogo2)).toBeNull()
+    // fireEvent.mouseDown(dropdowns2.at(0)!)
+    // expect(screen.queryByText(deletedLogo2)).toBeNull()
+    // fireEvent.mouseDown(dropdowns2.at(1)!)
+    // expect(screen.queryByText(deletedLogo2)).toBeNull()
+    // fireEvent.mouseDown(dropdowns2.at(2)!)
+    // expect(screen.queryByText(deletedLogo2)).toBeNull()
+    // fireEvent.mouseDown(dropdowns2.at(3)!)
+    // expect(screen.queryByText(deletedLogo2)).toBeNull()
+
+    // // Assert deleted logo image is removed from affected logo previews
+    expect(screen.queryByRole('img', { name: 'portal header logo' })).toBeNull()
+    expect(screen.queryByRole('img', { name: 'customer login logo' })).toBeNull()
+    expect(screen.queryByRole('img', { name: 'customer support logo' })).toBeNull()
+    expect(screen.queryByRole('img', { name: 'alarm logo' })).toBeNull()
+  })
+  it('should save correctly for edit', async () => {
+    services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
+      return { data: mspLabel }
+    })
+
+    render(
+      <Provider>
+        <PortalSettings />
+      </Provider>, {
+        route: { params, path: '/:tenantId/portalSetting' }
+      })
+
+    expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
+
+    await userEvent.click(screen.getByRole('button', { name: '3rd Party Portal Providers' }))
+    expect(await screen.findByRole('heading', { level: 3, name: '3rd Party Portal Providers' })).toBeVisible()
+    expect(screen.queryByRole('heading', { level: 4, name: 'Logo:' })).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Support Links' }))
+    expect(await screen.findByRole('heading', { level: 3, name: 'Support links behavior' })).toBeVisible()
+    expect(screen.queryByRole('heading', { level: 3, name: '3rd Party Portal Providers' })).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Contact Info' }))
+    expect(await screen.findByRole('heading', { level: 3, name: 'Contact information for emails footer' })).toBeVisible()
+    expect(screen.queryByRole('heading', { level: 3, name: 'Support links behavior' })).toBeNull()
+
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    //   pathname: `/${params.tenantId}/v/dashboard`,
+    //   hash: '',
+    //   search: ''
+    // }, { replace: true })
+  })
+  it('should save correctly for add', async () => {
+    services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
+      return { data: emptyMspLabel }
+    })
+
+    render(
+      <Provider>
+        <PortalSettings />
+      </Provider>, {
+        route: { params, path: '/:tenantId/portalSetting' }
+      })
+
+    expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
+
+
+    const mspLabelInput = screen.getByRole('textbox')
+    fireEvent.change(mspLabelInput, { target: { value: 'mspeleu' } })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { level: 3, name: '3rd Party Portal Providers' })).toBeVisible()
+    expect(screen.queryByRole('heading', { level: 4, name: 'Logo:' })).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { level: 3, name: 'Support links behavior' })).toBeVisible()
+    expect(screen.queryByRole('heading', { level: 3, name: '3rd Party Portal Providers' })).toBeNull()
+
+    const urlInputs = screen.getAllByRole('textbox')
+    expect(urlInputs).toHaveLength(2)
+    fireEvent.change(urlInputs[0], { target: { value: 'http://test.com' } })
+    fireEvent.change(urlInputs[1], { target: { value: 'http://test.com' } })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { level: 3, name: 'Contact information for emails footer' })).toBeVisible()
+    expect(screen.queryByRole('heading', { level: 3, name: 'Support links behavior' })).toBeNull()
+
+    const emailInput = screen.getByRole('textbox', { name: 'Email' })
+    const websiteInput = screen.getByRole('textbox', { name: 'Website' })
+    fireEvent.change(emailInput, { target: { value: 'info@email.com' } })
+    fireEvent.change(websiteInput, { target: { value: 'http://test.com' } })
+
+    expect(screen.getByRole('button', { name: 'Create' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Create' }))
+
+    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
+    //   pathname: `/${params.tenantId}/v/dashboard`,
+    //   hash: '',
+    //   search: ''
+    // }, { replace: true })
+  })
+  xit('should catch error when saving for edit', async () => {
+    services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
+      return { data: mspLabel }
+    })
+    mockServer.use(
+      rest.put(
+        MspUrlsInfo.updateMspLabel.url,
+        (req, res, ctx) => res(ctx.status(401))
+      )
+    )
+
+    render(
+      <Provider>
+        <PortalSettings />
+      </Provider>, {
+        route: { params, path: '/:tenantId/portalSetting' }
+      })
+
+    expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Apply' })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
+
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    expect(mockedUsedNavigate).not.toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/v/dashboard`,
+      hash: '',
+      search: ''
+    }, { replace: true })
   })
 })
 

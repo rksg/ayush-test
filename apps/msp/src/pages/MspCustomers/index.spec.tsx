@@ -237,7 +237,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -261,7 +261,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -285,7 +285,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
     fireEvent.click(resendInviteButton)
@@ -304,7 +304,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
 
@@ -337,7 +337,7 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     const row = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
 
@@ -372,7 +372,7 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const deleteButton = screen.getByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButton)

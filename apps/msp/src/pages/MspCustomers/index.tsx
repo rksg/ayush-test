@@ -41,6 +41,8 @@ import { RolesEnum }                                                            
 import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
 import { AccountType }                                                            from '@acx-ui/utils'
 
+import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
+
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
   const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
@@ -107,12 +109,14 @@ export function MspCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isAssignMultipleEcEnabled = true//useIsSplitOn(Features.ASSIGN_MULTIPLE_EC)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
+  const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
 
   const { data: userProfile } = useUserProfileContext()
@@ -430,6 +434,9 @@ export function MspCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        visible: (selectedRows) => {
+          return (isAssignMultipleEcEnabled && selectedRows.length === 1)
+        },
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
           const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
@@ -440,7 +447,20 @@ export function MspCustomers () {
         }
       },
       {
+        label: $t({ defaultMessage: 'Assign MSP Administrators' }),
+        visible: (selectedRows) => {
+          return (isAssignMultipleEcEnabled && selectedRows.length >= 2)
+        },
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          setDrawerAssignEcMspAdminsVisible(true)
+        }
+      },
+      {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
+        visible: (selectedRows) => {
+          return (isAssignMultipleEcEnabled && selectedRows.length === 1)
+        },
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
           setModalVisible(true)
@@ -449,7 +469,7 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Deactivate' }),
         visible: (selectedRows) => {
-          if(selectedRows[0] &&
+          if(selectedRows.length === 1 && selectedRows[0] &&
             (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
             return true
           }
@@ -479,7 +499,7 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Reactivate' }),
         visible: (selectedRows) => {
-          if(selectedRows[0] &&
+          if(selectedRows.length !== 1 && selectedRows[0] &&
             (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL')) {
             return false
           }
@@ -506,6 +526,9 @@ export function MspCustomers () {
       },
       {
         label: $t({ defaultMessage: 'Delete' }),
+        visible: (selectedRows) => {
+          return (isAssignMultipleEcEnabled && selectedRows.length === 1)
+        },
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({
             type: 'confirm',
@@ -534,7 +557,7 @@ export function MspCustomers () {
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={{ type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
       </Loader>
     )
@@ -633,6 +656,12 @@ export function MspCustomers () {
         tenantId={ecTenantId}
         tenantType={tenantType}
         setVisible={setDrawerIntegratorVisible}
+        setSelected={() => {}}
+      />}
+      {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
+        visible={drawerAssignEcMspAdminsVisible}
+        tenantId={ecTenantId}
+        setVisible={setDrawerAssignEcMspAdminsVisible}
         setSelected={() => {}}
       />}
     </>
