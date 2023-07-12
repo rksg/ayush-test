@@ -7,6 +7,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -19,6 +20,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const mockedDeleteApi = jest.fn()
+const mockedBuckDeleteApi = jest.fn()
+const mockedSendOtpApi = jest.fn()
+const mockedRebootApi = jest.fn()
 
 describe('Edge Table', () => {
   let params: { tenantId: string }
@@ -38,19 +44,31 @@ describe('Edge Table', () => {
       ),
       rest.delete(
         EdgeUrlsInfo.deleteEdge.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedDeleteApi()
+          return res(ctx.status(202))
+        }
       ),
       rest.delete(
         EdgeUrlsInfo.deleteEdges.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedBuckDeleteApi()
+          return res(ctx.status(202))
+        }
       ),
       rest.patch(
         EdgeUrlsInfo.sendOtp.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedSendOtpApi()
+          return res(ctx.status(202))
+        }
       ),
       rest.post(
         EdgeUrlsInfo.reboot.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedRebootApi()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -133,9 +151,13 @@ describe('Edge Table', () => {
       })
     const row = await screen.findByRole('row', { name: /Smart Edge 2/i })
     await user.click(within(row).getByRole('checkbox'))
-    await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "Smart Edge 2"?')
-    await user.click(screen.getByRole('button', { name: 'Delete SmartEdges' }))
+    await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText('Delete "Smart Edge 2"?')
+    await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
+    await waitFor(() => {
+      expect(mockedDeleteApi).toBeCalledTimes(1)
+    })
   })
 
   it('should send OTP sucessfully', async () => {
@@ -151,6 +173,9 @@ describe('Edge Table', () => {
     await user.click(screen.getByRole('button', { name: 'Send OTP' }))
     await screen.findByText('Are you sure you want to send OTP?')
     await user.click(screen.getByRole('button', { name: 'OK' }))
+    await waitFor(() => {
+      expect(mockedSendOtpApi).toBeCalledTimes(1)
+    })
   })
 
   it('should not contains columns configured to be filtered', async () => {
@@ -178,9 +203,13 @@ describe('Edge Table', () => {
     const row3 = await screen.findByRole('row', { name: /Smart Edge 3/i })
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(within(row3).getByRole('checkbox'))
-    await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "2 SmartEdges"?')
-    await user.click(screen.getByRole('button', { name: 'Delete SmartEdges' }))
+    await user.click(screen.getAllByRole('button', { name: 'Delete' })[0])
+    const dialog = await screen.findByRole('dialog')
+    await within(dialog).findByText('Delete "2 SmartEdges"?')
+    await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
+    await waitFor(() => {
+      expect(mockedBuckDeleteApi).toBeCalledTimes(1)
+    })
   })
 
   it('should reboot the selected SmartEdge', async () => {
@@ -197,5 +226,8 @@ describe('Edge Table', () => {
     const rebootDialg = await screen.findByRole('dialog')
     await within(rebootDialg).findByText('Reboot "Smart Edge 5"?')
     await user.click(within(rebootDialg).getByRole('button', { name: 'Reboot' }))
+    await waitFor(() => {
+      expect(mockedRebootApi).toBeCalledTimes(1)
+    })
   })
 })
