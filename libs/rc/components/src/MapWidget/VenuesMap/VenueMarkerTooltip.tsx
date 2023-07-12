@@ -58,8 +58,7 @@ export function VenueMarkerTooltip (
     clientsCount,
     switchClientsCount,
     edgeStat,
-    edgesCount,
-    edgeClientsCount
+    edgesCount
   } = props.venueMarker
 
   const { onNavigate, needPadding = true, isEdgeEnabled } = props
@@ -149,16 +148,8 @@ export function VenueMarkerTooltip (
         : <UI.TextWrapper>
           {$t({ defaultMessage: 'No SmartEdges' })}
         </UI.TextWrapper>,
-      clients: edgeClientsCount && edgeClientsCount > 0
-        ? <UI.CountWrapper>
-          <UI.TotalCount onClick={
-            () => onNavigate && onNavigate({ venueId, path: 'venue-details/clients/edge' })}>
-            {edgeClientsCount}
-          </UI.TotalCount>
-        </UI.CountWrapper>
-        : <UI.TextWrapper>
-          {$t({ defaultMessage: 'No SmartEdge clients' })}
-        </UI.TextWrapper>
+      clients: <></>
+
     })
   }
 
