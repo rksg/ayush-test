@@ -392,29 +392,6 @@ export const codes = {
   }
 } as unknown as Record<string, RecommendationConfig & CodeInfo>
 
-export const disabledRecommendations = {
-  'c-txpower5g-low': {
-    category: categories['Wi-Fi Client Experience'],
-    summary: defineMessage({ defaultMessage: 'Tx power is low for 5 GHz' }),
-    priority: priorities.medium
-  },
-  's-wlanauth-open': {
-    category: categories.Security,
-    summary: defineMessage({ defaultMessage: 'WLAN with Open Security' }),
-    priority: priorities.medium
-  },
-  's-wlanauth-weak': {
-    category: categories.Security,
-    summary: defineMessage({ defaultMessage: 'Weak WLAN authentication method' }),
-    priority: priorities.medium
-  },
-  'p-multicasttraffic-limit': {
-    category: categories['AP Performance'],
-    summary: defineMessage({ defaultMessage: 'Multicast/Broadcast traffic flood' }),
-    priority: priorities.medium
-  }
-}
-
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
   acc[key as keyof typeof states] = val.text
   return acc

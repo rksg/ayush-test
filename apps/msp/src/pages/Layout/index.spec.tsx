@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, MspUrlsInfo }         from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -66,6 +66,50 @@ const mspEcProfile = {
   service_expiration_date: ''
 }
 
+
+const entitlement =
+  [
+    {
+      name: 'Switch',
+      deviceSubType: 'ICX76',
+      deviceType: 'MSP_SWITCH',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Tue Dec 06 23:59:59 UTC 2023',
+      id: '358889502-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 100,
+      sku: 'CLD-MS76-1001',
+      status: 'VALID'
+    },
+    {
+      name: 'Wi-Fi',
+      deviceSubType: 'MSP_WIFI',
+      deviceType: 'MSP_WIFI',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Tue Dec 01 23:59:59 UTC 2023',
+      id: '373419142-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 80,
+      sku: 'CLD-MW00-1001',
+      status: 'VALID'
+    },
+    {
+      name: 'Wi-Fi',
+      deviceSubType: 'MSP_WIFI',
+      deviceType: 'MSP_WIFI',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Tue Dec 01 23:59:59 UTC 2023',
+      id: '373419143-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 60,
+      sku: 'CLD-MW00-1001',
+      status: 'EXPIRED'
+    }
+  ]
+
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
@@ -118,6 +162,10 @@ describe('Layout', () => {
           page: 1,
           totalCount: 0
         }))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspEntitlement.url,
+        (req, res, ctx) => res(ctx.json(entitlement))
       ),
       rest.get(
         'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json',

@@ -12,10 +12,8 @@ import {
   DetailsHeader,
   ValueDetails,
   DetailsWrapper,
-  RecommendationTitle,
-  RecommendationDivider,
-  RecommendationCardWrapper,
-  RecommendationInfoIcon,
+  Title,
+  InfoIcon,
   ValueDetailsWithIcon
 } from './styledComponents'
 
@@ -92,7 +90,13 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
     .value()
 
   const recommendationInfo = codes[code]
-  const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
+  const {
+    appliedReasonText,
+    valueFormatter,
+    actionText,
+    reasonText,
+    tradeoffText
+  } = recommendationInfo
 
   let parameters: Record<string, string | JSX.Element> = {
     ...metadata,
@@ -110,7 +114,9 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
   }
   return {
     actionText: $t(actionText, parameters),
-    reasonText: $t(reasonText, parameters),
+    reasonText: appliedOnce && appliedReasonText
+      ? $t(appliedReasonText, parameters)
+      : $t(reasonText, parameters),
     tradeoffText: $t(tradeoffText, parameters)
   }
 }
@@ -141,21 +147,15 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
     <DetailsWrapper>
       <Card type='solid-bg' title={$t(heading)}>
         <GridRow>
-          <GridCol col={{ span: 12 }}>
-            {firstLabel}
-          </GridCol>
-          <GridCol col={{ span: 10, pull: 2 }}>
-            <ValueDetails>{firstValue}</ValueDetails>
-          </GridCol>
-          <GridCol col={{ span: 12 }}>
-            {secondLabel}
-          </GridCol>
-          <GridCol col={{ span: 10, pull: 2 }}>
+          <GridCol col={{ span: 8 }}>{firstLabel}</GridCol>
+          <GridCol col={{ span: 16 }}><ValueDetails>{firstValue}</ValueDetails></GridCol>
+          <GridCol col={{ span: 8 }}>{secondLabel}</GridCol>
+          <GridCol col={{ span: 16 }}>
             <ValueDetails>
               <ValueDetailsWithIcon>
                 {secondValue}
                 {tooltipText && <Tooltip title={tooltipText}>
-                  <RecommendationInfoIcon />
+                  <InfoIcon />
                 </Tooltip>}
               </ValueDetailsWithIcon>
             </ValueDetails>
@@ -163,30 +163,11 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
         </GridRow>
       </Card>
     </DetailsWrapper>
-    <RecommendationCardWrapper>
-      <GridRow>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'What is the recommendation?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.actionText}
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'Why this recommendation?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.reasonText}
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'What is the potential trade-off?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.tradeoffText}
-        </GridCol>
-      </GridRow>
-    </RecommendationCardWrapper>
+    <Title>{$t({ defaultMessage: 'What is the recommendation?' })}</Title>
+    {recommendationText.actionText}
+    <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
+    {recommendationText.reasonText}
+    <Title>{$t({ defaultMessage: 'What is the potential trade-off?' })}</Title>
+    {recommendationText.tradeoffText}
   </>
 }

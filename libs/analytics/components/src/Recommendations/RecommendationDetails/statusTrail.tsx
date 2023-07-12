@@ -1,7 +1,6 @@
 import { get }                               from 'lodash'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
-import { GridCol, GridRow }          from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { states, statusTrailMsgs } from '../config'
@@ -48,22 +47,18 @@ const getStatusTrail = (details: EnhancedRecommendation, $t: IntlShape['$t']) =>
 const StatusTrailItem = ({ statusTrail }:{ statusTrail: ReturnType<typeof getStatusTrail>[0] }) => {
   const { status, createdAt } = statusTrail
   return <StatusTrailItemWrapper>
-    <GridRow>
-      <GridCol col={{ span: 10 }}>
-        <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel>
-      </GridCol>
-      <GridCol col={{ span: 14 }}>{status}</GridCol>
-    </GridRow>
+    <StatusTrailDateLabel>{createdAt}</StatusTrailDateLabel>
+    {status}
   </StatusTrailItemWrapper>
 }
 
 export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const statusTrail = getStatusTrail(details, $t)
-  return <>
+  return <div style={{ marginTop: 40 }}>
     <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>
     <StatusTrailWrapper>
       {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind} />)}
     </StatusTrailWrapper>
-  </>
+  </div>
 }

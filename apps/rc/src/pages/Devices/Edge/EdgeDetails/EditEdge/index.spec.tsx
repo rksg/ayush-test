@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData } from '../../__tests__/fixtures'
+import { mockEdgeData, mockEdgeList } from '../../__tests__/fixtures'
 
 import EditEdge from './index'
 
@@ -46,6 +46,10 @@ describe('EditEdge', () => {
       rest.get(
         EdgeUrlsInfo.getEdge.url,
         (req, res, ctx) => res(ctx.json(mockEdgeData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
       )
     )
   })

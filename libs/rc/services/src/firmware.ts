@@ -10,6 +10,7 @@ import {
   FirmwareSwitchVenue,
   createHttpRequest,
   RequestPayload,
+  ABFVersion,
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
@@ -105,6 +106,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    getAvailableABFList: build.query<ABFVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getAvailableABFList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'ABF', id: 'LIST' }]
     }),
     getFirmwareVersionIdList: build.query<string[], RequestPayload>({
       query: ({ params }) => {
@@ -266,6 +276,7 @@ export const {
   useGetVenueVersionListQuery,
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
+  useGetAvailableABFListQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
