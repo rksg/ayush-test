@@ -28,7 +28,11 @@ export const RecommendationDetails = () => {
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
       title={$t(details.summary)}
-      breadcrumb={[{ text: $t(linkMap[activeTab]), link }]}
+      breadcrumb={[
+        { text: $t({ defaultMessage: 'AI Assurance' }) },
+        { text: $t({ defaultMessage: 'AI Analytics' }) },
+        { text: $t(linkMap[activeTab]), link }
+      ]}
     />}
     <GridRow>
       <GridCol col={{ span: 3 }}>
