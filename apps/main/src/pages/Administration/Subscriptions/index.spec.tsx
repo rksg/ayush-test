@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
@@ -24,6 +24,7 @@ describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
@@ -171,5 +172,19 @@ describe('Subscriptions', () => {
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /Edge/i })
+  })
+  it('should filter edge data when PLM FF is not denabled', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByRole('columnheader', { name: 'Device Count' })
+    await screen.findByRole('row', { name: /Wi-Fi/i })
+    expect(screen.queryByRole('row', { name: /Edge/i })).toBeNull()
   })
 })
