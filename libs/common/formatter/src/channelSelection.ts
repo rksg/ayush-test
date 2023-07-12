@@ -1,4 +1,4 @@
-export const enumMap = [
+export const channelSelection = [
   {
     id: 0,
     value: 'NONE',

@@ -9,7 +9,7 @@ import {
 import { getUserProfile }         from '@acx-ui/user'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
-import { enumMap } from './enumMap'
+import { channelSelection } from './channelSelection'
 
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
@@ -197,8 +197,12 @@ const handleAutoWidth = (text: string) => {
   }
 }
 
-const json2keymap = (keyFields: string[], field: keyof(typeof enumMap)[0], filter: string[]) =>
-  (mappings: typeof enumMap) => mappings
+const json2keymap = (
+  keyFields: string[],
+  field: keyof(typeof channelSelection)[0],
+  filter: string[]
+) =>
+  (mappings: typeof channelSelection) => mappings
     .flatMap(items => items)
     .filter(item => !filter.includes(item[field] as string))
     .reduce((map, item) => map.set(
@@ -211,7 +215,7 @@ type CrrmTextType =
 
 const crrmText = (value: CrrmTextType) => {
   const { $t } = getIntl()
-  const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(enumMap)
+  const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(channelSelection)
   const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
   const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
   if (typeof value === 'string') {
