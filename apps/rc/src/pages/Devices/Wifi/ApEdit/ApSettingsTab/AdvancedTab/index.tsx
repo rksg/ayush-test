@@ -200,8 +200,9 @@ export function Advanced () {
                 valuePropName='checked'
                 style={{ marginTop: '-5px' }}
                 children={isUseVenueSettings
-                  ?<span>{venueLed?.ledEnabled ? $t({ defaultMessage: 'On' })
-                    : $t({ defaultMessage: 'Off' })}</span>
+                  ?<span data-testid='ApLed-text'>
+                    {venueLed?.ledEnabled ? $t({ defaultMessage: 'On' })
+                      : $t({ defaultMessage: 'Off' })}</span>
                   :<Switch data-testid='ApLed-switch'/>
                 }
               />
