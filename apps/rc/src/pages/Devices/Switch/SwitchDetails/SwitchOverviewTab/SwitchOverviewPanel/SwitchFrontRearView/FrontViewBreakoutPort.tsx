@@ -67,7 +67,7 @@ export function FrontViewBreakoutPort (props:{
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <div>
 
-      <UI.Port portColor={getPortColorEnum()}>
+      <UI.Port portColor={getPortColorEnum()} editable={true}>
         <UI.BreadkoutPortContainer
           data-testid='BreakoutPort'
           onClick={() => {

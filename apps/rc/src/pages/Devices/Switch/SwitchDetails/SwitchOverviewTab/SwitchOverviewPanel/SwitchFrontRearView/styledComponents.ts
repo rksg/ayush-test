@@ -159,7 +159,7 @@ const getPortColor = (portColor: string) => {
   return colorMap[portColor]
 }
 
-export const Port = styled.div<{ portColor: string }>`
+export const Port = styled.div<{ portColor: string, editable?: boolean }>`
   border-width: 1px;
   border-style: solid;
   border-color: ${(props) => getPortColor(props.portColor)};
@@ -169,6 +169,7 @@ export const Port = styled.div<{ portColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: ${(props) => props.editable ? 'pointer' : 'default'};
 `
 
 export const BreakOutPortFlag = styled.div<{ portColor: string }>`
@@ -324,7 +325,6 @@ export const BreakoutPortTooltipItem = styled.div`
 
 export const BreadkoutPortContainer = styled.div`
   position: relative;
-  cursor: pointer;
   font-size: 10px;
   svg {
     margin-top: 3px;
@@ -333,7 +333,6 @@ export const BreadkoutPortContainer = styled.div`
 
 export const RegularPortContainer = styled.div`
   position: relative;
-  cursor: pointer;
   font-size: 10px;
   div {
     margin-top: 3px;

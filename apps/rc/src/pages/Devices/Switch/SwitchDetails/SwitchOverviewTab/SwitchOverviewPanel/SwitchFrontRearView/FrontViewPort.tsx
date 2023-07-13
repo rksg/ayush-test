@@ -137,7 +137,7 @@ export function FrontViewPort (props:{
   const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <div>
-      <UI.Port portColor={portColor} onClick={onPortClick}>
+      <UI.Port portColor={portColor} onClick={onPortClick} editable={showEditIcon()}>
         {
           portIcon
             ? (

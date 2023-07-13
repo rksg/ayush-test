@@ -426,7 +426,7 @@ export function Unit (props:{
       </div>
     </UI.TitleBar>
     {
-      (!isRearView && member?.unitId === 1) && (
+      (!isRearView && props.index === 0) && (
         <UI.FrontViewTooltipContainer>
           <FrontViewTooltip />
         </UI.FrontViewTooltipContainer>
