@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { SwitchViewModel }          from '@acx-ui/rc/utils'
-import { dataApiURL, Provider }     from '@acx-ui/store'
-import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { SwitchViewModel } from '@acx-ui/rc/utils'
+import { Provider }        from '@acx-ui/store'
+import { render }          from '@acx-ui/test-utils'
 
 import { SwitchDetailsCard } from './SwitchDetailsCard'
 
@@ -71,11 +71,12 @@ const switchDetail = {
 
 const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  useIncidentsBySeverityQuery: () => sample
+}))
+
 describe('Topology Switch Card', () => {
   it('should render orrectly', async () => {
-    mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
-      data: { network: { hierarchyNode: { ...sample } } }
-    })
     const { asFragment } = render(<Provider><SwitchDetailsCard
       switchDetail={switchDetail as SwitchViewModel}
       isLoading={false}
