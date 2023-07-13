@@ -75,7 +75,7 @@ export const ChannelDist = (incident: Incident) => {
           <TimeSeries
             incident={incident}
             charts={timeSeriesCharts}
-            minGranularity='PT15M'
+            minGranularity='PT3M'
             buffer={buffer}
           />
         </GridCol>
