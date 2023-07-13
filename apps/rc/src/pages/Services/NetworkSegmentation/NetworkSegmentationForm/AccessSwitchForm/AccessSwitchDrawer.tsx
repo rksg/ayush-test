@@ -173,31 +173,30 @@ export function AccessSwitchDrawer (props: {
       PORT: /^\d\/\d\/\d{1,2}$/,
       LAG: /\d+/
     }
-    return (
+    return (<Space size='middle' style={{ height: '32px' }}>
       <Radio value={radioValue}>
-        <Space size='middle' style={{ height: '32px' }}>
-          {uplinkTypeMap[radioValue]}
-          {uplinkInfoType === radioValue &&
-          <Form.Item name={['uplinkInfo', 'uplinkId']}
-            rules={[
-              { required: uplinkInfoOverwrite },
-              { pattern: uplinkIdValidatorMap[radioValue],
-                message: $t(validationMessages.invalid) }
-            ]}
-            noStyle>
-            { isMultipleEdit && (!options || options.length === 0) ?
-              <Input disabled={!uplinkInfoOverwrite}
-                data-testid={radioValue}
-                style={{ width: '180px' }} /> :
-              <Select options={options}
-                data-testid={radioValue}
-                disabled={!uplinkInfoOverwrite}
-                placeholder={$t({ defaultMessage: 'Select ...' })}
-                style={{ width: '180px' }} />
-            }
-          </Form.Item>}
-        </Space>
-      </Radio>)
+        {uplinkTypeMap[radioValue]}
+      </Radio>
+      {uplinkInfoType === radioValue &&
+        <Form.Item name={['uplinkInfo', 'uplinkId']}
+          rules={[
+            { required: uplinkInfoOverwrite },
+            { pattern: uplinkIdValidatorMap[radioValue],
+              message: $t(validationMessages.invalid) }
+          ]}
+          noStyle>
+          { isMultipleEdit && (!options || options.length === 0) ?
+            <Input disabled={!uplinkInfoOverwrite}
+              data-testid={radioValue}
+              style={{ width: '180px' }} /> :
+            <Select options={options}
+              data-testid={radioValue}
+              disabled={!uplinkInfoOverwrite}
+              placeholder={$t({ defaultMessage: 'Select ...' })}
+              style={{ width: '180px' }} />
+          }
+        </Form.Item>}
+    </Space>)
   }
 
   const uplinkTypeChangeHandler = () => {
