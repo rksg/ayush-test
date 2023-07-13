@@ -104,7 +104,7 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('Venue')).toBeVisible()
     expect(await screen.findByText('21_US_Beta_Samsung')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
-    expect(await screen.findByText('Applied')).toBeVisible()
+    expect(await screen.findByText('Scheduled')).toBeVisible()
   })
 
   it('should render correctly for low priority (client load)', async () => {
