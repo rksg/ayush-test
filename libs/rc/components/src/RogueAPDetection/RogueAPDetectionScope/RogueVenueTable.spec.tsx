@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { userEvent }              from '@storybook/testing-library'
-import { act, fireEvent, within } from '@testing-library/react'
-import { rest }                   from 'msw'
+import { userEvent }         from '@storybook/testing-library'
+import { fireEvent, within } from '@testing-library/react'
+import { rest }              from 'msw'
 
 import { policyApi } from '@acx-ui/rc/services'
 import {
@@ -11,8 +11,8 @@ import {
   RogueAPRule,
   RogueVenue
 } from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -155,9 +155,7 @@ const ruleState = {
 
 describe('RogueVenueTable', () => {
   beforeEach(() => {
-    act(() => {
-      store.dispatch(policyApi.util.resetApiState())
-    })
+    store.dispatch(policyApi.util.resetApiState())
   })
 
   it('should render RogueVenueTable successfully', async () => {
@@ -200,8 +198,7 @@ describe('RogueVenueTable', () => {
     })).toBeTruthy()
 
     await screen.findByText('test-venue')
-
-    screen.getByText('test-venue2')
+    await screen.findByText('test-venue2')
 
     const row = screen.getByRole('row', {
       name: /test\-venue2 5 0 ON \(Default policyId1 profile\)/i
@@ -212,10 +209,21 @@ describe('RogueVenueTable', () => {
     const activateBtn = screen.getByRole('button', { name: 'Activate' })
     fireEvent.click(activateBtn)
 
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const dialog = await screen.findByRole('dialog')
+    await screen.findByText(/Change Rogue AP Profile/i)
+    fireEvent.click( await screen.findByText(/OK/))
 
-    const deactivateBtn = screen.getByRole('button', { name: 'Deactivate' })
+    await waitFor(()=>{
+      expect(dialog).not.toBeInTheDocument()
+    })
+
+    expect(await within(row).findByRole('switch')).toBeChecked()
+    expect(await within(row).findByRole('checkbox')).not.toBeChecked()
+
+    fireEvent.click(await within(row).findByRole('checkbox'))
+    const deactivateBtn = await screen.findByRole('button', { name: 'Deactivate' })
     fireEvent.click(deactivateBtn)
+    expect(await within(row).findByRole('checkbox')).not.toBeChecked()
   })
 
   it('render RogueVenueTable with maximum venue', async () => {
@@ -259,11 +267,10 @@ describe('RogueVenueTable', () => {
 
     await screen.findByText('test-venue2')
 
-    screen.getByText('test-venue2')
-
     const row = screen.getByRole('row', {
       name: /test\-venue2 5 0 ON \(Default policyId1 profile\)/i
     })
+    expect(await within(row).findByRole('switch')).toBeChecked()
 
     fireEvent.click(within(row).getByRole('checkbox'))
 

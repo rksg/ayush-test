@@ -4,6 +4,7 @@ import { Path }  from 'react-router-dom'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  CommonUrlsInfo,
   DHCPUrls,
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -45,6 +46,17 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+const mockVenueData = {
+  fields: ['name', 'id'],
+  totalCount: 3,
+  page: 1,
+  data: [
+    { id: 'mock_venue_1', name: 'Mock Venue 1' },
+    { id: 'mock_venue_2', name: 'Mock Venue 2' },
+    { id: 'mock_venue_3', name: 'Mock Venue 3' }
+  ]
+}
+
 describe('DHCPTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -58,6 +70,10 @@ describe('DHCPTable', () => {
       rest.post(
         DHCPUrls.getDHCPProfilesViewModel.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueData))
       )
     )
   })

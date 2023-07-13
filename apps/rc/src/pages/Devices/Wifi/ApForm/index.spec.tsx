@@ -63,7 +63,7 @@ async function changeVenue () {
   expect(screen.getByLabelText('AP Group')).not.toBeDisabled()
 }
 
-async function changeCoordinates (data, applyData) {
+async function changeCoordinates (data: string, applyData: boolean) {
   await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
   const dialog = await screen.findByRole('dialog')
   await within(dialog).findByText('GPS Coordinates')

@@ -447,3 +447,47 @@ export const fakeIncidentApInfraWanthroughput = fakeIncident({
   vlanCount: -1,
   connectedPowerDeviceCount: -1
 })
+
+export const fakeIncidentChannelDist = fakeIncident({
+  severity: 0.6,
+  startTime: '2023-07-09T00:00:00.000Z',
+  endTime: '2023-07-10T00:00:00.000Z',
+  code: 'p-channeldist-suboptimal-plan-50g-indoor',
+  sliceType: 'apGroup',
+  sliceValue: 'East Side',
+  id: '0ba74912-cc80-4bfa-957d-7f176409eb41',
+  path: [
+    {
+      type: 'system',
+      name: 'density-vsze-cluster'
+    },
+    {
+      type: 'zone',
+      name: 'Default Zone'
+    },
+    {
+      type: 'apGroup',
+      name: 'East Side'
+    }
+  ],
+  metadata: {
+    dominant: {},
+    apRadioDeploy: '2-5',
+    rootCauseChecks: {
+      checks: [],
+      params: {}
+    }
+  },
+  clientCount: -1,
+  impactedClientCount: -1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: 14,
+  impactedApCount: 14,
+  switchCount: -1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+})
