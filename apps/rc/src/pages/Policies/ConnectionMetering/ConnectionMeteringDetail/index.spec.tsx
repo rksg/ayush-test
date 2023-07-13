@@ -6,7 +6,8 @@ import {
   ConnectionMeteringUrls,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  QosStats
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -28,6 +29,28 @@ const mockConnectionMeteringProfile: ConnectionMetering = {
   billingCycleDays: 0
 }
 
+
+const mockQosStats: QosStats[] = [
+  {
+    personaId: 'persona-id-1',
+    vni: 1,
+    nsgId: 'nsgId',
+    uploadPackets: 100,
+    downloadPackets: 20,
+    uploadBytes: 200,
+    downloadBytes: 1000
+  },
+  {
+    personaId: 'persona-id-2',
+    vni: 1,
+    nsgId: 'nsgId',
+    uploadPackets: 200,
+    downloadPackets: 10,
+    uploadBytes: 200,
+    downloadBytes: 10
+  }
+]
+
 describe('ConnectionMeteringInstanceTable', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742',
@@ -41,6 +64,10 @@ describe('ConnectionMeteringInstanceTable', () => {
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringDetail.url,
         (_, res, ctx) => res(ctx.json(mockConnectionMeteringProfile))
+      ),
+      rest.post(
+        ConnectionMeteringUrls.getQosStats.url,
+        (req, res, ctx) => res(ctx.json({ data: mockQosStats }))
       )
     )
 

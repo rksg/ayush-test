@@ -3,11 +3,12 @@ import { rest } from 'msw'
 
 import { AnalyticsFilter }        from '@acx-ui/analytics/utils'
 import {  Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { Provider, dataApiURL  }  from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
-  waitForElementToBeRemoved } from '@acx-ui/test-utils'
+  waitForElementToBeRemoved,
+  mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
 import { currentAP } from './__tests__/fixtures'
@@ -70,6 +71,18 @@ const params = {
   activeTab: 'overview'
 }
 
+const data = {
+  summary: {
+    alarms: {
+      summary: {
+        critical: 1,
+        major: 1
+      },
+      totalCount: 2
+    }
+  }
+}
+
 const filters:AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
@@ -80,6 +93,10 @@ describe('AP Information Widget', () => {
 
   it('should render alarms chart correctly', async () => {
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getDashboardOverview.url,
+        (req, res, ctx) => res(ctx.json(data))
+      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (_, res, ctx) => res(ctx.json(alarmList))
@@ -89,6 +106,12 @@ describe('AP Information Widget', () => {
         (_, res, ctx) => res(ctx.json(alarmListMeta))
       )
     )
+
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: {
+        timeToConnectThreshold: { value: 30000 }
+      }
+    })
 
     const { asFragment } = render(
       <Provider>
@@ -104,6 +127,10 @@ describe('AP Information Widget', () => {
 
   it('should render "No active alarms" when no alarms exist', async () => {
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getDashboardOverview.url,
+        (req, res, ctx) => res(ctx.json(data))
+      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
@@ -113,6 +140,11 @@ describe('AP Information Widget', () => {
         (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: {
+        timeToConnectThreshold: { value: 30000 }
+      }
+    })
 
     const { asFragment } = render(
       <Provider>
