@@ -59,6 +59,7 @@ export enum Features {
   WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
   WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle'
 }
 
