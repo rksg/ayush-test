@@ -6,7 +6,7 @@ import {
   Input,
   Select
 } from 'antd'
-import _           from 'lodash'
+// import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -23,7 +23,7 @@ import {
 import {
   dateDisplayText,
   DateSelectionEnum,
-  MspAssignmentHistory,
+  // MspAssignmentHistory,
   MspAssignmentSummary,
   EntitlementDeviceType
 } from '@acx-ui/rc/utils'
@@ -44,9 +44,9 @@ export function AssignMspLicense () {
 
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
-  const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
-  const [assignedWifiLicense, setWifiLicense] = useState(0)
-  const [assignedSwitchLicense, setSwitchLicense] = useState(0)
+  // const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
+  // const [assignedWifiLicense, setWifiLicense] = useState(0)
+  // const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
@@ -63,7 +63,7 @@ export function AssignMspLicense () {
 
       if (licenseAssignment) {
         const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
-        setAssignedLicense(assigned)
+        // setAssignedLicense(assigned)
         const wifi = assigned.filter(en =>
           en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
         const wLic = wifi.length > 0 ? wifi[0].quantity : 0
@@ -90,11 +90,11 @@ export function AssignMspLicense () {
     return Promise.resolve()
   }
 
-  const handleAssignLicense = async (values: unknown) => {
-  }
+  // const handleAssignLicense = async (values: unknown) => {
+  // }
 
-  const handleEditLicense = async (values: unknown) => {
-  }
+  // const handleEditLicense = async (values: unknown) => {
+  // }
 
   const checkAvailableLicense =
   (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number) => {
@@ -232,7 +232,7 @@ export function AssignMspLicense () {
       />
       <StepsForm
         // formRef={formRef}
-        onFinish={isEditMode ? handleEditLicense : handleAssignLicense}
+        // onFinish={isEditMode ? handleEditLicense : handleAssignLicense}
         onCancel={() => navigate(linkToSubscriptions)}
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
