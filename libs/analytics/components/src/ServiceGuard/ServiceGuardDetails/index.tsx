@@ -29,7 +29,7 @@ const tabs : {
 
 const rootPath = '/analytics/serviceValidation'
 
-function ServiceGuardDetails () {
+export function ServiceGuardDetails () {
   const { $t } = useIntl()
   const { activeTab = tabs[0].key, ...ids } = useParams()
   const navigate = useNavigate()
@@ -70,5 +70,3 @@ function ServiceGuardDetails () {
     </>
   )
 }
-
-export default ServiceGuardDetails
