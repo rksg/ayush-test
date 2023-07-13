@@ -13,18 +13,19 @@ describe('Table', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
+  const handleClick = jest.fn()
 
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Table/>, { wrapper: Provider, route: {} })
+    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
   it('should render table with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Table/>, { wrapper: Provider, route: {} })
+    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -37,7 +38,7 @@ describe('Table', () => {
   it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table/>, { wrapper: Provider, route: {} })
+    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -54,29 +55,41 @@ describe('Table', () => {
   })
 
   it('should log rows when clicked', async () => {
-    const onRowClick = jest.fn()
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table onRowClick={onRowClick}/>, { wrapper: Provider, route: {} })
+    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const radio = await screen.findAllByRole('radio')
 
     await userEvent.click(radio[0])
 
-    expect(onRowClick).toHaveBeenCalledTimes(1)
-    expect(onRowClick).toHaveBeenCalledWith({
+    expect(handleClick).toHaveBeenCalledTimes(1)
+    expect(handleClick).toHaveBeenCalledWith({
+      children: undefined,
       id: 0,
-      value: {
-        children: undefined,
-        id: 0,
-        key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
-        name: '94:B3:4F:3D:21:80',
-        newValues: ['480'],
-        oldValues: [],
-        timestamp: '1685427082100',
-        type: 'ap'
-      }
+      key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
+      name: '94:B3:4F:3D:21:80',
+      newValues: ['480'],
+      oldValues: [],
+      timestamp: '1685427082100',
+      type: 'ap'
     })
+  })
+
+  it('should select row when selected value is passed in', async () => {
+    const selected = {
+      id: 0,
+      timestamp: '1685427082100',
+      type: 'ap',
+      name: '94:B3:4F:3D:21:80',
+      key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
+      oldValues: [],
+      newValues: ['480']
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: { configChanges } } } })
+    render(<Table selected={selected} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
   })
 })

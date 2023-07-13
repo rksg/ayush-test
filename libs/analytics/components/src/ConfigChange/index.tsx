@@ -8,19 +8,18 @@ import { Table } from './Table'
 
 
 export function ConfigChange () {
-  const [selectedRow, setSelectedRow] = useState<ConfigChangeType | null>(null)
-
+  const [selected, setSelected] = useState<ConfigChangeType | null>(null)
   const handleClick = (params: ConfigChangeType) => {
-    setSelectedRow(params)
+    setSelected(params)
   }
 
   return <GridRow>
     <GridCol col={{ span: 24 }} style={{ height: '170px' }}>
-      <Chart selectedRow={selectedRow} onClick={handleClick}/>
+      <Chart selected={selected} onClick={handleClick}/>
     </GridCol>
     <GridCol col={{ span: 8 }} style={{ minHeight: '180px' }}><div>kpi</div></GridCol>
     <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}>
-      <Table selectedRow={selectedRow} onRowClick={handleClick}/>
+      <Table selected={selected} onRowClick={handleClick}/>
     </GridCol>
   </GridRow>
 }

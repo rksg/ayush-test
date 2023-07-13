@@ -8,11 +8,11 @@ import type { ConfigChange }                    from '@acx-ui/components'
 import { useConfigChangeQuery } from './services'
 
 export function Chart (props: {
-  selectedRow: ConfigChange | null,
+  selected: ConfigChange | null,
   onClick: (params: ConfigChange) => void,
 }){
   const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
-  const { selectedRow, onClick } = props
+  const { selected, onClick } = props
   const queryResults = useConfigChangeQuery({
     ...getFilterPayload({ filter }),
     start: startDate,
@@ -33,7 +33,7 @@ export function Chart (props: {
             onDotClick={(params) => {
               onClick(params)
             }}
-            selectedData={selectedRow?.id}
+            selectedData={selected?.id}
           />}
       </AutoSizer>
     </Card>
