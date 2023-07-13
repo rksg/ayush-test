@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useIntl } from 'react-intl'
+import styled      from 'styled-components'
 
 import {
   Button,
@@ -22,10 +23,14 @@ interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitchTableData
   editHandler?: ( as: AccessSwitch )=>void;
 }
 
+const EditTdButton = styled(Button).attrs({ type: 'link' })`
+  svg path { stroke: currentColor }
+`
+
 export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { editHandler } = props
+  const { editHandler = ()=>{} } = props
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
@@ -57,10 +62,9 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: ['uplinkInfo', 'uplinkId'],
       sorter: true,
       render: (data, row) => {
-        return row.uplinkInfo ?
-          `${row.uplinkInfo.uplinkType} ${data}` :
-          <Button type='link'
-            onClick={()=>{editHandler && editHandler(row)}}> - <ConfigurationSolid /></Button>
+        return row.uplinkInfo ? `${row.uplinkInfo.uplinkType} ${data}` :
+          <EditTdButton
+            onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton>
       }
     }, {
       key: 'vlanId',
@@ -69,8 +73,8 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       sorter: true,
       render: (data, row) => {
         return row.vlanId ? data :
-          <Button type='link'
-            onClick={()=>{editHandler && editHandler(row)}}> - <ConfigurationSolid /></Button>
+          <EditTdButton
+            onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton>
       }
     }, {
       key: 'templateId',
@@ -91,7 +95,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
         return <SimpleListTooltip displayText={displayText} items={items}/>
       }
     }]
-  }, [$t, templateListResult])
+  }, [$t, templateListResult, editHandler])
 
   return (
     <Table

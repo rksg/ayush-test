@@ -35,7 +35,8 @@ import {
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { NetworkSegAuthModel } from './NetworkSegAuthModel'
+import * as UI                 from './styledComponents'
 
 export function AccessSwitchDrawer (props: {
   open: boolean;
@@ -319,17 +320,22 @@ export function AccessSwitchDrawer (props: {
           </Col>
         </Row>
 
-        <Form.Item name='templateId'
-          wrapperCol={{ span: 10 }}
-          hidden={webAuthPageType === 'USER_DEFINED'}>
-          <Select
-            placeholder={$t({ defaultMessage: 'Select Template ...' })}
-            disabled={!webAuthPageOverwrite}
-            options={templateList?.map(t => ({
-              value: t.id, label: t.name
-            }))} />
-        </Form.Item>
-
+        <Space align='baseline'>
+          <Form.Item name='templateId'
+            style={{ width: '180px' }}
+            hidden={webAuthPageType === 'USER_DEFINED'}>
+            <Select
+              placeholder={$t({ defaultMessage: 'Select Template ...' })}
+              disabled={!webAuthPageOverwrite}
+              options={templateList?.map(t => ({
+                value: t.id, label: t.name
+              }))} />
+          </Form.Item>
+          { (!isMultipleEdit || webAuthPageOverwrite) && webAuthPageType !== 'USER_DEFINED' &&
+          <NetworkSegAuthModel setWebAuthTemplateId={(id)=>{
+            form.setFieldValue('templateId', id)
+          }}/>}
+        </Space>
         {webAuthPageType === 'USER_DEFINED' ? (<>
           {
             Object.keys(defaultTemplateData).map(name=>{
@@ -353,12 +359,11 @@ export function AccessSwitchDrawer (props: {
         </>) : (<Card>
           {
             (Object.keys(defaultTemplateData) as (keyof typeof defaultTemplateData)[])
-              .map(name=>{
-                const item = defaultTemplateData[name]
-                return (<Form.Item name={name} label={$t(item.label)} key={name}>
-                  <p>{template?.[name]}</p>
-                </Form.Item>)
-              })
+              .map(name => <UI.DisplayFormItem name={name}
+                key={name}
+                label={$t(defaultTemplateData[name].label)}>
+                <p>{template?.[name]}</p>
+              </UI.DisplayFormItem>)
           }
         </Card>)}
       </Form>
