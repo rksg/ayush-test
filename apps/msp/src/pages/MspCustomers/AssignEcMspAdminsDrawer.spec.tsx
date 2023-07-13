@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { RolesEnum }                                              from '@acx-ui/types'
@@ -38,9 +38,9 @@ const list =
 //   }
 // ]
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
 }))
 
 describe('AssignEcMspAdminsDrawer', () => {

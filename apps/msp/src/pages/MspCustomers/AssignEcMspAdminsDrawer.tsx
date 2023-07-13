@@ -13,10 +13,12 @@ import {
 import {
   useMspAdminListQuery,
   useUpdateMspEcDelegatedAdminsMutation
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   MspAdministrator,
-  MspEcDelegatedAdmins,
+  MspEcDelegatedAdmins
+} from '@acx-ui/msp/utils'
+import {
   roleDisplayText
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'

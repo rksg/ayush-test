@@ -2,10 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { BaseUrl, MspPortal, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { ExternalProviders }  from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { CommonUrlsInfo }                  from '@acx-ui/rc/utils'
+import { ExternalProviders }               from '@acx-ui/rc/utils'
+import { Provider  }                       from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -92,18 +92,18 @@ const baseUrl: BaseUrl =
     }
 
 const services = require('@acx-ui/msp/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/msp/services')
-  // useAddMspLabelMutation: () => Promise.resolve({
-  //   json: () => Promise.resolve({ requestId: '456' }),
-  //   clone: () => Promise.resolve({ requestId: '456' })
-  // })
-// const services = require('@acx-ui/msp/services')
 // jest.mock('@acx-ui/msp/services', () => ({
-//   ...jest.requireActual('@acx-ui/msp/services'),
-//   useAddMspLabelMutation: () => (''),
-//   useUpdateMspLabelMutation: () => (''),
-//   useGetUploadURLMutation: () => ('')
+//   ...jest.requireActual('@acx-ui/msp/services')
+//   // useAddMspLabelMutation: () => Promise.resolve({
+//   //   json: () => Promise.resolve({ requestId: '456' }),
+//   //   clone: () => Promise.resolve({ requestId: '456' })
+//   })
+// const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services'),
+  useAddMspLabelMutation: () => (''),
+  useUpdateMspLabelMutation: () => (''),
+  useGetUploadURLMutation: () => ('')
 }))
 const utils = require('@acx-ui/utils')
 jest.mock('@acx-ui/utils', () => ({
