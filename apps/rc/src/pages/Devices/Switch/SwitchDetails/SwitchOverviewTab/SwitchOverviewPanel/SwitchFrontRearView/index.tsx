@@ -19,6 +19,8 @@ export const SwitchPannelContext = createContext({} as {
   editPortsFromPanelEnabled: boolean
   editPortDrawerVisible: boolean
   setEditPortDrawerVisible: (data: boolean) => void
+  editBreakoutPortDrawerVisible: boolean
+  setEditBreakoutPortDrawerVisible: (data: boolean) => void
   selectedPorts: SwitchPortStatus[]
   setSelectedPorts: (data: SwitchPortStatus[]) => void
   editLagModalVisible: boolean
@@ -34,6 +36,7 @@ export function SwitchFrontRearView (props:{
   const editPortsFromPanelEnabled = useIsSplitOn(Features.SWITCH_EDIT_PORTS_FROM_PANEL)
   const params = useParams()
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [editBreakoutPortDrawerVisible, setEditBreakoutPortDrawerVisible] = useState(false)
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
@@ -79,6 +82,8 @@ export function SwitchFrontRearView (props:{
     editPortsFromPanelEnabled,
     editPortDrawerVisible,
     setEditPortDrawerVisible,
+    editBreakoutPortDrawerVisible,
+    setEditBreakoutPortDrawerVisible,
     selectedPorts,
     setSelectedPorts,
     editLagModalVisible,

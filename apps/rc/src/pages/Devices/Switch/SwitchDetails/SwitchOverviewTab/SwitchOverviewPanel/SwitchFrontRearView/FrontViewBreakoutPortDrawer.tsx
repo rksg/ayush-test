@@ -27,7 +27,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
   const { drawerVisible, setDrawerVisible, breakoutPorts, portNumber } = props
   const {
     editPortsFromPanelEnabled,
-    setEditPortDrawerVisible,
+    setEditBreakoutPortDrawerVisible,
     setSelectedPorts
   } = useContext(SwitchPannelContext)
   const breakoutPortsData = breakoutPorts?.map((port) => {
@@ -136,7 +136,8 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       setSelectedPorts(selectedRows)
-      setEditPortDrawerVisible(true)
+      setEditBreakoutPortDrawerVisible(true)
+      setDrawerVisible(false)
     }
   }]
 

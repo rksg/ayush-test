@@ -103,14 +103,16 @@ export function EditPortDrawer ({
   isCloudPort,
   isMultipleEdit,
   isVenueLevel,
-  selectedPorts
+  selectedPorts,
+  onBackClick
 }: {
   visible: boolean,
   setDrawerVisible: (visible: boolean) => void,
   isCloudPort: boolean,
   isMultipleEdit: boolean,
   isVenueLevel: boolean,
-  selectedPorts: SwitchPortViewModel[]
+  selectedPorts: SwitchPortViewModel[],
+  onBackClick?: () => void
 }) {
   const { $t } = getIntl()
   const [form] = Form.useForm()
@@ -574,7 +576,7 @@ export function EditPortDrawer ({
           { type: 'SwitchPort', id: 'Setting' }
         ])
       )
-      setDrawerVisible(false)
+      onClose()
 
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
@@ -697,6 +699,9 @@ export function EditPortDrawer ({
   const onClose = () => {
     resetFields()
     setDrawerVisible(false)
+    if(onBackClick) {
+      onBackClick()
+    }
   }
 
   const onApply = () => {
@@ -732,6 +737,7 @@ export function EditPortDrawer ({
     title={$t({ defaultMessage: 'Edit Port' })}
     visible={visible}
     onClose={onClose}
+    onBackClick={onBackClick && onClose}
     footer={footer}
     children={<Loader states={[{
       isLoading: loading,
