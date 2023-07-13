@@ -23,7 +23,8 @@ import {
 import { filterByAccess } from '@acx-ui/user'
 
 import {
-  toUserDate
+  toUserDate,
+  compareVersions
 } from '../../FirmwareUtils'
 
 import { UpdateNowDialog } from './UpdateNowDialog'
@@ -95,8 +96,10 @@ export function VenueFirmwareList () {
     {
       visible: (selectedItems) => {
         const hasOutdatedFw = selectedItems?.some(
-          item => item.versions?.[0].id !== latestReleaseVersion?.id
-        )
+          item => latestReleaseVersion?.id !== undefined &&
+          ((item.versions?.[0].id !== undefined
+            && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)
+          || item.versions?.[0].id === undefined))
         return hasOutdatedFw
       },
       label: $t({ defaultMessage: 'Update Now' }),
