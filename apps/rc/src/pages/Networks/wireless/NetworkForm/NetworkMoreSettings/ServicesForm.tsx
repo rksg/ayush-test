@@ -1,5 +1,5 @@
 
-import { createContext, useState, useEffect, useContext } from 'react'
+import { createContext, useState, useEffect, useContext, ReactNode } from 'react'
 
 import {
   Checkbox,
@@ -30,6 +30,7 @@ import NetworkFormContext        from '../NetworkFormContext'
 import { hasVxLanTunnelProfile } from '../utils'
 
 import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }        from './DhcpOption82Form'
 import { DnsProxyModal }           from './DnsProxyModal'
 import * as UI                     from './styledComponents'
 import { WifiCallingSettingModal } from './WifiCallingSettingModal'
@@ -275,6 +276,20 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
       }
 
+      <UI.FieldLabel width='250px'>
+        {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
+        <Form.Item
+          name={['wlan','advancedCustomization','enableSyslog']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+
+      <UI.Subtitle>
+        {$t({ defaultMessage: 'DHCP' })}
+      </UI.Subtitle>
       <UI.FieldLabel width='125px'>
         {$t({ defaultMessage: 'Force DHCP' })}
         <Form.Item
@@ -286,16 +301,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         />
       </UI.FieldLabel>
 
-      <UI.FieldLabel width='250px'>
-        {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
-        <Form.Item
-          name={['wlan','advancedCustomization','enableSyslog']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />}
-        />
-      </UI.FieldLabel>
+      <DhcpOption82Form/>
 
       { showTunnelProfile &&
       <Form.Item
