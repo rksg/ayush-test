@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { AaaUrls }                               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
@@ -144,6 +145,33 @@ describe('AAAForm', () => {
     'test1234')
     await userEvent.click(await screen.findByText('Finish'))
   })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
+      route: { params }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Server'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
+      route: { params }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'RADIUS Server'
+    })).toBeVisible()
+  })
+
   it('should edit AAA successfully', async () => {
     await editAAA()
   })

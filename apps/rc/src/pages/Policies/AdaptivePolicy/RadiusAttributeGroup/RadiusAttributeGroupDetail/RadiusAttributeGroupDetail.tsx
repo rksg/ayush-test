@@ -5,6 +5,7 @@ import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
 import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
@@ -23,13 +24,15 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
   const [policySetPoliciesMap, setPolicySetPoliciesMap] = useState(new Map())
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicyListByQueryQuery,
@@ -127,13 +130,24 @@ export default function RadiusAttributeGroupDetail () {
     <>
       <PageHeader
         title={data?.name || ''}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
-          { text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
-          // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
+            link: tablePath }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
+            link: tablePath
+          }]}
         extra={[
           <TenantLink
             key='edit'

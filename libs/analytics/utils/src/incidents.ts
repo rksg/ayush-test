@@ -1,9 +1,10 @@
 import { capitalize } from 'lodash'
 
-import { get }                                        from '@acx-ui/config'
-import { formatter, intlFormats }                     from '@acx-ui/formatter'
-import { getIntl, PathNode, NodeType, noDataDisplay } from '@acx-ui/utils'
+import { get }                                                     from '@acx-ui/config'
+import { formatter, intlFormats }                                  from '@acx-ui/formatter'
+import { getIntl, PathNode, NetworkPath, NodeType, noDataDisplay } from '@acx-ui/utils'
 
+import { productNames }        from './constants'
 import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
@@ -48,26 +49,22 @@ export function calculateSeverity (severity: number): IncidentSeverities {
   return severityType
 }
 
-type NormalizedNodeType = 'network'
-  | 'zone'
-  | 'switchGroup'
-  | 'apGroup'
-  | 'switch'
-  | 'AP'
-  | 'system'
-  | 'controller'
+type SliceType = NodeType
+  | 'ap' | 'apMac'
+  | 'apGroupName'
+  | 'zoneName'
   | 'domains'
-  | 'domain'
 
 /**
  * Uses to normalize various node types we have between server & UI
  */
-export function normalizeNodeType (nodeType: NodeType): NormalizedNodeType {
+export function normalizeNodeType (nodeType: SliceType): NodeType {
   switch (nodeType) {
     case 'ap': return 'AP'
     case 'apMac': return 'AP'
     case 'apGroupName': return 'apGroup'
     case 'zoneName': return 'zone'
+    case 'domains': return 'domain'
     default: return nodeType
   }
 }
@@ -98,8 +95,6 @@ export function nodeTypes (nodeType: NodeType): string {
       return $t({ defaultMessage: 'SZ Cluster' })
     case 'controller':
       return $t({ defaultMessage: 'Controller' })
-    case 'domains':
-      return $t({ defaultMessage: 'Domain' })
     case 'domain':
       return $t({ defaultMessage: 'Domain' })
     default:
@@ -124,7 +119,7 @@ function formattedNodeName (
   }, { isComplexName, name: sliceValue, nodeName: node.name })
 }
 
-export function formattedPath (path: PathNode[], sliceValue: string) {
+export function formattedPath (path: NetworkPath, sliceValue: string) {
   const { $t } = getIntl()
   return path
     .filter(node => node.type !== 'network')
@@ -142,7 +137,7 @@ export function formattedPath (path: PathNode[], sliceValue: string) {
     }, { nodeA, nodeB, newline: '\n' }))
 }
 
-export function impactedArea (path: PathNode[], sliceValue: string) {
+export function impactedArea (path: NetworkPath, sliceValue: string) {
   const lastNode = path[path.length - 1]
   return lastNode
     ? formattedNodeName(lastNode, sliceValue)
@@ -176,7 +171,7 @@ export const shortDescription = (incident: Incident) => {
   const threshold = getThreshold(incident)
     ? formatter('longDurationFormat')(getThreshold(incident))
     : undefined
-  return $t(incident.shortDescription, { scope, threshold })
+  return $t(incident.shortDescription, { ...productNames, scope, threshold })
 }
 
 export const impactValues = <Type extends 'ap' | 'client'> (

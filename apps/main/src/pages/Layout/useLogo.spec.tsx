@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import * as rcServices                 from '@acx-ui/rc/services'
-import { MspUrlsInfo }                 from '@acx-ui/rc/utils'
+import * as mspServices                from '@acx-ui/msp/services'
+import { MspUrlsInfo }                 from '@acx-ui/msp/utils'
 import { store, Provider, baseMspApi } from '@acx-ui/store'
 import {
   mockServer,
@@ -51,7 +51,7 @@ describe('useLogo', () => {
   })
 
   it('renders null when MSP-EC profile loaded but logo is not loaded', () => {
-    const rcServicesSpy = jest.spyOn(rcServices, 'useGetMspEcProfileQuery')
+    const mspServicesSpy = jest.spyOn(mspServices, 'useGetMspEcProfileQuery')
       .mockReturnValue({
         data: { ...mspEcProfileData, msp_label: 'some-label' },
         refetch: jest.fn()
@@ -67,7 +67,7 @@ describe('useLogo', () => {
     )
     const { result } = renderHook(() => useLogo(tenantId), { wrapper: Provider })
     expect(result.current).toBeNull()
-    rcServicesSpy.mockRestore()
+    mspServicesSpy.mockRestore()
   })
 
   it('renders product logo when not MSP-EC', async () => {

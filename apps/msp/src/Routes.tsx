@@ -1,4 +1,4 @@
-import { ConfigProvider }                                   from '@acx-ui/components'
+import { ConfigProvider, PageNotFound }                     from '@acx-ui/components'
 import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
 import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
 import { Provider }                                         from '@acx-ui/store'
@@ -14,6 +14,7 @@ import { VarCustomers }     from './pages/VarCustomers'
 export default function MspRoutes () {
   const routes = rootRoutes(
     <Route path=':tenantId/v' element={<Layout />}>
+      <Route path='*' element={<PageNotFound />} />
       <Route index element={<TenantNavigate replace to='/dashboard' tenantType='v'/>} />
       <Route
         path='dashboard'
@@ -37,6 +38,7 @@ export default function MspRoutes () {
 function CustomersRoutes () {
   return rootRoutes(
     <Route>
+      <Route path='*' element={<PageNotFound />} />
       <Route path=':tenantId/v/dashboard/mspCustomers'>
         <Route index element={<MspCustomers />} />
         <Route path='create' element={<ManageCustomer />} />

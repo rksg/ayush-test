@@ -12,12 +12,12 @@ import { IncidentBySeverityDonutChart } from '.'
 const sample = { P1: 0, P2: 2, P3: 3, P4: 4 } as IncidentsBySeverityData
 
 describe('IncidentBySeverityDonutChart', () => {
-  const filters = {
+  const filters: IncidentFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'zone', name: 'some-venue' }],
-    range: DateRange.last24Hours
-  } as IncidentFilter
+    range: DateRange.last24Hours,
+    filter: {}
+  }
   beforeEach(() => store.dispatch(api.util.resetApiState()))
 
   it('should render loader', () => {

@@ -10,10 +10,10 @@ import { useEdgeExportCsv }                                          from '@acx-
 import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import {
   EdgeService,
-  RequestPayload,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { RequestPayload } from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
@@ -99,7 +99,8 @@ export const EdgeServices = () => {
       title: $t({ defaultMessage: 'Service Version' }),
       key: 'currentVersion',
       dataIndex: 'currentVersion',
-      sorter: true
+      sorter: true,
+      render: (_, row) => (row.currentVersion || $t({ defaultMessage: 'NA' }))
     }
   ]
 

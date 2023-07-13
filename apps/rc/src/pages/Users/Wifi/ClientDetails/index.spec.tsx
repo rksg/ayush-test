@@ -112,6 +112,40 @@ describe('ClientDetails', () => {
     })
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    render(<Provider><ClientDetails /></Provider>, {
+      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+    })
+    expect(screen.queryByText('Clients')).toBeNull()
+    expect(screen.queryByText('Wireless')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Wi-Fi Users'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    render(<Provider><ClientDetails /></Provider>, {
+      route: { params, path: '/:tenantId/t/users/wifi/:activeTab/:clientId/details/:activeTab' }
+    })
+    expect(await screen.findByText('Clients')).toBeVisible()
+    expect(await screen.findByText('Wireless')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Clients List'
+    })).toBeVisible()
+  })
+
   it('should render correctly with featureToggle off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')

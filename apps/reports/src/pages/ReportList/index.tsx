@@ -1,6 +1,7 @@
 import { useIntl, defineMessage } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
 
 export function ReportList () {
@@ -59,10 +60,17 @@ export function ReportList () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/reports')
   const viewText = defineMessage({ defaultMessage: 'View' })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   return (
     <>
-      <PageHeader title={$t({ defaultMessage: 'Reports' })} />
+      <PageHeader
+        title={$t({ defaultMessage: 'Reports' })}
+        breadcrumb={isNavbarEnhanced
+          ? [{ text: $t({ defaultMessage: 'Business Insights' }) }]
+          : undefined
+        }
+      />
       <GridRow>
         {reports.map(({ title, description, path }) => (
           <GridCol key={path} col={{ span: 6 }}>

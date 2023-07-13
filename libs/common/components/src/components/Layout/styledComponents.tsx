@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Button as AntButton,
   Divider as AntDivider,
@@ -9,7 +10,9 @@ import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 
 import modifyVars from '../../theme/modify-vars'
 
-export const Wrapper = styled.div`
+import bgImageUrl from './background.svg'
+
+export const Wrapper = styled.div<{ showScreen: boolean }>`
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
@@ -17,14 +20,20 @@ export const Wrapper = styled.div`
   --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
-
   .ant-pro-basicLayout {
     .ant-layout {
       background: var(--acx-primary-white);
-
       &.ant-layout-has-sider {
         .ant-layout-sider {
           overflow: visible !important;
+          ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              height: var(--acx-header-height);
+              position: fixed;
+              top: 0;
+              left: 0;
+              z-index: 100;
+            }`)}
           .ant-layout-sider-children {
             .ant-pro-sider-logo {
               padding: 0;
@@ -59,10 +68,18 @@ export const Wrapper = styled.div`
           }
           &:before {
             background-color: var(--acx-primary-black);
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
           &:after {
             background-color: var(--acx-primary-white);
             border-top-left-radius: 20px;
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
         }
         .ant-menu {
@@ -128,6 +145,10 @@ export const Wrapper = styled.div`
           &.ant-pro-sider-collapsed-button {
             border: none;
             box-shadow: none;
+            ${({ showScreen }) => (!showScreen &&
+            `@media screen and (max-width: 1279px) {
+              display: none;
+            }`)}
           }
           &:last-child {
             margin-top: auto;
@@ -227,7 +248,17 @@ export const Wrapper = styled.div`
     }
     &.sider-collapsed {
       .ant-layout.ant-layout-has-sider {
-        > div:first-child, .ant-layout-sider {
+        > div:first-child {
+          flex: 0 0 var(--acx-sider-collapsed-width) !important;
+          max-width: var(--acx-sider-collapsed-width) !important;
+          min-width: var(--acx-sider-collapsed-width) !important;
+          width: var(--acx-sider-collapsed-width) !important;
+          ${({ showScreen }) => (!showScreen &&
+          `@media screen and (min-width: 1279px) {
+            display: none;
+          }`)}
+        }
+        .ant-layout-sider {
           flex: 0 0 var(--acx-sider-collapsed-width) !important;
           max-width: var(--acx-sider-collapsed-width) !important;
           min-width: var(--acx-sider-collapsed-width) !important;
@@ -269,6 +300,12 @@ export const Wrapper = styled.div`
     .ant-layout-content {
       margin: 0;
       background-color: var(--acx-primary-white);
+      ${({ showScreen }) => (!showScreen &&
+      `@media screen and (max-width: 1279px) {
+        background-image: url('${bgImageUrl}');
+        background-size: cover;
+        background-repeat: no-repeat;
+      }`)}
     }
   }
 `
@@ -324,6 +361,14 @@ export const Content = styled.div`
     background-color: var(--acx-primary-white);
     z-index: 5;
   }
+`
+
+export const ResponsiveContent = styled.div`
+  min-width: 100%;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 `
 
 export const LeftHeaderContentWrapper = styled.div`

@@ -9,9 +9,10 @@ import {
   StepsFormLegacyInstance,
   Loader
 } from '@acx-ui/components'
-import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation }              from '@acx-ui/rc/services'
-import { DHCPSaveData, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useParams, useTenantLink, useNavigate, useLocation }               from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
+import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation }                                       from '@acx-ui/rc/services'
+import { DHCPSaveData, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useParams, useTenantLink, useNavigate, useLocation }                                        from '@acx-ui/react-router-dom'
 
 import { SettingForm } from './DHCPSettingForm'
 
@@ -23,6 +24,7 @@ interface DHCPFormProps {
 
 export default function DHCPForm (props: DHCPFormProps) {
   const { $t } = useIntl()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const params = useParams()
   type LocationState = {
@@ -95,7 +97,11 @@ export default function DHCPForm (props: DHCPFormProps) {
       <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
           $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'DHCP' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'DHCP Services' }), link: tablePath }
         ]}
       />

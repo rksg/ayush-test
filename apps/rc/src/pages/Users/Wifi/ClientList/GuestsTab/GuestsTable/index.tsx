@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   FetchBaseQueryError
@@ -30,17 +30,17 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload,
   FILTER,
   SEARCH
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RequestPayload }                                    from '@acx-ui/types'
 import { RolesEnum }                                         from '@acx-ui/types'
 import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
 import { DateRange, getIntl  }                               from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
-import { GuestDateFilter }                   from '../../PageHeader'
+import { GuestDateFilter }                   from '../../index'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -53,6 +53,7 @@ import {
   showNoSendConfirm,
   useHandleGuestPassResponse
 } from './addGuestDrawer'
+import { GuestTabContext } from './context'
 
 const defaultGuestNetworkPayload = {
   fields: ['name', 'defaultGuestCountry', 'id'],
@@ -75,6 +76,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     includeExpired: ['true'],
     ...(dateFilter.range === DateRange.allTime ? {} : { dateFilter })
   }
+  const { setGuestCount } = useContext(GuestTabContext)
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
@@ -361,6 +363,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
+  setGuestCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader states={[
       tableQuery

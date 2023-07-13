@@ -28,6 +28,7 @@ const HelpButton = (props:HelpButtonProps) => {
   const [isBlocked, setIsBlocked] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
 
   useEffect(()=>{
     switch (supportStatus) {
@@ -88,7 +89,7 @@ const HelpButton = (props:HelpButtonProps) => {
       }}
       items={[{
         key: 'documentation',
-        label: $t({ defaultMessage: 'Documentation Center' })
+        label: $t({ defaultMessage: 'What’s New' })
       },
       {
         key: 'videos',
@@ -113,7 +114,7 @@ const HelpButton = (props:HelpButtonProps) => {
         key: 'models',
         label: $t({ defaultMessage: 'Supported Device Models' })
       },
-      ...(!isGuestManager ? [{
+      ...(!(isGuestManager || isDPSKAdmin) ? [{
         key: 'firewallACL',
         label: $t({ defaultMessage: 'Firewall ACL Inputs' })
       }] : []),

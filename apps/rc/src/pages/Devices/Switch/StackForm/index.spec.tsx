@@ -3,6 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -71,12 +72,10 @@ describe('Switch Stack Form - Add', () => {
     Modal.destroyAll()
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><StackForm /></Provider>, {
+    render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add Switch Stack')).toBeVisible()
 
     await changeVenue()
@@ -225,6 +224,44 @@ describe('Switch Stack Form - Add', () => {
     // TODO
     // expect(await screen.findByText('Server Error')).toBeVisible()
   })
+
+  it('should render correct breadcrumb when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+
+    await changeVenue()
+    await fillInForm()
+
+    expect(screen.getByRole('link', {
+      name: /switches/i
+    })).toBeTruthy()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+  })
+
+  it('should render correct breadcrumb when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+
+    await changeVenue()
+    await fillInForm()
+
+    expect(await screen.findByText('Wired')).toBeVisible()
+    expect(await screen.findByText('Switches')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /switch list/i
+    })).toBeTruthy()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+  })
 })
 
 describe('Switch Stack Form - Edit', () => {
@@ -311,4 +348,6 @@ describe('Switch Stack Form - Edit', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
   })
+
+
 })

@@ -1,3 +1,4 @@
+import { PageNotFound }      from '@acx-ui/components'
 import { rootRoutes, Route } from '@acx-ui/react-router-dom'
 import { ReportType }        from '@acx-ui/reports/components'
 import { Provider }          from '@acx-ui/store'
@@ -21,6 +22,7 @@ const reports = {
 export default function ReportsRoutes () {
   const routes = rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='reports' element={<ReportList />}/>
       <Route path='reports/overview' element={reports.overview}/>
       <Route path='reports/wireless' element={reports.wireless} />

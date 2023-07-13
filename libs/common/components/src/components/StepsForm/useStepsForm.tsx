@@ -207,8 +207,8 @@ export function useStepsForm <T> ({
 
   const buttonEls = <UI.ActionsContainer data-testid='steps-form-actions'>
     <UI.ActionsButtons
-      editMode={!!editMode}
-      multipleSteps={steps.length > 1}
+      $editMode={!!editMode}
+      $multipleSteps={steps.length > 1}
       children={buttonsLayout}
     />
   </UI.ActionsContainer>

@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -83,6 +83,58 @@ describe('DpskDetails', () => {
 
     const targetTab = await screen.findByRole('tabpanel', { name: /Passphrase Management/ })
     expect(targetTab).toBeInTheDocument()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const passphraseTabParams = {
+      ...paramsForOverviewTab,
+      activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+    }
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: {
+          params: passphraseTabParams,
+          path: detailPath
+        }
+      }
+    )
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const passphraseTabParams = {
+      ...paramsForOverviewTab,
+      activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+    }
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: {
+          params: passphraseTabParams,
+          path: detailPath
+        }
+      }
+    )
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DPSK'
+    })).toBeVisible()
   })
 
   it('should navigate to the Passphrase Management tab', async () => {

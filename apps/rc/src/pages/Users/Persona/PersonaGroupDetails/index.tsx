@@ -5,7 +5,7 @@ import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                     from '@acx-ui/feature-toggle'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -27,6 +27,7 @@ function PersonaGroupDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, onClick } = props
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const extra = filterByAccess([
     <Button type={'primary'} onClick={onClick}>
@@ -38,7 +39,18 @@ function PersonaGroupDetailsPageHeader (props: {
     <PageHeader
       title={title}
       extra={extra}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        {
+          text: $t({ defaultMessage: 'Clients' })
+        },
+        {
+          text: $t({ defaultMessage: 'Persona Management' })
+        },
+        {
+          text: $t({ defaultMessage: 'Persona Groups' }),
+          link: 'users/persona-management'
+        }
+      ] : [
         {
           text: $t({ defaultMessage: 'Persona Group' }),
           link: 'users/persona-management'
@@ -184,7 +196,6 @@ function PersonaGroupDetails () {
               {/* eslint-disable-next-line max-len */}
               {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
             </Subtitle>
-
             <BasePersonaTable
               personaGroupId={personaGroupId}
               colProps={{

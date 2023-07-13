@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }    from '@acx-ui/components'
-import { useGetMacRegListQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader }     from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useGetMacRegListQuery }  from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -13,22 +14,36 @@ import { filterByAccess }        from '@acx-ui/user'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
-
 function MacRegistrationListPageHeader () {
   const { $t } = useIntl()
   const { policyId } = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getPolicyRoutePath(
+    { type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
 
   return (
     <PageHeader
       title={macRegistrationListQuery.data?.name || ''}
-      breadcrumb={[
-        // eslint-disable-next-line max-len
-        { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Network Control' }) },
+        {
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        },
         { text: $t({ defaultMessage: 'MAC Registration Lists' }),
-          // eslint-disable-next-line max-len
-          link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
+          link: tablePath
+        }
+      ] : [
+        {
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        },
+        {
+          text: $t({ defaultMessage: 'MAC Registration Lists' }),
+          link: tablePath
+        }
       ]}
       extra={filterByAccess([
         // eslint-disable-next-line max-len

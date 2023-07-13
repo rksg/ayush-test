@@ -10,6 +10,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@acx-ui/rc/services'
 import {
   CreateDpskFormFields,
@@ -18,7 +19,8 @@ import {
   getServiceRoutePath,
   ServiceOperation,
   DpskSaveData,
-  DeviceNumberType
+  DeviceNumberType,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -38,10 +40,11 @@ interface DpskFormProps {
 export default function DpskForm (props: DpskFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  // eslint-disable-next-line max-len
-  const linkToServices = useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
+  const tablePath = getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+  const linkToServices = useTenantLink(tablePath)
   const params = useParams()
   const { editMode = false, modalMode = false, modalCallBack } = props
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
@@ -87,10 +90,17 @@ export default function DpskForm (props: DpskFormProps) {
           ? $t({ defaultMessage: 'Edit DPSK Service' })
           : $t({ defaultMessage: 'Add DPSK Service' })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DPSK' }),
-            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+            link: tablePath
+          }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'DPSK' }),
+            link: tablePath
           }
         ]}
       />}

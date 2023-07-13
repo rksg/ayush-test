@@ -2,6 +2,7 @@ import { fireEvent } from '@testing-library/react'
 import userEvent     from '@testing-library/user-event'
 import { rest }      from 'msw'
 
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { QosPriorityEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Path, To }                         from '@acx-ui/react-router-dom'
 import { Provider }                         from '@acx-ui/store'
@@ -166,6 +167,56 @@ describe('WifiCallingConfigureForm', () => {
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingConfigureForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingConfigureForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Wi-Fi Calling'
+    })).toBeVisible()
   })
 
   it('should render form successfully then click the cancel button', async () => {

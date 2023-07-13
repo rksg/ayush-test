@@ -3,6 +3,7 @@ import { IntlShape, useIntl }           from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
 import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                           from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
@@ -36,6 +37,7 @@ export default function SnmpAgentTable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
@@ -128,10 +130,16 @@ export default function SnmpAgentTable () {
             { count: (list)? `(${list.totalCount})` : '' }
           )
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={((list?.totalCount as number) < 64) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })} key='add'>

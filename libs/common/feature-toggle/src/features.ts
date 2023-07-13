@@ -54,6 +54,15 @@ export enum Features {
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
+  PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
-  WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle'
+  WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
+  WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle'
+}
+
+export enum TierFeatures { // for Tier (ex: Beta) feature flag
+  BETA_MESH = 'BETA-MESH',
+  BETA_CLB = 'BETA-CLB'
 }

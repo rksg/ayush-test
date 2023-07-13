@@ -50,7 +50,7 @@ export default function PortalViewSelfSignRegister (props:{
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={portalLang.login} key='login'>
           <UI.FieldTextMiddle>{portalLang.loginNote}</UI.FieldTextMiddle>
-          <UI.FieldInput></UI.FieldInput>
+          <UI.FieldInput disabled={true}></UI.FieldInput>
           <UI.ViewSectionLink>
             {portalLang.forgotPswdLink}</UI.ViewSectionLink>
           <PortalButtonContent

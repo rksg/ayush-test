@@ -84,11 +84,9 @@ describe('NetworkForm', () => {
   it('should create open network successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+    render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
@@ -111,14 +109,38 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+    expect(screen.getByRole('link', {
+      name: /networks/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi Networks')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /network list/i
+    })).toBeTruthy()
+  })
+
   it('should create different SSID successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+    render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })

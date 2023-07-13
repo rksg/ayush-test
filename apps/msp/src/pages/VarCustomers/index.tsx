@@ -13,18 +13,21 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
   useAcceptRejectInvitationMutation,
   useDelegateToMspEcPath
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  VarCustomer
+} from '@acx-ui/msp/utils'
+import {
   EntitlementNetworkDeviceType,
   EntitlementUtil,
-  VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
@@ -79,6 +82,7 @@ export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -313,6 +317,9 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
+        breadcrumb={isNavbarEnhanced
+          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
+          : undefined}
         extra={
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

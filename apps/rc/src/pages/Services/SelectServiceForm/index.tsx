@@ -28,6 +28,7 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
@@ -99,7 +100,10 @@ export default function SelectServiceForm () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ] : [
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
       />

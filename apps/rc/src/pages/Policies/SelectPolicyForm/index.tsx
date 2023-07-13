@@ -29,6 +29,7 @@ export default function SelectPolicyForm () {
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     payload: {
@@ -86,9 +87,17 @@ export default function SelectPolicyForm () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Policy or Profile' })}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
         ]}
       />
       <StepsFormLegacy

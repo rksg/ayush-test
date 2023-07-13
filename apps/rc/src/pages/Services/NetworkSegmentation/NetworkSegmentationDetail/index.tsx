@@ -3,6 +3,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, PageHeader }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { NetworkSegmentationDetailTableGroup, NetworkSegmentationServiceInfo } from '@acx-ui/rc/components'
 import {
   useGetNetworkSegmentationViewDataListQuery
@@ -23,6 +24,7 @@ const NetworkSegmentationDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
   const location = useLocation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const {
     nsgViewData
@@ -43,8 +45,17 @@ const NetworkSegmentationDetail = () => {
     <>
       <PageHeader
         title={nsgViewData && nsgViewData.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'Network Segmentation' }),
+            link: getServiceRoutePath({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.LIST
+            })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Network Segmentation' }),
             link: getServiceRoutePath({

@@ -25,7 +25,7 @@ import {
   apGrouplist,
   successResponse,
   apDetailsList
-} from '../__tests__/fixtures'
+} from '../../__tests__/fixtures'
 
 import { ApForm } from '.'
 
@@ -63,7 +63,7 @@ async function changeVenue () {
   expect(screen.getByLabelText('AP Group')).not.toBeDisabled()
 }
 
-async function changeCoordinates (data, applyData) {
+async function changeCoordinates (data: string, applyData: boolean) {
   await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
   const dialog = await screen.findByRole('dialog')
   await within(dialog).findByText('GPS Coordinates')
@@ -122,12 +122,10 @@ describe('AP Form - Add', () => {
     Modal.destroyAll()
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApForm /></Provider>, {
+    render(<Provider><ApForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/wifi/:action' }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     expect(await screen.findByText('Add AP')).toBeVisible()
     expect(screen.queryByText('GPS Coordinates')).not.toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
@@ -136,6 +134,32 @@ describe('AP Form - Add', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><ApForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getByRole('link', {
+      name: /access points/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><ApForm /></Provider>, {
+      route: { params, path: '/:tenantId/t/devices/wifi/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(await screen.findByText('Access Points')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /ap list/i
+    })).toBeTruthy()
   })
 
   describe('handle Add AP and Coordinates Modal', () => {

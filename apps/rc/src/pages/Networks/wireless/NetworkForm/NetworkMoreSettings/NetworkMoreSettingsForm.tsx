@@ -131,6 +131,7 @@ export function MoreSettingsForm (props: {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
+  const ssidRateLimitingFeatureBundleFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const [
     enableDhcp,
@@ -218,6 +219,10 @@ export function MoreSettingsForm (props: {
       }
     }
 
+  }
+
+  const UserConnectionComponent = () => {
+    return (<UserConnectionForm />)
   }
 
   return (
@@ -427,6 +432,18 @@ export function MoreSettingsForm (props: {
             } />
         </div>
 
+        {ssidRateLimitingFeatureBundleFlag &&
+          <UI.FieldLabel width='250px'>
+            {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+            <Form.Item
+              name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
+              style={{ marginBottom: '10px' }}
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch/>}/>
+          </UI.FieldLabel>
+        }
+
         <UI.FieldLabel width='250px'>
           {$t({ defaultMessage: 'Enable 802.11k neighbor reports' })}
           <Form.Item
@@ -623,7 +640,7 @@ export function MoreSettingsForm (props: {
 
         }
         <UI.FieldLabel width='250px'>
-          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE):' }) }
+          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE)' }) }
           <Form.Item
             name={['wlan','advancedCustomization','enableOptimizedConnectivityExperience']}
             style={{ marginBottom: '10px' }}
@@ -637,7 +654,7 @@ export function MoreSettingsForm (props: {
             <UI.FieldLabel width='250px'>
               {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
               <Form.Item
-                name={['wlan', 'advancedCustomization', 'apHostNameAdvertisementInBeacon']}
+                name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
@@ -646,13 +663,31 @@ export function MoreSettingsForm (props: {
             <UI.FieldLabel width='250px'>
               {$t({ defaultMessage: 'GTK Rekey' })}
               <Form.Item
-                name={['wlan', 'advancedCustomization', 'GTKRekey']}
+                name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
                 children={<Switch/>}/>
             </UI.FieldLabel></>
         }
+
+        {ssidRateLimitingFeatureBundleFlag &&
+          <Form.Item
+            name={['wlan','advancedCustomization','dtimInterval']}
+            label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
+            initialValue={1}
+            rules={[{
+              type: 'number', max: 255, min: 1,
+              message: $t({
+                defaultMessage:
+                  'DTIM (Delivery Traffic Indication Message) Interval must be between 1 and 255'
+              })
+            }]}
+            style={{ marginBottom: '15px', width: '300px' }}
+            children={<InputNumber style={{ width: '150px' }} />}
+          />
+        }
+
         {enableOce &&
           <>
             <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
@@ -742,7 +777,7 @@ export function MoreSettingsForm (props: {
       </Panel>
       }
       {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&<Panel header='User Connection' key='5'>
-        <UserConnectionForm/>
+        <UserConnectionComponent/>
       </Panel>}
     </UI.CollapsePanel>
   )

@@ -7,10 +7,12 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { useCreateWifiCallingServiceMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG,
+  getServiceListRoutePath,
   getServiceRoutePath,
   QosPriorityEnum,
   ServiceOperation,
@@ -28,10 +30,13 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 const WifiCallingForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink(getServiceRoutePath({
-    type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST
-  }))
+  const tablePath = getServiceRoutePath({
+    type: ServiceType.WIFI_CALLING,
+    oper: ServiceOperation.LIST
+  })
+  const linkToServices = useTenantLink(tablePath)
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const serviceName = ''
   const description = ''
@@ -72,11 +77,17 @@ const WifiCallingForm = () => {
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
         title={$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'Wi-Fi Calling' }),
+            link: tablePath
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Services' }),
-            // eslint-disable-next-line max-len
-            link: getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })
+            link: tablePath
           }
         ]}
       />

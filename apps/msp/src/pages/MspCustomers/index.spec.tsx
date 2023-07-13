@@ -2,7 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -106,7 +107,11 @@ const mspPortal = {
   msp_label: 'eleu1658'
 }
 
-const services = require('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
+const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
@@ -132,7 +137,7 @@ describe('MspCustomers', () => {
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
@@ -197,6 +202,32 @@ describe('MspCustomers', () => {
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
+  })
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.queryByText('My Customers')).toBeNull()
+  })
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(await screen.findByText('My Customers')).toBeVisible()
   })
   it('should edit for selected trial account row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -401,7 +432,7 @@ describe('MspCustomers', () => {
       return { data: userProfile }
     })
     const tenantDetails = { tenantType: AccountType.MSP_INSTALLER }
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: tenantDetails }
     })
     user.hasRoles = jest.fn().mockImplementation(() => {

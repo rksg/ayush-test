@@ -1,8 +1,8 @@
 import { capitalize, omit } from 'lodash'
 
-import * as configUtil        from '@acx-ui/config'
-import { renderHook }         from '@acx-ui/test-utils'
-import { PathNode, NodeType } from '@acx-ui/utils'
+import * as configUtil           from '@acx-ui/config'
+import { renderHook }            from '@acx-ui/test-utils'
+import { NetworkPath, NodeType } from '@acx-ui/utils'
 
 import { fakeIncident, fakeIncident1, fakeIncidentTtc, fakeIncidentApInfraWanthroughput } from './fakeIncident'
 import { kpiConfig }                                                                      from './healthKPIConfig'
@@ -120,7 +120,7 @@ describe('formattedPath', () => {
       { type: 'apGroup', name: 'AG' }
     ]
     const sliceValue = 'Name'
-    expect(formattedPath(path as PathNode[], sliceValue)).toEqual('V (Venue)\n> AG (AP Group)')
+    expect(formattedPath(path as NetworkPath, sliceValue)).toEqual('V (Venue)\n> AG (AP Group)')
   })
   it('returns path which contains AP with correct format', () => {
     const path = [
@@ -130,29 +130,29 @@ describe('formattedPath', () => {
       { type: 'ap', name: 'IP' }
     ]
     const sliceValue = 'Name'
-    expect(formattedPath(path as PathNode[], sliceValue))
+    expect(formattedPath(path as NetworkPath, sliceValue))
       .toEqual('V (Venue)\n> AG (AP Group)\n> Name (IP) (Access Point)')
   })
 })
 
 describe('impactedArea', () => {
-  const path = [{ type: 'zone', name: 'Venue' }] as PathNode[]
+  const path = [{ type: 'zone', name: 'Venue' }] as NetworkPath
   it('return correct value for normal incident', () => {
     const sliceValue = 'Venue'
     expect(impactedArea(path, sliceValue)).toEqual(sliceValue)
   })
   it('return correct value for AP incident', () => {
-    const apPath = [...path, { type: 'ap', name: 'IP' }] as PathNode[]
+    const apPath = [...path, { type: 'ap', name: 'IP' }] as NetworkPath
     const sliceValue = 'AP'
     expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
   })
   it('returns sliceValue when node name same as sliceValue', () => {
-    const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as PathNode[]
+    const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as NetworkPath
     const sliceValue = 'AP'
     expect(impactedArea(sameNamePath, sliceValue)).toEqual(sliceValue)
   })
   it('returns sliceValue when empty path', () => {
-    const emptyPath = [] as PathNode[]
+    const emptyPath = [] as NetworkPath
     const sliceValue = 'AP'
     expect(impactedArea(emptyPath, sliceValue)).toEqual(sliceValue)
   })

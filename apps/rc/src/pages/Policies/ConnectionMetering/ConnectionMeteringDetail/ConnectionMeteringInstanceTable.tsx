@@ -270,7 +270,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       render: (_, row) => {
         const stat = getQosStatsByInstance(row)
         if (stat && stat.billingStartEpoch) {
-          return <span>{moment(stat.billingStartEpoch).format('MM/DD/YYYY')}</span>
+          return <span>{moment(stat.billingStartEpoch * 1000).format('MM/DD/YYYY')}</span>
         }
         return undefined
       }

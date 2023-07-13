@@ -220,6 +220,7 @@ export { ReactComponent as DataStudioOutlined } from './icons/DataStudioOutlined
 export { ReactComponent as DataStudioSolid } from './icons/DataStudioSolid.svg'
 export { ReactComponent as RocketOutlined } from './icons/RocketOutlined.svg'
 export { ReactComponent as RocketSolid } from './icons/RocketSolid.svg'
+export { ReactComponent as RotateMobileOutlined } from './icons/RotateMobileOutlined.svg'
 export { ReactComponent as SearchFitOutlined } from './icons/SearchFitOutlined.svg'
 export { ReactComponent as SearchFullOutlined } from './icons/SearchFullOutlined.svg'
 export { ReactComponent as SearchOutlined } from './icons/SearchOutlined.svg'

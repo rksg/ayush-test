@@ -2,12 +2,12 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps, SummaryCard }                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
-import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                    from '@acx-ui/rc/services'
-import { DhcpUeSummaryStats, ServiceOperation, ServiceType, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                  from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                         from '@acx-ui/user'
+import { Button, Card, Loader, PageHeader, Table, TableProps, SummaryCard }                                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                        from '@acx-ui/feature-toggle'
+import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                                           from '@acx-ui/rc/services'
+import { DhcpUeSummaryStats, ServiceOperation, ServiceType, defaultSort, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, sortProp } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                                                                         from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                                                from '@acx-ui/user'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
@@ -17,6 +17,8 @@ const EdgeDHCPDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const getDhcpStatsPayload = {
     fields: [
@@ -54,9 +56,9 @@ const EdgeDHCPDetail = () => {
   const columns: TableProps<DhcpUeSummaryStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
-      key: 'edgeId',
-      dataIndex: 'edgeId',
-      sorter: true,
+      key: 'edgeName',
+      dataIndex: 'edgeName',
+      sorter: { compare: sortProp('edgeName', defaultSort) },
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (data, row) {
@@ -148,8 +150,17 @@ const EdgeDHCPDetail = () => {
     <>
       <PageHeader
         title={dhcpStats && dhcpStats.data[0]?.serviceName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
+            link: getServiceRoutePath({
+              type: ServiceType.EDGE_DHCP,
+              oper: ServiceOperation.LIST
+            })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
             link: getServiceRoutePath({

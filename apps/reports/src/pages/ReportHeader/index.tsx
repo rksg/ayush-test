@@ -1,52 +1,30 @@
-import moment from 'moment-timezone'
-
-import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
-import { RangePicker, PageHeader }   from '@acx-ui/components'
-import { useDateFilter }             from '@acx-ui/utils'
+import { PageHeader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
 
 export function ReportHeader (props: {
   name: string,
-  mode?:FilterMode,
   showFilter?: boolean
-  isRadioBandDisabled?: boolean,
-  radioBandDisabledReason?: string,
-  footer?: React.ReactNode }) {
+  footer?: React.ReactNode,
+  type: ReportType }) {
   const {
     name,
-    mode = 'both',
-    isRadioBandDisabled=false,
-    radioBandDisabledReason,
-    showFilter=true
+    showFilter=true,
+    type
   } = props
-  const shouldQuerySwitch = ['switch','both'].includes(mode)
-  const showRadioBand = ['ap','both'].includes(mode)
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   return (
     <PageHeader
       title={name}
-      breadcrumb={[
-        { text: 'Reports', link: '/reports' }
-      ]}
-      extra={[
-        showFilter && <NetworkFilter
-          key='reports-network-filter'
-          shouldQuerySwitch={shouldQuerySwitch}
-          showRadioBand={showRadioBand}
-          multiple={true}
-          filterMode={mode}
-          filterFor={'reports'}
-          isRadioBandDisabled={isRadioBandDisabled}
-          radioBandDisabledReason={radioBandDisabledReason}
-        />,
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />
-      ]}
+      breadcrumb={isNavbarEnhanced
+        ? [
+          { text: 'Business Insights' },
+          { text: 'Reports', link: '/reports' }
+        ] : [
+          { text: 'Reports', link: '/reports' }
+        ]}
+      extra={usePageHeaderExtra(type, showFilter)}
       footer={props.footer && props.footer}
       footerSpacer={false}
     />

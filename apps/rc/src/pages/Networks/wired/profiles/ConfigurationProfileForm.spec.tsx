@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { switchApi, venueApi }                                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo }                         from '@acx-ui/rc/utils'
 import { Provider, store }                                        from '@acx-ui/store'
@@ -85,6 +86,46 @@ describe('Wired', () => {
     })
 
     expect(await screen.findByText('Add Switch Configuration Profile')).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+      })
+
+    expect(screen.getByRole('link', {
+      name: /wired networks/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+      })
+
+    expect(await screen.findByText('Wired')).toBeVisible()
+    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /configuration profiles/i
+    })).toBeTruthy()
   })
 
   it('should render edit Switch Configuration Profile form correctly', async () => {

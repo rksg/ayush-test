@@ -5,10 +5,12 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { PageHeader, StepsForm }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { TunnelProfileForm, TunnelProfileFormType }                     from '@acx-ui/rc/components'
 import { useGetTunnelProfileByIdQuery, useUpdateTunnelProfileMutation } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   LocationExtended,
   MtuTypeEnum,
@@ -35,6 +37,9 @@ const EditTunnelProfile = () => {
     { params: { id: params.policyId } }
   )
   const [updateTunnelProfile] = useUpdateTunnelProfileMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+
+  const isDefaultTunnelProfile = params.tenantId === tunnelProfileData?.id
 
   useEffect(() => {
     form.setFieldValue('name', tunnelProfileData?.name)
@@ -74,7 +79,17 @@ const EditTunnelProfile = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit Tunnel Profile' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
+          {
+            text: $t({ defaultMessage: 'Tunnel Profile' }),
+            link: tablePath
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Tunnel Profile' }),
             link: tablePath
@@ -101,7 +116,7 @@ const EditTunnelProfile = () => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
-              <TunnelProfileForm />
+              <TunnelProfileForm isDefaultTunnelProfile={isDefaultTunnelProfile}/>
             </Col>
           </Row>
         </StepsForm.StepForm>

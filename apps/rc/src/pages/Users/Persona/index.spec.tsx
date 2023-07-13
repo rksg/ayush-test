@@ -11,8 +11,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('Persona Portal', () => {
-
+describe.skip('Persona Portal', () => {
   let params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }

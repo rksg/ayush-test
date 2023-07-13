@@ -132,13 +132,16 @@ function DashboardPageHeader () {
       }, {
         key: 'add-switch',
         label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+      }, {
+        key: 'add-edge',
+        label: <TenantLink to='devices/edge/add'>{$t({ defaultMessage: 'SmartEdge' })}</TenantLink>
       }]
     }]}
   />
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'Dashboard' })}
+      title={useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? '' : 'Dashboard'}
       extra={filterByAccess([
         <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
           <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>

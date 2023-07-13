@@ -28,12 +28,12 @@ import {
   FirmwareVersion,
   UpdateScheduleRequest,
   TableQuery,
-  RequestPayload,
   useTableQuery,
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { RequestPayload } from '@acx-ui/types'
 
 import {
   getNextScheduleTpl,
@@ -82,9 +82,9 @@ function useColumns (
           versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
         }
         if (enableSwitchRodanFirmware && row.switchFirmwareVersionAboveTen?.id) {
-          versionList.push(row.switchFirmwareVersionAboveTen.id)
+          versionList.push(parseSwitchVersion(row.switchFirmwareVersionAboveTen.id))
         }
-        return versionList.length > 0 ? versionList.join(' ,') : '--'
+        return versionList.length > 0 ? versionList.join(', ') : '--'
       }
     },
     {
@@ -146,7 +146,13 @@ export const VenueFirmwareTable = (
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
+  const [currentScheduleVersion, setCurrentScheduleVersion] = useState('')
+  const [currentScheduleVersionAboveTen, setCurrentScheduleVersionAboveTen] = useState('')
+  const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
+  const [icx8200Count, setIcx8200Count] = useState<number>(0)
+
   const enableSwitchRodanFirmware = useIsSplitOn(Features.SWITCH_RODAN_FIRMWARE)
+  const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
 
@@ -200,7 +206,6 @@ export const VenueFirmwareTable = (
     }
   }
 
-  // eslint-disable-next-line max-len
   // const tableData = tableQuery?.data as readonly FirmwareSwitchVenue[] | undefined
   const columns = useColumns(searchable, filterables)
 
@@ -223,13 +228,22 @@ export const VenueFirmwareTable = (
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+      let nonIcx8200Count = 0, icx8200Count = 0
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
         const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
-        _.remove(filterVersions, (v: FirmwareVersion) => (
-          v.id === version || v.id === rodanVersion))
+        // eslint-disable-next-line max-len
+        removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
+
+        if (enableSwitchTwoVersionUpgrade) {
+          nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
+          icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
+        }
       })
+
       setUpgradeVersions(filterVersions)
+      setNonIcx8200Count(nonIcx8200Count)
+      setIcx8200Count(icx8200Count)
       setUpdateModelVisible(true)
     }
   },
@@ -252,18 +266,30 @@ export const VenueFirmwareTable = (
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+      let nonIcx8200Count = 0, icx8200Count = 0
+      let currentScheduleVersion = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
+        (selectedRows[0].nextSchedule?.version ? selectedRows[0].nextSchedule.version.name : '') : ''
+      // eslint-disable-next-line max-len
+      let currentScheduleVersionAboveTen = enableSwitchTwoVersionUpgrade && selectedRows.length === 1 ? // eslint-disable-next-line max-len
+        (selectedRows[0].nextSchedule?.versionAboveTen ? selectedRows[0].nextSchedule.versionAboveTen.name : '') : ''
+
       selectedRows.forEach((row: FirmwareSwitchVenue) => {
         const version = row.switchFirmwareVersion?.id
         const rodanVersion = enableSwitchRodanFirmware ? row.switchFirmwareVersionAboveTen?.id : ''
-        _.remove(filterVersions, (v: FirmwareVersion) => {
-          if (!enableSwitchRodanFirmware && v.id.startsWith('100')) {
-            return true
-          }
+        // eslint-disable-next-line max-len
+        removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
 
-          return v.id === version || v.id === rodanVersion
-        })
+        if (enableSwitchTwoVersionUpgrade) {
+          nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
+          icx8200Count = icx8200Count + (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
+        }
       })
+
       setChangeUpgradeVersions(filterVersions)
+      setNonIcx8200Count(nonIcx8200Count)
+      setIcx8200Count(icx8200Count)
+      setCurrentScheduleVersion(currentScheduleVersion)
+      setCurrentScheduleVersionAboveTen(currentScheduleVersionAboveTen)
       setChangeScheduleModelVisible(true)
     }
   },
@@ -323,6 +349,8 @@ export const VenueFirmwareTable = (
         visible={updateModelVisible}
         data={venues}
         availableVersions={upgradeVersions}
+        nonIcx8200Count={nonIcx8200Count}
+        icx8200Count={icx8200Count}
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />
@@ -330,6 +358,10 @@ export const VenueFirmwareTable = (
         visible={changeScheduleModelVisible}
         data={venues}
         availableVersions={changeUpgradeVersions}
+        nonIcx8200Count={nonIcx8200Count}
+        icx8200Count={icx8200Count}
+        currentScheduleVersion={currentScheduleVersion}
+        currentScheduleVersionAboveTen={currentScheduleVersionAboveTen}
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
@@ -387,5 +419,17 @@ export function VenueFirmwareList () {
 
 function hasSchedule (venue: FirmwareSwitchVenue): boolean {
   return !!venue.nextSchedule
+}
+
+const removeCurrentVersionsAnd10010IfNeeded = (version: string,
+  rodanVersion: string,
+  filterVersions: FirmwareVersion[],
+  enableSwitchRodanFirmware: boolean) => {
+  _.remove(filterVersions, (v: FirmwareVersion) => {
+    if (!enableSwitchRodanFirmware && v.id.startsWith('100')) {
+      return true
+    }
+    return v.id === version || v.id === rodanVersion
+  })
 }
 

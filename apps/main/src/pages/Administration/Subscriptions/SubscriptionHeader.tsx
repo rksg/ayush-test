@@ -15,9 +15,8 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { getJwtTokenPayload } from '@acx-ui/utils'
-import { AccountTier }        from '@acx-ui/utils'
+import { useParams }                       from '@acx-ui/react-router-dom'
+import { getJwtTokenPayload, AccountTier } from '@acx-ui/utils'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
@@ -62,18 +61,15 @@ export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
   const subscriptionVal = (getJwtTokenPayload().acx_account_tier
-    === AccountTier.PLATINUM? SubscriptionTierType.Platinum : SubscriptionTierType.Gold)
-
+  === AccountTier.PLATINUM? SubscriptionTierType.Platinum : SubscriptionTierType.Gold)
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))
 
   const queryResults = useGetEntitlementSummaryQuery({ params })
-
   const summaryData = subscriptionUtilizationTransformer(
     subscriptionDeviceTypeList,
     queryResults.data ?? [])
-
 
   return (
     <Loader states={[queryResults]}>

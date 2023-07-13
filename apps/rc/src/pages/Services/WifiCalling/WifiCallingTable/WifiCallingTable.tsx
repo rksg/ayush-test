@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { defaultNetworkPayload, SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -45,6 +46,7 @@ export default function WifiCallingTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteWifiCallingServicesMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const WIFICALLING_LIMIT_NUMBER = 5
 
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
@@ -139,7 +141,10 @@ export default function WifiCallingTable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([

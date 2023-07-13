@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 
-import { ArrowUpOutlined, ArrowDownOutlined }                                  from '@ant-design/icons'
-import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
-import { useWatch }                                                            from 'antd/lib/form/Form'
-import _                                                                       from 'lodash'
-import moment                                                                  from 'moment-timezone'
-import { useIntl }                                                             from 'react-intl'
+import { ArrowUpOutlined, ArrowDownOutlined }                                              from '@ant-design/icons'
+import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch, Typography } from 'antd'
+import { useWatch }                                                                        from 'antd/lib/form/Form'
+import _                                                                                   from 'lodash'
+import moment                                                                              from 'moment-timezone'
+import { useIntl }                                                                         from 'react-intl'
+import styled                                                                              from 'styled-components'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }   from '@acx-ui/rc/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                      from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -43,7 +44,10 @@ import {
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
-
+const Info = styled(Typography.Text)`
+  overflow-wrap: anywhere;
+  font-size: 12px;
+`
 
 function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
   const { uploadRate, downloadRate } = props
@@ -52,13 +56,15 @@ function RateLimitLabel (props:{ uploadRate?:number, downloadRate?:number }) {
     <div style={{ display: 'flex' }}>
       <div><ArrowDownOutlined /></div>
       <div>
-        <span>{downloadRate ? downloadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</span>
+        <Info>
+          {downloadRate ? downloadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}
+        </Info>
       </div>
     </div>
     <div style={{ display: 'flex', marginLeft: '4px' }}>
       <div><ArrowUpOutlined /></div>
       <div>
-        <span>{uploadRate ? uploadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</span>
+        <Info>{uploadRate ? uploadRate + 'mbps' : $t({ defaultMessage: 'Unlimited' })}</Info>
       </div>
     </div>
   </div>)
@@ -72,8 +78,8 @@ function DataConsumptionLable (props: {
   const { $t } = useIntl()
   const { billingCycleRepeat, biilingCycleType, billingCycleDays } = props
 
-  if (!billingCycleRepeat) return <span>{$t({ defaultMessage: 'Once' })}</span>
-  return <span>{ $t({ defaultMessage: `Repeating cycles {
+  if (!billingCycleRepeat) return <Info>{$t({ defaultMessage: 'Once' })}</Info>
+  return <Info>{ $t({ defaultMessage: `Repeating cycles {
     cycleType, select,
     CYCLE_MONTHLY {(Monthly)}
     CYCLE_WEEKLY {(Weekly)}
@@ -82,7 +88,7 @@ function DataConsumptionLable (props: {
   }` }, {
     cycleType: biilingCycleType,
     cycleDays: billingCycleDays
-  })}</span>
+  })}</Info>
 
 }
 
@@ -92,35 +98,35 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
   return (
     <div>
       <div>
-        <StepsForm.Title style={{ fontSize: '12px' }}>
+        <Subtitle level={5}>
           {$t({ defaultMessage: 'Rate limiting' })}
-        </StepsForm.Title>
+        </Subtitle>
       </div>
       <div style={{ display: 'flex' }}>
         <div style={{ width: '40%' }}>
-          <span style={{ fontSize: '10px' }}>{$t({ defaultMessage: 'Rate limit:' })}</span>
+          <Info>{$t({ defaultMessage: 'Rate limit:' })}</Info>
         </div>
-        <div style={{ width: '60%', fontSize: '10px' }}>
+        <div style={{ width: '60%', fontSize: '12px' }}>
           <RateLimitLabel uploadRate={data.uploadRate} downloadRate={data.downloadRate} />
         </div>
       </div>
       <div style={{ marginTop: '4px' }}>
-        <StepsForm.Title style={{ fontSize: '12px' }}>
-          {$t({ defaultMessage: 'Data comsumption' })}
-        </StepsForm.Title>
+        <Subtitle level={5}>
+          {$t({ defaultMessage: 'Data consumption' })}
+        </Subtitle>
       </div>
-      <div style={{ display: 'flex', fontSize: '10px' }}>
+      <div style={{ display: 'flex', fontSize: '12px' }}>
         <div style={{ width: '40%' }}>
-          <span>{$t({ defaultMessage: 'MaxData:' })}</span>
+          <Info>{$t({ defaultMessage: 'MaxData:' })}</Info>
         </div>
         <div style={{ width: '60%' }}>
-          <span>{data.dataCapacity > 0 ? data.dataCapacity + 'mbps' :
-            $t({ defaultMessage: 'Unlimited' })}</span>
+          <Info>{data.dataCapacity > 0 ? data.dataCapacity + 'mbps' :
+            $t({ defaultMessage: 'Unlimited' })}</Info>
         </div>
       </div>
-      <div style={{ display: 'flex', fontSize: '10px' }}>
+      <div style={{ display: 'flex', fontSize: '12px' }}>
         <div style={{ width: '40%' }}>
-          <span>{$t({ defaultMessage: 'Consumption cycle:' })}</span>
+          <Info>{$t({ defaultMessage: 'Consumption cycle:' })}</Info>
         </div>
         <div style={{ width: '60%' }}>
           <DataConsumptionLable
@@ -149,14 +155,21 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
       <StepsForm.Title style={{ fontSize: '14px' }}>
         {$t({ defaultMessage: 'Traffic Control' })}
       </StepsForm.Title>
-      <Space direction={'vertical'} size={24} style={{ display: 'flex' }}>
+      <Space direction={'vertical'} size={24} style={{ display: 'flex', marginTop: '5px' }}>
         <Row>
           <Col span={21}>
             <Form.Item
-              label={$t({ defaultMessage: 'Connection Metering' })}
+              label={
+                <>
+                  {$t({ defaultMessage: 'Data Usage Metering' })}
+                  <Tooltip.Question
+                    // eslint-disable-next-line max-len
+                    title={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected data usage metering policy' })}
+                    placement='top'
+                  />
+                </>
+              }
               name={'meteringProfileId'}
-              // eslint-disable-next-line max-len
-              tooltip={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected connection metering policy' })}
             >
               <Select
                 allowClear
@@ -197,7 +210,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
               >
                 <DatePicker
                   format={'YYYY/MM/DD'}
-                  style={{ width: '90%' }}
+                  style={{ width: '100%' }}
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
               </Form.Item>
@@ -207,7 +220,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
       </Space>
 
       <Modal
-        title={$t({ defaultMessage: 'Add Connection Metering' })}
+        title={$t({ defaultMessage: 'Add Data Usage Metering' })}
         visible={modalVisible}
         type={ModalType.ModalStepsForm}
         children={<ConnectionMeteringForm

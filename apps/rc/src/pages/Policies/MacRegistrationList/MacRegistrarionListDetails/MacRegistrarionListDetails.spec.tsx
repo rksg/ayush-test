@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }                                            from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockServer, render, screen }                                  from '@acx-ui/test-utils'
@@ -104,6 +104,50 @@ describe('MacRegistrationListDetails', () => {
     expect(await screen.findByText('ACCEPT')).toBeVisible()
 
     expect(await screen.findByText(networkList.data[0].name)).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'overview'
+    }
+
+    render(<Provider><MacRegistrationListDetails /></Provider>, {
+      // eslint-disable-next-line max-len
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
+    })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'MAC Registration Lists'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'overview'
+    }
+
+    render(<Provider><MacRegistrationListDetails /></Provider>, {
+      // eslint-disable-next-line max-len
+      route: { params, path: '/:tenantId/t/:policyId/:activeTab' }
+    })
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'MAC Registration Lists'
+    })).toBeVisible()
   })
 
   it('should not have active tab if it does not exist', async () => {

@@ -6,7 +6,7 @@ import { defineMessage, FormattedMessage, useIntl }                  from 'react
 import { useParams }                                                 from 'react-router-dom'
 
 import { cssStr, Loader, Tooltip }                                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }             from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
 import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
 import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
@@ -41,7 +41,9 @@ export function LoadBalancing () {
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
     useUpdateVenueLoadBalancingMutation()
 
+  const betaStickyFlag = useIsTierAllowed(TierFeatures.BETA_CLB)
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
+  const supportStickyClient = betaStickyFlag && stickyClientFlag
 
   const infoMessage = defineMessage({
     defaultMessage: `Make sure <b>background scan</b> is selected for channel selection
@@ -235,7 +237,7 @@ export function LoadBalancing () {
     </Row>
     }
 
-    {stickyClientFlag && enabled &&
+    {supportStickyClient && enabled &&
     <Row>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
@@ -258,7 +260,7 @@ export function LoadBalancing () {
     </Row>
     }
 
-    {stickyClientFlag && enabled && stickyClientSteeringEnabled &&
+    {supportStickyClient && enabled && stickyClientSteeringEnabled &&
     <Row>
       <Col span={colSpan}>
         <Space>

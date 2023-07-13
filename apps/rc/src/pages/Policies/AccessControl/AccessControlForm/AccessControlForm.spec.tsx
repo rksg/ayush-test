@@ -4,17 +4,18 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   aclDetail,
-  aclList, aclResponse,
+  aclList, aclResponse, avcApp, avcCat, deviceDetailResponse, devicePolicyListResponse,
   layer2PolicyListResponse,
   layer2Response,
   layer3PolicyListResponse,
-  layer3Response
+  layer3Response, queryApplication
 } from '../__tests__/fixtures'
 
 import AccessControlForm from './AccessControlForm'
@@ -45,6 +46,8 @@ describe('AccessControlForm Component', () => {
         (_, res, ctx) => res(ctx.json(aclResponse))),
       rest.get(AccessControlUrls.getAccessControlProfile.url,
         (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.put(AccessControlUrls.updateAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclDetail))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json(aclList))),
       rest.get(AccessControlUrls.getL2AclPolicyList.url,
@@ -54,7 +57,17 @@ describe('AccessControlForm Component', () => {
       rest.get(AccessControlUrls.getL3AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer3Response))),
       rest.get(AccessControlUrls.getL2AclPolicy.url,
-        (_, res, ctx) => res(ctx.json(layer2Response)))
+        (_, res, ctx) => res(ctx.json(layer2Response))),
+      rest.get(AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(ctx.json(deviceDetailResponse))),
+      rest.get(AccessControlUrls.getDevicePolicyList.url,
+        (_, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.get(AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(ctx.json(queryApplication))),
+      rest.get(AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(ctx.json(avcCat))),
+      rest.get(AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(ctx.json(avcApp)))
     )
   })
 
@@ -80,6 +93,48 @@ describe('AccessControlForm Component', () => {
     await userEvent.click(screen.getByRole('button', {
       name: 'Cancel'
     }))
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <Form>
+          <AccessControlForm editMode={false}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Access Control'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <Form>
+          <AccessControlForm editMode={false}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Access Control'
+    })).toBeVisible()
   })
 
   it('Render AccessControlForm component successfully (create)', async () => {
