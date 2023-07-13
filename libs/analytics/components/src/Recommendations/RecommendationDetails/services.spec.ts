@@ -157,7 +157,7 @@ describe('recommendation services', () => {
       recommendedValue: 'crrm',
       sliceType: 'zone',
       sliceValue: '21_US_Beta_Samsung',
-      status: 'applied',
+      status: 'applyscheduled',
       kpi_number_of_interfering_links: {
         current: 0,
         previous: null,
