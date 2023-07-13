@@ -107,7 +107,7 @@ function useColumns (
           ? getNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
           : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
-            <UI.ScheduleText>{getNextScheduleTpl(intl, row)}</UI.ScheduleText>
+            <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
           </Tooltip>
         )
       }
