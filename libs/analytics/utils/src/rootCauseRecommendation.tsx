@@ -42,6 +42,9 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'p-cov-clientrssi-low': 'rss',
   'p-load-sz-cpu-load': 'sz-cpu-load',
   'p-switch-memory-high': 'switch-memory-high',
+  'p-channeldist-suboptimal-plan-24g': 'channel-dist-24g',
+  'p-channeldist-suboptimal-plan-50g-outdoor': 'channel-dist-50g',
+  'p-channeldist-suboptimal-plan-50g-indoor': 'channel-dist-50g',
   'i-net-time-future': 'time-future',
   'i-net-time-past': 'time-past',
   'i-net-sz-net-latency': 'sz-net-latency',
@@ -127,7 +130,7 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_DOS_ATTACK: {
       rootCauses: defineMessage({ defaultMessage: '<p>Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.</p>' }),
-      recommendations: defineMessage({ defaultMessage: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in RUCKUS One. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>' })
+      recommendations: defineMessage({ defaultMessage: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in {smartZone}. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>' })
     },
     CCD_REASON_ASSOC_TOOMANY: {
       rootCauses: defineMessage({
@@ -277,7 +280,7 @@ export const rootCauseRecommendationMap = {
     },
     CCD_REASON_ASSOC_DOS_ATTACK: {
       rootCauses: defineMessage({ defaultMessage: '<p>Impacted clients are failing association because of a DoS prevention feature that temporarily blocks their connections after they have excessive authentication failures in a short period of time.</p>' }),
-      recommendations: defineMessage({ defaultMessage: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in RUCKUS One. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>' })
+      recommendations: defineMessage({ defaultMessage: '<p>This issue is caused by a DoS protection feature, which can be enabled/disabled in {smartZone}. If the behavior is having an undesirable impact on valid clients, the feature can be disabled or optimized to make the prevention logic more conservative.</p>' })
     },
     CCD_REASON_ASSOC_TOOMANY: {
       rootCauses: defineMessage({
@@ -527,8 +530,8 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `
         <p>In many cases with RADIUS failure, each client device or RADIUS server behaves differently, which causes a variety of unique failure symptoms. If the problem is affecting many users or lasting for a long time, it may be helpful to validate the end-to-end RADIUS setup and network performance:</p>
         <ol>
-          <li>Check the RADIUS server and RUCKUS One settings to identify matching configurations (IP address, port, and shared secret).</li>
-          <li>Check for RADIUS reachability by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li>
+          <li>Check the RADIUS server and {smartZone} settings to identify matching configurations (IP address, port, and shared secret).</li>
+          <li>Check for RADIUS reachability by {smartZone}/AP (network reliability issues, like congestion, drops, flapping links, etc).</li>
           <li>Check for recent changes in the RADIUS infrastructure that may be leading to issues.</li>
           <li>Check RADIUS performance metrics to ensure it has sufficient capacity and is not overloaded.</li>
           <li>Check the wireless link for high congestion, retries/errors, or other unreliability issues.</li>
@@ -538,7 +541,7 @@ export const rootCauseRecommendationMap = {
     CCD_REASON_AAA_SERVER_UNAVAILABLE: {
       rootCauses: defineMessage({
         defaultMessage: `
-        <p>The RADIUS server is offline or unreachable from RUCKUS One/AP (message from RUCKUS One/AP to RADIUS is failing), which is often caused by:</p>
+        <p>The RADIUS server is offline or unreachable from {smartZone}/AP (message from {smartZone}/AP to RADIUS is failing), which is often caused by:</p>
         <ol>
           <li>AP/SZ misconfiguration (Bad IP, bad port).</li>
           <li>The RADIUS server is offline.</li>
@@ -547,8 +550,8 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between RUCKUS One/AP and the RADIUS server.</p>
-        <p>If all services are up and functional, double-check the RADIUS configuration on RUCKUS One/AP.</p>`
+        <p>To fix this issue, it may be necessary to check the RADIUS server availability as well as the link between {smartZone}/AP and the RADIUS server.</p>
+        <p>If all services are up and functional, double-check the RADIUS configuration on {smartZone}/AP.</p>`
       })
     },
     CCD_REASON_AAA_AUTH_FAIL: {
@@ -578,7 +581,7 @@ export const rootCauseRecommendationMap = {
         <p>The RADIUS authentication exchange is failing because of a timeout waiting for a response from the RADIUS server. This is typically caused by the following reasons:</p>
         <ol>
           <li>The RADIUS server is offline.</li>
-          <li>The RADIUS server is unreachable by RUCKUS One/AP (network reliability issues, like congestion, drops, flapping links, etc).</li>
+          <li>The RADIUS server is unreachable by {smartZone}/AP (network reliability issues, like congestion, drops, flapping links, etc).</li>
           <li>The RADIUS server is overloaded and unable to reply.</li>
           <li>The wireless link is experiencing high congestion, retries/errors, or other unreliability issues.</li>
         </ol>`
@@ -587,7 +590,7 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `
         <p>RADIUS timeouts are most likely to be resolved by investigating the RADIUS server health directly, typically by focusing on load or service availability metrics and logs:</p>
         <ol>
-          <li>Is the RADIUS server reliable and reachable (by ping from the AP or RUCKUS One)?</li>
+          <li>Is the RADIUS server reliable and reachable (by ping from the AP or {smartZone})?</li>
           <li>Is the RADIUS server experiencing high load?</li>
           <li>Is the RADIUS hardware infrastructure (CPU, Memory, IO) over-loaded or otherwise suffering a service outage?</li>
           <li>Do the RADIUS logs indicate unusual failures messages or reasons?</li>
@@ -755,9 +758,9 @@ export const rootCauseRecommendationMap = {
           <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
           <ol>
             <li>Ensure that PSE - PoE switch or PoE injector capacity and cumulative power requirements of all APs for full operation are appropriately matched.</li>
-            <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. In rare cases it might indicate configuration corruption.</li>
-            <li>(Typical) Check the connectivity to the AP gateway and latency to RUCKUS One. Download time out is the main cause.</li>
-            <li>RUCKUS One can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing RUCKUS One to reboot the AP. In these cases, an alarm is raised. Use RUCKUS One alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li>
+            <li>(Typical) Check the connectivity to the AP gateway and latency to {smartZone}. In rare cases it might indicate configuration corruption.</li>
+            <li>(Typical) Check the connectivity to the AP gateway and latency to {smartZone}. Download time out is the main cause.</li>
+            <li>{smartZone} can reboot the AP for multiple reasons. There could be an mishandled exception or catastrophic failure in a process, causing {smartZone} to reboot the AP. In these cases, an alarm is raised. Use {smartZone} alarm message, Alarm code: 302 and attribute field to understand and isolate this issue further.</li>
           </ol>
         `
       })
@@ -767,12 +770,12 @@ export const rootCauseRecommendationMap = {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `
-          <p>System has detected high number of AP-RUCKUS One connection failures. This can occur due to following reasons:</p>
+          <p>System has detected high number of AP-{smartZone} connection failures. This can occur due to following reasons:</p>
           <ol>
-            <li>Intermittent or permanent loss of connectivity between AP and RUCKUS One. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-RUCKUS One connection failures.</li>
-            <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-RUCKUS One communication failure.</li>
-            <li>Lack of reachability from AP to RUCKUS One over a WAN connection or cloud would cause APs to disconnect from RUCKUS One.</li>
-            <li>In rare cases, AP certificate is invalid which forces RUCKUS One to deny the incoming connection from the AP.</li>
+            <li>Intermittent or permanent loss of connectivity between AP and {smartZone}. Losing consecutive heartbeat/keepalive messages from the AP will result in AP-{smartZone} connection failures.</li>
+            <li>Improperly configured Firewall or NAT device or a network switch can cause the AP-{smartZone} communication failure.</li>
+            <li>Lack of reachability from AP to {smartZone} over a WAN connection or cloud would cause APs to disconnect from {smartZone}.</li>
+            <li>In rare cases, AP certificate is invalid which forces {smartZone} to deny the incoming connection from the AP.</li>
           </ol>
         `
       }),
@@ -780,9 +783,9 @@ export const rootCauseRecommendationMap = {
         defaultMessage: `
           <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
           <ol>
-            <li>Test network connection between AP and RUCKUS One.</li>
+            <li>Test network connection between AP and {smartZone}.</li>
             <li>Ensure that there is clear communication on all required ports.</li>
-            <li>Test WAN connection health to ensure there is a route from AP to RUCKUS One and there is no or acceptable packet loss.</li>
+            <li>Test WAN connection health to ensure there is a route from AP to {smartZone} and there is no or acceptable packet loss.</li>
             <li>Ensure that AP certificate is valid. Work with Ruckus customer support to identify and resolve this condition.</li>
           </ol>
         `
@@ -812,7 +815,7 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
-  'channel-dist-5g': {
+  'channel-dist-50g': {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `

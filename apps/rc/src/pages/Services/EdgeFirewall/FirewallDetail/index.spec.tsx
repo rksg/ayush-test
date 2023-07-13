@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { EdgeFirewallUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { EdgeFirewallUrls, EdgeUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
 import { mockedFirewallDataList } from '../__tests__/fixtures'
@@ -12,6 +12,7 @@ import FirewallDetail from '.'
 
 
 const mockedUsedNavigate = jest.fn()
+const mockedEdgeListReq = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -32,7 +33,10 @@ describe('Firewall Detail', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeList))
+        (req, res, ctx) => {
+          mockedEdgeListReq()
+          return res(ctx.json(mockEdgeList))
+        }
       )
     )
   })
@@ -45,13 +49,17 @@ describe('Firewall Detail', () => {
         route: { params, path: '/:tenantId/services/firewall/:serviceId/detail' }
       }
     )
+
+    await waitFor(() => {
+      expect(mockedEdgeListReq).toBeCalled()
+    })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(row.length).toBe(5)
     expect(await screen.findByText('ON (2 rules)')).toBeVisible()
     expect(await screen.findByText('ON (IN: 2 rules, OUT: 2 rules)')).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
+  it('should render breadcrumb correctly when feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
@@ -60,11 +68,12 @@ describe('Firewall Detail', () => {
         route: { params, path: '/:tenantId/services/firewall/:serviceId/detail' }
       }
     )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
+    expect(await screen.findByRole('link', {
       name: 'Firewall'
     })).toBeVisible()
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {

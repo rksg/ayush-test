@@ -102,7 +102,9 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   speedKbps: 12* Math.pow(12, 6),
   duplex: 'Full',
   ip: '1.1.1.1',
-  sortIdx: 1
+  sortIdx: 1,
+  vlan: '',
+  subnet: ''
 },
 {
   portId: '2',
@@ -110,11 +112,13 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   status: 'Down',
   adminStatus: 'Disabled',
   type: EdgePortTypeEnum.LAN,
-  mac: 'AA:BB:CC:DD:EE:FF',
+  mac: 'AA:BB:CC:DD:EE:F1',
   speedKbps: 10* Math.pow(12, 6),
   duplex: 'Half',
   ip: '1.1.1.2',
-  sortIdx: 2
+  sortIdx: 2,
+  vlan: '',
+  subnet: ''
 }]
 
 export const mockEdgeDnsServersData = {
@@ -610,4 +614,32 @@ export const mockFirewallData = {
       ]
     }
   ]
+}
+
+export const mockEdgeSubInterfacesStatus = {
+  fields: ['subnet','vlan','ip','name','serial_number','type','sort_idx','mac','status'],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      serialNumber: 'edge-serialnum',
+      sortIdx: 0,
+      name: '',
+      status: 'Up',
+      type: 'LAN',
+      mac: 'AA:BB:CC:DD:EE:FF',
+      ip: '192.168.5.3/25',
+      subnet: '255.255.255.128',
+      vlan: '4'
+    },{
+      serialNumber: 'edge-serialnum',
+      sortIdx: 0,
+      name: '',
+      status: 'Up',
+      type: 'LAN',
+      mac: 'AA:BB:CC:DD:EE:FF',
+      ip: '',
+      subnet: '',
+      vlan: '3'
+    }]
 }

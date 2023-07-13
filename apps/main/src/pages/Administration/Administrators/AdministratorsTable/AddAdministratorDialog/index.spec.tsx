@@ -117,7 +117,7 @@ describe('Add administrator dialog component', () => {
         email: 'c123@email.com',
         role: 'ADMIN',
         detailLevel: 'debug',
-        delegateToAllECs: true
+        delegateToAllECs: false
       })
     })
   })

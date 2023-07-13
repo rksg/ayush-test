@@ -2,9 +2,9 @@ import { gql }     from 'graphql-request'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, TimeSeriesDataType }      from '@acx-ui/analytics/utils'
-import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+import { getSeriesData, TimeSeriesDataType, productNames } from '@acx-ui/analytics/utils'
+import { Card, MultiLineTimeSeriesChart, NoData }          from '@acx-ui/components'
+import { useNavigate, useTenantLink }                      from '@acx-ui/react-router-dom'
 
 import { TimeSeriesChartProps } from '../types'
 
@@ -35,7 +35,10 @@ export const ApDisconnectionCountChart = (
   const chartResults = getSeriesData(
     apDisconnectionCountChart as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
-  return <Card title={$t({ defaultMessage: 'AP-RUCKUS One Disconnections' })} type='no-border'>
+  return <Card
+    title={$t({ defaultMessage: 'AP-{smartZone} Disconnections' }, productNames)}
+    type='no-border'
+  >
     <AutoSizer>
       {({ height, width }) => (
         chartResults.length ?
