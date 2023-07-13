@@ -31,7 +31,8 @@ export interface AdvancedUpdateNowDialogProps {
 }
 
 export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
-  const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions } = useApEolFirmware()
+  // eslint-disable-next-line max-len
+  const { getAvailableEolApFirmwares, getEolABFOtherVersionsOptions, getDefaultEolVersionLabel } = useApEolFirmware()
   const intl = useIntl()
   const { visible, onSubmit, onCancel, data: venuesData = [], availableVersions } = props
   const eolApFirmwares = getAvailableEolApFirmwares(venuesData)
@@ -59,7 +60,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
 
   const otherActiveVersionOptions = otherActiveVersions.map((version) => {
     return {
-      label: getVersionLabel(intl, version),
+      label: getVersionLabel(intl, version, false),
       value: version.name
     }
   })
@@ -123,7 +124,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
                 categoryId={eol.name}
                 abfLabel={intl.$t({ defaultMessage: 'Legacy Device' })}
                 defaultVersionId={eol.latestEolVersion}
-                defaultVersionLabel={eol.latestEolVersion}
+                defaultVersionLabel={getDefaultEolVersionLabel(eol.latestEolVersion)}
                 apModels={eol.apModels?.join(', ')}
                 otherVersions={eolABFOtherVersion[eol.name] ? eolABFOtherVersion[eol.name] : []}
                 update={updateSelectedABF}
