@@ -392,6 +392,24 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port',
     newApi: true
   },
+  getApLed: {
+    method: 'get',
+    // url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
+    newApi: true
+  },
+  updateApLed: {
+    method: 'put',
+    // url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
+    newApi: true
+  },
+  resetApLed: {
+    method: 'delete',
+    // url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
+    newApi: true
+  },
   getApCustomization: {
     method: 'get',
     url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
