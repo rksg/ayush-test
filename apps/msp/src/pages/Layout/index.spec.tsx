@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, MspUrlsInfo }         from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                         from '@acx-ui/msp/utils'
+import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
