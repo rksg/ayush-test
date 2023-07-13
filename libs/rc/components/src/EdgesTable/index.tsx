@@ -24,7 +24,7 @@ import {
   RequestPayload,
   TABLE_QUERY,
   TableQuery,
-  useTableQuery
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -83,7 +83,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
 
-  const tableQuery = useTableQuery({
+  const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
     sorter: {
