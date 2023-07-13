@@ -5,7 +5,8 @@ import { defineMessage } from 'react-intl'
 import {
   nodeTypes,
   getFilterPayload,
-  formattedPath
+  formattedPath,
+  AnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { recommendationApi }         from '@acx-ui/store'
@@ -30,6 +31,7 @@ export type Recommendation = {
   id: string
   code: string
   status: string
+  statusEnum: keyof typeof states
   createdAt: string
   updatedAt: string
   sliceType: string
@@ -54,6 +56,22 @@ export interface MutationResponse {
     }
   }
 }
+
+interface SchedulePayload {
+  id: string
+  scheduledAt: string
+  filters: AnalyticsFilter
+}
+
+interface ScheduleResponse {
+  schedule: {
+    errorCode: string;
+    errorMsg: string;
+    success: boolean;
+  }
+}
+
+
 const radioConfigMap = {
   radio24g: '2.4 GHz',
   radio5g: '5 GHz',
@@ -107,7 +125,8 @@ function transformResponse (recommendations: Recommendation[]) {
       category: $t(codes[code as keyof typeof codes].category),
       summary: $t(codes[code as keyof typeof codes].summary),
       status: $t(states[status as keyof typeof states].text),
-      statusTooltip: getStatusTooltip(code, status, { ...metadata, updatedAt })
+      statusTooltip: getStatusTooltip(code, status, { ...metadata, updatedAt }),
+      statusEnum: status as keyof typeof states
     }
   })
 }
@@ -167,7 +186,49 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: MutationResponse) => response,
       invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
-    })
+    }),
+    scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation MutateRecommendation(
+            $id: String,
+            $scheduledAt: DateTime
+          ) {
+            schedule(id: $id, scheduledAt: $scheduledAt) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          scheduledAt: payload.scheduledAt,
+          path: getFilterPayload(payload.filters)
+        }
+      }),
+      invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+    }),
+    cancelRecommendation: build
+      .mutation<ScheduleResponse, { id: string }>({
+        query: (payload) => ({
+          document: gql`
+          mutation MutateRecommendation(
+            $id: String
+          ) {
+            cancel(id: $id) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+          variables: {
+            id: payload.id
+          }
+        }),
+        invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+      })
   })
 })
 
@@ -175,4 +236,9 @@ export interface Response<Recommendation> {
   recommendations: Recommendation[]
 }
 
-export const { useRecommendationListQuery, useMuteRecommendationMutation } = api
+export const {
+  useRecommendationListQuery,
+  useMuteRecommendationMutation,
+  useScheduleRecommendationMutation,
+  useCancelRecommendationMutation
+} = api

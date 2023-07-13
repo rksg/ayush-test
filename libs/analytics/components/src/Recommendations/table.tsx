@@ -16,6 +16,7 @@ import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { TenantLink, useLocation }     from '@acx-ui/react-router-dom'
 import { noDataDisplay }               from '@acx-ui/utils'
 
+import { RecommendationActions }  from './RecommendationActions'
 import {
   useRecommendationListQuery,
   Recommendation,
@@ -162,6 +163,14 @@ export function RecommendationTable ({ filters, showCrrm }:
         },
         sorter: { compare: sortProp('status', defaultSort) },
         filterable: true
+      },
+      {
+        title: $t(defineMessage({ defaultMessage: 'Actions' })),
+        key: 'id',
+        dataIndex: 'id',
+        width: 90,
+        render: (_, value) =>
+          <RecommendationActions recommendation={value} filters={filters} />
       }
     ]
     return showCrrm
@@ -171,7 +180,7 @@ export function RecommendationTable ({ filters, showCrrm }:
   }, [showCrrm]) // '$t' 'basePath' 'intl' are not changing
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults]} style={{ height: 400 }}>
       <UI.RecommendationTableWrapper
         settingsId='incident-table'
         type='tall'

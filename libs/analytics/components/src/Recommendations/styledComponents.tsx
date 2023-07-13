@@ -68,4 +68,8 @@ styled((props: TableProps<RecommendationRow>) => <Table {...props} />)`
   .ant-radio-inner {
     background-color: var(--acx-primary-white);
   }
+
+  .ant-table-content {
+    overflow: unset !important;
+  }
 `
