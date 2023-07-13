@@ -116,6 +116,7 @@ export function SwitchFrontRearView (props:{
       editData={editLag}
       visible={editLagModalVisible}
       setVisible={setEditLagModalVisible}
+      type='drawer'
     />
     }
   </SwitchPannelContext.Provider>
