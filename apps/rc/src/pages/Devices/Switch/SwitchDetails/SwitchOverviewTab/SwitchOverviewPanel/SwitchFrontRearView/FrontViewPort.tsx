@@ -27,6 +27,7 @@ export function FrontViewPort (props:{
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
     disabledClick } = props
   const {
+    editPortsFromPanelEnabled,
     setEditPortDrawerVisible,
     setSelectedPorts,
     setEditLagModalVisible,
@@ -109,6 +110,9 @@ export function FrontViewPort (props:{
   }
 
   const showEditIcon = () => {
+    if(!editPortsFromPanelEnabled) {
+      return false
+    }
     if(portIcon ==='LagMember'){
       return true
     }

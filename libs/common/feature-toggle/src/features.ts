@@ -57,7 +57,8 @@ export enum Features {
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
-  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  SWITCH_EDIT_PORTS_FROM_PANEL = 'acx-ui-edit-ports-from-panel'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { EditPortDrawer, SwitchLagModal }                       from '@acx-ui/rc/components'
 import { Lag, StackMember, SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { useParams }                                            from '@acx-ui/react-router-dom'
@@ -15,6 +16,7 @@ interface SlotMember {
 }
 
 export const SwitchPannelContext = createContext({} as {
+  editPortsFromPanelEnabled: boolean
   editPortDrawerVisible: boolean
   setEditPortDrawerVisible: (data: boolean) => void
   selectedPorts: SwitchPortStatus[]
@@ -29,6 +31,7 @@ export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
 }) {
   const { stackMember } = props
+  const editPortsFromPanelEnabled = useIsSplitOn(Features.SWITCH_EDIT_PORTS_FROM_PANEL)
   const params = useParams()
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
@@ -73,6 +76,7 @@ export function SwitchFrontRearView (props:{
   }
 
   return <SwitchPannelContext.Provider value={{
+    editPortsFromPanelEnabled,
     editPortDrawerVisible,
     setEditPortDrawerVisible,
     selectedPorts,

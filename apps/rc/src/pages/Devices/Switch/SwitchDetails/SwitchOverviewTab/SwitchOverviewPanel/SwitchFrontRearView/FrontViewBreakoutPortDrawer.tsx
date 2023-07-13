@@ -25,7 +25,11 @@ export interface BreakOutPortDrawerType {
 export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
   const { $t } = useIntl()
   const { drawerVisible, setDrawerVisible, breakoutPorts, portNumber } = props
-  const { setEditPortDrawerVisible, setSelectedPorts } = useContext(SwitchPannelContext)
+  const {
+    editPortsFromPanelEnabled,
+    setEditPortDrawerVisible,
+    setSelectedPorts
+  } = useContext(SwitchPannelContext)
   const breakoutPortsData = breakoutPorts?.map((port) => {
     return {
       ...port,
@@ -153,7 +157,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
           dataSource={breakoutPortsData}
           rowKey='portIdentifier'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{
+          rowSelection={editPortsFromPanelEnabled ? {
             type: 'checkbox',
             renderCell: (checked, record, index, originNode) => {
               return record?.inactiveRow
@@ -165,7 +169,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
                 disabled: record?.inactiveRow
               }
             }
-          }}
+          }: undefined}
         />
       </div>
     }
