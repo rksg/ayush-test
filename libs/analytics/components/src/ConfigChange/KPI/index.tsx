@@ -9,7 +9,8 @@ import {
   kpisForTab,
   kpiConfig,
   useAnalyticsFilter,
-  getFilterPayload
+  getFilterPayload,
+  productNames
 } from '@acx-ui/analytics/utils'
 import { Loader, Tabs, TrendTypeEnum } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
@@ -45,7 +46,7 @@ const KPI = ({ apiMetric, label, format, deltaSign, values }: KPIProps) => {
   const { trend, value } =
     kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, formatterFn)
   return <Statistic
-    title={$t(label)}
+    title={$t(label, productNames)}
     value={$t(
       { defaultMessage: 'Before: {before} | After: {after}' },
       {
@@ -74,8 +75,7 @@ export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
   const { $t } = useIntl()
   const [tabKey, setTabKey] = useState('overview')
 
-  const { kpis: kpiKeys } =
-    kpisForTab(isMLISA)[tabKey as keyof typeof kpisForTab] as { kpis: string[] }
+  const { kpis: kpiKeys } = kpisForTab(isMLISA)[tabKey as keyof ReturnType<typeof kpisForTab>]
   const kpis = kpiKeys
     .filter(key => hasConfigChange(kpiConfig[key as keyof typeof kpiConfig]))
     .reduce((agg, key: string) => {
