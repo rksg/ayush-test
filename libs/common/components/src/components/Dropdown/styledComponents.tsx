@@ -21,16 +21,11 @@ export const OverlayContainer = styled.div`
 
 export const OverlayTitle = styled(Subtitle).attrs({ level: 4 })``
 
-const IconWrapper = styled.div`display: flex;`
-export const CaretDownSolidIcon = () => <IconWrapper><CaretDownSolid/></IconWrapper>
+export const CaretDownSolidIcon = styled(CaretDownSolid)`display: flex;`
 
-const IconReverseWrapper = styled.div`
+export const CaretDownSolidIconReverse = styled(CaretDownSolid)`
   display: flex;
   svg {
     fill: var(--acx-primary-white);
     stroke: var(--acx-primary-white);
-  }
-`
-
-export const CaretDownSolidIconReverse = () =>
-  <IconReverseWrapper><CaretDownSolid/></IconReverseWrapper>
+  }`
