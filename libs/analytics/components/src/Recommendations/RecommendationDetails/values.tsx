@@ -1,3 +1,5 @@
+import { Fragment } from 'react'
+
 import { chain, snakeCase }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
@@ -34,7 +36,7 @@ const getValues = (details: EnhancedRecommendation) => {
     appliedOnce,
     heading: codes[code].valueText,
     original: valueFormatter(originalValue),
-    current: valueFormatter(currentValue),
+    current: currentValue ? valueFormatter(currentValue) : null,
     recommended: valueFormatter(recommendedValue),
     tooltipContent: typeof recommendedValueTooltipContent === 'function'
       ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
@@ -127,14 +129,7 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
     heading, appliedOnce, status, original, current, recommended, tooltipContent
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const firstValue = applied ? original : current
-  const firstLabel = applied
-    ? $t({ defaultMessage: 'Original Configuration' })
-    : $t({ defaultMessage: 'Current Configuration' })
   const secondValue = applied ? current : recommended
-  const secondLabel = applied
-    ? $t({ defaultMessage: 'Current Configuration' })
-    : $t({ defaultMessage: 'Recommended Configuration' })
   const recommendationText = getRecommendationsText(details, $t)
   const tooltipText = typeof tooltipContent === 'string'
     ? tooltipContent
@@ -142,24 +137,39 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
       ? null
       : $t(tooltipContent)
 
+  const fields = [
+    {
+      label: applied
+        ? $t({ defaultMessage: 'Original Configuration' })
+        : $t({ defaultMessage: 'Current Configuration' }),
+      value: applied ? original : current
+    },
+    {
+      label: applied
+        ? $t({ defaultMessage: 'Current Configuration' })
+        : $t({ defaultMessage: 'Recommended Configuration' }),
+      value: tooltipText
+        ? <ValueDetailsWithIcon>
+          {secondValue}
+          {tooltipText && <Tooltip title={tooltipText}>
+            <InfoIcon />
+          </Tooltip>}
+        </ValueDetailsWithIcon>
+        : secondValue
+    }
+  ]
+
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
     <DetailsWrapper>
       <Card type='solid-bg' title={$t(heading)}>
         <GridRow>
-          <GridCol col={{ span: 8 }}>{firstLabel}</GridCol>
-          <GridCol col={{ span: 16 }}><ValueDetails>{firstValue}</ValueDetails></GridCol>
-          <GridCol col={{ span: 8 }}>{secondLabel}</GridCol>
-          <GridCol col={{ span: 16 }}>
-            <ValueDetails>
-              <ValueDetailsWithIcon>
-                {secondValue}
-                {tooltipText && <Tooltip title={tooltipText}>
-                  <InfoIcon />
-                </Tooltip>}
-              </ValueDetailsWithIcon>
-            </ValueDetails>
-          </GridCol>
+          {fields
+            .filter(({ value }) => value !== null)
+            .map(({ label, value }, ind) => <Fragment key={ind}>
+              <GridCol col={{ span: 8 }}>{label}</GridCol>
+              <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
+            </Fragment>)}
         </GridRow>
       </Card>
     </DetailsWrapper>
