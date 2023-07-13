@@ -24,7 +24,7 @@ import {
   WifiUrlsInfo,
   WifiApSetting,
   ApLanPort,
-  ApLed,
+  ApLedSettings,
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,

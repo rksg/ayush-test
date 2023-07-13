@@ -20,6 +20,7 @@ import { LanPorts }      from './LanPorts'
 import { MdnsProxyTab }  from './MdnsProxyTab/MdnsProxyTab'
 import { ApMesh }        from './MeshTab'
 import { RadioSettings } from './RadioTab/RadioSettings'
+import { Advanced } from './AdvancedTab'
 
 
 const { TabPane } = Tabs
@@ -39,6 +40,7 @@ export function ApSettingsTab () {
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  const supportAdvanced = useIsSplitOn(Features.WIFI_FR_6029_FG3_2_TOGGLE)
 
   const isTierAllowMeshEnhancement = useIsTierAllowed(TierFeatures.BETA_MESH)
   const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
@@ -95,7 +97,8 @@ export function ApSettingsTab () {
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
       multicast: $t({ defaultMessage: 'Directed Multicast' }),
       snmp: $t({ defaultMessage: 'AP SNMP' }),
-      mesh: $t({ defaultMessage: 'Mesh' })
+      mesh: $t({ defaultMessage: 'Mesh' }),
+      advanced: $t({ defaultMessage: 'Advanced' })
     }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
@@ -155,6 +158,11 @@ export function ApSettingsTab () {
         {(supportMeshEnhancement && isSupportMesh) &&
         <TabPane tab={tabTitleMap('mesh')} key='mesh'>
           <ApMesh />
+        </TabPane>
+        }
+        {supportAdvanced &&
+        <TabPane tab={tabTitleMap('advanced')} key='advanced'>
+          <Advanced />
         </TabPane>
         }
       </Tabs>

@@ -394,20 +394,17 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApLed: {
     method: 'get',
-    // url: '/venues/aps/:serialNumber/ledSettings',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
+    url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
   updateApLed: {
     method: 'put',
-    // url: '/venues/aps/:serialNumber/ledSettings',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
+    url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
   resetApLed: {
     method: 'delete',
-    // url: '/venues/aps/:serialNumber/ledSettings',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
+    url: '/venues/aps/:serialNumber/ledSettings',
     newApi: true
   },
   getApCustomization: {
