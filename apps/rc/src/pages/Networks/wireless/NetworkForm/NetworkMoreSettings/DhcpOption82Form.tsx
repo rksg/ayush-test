@@ -76,7 +76,7 @@ export function DhcpOption82Form () {
       label={$t({ defaultMessage: 'DHCP Option 82' })}
       initialValue={false}
       switchStyle={{ marginLeft: '88px' }}
-      style={{ width: 'max-content' }}>
+      style={{ width: 'max-content', marginLeft: '-8px' }}>
 
       <UI.FieldLabel width='190px'>
         {$t({ defaultMessage: 'Sub-option 1' })}

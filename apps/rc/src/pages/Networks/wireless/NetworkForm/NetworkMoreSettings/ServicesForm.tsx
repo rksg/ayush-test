@@ -44,6 +44,7 @@ export const WifiCallingSettingContext = createContext({} as WifiCallingSettingC
 
 export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
+  const ssidRateLimitingFeatureBundleFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const [
     enableDnsProxy,
     enableAntiSpoofing,
@@ -290,7 +291,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       <UI.Subtitle>
         {$t({ defaultMessage: 'DHCP' })}
       </UI.Subtitle>
-      <UI.FieldLabel width='125px'>
+      <UI.FieldLabel width='182px'>
         {$t({ defaultMessage: 'Force DHCP' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
@@ -301,7 +302,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         />
       </UI.FieldLabel>
 
-      <DhcpOption82Form/>
+      {ssidRateLimitingFeatureBundleFlag && <DhcpOption82Form/>}
 
       { showTunnelProfile &&
       <Form.Item
