@@ -9,8 +9,9 @@ import { useIntl }                from 'react-intl'
 import { Button, cssStr }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { RadioSettingsChannels }       from '../RadioSettingsChannels'
-import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/R770/RadioSettingsChannels320Mhz'
+import { RadioSettingsChannels }         from '../RadioSettingsChannels'
+import { findIsolatedGroupByChannel }    from '../RadioSettingsChannels/R770/ChannelComponentStates'
+import { RadioSettingsChannels320MhzV2 } from '../RadioSettingsChannels/R770/RadioSettingsChannels320MhzV2'
 import {
   RadioSettingsChannelsManual320Mhz
 } from '../RadioSettingsChannels/R770/RadioSettingsChannelsManual320Mhz'
@@ -90,6 +91,7 @@ export function SingleRadioSettings (props:{
 
   const methodFieldName = [...radioDataKey, 'method']
   const channelBandwidthFieldName = [...radioDataKey, 'channelBandwidth']
+  const channelBandwidth320MhzGroupFieldName = [...radioDataKey, 'channelBandwidth320MhzGroup']
   const allowedChannelsFieldName = [...radioDataKey, 'allowedChannels']
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
@@ -274,11 +276,18 @@ export function SingleRadioSettings (props:{
       const isManualSelect = channelMethod === 'MANUAL'
       const channelLength = channelList.length || 0
 
+      const isolatedGroup = findIsolatedGroupByChannel(channelList)
+
       if (isManualSelect) {
         if (channelLength !== 1) {
           errorMessage = $t({ defaultMessage: 'Please select one channel' })
         }
-      } else if (channelLength < 2) {
+      }
+      else if (channelBandwidth === '320MHz' && isolatedGroup.length !== 0) {
+        // eslint-disable-next-line max-len
+        errorMessage = $t({ defaultMessage: 'Please select two adjacent 160Mhz channels to combine one 320 MHz channel' })
+      }
+      else if (channelLength < 2) {
         errorMessage = $t({ defaultMessage: 'Please select at least two channels' })
       }
       return errorMessage
@@ -347,6 +356,7 @@ export function SingleRadioSettings (props:{
               <RadioSettingsChannelsManual320Mhz
                 context={context}
                 formName={allowedChannelsFieldName}
+                groupFormName={channelBandwidth320MhzGroupFieldName}
                 channelList={channelList}
                 disabled={inherit5G || disable || isUseVenueSettings}
                 editContext={editContext}
@@ -358,7 +368,7 @@ export function SingleRadioSettings (props:{
       return (
         <Row gutter={20}>
           <Col span={channelColSpan}>
-            <RadioSettingsChannels320Mhz
+            <RadioSettingsChannels320MhzV2
               context={context}
               formName={allowedChannelsFieldName}
               channelList={channelList}

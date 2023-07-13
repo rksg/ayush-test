@@ -54,6 +54,9 @@ export {
   RadioSettingsChannels320Mhz
 } from './RadioSettingsChannels/R770/RadioSettingsChannels320Mhz'
 export {
+  RadioSettingsChannels320MhzV2
+} from './RadioSettingsChannels/R770/RadioSettingsChannels320MhzV2'
+export {
   RadioSettingsChannelsManual320Mhz
 } from './RadioSettingsChannels/R770/RadioSettingsChannelsManual320Mhz'
 export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
@@ -135,3 +138,4 @@ export * from './RadioSettings/RadioSettingsContents'
 export * from './SimpleListTooltip'
 export * from './RogueAPDetection'
 export * from './VlanSettingDrawer'
+export * from './RadioSettingsChannels/R770/ChannelComponentStates'

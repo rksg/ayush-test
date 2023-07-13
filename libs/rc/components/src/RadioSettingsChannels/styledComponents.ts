@@ -132,21 +132,20 @@ export const CheckboxGroup = styled(Checkbox.Group)`
 `
 export const CheckboxGroupFor320Mhz = styled(CheckboxGroup)`
   .ant-checkbox-wrapper {
-    border-bottom: 30px solid var(--acx-neutrals-30);
-    width: 260px;
-    border-bottom-width: 30px;
+    width: 140px;
     > span {
       &:last-child {
         position: relative;
         text-align: center;
-        font-size: var(--acx-body-3-font-size);
-        height: 30px;
-        line-height: 30px;
         color: var(--acx-primary-white);
         user-select: none;
       }
     }
+    &.isolated.ant-checkbox-wrapper-checked  {
+      border-bottom-color: var(--acx-semantics-red-60)
+    }
   }
+
 `
 
 const BarButton = styled(Button)`
@@ -171,6 +170,11 @@ export const BarButton5G = styled(BarButton)`
     background: var(--acx-accents-orange-25);
   }
 `
+
+export const BarButton6G = styled(BarButton5G)`
+  width: 99%
+`
+
 export const BarButtonDFS = styled(BarButton)`
   border: 1px solid var(--acx-accents-orange-10);
   background: var(--acx-accents-orange-10);

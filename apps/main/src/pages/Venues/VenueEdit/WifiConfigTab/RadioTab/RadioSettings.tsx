@@ -21,7 +21,8 @@ import { ApRadioTypeEnum,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
   SelectItemOption,
-  SingleRadioSettings }                               from '@acx-ui/rc/components'
+  SingleRadioSettings,
+  findIsolatedGroupByChannel }                               from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetDefaultRadioCustomizationQuery,
@@ -333,13 +334,26 @@ export function RadioSettings () {
 
   const validateRadioChannels = ( data: VenueRadioCustomization ) => {
     const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
-
     const validateChannels = (channels: unknown[] | undefined, title: string) => {
       if (Array.isArray(channels) && channels.length <2) {
         showActionModal({
           type: 'error',
           title: title,
           content: $t({ defaultMessage: 'Please select at least two channels' })
+        })
+        return false
+      }
+      return true
+    }
+    const validate320MHzIsolatedGroup = (channels: unknown[] | undefined, title: string) => {
+      const typeSafeChannels = channels as string[]
+      const isolatedGroup = findIsolatedGroupByChannel(typeSafeChannels)
+      if (isolatedGroup.length > 0) {
+        showActionModal({
+          type: 'error',
+          title: title,
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'Please select two adjacent 160Mhz channels to combine one 320 MHz channel' })
         })
         return false
       }
@@ -361,6 +375,7 @@ export function RadioSettings () {
     const channel6 = radioParams6G?.allowedChannels
     const title6 = $t({ defaultMessage: '6 GHz - Channel selection' })
     if (!validateChannels(channel6, title6)) return false
+    if (!validate320MHzIsolatedGroup(channel6, title6)) return false
 
     const { radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G || {}
     const indoorLowerChannel5 = radioParamsLower5G?.allowedIndoorChannels
