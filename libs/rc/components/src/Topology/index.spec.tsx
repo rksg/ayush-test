@@ -332,55 +332,51 @@ describe('Topology', () => {
 
     expect(ApDevices.length).toBe(5)
 
-    // show tooltip on node mouseover
-    fireEvent.mouseOver(ApDevices[0])
+    // show tooltip on node click
+    fireEvent.click(ApDevices[0])
 
     const apCard = await screen.findByTestId('nodeTooltip')
-    await new Promise((resolve) => setTimeout(resolve, 500))
     expect(apCard).not.toBeNull()
 
-    // hide tooltip on mouseout
-    fireEvent.mouseOut(ApDevices[0])
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    // hide tooltip on close
+    fireEvent.click(screen.getByTestId(/CloseSymbol/i))
     expect(apCard).not.toBeInTheDocument()
 
-    fireEvent.mouseOver(switchDevices[0])
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    fireEvent.click(switchDevices[0])
     expect(await screen.findByTestId('nodeTooltip')).not.toBeNull()
-    fireEvent.mouseOut(ApDevices[0])
+    fireEvent.click(screen.getByTestId(/CloseSymbol/i))
 
-    // show tooltip on edge mouseover
+    // show tooltip on edge click
     const allPaths = await screen.findAllByTestId('topologyEdge')
-    fireEvent.mouseOver(allPaths[0])
+    fireEvent.click(allPaths[0])
     const edgeCard = await screen.findByTestId('edgeTooltip')
     expect(edgeCard).not.toBeNull()
 
-    // hide tooltip on mouseout
-    fireEvent.mouseOut(allPaths[0])
+    // hide tooltip on close
+    fireEvent.click(screen.getByTestId(/CloseSymbol/i))
     expect(edgeCard).not.toBeInTheDocument()
 
     // to cover name || mac comdition
-    fireEvent.mouseOver(allPaths[1])
+    fireEvent.click(allPaths[1])
 
     // to cover poeEnabled false
-    fireEvent.mouseOver(allPaths[3])
+    fireEvent.click(allPaths[3])
 
     const switchStackDevice = await screen.findByTestId('StackDevice')
 
-    fireEvent.mouseOver(switchStackDevice)
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    fireEvent.click(switchStackDevice)
     expect(await screen.findByTestId('nodeTooltip')).not.toBeNull()
 
-    // no tooltip on cloud connection edge mouseover
+    // no tooltip on cloud connection edge click
 
-    fireEvent.mouseOver(allPaths[8])
+    fireEvent.click(allPaths[8])
     expect(edgeCard).not.toBeInTheDocument()
 
 
-    // no tooltip on cloud node mouseover
+    // no tooltip on cloud node click
 
     const cloud = await screen.findByTestId('CloudSolid')
-    fireEvent.mouseOver(cloud)
+    fireEvent.click(cloud)
     expect(apCard).not.toBeInTheDocument()
 
 

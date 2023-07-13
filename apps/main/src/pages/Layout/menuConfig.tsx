@@ -38,7 +38,7 @@ export function useMenuConfig () {
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-
+  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
@@ -190,9 +190,7 @@ export function useMenuConfig () {
             },
             {
               uri: isNavbarEnhanced ? '/networks/wireless/reports/wlans' : '/reports/wlans',
-              label: isNavbarEnhanced
-                ? $t({ defaultMessage: 'WLAN Report' })
-                : $t({ defaultMessage: 'WLANs Report' }),
+              label: $t({ defaultMessage: 'WLANs Report' }),
               isActiveCheck: isNavbarEnhanced ? undefined : IsActiveCheck.IGNORE_ACTIVE_CHECK
             },
             {
@@ -336,7 +334,7 @@ export function useMenuConfig () {
               uri: '/administration/onpremMigration',
               label: $t({ defaultMessage: 'ZD Migration' })
             }] : []),
-            ...(isCloudpathBetaEnabled ? [{
+            ...(isRadiusClientEnabled ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])

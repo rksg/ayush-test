@@ -90,6 +90,15 @@ export interface FirmwareVersion {
   releaseDate?: string;
 }
 
+export interface ABFVersion {
+  abf: string;
+  id: string;
+  name: string;
+  category: FirmwareCategory;
+  releaseDate: string;
+  onboardDate: string;
+}
+
 export interface EolApFirmware {
   name: string;
   currentEolVersion: string;

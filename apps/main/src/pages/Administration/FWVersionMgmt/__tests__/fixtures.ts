@@ -71,6 +71,15 @@ export const venue = [
         category: 'RECOMMENDED'
       }
     ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.413',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ],
     lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
   },
   {
@@ -317,3 +326,54 @@ export const switchCurrentVersions = {
     '10010_rc3'
   ]
 }
+
+export const availableABFList = [
+  {
+    abf: 'active',
+    releaseDate: '2023-06-15T18:54:43.177+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-05-31T02:31:12.682+0000',
+    name: '7.0.0.103.288',
+    id: '7.0.0.103.288'
+  },
+  {
+    abf: 'eol-ap-2022-12',
+    releaseDate: '2023-05-05T19:29:20.563+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-05-05T10:14:59.048+0000',
+    name: '6.2.0.103.533',
+    id: '6.2.0.103.533'
+  },
+  {
+    abf: 'eol-ap-2022-12',
+    releaseDate: '2023-04-18T23:33:30.771+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-04-18T08:04:31.098+0000',
+    name: '6.2.0.103.513',
+    id: '6.2.0.103.513'
+  },
+  {
+    abf: 'eol-ap-2021-05',
+    releaseDate: '2023-02-10T19:03:37.166+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-02-07T09:16:58.390+0000',
+    name: '6.1.0.10.453',
+    id: '6.1.0.10.453'
+  },
+  {
+    abf: 'eol-ap-2021-05',
+    releaseDate: '2023-02-05T19:03:37.166+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-02-01T09:16:58.390+0000',
+    name: '6.1.0.10.433',
+    id: '6.1.0.10.433'
+  },
+  {
+    abf: 'eol-ap-2021-05',
+    releaseDate: '2023-02-01T18:54:43.177+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-01-31T02:31:12.682+0000',
+    name: '6.1.0.10.413',
+    id: '6.1.0.10.413'
+  }
+]
