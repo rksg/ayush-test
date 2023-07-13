@@ -2,6 +2,7 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
+import { act }        from 'react-dom/test-utils'
 
 import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi }     from '@acx-ui/rc/services'
@@ -25,6 +26,9 @@ import {
   editStackMembers,
   standaloneSwitches
 } from '../__tests__/fixtures'
+import {
+  vlansByVenueListResponse
+} from '../SwitchForm/__tests__/fixtures'
 
 import { StackForm } from '.'
 
@@ -35,19 +39,23 @@ jest.mock('react-router-dom', () => ({
 }))
 
 async function fillInForm () {
-  fireEvent.change(await screen.findByLabelText(/Stack Name/), { target: { value: 'test stack' } })
+  const stackNameInput = await screen.findByLabelText(/Stack Name/)
+  fireEvent.change(stackNameInput, { target: { value: '' } })
+  fireEvent.change(stackNameInput, { target: { value: 'test stack' } })
   fireEvent.change(await screen.findByLabelText(/Description/),
     { target: { value: 'test description' } })
-  fireEvent.change(await screen.findByTestId(/serialNumber1/), { target: { value: 'FMK4124R20X' } })
-  fireEvent.change(await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
+  fireEvent.change(
+    await screen.findByTestId(/serialNumber1/), { target: { value: 'FMK4124R20X' } })
+  fireEvent.change(
+    await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
   screen.getByTestId(/serialNumber1/i).focus()
   screen.getByTestId(/serialNumber1/i).blur()
-
 }
 
 async function changeVenue () {
   fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
-  await userEvent.click(screen.getAllByText('My-Venue')[0])
+  const venue = await screen.findAllByText('My-Venue')
+  await userEvent.click(venue[0])
 }
 
 describe('Switch Stack Form - Add', () => {
@@ -62,10 +70,18 @@ describe('Switch Stack Form - Add', () => {
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json(editStackData))),
       rest.post(SwitchUrlsInfo.addSwitch.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+        (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(editStackDetail)))
+        (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.post(SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))),
+      rest.post(SwitchUrlsInfo.convertToStack.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
   afterEach(() => {
@@ -75,8 +91,9 @@ describe('Switch Stack Form - Add', () => {
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
-
-    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+    await waitFor(async () => {
+      expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+    })
 
     await changeVenue()
     await fillInForm()
@@ -105,9 +122,13 @@ describe('Switch Stack Form - Add', () => {
       route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
-    await fillInForm()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
+    await waitFor(async () => {
+      expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+    })
+
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
+    await fillInForm()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -183,14 +204,6 @@ describe('Switch Stack Form - Add', () => {
       route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/add' }
     })
 
-    mockServer.use(
-      rest.post(SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))
-      ),
-      rest.post(SwitchUrlsInfo.convertToStack.url,
-        (_, res, ctx) => res(ctx.json({})))
-    )
-
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
@@ -208,9 +221,6 @@ describe('Switch Stack Form - Add', () => {
     })
 
     mockServer.use(
-      rest.post(SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))
-      ),
       rest.post(SwitchUrlsInfo.convertToStack.url,
         (_, res, ctx) => res(ctx.status(404), ctx.json({})))
     )
@@ -298,7 +308,7 @@ describe('Switch Stack Form - Edit', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
   })
-  it.skip('should submit edit stack form correctly', async () => {
+  it('should submit edit stack form correctly', async () => {
     // TODO:
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
@@ -310,12 +320,10 @@ describe('Switch Stack Form - Edit', () => {
     const src = await screen.findByTestId('1_Icon')
 
     const dst = await screen.findByTestId('dropContainer')
-    fireEvent.dragStart(src)
-    fireEvent.dragEnter(dst)
+    fireEvent.mouseDown(src)
+    fireEvent.mouseMove(dst)
     await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.drop(dst)
-    fireEvent.dragLeave(dst)
-    fireEvent.dragEnd(src)
+    fireEvent.mouseUp(dst)
   })
   it('should render edit stack form with real module correctly', async () => {
     editStackDetail.model = 'ICX7650-C12P'
@@ -333,7 +341,10 @@ describe('Switch Stack Form - Edit', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
 
     const applyButton = await screen.findByRole('button', { name: /apply/i })
-    fireEvent.click(applyButton)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(applyButton)
+    })
   })
   it('should render edit stack form with readonly mode correctly', async () => {
     editStackDetail.cliApplied = true
