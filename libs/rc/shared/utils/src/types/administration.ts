@@ -192,6 +192,22 @@ export interface NotificationRecipientResponse {
   updatedDate: string;
 }
 
+export interface TenantAuthentications {
+  id?: string;
+  name: string;
+  authenticationType: string;
+  clientID?: string;
+  clientIDStatus?: string;
+  clientSecret?: string;
+  tokenURL?: string;
+  samlFileType?: string;
+  samlFileURL?: string;
+  authorizationURL?: string;
+  tenant?: string;
+  url?: string;
+  scopes?: string;
+}
+
 export interface Entitlement {
   id: string;
   deviceType: EntitlementDeviceType;
