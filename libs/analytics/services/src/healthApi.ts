@@ -1,5 +1,6 @@
 import { gql } from 'graphql-request'
 
+import { getAPCountForNode } from '@acx-ui/analytics/components'
 import {
   getSelectedNodePath,
   getFilterPayload,
@@ -79,7 +80,7 @@ const getKPIMetric = (kpi: string, threshold?: string) : string => {
 const getGranularity = (start: string, end: string, kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { minGranularity } } = config
-  return calculateGranularity(start, end, minGranularity)
+  return calculateGranularity(start, end, minGranularity, getAPCountForNode())
 }
 const getHistogramQuery = (kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]

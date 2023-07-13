@@ -19,6 +19,9 @@ export const HealthPageContext = createContext(
   null as unknown as HealthFilter & { apCount?: number }
 )
 
+let apCount: number | undefined
+export const getAPCountForNode = () => apCount // to be used outside components
+
 const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
 
 export const formatTimeWindow = (window: TimeStampRange) : TimeStampRange => window
@@ -48,7 +51,7 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
     setTimeWindow: setTimeWindowCallback,
     timeWindow
   }), [analyticsFilter.filters, setTimeWindowCallback, timeWindow])
-  const apCount = data?.network.node.apCount
+  apCount = data?.network.node.apCount
   return isLoading
     ? null
     : <HealthPageContext.Provider {...props} value={{ ...context, apCount }} />

@@ -1,7 +1,7 @@
 import moment from 'moment-timezone'
 
 export const calculateGranularity = (
-  start: string, end: string, minGranularity?: string
+  start: string, end: string, minGranularity?: string, apCount: number = 0
 ): string => {
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
   let gran
@@ -20,3 +20,4 @@ export const calculateGranularity = (
     ? minGranularity
     : gran
 }
+
