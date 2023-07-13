@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react'
 
-import { Form, RadioChangeEvent } from 'antd'
-import { useWatch }               from 'antd/lib/form/Form'
+import { Form }     from 'antd'
+import { useWatch } from 'antd/lib/form/Form'
+import { useIntl }  from 'react-intl'
 
+import { Tabs }                   from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   GuestNetworkTypeEnum,
@@ -13,14 +15,19 @@ import {
 
 
 
-import NetworkFormContext                             from '../../NetworkFormContext'
-import { hasAccountingRadius, hasVxLanTunnelProfile } from '../../utils'
-import { RadioSwitch }                                from '../styledComponents'
+import NetworkFormContext from '../../NetworkFormContext'
+import {
+  hasAccountingRadius, hasAuthRadius,
+  hasVxLanTunnelProfile
+} from '../../utils'
+import { RadioLabel } from '../styledComponents'
 
 import AdvancedOfMoreSettingsForm       from './AdvancedOfMoreSettingsForm'
 import NetworkControlOfMoreSettingsForm from './NetworkControlOfMoreSettingsForm'
 import NetworkingOfMoreSettingsForm     from './NetworkingOfMoreSettingsForm'
 import RadioOfMoreSettingsForm          from './RadioOfMoreSettingsForm'
+import RadiusOptionsOfMoreSettingsForm  from './RadiusOptionsOfMoreSettingsForm'
+import UserConnectionOfMoreSettingsForm from './UserConnectionOfMoreSettingsForm'
 import VLANOfNetworkMoreSettingsForm    from './VLANOfMoreSettingsForm'
 
 interface MoreSettingsFormProps {
@@ -28,6 +35,7 @@ interface MoreSettingsFormProps {
 }
 
 export function MoreSettingsForm (props: MoreSettingsFormProps) {
+  const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
@@ -37,9 +45,8 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA || data?.type === NetworkTypeEnum.DPSK
   const enableVxLan = hasVxLanTunnelProfile(wlanData)
-  const isHasAccountingRadius = hasAccountingRadius(data, wlanData)
-  const showSingleSessionIdAccounting = !isRadiusOptionsSupport && isHasAccountingRadius
-
+  const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
+  const showRadiusOptionsForm = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const networkWPASecuredList = getNetworkWPASecuredList(enableWPA3_80211R)
 
@@ -75,22 +82,27 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
   }
 
   interface Tab {
-    value: 'VLAN' | 'Network Control' | 'Radio' | 'Networking' | 'Advanced'
+    // eslint-disable-next-line max-len
+    value: 'VLAN' | 'Network Control' | 'Radio' | 'Networking' | 'Radius Options' | 'User Connection' | 'Advanced'
     visible: boolean
   }
+
   const tabs: Tab[] = [
     { value: 'VLAN', visible: true },
     { value: 'Network Control', visible: false },
     { value: 'Radio', visible: false },
     { value: 'Networking', visible: false },
+    { value: 'Radius Options', visible: false },
+    { value: 'User Connection', visible: false },
     { value: 'Advanced', visible: false }
   ]
 
   const [selectedTabValue, setSelectedTabValue] = useState<string>(tabs[0].value)
-  const onSelectedTabChange = ({ target }: RadioChangeEvent): void => {
-    setSelectedTabValue(target.value)
+
+  const onSelectedTabChange = (currentSelectedTabValue: string): void => {
+    setSelectedTabValue(currentSelectedTabValue)
     // hidden form except selected one
-    tabs.forEach((tab) => tab.visible = tab.value === target.value)
+    tabs.forEach((tab) => tab.visible = tab.value === currentSelectedTabValue)
   }
 
   function isHidden (tabValue: string) {
@@ -98,6 +110,7 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
 
     return tab?.value !== selectedTabValue
   }
+
   function getNetworkWPASecuredList (enableWPA3_80211R: boolean) : WlanSecurityEnum[] {
     const networkWPASecuredList = [
       WlanSecurityEnum.WPA2Personal,
@@ -111,18 +124,72 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
     return networkWPASecuredList.concat([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3])
   }
 
+
   return (
     <>
-      <RadioSwitch
-        defaultValue={selectedTabValue}
+      <Tabs
         onChange={onSelectedTabChange}
-        value={selectedTabValue}
-        options={tabs.map(tab => tab.value)}
-        optionType={'button'}
-        buttonStyle={'outline'}
-        size={'large'}
-        style={{ marginBottom: '30px', width: '100%', height: '100%' }}
-      />
+        activeKey={selectedTabValue}
+        type='third'
+      >
+        <Tabs.TabPane
+          key='VLAN'
+          tab={
+            <RadioLabel style={{ width: '18px' }}>
+              {$t({ defaultMessage: 'VLAN' })}
+            </RadioLabel>
+          }
+        />
+        <Tabs.TabPane
+          key='Network Control'
+          tab={
+            <RadioLabel style={{ width: '76px' }}>
+              {$t({ defaultMessage: 'Network Control' })}
+            </RadioLabel>
+          }
+        />
+        <Tabs.TabPane
+          key='Radio'
+          tab={
+            <RadioLabel style={{ width: '13px' }}>
+              {$t({ defaultMessage: 'Radio' })}
+            </RadioLabel>
+          }
+        />
+        <Tabs.TabPane
+          key='Networking'
+          tab={
+            <RadioLabel style={{ width: '76px' }}>
+              {$t({ defaultMessage: 'Networking' })}
+            </RadioLabel>
+          }
+        />
+        <Tabs.TabPane
+          key='Radius Options'
+          tab={
+            <RadioLabel style={{ width: '76px' }}>
+              {$t({ defaultMessage: 'Radius Options' })}
+            </RadioLabel>
+          }
+        />
+        <Tabs.TabPane
+          key='User Connection'
+          tab={
+            <RadioLabel style={{ width: '76px' }}>
+              {$t({ defaultMessage: 'User Connection' })}
+            </RadioLabel>
+          }
+        />
+        <Tabs.TabPane
+          key='Advanced'
+          tab={
+            <RadioLabel style={{ width: '57px' }}>
+              {$t({ defaultMessage: 'Advanced' })}
+            </RadioLabel>
+          }
+        />
+      </Tabs>
+
       <div style={{ marginLeft: '23px' }}>
         <div hidden={isHidden('VLAN') || false}>
           <VLANOfNetworkMoreSettingsForm
@@ -134,11 +201,12 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
         </div>
         <div hidden={isHidden('Network Control') || false}>
           <NetworkControlOfMoreSettingsForm
-            showSingleSessionIdAccounting={showSingleSessionIdAccounting}
+            showSingleSessionIdAccounting={!isRadiusOptionsSupport && showSingleSessionIdAccounting}
           />
         </div>
         <div hidden={isHidden('Radio') || false}>
-          <RadioOfMoreSettingsForm form={form}
+          <RadioOfMoreSettingsForm
+            form={form}
             bssMinimumPhyRate={bssMinimumPhyRate}
             enableOfdmOnly={enableOfdmOnly}
             enableFastRoaming={enableFastRoaming}
@@ -165,8 +233,20 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
             networkWPASecuredList={networkWPASecuredList}
           />
         </div>
+        <div hidden={isHidden('Radius Options') || false}>
+          { showRadiusOptionsForm &&
+            <RadiusOptionsOfMoreSettingsForm
+              context='network'
+              isWispr={data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr}
+              showSingleSessionIdAccounting={showSingleSessionIdAccounting}
+            />
+          }
+        </div>
+        <div hidden={isHidden('User Connection') || false}>
+          <UserConnectionOfMoreSettingsForm />
+        </div>
         <div hidden={isHidden('Advanced') || false}>
-          <AdvancedOfMoreSettingsForm/>
+          {false && <AdvancedOfMoreSettingsForm />}
         </div>
       </div>
     </>

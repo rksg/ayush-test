@@ -12,7 +12,7 @@ function NetworkControlOfMoreSettingsForm (props: Props) {
   return (
     <>
       <div>
-        <ServicesForm showSingleSessionIdAccounting={props.showSingleSessionIdAccounting}/>
+        <ServicesForm showSingleSessionIdAccounting={props.showSingleSessionIdAccounting} />
       </div>
       <div style={{ marginTop: '50px' }}>
         <AccessControlForm />

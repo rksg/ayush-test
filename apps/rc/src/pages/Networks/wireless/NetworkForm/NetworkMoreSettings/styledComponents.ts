@@ -18,11 +18,6 @@ export const Label = styled.span`
   font-size: var(--acx-body-4-font-size);
   line-height: 34px;
 `
-export const RadioSwitch = styled(Radio.Group)`
-  border-radius: 0.5rem;
-  justify-content: left;
-  flex-direction: row;
-`
 
 export const LabelOfInput = styled.span`
     font-size: var(--acx-body-4-font-size);
@@ -67,4 +62,8 @@ display: block;
 export const Description = styled.span`
 color: var(--acx-neutrals-50);
 font-size: var(--acx-body-4-font-size);
+`
+export const RadioLabel = styled.div`
+  display: flex;
+  justify-content: center;
 `
