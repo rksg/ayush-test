@@ -12,6 +12,7 @@ import {
   getFilterPayload
 } from '@acx-ui/analytics/utils'
 import { Loader, Tabs, TrendTypeEnum } from '@acx-ui/components'
+import { get }                         from '@acx-ui/config'
 import { FormatterType, formatter }    from '@acx-ui/formatter'
 import { noDataDisplay }               from '@acx-ui/utils'
 
@@ -69,10 +70,12 @@ function hasConfigChange <RecordType> (
 }
 
 export const KPIs = (props: { kpiTimeRanges: number[][] }) => {
+  const isMLISA = get('IS_MLISA_SA')
   const { $t } = useIntl()
   const [tabKey, setTabKey] = useState('overview')
 
-  const { kpis: kpiKeys } = kpisForTab[tabKey as keyof typeof kpisForTab]
+  const { kpis: kpiKeys } =
+    kpisForTab(isMLISA)[tabKey as keyof typeof kpisForTab] as { kpis: string[] }
   const kpis = kpiKeys
     .filter(key => hasConfigChange(kpiConfig[key as keyof typeof kpiConfig]))
     .reduce((agg, key: string) => {
