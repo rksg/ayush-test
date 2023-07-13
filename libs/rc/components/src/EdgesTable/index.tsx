@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import {
   Loader,
-  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -16,17 +15,22 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useDeleteEdgeMutation,
   useGetEdgeListQuery,
-  useRebootEdgeMutation,
-  useSendOtpMutation,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                             from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                     from '@acx-ui/user'
+import {
+  EdgeStatus,
+  EdgeStatusEnum,
+  RequestPayload,
+  TABLE_QUERY,
+  TableQuery,
+  usePollingTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
 
 import { seriesMappingAP } from '../DevicesWidget'
+import { useEdgeActions }  from '../useEdgeActions'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 import { useExportCsv }    from './useExportCsv'
@@ -79,7 +83,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
 
-  const tableQuery = useTableQuery({
+  const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
     sorter: {
@@ -103,9 +107,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     })
 
-  const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
-  const [ rebootEdge ] = useRebootEdgeMutation()
-  const [sendOtp] = useSendOtpMutation()
+  const { deleteEdges, reboot, sendOtp } = useEdgeActions()
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
@@ -227,22 +229,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'SmartEdges' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length
-          },
-          onOk: () => {
-            rows.length === 1 ?
-              deleteEdge({ params: { serialNumber: rows[0].serialNumber } })
-                .then(clearSelection) :
-              deleteEdge({ payload: rows.map(item => item.serialNumber) })
-                .then(clearSelection)
-          }
-        })
+        deleteEdges(rows, clearSelection)
       }
     },
     {
@@ -250,34 +237,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         EdgeStatusEnum.OPERATIONAL === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          title: $t(
-            { defaultMessage: 'Reboot "{edgeName}"?' },
-            { edgeName: rows[0].name }
-          ),
-          content: $t({
-            defaultMessage: `Rebooting the SmartEdge will disconnect all connected clients.
-              Are you sure you want to reboot?`
-          }),
-          customContent: {
-            action: 'CUSTOM_BUTTONS',
-            buttons: [{
-              text: $t({ defaultMessage: 'Cancel' }),
-              type: 'default',
-              key: 'cancel'
-            }, {
-              text: $t({ defaultMessage: 'Reboot' }),
-              type: 'primary',
-              key: 'ok',
-              closeAfterAction: true,
-              handler: () => {
-                rebootEdge({ params: { serialNumber: rows[0].serialNumber } })
-                  .then(clearSelection)
-              }
-            }]
-          }
-        })
+        reboot(rows[0], clearSelection)
       }
     },
     {
@@ -285,23 +245,12 @@ export const EdgesTable = (props: EdgesTableProps) => {
         EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Send OTP' }),
       onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          title: $t({ defaultMessage: 'Send OTP' }),
-          content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
-          onOk: () => {
-            sendOtp({ params: { serialNumber: rows[0].serialNumber } })
-              .then(clearSelection)
-          }
-        })
+        sendOtp(rows[0], clearSelection)
       }
     }
   ]
   return (
-    <Loader states={[
-      tableQuery,
-      { isLoading: false, isFetching: isDeleteEdgeUpdating }
-    ]}>
+    <Loader states={[tableQuery]}>
       <Table
         settingsId='edges-table'
         rowKey='serialNumber'

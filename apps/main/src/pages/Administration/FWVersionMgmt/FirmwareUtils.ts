@@ -10,7 +10,6 @@ import {
   FirmwareVenueVersion,
   FirmwareType,
   Schedule,
-  EdgeFirmwareVersion,
   LatestEdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -105,12 +104,12 @@ export function getReleaseFirmware<T extends FirmwareVersionType> (firmwareVersi
   return firmwareVersions.filter(categoryIsReleaseFunc)
 }
 
-// eslint-disable-next-line max-len
-export const getVersionLabel = (intl: IntlShape, version: FirmwareVersion | EdgeFirmwareVersion): string => {
+type VersionLabelType = { name: string, category: FirmwareCategory, onboardDate?: string }
+export const getVersionLabel = (intl: IntlShape, version: VersionLabelType): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(version?.category)
-  const versionOnboardDate = transformToUserDate(version)
+  const versionOnboardDate = version.onboardDate ? toUserDate(version.onboardDate) : ''
 
   return `${versionName} (${versionType}) ${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
 }
@@ -121,11 +120,6 @@ export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion)
   const versionType = transform(version?.category)
 
   return `${versionName} (${versionType})`
-}
-
-const transformToUserDate = (firmwareVersion: FirmwareVersion | EdgeFirmwareVersion)
-: string | undefined => {
-  return toUserDate(firmwareVersion?.onboardDate as string)
 }
 
 export const toUserDate = (date: string): string => {
@@ -218,7 +212,17 @@ export const isSwitchNextScheduleTooltipDisabled = (venue: FirmwareSwitchVenue) 
 export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
   if (venue.nextSchedule) {
     const versionName = venue.nextSchedule.version?.name
-    return versionName ? parseSwitchVersion(versionName) : versionName
+    const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
+    let names = []
+
+    if (versionName) {
+      names.push(parseSwitchVersion(versionName))
+    }
+
+    if (versionAboveTenName) {
+      names.push(parseSwitchVersion(versionAboveTenName))
+    }
+    return names.join(', ')
   }
   return ''
 }
@@ -226,7 +230,31 @@ export const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): str
 export const parseSwitchVersion = (version: string) => {
   const defaultVersion = ['09010f_b19', '09010e_b392', '10010_rc3']
   if (defaultVersion.includes(version)) {
-    return version.split('_')[0]
+    return convertSwitchVersionFormat(version.split('_')[0])
+  }
+  return convertSwitchVersionFormat(version)
+}
+
+export const convertSwitchVersionFormat = (version: string) => {
+  // eslint-disable-next-line max-len
+  const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:(?<build>_[a-z]*\d+))?$/
+  const versionGroup = version?.match(switchVersionReg)?.groups
+  const newVersionGroup: string[] = []
+
+  if (versionGroup) {
+    const majorVersionReg = /(\d{2,})(\d+)(\d{2,})$/
+    const majorGroup = versionGroup['major']?.match(majorVersionReg)
+
+    if (majorGroup && majorGroup.shift()) { // remove matched full string
+      if (majorGroup[0].startsWith('0')) {
+        majorGroup[0] = majorGroup[0].replace(/^0+/, '')
+      }
+      newVersionGroup.push(majorGroup.join('.'))
+    }
+    newVersionGroup.push(versionGroup['minor'])
+    newVersionGroup.push(versionGroup['build'])
+
+    return newVersionGroup.join('')
   }
   return version
 }

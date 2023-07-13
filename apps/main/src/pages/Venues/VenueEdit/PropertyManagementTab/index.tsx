@@ -278,12 +278,12 @@ export function PropertyManagementTab () {
     const modal = AntModal['confirm']({})
 
     modal.update({
-      title: $t({ defaultMessage: 'Switch Property Management Off?' }),
+      title: $t({ defaultMessage: 'Disable Property Management?' }),
       content: <>
         {$t(EditPropertyConfigMessages.DISABLE_PROPERTY_MESSAGE)}
         {confirmForm({ text: 'Disable', modal })}
       </>,
-      okText: $t({ defaultMessage: 'Switch Off' }),
+      okText: $t({ defaultMessage: 'Disable' }),
       okButtonProps: { disabled: true },
       onOk: () => {callback()},
       icon: <> </>
@@ -437,6 +437,10 @@ export function PropertyManagementTab () {
                                 ?.getFieldValue('residentPortalId'))?.name}
                           />
                           : <Select
+                            showSearch
+                            filterOption={(input, option) =>
+                              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
                             options={residentPortalList?.data
                               .map(r => ({ value: r.id, label: r.name })) ?? []}
                           />

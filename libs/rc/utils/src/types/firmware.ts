@@ -46,6 +46,7 @@ export interface UpdateScheduleRequest {
   preDownload?: boolean;
   venueIds?: string[] | null
   switchVersion?: string
+  switchVersionAboveTen?: string
 }
 
 export interface UpdateNowRequest {
@@ -87,6 +88,15 @@ export interface FirmwareVersion {
   createdDate?: string; // onboardDate
   onboardDate?: string;
   releaseDate?: string;
+}
+
+export interface ABFVersion {
+  abf: string;
+  id: string;
+  name: string;
+  category: FirmwareCategory;
+  releaseDate: string;
+  onboardDate: string;
 }
 
 export interface EolApFirmware {
@@ -154,6 +164,10 @@ export interface switchSchedule {
     name: string;
     category: FirmwareCategory;
   }
+  versionAboveTen?: {
+    name: string;
+    category: FirmwareCategory;
+  }
 }
 
 export interface FirmwareSwitchVenue {
@@ -168,6 +182,8 @@ export interface FirmwareSwitchVenue {
   lastSkippedVersions: SkippedVersion[];
   versionHistory: VersionHistory[];
   lastScheduleUpdateTime: string;
+  switchCount?: number;
+  aboveTenSwitchCount?: number;
 }
 
 export interface CurrentVersions {
