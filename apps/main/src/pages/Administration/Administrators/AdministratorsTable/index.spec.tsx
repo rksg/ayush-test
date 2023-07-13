@@ -12,6 +12,7 @@ import {
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
@@ -414,6 +415,8 @@ describe('Administrators table with MSP-EC FF enabled', () => {
       </Provider>, {
         route: { params }
       })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     await waitFor(async () => {
       expect(await screen.findByRole('row', { name: /efg.cheng@email.com/ })).toBeVisible()
