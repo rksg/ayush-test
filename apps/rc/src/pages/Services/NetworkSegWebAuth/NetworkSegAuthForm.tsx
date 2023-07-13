@@ -15,6 +15,7 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useCreateWebAuthTemplateMutation,
   useGetWebAuthTemplateQuery,
@@ -23,9 +24,12 @@ import {
 import {
   CommonResult,
   LocationExtended,
+  ServiceOperation,
+  ServiceType,
   WebAuthTemplate,
   defaultTemplateData,
   getServiceListRoutePath,
+  getServiceRoutePath,
   getWebAuthLabelValidator,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
@@ -42,6 +46,9 @@ export default function NetworkSegAuthForm (
   const navigate = useNavigate()
   const location = useLocation()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const path = getServiceRoutePath(
+    { type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.LIST })
 
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
@@ -52,12 +59,12 @@ export default function NetworkSegAuthForm (
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
   const finishHandler = (response?: WebAuthTemplate)=>{
+    formRef.current?.resetFields()
     if (modalMode) modalCallBack(response?.id)
     else redirectPreviousPage(navigate, previousPath, linkToServices)
   }
 
   useEffect(() => {
-    formRef.current?.resetFields()
     if (data && editMode) {
       formRef.current?.setFieldsValue(data)
     }
@@ -109,8 +116,12 @@ export default function NetworkSegAuthForm (
         title={editMode ?
           $t({ defaultMessage: 'Edit Network Segmentation Auth page for Switch' }) :
           $t({ defaultMessage: 'Add Network Segmentation Auth page for Switch' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }), link: path }
+        ] : [
+          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />}
       <StepsFormLegacy<WebAuthTemplate>

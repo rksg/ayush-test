@@ -21,9 +21,10 @@ export const NetworkSegAuthModel = (props: {
       {$t({ defaultMessage: 'Add' })}
     </Button>
     <Modal
-      title={$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
+      title={$t({ defaultMessage: 'Add Network Segmentation Auth page for Switch' })}
       visible={visible}
       type={ModalType.ModalStepsForm}
+      width={680}
       children={
         <NetworkSegAuthForm editMode={false}
           modalMode={true}
