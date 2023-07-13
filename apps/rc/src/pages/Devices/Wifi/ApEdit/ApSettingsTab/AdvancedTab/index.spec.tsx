@@ -1,14 +1,18 @@
-import { useIsSplitOn } from "@acx-ui/feature-toggle"
-import { apApi, venueApi } from "@acx-ui/rc/services"
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest } from "@acx-ui/rc/utils"
-import { Provider, store } from "@acx-ui/store"
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from "@acx-ui/test-utils"
-import { rest } from "msw"
-import { r760Ap, venueData } from "../../../../__tests__/fixtures"
-import { Advanced } from "."
-import { ApDataContext } from ".."
-import { ApEditContext } from "../.."
-import userEvent from "@testing-library/user-event"
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+
+import { ApDataContext }     from '..'
+import { ApEditContext }     from '../..'
+import { r760Ap, venueData } from '../../../../__tests__/fixtures'
+
+import { Advanced } from '.'
+
 
 const params = {
   tenantId: 'tenant-id',
