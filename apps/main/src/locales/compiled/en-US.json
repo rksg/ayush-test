@@ -2213,7 +2213,7 @@
   "QmHS60": "Delete {count, plural, one {\"{entityValue}\"} other {{count} APs} }?",
   "Qo4kOJ": "802.1X Auth Failure",
   "Qph95R": "# of remaining IPs",
-  "Qpk8Ou": "TelnetCpe",
+  "Qpk8Ou": "TelenetCpe",
   "Qq9Z7z": "Resource Utilization",
   "QtFGiO": "Host",
   "QuQfws": "< {threshold}",

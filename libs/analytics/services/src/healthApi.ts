@@ -11,13 +11,14 @@ import { dataApi }     from '@acx-ui/store'
 import { NodesFilter } from '@acx-ui/utils'
 
 export interface KpiThresholdType {
-  timeToConnect: number;
-  rss: number;
-  clientThroughput: number;
-  apCapacity: number;
-  apServiceUptime: number;
-  apToSZLatency: number;
-  switchPoeUtilization: number;
+  timeToConnect: number
+  rss: number
+  clientThroughput: number
+  apCapacity: number
+  apServiceUptime: number
+  apToSZLatency: number
+  switchPoeUtilization: number
+  clusterLatency: number
 }
 
 type datum = number []
@@ -108,6 +109,7 @@ interface ThresholdsApiResponse {
   apServiceUptimeThreshold?: ThresholdData
   apToSZLatencyThreshold?: ThresholdData
   switchPoeUtilizationThreshold?: ThresholdData
+  clusterLatencyThreshold?: ThresholdData
 }
 
 type KpisHavingThreshold = keyof KpiThresholdType
