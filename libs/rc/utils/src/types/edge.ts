@@ -112,6 +112,8 @@ export interface EdgePortStatus {
   duplex:string
   ip: string
   sortIdx: number
+  vlan: string
+  subnet: string
 }
 
 export interface EdgeStatusSeverityStatistic {

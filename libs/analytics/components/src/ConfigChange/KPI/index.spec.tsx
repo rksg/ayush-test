@@ -7,7 +7,7 @@ import { KPIs } from '.'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
-  kpisForTab: {
+  kpisForTab: () => ({
     overview: {
       kpis: [
         'connectionSuccess',
@@ -19,7 +19,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
         'switchPoeUtilization'
       ]
     }
-  }
+  })
 }))
 
 describe('KPIs', () => {

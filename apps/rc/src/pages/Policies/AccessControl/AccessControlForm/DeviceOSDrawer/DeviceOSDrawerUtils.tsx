@@ -19,7 +19,7 @@ const deviceOsVendorMap: Record<string, string[]> = {
   [DeviceTypeEnum.IotDevice]: [OsVendorEnum.All, OsVendorEnum.NestCamera, OsVendorEnum.NestThermostat, OsVendorEnum.WemoSmartSwitch, OsVendorEnum.WifiSmartPlug],
   // eslint-disable-next-line max-len
   [DeviceTypeEnum.HomeAvEquipment]: [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick],
-  [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
+  [DeviceTypeEnum.WdsDevice]: [OsVendorEnum.All, OsVendorEnum.TelenetCpe]
 }
 
 export const getDeviceOsVendorMap = () => {
@@ -54,7 +54,7 @@ export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
       // eslint-disable-next-line max-len
       return [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick]
     case DeviceTypeEnum.WdsDevice:
-      return [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
+      return [OsVendorEnum.All, OsVendorEnum.TelenetCpe]
     default:
       return []
   }
