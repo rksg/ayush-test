@@ -10,7 +10,7 @@ import {
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useMspEntitlementListQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   dateSort,
   defaultSort,

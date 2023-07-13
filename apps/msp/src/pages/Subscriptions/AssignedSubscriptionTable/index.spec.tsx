@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 

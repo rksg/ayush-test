@@ -19,12 +19,14 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   dateDisplayText,
   DateSelectionEnum,
   // MspAssignmentHistory,
-  MspAssignmentSummary,
+  MspAssignmentSummary
+} from '@acx-ui/msp/utils'
+import {
   EntitlementDeviceType
 } from '@acx-ui/rc/utils'
 import {
