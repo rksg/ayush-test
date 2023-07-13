@@ -1,10 +1,9 @@
+
 import React, { useContext, useState } from 'react'
 
 import { Form }     from 'antd'
 import { useWatch } from 'antd/lib/form/Form'
-import { useIntl }  from 'react-intl'
 
-import { Tabs }                   from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   GuestNetworkTypeEnum,
@@ -13,20 +12,18 @@ import {
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
-
-
 import NetworkFormContext from '../../NetworkFormContext'
 import {
   hasAccountingRadius, hasAuthRadius,
   hasVxLanTunnelProfile
 } from '../../utils'
-import { RadioLabel } from '../styledComponents'
 
 import AdvancedOfMoreSettingsForm       from './AdvancedOfMoreSettingsForm'
 import NetworkControlOfMoreSettingsForm from './NetworkControlOfMoreSettingsForm'
 import NetworkingOfMoreSettingsForm     from './NetworkingOfMoreSettingsForm'
 import RadioOfMoreSettingsForm          from './RadioOfMoreSettingsForm'
 import RadiusOptionsOfMoreSettingsForm  from './RadiusOptionsOfMoreSettingsForm'
+import TabSwitcher                      from './TabSwitcher'
 import UserConnectionOfMoreSettingsForm from './UserConnectionOfMoreSettingsForm'
 import VLANOfNetworkMoreSettingsForm    from './VLANOfMoreSettingsForm'
 
@@ -34,8 +31,20 @@ interface MoreSettingsFormProps {
   wlanData: NetworkSaveData | null;
 }
 
+function getNetworkWPASecuredList (enableWPA3_80211R: boolean) : WlanSecurityEnum[] {
+  const networkWPASecuredList = [
+    WlanSecurityEnum.WPA2Personal,
+    WlanSecurityEnum.WPAPersonal,
+    WlanSecurityEnum.WPA2Enterprise
+  ]
+
+  if (!enableWPA3_80211R)
+    return networkWPASecuredList
+
+  return networkWPASecuredList.concat([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3])
+}
+
 export function MoreSettingsForm (props: MoreSettingsFormProps) {
-  const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
@@ -81,115 +90,29 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
     form.setFieldValue(['wlan', 'vlanId'], 3000)
   }
 
-  interface Tab {
+  const tabs: string[] = [
     // eslint-disable-next-line max-len
-    value: 'VLAN' | 'Network Control' | 'Radio' | 'Networking' | 'Radius Options' | 'User Connection' | 'Advanced'
-    visible: boolean
-  }
-
-  const tabs: Tab[] = [
-    { value: 'VLAN', visible: true },
-    { value: 'Network Control', visible: false },
-    { value: 'Radio', visible: false },
-    { value: 'Networking', visible: false },
-    { value: 'Radius Options', visible: false },
-    { value: 'User Connection', visible: false },
-    { value: 'Advanced', visible: false }
+    'VLAN', 'Network Control' , 'Radio' , 'Networking' ,'Radius Options' , 'User Connection' , 'Advanced'
   ]
 
-  const [selectedTabValue, setSelectedTabValue] = useState<string>(tabs[0].value)
+  const [selectedTabValue, setSelectedTabValue] = useState<string>(tabs[0])
 
-  const onSelectedTabChange = (currentSelectedTabValue: string): void => {
-    setSelectedTabValue(currentSelectedTabValue)
-    // hidden form except selected one
-    tabs.forEach((tab) => tab.visible = tab.value === currentSelectedTabValue)
+  const handleSelectedTabValueChange = (selectedTabValue: string): void => {
+    setSelectedTabValue(selectedTabValue)
   }
 
-  function isHidden (tabValue: string) {
-    const tab = tabs.find(tab => tab.value === tabValue)
+  const isHidden = (subject: string) => {
+    const tab = tabs.find(tab => tab === subject)
 
-    return tab?.value !== selectedTabValue
+    return tab !== selectedTabValue
   }
-
-  function getNetworkWPASecuredList (enableWPA3_80211R: boolean) : WlanSecurityEnum[] {
-    const networkWPASecuredList = [
-      WlanSecurityEnum.WPA2Personal,
-      WlanSecurityEnum.WPAPersonal,
-      WlanSecurityEnum.WPA2Enterprise
-    ]
-
-    if (!enableWPA3_80211R)
-      return networkWPASecuredList
-
-    return networkWPASecuredList.concat([WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3])
-  }
-
 
   return (
-    <>
-      <Tabs
-        onChange={onSelectedTabChange}
-        activeKey={selectedTabValue}
-        type='third'
-      >
-        <Tabs.TabPane
-          key='VLAN'
-          tab={
-            <RadioLabel style={{ width: '18px' }}>
-              {$t({ defaultMessage: 'VLAN' })}
-            </RadioLabel>
-          }
-        />
-        <Tabs.TabPane
-          key='Network Control'
-          tab={
-            <RadioLabel style={{ width: '76px' }}>
-              {$t({ defaultMessage: 'Network Control' })}
-            </RadioLabel>
-          }
-        />
-        <Tabs.TabPane
-          key='Radio'
-          tab={
-            <RadioLabel style={{ width: '13px' }}>
-              {$t({ defaultMessage: 'Radio' })}
-            </RadioLabel>
-          }
-        />
-        <Tabs.TabPane
-          key='Networking'
-          tab={
-            <RadioLabel style={{ width: '76px' }}>
-              {$t({ defaultMessage: 'Networking' })}
-            </RadioLabel>
-          }
-        />
-        <Tabs.TabPane
-          key='Radius Options'
-          tab={
-            <RadioLabel style={{ width: '76px' }}>
-              {$t({ defaultMessage: 'Radius Options' })}
-            </RadioLabel>
-          }
-        />
-        <Tabs.TabPane
-          key='User Connection'
-          tab={
-            <RadioLabel style={{ width: '76px' }}>
-              {$t({ defaultMessage: 'User Connection' })}
-            </RadioLabel>
-          }
-        />
-        <Tabs.TabPane
-          key='Advanced'
-          tab={
-            <RadioLabel style={{ width: '57px' }}>
-              {$t({ defaultMessage: 'Advanced' })}
-            </RadioLabel>
-          }
-        />
-      </Tabs>
-
+    <Form>
+      <TabSwitcher
+        handleSelectedTabValueChange={handleSelectedTabValueChange}
+        defaultValue={selectedTabValue}
+      />
       <div style={{ marginLeft: '23px' }}>
         <div hidden={isHidden('VLAN') || false}>
           <VLANOfNetworkMoreSettingsForm
@@ -234,7 +157,7 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
           />
         </div>
         <div hidden={isHidden('Radius Options') || false}>
-          { showRadiusOptionsForm &&
+          {showRadiusOptionsForm &&
             <RadiusOptionsOfMoreSettingsForm
               context='network'
               isWispr={data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr}
@@ -246,10 +169,10 @@ export function MoreSettingsForm (props: MoreSettingsFormProps) {
           <UserConnectionOfMoreSettingsForm />
         </div>
         <div hidden={isHidden('Advanced') || false}>
-          {false && <AdvancedOfMoreSettingsForm />}
+          <AdvancedOfMoreSettingsForm />
         </div>
       </div>
-    </>
+    </Form>
   )
 }
 
