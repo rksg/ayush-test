@@ -66,14 +66,9 @@ export function RecommendationTable ({ filters, showCrrm }:
 
   const selectedRecommendation = selectedRowData[0]
 
-  const data = (() => {
-    const filterCrrm = queryResults.data?.filter((val) => showCrrm
-      ? val.code.includes('crrm')
-      : !val.code.includes('crrm'))
-    return (showMuted)
-      ? filterCrrm
-      : filterCrrm?.filter((r: Recommendation) => !r.isMuted)
-  })()
+  const data = queryResults?.data?.filter((row) =>
+    (showCrrm === row.code.includes('crrm')) && (showMuted || !row.isMuted)
+  )
 
   const rowActions: TableProps<Recommendation>['rowActions'] = [
     {
