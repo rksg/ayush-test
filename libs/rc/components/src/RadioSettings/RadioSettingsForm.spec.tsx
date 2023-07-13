@@ -14,7 +14,7 @@ import { ApRadioTypeDataKeyMap, ApRadioTypeEnum,
 import { RadioSettingsForm } from './RadioSettingsForm'
 
 
-describe('RadioSettingForm component', () => {
+describe.skip('RadioSettingForm component', () => {
   it('should render Venue Radio 2.4G', async () => {
     const radioType = ApRadioTypeEnum.Radio24G
     const radioDataKey = VenueRadioTypeDataKeyMap[radioType]

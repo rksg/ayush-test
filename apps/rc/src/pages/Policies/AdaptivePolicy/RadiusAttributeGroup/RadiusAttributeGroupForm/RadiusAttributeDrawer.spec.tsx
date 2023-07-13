@@ -28,6 +28,7 @@ describe('RadiusAttributeDrawer', () => {
           isEdit={false}
           editAttribute={undefined}
           setAttributeAssignments={jest.fn()}
+          getAttributeAssignments={jest.fn()}
         />
       </Provider>,
       {
@@ -70,6 +71,7 @@ describe('RadiusAttributeDrawer', () => {
           isEdit={true}
           editAttribute={editAttribute}
           setAttributeAssignments={jest.fn()}
+          getAttributeAssignments={jest.fn()}
         />
       </Provider>,
       {

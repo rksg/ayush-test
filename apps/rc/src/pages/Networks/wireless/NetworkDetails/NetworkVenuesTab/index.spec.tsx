@@ -39,6 +39,7 @@ import { NetworkVenuesTab } from './index'
 
 jest.mock('socket.io-client')
 
+const mockedApplyFn = jest.fn()
 describe('NetworkVenuesTab', () => {
   beforeAll(async () => {
     const env = {
@@ -80,7 +81,10 @@ describe('NetworkVenuesTab', () => {
       ),
       rest.put(
         WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({}))
+        (req, res, ctx) => {
+          mockedApplyFn()
+          return res(ctx.json({}))
+        }
       )
     )
   })
@@ -543,9 +547,13 @@ describe('NetworkVenuesTab', () => {
     fireEvent.click(within(radioTag).getByRole('img', { name: 'close', hidden: true }))
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    await waitFor(() => {
+      expect(mockedApplyFn).toBeCalled()
+    })
   })
 
   it('should trigger NetworkSchedulingDialog', async () => {
+    const requestSpy = jest.fn()
     const newVenues = [
       {
         ...network.venues[0],
@@ -570,6 +578,13 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      ),
+      rest.get(
+        'https://maps.googleapis.com/maps/api/timezone/json',
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json(timezoneRes))
+        }
       )
     )
 
@@ -589,5 +604,9 @@ describe('NetworkVenuesTab', () => {
 
     const applyButton = await within(dialog).findByRole('button', { name: 'Apply' })
     fireEvent.click(applyButton)
+
+    await waitFor(() => {
+      expect(mockedApplyFn).toBeCalled()
+    })
   })
 })
