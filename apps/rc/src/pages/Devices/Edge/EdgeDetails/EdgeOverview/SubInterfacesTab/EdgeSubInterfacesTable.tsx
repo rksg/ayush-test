@@ -28,12 +28,6 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
 
   const columns: TableProps<EdgePortStatus>['columns'] = [
     {
-      key: 'sortIdx',
-      dataIndex: 'sortIdx',
-      defaultSortOrder: 'ascend',
-      show: false
-    },
-    {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'type',
       dataIndex: 'type',
@@ -77,6 +71,7 @@ export const EdgeSubInterfacesTable = ({ serialNumber, portMac }:
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
       />
     </Loader>
   )

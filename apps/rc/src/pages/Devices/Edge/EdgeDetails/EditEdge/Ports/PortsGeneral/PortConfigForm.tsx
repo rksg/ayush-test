@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react'
 
 import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
+import TextArea                                                from 'antd/lib/input/TextArea'
 import { useIntl }                                             from 'react-intl'
 
 import { StepsFormLegacy }                                                                                        from '@acx-ui/components'
@@ -205,11 +206,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
         <Col span={5}>
           <Form.Item
             name='name'
-            label={$t({ defaultMessage: 'Port Name' })}
+            label={$t({ defaultMessage: 'Description' })}
             rules={[
-              { max: 64 }
+              { max: 255 }
             ]}
-            children={<Input />}
+            children={<TextArea />}
           />
           <Form.Item
             name='portType'
