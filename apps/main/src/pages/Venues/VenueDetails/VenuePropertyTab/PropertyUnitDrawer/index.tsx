@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { ArrowUpOutlined, ArrowDownOutlined }                                              from '@ant-design/icons'
 import { Checkbox, Col, Form, Input, InputNumber, Row, Select, Space, Switch, Typography } from 'antd'
@@ -140,15 +140,25 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
 }
 
 
-function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
+function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], isEdit: boolean })
 {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data } = props
+  const { data, isEdit } = props
   const [modalVisible, setModalVisible] = useState(false)
   const onModalClose = () => setModalVisible(false)
   const [profileMap, setProfileMap] = useState(new Map(data.map((p) => [p.id, p])))
   const profileId = useWatch('meteringProfileId', form)
+  const bottonRef = useRef<HTMLDivElement>(null)
+  const shouldScrollDown = useRef<boolean>(!isEdit)
+
+  useEffect(()=> {
+    if (shouldScrollDown.current && profileId && bottonRef.current) {
+      bottonRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [profileId])
+
+
 
   return (
     <>
@@ -176,6 +186,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 options={Array.from(profileMap,
                   (entry) => ({ label: entry[1].name, value: entry[0] }))}
+                onChange={()=> {shouldScrollDown.current = true}}
               />
             </Form.Item>
           </Col>
@@ -189,7 +200,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
             </Button>
           </Col>
         </Row>
-        {profileId &&
+        {profileId && profileMap.has(profileId) &&
         <>
           <Row>
             <Col span={24}>
@@ -214,6 +225,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
               </Form.Item>
+              <div ref={bottonRef}></div>
             </Col>
           </Row>
         </>}
@@ -685,6 +697,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             name='propertyUnitForm'
             form={form}
             layout={'vertical'}
+            scrollToFirstError={true}
           >
             <Form.Item name='id' noStyle><Input type='hidden' /></Form.Item>
             <Form.Item name='personaId' noStyle><Input type='hidden' /></Form.Item>
@@ -787,6 +800,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             {isConnectionMeteringEnabled &&
               <ConnectionMeteringSettingForm
                 data={connectionMeteringList}
+                isEdit
               />
             }
           </Form>
@@ -795,7 +809,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       footer={<Drawer.FormFooter
         buttonLabel={{
           save: isEdit
-            ? $t({ defaultMessage: 'Save' })
+            ? $t({ defaultMessage: 'Apply' })
             : $t({ defaultMessage: 'Add' })
         }}
         onSave={onSave}

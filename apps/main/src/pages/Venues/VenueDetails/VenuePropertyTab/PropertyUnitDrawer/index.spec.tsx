@@ -106,6 +106,7 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should render simple drawer', async () => {
+    window.HTMLElement.prototype.scrollIntoView = function () {}
     render(<Provider>
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)
@@ -125,6 +126,8 @@ describe('Property Unit Drawer', () => {
         PropertyUrlsInfo.getPropertyUnitList.url,
         (_, res, ctx) => res(ctx.json(mockPropertyUnitList)))
     )
+    window.HTMLElement.prototype.scrollIntoView = function () {}
+
     render(<Provider>
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)
@@ -146,6 +149,7 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should edit no nsg drawer', async () => {
+    window.HTMLElement.prototype.scrollIntoView = function () {}
     render(<Provider>
       <PropertyUnitDrawer
         isEdit
@@ -163,7 +167,7 @@ describe('Property Unit Drawer', () => {
     await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
     await userEvent.click(await screen.findByText(mockConnectionMeterings[3].name))
 
-    const saveBtn = await screen.findByRole('button', { name: /save/i })
+    const saveBtn = await screen.findByRole('button', { name: /Apply/i })
     await screen.findByText('Rate limiting')
     await screen.findByText('Data consumption')
     await screen.findByText('Expiration Date of Data Consumption')
@@ -171,6 +175,7 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should edit nsg drawer', async () => {
+    window.HTMLElement.prototype.scrollIntoView = function () {}
     render(<Provider>
       <PropertyUnitDrawer
         isEdit
@@ -190,7 +195,7 @@ describe('Property Unit Drawer', () => {
 
     await userEvent.click(await screen.findByText(mockConnectionMeterings[0].name))
     await userEvent.click(await screen.findByText(mockConnectionMeterings[1].name))
-    const saveBtn = await screen.findByRole('button', { name: /save/i })
+    const saveBtn = await screen.findByRole('button', { name: /Apply/i })
     await userEvent.click(saveBtn)
   })
 })
