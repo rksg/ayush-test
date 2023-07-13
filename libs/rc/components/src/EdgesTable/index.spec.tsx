@@ -29,6 +29,7 @@ const mockedRebootApi = jest.fn()
 describe('Edge Table', () => {
   let params: { tenantId: string }
   beforeEach(() => {
+    document.body.innerHTML = '' //FIXME:
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }

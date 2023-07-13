@@ -394,6 +394,10 @@ export const validationMessages = {
   specialCharacterNameInvalid: defineMessage({
     defaultMessage: 'Special character is invalid',
     description: 'Validation - name for service and policy'
+  }),
+  colonSeparatedMacInvalid: defineMessage({
+    defaultMessage: 'Please provide a valid MAC address in semicolon-separated format.',
+    description: 'Validation - colon separated MAC address checks'
   })
 }
 
