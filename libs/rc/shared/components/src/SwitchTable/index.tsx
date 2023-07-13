@@ -325,25 +325,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
-    tooltip: stackTooltip, // TODO: tooltip won't show when button is disabled
+    tooltip: stackTooltip,
     disabled: (rows) => {
-      const modelFamily = rows[0]?.model?.split('-')[0]
-      const venueId = rows[0]?.venueId
-      const notOperational = rows.find(i =>
-        !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
-      const invalid = rows.find(i =>
-        i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId)
-      const hasStack = rows.find(i => i.isStack || i.formStacking)
-      setStackTooltip('')
-
-      if(!!hasStack) {
-        setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
-      } else if(!!notOperational) {
-        setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
-      } else if(!!invalid) {
-        setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
-      }
-
+      const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(rows)
       return !!notOperational || !!invalid || !!hasStack
     },
     onClick: (selectedRows) => {
@@ -382,6 +366,23 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
   }
 
+  const checkSelectedRowsStatus = (rows: SwitchRow[]) => {
+    const modelFamily = rows[0]?.model?.split('-')[0]
+    const venueId = rows[0]?.venueId
+
+    const notOperational = rows.find(i =>
+      !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
+    const invalid = rows.find(i =>
+      i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId)
+    const hasStack = rows.find(i => i.isStack || i.formStacking)
+
+    return {
+      hasStack,
+      notOperational,
+      invalid
+    }
+  }
+
   return <Loader states={[tableQuery]}>
     <Table<SwitchRow>
       {...props}
@@ -406,7 +407,19 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         },
         getCheckboxProps: (record) => ({
           disabled: !record.isFirstLevel
-        })
+        }),
+        onChange (selectedRowKeys, selectedRows) {
+          const { hasStack, notOperational, invalid } = checkSelectedRowsStatus(selectedRows)
+
+          setStackTooltip('')
+          if(!!hasStack) {
+            setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
+          } else if(!!notOperational) {
+            setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
+          } else if(!!invalid) {
+            setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+          }
+        }
       } : undefined}
       actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),

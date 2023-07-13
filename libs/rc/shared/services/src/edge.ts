@@ -262,6 +262,15 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         return result?.data
       }
     }),
+    getEdgeSubInterfacesStatusList: build.query<TableResult<EdgePortStatus>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeSubInterfacesStatusList)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getLatestEdgeFirmware: build.query<LatestEdgeFirmwareVersion[], RequestPayload>({
       query: () => {
         const req = createHttpRequest(EdgeUrlsInfo.getLatestEdgeFirmware)
@@ -468,6 +477,7 @@ export const {
   useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery,
   useGetEdgePortsStatusListQuery,
+  useGetEdgeSubInterfacesStatusListQuery,
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetVenueEdgeFirmwareListQuery,
   useUpdateEdgeFirmwareMutation,

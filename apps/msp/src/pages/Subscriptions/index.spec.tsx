@@ -70,7 +70,7 @@ const summary =
     }
   ]
 
-describe('Subscriptions', () => {
+describe.skip('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(

@@ -60,14 +60,6 @@ const ApplicationPolicyMgmt = () => {
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>
-              <UI.CurrentLabel>
-                {$t({ defaultMessage: 'Support Regular:' })}
-              </UI.CurrentLabel>
-              <UI.CurrentValue>
-                {$t({ defaultMessage: 'Yes' })}
-              </UI.CurrentValue>
-            </UI.CurrentDetail>
-            <UI.CurrentDetail>
               <UI.CurrentLabelBold>
                 {$t({ defaultMessage: 'Release' })}
               </UI.CurrentLabelBold>
@@ -83,14 +75,6 @@ const ApplicationPolicyMgmt = () => {
               </UI.CurrentLabelBold>
               <UI.CurrentValue>
                 {'RuckusSigPack-'+data?.currentVersion}
-              </UI.CurrentValue>
-            </UI.CurrentDetail>
-            <UI.CurrentDetail>
-              <UI.CurrentLabel>
-                {$t({ defaultMessage: 'Support Regular:' })}
-              </UI.CurrentLabel>
-              <UI.CurrentValue>
-                {$t({ defaultMessage: 'Yes' })}
               </UI.CurrentValue>
             </UI.CurrentDetail>
             <UI.CurrentDetail>

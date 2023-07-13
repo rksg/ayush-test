@@ -92,15 +92,14 @@ const transformExpirationDate = (row: MspEc) => {
   const entitlements = row.entitlements
   let target: DelegationEntitlementRecord
   entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    target = entitlement
-    const consumed = parseInt(entitlement.quantity, 10)
+    const consumed = parseInt(entitlement.consumed, 10)
     const quantity = parseInt(entitlement.quantity, 10)
     if (consumed > 0 || quantity > 0) {
       if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
         target = entitlement
       }
     }
-    expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
+    expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
   })
   return expirationDate
 }
