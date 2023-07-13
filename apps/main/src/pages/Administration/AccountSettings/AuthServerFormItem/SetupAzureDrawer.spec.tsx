@@ -118,11 +118,12 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByText('IdP Metadata')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Upload file instead' }))
     expect(await screen.findByRole('button', { name: 'Browse' })).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Paste IdP Metadata code instead' }))
+    await userEvent.click(screen.getByRole('button',
+      { name: 'Paste IdP Metadata code or link instead' }))
     expect(screen.getByText('IdP Metadata')).toBeVisible()
     // TODO: check if add page should start out on metadata page; if not, should use below tests instead
     // expect(screen.getByRole('button', { name: 'Browse' })).toBeVisible()
-    // await userEvent.click(screen.getByRole('button', { name: 'Paste IdP Metadata code instead' }))
+    // await userEvent.click(screen.getByRole('button', { name: 'Paste IdP Metadata code or link instead' }))
     // await userEvent.click(await screen.findByRole('button', { name: 'Upload file instead' }))
     // expect(await screen.findByRole('button', { name: 'Browse' })).toBeVisible()
   })
@@ -150,7 +151,8 @@ describe('Setup Azure Drawer', () => {
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Change File' })).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Paste IdP Metadata code instead' }))
+    await userEvent.click(screen.getByRole('button',
+      { name: 'Paste IdP Metadata code or link instead' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Upload file instead' }))
     expect(await screen.findByRole('button', { name: 'Change File' })).toBeVisible()
   })

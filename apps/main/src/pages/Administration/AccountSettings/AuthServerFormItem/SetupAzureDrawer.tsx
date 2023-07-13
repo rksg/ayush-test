@@ -261,7 +261,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       <TextArea
         value={metadata}
         onChange={e => onMetadataChange(e.target.value)}
-        placeholder='Paste IDP metadata here...'
+        placeholder='Paste the IDP metadata code or link here...'
         style={{
           fontSize: '12px',
           resize: 'none',
@@ -294,7 +294,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     {uploadFile && <Button type='link'
       key='uploadIdp'
       onClick={() => { setUploadFile(false) }}>
-      {$t({ defaultMessage: 'Paste IdP Metadata code instead' })}
+      {$t({ defaultMessage: 'Paste IdP Metadata code or link instead' })}
     </Button>}
     <Form layout='vertical' form={form} >
       {props.children}
