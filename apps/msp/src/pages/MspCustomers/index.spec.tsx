@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
 import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -107,7 +107,11 @@ const mspPortal = {
   msp_label: 'eleu1658'
 }
 
-const services = require('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
+const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
@@ -133,7 +137,7 @@ describe('MspCustomers', () => {
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
@@ -428,7 +432,7 @@ describe('MspCustomers', () => {
       return { data: userProfile }
     })
     const tenantDetails = { tenantType: AccountType.MSP_INSTALLER }
-    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
       return { data: tenantDetails }
     })
     user.hasRoles = jest.fn().mockImplementation(() => {

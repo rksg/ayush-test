@@ -26,14 +26,18 @@ import {
   useSupportMspCustomerListQuery,
   useGetMspLabelQuery,
   useIntegratorCustomerListQuery,
-  useGetTenantDetailsQuery,
   useDelegateToMspEcPath,
   useCheckDelegateAdmin
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  MspEc
+} from '@acx-ui/msp/utils'
+import {
+  useGetTenantDetailsQuery
+} from '@acx-ui/rc/services'
+import {
   EntitlementNetworkDeviceType,
-  MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
