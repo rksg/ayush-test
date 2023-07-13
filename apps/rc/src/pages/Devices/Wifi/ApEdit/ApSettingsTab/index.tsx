@@ -12,6 +12,7 @@ import { directedMulticastInfo }                                  from '@acx-ui/
 
 import { ApEditContext } from '../index'
 
+import { Advanced }          from './AdvancedTab'
 import { ApSnmp }            from './ApSnmpTab'
 import { DirectedMulticast } from './DirectedMulticast'
 //import { ApExternalAntenna } from './ExternalAntenna/ApExternalAntenna'
@@ -20,7 +21,6 @@ import { LanPorts }      from './LanPorts'
 import { MdnsProxyTab }  from './MdnsProxyTab/MdnsProxyTab'
 import { ApMesh }        from './MeshTab'
 import { RadioSettings } from './RadioTab/RadioSettings'
-import { Advanced } from './AdvancedTab'
 
 
 const { TabPane } = Tabs
