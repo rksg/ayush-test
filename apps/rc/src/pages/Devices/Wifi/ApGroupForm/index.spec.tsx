@@ -64,7 +64,6 @@ describe('AP Group Form - Add', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
     expect(await screen.findByText('Add AP Group')).toBeVisible()
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
