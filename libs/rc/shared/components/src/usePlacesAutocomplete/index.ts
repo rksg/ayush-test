@@ -14,7 +14,12 @@ export function usePlacesAutocomplete ( props:
     onPlaceSelected?: (place: google.maps.places.PlaceResult)=>void
   }
 ) {
-  const { currentMapRegion } = usePreference()
+  const {
+    currentMapRegion,
+    getReqState,
+    updateReqState
+  } = usePreference()
+  const isLoading = getReqState.isLoading || getReqState.isFetching || updateReqState.isLoading
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const inputRef = useRef<InputRef>(null)
   const autocompleteRef = useRef<google.maps.places.Autocomplete>()
@@ -23,7 +28,7 @@ export function usePlacesAutocomplete ( props:
   const [mapReady, setMapReady] = useState(false)
 
   useEffect(() => {
-    if (!isMapEnabled) return
+    if (!isMapEnabled || isLoading) return
     if (!!window.google?.maps?.places) {
       setMapReady(true)
     } else {
@@ -37,7 +42,7 @@ export function usePlacesAutocomplete ( props:
         setMapReady(true)
       })
     }
-  }, [isMapEnabled, currentMapRegion])
+  }, [isMapEnabled, currentMapRegion, isLoading])
 
   useEffect(() => {
     if (mapReady && inputRef.current?.input) {
