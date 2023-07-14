@@ -60,6 +60,7 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
 
 type WebAuthSwitchType = {
   switchId: string,
+  serialNumber: string,
   switchModel: string,
   switchName: string,
   venueId: string,
@@ -84,7 +85,7 @@ export default function NetworkSegAuthDetail () {
       fixed: 'left',
       render: (data, row) => (
         <TenantLink
-          to={`/devices/switch/${row.switchId}/${row.switchId}/details/overview`}>
+          to={`/devices/switch/${row.switchId}/${row.serialNumber}/details/overview`}>
           {data}
         </TenantLink>
       )
