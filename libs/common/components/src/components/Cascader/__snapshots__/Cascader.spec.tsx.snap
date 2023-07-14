@@ -301,7 +301,7 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
+                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bnTikF"
                 type="button"
               >
                 <span>
@@ -677,7 +677,7 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
+                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bnTikF"
                 type="button"
               >
                 <span>
