@@ -344,7 +344,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const footer = [
-    <Space key='edit-port-footer'>
+    <Space key='edit-lag-modal-footer'>
       <Button key='cancelBtn' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -358,7 +358,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   ]
 
   const footerForDrawer = [
-    <Space style={{ display: 'flex', marginLeft: 'auto' }}>
+    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-lag-drawer-footer'>
       <Button key='cancel' onClick={onClose} disabled={loading}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>

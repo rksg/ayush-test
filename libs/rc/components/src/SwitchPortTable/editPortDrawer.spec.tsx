@@ -226,6 +226,30 @@ describe('EditPortDrawer', () => {
       fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
+    it('should close Drawer and execute onBackClick function correctly', async () => {
+      const onBackClickAction = jest.fn()
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+          onBackClick={onBackClickAction}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      expect(onBackClickAction).toHaveBeenCalled()
+    })
+
     it('should handle ICX7650-48F correctly', async () => {
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortSetting.url,
