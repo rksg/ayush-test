@@ -1,6 +1,5 @@
 import { gql } from 'graphql-request'
 
-import { getAPCountForNode } from '@acx-ui/analytics/components'
 import {
   getSelectedNodePath,
   getFilterPayload,
@@ -43,7 +42,7 @@ export type KpiPayload = AnalyticsFilter & {
   kpi: string;
   threshold?: string;
   granularity?: string;
-}
+} & { apCount?: number }
 
 type ConfigCode = keyof typeof kpiConfig
 
@@ -77,10 +76,10 @@ const getKPIMetric = (kpi: string, threshold?: string) : string => {
     : apiMetric
 }
 
-const getGranularity = (start: string, end: string, kpi: string) => {
+const getGranularity = (start: string, end: string, kpi: string, apCount: number) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { minGranularity } } = config
-  return calculateGranularity(start, end, minGranularity, getAPCountForNode())
+  return calculateGranularity(start, end, minGranularity, apCount)
 }
 const getHistogramQuery = (kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
@@ -153,7 +152,7 @@ export const healthApi = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.granularity ||
-          getGranularity(payload.startDate, payload.endDate, payload.kpi),
+          getGranularity(payload.startDate, payload.endDate, payload.kpi, payload.apCount ?? 0),
           ...getHealthFilter(payload)
         }
       }),

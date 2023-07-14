@@ -1,23 +1,52 @@
 import moment from 'moment-timezone'
 
+import { get } from '@acx-ui/config'
+
 export const calculateGranularity = (
   start: string, end: string, minGranularity?: string, apCount: number = 0
 ): string => {
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
-  let gran
-  switch (true) {
-    case interval > 24 * 7: // 7 days
-      gran = 'PT1H'
-      break
-    case interval > 24 * 3: // 3 days
-      gran = 'PT15M'
-      break
-    default:
-      gran = 'PT180S'
-  }
+  let gran = getGranularityByAPCount(interval, apCount)
+  if (overlapsRollup(start, end)) minGranularity = 'PT1H'
   return minGranularity &&
     moment.duration(minGranularity).asSeconds() > moment.duration(gran).asSeconds()
     ? minGranularity
     : gran
 }
-
+const getGranularityByAPCount = (interval: number, apCount: number) => {
+  switch (true) {
+    case interval > 24 * 7:
+      switch (true) {
+        case apCount < 10000:
+          return 'PT1H'
+        case apCount < 30000:
+          return 'PT12H'
+        default:
+          return 'PT24H'
+      }
+    case interval > 24 * 3:
+      switch (true) {
+        case apCount < 10000:
+          return 'PT15M'
+        case apCount < 30000:
+          return 'PT6H'
+        default:
+          return 'PT12H'
+      }
+    default:
+      switch (true) {
+        case apCount < 10000:
+          return 'PT180S'
+        case apCount < 30000:
+          return 'PT15M'
+        default:
+          return 'PT1H'
+      }
+  }
+}
+const overlapsRollup = (start: string, end: string) => {
+  if (moment(end) < moment(start)) return false
+  const rollupDays = parseInt(get('DRUID_ROLLUP_DAYS'), 10)
+  const rollupDate = moment().utc().startOf('day').subtract(rollupDays, 'days')
+  return rollupDays < 36500 && moment(start) < rollupDate
+}

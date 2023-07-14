@@ -10,13 +10,13 @@ import { useNavigate, useParams, useTenantLink }                          from '
 
 import { Header } from '../Header'
 
-import ConnectedClientsOverTime                         from './ConnectedClientsOverTime'
-import { HealthDrillDown }                              from './HealthDrillDown'
-import { DrilldownSelection }                           from './HealthDrillDown/config'
-import { HealthPageContextProvider, getAPCountForNode } from './HealthPageContext'
-import Kpis                                             from './Kpi'
-import * as UI                                          from './styledComponents'
-import { SummaryBoxes }                                 from './SummaryBoxes'
+import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
+import { HealthDrillDown }           from './HealthDrillDown'
+import { DrilldownSelection }        from './HealthDrillDown/config'
+import { HealthPageContextProvider } from './HealthPageContext'
+import Kpis                          from './Kpi'
+import * as UI                       from './styledComponents'
+import { SummaryBoxes }              from './SummaryBoxes'
 
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
@@ -85,4 +85,4 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     </>
   )
 }
-export { HealthPage, getAPCountForNode }
+export { HealthPage }
