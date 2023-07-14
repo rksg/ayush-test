@@ -81,7 +81,7 @@ export function RadioSettingsForm (props:{
   }
 
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
-  const multicastRateLimitFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
+  const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
 
   return (
     <>
