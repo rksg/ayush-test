@@ -8,6 +8,9 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }     
 
 import { TopologyGraph } from '.'
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  useIncidentsBySeverityQuery: () => ([])
+}))
 
 const fields = [
   'deviceType',
