@@ -1,6 +1,7 @@
 import { useContext, useRef, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
+import { isArray }                              from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext' //'antd/lib/form/context'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
@@ -11,14 +12,14 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { LanPortSettings }          from '@acx-ui/rc/components'
+import { LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
-  useGetApLanPortsQuery,
   useLazyGetVenueQuery,
   useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
   useUpdateApCustomizationMutation,
-  useResetApCustomizationMutation
+  useResetApCustomizationMutation,
+  useGetApCustomizationQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -49,7 +50,7 @@ export function LanPorts () {
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apLanPorts, isLoading: isApLanPortsLoading }
-    = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+    = useGetApCustomizationQuery({ params: { tenantId, serialNumber } })
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
@@ -64,10 +65,11 @@ export function LanPorts () {
 
   const [venue, setVenue] = useState({} as VenueExtended)
   const [venueLanPorts, setVenueLanPorts] = useState({})
+  const [selectedModel, setSelectedModel] = useState({} as WifiApSetting)
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
-  const [selectedModel, setSelectedModel] = useState({} as WifiApSetting)
   const [useVenueSettings, setUseVenueSettings] = useState(true)
+  const [initData, setInitData] = useState({} as WifiApSetting)
   const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
@@ -77,26 +79,31 @@ export function LanPorts () {
   const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
 
   useEffect(() => {
-    if (apDetails && apCaps && !isApLanPortsLoading) {
+    if (apDetails && apCaps && apLanPorts && !isApLanPortsLoading) {
+      const { venueId } = apDetails
       const setData = async () => {
         const venue = (await getVenue({
-          params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap())
+          params: { tenantId, venueId } }, true).unwrap())
+
         const venueLanPorts = (await getVenueLanPorts({
-          params: { tenantId, venueId: apDetails?.venueId }
+          params: { tenantId, venueId }
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
+
         const venueSettings = (await getVenueSettings({
-          params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap())
+          params: { tenantId, venueId } }, true).unwrap())
 
         const lanPorts = (apLanPorts?.useVenueSettings
           ? venueLanPorts : apLanPorts) as WifiApSetting
+        //const lanPorts = { ...apLanPorts } as WifiApSetting
         setVenue(venue)
         setVenueLanPorts(venueLanPorts)
         setSelectedModel(lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
-        setSelectedPortCaps(apCaps?.lanPorts?.[activeTabIndex] as LanPort)
-        setUseVenueSettings(apLanPorts?.useVenueSettings ?? true)
+        setSelectedPortCaps(apCaps.lanPorts?.[activeTabIndex] as LanPort)
+        setUseVenueSettings(apLanPorts.useVenueSettings ?? true)
         setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
         setLanData(lanPorts?.lanPorts as LanPort[])
+        setInitData(apLanPorts)
         setFormInitializing(false)
       }
       setData()
@@ -108,7 +115,6 @@ export function LanPorts () {
       ...selectedModel,
       lanPorts: formRef?.current?.getFieldsValue()?.lan as LanPort[]
     })
-    updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }, [lanData])
 
   const onTabChange = (tab: string) => {
@@ -142,10 +148,17 @@ export function LanPorts () {
       if (values?.useVenueSettings) {
         await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
       } else {
-        const payload = {
-          lanPorts: values?.lan,
+        const { lan, poeOut, poeMode } = values
+        const payload: WifiApSetting = {
+          ...initData,
+          lanPorts: lan,
+          ...(poeMode && { poeMode: poeMode }),
+          ...(poeOut && isArray(poeOut) && { poeOut: poeOut.some(item => item === true) }),
           useVenueSettings: false
         }
+
+        //console.log('values: ', values)
+        //console.log('payload: ', payload)
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
       }
     } catch (error) {
@@ -172,6 +185,7 @@ export function LanPorts () {
         : lanData?.[idx]})) as LanPort[]
 
     setLanData(newLanData)
+    updateEditContext(formRef?.current as StepsFormLegacyInstance)
   }
 
   const updateEditContext = (form: StepsFormLegacyInstance) => {
@@ -209,6 +223,8 @@ export function LanPorts () {
             <Col span={10}>
               <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
+          </Row>
+          <Row gutter={24}>
             <Col span={24}>
               <Form.Item
                 hidden={true}
@@ -216,6 +232,19 @@ export function LanPorts () {
                 initialValue={useVenueSettings}
                 children={<Switch checked={useVenueSettings} />}
               />
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={8}>
+              <LanPortPoeSettings
+                selectedModel={selectedModel}
+                selectedModelCaps={selectedModelCaps}
+                useVenueSettings={useVenueSettings}
+              />
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={24}>
               <Tabs
                 type='third'
                 onChange={onTabChange}

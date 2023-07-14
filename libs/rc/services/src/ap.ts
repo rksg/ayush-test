@@ -536,12 +536,13 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApCustomization: build.query<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApApCustomization, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApCustomization, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
     updateApCustomization: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
