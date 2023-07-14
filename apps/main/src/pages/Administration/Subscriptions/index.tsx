@@ -11,6 +11,8 @@ import {
 import { get }                             from '@acx-ui/config'
 import { useIsTierAllowed, Features }      from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
+import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
+import { MSPUtils }                        from '@acx-ui/msp/utils'
 import { SpaceWrapper }                    from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
@@ -78,6 +80,9 @@ const SubscriptionTable = () => {
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
+  const mspUtils = MSPUtils()
+  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   const columns: TableProps<Entitlement>['columns'] = [
     {
@@ -121,6 +126,17 @@ const SubscriptionTable = () => {
         return row.quantity
       }
     },
+    ...(isOnboardedMsp ? [
+      {
+        title: $t({ defaultMessage: 'Source' }),
+        dataIndex: 'source',
+        key: 'source',
+        render: function () {
+          // TODO
+          return 'Purchased'
+        }
+      }
+    ] : []),
     {
       title: $t({ defaultMessage: 'Starting Date' }),
       dataIndex: 'effectiveDate',

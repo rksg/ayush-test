@@ -36,11 +36,11 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
   ]
 
   let series = [
-    { name: 'used',
+    { name: '<3>used',
       value: isZeroQuantity ? 0: (used / total)*100 },
-    { name: 'used2',
+    { name: '<2>assigned',
       value: isZeroQuantity ? 0: (assigned / total)*100 },
-    { name: 'available',
+    { name: '<1>available',
       value: isZeroQuantity ? 100 : ((total-used-assigned) / total)*100 }
   ]
 

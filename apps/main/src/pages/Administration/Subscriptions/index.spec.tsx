@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                             from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
@@ -57,6 +58,14 @@ describe('Subscriptions', () => {
       rest.post(
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspProfile.url,
+        (req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
       )
     )
   })
