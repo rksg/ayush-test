@@ -184,8 +184,8 @@ describe('Add Stack Member Form', () => {
     })
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    const msg = await screen.
-      findAllByText('Serial number is invalid since it\'s not unique in stack')
+    const msg = await screen
+      .findAllByText('Serial number is invalid since it\'s not unique in stack')
     expect(msg[0]).toBeVisible()
   })
 })
