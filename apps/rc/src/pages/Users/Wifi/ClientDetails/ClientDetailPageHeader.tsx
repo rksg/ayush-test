@@ -2,10 +2,10 @@ import { Menu, MenuProps, Space } from 'antd'
 import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
-import { Dropdown, CaretDownSolidIconReverse, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
-import { useDisconnectClientMutation, useGetClientDetailsQuery }                from '@acx-ui/rc/services'
-import { ClientStatusEnum, ClientUrlsInfo }                                     from '@acx-ui/rc/utils'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { useDisconnectClientMutation, useGetClientDetailsQuery }         from '@acx-ui/rc/services'
+import { ClientStatusEnum, ClientUrlsInfo }                              from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -119,7 +119,7 @@ function ClientDetailPageHeader () {
           <Button type='secondary'>
             <Space>
               {$t({ defaultMessage: 'Actions' })}
-              <CaretDownSolidIconReverse />
+              <CaretDownSolidIcon />
             </Space>
           </Button>
         }</Dropdown>

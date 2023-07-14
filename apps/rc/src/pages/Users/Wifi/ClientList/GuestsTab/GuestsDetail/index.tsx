@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl'
 
 import {
   Dropdown,
-  CaretDownSolidIconReverse,
+  CaretDownSolidIcon,
   Button,
   cssStr,
   Table,
@@ -260,7 +260,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         <Button type='secondary'>
           <Space>
             {$t({ defaultMessage: 'Actions' })}
-            <CaretDownSolidIconReverse />
+            <CaretDownSolidIcon />
           </Space>
         </Button>
       }</Dropdown>

@@ -22,10 +22,3 @@ export const OverlayContainer = styled.div`
 export const OverlayTitle = styled(Subtitle).attrs({ level: 4 })``
 
 export const CaretDownSolidIcon = styled(CaretDownSolid)`display: flex;`
-
-export const CaretDownSolidIconReverse = styled(CaretDownSolid)`
-  display: flex;
-  svg {
-    fill: var(--acx-primary-white);
-    stroke: var(--acx-primary-white);
-  }`
