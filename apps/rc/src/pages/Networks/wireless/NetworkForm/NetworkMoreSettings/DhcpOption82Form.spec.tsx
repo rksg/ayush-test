@@ -19,6 +19,7 @@ describe('AccessControlForm', () => {
       </IntlProvider>, {
         route: { params }
       })
+   expect(await screen.findByText('DHCP Option 82')).toBeVisible()
   })
 
 })
