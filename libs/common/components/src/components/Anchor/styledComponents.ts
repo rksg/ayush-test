@@ -32,6 +32,10 @@ export const Anchor = styled(AntAnchor)`
     color: var(--acx-primary-black);
     font-size: var(--acx-subtitle-5-font-size);
     line-height: var(--acx-subtitle-5-line-height);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
   }
   .ant-anchor-link-active > .ant-anchor-link-title {
     font-weight: var(--acx-subtitle-5-font-weight);
