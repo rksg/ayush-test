@@ -4,6 +4,8 @@ import { render }       from '@testing-library/react'
 import { Form }         from 'antd'
 import { IntlProvider } from 'react-intl'
 
+import { screen } from '@acx-ui/test-utils'
+
 import { DhcpOption82Form } from './DhcpOption82Form'
 
 describe('AccessControlForm', () => {
@@ -19,7 +21,7 @@ describe('AccessControlForm', () => {
       </IntlProvider>, {
         route: { params }
       })
-   expect(await screen.findByText('DHCP Option 82')).toBeVisible()
+    expect(await screen.findByText('DHCP Option 82')).toBeVisible()
   })
 
 })
