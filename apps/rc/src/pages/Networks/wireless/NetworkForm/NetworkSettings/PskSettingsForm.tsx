@@ -208,13 +208,6 @@ function SettingsForm () {
     }
   },[data])
 
-  useEffect(() => {
-    if (wlanSecurity !== WlanSecurityEnum.WPA2Personal) {
-      form.setFieldValue(['wlan', 'isMacRegistrationList'], false)
-      form.setFieldValue(['wlan', 'macRegistrationListId'], null)
-    }
-  }, [wlanSecurity])
-
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
 
@@ -341,8 +334,7 @@ function SettingsForm () {
                 <Space direction='vertical'>
                   <Radio value={true}
                     disabled={
-                      !isCloudpathBetaEnabled ||
-                      wlanSecurity !== WlanSecurityEnum.WPA2Personal
+                      !isCloudpathBetaEnabled
                     }>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
                   </Radio>
