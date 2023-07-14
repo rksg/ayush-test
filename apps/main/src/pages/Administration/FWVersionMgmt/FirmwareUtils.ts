@@ -105,13 +105,15 @@ export function getReleaseFirmware<T extends FirmwareVersionType> (firmwareVersi
 }
 
 type VersionLabelType = { name: string, category: FirmwareCategory, onboardDate?: string }
-export const getVersionLabel = (intl: IntlShape, version: VersionLabelType): string => {
+// eslint-disable-next-line max-len
+export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType: boolean = true): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
   const versionType = transform(version?.category)
   const versionOnboardDate = version.onboardDate ? toUserDate(version.onboardDate) : ''
 
-  return `${versionName} (${versionType}) ${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
+  // eslint-disable-next-line max-len
+  return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
 }
 
 export const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {

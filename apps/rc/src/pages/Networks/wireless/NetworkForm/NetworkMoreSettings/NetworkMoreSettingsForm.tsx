@@ -666,7 +666,7 @@ export function MoreSettingsForm (props: {
                 name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
-                initialValue={false}
+                initialValue={true}
                 children={<Switch/>}/>
             </UI.FieldLabel></>
         }
