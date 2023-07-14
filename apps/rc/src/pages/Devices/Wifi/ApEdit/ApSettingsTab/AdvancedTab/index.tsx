@@ -158,6 +158,9 @@ export function Advanced () {
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
+      buttonLabel={{
+        submit: $t({ defaultMessage: 'Apply' })
+      }}
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
         <Row gutter={20}>

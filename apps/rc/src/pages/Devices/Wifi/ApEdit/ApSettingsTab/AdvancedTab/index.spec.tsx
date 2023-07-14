@@ -107,4 +107,32 @@ describe('AP Advanced', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Apply/ }))
   })
+
+  it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
+    render(
+      <Provider>
+        <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <Advanced />
+        </ApDataContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/advanced' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
+
+    expect(await screen.findByTestId('ApLed-switch')).toBeChecked()
+    await userEvent.click(await screen.findByTestId('ApLed-switch'))
+    expect(await screen.findByTestId('ApLed-switch')).not.toBeChecked()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ }))
+    expect(screen.queryByTestId('ApLed-switch')).toBeNull()
+    expect(await screen.findByTestId('ApLed-text')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
+    expect(await screen.findByTestId('ApLed-switch')).not.toBeChecked()
+    expect(screen.queryByTestId('ApLed-text')).toBeNull()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Cancel/ }))
+  })
 })
