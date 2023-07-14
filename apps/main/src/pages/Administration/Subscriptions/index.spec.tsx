@@ -57,6 +57,11 @@ describe('Subscriptions', () => {
       rest.post(
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(AdministrationUrlsInfo.getAccountTier.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ acx_account_tier: 'Gold' }))
+        }
       )
     )
   })
