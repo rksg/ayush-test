@@ -19,8 +19,6 @@ export function LanPortPoeSettings (props: {
     useVenueSettings
   } = props
 
-  //const form = Form.useFormInstance()
-
   const onChangedByCustom = (fieldName: string) => {
     onGUIChanged?.(fieldName)
   }
