@@ -2,11 +2,15 @@ import { Button as AntButton } from 'antd'
 import styled, { css }         from 'styled-components/macro'
 
 export const Button = styled(AntButton)<{ $customType: string | null }>`
-  ${props => props.$customType === 'secondary' ? css`
+  ${props => props.type === 'primary' ? css`
     background-color: var(--acx-accents-orange-50);
     border-color: var(--acx-accents-orange-50);
     &:hover, &:focus {
       background-color: var(--acx-accents-orange-60);
+      border-color: var(--acx-accents-orange-60);
+    }
+    &:active {
+      background-color: var(--acx-accents-orange-50);
       border-color: var(--acx-accents-orange-60);
     }
     svg { path { stroke: var(--acx-primary-white) !important } }

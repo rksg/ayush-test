@@ -16,11 +16,11 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import { CloudMessageBanner }  from '@acx-ui/rc/components'
 import {
-  useGetTenantDetailQuery,
-  useMspEntitlementListQuery
-} from '@acx-ui/rc/services'
+  useMspEntitlementListQuery,
+  useGetTenantDetailQuery
+} from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                           from '@acx-ui/rc/components'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'

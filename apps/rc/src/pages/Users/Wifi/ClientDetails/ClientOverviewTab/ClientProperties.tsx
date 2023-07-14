@@ -240,6 +240,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
 
 function Connection ({ client }: { client: ClientExtended }) {
   const { $t } = getIntl()
+  const showVni = !!client.vni
 
   return <>
     <Subtitle level={4}>
@@ -310,6 +311,16 @@ function Connection ({ client }: { client: ClientExtended }) {
         </Tooltip>}
         children={client?.vlan || '--'}
       />
+      { showVni &&
+        <Descriptions.Item
+          label={<Tooltip
+            placement='bottom'
+            title={$t({ defaultMessage: 'VXLAN network identifier' })}
+          >{$t({ defaultMessage: 'VNI' })}
+          </Tooltip>}
+          children={client?.vni || '--'}
+        />
+      }
       <Descriptions.Item
         label={<Tooltip
           placement='bottom'

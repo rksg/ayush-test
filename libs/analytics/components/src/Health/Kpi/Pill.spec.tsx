@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 
-import { healthApi }                        from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig }       from '@acx-ui/analytics/utils'
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange, getIntl }               from '@acx-ui/utils'
+import { healthApi }                                from '@acx-ui/analytics/services'
+import { AnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import { dataApiURL, Provider, store }              from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen }         from '@acx-ui/test-utils'
+import { DateRange, getIntl }                       from '@acx-ui/utils'
 
 import HealthPill from './Pill'
 
@@ -191,8 +191,9 @@ describe('Pill without kpi threshold', () => {
     await screen.findByText('Online APs')
     const infoIcon = await screen.findByTestId('InformationOutlined')
     await userEvent.hover(infoIcon)
-    expect(await screen.findByRole('tooltip', { hidden: true }))
-      .toHaveTextContent($t(tooltip, { br: '\n' }).replace('\n', '').replace('\n', ' '))
+    expect(await screen.findByRole('tooltip', { hidden: true })).toHaveTextContent(
+      $t(tooltip, { ...productNames, br: '\n' }).replace('\n', '').replace('\n', ' ')
+    )
   })
   it('should calculate results according to time window', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {

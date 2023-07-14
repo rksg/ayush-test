@@ -12,7 +12,7 @@ import {
   DataType,
   OperatorType,
   RadiusAttribute,
-  treeNode
+  treeNode, checkObjectNotExists
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -23,12 +23,13 @@ import { FieldSpace } from './styledComponents'
 interface RadiusAttributeFormProps {
   form: FormInstance,
   isEdit?: boolean,
-  editAttribute?: AttributeAssignment
+  editAttribute?: AttributeAssignment,
+  getAttributeAssignments: () => AttributeAssignment []
 }
 
 export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const { $t } = useIntl()
-  const { form, isEdit = false, editAttribute } = props
+  const { form, isEdit = false, editAttribute, getAttributeAssignments } = props
 
   const [attributeTreeData, setAttributeTreeData] = useState([] as treeNode [])
 
@@ -125,13 +126,31 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
     return result ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
   }
 
+  const attributeValidator = (attributeName: string) => {
+    const attributeAssignments = getAttributeAssignments()
+
+    if(attributeAssignments.length === 0)
+      return Promise.resolve()
+
+    const operator = form.getFieldValue('operator')
+    const attributeValue = form.getFieldValue('attributeValue')
+    const list = attributeAssignments.filter(a => a.id !== editAttribute?.id)
+      .map(n => ({ attributeName: n.attributeName,
+        operator: n.operator, attributeValue: n.attributeValue }))
+
+    return checkObjectNotExists(list,
+      { attributeName: attributeName, operator: operator, attributeValue: attributeValue },
+      $t({ defaultMessage: 'Attribute' }), 'value')
+  }
+
   return (
     <Loader states={[{ isLoading: radiusAttributeVendorListQuery.isLoading }]}>
       <Form layout='vertical' form={form}>
         <Form.Item name='id' hidden children={<Input />}/>
         <Form.Item name='attributeName'
           label={$t({ defaultMessage: 'Attribute Type' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true },
+            { validator: (_, value) => attributeValidator(value) }]}
         >
           <Form.Item>
             <TreeSelect

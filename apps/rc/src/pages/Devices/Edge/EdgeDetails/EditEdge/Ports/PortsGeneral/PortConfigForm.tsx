@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react'
 
 import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
+import TextArea                                                from 'antd/lib/input/TextArea'
 import { useIntl }                                             from 'react-intl'
 
 import { StepsFormLegacy }                                                                                        from '@acx-ui/components'
@@ -47,7 +48,6 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const form = useFormInstance<PortConfigFormType>()
   const mac = useWatch([`port_${index}`, 'mac'])
   const portType = useWatch([`port_${index}`, 'portType'])
-  const enabled = useWatch([`port_${index}`, 'enabled'])
   const ipMode = useWatch([`port_${index}`, 'ipMode'])
   const statusIp = useWatch([`port_${index}`, 'statusIp'])
 
@@ -206,11 +206,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
         <Col span={5}>
           <Form.Item
             name='name'
-            label={$t({ defaultMessage: 'Port Name' })}
+            label={$t({ defaultMessage: 'Description' })}
             rules={[
-              { max: 64 }
+              { max: 255 }
             ]}
-            children={<Input />}
+            children={<TextArea />}
           />
           <Form.Item
             name='portType'
@@ -232,12 +232,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                       children={<Switch />}
                     />
                   </StepsFormLegacy.FieldLabel>
-                  {enabled &&
-                    <>
-                      <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
-                      {getFieldsByPortType(portType)}
-                    </>
-                  }
+                  <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
+                  {getFieldsByPortType(portType)}
                 </>
           }
         </Col>
