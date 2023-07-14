@@ -237,7 +237,7 @@ export function DhcpOption82Form () {
             <Form.Item
               name={['wlan','advancedCustomization','dhcpOption82MacFormat']}
               label='AP & Client MAC format delimiter'
-              initialValue={false}
+              initialValue={DhcpOption82MacEnum.COLON}
               children={
                 <Select>
                   <Option value={DhcpOption82MacEnum.COLON}>
