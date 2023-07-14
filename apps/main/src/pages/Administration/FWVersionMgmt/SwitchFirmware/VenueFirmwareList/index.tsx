@@ -28,12 +28,12 @@ import {
   FirmwareVersion,
   UpdateScheduleRequest,
   TableQuery,
-  RequestPayload,
   useTableQuery,
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { RequestPayload } from '@acx-ui/types'
 
 import {
   getNextScheduleTpl,
@@ -107,7 +107,7 @@ function useColumns (
           ? getNextScheduleTpl(intl, row)
           // eslint-disable-next-line max-len
           : <Tooltip title={<UI.ScheduleTooltipText>{getSwitchNextScheduleTplTooltip(row)}</UI.ScheduleTooltipText>} placement='bottom'>
-            <UI.ScheduleText>{getNextScheduleTpl(intl, row)}</UI.ScheduleText>
+            <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
           </Tooltip>
         )
       }
