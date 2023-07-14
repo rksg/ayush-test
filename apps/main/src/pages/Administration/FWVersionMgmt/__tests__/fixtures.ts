@@ -178,17 +178,55 @@ export const switchVenue = {
           id: '09010f_b401',
           name: '09010f_b401',
           category: 'RECOMMENDED'
+        },
+        {
+          id: '09010f_b19',
+          name: '09010f_b19',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '09010f_b403',
+          name: '09010f_b403',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc2',
+          name: '10010_rc2',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc3',
+          name: '10010_rc3',
+          category: 'RECOMMENDED'
         }
       ],
+      nextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-07-11T08:00:00-07:00',
+          endDateTime: '2023-07-11T10:00:00-07:00'
+        },
+        version: {
+          id: '09010f_b401',
+          name: '09010f_b401',
+          category: 'RECOMMENDED'
+        },
+        versionAboveTen: {
+          id: '10010_rc2',
+          name: '10010_rc2',
+          category: 'RECOMMENDED'
+        }
+      },
       preDownload: false,
+      switchCount: 2,
+      aboveTenSwitchCount: 3,
       upgradeVenueViewList: null
     },
     {
       id: '923f6df894c340498894a6b7c68feaae',
       name: 'My-Venue',
       switchFirmwareVersion: {
-        id: '09010e_b392',
-        name: '09010e_b392',
+        id: '09010f_b19',
+        name: '09010f_b19',
         category: 'RECOMMENDED'
       },
       switchFirmwareVersionAboveTen: {
@@ -201,9 +239,31 @@ export const switchVenue = {
           id: '09010f_b401',
           name: '09010f_b401',
           category: 'RECOMMENDED'
+        },
+        {
+          id: '09010e_b392',
+          name: '09010e_b392',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '09010f_b403',
+          name: '09010f_b403',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc2',
+          name: '10010_rc2',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc3',
+          name: '10010_rc3',
+          category: 'RECOMMENDED'
         }
       ],
       preDownload: false,
+      switchCount: 1,
+      aboveTenSwitchCount: 1,
       upgradeVenueViewList: null
     }
   ]
@@ -220,23 +280,38 @@ export const switchLatest = [
 
 export const switchRelease = [
   {
+    id: '09010e_b392',
+    name: '09010e_b392',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '09010f_b19',
+    name: '09010f_b19',
+    category: 'RECOMMENDED'
+  },
+  {
     id: '09010f_b401',
     name: '09010f_b401',
     category: 'RECOMMENDED'
   },
   {
-    id: '09010e_b399',
-    name: '09010e_b399',
-    category: 'RECOMMENDED'
-  },
-  {
-    id: '09010e_b397',
-    name: '09010e_b397',
-    category: 'RECOMMENDED'
-  },
-  {
     id: '09010f_b403',
     name: '09010f_b403',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '10010_b176',
+    name: '10010_b176',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '10010_rc2',
+    name: '10010_rc2',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '10010_rc3',
+    name: '10010_rc3',
     category: 'RECOMMENDED'
   }
 ]
@@ -244,10 +319,11 @@ export const switchRelease = [
 export const switchCurrentVersions = {
   currentVersions: [
     '09010e_b392',
-    '09010e_b399'
+    '09010f_b19'
   ],
   currentVersionsAboveTen: [
-    '10010_b176'
+    '10010_b176',
+    '10010_rc3'
   ]
 }
 
