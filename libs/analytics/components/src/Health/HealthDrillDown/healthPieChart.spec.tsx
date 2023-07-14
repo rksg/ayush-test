@@ -1,4 +1,5 @@
 import { AnalyticsFilter, pathToFilter }                                                   from '@acx-ui/analytics/utils'
+import { get }                                                                             from '@acx-ui/config'
 import { formatter }                                                                       from '@acx-ui/formatter'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup } from '@acx-ui/test-utils'
@@ -8,12 +9,15 @@ import { mockConnectionFailureResponse, mockTtcResponse, mockPathWithAp, mockOnl
 import { HealthPieChart, pieNodeMap, tooltipFormatter }                                          from './healthPieChart'
 import { api }                                                                                   from './services'
 
+const mockGet = get as jest.Mock
 
 jest.mock('react-intl', () => ({
   ...jest.requireActual('react-intl'),
   defineMessage: jest.fn(message => message)
 }))
-
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 describe('HealthPieChart', () => {
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
@@ -154,6 +158,17 @@ describe('HealthPieChart', () => {
         { type: 'AP', name: 'AP' }
       ]))
       expect(ap.defaultMessage?.[0].options.one.value[0].value).toEqual('AP')
+    })
+
+    it('should return correct title for ACX', () => {
+      mockGet.mockReturnValue(undefined)
+      const venue = pieNodeMap(pathToFilter([]))
+      expect(venue.defaultMessage?.[0].options.one.value[0].value).toEqual('Venue')
+    })
+    it('should return correct title for RA', () => {
+      mockGet.mockReturnValue('true')
+      const venue = pieNodeMap(pathToFilter([]))
+      expect(venue.defaultMessage?.[0].options.one.value[0].value).toEqual('Zone')
     })
   })
 })

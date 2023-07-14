@@ -137,10 +137,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Infrastructure' }),
     subCategory: defineMessage({ defaultMessage: 'Service Availability' }),
     shortDescription: defineMessage({
-      defaultMessage: 'High AP-RUCKUS One connection failures in {scope}'
+      defaultMessage: 'High AP-{smartZone} connection failures in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'High AP-RUCKUS One connection failures in {scope}.'
+      defaultMessage: 'High AP-{smartZone} connection failures in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -166,39 +166,39 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'network'
   },
-  // 'p-channeldist-suboptimal-plan-24g': {
-  //   category: defineMessage({ defaultMessage: 'Performance' }),
-  //   subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
-  //   shortDescription: defineMessage({
-  //     defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}'
-  //   }),
-  //   longDescription: defineMessage({
-  //     defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}.'
-  //   }),
-  //   incidentType: 'network'
-  // },
-  // 'p-channeldist-suboptimal-plan-50g-outdoor': {
-  //   category: defineMessage({ defaultMessage: 'Performance' }),
-  //   subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
-  //   shortDescription: defineMessage({
-  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}'
-  //   }),
-  //   longDescription: defineMessage({
-  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}.'
-  //   }),
-  //   incidentType: 'network'
-  // },
-  // 'p-channeldist-suboptimal-plan-50g-indoor': {
-  //   category: defineMessage({ defaultMessage: 'Performance' }),
-  //   subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
-  //   shortDescription: defineMessage({
-  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}'
-  //   }),
-  //   longDescription: defineMessage({
-  //     defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}.'
-  //   }),
-  //   incidentType: 'network'
-  // },
+  'p-channeldist-suboptimal-plan-24g': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Sub-optimal channel conditions detected for 2.4 GHz in {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-channeldist-suboptimal-plan-50g-outdoor': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (outdoor) in {scope}.'
+    }),
+    incidentType: 'network'
+  },
+  'p-channeldist-suboptimal-plan-50g-indoor': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Channel Conditions' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Sub-optimal channel conditions detected for 5 GHz (indoor) in {scope}.'
+    }),
+    incidentType: 'network'
+  },
   'i-switch-vlan-mismatch': {
     category: defineMessage({ defaultMessage: 'Infrastructure' }),
     subCategory: defineMessage({ defaultMessage: 'VLAN Mismatch' }),

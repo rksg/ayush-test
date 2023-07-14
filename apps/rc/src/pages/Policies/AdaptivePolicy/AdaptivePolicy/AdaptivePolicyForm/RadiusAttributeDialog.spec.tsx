@@ -34,7 +34,8 @@ describe('RadiusAttributeDialog', () => {
         <RadiusAttributeDialog
           visible={true}
           onCancel={jest.fn()}
-          setAttributeAssignments={jest.fn()}/>
+          setAttributeAssignments={jest.fn()}
+          getAttributeAssignments={jest.fn()}/>
       </Provider>,
       {
         route: { params: {
@@ -75,7 +76,8 @@ describe('RadiusAttributeDialog', () => {
           onCancel={jest.fn()}
           isEdit={true}
           setAttributeAssignments={jest.fn()}
-          editAttribute={editAttribute}/>
+          editAttribute={editAttribute}
+          getAttributeAssignments={jest.fn()}/>
       </Provider>,
       {
         route: { params: {
