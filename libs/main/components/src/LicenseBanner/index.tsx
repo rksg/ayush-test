@@ -4,12 +4,10 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import {
-  useEntitlementBannersQuery,
-  useGetMspEntitlementBannersQuery
-}                                    from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
+import { useGetMspEntitlementBannersQuery } from '@acx-ui/msp/services'
+import { useEntitlementBannersQuery }       from '@acx-ui/rc/services'
 import {
   LicenseBannerTypeEnum,
   EntitlementBanner,

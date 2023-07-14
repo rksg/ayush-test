@@ -39,6 +39,7 @@ const SummaryForm = (props: SummaryFormProps) => {
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
   // eslint-disable-next-line max-len
   const [ getZdConfiguration, { data: migrateResult }] = useLazyGetZdConfigurationQuery()
+  const [ taskState, setTaskState ] = useState('')
 
   let usedBarColors = [
     cssStr('--acx-accents-blue-50'),
@@ -68,17 +69,21 @@ const SummaryForm = (props: SummaryFormProps) => {
     if (migrateResult && migrateResult.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0) {
       // eslint-disable-next-line max-len
       setValidateZdApsResult(migrateResult.data[0].migrationTaskList[0].apImportResultList ? migrateResult.data[0].migrationTaskList[0].apImportResultList : [])
-      const total = migrateResult.data[0].migrationTaskList[0].apImportResultList?.length
-      // eslint-disable-next-line max-len
-      const used = migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(apCompleted).length
-      let series = [
-        { name: 'used',
-          value: (used / total)*100 },
-        { name: 'available',
-          value: ((total-used) / total)*100 }
-      ]
-      setSeries(series)
-      setProgress(Math.floor((used/total) * 100))
+      const taskState = migrateResult.data[0].migrationTaskList[0].state ?? ''
+      if (taskState !== 'Completed' && taskState !== 'Failed') {
+        const total = migrateResult.data[0].migrationTaskList[0].apImportResultList?.length
+        // eslint-disable-next-line max-len
+        const used = migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(apCompleted).length
+        let series = [
+          { name: 'used',
+            value: (used / total)*100 },
+          { name: 'available',
+            value: ((total-used) / total)*100 }
+        ]
+        setSeries(series)
+        setProgress(Math.floor((used/total) * 100))
+      }
+      setTaskState(taskState)
     }
   },[migrateResult])
 
@@ -162,22 +167,24 @@ const SummaryForm = (props: SummaryFormProps) => {
           </Subtitle>
         </Col>
         <Col span={7}>
-          <SpaceWrapper full size='small' justifycontent='flex-start'>
-            <Subtitle level={5}>{$t({ defaultMessage: 'Progress' })}:</Subtitle>
-            <StackedBarChart
-              style={{ height: 16, width: 135 }}
-              showLabels={false}
-              showTotal={false}
-              showTooltip={false}
-              barWidth={12}
-              data={[{
-                category: 'AP Migrations ',
-                series
-              }]}
-              barColors={usedBarColors}
-            />
-            <Subtitle level={5}>{progress}%</Subtitle>
-          </SpaceWrapper>
+          {taskState !== 'Completed' && taskState !== 'Failed' &&
+            <SpaceWrapper full size='small' justifycontent='flex-start'>
+              <Subtitle level={5}>{$t({ defaultMessage: 'Progress' })}:</Subtitle>
+              <StackedBarChart
+                style={{ height: 16, width: 135 }}
+                showLabels={false}
+                showTotal={false}
+                showTooltip={false}
+                barWidth={12}
+                data={[{
+                  category: 'AP Migrations ',
+                  series
+                }]}
+                barColors={usedBarColors}
+              />
+              <Subtitle level={5}>{progress}%</Subtitle>
+            </SpaceWrapper>
+          }
         </Col>
       </Row>
       <Table
