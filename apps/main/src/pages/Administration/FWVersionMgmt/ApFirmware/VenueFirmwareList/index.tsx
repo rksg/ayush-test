@@ -35,7 +35,8 @@ import {
   useTableQuery,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  EolApFirmware
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -72,7 +73,6 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
       searchable: searchable,
@@ -84,8 +84,7 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      // sorter: true,
-      sorter: { compare: sortProp('versions[0].version', defaultSort) },
+      sorter: { compare: sortCurrentApFirmware },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
@@ -93,10 +92,26 @@ function useColumns (
       }
     },
     {
+      title: intl.$t({ defaultMessage: 'Legacy AP Firmware' }),
+      key: 'eolApFirmwares',
+      dataIndex: 'eolApFirmwares',
+      sorter: false,
+      // filterable: filterables ? filterables['version'] : false,
+      // filterMultiple: false,
+      render: function (data, row) {
+        const eolApFirmwares = row.eolApFirmwares
+
+        return eolApFirmwares
+          ? <Tooltip title={getEolFirmwareTooltipText(eolApFirmwares)}>
+            <UI.WithTooltip>{getEolFirmwareText(eolApFirmwares)}</UI.WithTooltip>
+          </Tooltip>
+          : '--'
+      }
+    },
+    {
       title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'type',
       dataIndex: 'type',
-      // sorter: true,
       sorter: { compare: sortProp('versions[0].category', defaultSort) },
       filterable: filterables ? filterables['type'] : false,
       filterMultiple: false,
@@ -112,7 +127,6 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
-      // sorter: false,
       sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
       render: function (data, row) {
         if (!row.lastScheduleUpdate) return '--'
@@ -123,7 +137,6 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      // sorter: false,
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
       render: function (data, row) {
@@ -133,11 +146,8 @@ function useColumns (
           ? getApNextScheduleTpl(row)
           : <Tooltip
             title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(row)}</UI.ScheduleTooltipText>}
-            placement='bottom'
             overlayStyle={{ minWidth: '280px' }}
-          >
-            <UI.ScheduleText>{getApNextScheduleTpl(row)}</UI.ScheduleText>
-          </Tooltip>
+          ><UI.WithTooltip>{getApNextScheduleTpl(row)}</UI.WithTooltip></Tooltip>
       }
     }
   ]
@@ -146,8 +156,16 @@ function useColumns (
     (key !== 'edges' || (key === 'edges' && isEdgeEnabled)))
 }
 
-export const useDefaultVenuePayload = (): RequestPayload => {
-  return {}
+function sortCurrentApFirmware (a: FirmwareVenue, b: FirmwareVenue) {
+  return compareVersions(getApVersion(a), getApVersion(b))
+}
+
+function getEolFirmwareTooltipText (eolApFirmwares: EolApFirmware[]): string {
+  return eolApFirmwares.map(eol => `${eol.currentEolVersion}: ${eol.apModels.join(',')}`).join('\n')
+}
+
+function getEolFirmwareText (eolApFirmwares: EolApFirmware[]): string {
+  return eolApFirmwares.map(eol => eol.currentEolVersion).join(', ')
 }
 
 type VenueTableProps = {
@@ -486,14 +504,9 @@ export const VenueFirmwareTable = (
 }
 
 export function VenueFirmwareList () {
-  const venuePayload = useDefaultVenuePayload()
-
   const tableQuery = useTableQuery<FirmwareVenue>({
     useQuery: useGetVenueVersionListQuery,
-    defaultPayload: venuePayload,
-    search: {
-      searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
+    defaultPayload: {}
   })
 
   const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {

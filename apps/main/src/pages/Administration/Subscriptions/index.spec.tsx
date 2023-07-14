@@ -59,6 +59,11 @@ describe('Subscriptions', () => {
         AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
         (req, res, ctx) => res(ctx.status(202))
       ),
+      rest.get(AdministrationUrlsInfo.getAccountTier.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ acx_account_tier: 'Gold' }))
+        }
+      ),
       rest.get(
         MspUrlsInfo.getMspProfile.url,
         (req, res, ctx) => res(ctx.json({
@@ -84,6 +89,7 @@ describe('Subscriptions', () => {
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
     expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
+    expect(await screen.findByText('Essentials')).toBeVisible()
 
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subsciptions' })
