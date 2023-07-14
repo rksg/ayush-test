@@ -13,7 +13,7 @@ import {
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { TenantLink, useLocation }     from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay }               from '@acx-ui/utils'
 
 import {
@@ -37,11 +37,8 @@ export interface RecommendationRow extends Recommendation {
 }
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
-  let { pathname } = useLocation()
-  if (pathname.includes('/next')) {
-    pathname = pathname.replace('/next', '')
-  }
-  return <TenantLink to={`${pathname}/${value.id}`}>
+  const { activeTab } = useParams()
+  return <TenantLink to={`/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
