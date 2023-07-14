@@ -1,0 +1,28 @@
+{
+  "sourceRoot": "libs/rc/shared/utils/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/rc/shared/utils/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/rc/shared/utils"
+      ],
+      "options": {
+        "jestConfig": "libs/rc/shared/utils/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
