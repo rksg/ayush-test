@@ -86,8 +86,8 @@ export function RecommendationTable ({ filters, showCrrm }:
       {
         title: $t(defineMessage({ defaultMessage: 'Priority' })),
         width: 90,
-        dataIndex: 'priority',
-        key: 'priority',
+        dataIndex: 'priorityLabel',
+        key: 'priorityLabel',
         render: (_, value) => {
           return <UI.Priority>
             <UI.PriorityIcon value={value.priority} />
@@ -96,8 +96,7 @@ export function RecommendationTable ({ filters, showCrrm }:
         },
         sorter: { compare: sortProp('priority', severitySort) },
         fixed: 'left',
-        filterable: true,
-        defaultSortOrder: 'descend'
+        filterable: true
       },
       {
         title: $t(defineMessage({ defaultMessage: 'Date' })),
