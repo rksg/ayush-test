@@ -3,15 +3,14 @@ import { useMemo, useEffect, useState, useRef, useCallback, Component, MutableRe
 
 import {
   DatePicker as AntDatePicker,
-  DatePickerProps as AntDatePickerProps,
-  Divider
+  DatePickerProps as AntDatePickerProps
 } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import {  DateFormatEnum, formatter }    from '@acx-ui/formatter'
-import { CaretDownSolid, ClockOutlined } from '@acx-ui/icons'
+import {  DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { ClockOutlined }              from '@acx-ui/icons'
 import {
   defaultRanges,
   DateRange,
@@ -22,11 +21,10 @@ import {
   dateRangeForLast
 } from '@acx-ui/utils'
 
-import { Button }  from '../Button'
 import { Tooltip } from '../Tooltip'
 
-import { DatePickerFooter } from './DatePickerFooter'
-import * as UI              from './styledComponents'
+import { DatePickerFooter, DateTimePickerFooter } from './DatePickerFooter'
+import * as UI                                    from './styledComponents'
 
 import type { RangePickerProps }    from 'antd/lib/date-picker/generatePicker'
 import type { CommonPickerMethods } from 'antd/lib/date-picker/generatePicker/interface'
@@ -165,102 +163,6 @@ export const DatePicker = (props: AntDatePickerProps) => (
   </UI.Wrapper>
 )
 
-
-interface DateTimePickerFooterProps {
-  onApply: CallableFunction;
-  onCancel: CallableFunction;
-  applyFooterMsg?: string;
-  value: Moment;
-  setValue: CallableFunction;
-  initialDate: Moment;
-}
-
-const DateTimePickerFooter = ({
-  applyFooterMsg,
-  onApply,
-  onCancel,
-  value,
-  setValue,
-  initialDate
-}: DateTimePickerFooterProps) => {
-  const [open, setOpen] = useState({ hour: false, minute: false })
-
-  const disabledHours = useCallback(() => {
-    const hours = []
-    const previousHour = (initialDate.hours() - 1) % 24
-    for (let i = previousHour; i >= 0; i--) {
-      hours.push(i)
-    }
-    return initialDate.isSame(value, 'dates') ? hours : []
-  }, [initialDate, value])
-
-  const disabledMinutes = useCallback(() => {
-    const minutes = []
-    const pastMinute = (initialDate.minutes() - 15) % 60
-    for (let i = pastMinute; i >= 0; i = i - 15) {
-      minutes.push(i)
-    }
-    return initialDate.isSame(value, 'dates') ? minutes : []
-  }, [initialDate, value])
-
-  return <UI.FooterWrapper>
-    <UI.TimePickerRow>
-      <UI.TimePickerWrapper
-        role='time-picker'
-        size='small'
-        inputReadOnly
-        hourStep={1}
-        value={value}
-        open={open.hour}
-        onOpenChange={(val) => setOpen(open => ({ ...open, hour: val }))}
-        onClick={() => setOpen(open => ({ ...open, hour: true }))}
-        showNow={false}
-        format={'HH'}
-        placeholder={String(value.hours())}
-        suffixIcon={<CaretDownSolid />}
-        allowClear={false}
-        disabledTime={() => ({ disabledHours })}
-        getPopupContainer={(node: HTMLElement) => node}
-        onSelect={(time) => {
-          setOpen(open => ({ ...open, hour: false }))
-          setValue(time)
-        }}
-      />
-      <UI.TimePickerColon>:</UI.TimePickerColon>
-      <UI.TimePickerWrapper
-        role='time-picker'
-        size='small'
-        inputReadOnly
-        value={value}
-        open={open.minute}
-        onOpenChange={val => setOpen(open => ({ ...open, minute: val }))}
-        onClick={() => setOpen(open => ({ ...open, minute: true }))}
-        showNow={false}
-        format={'mm'}
-        minuteStep={15}
-        placeholder={String(value.minutes())}
-        suffixIcon={<CaretDownSolid />}
-        allowClear={false}
-        disabledTime={() => ({ disabledMinutes })}
-        getPopupContainer={(node: HTMLElement) => node}
-        onSelect={(time) => {
-          setOpen(open => ({ ...open, minute: true }))
-          setValue(time)
-        }}
-      />
-    </UI.TimePickerRow>
-    {applyFooterMsg
-      ? <>
-        <Divider />
-        <UI.ApplyMsgWrapper>{applyFooterMsg}</UI.ApplyMsgWrapper>
-        <Divider />
-      </>
-      : <Divider />}
-    <Button type='secondary' size='small' onClick={() => onApply()} >Apply</Button>
-    <Button type='default' size='small' onClick={() => onCancel()}>Cancel</Button>
-  </UI.FooterWrapper>
-}
-
 interface DateTimePickerProps {
   applyFooterMsg?: string;
   disabled?: boolean;
@@ -290,11 +192,11 @@ export const DateTimePicker = ({
     setOpen(val)
   }
   const onApplyHandler = () => {
-    onApply(date, 'current date')
+    onApply(date)
     setOpen(false)
   }
   const disabledDate = useCallback((value: Moment) =>
-    value.isBefore(initialDate.current)
+    value.isBefore(moment(initialDate.current))
     || value.isAfter(moment(initialDate.current).add(1, 'months')),
   [initialDate])
 

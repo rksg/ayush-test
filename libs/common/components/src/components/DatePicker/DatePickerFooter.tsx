@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
+import { Divider }                  from 'antd'
 import { range as timepickerRange } from 'lodash'
 import { useIntl }                  from 'react-intl'
 
@@ -150,4 +151,99 @@ export const DatePickerFooter = ({
       </UI.RangeApplyRow>
     </>
   )
+}
+
+interface DateTimePickerFooterProps {
+  onApply: CallableFunction;
+  onCancel: CallableFunction;
+  applyFooterMsg?: string;
+  value: Moment;
+  setValue: CallableFunction;
+  initialDate: Moment;
+}
+
+export const DateTimePickerFooter = ({
+  applyFooterMsg,
+  onApply,
+  onCancel,
+  value,
+  setValue,
+  initialDate
+}: DateTimePickerFooterProps) => {
+  const [open, setOpen] = useState({ hour: false, minute: false })
+
+  const disabledHours = useCallback(() => {
+    const hours = []
+    const previousHour = (initialDate.hours() - 1) % 24
+    for (let i = previousHour; i >= 0; i--) {
+      hours.push(i)
+    }
+    return initialDate.isSame(value, 'dates') ? hours : []
+  }, [initialDate, value])
+
+  const disabledMinutes = useCallback(() => {
+    const minutes = []
+    const pastMinute = (initialDate.minutes() - 15) % 60
+    for (let i = pastMinute; i >= 0; i = i - 15) {
+      minutes.push(i)
+    }
+    return initialDate.isSame(value, 'dates') ? minutes : []
+  }, [initialDate, value])
+
+  return <UI.FooterWrapper>
+    <UI.TimePickerRow>
+      <UI.TimePickerWrapper
+        role='time-picker'
+        size='small'
+        inputReadOnly
+        hourStep={1}
+        value={value}
+        open={open.hour}
+        onOpenChange={(val) => setOpen(open => ({ ...open, hour: val }))}
+        onClick={() => setOpen(open => ({ ...open, hour: true }))}
+        showNow={false}
+        format={'HH'}
+        placeholder={String(value.hours())}
+        suffixIcon={<CaretDownSolid />}
+        allowClear={false}
+        disabledTime={() => ({ disabledHours })}
+        getPopupContainer={(node: HTMLElement) => node}
+        onSelect={(time) => {
+          setOpen(open => ({ ...open, hour: false }))
+          setValue(time)
+        }}
+      />
+      <UI.TimePickerColon>:</UI.TimePickerColon>
+      <UI.TimePickerWrapper
+        role='time-picker'
+        size='small'
+        inputReadOnly
+        value={value}
+        open={open.minute}
+        onOpenChange={val => setOpen(open => ({ ...open, minute: val }))}
+        onClick={() => setOpen(open => ({ ...open, minute: true }))}
+        showNow={false}
+        format={'mm'}
+        minuteStep={15}
+        placeholder={String(value.minutes())}
+        suffixIcon={<CaretDownSolid />}
+        allowClear={false}
+        disabledTime={() => ({ disabledMinutes })}
+        getPopupContainer={(node: HTMLElement) => node}
+        onSelect={(time) => {
+          setOpen(open => ({ ...open, minute: true }))
+          setValue(time)
+        }}
+      />
+    </UI.TimePickerRow>
+    {applyFooterMsg
+      ? <>
+        <Divider />
+        <UI.ApplyMsgWrapper>{applyFooterMsg}</UI.ApplyMsgWrapper>
+        <Divider />
+      </>
+      : <Divider />}
+    <Button type='secondary' size='small' onClick={() => onApply()} >Apply</Button>
+    <Button type='default' size='small' onClick={() => onCancel()}>Cancel</Button>
+  </UI.FooterWrapper>
 }
