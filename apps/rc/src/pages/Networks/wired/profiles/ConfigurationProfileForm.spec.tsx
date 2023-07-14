@@ -329,12 +329,10 @@ describe('Wired', () => {
 
     const dst = await screen.findAllByTestId('untagged_module1_0')
     const src = await screen.findAllByTestId('untagged_module1_10')
-    fireEvent.dragStart(src[0])
-    fireEvent.dragEnter(src[0])
+    fireEvent.mouseDown(src[0])
+    fireEvent.mouseMove(dst[0])
     await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.drop(dst[0])
-    fireEvent.dragLeave(dst[0])
-    fireEvent.dragEnd(dst[0])
+    fireEvent.mouseUp(dst[0])
     const nextTrustPortButton1 = await within(dialog).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton1)
 

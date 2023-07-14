@@ -142,17 +142,108 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    const dst = await screen.findAllByTestId('untagged_module1_0')
-    const src = await screen.findAllByTestId('untagged_module1_10')
-    fireEvent.dragStart(src[0])
-    fireEvent.dragEnter(src[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.drop(dst[0])
-    fireEvent.dragLeave(dst[0])
-    fireEvent.dragEnd(dst[0])
+    await userEvent.click(await screen.findByTestId('untagged_module1_0'))
+    await userEvent.click(await screen.findByTestId('untagged_module2_0'))
+    await userEvent.click(await screen.findByTestId('untagged_module3_0'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await userEvent.click(await screen.findByTestId('tagged_module1_1'))
+    await userEvent.click(await screen.findByTestId('tagged_module2_1'))
+    await userEvent.click(await screen.findByTestId('tagged_module3_1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+
+
+  it('should add ICX7150-24 model with drag and select untagged ports correctly', async () => {
+    render(<IntlProvider locale='en'>
+      <VlanPortsModal
+        open={true}
+        editRecord={undefined}
+        currrentRecords={undefined}
+        onCancel={jest.fn()}
+        onSave={jest.fn()}
+        vlanList={[]}
+      />
+    </IntlProvider>)
+
+    await screen.findByText(/Select Ports By Model/i)
+    await screen.findByText(/Select family and model to be configured/i)
+
+    const family = await screen.findByText('ICX-7150')
+    await userEvent.click(family)
+    const model = await screen.findByText('24')
+    await userEvent.click(model)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    await userEvent.click(await screen.findByTestId('tagged_module3_2'))
+
+    const dst1 = await screen.findAllByTestId('untagged_module1_0')
+    const src1 = await screen.findAllByTestId('untagged_module1_10')
+    fireEvent.mouseDown(src1[0])
+    fireEvent.mouseMove(dst1[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.mouseUp(dst1[0])
+
+    const dst2 = await screen.findAllByTestId('untagged_module2_0')
+    const src2 = await screen.findAllByTestId('untagged_module2_1')
+    fireEvent.mouseDown(src2[0])
+    fireEvent.mouseMove(dst2[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.mouseUp(dst2[0])
+
+    const dst3 = await screen.findAllByTestId('untagged_module3_0')
+    const src3 = await screen.findAllByTestId('untagged_module3_3')
+    fireEvent.mouseDown(src3[0])
+    fireEvent.mouseMove(dst3[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.mouseUp(dst3[0])
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+
+  it('should add ICX7150-24 model with drag and select tagged ports correctly', async () => {
+    render(<IntlProvider locale='en'>
+      <VlanPortsModal
+        open={true}
+        editRecord={undefined}
+        currrentRecords={undefined}
+        onCancel={jest.fn()}
+        onSave={jest.fn()}
+        vlanList={[]}
+      />
+    </IntlProvider>)
+
+    await screen.findByText(/Select Ports By Model/i)
+    await screen.findByText(/Select family and model to be configured/i)
+
+    const family = await screen.findByText('ICX-7150')
+    await userEvent.click(family)
+    const model = await screen.findByText('24')
+    await userEvent.click(model)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    const dst1 = await screen.findAllByTestId('tagged_module1_0')
+    const src1 = await screen.findAllByTestId('tagged_module1_10')
+    fireEvent.mouseDown(src1[0])
+    fireEvent.mouseMove(dst1[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.mouseUp(dst1[0])
+
+    const dst2 = await screen.findAllByTestId('tagged_module2_0')
+    const src2 = await screen.findAllByTestId('tagged_module2_1')
+    fireEvent.mouseDown(src2[0])
+    fireEvent.mouseMove(dst2[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.mouseUp(dst2[0])
+
+    const dst3 = await screen.findAllByTestId('tagged_module3_0')
+    const src3 = await screen.findAllByTestId('tagged_module3_3')
+    fireEvent.mouseDown(src3[0])
+    fireEvent.mouseMove(dst3[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.mouseUp(dst3[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
@@ -179,17 +270,21 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    const dst = await screen.findAllByTestId('untagged_module1_0')
-    const src = await screen.findAllByTestId('untagged_module1_10')
-    fireEvent.dragStart(src[0])
-    fireEvent.dragEnter(src[0])
+    const dst1 = await screen.findAllByTestId('untagged_module1_0')
+    const src1 = await screen.findAllByTestId('untagged_module1_10')
+    fireEvent.mouseDown(src1[0])
+    fireEvent.mouseMove(dst1[0])
     await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.drop(dst[0])
-    fireEvent.dragLeave(dst[0])
-    fireEvent.dragEnd(dst[0])
+    fireEvent.mouseUp(dst1[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    await userEvent.click(await screen.findByTestId('tagged_module2_0'))
+
+    const dst2 = await screen.findAllByTestId('tagged_module1_11')
+    const src2 = await screen.findAllByTestId('tagged_module1_20')
+    fireEvent.mouseDown(src2[0])
+    fireEvent.mouseMove(dst2[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.mouseUp(dst2[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
