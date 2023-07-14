@@ -64,7 +64,7 @@ describe('Test usePlacesAutocomplete', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     rerender()
 
-    expect(mockInstances.get(Autocomplete)).toHaveLength(1)
+    await waitFor(() => expect(mockInstances.get(Autocomplete)).toHaveLength(1))
     // TODO: expect(onPlaceSelected).toBeCalled()
   })
 })
