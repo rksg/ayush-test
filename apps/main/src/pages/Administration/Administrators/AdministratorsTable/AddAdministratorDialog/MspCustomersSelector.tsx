@@ -7,13 +7,10 @@ import {
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { SpaceWrapper }     from '@acx-ui/rc/components'
-import {
-  useMspCustomerListQuery
-} from '@acx-ui/rc/services'
-import { useTableQuery
-} from '@acx-ui/rc/utils'
-import { RolesEnum } from '@acx-ui/types'
+import { useMspCustomerListQuery } from '@acx-ui/msp/services'
+import { SpaceWrapper }            from '@acx-ui/rc/components'
+import { useTableQuery }           from '@acx-ui/rc/utils'
+import { RolesEnum }               from '@acx-ui/types'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',
@@ -55,9 +52,9 @@ const MspCustomerSelector = () => {
   const role = Form.useWatch('role', form)
 
   useEffect(() => {
-    (role === RolesEnum.DPSK_ADMIN || role === RolesEnum.GUEST_MANAGER)
-      ? form.setFieldValue('ecType', 'none')
-      : form.setFieldValue('ecType', 'all')
+    (role === RolesEnum.PRIME_ADMIN)
+      ? form.setFieldValue('ecType', ECCustomerRadioButtonEnum.all)
+      : form.setFieldValue('ecType', ECCustomerRadioButtonEnum.none)
   }, [role])
 
   const ecTypesList = getEcTypes().map((item) => ({

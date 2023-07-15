@@ -12,7 +12,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { recommendationApi }         from '@acx-ui/store'
 import { NodeType, getIntl }         from '@acx-ui/utils'
 
-import { states, codes, disabledRecommendations } from './config'
+import { states, codes } from './config'
 
 type Metadata = {
   error?: {
@@ -111,9 +111,7 @@ const getStatusTooltip = (code: string, state: string, metadata: Metadata) => {
 }
 function transformResponse (recommendations: Recommendation[]) {
   const { $t } = getIntl()
-  const filteredRecommendations = recommendations.filter(({ code }) =>
-    !Object.keys(disabledRecommendations).includes(code))
-  return filteredRecommendations.map(recommendation => {
+  return recommendations.map(recommendation => {
     const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
     const { order, label } = codes[code as keyof typeof codes].priority
     return {

@@ -1,7 +1,7 @@
-import { gql }                   from 'graphql-request'
-import { chain, get, snakeCase } from 'lodash'
-import moment                    from 'moment-timezone'
-import { MessageDescriptor }     from 'react-intl'
+import { gql }               from 'graphql-request'
+import { get, snakeCase }    from 'lodash'
+import moment                from 'moment-timezone'
+import { MessageDescriptor } from 'react-intl'
 
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
@@ -57,13 +57,6 @@ export type RecommendationAp = {
   version: string;
 }
 
-const getRecommendationStatus = (recommendation: RecommendationDetails) => {
-  const config = chain(recommendation.statusTrail)
-    .filter(item => ['new', 'applied', 'reverted'].includes(item.status))
-    .first()
-    .value()
-  return config ? config.status : 'unknown'
-}
 export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
     code, statusTrail, status, appliedTime, currentValue, recommendedValue
@@ -89,7 +82,6 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     priority,
     category,
     summary,
-    status: getRecommendationStatus(details),
     appliedOnce: Boolean(statusTrail.find(t => t.status === 'applied'))
   } as EnhancedRecommendation
 }

@@ -2179,7 +2179,7 @@
   "QmHS60": "DE-Delete {count, plural, one {\"{entityValue}\"} other {{count} APs} }?",
   "Qo4kOJ": "DE-802.1X Auth Failure",
   "Qph95R": "DE-# of remaining IPs",
-  "Qpk8Ou": "DE-TelnetCpe",
+  "Qpk8Ou": "DE-TelenetCpe",
   "Qq9Z7z": "DE-Resource Utilization",
   "QtFGiO": "DE-Host",
   "QuQfws": "DE-< {threshold}",

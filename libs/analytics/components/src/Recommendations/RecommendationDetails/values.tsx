@@ -1,3 +1,5 @@
+import { Fragment } from 'react'
+
 import { chain, snakeCase }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
@@ -12,10 +14,8 @@ import {
   DetailsHeader,
   ValueDetails,
   DetailsWrapper,
-  RecommendationTitle,
-  RecommendationDivider,
-  RecommendationCardWrapper,
-  RecommendationInfoIcon,
+  Title,
+  InfoIcon,
   ValueDetailsWithIcon
 } from './styledComponents'
 
@@ -36,7 +36,7 @@ const getValues = (details: EnhancedRecommendation) => {
     appliedOnce,
     heading: codes[code].valueText,
     original: valueFormatter(originalValue),
-    current: valueFormatter(currentValue),
+    current: currentValue ? valueFormatter(currentValue) : null,
     recommended: valueFormatter(recommendedValue),
     tooltipContent: typeof recommendedValueTooltipContent === 'function'
       ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
@@ -92,7 +92,13 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
     .value()
 
   const recommendationInfo = codes[code]
-  const { valueFormatter, actionText, reasonText, tradeoffText } = recommendationInfo
+  const {
+    appliedReasonText,
+    valueFormatter,
+    actionText,
+    reasonText,
+    tradeoffText
+  } = recommendationInfo
 
   let parameters: Record<string, string | JSX.Element> = {
     ...metadata,
@@ -110,7 +116,9 @@ const getRecommendationsText = (details: EnhancedRecommendation, $t: IntlShape['
   }
   return {
     actionText: $t(actionText, parameters),
-    reasonText: $t(reasonText, parameters),
+    reasonText: appliedOnce && appliedReasonText
+      ? $t(appliedReasonText, parameters)
+      : $t(reasonText, parameters),
     tradeoffText: $t(tradeoffText, parameters)
   }
 }
@@ -121,14 +129,7 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
     heading, appliedOnce, status, original, current, recommended, tooltipContent
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const firstValue = applied ? original : current
-  const firstLabel = applied
-    ? $t({ defaultMessage: 'Original Configuration' })
-    : $t({ defaultMessage: 'Current Configuration' })
   const secondValue = applied ? current : recommended
-  const secondLabel = applied
-    ? $t({ defaultMessage: 'Current Configuration' })
-    : $t({ defaultMessage: 'Recommended Configuration' })
   const recommendationText = getRecommendationsText(details, $t)
   const tooltipText = typeof tooltipContent === 'string'
     ? tooltipContent
@@ -136,57 +137,47 @@ export const Values = ({ details }: { details: EnhancedRecommendation }) => {
       ? null
       : $t(tooltipContent)
 
+  const fields = [
+    {
+      label: applied
+        ? $t({ defaultMessage: 'Original Configuration' })
+        : $t({ defaultMessage: 'Current Configuration' }),
+      value: applied ? original : current
+    },
+    {
+      label: applied
+        ? $t({ defaultMessage: 'Current Configuration' })
+        : $t({ defaultMessage: 'Recommended Configuration' }),
+      value: tooltipText
+        ? <ValueDetailsWithIcon>
+          {secondValue}
+          {tooltipText && <Tooltip title={tooltipText}>
+            <InfoIcon />
+          </Tooltip>}
+        </ValueDetailsWithIcon>
+        : secondValue
+    }
+  ]
+
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
     <DetailsWrapper>
       <Card type='solid-bg' title={$t(heading)}>
         <GridRow>
-          <GridCol col={{ span: 12 }}>
-            {firstLabel}
-          </GridCol>
-          <GridCol col={{ span: 10, pull: 2 }}>
-            <ValueDetails>{firstValue}</ValueDetails>
-          </GridCol>
-          <GridCol col={{ span: 12 }}>
-            {secondLabel}
-          </GridCol>
-          <GridCol col={{ span: 10, pull: 2 }}>
-            <ValueDetails>
-              <ValueDetailsWithIcon>
-                {secondValue}
-                {tooltipText && <Tooltip title={tooltipText}>
-                  <RecommendationInfoIcon />
-                </Tooltip>}
-              </ValueDetailsWithIcon>
-            </ValueDetails>
-          </GridCol>
+          {fields
+            .filter(({ value }) => value !== null)
+            .map(({ label, value }, ind) => <Fragment key={ind}>
+              <GridCol col={{ span: 8 }}>{label}</GridCol>
+              <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
+            </Fragment>)}
         </GridRow>
       </Card>
     </DetailsWrapper>
-    <RecommendationCardWrapper>
-      <GridRow>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'What is the recommendation?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.actionText}
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'Why this recommendation?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.reasonText}
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <RecommendationTitle>
-            {$t({ defaultMessage: 'What is the potential trade-off?' })}
-          </RecommendationTitle>
-          <RecommendationDivider />
-          {recommendationText.tradeoffText}
-        </GridCol>
-      </GridRow>
-    </RecommendationCardWrapper>
+    <Title>{$t({ defaultMessage: 'What is the recommendation?' })}</Title>
+    {recommendationText.actionText}
+    <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
+    {recommendationText.reasonText}
+    <Title>{$t({ defaultMessage: 'What is the potential trade-off?' })}</Title>
+    {recommendationText.tradeoffText}
   </>
 }

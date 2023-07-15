@@ -1,5 +1,5 @@
-import { RecommendationDetails }                        from '@acx-ui/analytics/components'
-import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import { RecommendationDetails, NetworkAssurance, NetworkAssuranceTabEnum } from '@acx-ui/analytics/components'
+import { Route, rootRoutes, Navigate, MLISA_BASE_PATH }                     from '@acx-ui/react-router-dom'
 
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
@@ -21,13 +21,18 @@ function AllRoutes () {
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
-      <Route path='health' element={<div>Health</div>} />
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
       <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
       <Route path='occupancy' element={<div>Occupancy</div>} />
       <Route path='dataStudio' element={<div>Data Studio</div>} />
       <Route path='reports' element={<div>Reports</div>} />
       <Route path='admin/*' element={<div>Admin</div>} />
+      <Route path='health'>
+        <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+        <Route index={false}
+          path='tab/:categoryTab'
+          element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
+      </Route>
     </Route>
   </Route>)
 }
