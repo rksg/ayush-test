@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                                       from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                                                       from '@acx-ui/msp/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -123,9 +123,9 @@ const userProfile = {
   varTenantId: '3061bd56e37445a8993ac834c01e2710'
 }
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
 }))
 const user = require('@acx-ui/user')
 jest.mock('@acx-ui/user', () => ({

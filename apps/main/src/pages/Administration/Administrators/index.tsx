@@ -1,10 +1,9 @@
-import {
-  useGetTenantDetailsQuery,
-  useGetMspEcProfileQuery
-} from '@acx-ui/rc/services'
-import { MSPUtils, TenantType }  from '@acx-ui/rc/utils'
-import { useUserProfileContext } from '@acx-ui/user'
-import { useTenantId }           from '@acx-ui/utils'
+import { useGetMspEcProfileQuery }  from '@acx-ui/msp/services'
+import { MSPUtils }                 from '@acx-ui/msp/utils'
+import { useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { TenantType }               from '@acx-ui/rc/utils'
+import { useUserProfileContext }    from '@acx-ui/user'
+import { useTenantId }              from '@acx-ui/utils'
 
 import AdministratorsTable from './AdministratorsTable'
 import DelegationsTable    from './DelegationsTable'
