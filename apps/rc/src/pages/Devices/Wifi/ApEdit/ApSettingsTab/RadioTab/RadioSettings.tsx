@@ -12,7 +12,8 @@ import {
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
-  SelectItemOption } from '@acx-ui/rc/components'
+  SelectItemOption,
+  findIsolatedGroupByChannel } from '@acx-ui/rc/components'
 import {
   useGetApRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
@@ -387,6 +388,23 @@ export function RadioSettings () {
       return true
     }
 
+    const validate320MHzIsolatedGroup = (channels: unknown[] | undefined, method: string | undefined, title: string) => {
+      const typeSafeChannels = channels as string[]
+      if (method !== 'MANUAL') {
+        const isolatedGroup = findIsolatedGroupByChannel(typeSafeChannels)
+        if (isolatedGroup.length > 0) {
+          showActionModal({
+            type: 'error',
+            title: title,
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'Please select two adjacent 160Mhz channels to combine one 320 MHz channel' })
+          })
+          return false
+        }
+      }
+      return true
+    }
+
     let title = ''
     const { allowedChannels: channel24, method: method24 } = apRadioParams24G || {}
     title = $t({ defaultMessage: '2.4 GHz - Channel selection' })
@@ -403,6 +421,7 @@ export function RadioSettings () {
       const { allowedChannels: channel6, method: method6 } = apRadioParams6G || {}
       title = $t({ defaultMessage: '6 GHz - Channel selection' })
       if (!validateChannels(channel6, method6, title)) return false
+      if (!validate320MHzIsolatedGroup(channel6, method6, title)) return false
     }
 
     if (hasRadioDual5G) {

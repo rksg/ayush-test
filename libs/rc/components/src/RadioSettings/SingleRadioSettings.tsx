@@ -148,14 +148,16 @@ export function SingleRadioSettings (props:{
     allowedChannels,
     allowedIndoorChannels,
     allowedOutdoorChannels,
-    combinChannels
+    combinChannels,
+    channelBandwidth320MhzGroup
   ] = [
     useWatch<string>(methodFieldName),
     useWatch<string>(channelBandwidthFieldName),
     useWatch<string[]>(allowedChannelsFieldName),
     useWatch<string[]>(allowedIndoorChannelsFieldName),
     useWatch<string[]>(allowedOutdoorChannelsFieldName),
-    useWatch<boolean>(combinChannelsFieldName)
+    useWatch<boolean>(combinChannelsFieldName),
+    useWatch<string>(channelBandwidth320MhzGroupFieldName)
   ]
 
   useEffect(() => {
@@ -180,6 +182,16 @@ export function SingleRadioSettings (props:{
     if (channelBandwidth !== 'AUTO' &&
         !bandwidthOptions.find(option => option.value === channelBandwidth)) {
       form.setFieldValue(channelBandwidthFieldName, 'AUTO')
+    }
+
+    if (radioType === ApRadioTypeEnum.Radio6G) {
+      if (channelBandwidth === '320MHz' && channelMethod === 'MANUAL') {
+        if (!channelBandwidth320MhzGroup || channelBandwidth320MhzGroup === 'AUTO') {
+          form.setFieldValue(channelBandwidth320MhzGroupFieldName, '320MHz-1')
+        }
+      } else {
+        form.setFieldValue(channelBandwidth320MhzGroupFieldName, 'AUTO')
+      }
     }
 
     const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
@@ -354,9 +366,8 @@ export function SingleRadioSettings (props:{
           <Row gutter={20}>
             <Col span={channelColSpan}>
               <RadioSettingsChannelsManual320Mhz
-                context={context}
                 formName={allowedChannelsFieldName}
-                groupFormName={channelBandwidth320MhzGroupFieldName}
+                channelBandwidth320MhzGroupFieldName={channelBandwidth320MhzGroupFieldName}
                 channelList={channelList}
                 disabled={inherit5G || disable || isUseVenueSettings}
                 editContext={editContext}

@@ -38,14 +38,13 @@ const ChannelGroup_320MHz_Manual: ChannelGroup = {
 /* eslint-enable max-len */
 
 export function RadioSettingsChannelsManual320Mhz (props: {
-  context?: string
   formName: string[],
+  channelBandwidth320MhzGroupFieldName: string[]
   channelList: RadioChannel[],
   disabled?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editContext: React.Context<any>,
   channelMethod?: string
-
 }) {
 
   const {
@@ -53,30 +52,22 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     setEditContextData
   } = useContext(props.editContext)
 
-  const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
 
-  const filterUnselectedChannel = (channels: RadioChannel[]) : CheckboxValueType[] => {
-    let selectedChannels = [] as CheckboxValueType[]
-    channels.forEach((channel) => {
-      if (channel.selected === true) {
-        selectedChannels.push(channel.value)
-      }
-    })
-    return selectedChannels
-  }
-
-  let { disabled = false, formName, channelList } = props
-
-  const [checkedGroup, setCheckGroup] = useState('320MHz-1')
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const [checkedGroup, setCheckGroup] = useState('320MHz-1')
+  const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
+
+  let { disabled = false } = props
 
   const handleClickGroupChannels = (event: RadioChangeEvent) => {
     setCheckGroup(event.target.value)
+    form.setFieldValue(props.channelBandwidth320MhzGroupFieldName, event.target.value)
     if(_.intersection(ChannelGroup_320MHz_Manual[event.target.value], checkedChannel)) {
       return
     }
     else {
+      form.setFieldValue(props.formName, [])
       setCheckedChannel([])
     }
     // notify data is changed
@@ -87,7 +78,9 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   }
 
   const handleChannelChange = (checkedValues: CheckboxValueType[]) => {
-    setCheckedChannel(_.difference(checkedValues, checkedChannel))
+    const diff = _.difference(checkedValues, checkedChannel)
+    setCheckedChannel(diff)
+    form.setFieldValue(props.formName, diff)
     // notify data is changed
     setEditContextData({
       ...editContextData,
@@ -96,17 +89,18 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   }
 
   useEffect(()=> {
-
-    const defaultSelectedChannels = filterUnselectedChannel(channelList)
-    if(!defaultSelectedChannels){
-      form.setFieldValue(formName, defaultSelectedChannels)
+    const selectedCh = form.getFieldValue(props.formName)
+    if (selectedCh) {
+      setCheckedChannel(selectedCh)
     }
-    setCheckedChannel(defaultSelectedChannels)
+
+    const group = form.getFieldValue(props.channelBandwidth320MhzGroupFieldName)
+    if(!group) {
+      setCheckGroup(group)
+    }
   }, [])
 
-
-
-  return(
+  return(<>
     <Radio.Group onChange={handleClickGroupChannels} value={checkedGroup}>
       <Row>
         <Radio value={'320MHz-1'}>320MHz-1</Radio>
@@ -166,5 +160,9 @@ export function RadioSettingsChannelsManual320Mhz (props: {
           />
         </Col>
       </Row>}
-    </Radio.Group>)
+    </Radio.Group>
+    <Form.Item name={props.channelBandwidth320MhzGroupFieldName} hidden/>
+    <Form.Item name={props.formName} hidden/>
+  </>
+  )
 }
