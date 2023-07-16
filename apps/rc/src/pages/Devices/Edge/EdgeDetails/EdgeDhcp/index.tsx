@@ -15,10 +15,10 @@ import {
 import {
   DhcpPoolStats,
   EdgeDhcpHostStatus,
-  RequestPayload,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload } from '@acx-ui/types'
 
 import ManageDhcpDrawer from './ManageDhcpDrawer'
 import * as UI          from './styledComponents'

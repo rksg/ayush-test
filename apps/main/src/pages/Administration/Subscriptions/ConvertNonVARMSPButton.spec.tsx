@@ -4,8 +4,9 @@ import React from 'react'
 import { fireEvent, waitForElementToBeRemoved, within } from '@testing-library/react'
 import { rest }                                         from 'msw'
 
-import { AdministrationUrlsInfo, MspUrlsInfo, TenantType } from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
+import { MspUrlsInfo }                        from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
 import {
   mockServer,
   render,

@@ -12,8 +12,8 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }                                  from '@acx-ui/types'
-import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
+import { TimeStampRange }                                            from '@acx-ui/types'
+import { DateRange, NetworkPath, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -165,7 +165,7 @@ describe('Kpi Section', () => {
       data: { network: { timeSeries: sampleTS } }
     })
 
-    const path = [{ type: 'ap', name: 'z1' }] as NetworkPath
+    const path = [{ type: 'ap' as NodeType, name: 'z1' }] as NetworkPath
     const filter = pathToFilter(path)
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
@@ -230,5 +230,4 @@ describe('Kpi Section', () => {
 
     expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
   })
-
 })

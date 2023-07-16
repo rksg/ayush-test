@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
 import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { Provider }                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                   from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitForElementToBeRemoved, within }                        from '@acx-ui/test-utils'
 
 import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
 import { mockedFirewallDataList } from '../__tests__/fixtures'
@@ -55,14 +55,16 @@ describe('Firewall Table', () => {
     )
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     expect(row.length).toBe(2)
-    const ddosCheckMark = await screen.findByTestId('ddos-check-mark-1')
-    await user.hover(ddosCheckMark)
+    await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 1 No' })
+    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 No' })
+    const ddosInfo = await screen.findByTestId('ddos-info-1')
+    await user.hover(ddosInfo)
     await screen.findByText('ALL: 220')
     await screen.findByText('ICMP: 200')
-    const aclCheckMark = await screen.findByTestId('acl-check-mark-1')
-    await user.hover(aclCheckMark)
-    await screen.findByText('ACL1 (inbound)')
-    await screen.findByText('ACL2 (outbound)')
+
+    const edgeNumStr = await screen.findByTestId('edge-names-1')
+    await user.hover(edgeNumStr)
+    await screen.findByText('Smart Edge 1')
   })
 
   it('should go edit page', async () => {
@@ -148,8 +150,10 @@ describe('Firewall Table', () => {
     const row = await screen.findByRole('row', { name: /TestFirewall1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "TestFirewall1"?')
+    const dialogTitle = await screen.findByText('Delete "TestFirewall1"?')
     await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
+    await waitForElementToBeRemoved(dialogTitle)
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('should delete selected row(multiple)', async () => {
@@ -166,7 +170,9 @@ describe('Firewall Table', () => {
     await user.click(within(row1).getByRole('checkbox'))
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "2 Firewall"?')
+    const dialogTitle = await screen.findByText('Delete "2 Firewall"?')
     await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
+    await waitForElementToBeRemoved(dialogTitle)
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 })

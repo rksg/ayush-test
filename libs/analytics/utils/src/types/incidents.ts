@@ -19,6 +19,7 @@ export interface IncidentMetadata {
     checks: Record<string,boolean>[]
     params: Record<string,string>
   }
+  apRadioDeploy?: string
 }
 
 export interface Incident extends IncidentInformation {
