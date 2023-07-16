@@ -34,7 +34,6 @@ export function RadioSettingsForm (props:{
 }) {
 
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const { radioType,
     disabled = false,
