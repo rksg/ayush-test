@@ -77,6 +77,21 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     })
   }
 
+  const filterUnselectedChannels = (channels: RadioChannel[]) : string [] => {
+    const selectedChannels = [] as string[]
+    channels.forEach((channel)=> {
+      if (channel.selected === true) {
+        selectedChannels.push(channel.value)
+      }
+    })
+
+    if (selectedChannels.length > 1) {
+      return _.castArray(selectedChannels[0])
+    }
+
+    return selectedChannels
+  }
+
   const handleChannelChange = (checkedValues: CheckboxValueType[]) => {
     const diff = _.difference(checkedValues, checkedChannel)
     setCheckedChannel(diff)
@@ -89,13 +104,13 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   }
 
   useEffect(()=> {
-    const selectedCh = form.getFieldValue(props.formName)
-    if (selectedCh) {
-      setCheckedChannel(selectedCh)
+    const selectedChannels = filterUnselectedChannels(props.channelList)
+    if (selectedChannels) {
+      setCheckedChannel(selectedChannels)
     }
 
     const group = form.getFieldValue(props.channelBandwidth320MhzGroupFieldName)
-    if(!group) {
+    if(group) {
       setCheckGroup(group)
     }
   }, [])
@@ -103,13 +118,14 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   return(<>
     <Radio.Group onChange={handleClickGroupChannels} value={checkedGroup}>
       <Row>
-        <Radio value={'320MHz-1'}>320MHz-1</Radio>
+        <Radio data-testid={'320MHz-1-radio'} value={'320MHz-1'}>320MHz-1</Radio>
       </Row>
       {(checkedGroup === '320MHz-1') && <Row>
         <Col span={14}>
           <CheckboxGroup
             value={checkedChannel}
             disabled={disabled}
+            data-testid={'320MHz-1-checkboxgroup'}
             onChange={handleChannelChange}
             options={ChannelGroup_320MHz_Manual['320MHz-1'].map((value: string) => {
               return {
@@ -132,13 +148,14 @@ export function RadioSettingsChannelsManual320Mhz (props: {
         </Col>
       </Row>}
       <Row>
-        <Radio value={'320MHz-2'}>320MHz-2</Radio>
+        <Radio data-testid={'320MHz-2-radio'} value={'320MHz-2'}>320MHz-2</Radio>
       </Row>
       {(checkedGroup === '320MHz-2') && <Row>
         <Col span={14}>
           <CheckboxGroup
             value={checkedChannel}
             disabled={disabled}
+            data-testid={'320MHz-2-checkboxgroup'}
             onChange={handleChannelChange}
             options={ChannelGroup_320MHz_Manual['320MHz-2'].map((value: string) => {
               return {

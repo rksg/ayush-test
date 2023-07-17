@@ -9,7 +9,7 @@ import { Tooltip } from '@acx-ui/components'
 
 import { BarButton6G, CheckboxGroupFor320Mhz } from '../styledComponents'
 
-import { defaultStates, ChannelGroup320MhzEnum, testingData, findIsolatedGroup } from './ChannelComponentStates'
+import { defaultStates, ChannelGroup320MhzEnum, findIsolatedGroup } from './ChannelComponentStates'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
@@ -46,10 +46,7 @@ export function RadioSettingsChannels320Mhz (props: {
 
   const form = Form.useFormInstance()
 
-  // 控制畫面
   const [complexGroupChannelState, setComplexGroupChannelState] = useState(defaultStates)
-  // TODO Remove Testing Data
-  channelList = testingData
 
   useEffect(()=> {
     const selectedChannels = filterUnselectedChannels(channelList)
@@ -186,6 +183,7 @@ export function RadioSettingsChannels320Mhz (props: {
           <Col span={6}>
             <BarButton6G
               disabled={disabled}
+              data-testid={`320-button-${key}`}
               onClick={handleClick320MhzGroupChannels}
               id={key}
             >
@@ -205,6 +203,7 @@ export function RadioSettingsChannels320Mhz (props: {
           <Checkbox
             disabled={disabled}
             className={value.isolated ? 'isolated' : ''}
+            data-testid={`160-checkbox-${key}`}
             value={key}>
             <TooltipFor320Mhz
               channelGroupNumber={key}
