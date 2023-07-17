@@ -195,7 +195,7 @@ export function RadioSettingsForm (props:{
               name={enableMulticastRateLimitingFieldName}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
-              initialValue={false}
+              initialValue={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
             >
               {!isUseVenueSettings ? (
                 <Switch
