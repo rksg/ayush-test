@@ -4,28 +4,18 @@ import { Col, Row, Form, Checkbox } from 'antd'
 import _                            from 'lodash'
 import { useIntl }                  from 'react-intl'
 
+
 import { Tooltip } from '@acx-ui/components'
 
+import { BarButton6G, CheckboxGroupFor320Mhz } from '../styledComponents'
 
-import { CheckboxGroupFor320Mhz } from '../styledComponents'
+import { defaultStates, ChannelGroup320MhzEnum, testingData, findIsolatedGroup } from './ChannelComponentStates'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 interface RadioChannel {
-  value: string;
-  selected: boolean;
-}
-type ChannelGroup = {
-  [key: string] : string[]
-}
-/* eslint-disable max-len */
-const ChannelGroup_320MHz: ChannelGroup = {
-  31: ['1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61'],
-  63: ['33', '37', '41', '45', '49', '53', '57', '61', '65', '69', '73', '77', '81', '85', '89', '93'],
-  95: ['65', '69', '73', '77', '81', '85', '89', '93', '97', '101', '105', '109', '113', '117', '121', '125'],
-  127: ['97', '101', '105', '109', '113', '117', '121', '125', '129', '133', '137', '141', '145', '149', '153', '157'],
-  159: ['129', '133', '137', '141', '145', '149', '153', '157', '161', '165', '169', '173', '177', '181', '185', '189'],
-  191: ['161', '165', '169', '173', '177', '181', '185', '189', '193', '197', '201', '205', '209', '213', '217', '221']
+    value: string;
+    selected: boolean;
 }
 
 const filterUnselectedChannels = (channels: RadioChannel[]) : string [] => {
@@ -38,29 +28,16 @@ const filterUnselectedChannels = (channels: RadioChannel[]) : string [] => {
   return selectedChannels
 }
 
-const setSelectedCannelGroupCheckBox = (defaultSelectedChannels: string[]): CheckboxValueType[] => {
-  let checkedChannelGroup = [] as CheckboxValueType[]
-  // 改成全測 intersection
-  _.forIn(ChannelGroup_320MHz, function (value, key) {
-    const shouldCheckboxBeChecked = _.intersection(value, defaultSelectedChannels).length === 16
-    if (shouldCheckboxBeChecked) {
-      checkedChannelGroup.push(key)
-    }
-  })
-  console.log(`Default Gourp: ${checkedChannelGroup}`)
-  return checkedChannelGroup
-}
-/* eslint-enable max-len */
 export function RadioSettingsChannels320Mhz (props: {
-  context?: string
-  formName: string[],
-  channelList: RadioChannel[],
-  disabled?: boolean,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editContext: React.Context<any>,
-  channelMethod?: string
+    context?: string
+    formName: string[],
+    channelList: RadioChannel[],
+    disabled?: boolean,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    editContext: React.Context<any>,
 }) {
-  let { disabled = false, formName, channelList } = props
+
+  let { disabled = false, channelList } = props
 
   const {
     editContextData,
@@ -69,51 +46,105 @@ export function RadioSettingsChannels320Mhz (props: {
 
   const form = Form.useFormInstance()
 
-  const [checkedChannelGroup, setCheckedChannelGroup] = useState([] as CheckboxValueType[])
-  const [selectedChannels, setSelectedChannels] = useState([] as string[])
+  // 控制畫面
+  const [complexGroupChannelState, setComplexGroupChannelState] = useState(defaultStates)
+  // TODO Remove Testing Data
+  channelList = testingData
 
   useEffect(()=> {
+    const selectedChannels = filterUnselectedChannels(channelList)
+    let checked160MHzGroup = [] as CheckboxValueType[]
+    if(selectedChannels) {
+      _.forIn(complexGroupChannelState.ChannelGroup_160MHz, (value, key) => {
+        if(_.intersection(value.channels, selectedChannels).length !== 0){
+          checked160MHzGroup.push(key)
+        }
+      })
+    }
 
-    setSelectedChannels(filterUnselectedChannels(channelList))
+    let unsavedStates = _.cloneDeep(complexGroupChannelState)
+    _.set(unsavedStates, 'enabledCheckbox', checked160MHzGroup)
 
-    form.setFieldValue(formName, selectedChannels)
+    setComplexGroupChannelState(unsavedStates)
 
-    const unsavedCheckedChannelGroup = setSelectedCannelGroupCheckBox(selectedChannels)
-
-    setCheckedChannelGroup(unsavedCheckedChannelGroup)
-
+    form.setFieldValue(props.formName, channelList)
   }, [])
 
-  const handleClickGroupChannels = (checkedValues: CheckboxValueType[]) => {
 
-    const unselectChannel = _.head(_.difference(checkedChannelGroup, checkedValues)) as string
+  useEffect(()=> {
+    let enableChannels = [] as string[]
+    complexGroupChannelState.enabledCheckbox.forEach((channel) => {
+      /* eslint-disable max-len */
+      const groupChannels = _.get(complexGroupChannelState.ChannelGroup_160MHz, channel)
+      enableChannels = enableChannels.concat(groupChannels.channels)
+    })
+    form.setFieldValue(props.formName, enableChannels)
+  }, [complexGroupChannelState])
 
-    if (unselectChannel) {
-      setSelectedChannels(
-        _.difference(selectedChannels, ChannelGroup_320MHz[unselectChannel])
-      )
+  const handleClick160MhzGroupChannels = (checkedValues: CheckboxValueType[]) => {
+    let unsavedStates = _.cloneDeep(complexGroupChannelState)
+    _.set(unsavedStates, 'enabledCheckbox', checkedValues)
+
+    const isolatedChannel = findIsolatedGroup(checkedValues)
+
+    if(isolatedChannel) {
+      _.forIn(complexGroupChannelState.ChannelGroup_160MHz, (value, key) => {
+        if (isolatedChannel.includes(key)){
+          _.set(unsavedStates, `ChannelGroup_160MHz.${key}.isolated`, true)
+        }
+        else {
+          _.set(unsavedStates, `ChannelGroup_160MHz.${key}.isolated`, false)
+        }
+      })
     }
 
-    const selectChannel = _.head(_.difference(checkedValues, checkedChannelGroup))
+    setComplexGroupChannelState(unsavedStates)
+    form.setFieldValue(props.formName, unsavedStates.getEnabledChannels())
+    // notify data is changed
+    setEditContextData({
+      ...editContextData,
+      isDirty: true
+    })
 
-    if (selectChannel) {
+  }
 
+  const handleClick320MhzGroupChannels = (event: React.MouseEvent) => {
+
+    /* eslint-disable max-len */
+    let channel160Groups = _.get(complexGroupChannelState, 'ChannelGroup_320MHz.' + event.currentTarget.id).channel160Groups
+
+    const intersection = _.intersection(channel160Groups, complexGroupChannelState.enabledCheckbox)
+
+    let unsavedStates = _.cloneDeep(complexGroupChannelState)
+
+    let isolatedChannel = [] as CheckboxValueType[]
+
+    if(intersection.length === 2) {
+      let removeIntersection = _.difference(unsavedStates.enabledCheckbox, intersection)
+      _.set(unsavedStates, 'enabledCheckbox', removeIntersection)
+
+      isolatedChannel = findIsolatedGroup(removeIntersection)
     }
 
+    else {
+      const union = _.union(unsavedStates.enabledCheckbox, channel160Groups)
+      _.set(unsavedStates, 'enabledCheckbox', union)
+      isolatedChannel = findIsolatedGroup(union)
+    }
 
-    // _.forIn(ChannelGroup_320MHz, function (value, key) {
-    //   const shouldAppendSelectedChannels = checkedValues.includes(key)
-    //   if (shouldAppendSelectedChannels) {
-    //     selectedChannels = selectedChannels.concat(value)
-    //   }
-    // })
-    const sortedSelectedChannels = _.sortedUniq(selectedChannels)
-    console.log(`Onchange Select Channels: ${sortedSelectedChannels}`)
-    console.log(`Onchange Select Group: ${checkedValues}`)
+    if(isolatedChannel) {
+      _.forIn(complexGroupChannelState.ChannelGroup_160MHz, (value, key) => {
+        if (isolatedChannel.includes(key)){
+          _.set(unsavedStates, `ChannelGroup_160MHz.${key}.isolated`, true)
+        }
+        else {
+          _.set(unsavedStates, `ChannelGroup_160MHz.${key}.isolated`, false)
+        }
+      })
+    }
 
-    form.setFieldValue(props.formName, sortedSelectedChannels)
-    setCheckedChannelGroup(checkedValues)
-
+    setComplexGroupChannelState(unsavedStates)
+    form.setFieldValue(props.formName, unsavedStates.getEnabledChannels())
     // notify data is changed
     setEditContextData({
       ...editContextData,
@@ -121,85 +152,112 @@ export function RadioSettingsChannels320Mhz (props: {
     })
   }
 
+  function TooltipFor320Mhz (props: {
+    channelGroupNumber: string,
+    availability: boolean
+  }) {
 
-  return (
+    const { $t } = useIntl()
+    const { channelGroupNumber, availability } = props
+
+    const message = availability ?
+      $t({ defaultMessage: 'Disable this channel' }) :
+      $t({ defaultMessage: 'Enable this channel' })
+    /* eslint-disable max-len */
+    return (
+      <Tooltip
+        title={
+          <div style={{ textAlign: 'center' }}>
+            <p>{buildTooltipMessage(message, complexGroupChannelState.ChannelGroup_160MHz[channelGroupNumber].channels)}</p>
+          </div>
+        }
+      >
+        {channelGroupNumber}
+      </Tooltip>
+    )
+
+  }
+
+  const render320MHzGroup = (assignedGroup: ChannelGroup320MhzEnum) => {
+    let node: React.ReactNode[] = []
+    _.forIn(complexGroupChannelState.ChannelGroup_320MHz, function (value, key){
+      if(value.group === assignedGroup)
+        node.push(
+          <Col span={6}>
+            <BarButton6G
+              disabled={disabled}
+              onClick={handleClick320MhzGroupChannels}
+              id={key}
+            >
+              {key}
+            </BarButton6G>
+          </Col>
+        )
+    })
+    return node
+  }
+
+  const render160MHzGroup = () => {
+    let node: React.ReactNode[] = []
+    _.forIn(complexGroupChannelState.ChannelGroup_160MHz, function (value, key){
+      node.push(
+        <Col span={3}>
+          <Checkbox
+            disabled={disabled}
+            className={value.isolated ? 'isolated' : ''}
+            value={key}>
+            <TooltipFor320Mhz
+              channelGroupNumber={key}
+              availability={complexGroupChannelState.enabledCheckbox.includes(key)}
+            />
+          </Checkbox>
+        </Col>
+      )
+    })
+    return node
+  }
+
+  return (<>
+    <Form.Item name={props.formName} hidden/>
     <CheckboxGroupFor320Mhz
       style={{ width: '100%' }}
       disabled={disabled}
-      onChange={handleClickGroupChannels}
-      value={checkedChannelGroup}
+      onChange={handleClick160MhzGroupChannels}
+      value={complexGroupChannelState.enabledCheckbox}
     >
       <div style={{ marginTop: '10px' }}>
         <Row style={
           { marginBottom: '10px',
-            backgroundColor: '#FEF6ED',
             height: '50px',
             paddingTop: '10px' }}>
           <Col span={2}>
-            <p style={{ lineHeight: '30px', margin: '0px' }}>320 MHz-1</p>
+            <p>320 MHz-1</p>
           </Col>
-          <Col span={6}>
-            <Checkbox value={'31'}>
-              <TooltipFor320Mhz
-                channelGroupNumber={'31'}
-                availability={checkedChannelGroup.includes('31')}
-              />
-            </Checkbox>
-          </Col>
-          <Col span={6}>
-            <Checkbox value={'95'}>
-              <TooltipFor320Mhz
-                channelGroupNumber={'95'}
-                availability={checkedChannelGroup.includes('95')}
-              />
-            </Checkbox>
-          </Col>
-          <Col span={6}>
-            <Checkbox value={'159'}>
-              <TooltipFor320Mhz
-                channelGroupNumber={'159'}
-                availability={checkedChannelGroup.includes('159')}
-              />
-            </Checkbox>
-          </Col>
+          {render320MHzGroup(ChannelGroup320MhzEnum.Group1)}
         </Row>
         <Row style={
           { marginBottom: '10px',
-            backgroundColor: '#FEF6ED',
             height: '50px',
             paddingTop: '10px' }}>
           <Col span={2}>
-            <p style={{ lineHeight: '30px', margin: '0px' }}>320 MHz-2</p>
+            <p>320 MHz-2</p>
           </Col>
-          <Col span={6} offset={3}>
-            <Checkbox value={'63'}>
-              <TooltipFor320Mhz
-                channelGroupNumber={'63'}
-                availability={checkedChannelGroup.includes('63')}
-              />
-            </Checkbox>
-          </Col>
-          <Col span={6}>
-            <Checkbox value={'127'}>
-              <TooltipFor320Mhz
-                channelGroupNumber={'127'}
-                availability={checkedChannelGroup.includes('127')}
-              />
-            </Checkbox>
-          </Col>
-          <Col span={6}>
-            <Checkbox value={'191'}>
-              <TooltipFor320Mhz
-                channelGroupNumber={'191'}
-                availability={checkedChannelGroup.includes('191')}
-              />
-            </Checkbox>
-          </Col>
+          <Col span={3}></Col>
+          {render320MHzGroup(ChannelGroup320MhzEnum.Group2)}
+        </Row>
+        <Row style={
+          { marginBottom: '10px',
+            height: '50px',
+            paddingTop: '10px' }}>
+          <Col span={2}></Col>
+          {render160MHzGroup()}
         </Row>
       </div>
     </CheckboxGroupFor320Mhz>
+  </>
   )
 }
+
 
 function buildTooltipMessage (message: string , channels: string[]) {
   channels.forEach((element, index, it) => {
@@ -227,30 +285,4 @@ function buildTooltipMessage (message: string , channels: string[]) {
     }
   })
   return message
-}
-
-function TooltipFor320Mhz (props: {
-  channelGroupNumber: string,
-  availability: boolean
-}) {
-
-  const { $t } = useIntl()
-  const { channelGroupNumber, availability } = props
-
-  const message = availability ?
-    $t({ defaultMessage: 'Disable this channel' }) :
-    $t({ defaultMessage: 'Enable this channel' })
-
-  return (
-    <Tooltip
-      title={
-        <div style={{ textAlign: 'center' }}>
-          <p>{buildTooltipMessage(message, ChannelGroup_320MHz[channelGroupNumber])}</p>
-        </div>
-      }
-    >
-      {channelGroupNumber}
-    </Tooltip>
-  )
-
 }

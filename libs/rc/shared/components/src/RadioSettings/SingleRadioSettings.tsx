@@ -9,9 +9,9 @@ import { useIntl }                from 'react-intl'
 import { Button, cssStr }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { RadioSettingsChannels }         from '../RadioSettingsChannels'
-import { findIsolatedGroupByChannel }    from '../RadioSettingsChannels/R770/ChannelComponentStates'
-import { RadioSettingsChannels320MhzV2 } from '../RadioSettingsChannels/R770/RadioSettingsChannels320MhzV2'
+import { RadioSettingsChannels }       from '../RadioSettingsChannels'
+import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/R770/ChannelComponentStates'
+import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/R770/RadioSettingsChannels320Mhz'
 import {
   RadioSettingsChannelsManual320Mhz
 } from '../RadioSettingsChannels/R770/RadioSettingsChannelsManual320Mhz'
@@ -379,7 +379,7 @@ export function SingleRadioSettings (props:{
       return (
         <Row gutter={20}>
           <Col span={channelColSpan}>
-            <RadioSettingsChannels320MhzV2
+            <RadioSettingsChannels320Mhz
               context={context}
               formName={allowedChannelsFieldName}
               channelList={channelList}
