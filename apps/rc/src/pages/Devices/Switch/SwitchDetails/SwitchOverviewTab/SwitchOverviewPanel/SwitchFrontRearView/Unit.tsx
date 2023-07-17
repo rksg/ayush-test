@@ -455,8 +455,8 @@ export function Unit (props:{
         : <>
           {
             rearView && rearView.slots.map((slot, index) => (
-              <UI.RearSlotWrapper>
-                <RearView key={index}
+              <UI.RearSlotWrapper key={index}>
+                <RearView
                   slot={slot}
                   switchModelInfo={switchSlots as SwitchModelInfo}
                 />
