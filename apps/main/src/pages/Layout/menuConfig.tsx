@@ -23,12 +23,16 @@ import {
   SwitchSolid,
   WiFi
 } from '@acx-ui/icons'
+import { useGetAccountTierQuery }                              from '@acx-ui/rc/services'
 import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { useParams }                                           from '@acx-ui/react-router-dom'
 import { RolesEnum }                                           from '@acx-ui/types'
 import { hasRoles }                                            from '@acx-ui/user'
+import { getJwtTokenPayload, AccountTier }                     from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
+  const params = useParams()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
@@ -42,6 +46,11 @@ export function useMenuConfig () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
+
+  const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
+  const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
+  const isDelegatedTierPlatinum = tier === AccountTier.PLATINUM
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -63,10 +72,11 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(isNavbarEnhanced && isAnltAdvTier && showConfigChange ? [{
-              uri: '/analytics/configChange',
-              label: $t({ defaultMessage: 'Config Change' })
-            }] : [])
+            ...(isNavbarEnhanced && isAnltAdvTier
+            && showConfigChange && isDelegatedTierPlatinum ? [{
+                uri: '/analytics/configChange',
+                label: $t({ defaultMessage: 'Config Change' })
+              }] : [])
           ]
         },
         {
@@ -77,11 +87,11 @@ export function useMenuConfig () {
               uri: '/analytics/health',
               label: $t({ defaultMessage: 'Health' })
             },
-            ...(isAnltAdvTier ? [{
+            ...(isAnltAdvTier && isDelegatedTierPlatinum ? [{
               uri: '/analytics/serviceValidation',
               label: $t({ defaultMessage: 'Service Validation' })
             }] : []),
-            ...(isAnltAdvTier && showVideoCallQoe ? [{
+            ...(isAnltAdvTier && showVideoCallQoe && isDelegatedTierPlatinum? [{
               uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
