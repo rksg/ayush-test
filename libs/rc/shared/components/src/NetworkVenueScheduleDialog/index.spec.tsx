@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { Form } from 'antd'
-import { rest } from 'msw'
+import { Form }     from 'antd'
+import { debounce } from 'lodash'
+import { rest }     from 'msw'
 
 import * as config                                       from '@acx-ui/config'
 import { NetworkVenue, SchedulerTypeEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -169,8 +170,9 @@ describe('NetworkVenueTabScheduleDialog', () => {
 
     fireEvent.mouseDown(mondayLastTimeSlot)
     fireEvent.mouseMove(mondayTimeSlot)
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(mondayTimeSlot)
+    debounce(() => {
+      fireEvent.mouseUp(mondayTimeSlot)
+    }, 100)
   })
   it('should drag and select partial timeslots successfully', async () => {
     const props = {
@@ -198,8 +200,8 @@ describe('NetworkVenueTabScheduleDialog', () => {
 
     fireEvent.mouseDown(tuesdayTimeSlot1)
     fireEvent.mouseMove(tuesdayTimeSlot2)
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(tuesdayTimeSlot2)
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    debounce(() => {
+      fireEvent.mouseUp(tuesdayTimeSlot2)
+    }, 100)
   })
 })
