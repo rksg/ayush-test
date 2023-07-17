@@ -333,18 +333,25 @@ export function ManageCustomer () {
   const addressValidator = async (value: string) => {
     const isSameValue = value ===
       formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+    const isSameCountry = (data && (data?.address?.country === address?.country)) || false
+    setSameCountry(isSameCountry)
+    if(!address.addressLine){
+      return Promise.reject(
+        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+      )
+    }
     if (isEditMode && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Address must be in ' })} `
+        intl.$t(
+          { defaultMessage: 'Address must be in {country}' },
+          { country: data?.address?.country }
+        )
       )
     }
     return Promise.resolve()
   }
 
   const fieldValidator = async (value: string, remainingDevices: number) => {
-    const ecData = formRef.current?.getFieldsValue() as EcFormData
-    setSwitchLicense(ecData?.switchLicense)
-    setWifiLicense(ecData?.wifiLicense)
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
         `${intl.$t({ defaultMessage: 'Invalid number' })} `
@@ -435,6 +442,8 @@ export function ManageCustomer () {
         tenant_type: AccountType.MSP_EC,
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
+        city: address.city,
+        country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
         admin_delegations: delegations,
@@ -533,6 +542,8 @@ export function ManageCustomer () {
         tenant_type: AccountType.MSP_EC,
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
+        city: address.city,
+        country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate
       }
