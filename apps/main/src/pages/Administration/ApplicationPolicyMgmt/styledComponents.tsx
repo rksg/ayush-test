@@ -13,7 +13,7 @@ export const FwContainer = styled.div`
   margin-right: 30px;
   border-radius: 4px;
   width:417px;
-  height:92px;
+  height:80px;
   width: fit-content;
   padding: 13px 55px 12px 16px;
 `

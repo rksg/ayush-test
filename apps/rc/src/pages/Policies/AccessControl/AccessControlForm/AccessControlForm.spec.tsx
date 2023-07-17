@@ -11,11 +11,11 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   aclDetail,
-  aclList, aclResponse,
+  aclList, aclResponse, avcApp, avcCat, deviceDetailResponse, devicePolicyListResponse,
   layer2PolicyListResponse,
   layer2Response,
   layer3PolicyListResponse,
-  layer3Response
+  layer3Response, queryApplication
 } from '../__tests__/fixtures'
 
 import AccessControlForm from './AccessControlForm'
@@ -46,6 +46,8 @@ describe('AccessControlForm Component', () => {
         (_, res, ctx) => res(ctx.json(aclResponse))),
       rest.get(AccessControlUrls.getAccessControlProfile.url,
         (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.put(AccessControlUrls.updateAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclDetail))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json(aclList))),
       rest.get(AccessControlUrls.getL2AclPolicyList.url,
@@ -55,7 +57,17 @@ describe('AccessControlForm Component', () => {
       rest.get(AccessControlUrls.getL3AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer3Response))),
       rest.get(AccessControlUrls.getL2AclPolicy.url,
-        (_, res, ctx) => res(ctx.json(layer2Response)))
+        (_, res, ctx) => res(ctx.json(layer2Response))),
+      rest.get(AccessControlUrls.getDevicePolicy.url,
+        (_, res, ctx) => res(ctx.json(deviceDetailResponse))),
+      rest.get(AccessControlUrls.getDevicePolicyList.url,
+        (_, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.get(AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(ctx.json(queryApplication))),
+      rest.get(AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(ctx.json(avcCat))),
+      rest.get(AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(ctx.json(avcApp)))
     )
   })
 
