@@ -1,6 +1,7 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
+import { debounce }   from 'lodash'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
@@ -322,8 +323,9 @@ describe('Switch Stack Form - Edit', () => {
     const dst = await screen.findByTestId('dropContainer')
     fireEvent.mouseDown(src)
     fireEvent.mouseMove(dst)
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst)
+    debounce(() => {
+      fireEvent.mouseUp(dst)
+    }, 100)
   })
   it('should render edit stack form with real module correctly', async () => {
     editStackDetail.model = 'ICX7650-C12P'
@@ -342,7 +344,7 @@ describe('Switch Stack Form - Edit', () => {
 
     const applyButton = await screen.findByRole('button', { name: /apply/i })
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
+    act(() => {
       fireEvent.click(applyButton)
     })
   })
@@ -358,6 +360,13 @@ describe('Switch Stack Form - Edit', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
+
+    const applyButton = await screen.findByRole('button', { name: /apply/i })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.click(applyButton)
+    })
+    expect(mockedUsedNavigate).toBeCalledTimes(9)
   })
 
 

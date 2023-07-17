@@ -98,7 +98,7 @@ describe('Add Stack Member Form', () => {
     fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
     serialNumber2.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
+    act(() => {
       serialNumber2.blur()
     })
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
@@ -121,7 +121,7 @@ describe('Add Stack Member Form', () => {
     fireEvent.change(serialNumber1, { target: { value: 'FMG4124R20X' } })
     serialNumber1.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
+    act(() => {
       serialNumber1.blur()
     })
 
@@ -147,7 +147,7 @@ describe('Add Stack Member Form', () => {
     fireEvent.change(serialNumber1, { target: { value: 'aaa' } })
     serialNumber1.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
+    act(() => {
       serialNumber1.blur()
     })
 
@@ -170,7 +170,7 @@ describe('Add Stack Member Form', () => {
     fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
     serialNumber1.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
+    act(() => {
       serialNumber1.blur()
     })
 
@@ -179,7 +179,7 @@ describe('Add Stack Member Form', () => {
     fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
     serialNumber2.focus()
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
+    act(() => {
       serialNumber2.blur()
     })
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
