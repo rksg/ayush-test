@@ -1,4 +1,6 @@
-import { UserConnectionForm } from '../../../UserConnectionForm'
+import {
+  UserConnectionForm
+} from '../../../NetworkMoreSettings/UserConnectionForm'
 
 const UserConnectionOfMoreSettingsForm = () => {
 

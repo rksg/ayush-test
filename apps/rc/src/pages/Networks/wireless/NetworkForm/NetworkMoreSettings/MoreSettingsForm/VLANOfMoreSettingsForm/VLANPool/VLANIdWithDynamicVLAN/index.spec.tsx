@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import VLANIdWithDynamicVLAN from '.'
+import VLANIdWithDynamicVLAN from './index'
 
 
 describe('VLANIdWithDynamicVLAN', () => {

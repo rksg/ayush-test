@@ -1,3 +1,5 @@
+import React from 'react'
+
 import ProxyArp from './ProxyArp'
 import VLANPool from './VLANPool'
 
@@ -9,7 +11,7 @@ interface VLANOfNetworkMoreSettingsFormProps {
   showDynamicWlan: boolean
 }
 
-export default function VLANOfNetworkMoreSettingsForm (
+function VLANOfNetworkMoreSettingsForm (
   { enableVlanPooling,
     enableVxLan,
     isPortalDefaultVLANId,
@@ -19,16 +21,14 @@ export default function VLANOfNetworkMoreSettingsForm (
   return (
     <>
       <VLANPool
-        data-testid='VLANPool'
         enableVxLan={enableVxLan}
         enableVlanPooling={enableVlanPooling}
         isPortalDefaultVLANId={isPortalDefaultVLANId}
         showDynamicWlan={showDynamicWlan}
       />
-      <ProxyArp
-        data-testid='ProxyArp'
-        enableVxLan={enableVxLan}
-      />
+      <ProxyArp enableVxLan={enableVxLan} />
     </>
   )
 }
+
+export default VLANOfNetworkMoreSettingsForm

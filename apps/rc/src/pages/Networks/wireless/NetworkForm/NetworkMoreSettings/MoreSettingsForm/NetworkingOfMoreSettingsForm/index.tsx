@@ -7,7 +7,7 @@ import { Tooltip }                                                              
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { BasicServiceSetPriorityEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import * as UI from '../../../styledComponents'
+import * as UI from '../../styledComponents'
 
 
 interface NetworkingOfMoreSettingsFormProps {

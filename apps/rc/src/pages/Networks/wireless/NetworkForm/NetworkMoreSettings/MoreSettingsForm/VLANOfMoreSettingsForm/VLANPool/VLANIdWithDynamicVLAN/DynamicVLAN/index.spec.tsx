@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import DynamicVLAN from 'apps/rc/src/pages/Networks/wireless/NetworkForm/NetworkMoreSettings/MoreSettingsForm/BodyOfMoreSettingsForm/VLANOfMoreSettingsForm/VLANPool/VLANIdWithDynamicVLAN/DynamicVLAN/index'
+import DynamicVLAN from './index'
 
 
 describe('DynamicVLAN', () => {
