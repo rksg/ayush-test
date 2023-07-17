@@ -23,6 +23,7 @@ export enum Features {
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
   SWITCH_SUPPORT_ICX8200 = 'switch-support-icx8200',
+  SWITCH_DHCP_CLIENTS = 'switch-dhcp-clients',
   MDNS_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
@@ -56,8 +57,11 @@ export enum Features {
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
+  WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
-  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled'
+  RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
+  SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
+  DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

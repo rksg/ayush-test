@@ -62,5 +62,4 @@ CODEOWNERS.destination_branch_pattern release/*
 
 # Suppress info comment on pull request creation about added code owners. Info comment will be added by default.
 # CODEOWNERS.toplevel.create_pull_request_comment disable
-@@@api-docs-team   	@"Shannon.Clark" @"Dora.Yang" @"birdy.chang" @"rk1117" @"js1353" @"mark.tandowsky"
-/api-docs/*     @@"api-docs-team"
+/api-docs/*     @@"api-docs-review-team"

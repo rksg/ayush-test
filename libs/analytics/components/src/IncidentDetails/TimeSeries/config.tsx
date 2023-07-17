@@ -5,6 +5,7 @@ import apPoeImpactChart                   from './Charts/ApPoeImpactChart'
 import apRebootBySystemChart              from './Charts/ApRebootBySystemChart'
 import apWanthroughputImpactChart         from './Charts/ApWanthroughputImpactChart'
 import attemptAndFailureChart             from './Charts/AttemptAndFailureChart'
+import channelChangeCount                 from './Charts/ChannelChangeCount'
 import clientCountChart                   from './Charts/ClientCountChart'
 import connectedClientsChartChart         from './Charts/ConnectedClientsChart'
 import downtimeEventTypeDistributionChart from './Charts/DowntimeEventTypeDistributionChart'
@@ -34,7 +35,8 @@ export enum TimeSeriesChartTypes {
   ConnectedClientsChart,
   RebootedApsCountChart,
   ApPoeImpactChart,
-  ApWanThroughputImpactChart
+  ApWanThroughputImpactChart,
+  ChannelChangeCount
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -50,5 +52,6 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.ConnectedClientsChart]: connectedClientsChartChart,
   [TimeSeriesChartTypes.RebootedApsCountChart]: rebootedAPsCountChart,
   [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactChart,
-  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart
+  [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart,
+  [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount
 }

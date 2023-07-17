@@ -12,7 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsTierAllowed }                                                       from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { useGetTunnelProfileViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import {
@@ -30,6 +30,7 @@ import NetworkFormContext        from '../NetworkFormContext'
 import { hasVxLanTunnelProfile } from '../utils'
 
 import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }        from './DhcpOption82Form'
 import { DnsProxyModal }           from './DnsProxyModal'
 import * as UI                     from './styledComponents'
 import { WifiCallingSettingModal } from './WifiCallingSettingModal'
@@ -43,6 +44,7 @@ export const WifiCallingSettingContext = createContext({} as WifiCallingSettingC
 
 export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
+  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const [
     enableDnsProxy,
     enableAntiSpoofing,
@@ -94,7 +96,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
   const showTunnelProfile = hasVxLanTunnelProfile(data)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const tunnelProfileDefaultPayload = {
     fields: ['name', 'id'],
     pageSize: 10000,
@@ -105,7 +107,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
   const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
-    skip: !!!isEdgeEnabled,
+    skip: !isEdgeEnabled || !isEdgeReady,
     selectFromResult: ({ data, isLoading }) => {
       return {
         tunnelOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
@@ -275,17 +277,6 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
       }
 
-      <UI.FieldLabel width='125px'>
-        {$t({ defaultMessage: 'Force DHCP' })}
-        <Form.Item
-          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch disabled={enableAntiSpoofing} />}
-        />
-      </UI.FieldLabel>
-
       <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
         <Form.Item
@@ -296,6 +287,22 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           children={<Switch />}
         />
       </UI.FieldLabel>
+
+      <UI.Subtitle>
+        {$t({ defaultMessage: 'DHCP' })}
+      </UI.Subtitle>
+      <UI.FieldLabel width='182px'>
+        {$t({ defaultMessage: 'Force DHCP' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch disabled={enableAntiSpoofing} />}
+        />
+      </UI.FieldLabel>
+
+      {dhcpOption82Flag && <DhcpOption82Form/>}
 
       { showTunnelProfile &&
       <Form.Item

@@ -139,6 +139,23 @@ describe('Table component', () => {
     expect(alert).not.toBeVisible()
   })
 
+  it('shows search/filter when no selected bar and row selected', async () => {
+    const props: TableProps<TestRow> = {
+      columns: [
+        { ...testColumns[0], searchable: true },
+        ...testColumns.slice(1, 3)
+      ],
+      dataSource: testData,
+      rowSelection: { type: 'radio' },
+      tableAlertRender: false
+    }
+    render(<Table {...props} />)
+    expect(await screen.findByPlaceholderText('Search Name')).toBeVisible()
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    await userEvent.click(within(row1).getByRole('radio'))
+    expect(await screen.findByPlaceholderText('Search Name')).toBeVisible()
+  })
+
   it('renders table with ellipsis column', async () => {
     const columns = testColumns.map((column, i) => {
       column = { ...column }
@@ -385,7 +402,29 @@ describe('Table component', () => {
     expect(onChange).toBeCalledTimes(2)
   })
 
-  it('Repeated key data: rowKey funciton single select row click', async () => {
+  it('hides search/filter and shows row actions', async () => {
+    const rowActions: TableProps<TestRow>['rowActions'] = [
+      { label: 'Delete', onClick: (_selected, clear) => clear() }
+    ]
+    render(<Table
+      columns={[
+        { ...testColumns[0], searchable: true },
+        ...testColumns.slice(1, 3)
+      ]}
+      dataSource={testData}
+      rowSelection={{ type: 'checkbox' }}
+      rowActions={rowActions}
+    />)
+    expect(await screen.findByPlaceholderText('Search Name')).toBeVisible()
+    const row1 = await screen.findByRole('row', { name: /john/i })
+    await userEvent.click(within(row1).getByRole('checkbox'))
+    await waitFor(() => {
+      expect(screen.queryByPlaceholderText('Search Name')).toBeNull()
+    })
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeVisible()
+  })
+
+  it('Repeated key data: rowKey function single select row click', async () => {
     const treeData = [
       { key: '1',
         name: 'John Doe',
@@ -554,7 +593,6 @@ describe('Table component', () => {
     }
 
     render(<Component />)
-
 
     const editButton = screen.getByRole('button', { name: /edit/i })
     expect(editButton).toBeVisible()

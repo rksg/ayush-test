@@ -11,14 +11,18 @@ import {
 } from '@acx-ui/components'
 import {
   useDeviceInventoryListQuery,
-  useExportDeviceInventoryMutation,
+  useExportDeviceInventoryMutation
+} from '@acx-ui/msp/services'
+import {
+  EcDeviceInventory
+} from '@acx-ui/msp/utils'
+import {
   useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
   APView,
   ApDeviceStatusEnum,
   transformApStatus,
-  EcDeviceInventory,
   EntitlementNetworkDeviceType,
   SwitchStatusEnum,
   useTableQuery

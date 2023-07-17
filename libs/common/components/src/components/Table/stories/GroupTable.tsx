@@ -1,7 +1,7 @@
 import React from 'react'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { APExtended } from 'libs/rc/utils/src/types/ap'
+import { APExtended } from 'libs/rc/shared/utils/src/types/ap'
 import { uniqueId }   from 'lodash'
 
 import { Table, TableProps } from '..'

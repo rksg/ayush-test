@@ -78,9 +78,9 @@ export interface TableProps <RecordType>
       groupBy?: string | undefined
     ) => void
     iconButton?: IconButtonProps,
-    filterableWidth?: number
-    searchableWidth?: number
-    onDisplayRowChange?: (displayRows: RecordType[]) => void
+    filterableWidth?: number,
+    searchableWidth?: number,
+    onDisplayRowChange?: (displayRows: RecordType[]) => void,
     getAllPagesData?: () => RecordType[]
   }
 
@@ -306,7 +306,7 @@ function Table <RecordType extends Record<string, any>> ({
     searchables.length,
     iconButton
   ].some(Boolean)
-  const hasHeaderItems = !hasRowSelected &&
+  const hasHeaderItems = (!hasRowSelected || props.tableAlertRender === false) &&
     (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
   const selectAllRowSelection = {
     columnWidth: '45px',

@@ -1,13 +1,12 @@
 import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
-import { Loader }                 from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  useGetRecoveryPassphraseQuery,
-  useGetMspEcProfileQuery
-} from '@acx-ui/rc/services'
-import { MSPUtils, isDelegationMode } from '@acx-ui/rc/utils'
+import { Loader }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }       from '@acx-ui/msp/services'
+import { MSPUtils }                      from '@acx-ui/msp/utils'
+import { useGetRecoveryPassphraseQuery } from '@acx-ui/rc/services'
+import { isDelegationMode }              from '@acx-ui/rc/utils'
 import {
   useUserProfileContext,
   useGetMfaTenantDetailsQuery

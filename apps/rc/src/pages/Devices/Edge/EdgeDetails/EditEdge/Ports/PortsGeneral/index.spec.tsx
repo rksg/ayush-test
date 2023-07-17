@@ -275,13 +275,13 @@ describe('EditEdge ports - ports general', () => {
         }
       })
     await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('local0')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('local0')
     await user.click(await screen.findByRole('radio', { name: 'Port 3' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('port1')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('port1')
     await user.click(await screen.findByRole('radio', { name: 'Port 4' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('tap0')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('tap0')
     await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
-    expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('port2')
+    expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('port2')
   })
 
   it('should show no data string when ports data is empty', async () => {
