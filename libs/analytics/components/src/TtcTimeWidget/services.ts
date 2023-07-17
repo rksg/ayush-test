@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { dataApi }         from '@acx-ui/store'
+import { getFilterPayload, AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { dataApi }                           from '@acx-ui/store'
 
 interface Response {
   network: {
@@ -33,8 +33,7 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          path: payload.path,
-          filter: payload.filter ?? {}
+          ...getFilterPayload(payload)
         }
       }),
       transformResponse: (result: Response) =>

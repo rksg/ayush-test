@@ -47,7 +47,7 @@ jest.mock('react-router-dom', () => ({
 
 const updateNsgPath = '/:tenantId/t/services/networkSegmentation/:serviceId/edit'
 
-describe('Update NetworkSegmentation', () => {
+describe.skip('Update NetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {

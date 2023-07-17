@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { healthApi }                   from '@acx-ui/analytics/services'
-import { AnalyticsFilter }             from '@acx-ui/analytics/utils'
-import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
-import { dataApiURL, Provider, store } from '@acx-ui/store'
+import { healthApi }                     from '@acx-ui/analytics/services'
+import { AnalyticsFilter, pathToFilter } from '@acx-ui/analytics/utils'
+import { BrowserRouter as Router }       from '@acx-ui/react-router-dom'
+import { dataApiURL, Provider, store }   from '@acx-ui/store'
 import {
   cleanup,
   mockGraphqlMutation,
@@ -12,8 +12,8 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }                                  from '@acx-ui/types'
-import { DateRange, NetworkPath, fixedEncodeURIComponent } from '@acx-ui/utils'
+import { TimeStampRange }                                            from '@acx-ui/types'
+import { DateRange, NetworkPath, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -44,12 +44,12 @@ describe('Kpi Section', () => {
     ],
     data: [[10, 20], [null, null], [0, 0], [4, 5], [4, 5]]
   }
-  const filters = {
+  const filters: AnalyticsFilter = {
     startDate: '2022-04-07T09:15:00.000Z',
     endDate: '2022-04-07T10:15:00.000Z',
-    path: [{ type: 'ap', name: 'Network' }],
-    range: DateRange.last24Hours
-  } as AnalyticsFilter
+    range: DateRange.last24Hours,
+    filter: {}
+  }
   const healthContext = {
     ...filters,
     timeWindow: [sampleTS.time[0], sampleTS.time[4]] as TimeStampRange,
@@ -84,9 +84,9 @@ describe('Kpi Section', () => {
     const params = { tenantId: 'testTenant' }
     render(<Provider>
       <HealthPageContext.Provider
-        value={{ ...healthContext, path }}
+        value={{ ...healthContext }}
       >
-        <KpiSection tab={'overview'} filters={{ ...filters, path }} />
+        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
       </HealthPageContext.Provider>
     </Provider>, { route: { params, path: '/:tenantId' } })
     const loaders = await screen.findAllByRole('img', { name: 'loader' })
@@ -120,15 +120,16 @@ describe('Kpi Section', () => {
 
     const path =
       [{ type: 'network', name: 'Network' }, { type: 'zoneName', name: 'z1' }] as NetworkPath
+    const filter = pathToFilter(path)
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
-      path,
+      filter,
       raw: []
     }))
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
+        <KpiSection tab={'overview'} filters={{ ...filters, filter }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
@@ -164,17 +165,18 @@ describe('Kpi Section', () => {
       data: { network: { timeSeries: sampleTS } }
     })
 
-    const path = [{ type: 'ap', name: 'z1' }] as NetworkPath
+    const path = [{ type: 'ap' as NodeType, name: 'z1' }] as NetworkPath
+    const filter = pathToFilter(path)
     const period = fixedEncodeURIComponent(JSON.stringify(filters))
     const analyticsNetworkFilter = fixedEncodeURIComponent(JSON.stringify({
-      path,
+      filter,
       raw: []
     }))
 
 
     render(<Provider>
       <HealthPageContext.Provider value={healthContext}>
-        <KpiSection tab={'overview'} filters={{ ...filters, path: path }} />
+        <KpiSection tab={'overview'} filters={{ ...filters, filter }} />
       </HealthPageContext.Provider>
     </Provider>, {
       route: {
@@ -215,17 +217,17 @@ describe('Kpi Section', () => {
       }
     })
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const filter = pathToFilter(path)
     render(<Router><Provider>
       <HealthPageContext.Provider
-        value={{ ...healthContext, path }}
+        value={{ ...healthContext, filter }}
       >
         <KpiSection tab={'overview'}
-          filters={{ ...filters, path, endDate: sampleTS.data[2] as unknown as string }}
+          filters={{ ...filters, filter, endDate: sampleTS.data[2] as unknown as string }}
         />
       </HealthPageContext.Provider>
     </Provider></Router>)
 
     expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
   })
-
 })

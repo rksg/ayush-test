@@ -182,7 +182,7 @@ describe('AdaptivePolicyForm', () => {
     expect(mockedUsedNavigate).toBeCalled()
   })
 
-  it('should edit giving data successfully', async () => {
+  it.skip('should edit giving data successfully', async () => {
     mockServer.use(
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],

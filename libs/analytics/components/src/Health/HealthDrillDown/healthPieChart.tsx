@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { useIntl, defineMessage } from 'react-intl'
-import AutoSizer                  from 'react-virtualized-auto-sizer'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import AutoSizer                                     from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, getSelectedNodePath } from '@acx-ui/analytics/utils'
 import {
   ContentSwitcher,
   ContentSwitcherProps,
@@ -12,8 +12,9 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
+import { get }         from '@acx-ui/config'
 import { formatter }   from '@acx-ui/formatter'
-import { NetworkPath } from '@acx-ui/utils'
+import { NodesFilter } from '@acx-ui/utils'
 
 import {
   Stages,
@@ -60,23 +61,29 @@ const transformData = (
   return { nodes: [], wlans: [] }
 }
 
-export function pieNodeMap (node: NetworkPath) {
+export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
+  const isMLISA = get('IS_MLISA_SA')
+  const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
     case 'zone':
       return defineMessage({ defaultMessage: `{ count, plural,
         one {AP Group}
         other {AP Groups}
       }` })
-    case 'ap':
     case 'AP':
       return defineMessage({ defaultMessage: `{ count, plural,
         one {AP}
         other {APs}
       }` })
     default:
-      return defineMessage({ defaultMessage: `{ count, plural,
+      return !isMLISA ?
+        defineMessage({ defaultMessage: `{ count, plural,
         one {Venue}
         other {Venues}
+      }` })
+        : defineMessage({ defaultMessage: `{ count, plural,
+        one {Zone}
+        other {Zones}
       }` })
   }
 }
@@ -131,18 +138,18 @@ export const HealthPieChart = ({
   valueFormatter: (value: unknown, tz?: string | undefined) => string
 }) => {
   const { $t } = useIntl()
-  const { startDate: start, endDate: end, path } = filters
+  const { startDate: start, endDate: end, filter } = filters
   const queryResults = usePieChartQuery(
     {
       start,
       end,
-      path,
+      filter,
       queryType: queryType as string,
       queryFilter: stageNameToCodeMap[selectedStage]
     }
   )
   const { nodes, wlans } = transformData(queryResults.data)
-  const venueTitle = $t(pieNodeMap(path), { count: nodes.length })
+  const venueTitle = $t(pieNodeMap(filter), { count: nodes.length })
   const wlansTitle = $t(pieWlanMap(), { count: wlans.length })
   const tabDetails: ContentSwitcherProps['tabDetails'] = [{
     label: wlansTitle,

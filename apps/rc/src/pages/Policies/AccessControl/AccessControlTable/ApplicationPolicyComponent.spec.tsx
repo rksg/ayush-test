@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  AccessControlUrls
+  AccessControlUrls, CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -13,12 +13,12 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  aclList,
-  applicationPolicyListResponse,
-  enhancedApplicationPolicyListResponse
+  aclList, applicationDetail, avcApp, avcCat,
+  enhancedApplicationPolicyListResponse, networkListResponse, queryApplication
 } from '../__tests__/fixtures'
 
 import ApplicationPolicyComponent from './ApplicationPolicyComponent'
+
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -33,24 +33,48 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('AccessControlTable', () => {
+describe('AccessControlTable - ApplicationPolicy', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
         AccessControlUrls.getEnhancedApplicationPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(
+          ctx.json(networkListResponse)
+        )
+      ), rest.post(
+        AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json({ requestId: 'requestId1' })
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.get(
+        AccessControlUrls.getAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationDetail)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
       )
     )
   })
 
   it('should render ApplicationPolicyComponent in AccessControlTable', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationPolicyListResponse)
-      )
-    ))
-
     render(
       <Provider>
         <ApplicationPolicyComponent />
@@ -74,13 +98,8 @@ describe('AccessControlTable', () => {
 
   // eslint-disable-next-line max-len
   it('should delete selected row from ApplicationPolicyComponent in AccessControlTable', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationPolicyListResponse)
-      )
-    ), rest.delete(
-      AccessControlUrls.delAppAclPolicy.url,
+    mockServer.use(rest.delete(
+      AccessControlUrls.delAppAclPolicies.url,
       (_, res, ctx) => res(
         ctx.json({ requestId: 'requestId1' })
       )

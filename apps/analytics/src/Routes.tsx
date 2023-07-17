@@ -8,21 +8,23 @@ import {
   HealthPage,
   IncidentDetails,
   IncidentListPage,
-  IncidentListPageLegacy
+  IncidentListPageLegacy,
+  NetworkAssurance,
+  NetworkAssuranceTabEnum,
+  ServiceGuard,
+  ServiceGuardDetails,
+  ServiceGuardForm,
+  ServiceGuardSpecGuard,
+  ServiceGuardTestGuard,
+  VideoCallQoe,
+  VideoCallQoeForm,
+  VideoCallQoeDetails
 }                                                   from '@acx-ui/analytics/components'
+import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-dom'
 import { Provider }                                 from '@acx-ui/store'
 import { hasAccess }                                from '@acx-ui/user'
-
-import { NetworkAssurance, NetworkAssuranceTabEnum }    from './pages/NetworkAssurance'
-import { ServiceGuard }                                 from './pages/ServiceGuard'
-import ServiceGuardDetails                              from './pages/ServiceGuard/ServiceGuardDetails'
-import ServiceGuardForm                                 from './pages/ServiceGuard/ServiceGuardForm'
-import { ServiceGuardSpecGuard, ServiceGuardTestGuard } from './pages/ServiceGuard/ServiceGuardGuard'
-import { VideoCallQoe }                                 from './pages/VideoCallQoe'
-import { VideoCallQoeForm }                             from './pages/VideoCallQoe/VideoCallQoeForm/VideoCallQoeForm'
-import { VideoCallQoeDetails }                          from './pages/VideoCallQoeDetails'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
@@ -36,6 +38,7 @@ export default function AnalyticsRoutes () {
 
   const routes = rootRoutes(
     <Route path=':tenantId/t'>
+      <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
         element={isNavbarEnhanced

@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                               from '@acx-ui/store'
+import { getFilterPayload, AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+import { dataApi }                                                 from '@acx-ui/store'
 
 export type Ports = {
   name: string
@@ -30,8 +30,8 @@ export const api = dataApi.injectEndpoints({
         document: gql`
           query TopNPorts(
             $end: DateTime, $start: DateTime, $path: [HierarchyNodeInput], $n: Int!, $by: String!,
-            $granularity: String!, $direction: String) {
-            network(end: $end, start: $start) {
+            $granularity: String!, $direction: String, $filter: FilterInput) {
+            network(end: $end, start: $start, filter: $filter) {
               hierarchyNode(path: $path) {
                 topNPorts(n: $n, by: $by, direction: $direction) {
                   name
@@ -49,10 +49,9 @@ export const api = dataApi.injectEndpoints({
           n: 10,
           by: payload.by,
           direction: null,
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
-          filter: payload.filter,
+          ...getFilterPayload(payload),
           granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M')
         }
       }),

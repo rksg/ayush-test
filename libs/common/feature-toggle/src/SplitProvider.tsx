@@ -3,32 +3,41 @@ import React from 'react'
 import { SplitFactory, SplitSdk } from '@splitsoftware/splitio-react'
 import SplitIO                    from '@splitsoftware/splitio-react/types/splitio/splitio'
 
+import {
+  useUserProfileContext
+} from '@acx-ui/analytics/utils'
 import { get }       from '@acx-ui/config'
 import { useParams } from '@acx-ui/react-router-dom'
 
 let factory: SplitIO.IBrowserSDK
 const splitKey = get('SPLIT_IO_KEY')
+const isMLISA = get('IS_MLISA_SA')
 const suffix = splitKey.substring(0, 5)
 
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const { tenantId } = useParams() as { tenantId: string }
-  if (!factory) {
+  const { data: userProfile } = useUserProfileContext()
+  const prefixKey = isMLISA ? 'MLISA' : 'ACX'
+  const tenantKey = isMLISA ? userProfile?.accountId as string : tenantId
+  if (!factory && tenantKey) {
     factory = SplitSdk({
       scheduler: {
         featuresRefreshRate: 30 // 30 sec
       },
       core: {
         authorizationKey: splitKey,
-        key: tenantId
+        key: tenantKey
       },
       storage: {
         type: 'LOCALSTORAGE',
-        prefix: 'ACX' + suffix
+        prefix: prefixKey + suffix
       },
       debug: false // set this value to true for running in debug mode for debugging in local development only
     })
   }
-  return <SplitFactory factory={factory} children={props.children}/>
+  return tenantKey ? (
+    <SplitFactory factory={factory} children={props.children} />
+  ) : null
 }
 
 export { SplitProvider }

@@ -4,22 +4,21 @@ import { rest }  from 'msw'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { render, screen, fireEvent, mockServer } from '@acx-ui/test-utils'
-import { PathNode, DateRange }                   from '@acx-ui/utils'
+import { NetworkPath, DateRange }                from '@acx-ui/utils'
 
 import { VenueFilter } from '.'
 
 const setNodeFilter = jest.fn()
-const filters = (nodes: PathNode[][]) => ({
+const filters = (nodes: NetworkPath[]) => ({
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'network', name: 'Network' }],
   range: DateRange.last24Hours,
   filter: { networkNodes: nodes, switchNodes: nodes }
 })
-let mockUseDashboardFilter = { filters: filters([]), setNodeFilter }
+let mockUseDashboardFilter = { venueIds: [], filters: filters([]), setNodeFilter }
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  defaultNetworkPath: [{ type: 'network', name: 'Network' }],
   useDashboardFilter: () => mockUseDashboardFilter
 }))
 describe('venue Filter', () => {
@@ -38,7 +37,7 @@ describe('venue Filter', () => {
       )
     )
     jest.clearAllMocks()
-    mockUseDashboardFilter = { filters: filters([]), setNodeFilter }
+    mockUseDashboardFilter = { venueIds: [], filters: filters([]), setNodeFilter }
   })
   it('should render loader', () => {
     render(<Provider><VenueFilter /></Provider>, { route })
@@ -87,6 +86,7 @@ describe('venue Filter', () => {
   it('renders existing filters', async () => {
     mockUseDashboardFilter = {
       filters: filters([[{ type: 'zone', name: 'venue1' }]]),
+      venueIds: ['venue1'],
       setNodeFilter
     }
     render(<Provider><VenueFilter /></Provider>, { route })

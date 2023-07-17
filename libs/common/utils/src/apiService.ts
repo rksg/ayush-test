@@ -71,9 +71,14 @@ export const createHttpRequest = (
   const domain = (enableNewApi(apiInfo) && !isLocalHost())
     ? newApiHostName
     : origin
-
-  const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
-    generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
+  const tmpParamValues = {
+    ...paramValues
+  }
+  if(paramValues && paramValues.hasOwnProperty('tenantId') && !paramValues.tenantId){
+    tmpParamValues.tenantId = ''
+  }
+  const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, tmpParamValues) :
+    generatePath(`${apiInfo.oldUrl || apiInfo.url}`, tmpParamValues)
   const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
   return {
     headers,
