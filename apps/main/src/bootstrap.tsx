@@ -59,12 +59,20 @@ declare global {
 export function loadMessages (locales: readonly string[]): LangKey {
   const locale = locales.find(locale =>
     supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  let browserLang = supportedLocales[locale as keyof typeof supportedLocales]
-  if (browserLang !== DEFAULT_SYS_LANG) {
-    const isConfirm = BrowserDialog(browserLang)
+  let browLang = supportedLocales[locale as keyof typeof supportedLocales]
+  const bLang = localStorage.getItem('browserLang')
+  const isBrowserDialog = localStorage.getItem('isBrowserDialog')
+  let browserLang = bLang?? browLang
+    console.log(`bLang: ${bLang} ${browserLang}`)
+
+  if (Boolean(!isBrowserDialog) && browserLang !== DEFAULT_SYS_LANG) {
+    const isConfirm = BrowserDialog(browserLang as LangKey)
+    console.log(`isConfirm ${isConfirm}`)
     browserLang = isConfirm ? browserLang : DEFAULT_SYS_LANG
+    localStorage.setItem('browserLang', browserLang)
+    localStorage.setItem('isBrowserDialog', 'true')
   }
-  return browserLang
+  return browserLang as LangKey
 }
 
 export function renderPendoAnalyticsTag () {
