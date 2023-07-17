@@ -13,7 +13,6 @@ import { r760Ap, venueData } from '../../../../__tests__/fixtures'
 
 import { Advanced } from '.'
 
-
 const params = {
   tenantId: 'tenant-id',
   serialNumber: 'serial-number',
@@ -30,6 +29,11 @@ const mockApLedSettings = {
   useVenueSettings: true
 }
 
+const mockedRedirectPreviousPage = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  redirectPreviousPage: () => mockedRedirectPreviousPage
+}))
 
 describe('AP Advanced', () => {
   beforeEach(() => {
@@ -67,6 +71,15 @@ describe('AP Advanced', () => {
   })
 
   it('should handle click Customize/Use Venue settings link', async () => {
+    const resetApLedSpy = jest.fn()
+    mockServer.use(
+      rest.delete(WifiUrlsInfo.resetApLed.url,
+        (req, res, ctx)=>{
+          resetApLedSpy()
+          return res(ctx.json({ requestId: '123' }))
+        })
+    )
+
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -106,9 +119,21 @@ describe('AP Advanced', () => {
     expect(screen.queryByTestId('ApLed-switch')).toBeNull()
 
     await userEvent.click(await screen.findByRole('button', { name: /Apply/ }))
+    await waitFor(() => {
+      expect(resetApLedSpy).toBeCalled()
+    })
   })
 
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
+    const updateApLedSpy = jest.fn()
+    mockServer.use(
+      rest.delete(WifiUrlsInfo.updateApLed.url,
+        (req, res, ctx)=>{
+          updateApLedSpy()
+          return res(ctx.json({ requestId: '123' }))
+        })
+    )
+
     render(
       <Provider>
         <ApDataContext.Provider value={{ apData: r760Ap }}>
@@ -134,5 +159,9 @@ describe('AP Advanced', () => {
     expect(screen.queryByTestId('ApLed-text')).toBeNull()
 
     await userEvent.click(await screen.findByRole('button', { name: /Cancel/ }))
+
+    await waitFor(() => {
+      expect(mockedRedirectPreviousPage).toBeCalled()
+    })
   })
 })
