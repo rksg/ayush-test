@@ -465,11 +465,11 @@ export function Unit (props:{
           }
         </>
       }
-      {visible && <UnitDrawer
+      <UnitDrawer
         switchUnit={unit}
         visible={visible}
         onClose={()=>setVisible(false)}
-      /> }
+      />
     </UI.UnitWrapper>
   </div>
 }
