@@ -48,7 +48,7 @@ export function RadioSettingsForm (props:{
   const txPowerFieldName = [...radioDataKey, 'txPower']
   const bssMinRate6gFieldName = [...radioDataKey, 'bssMinRate6G']
   const mgmtTxRate6gFieldName = [...radioDataKey, 'mgmtTxRate6G']
-  const enableMulticastRateLimitingFieldName = ''
+  const enableMulticastRateLimitingFieldName = [...radioDataKey, 'enableMulticastRateLimiting']
   const enableUploadLimitFieldName = [...radioDataKey, 'enableMulticastUplinkRateLimiting6G']
   const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting6G']
   const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting6G']
