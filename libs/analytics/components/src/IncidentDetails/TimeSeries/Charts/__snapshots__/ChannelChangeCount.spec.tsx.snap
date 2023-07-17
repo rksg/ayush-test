@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`apDisconnectionCountChartQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $granularity: String
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+  channelChangeCountChart: timeSeries(granularity: $granularity) {
+    time
+    channelChangeCount: apChannelChangeCount(filter: {code: $code})
+  }
+
+                }
+              }
+            }
+          "
+`;
+
+exports[`apDisconnectionCountChartQuery should call corresponding api 2`] = `
+Object {
+  "code": "p-channeldist-suboptimal-plan-50g-indoor",
+  "codeMap": Array [
+    "p-channeldist-suboptimal-plan-50g-indoor",
+  ],
+  "end": "2023-07-10T06:00:00.000Z",
+  "granularity": "PT180S",
+  "path": Array [
+    Object {
+      "name": "density-vsze-cluster",
+      "type": "system",
+    },
+    Object {
+      "name": "Default Zone",
+      "type": "zone",
+    },
+    Object {
+      "name": "East Side",
+      "type": "apGroup",
+    },
+  ],
+  "start": "2023-07-08T18:00:00.000Z",
+}
+`;

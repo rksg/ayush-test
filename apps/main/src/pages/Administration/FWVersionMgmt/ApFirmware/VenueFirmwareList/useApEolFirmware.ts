@@ -74,7 +74,7 @@ export function useApEolFirmware () {
         return !maxEolABFVersion || canABFVersionDisplay(maxEolABFVersion, abfVersion.id)
       })
       .forEach((abfVersion: ABFVersion) => {
-        const option = { label: getVersionLabel(intl, abfVersion), value: abfVersion.id }
+        const option = { label: getVersionLabel(intl, abfVersion, false), value: abfVersion.id }
 
         if (result.hasOwnProperty(abfVersion.abf)) {
           result[abfVersion.abf].push(option)
@@ -130,9 +130,18 @@ export function useApEolFirmware () {
     })
   }
 
+  const getDefaultEolVersionLabel = (eolVersion: string): string => {
+    if (!releasedABFList) return ''
+
+    const target = releasedABFList.find(abf => abf.id === eolVersion)
+
+    return target ? getVersionLabel(intl, target) : ''
+  }
+
   return {
     getAvailableEolApFirmwares,
     getEolABFOtherVersionsOptions,
-    canUpdateEolApFirmware
+    canUpdateEolApFirmware,
+    getDefaultEolVersionLabel
   }
 }
