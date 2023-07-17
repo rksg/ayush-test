@@ -448,4 +448,29 @@ describe.skip('DpskPassphraseManagement', () => {
       expect(within(dialog).queryByRole('button', { name: 'Delete' })).toBeNull()
     })
   })
+
+  it('should display Status of passphrase', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const revokedRecord = mockedDpskPassphraseList.data.find(p => p.revocationDate)!
+    const revokedRow = await screen.findByRole('row', { name: new RegExp(revokedRecord.username) })
+
+    const activeRecord = mockedDpskPassphraseList.data.find(p => !p.expirationDate)!
+    const activeRow = await screen.findByRole('row', { name: new RegExp(activeRecord.username) })
+
+    const expiredRecord = mockedDpskPassphraseList.data.find(p => p.expirationDate)!
+    const expiredRow = await screen.findByRole('row', { name: new RegExp(expiredRecord.username) })
+
+    expect(await within(revokedRow).findByText('Revoked (2022-12-24 08:00 AM)')).toBeVisible()
+    expect(await within(activeRow).findByText('Active')).toBeVisible()
+    expect(await within(expiredRow).findByText('Expired')).toBeVisible()
+  })
 })
