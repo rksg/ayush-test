@@ -4,6 +4,7 @@ import { get }                                                     from '@acx-ui
 import { formatter, intlFormats }                                  from '@acx-ui/formatter'
 import { getIntl, PathNode, NetworkPath, NodeType, noDataDisplay } from '@acx-ui/utils'
 
+import { productNames }        from './constants'
 import { kpiConfig }           from './healthKPIConfig'
 import { incidentInformation } from './incidentInformation'
 import incidentSeverities      from './incidentSeverities.json'
@@ -170,7 +171,7 @@ export const shortDescription = (incident: Incident) => {
   const threshold = getThreshold(incident)
     ? formatter('longDurationFormat')(getThreshold(incident))
     : undefined
-  return $t(incident.shortDescription, { scope, threshold })
+  return $t(incident.shortDescription, { ...productNames, scope, threshold })
 }
 
 export const impactValues = <Type extends 'ap' | 'client'> (

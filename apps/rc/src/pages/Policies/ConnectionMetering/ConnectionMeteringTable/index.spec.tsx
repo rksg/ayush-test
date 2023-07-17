@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, ConnectionMetering, ConnectionMeteringUrls, NewTablePageable, NewTableResult, BillingCycleType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                              from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                                                                     from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, ConnectionMetering, ConnectionMeteringUrls, NewTablePageable, NewTableResult, BillingCycleType, PropertyUrlsInfo, PropertyConfigs, PropertyConfigStatus, Persona } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                         from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                                                from '@acx-ui/test-utils'
 
 import ConnectionMeteringTable from './index'
 
@@ -33,7 +33,18 @@ const connectionMeterings = [{
   billingCycleType: 'CYCLE_UNSPECIFIED' as BillingCycleType,
   billingCycleDays: null,
   venueCount: 1,
-  unitCount: 2
+  unitCount: 2,
+  personas: [{
+    name: 'unit-persona1',
+    identityId: 'identityId',
+    primary: true,
+    groupId: 'groupId'
+  }, {
+    name: 'unit-persona2',
+    identityId: 'identityId2',
+    primary: true,
+    groupId: 'groupId'
+  }] as Persona[]
 }, {
   id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
   name: 'profile2',
@@ -74,7 +85,13 @@ const connectionMeterings = [{
   billingCycleType: 'CYCLE_NUMS_DAY' as BillingCycleType,
   billingCycleDays: 3,
   venueCount: 1,
-  unitCount: 1
+  unitCount: 1,
+  personas: [{
+    name: 'unit-persona3',
+    identityId: 'identityId3',
+    primary: true,
+    groupId: 'groupId'
+  }] as Persona[]
 }
 ]
 
@@ -90,6 +107,12 @@ const venues = [{
   id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
   name: 'venue1',
   country: 'US'
+}]
+
+const propertyConfigs: PropertyConfigs[] = [{
+  status: PropertyConfigStatus.ENABLED,
+  personaGroupId: 'groupId',
+  venueName: 'venue1'
 }]
 
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
@@ -117,6 +140,12 @@ describe('ConnectionMeteringTable', () => {
         (req, res, ctx) => {
           deleteFn()
           return res(ctx.json({}))
+        }
+      ),
+      rest.post(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => {
+          return res(ctx.json({ data: propertyConfigs }))
         }
       )
     )
@@ -213,5 +242,4 @@ describe('ConnectionMeteringTable', () => {
     const editButton = screen.getByRole('button', { name: /Edit/i })
     fireEvent.click(editButton)
   })
-
 })
