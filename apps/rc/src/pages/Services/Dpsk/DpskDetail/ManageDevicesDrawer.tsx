@@ -73,7 +73,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const getNetworkId = (networkName: string) => {
     if (tableQuery.data && tableQuery.data.data) {
       const networkIdx = tableQuery.data.data.findIndex(network => network.name === networkName)
-      return tableQuery.data.data[networkIdx].id
+      return networkIdx !== -1 ? tableQuery.data.data[networkIdx].id : ''
     }
     return ''
   }
