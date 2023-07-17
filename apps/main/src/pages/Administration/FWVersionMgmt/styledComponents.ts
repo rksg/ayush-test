@@ -14,8 +14,8 @@ export const ScheduleTooltipText = styled.span`
   font-size: 12px;
 `
 
-export const ScheduleText = styled.span`
-  cursor: pointer;
+export const WithTooltip = styled.span`
+  cursor: default;
 `
 
 export const BannerVersion = styled.div`
