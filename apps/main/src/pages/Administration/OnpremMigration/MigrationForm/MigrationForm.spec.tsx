@@ -13,7 +13,8 @@ import {
   getUrlForTest,
   CommonUrlsInfo,
   MigrationContextType,
-  MigrationUrlsInfo
+  MigrationUrlsInfo,
+  AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -106,6 +107,13 @@ describe('MigrationForm', () => {
       (_, res, ctx) => res(
         ctx.json(configurationResult)
       )
+    ), rest.get(
+      AdministrationUrlsInfo.getPreferences.url,
+      (_req, res, ctx) => res(ctx.json({
+        global: {
+          mapRegion: 'US'
+        }
+      }))
     ))
 
     render(
