@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 import { SearchBar } from '@acx-ui/components'
 
@@ -17,4 +18,19 @@ export const SearchBarDiv = styled.div`
   display: flex;
   padding-bottom: 4px;
   gap: 5px;
+`
+
+export const IconContainer = styled.div`
+  svg {
+    height: 24px;
+    vertical-align: middle;
+  }
+`
+
+export const OsType = styled(Space)`
+  svg {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+  }
 `
