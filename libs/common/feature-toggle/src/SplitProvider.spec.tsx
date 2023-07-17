@@ -1,4 +1,11 @@
-import { render, screen } from '@acx-ui/test-utils'
+import { renderHook } from '@testing-library/react'
+import { rest }       from 'msw'
+
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
+
+import { useFFList, useIsTierAllowed } from './useIsTierAllowed'
+
 
 let split = require('@splitsoftware/splitio-react')
 
@@ -56,3 +63,87 @@ describe('SplitProvider', () => {
     expect(split.SplitFactory).toHaveBeenCalledWith({ children: 'child1', factory: 'factory1' }, {})
   })
 })
+
+describe('useFFList', () => {
+  it.skip('returns correct feature and beta lists', () => {
+    jest.mock('@acx-ui/utils', () => ({
+      getJwtTokenPayload: jest.fn(() => ({
+        tenantType: 'REC',
+        acx_account_tier: 'Gold',
+        acx_account_vertical: 'Default',
+        tenantId: '123',
+        isBetaFlag: true
+      }))
+    }))
+
+    jest.mock('@acx-ui/user', () => ({
+      useGetBetaStatusQuery: jest.fn(() => ({
+        data: {
+          enabled: true
+        }
+      }))
+    }))
+
+    const { result } = renderHook(() => useFFList())
+
+    expect(result.current.featureList).toEqual([
+      'ADMN-ESNTLS',
+      'CNFG-ESNTLS',
+      'NTFY-ESNTLS',
+      'ANLT-ESNTLS',
+      'ANLT-FNDT',
+      'ANLT-STUDIO',
+      'PLCY-ESNTLS',
+      'API-CLOUD'
+    ])
+    expect(result.current.betaList).toEqual([
+      'PLCY-EDGE',
+      'BETA-CP',
+      'BETA-CLB',
+      'BETA-MESH'
+    ])
+  })
+})
+
+describe('useIsTierAllowed', () => {
+  beforeEach(() => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    mockServer.use(
+      rest.get(UserUrlsInfo.getBetaStatus.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ data: {
+            enabled: true
+          } }))
+        }
+      )
+    )
+
+  })
+  it.skip('returns true for allowed feature', () => {
+    jest.mock('./useIsTierAllowed', () => ({
+      useFFList: jest.fn(() => ({
+        featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+        betaList: ['PLCY-EDGE', 'BETA-CP']
+      }))
+    }))
+
+    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'))
+
+    expect(result.current).toBe(true)
+  })
+
+  it.skip('returns false for disallowed feature', () => {
+    jest.mock('./useIsTierAllowed', () => ({
+      useFFList: jest.fn(() => ({
+        featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+        betaList: ['PLCY-EDGE', 'BETA-CP']
+      }))
+    }))
+
+    const { result } = renderHook(() => useIsTierAllowed('INVALID-FEATURE'))
+
+    expect(result.current).toBe(false)
+  })
+})
+
