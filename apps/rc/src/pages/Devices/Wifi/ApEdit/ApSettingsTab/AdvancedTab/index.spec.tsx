@@ -30,9 +30,10 @@ const mockApLedSettings = {
 }
 
 const mockedRedirectPreviousPage = jest.fn()
+const resetApLedSpy = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
-  redirectPreviousPage: () => mockedRedirectPreviousPage
+  redirectPreviousPage: () => mockedRedirectPreviousPage()
 }))
 
 describe('AP Advanced', () => {
@@ -40,6 +41,8 @@ describe('AP Advanced', () => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedRedirectPreviousPage.mockClear()
+    resetApLedSpy.mockClear()
     mockServer.use(
       rest.get(
         getUrlForTest(CommonUrlsInfo.getVenue),
@@ -49,7 +52,14 @@ describe('AP Advanced', () => {
         (_, res, ctx) => res(ctx.json(mockVenueLed))),
       rest.get(
         getUrlForTest(WifiUrlsInfo.getApLed),
-        (_, res, ctx) => res(ctx.json(mockApLedSettings)))
+        (_, res, ctx) => res(ctx.json(mockApLedSettings))),
+      rest.delete(WifiUrlsInfo.resetApLed.url,
+        (_, res, ctx)=>{
+          resetApLedSpy()
+          return res(ctx.json({ requestId: '123' }))
+        }),
+      rest.delete(WifiUrlsInfo.updateApLed.url,
+        (_, res, ctx)=> res(ctx.json({ requestId: '123' })))
     )
   })
 
@@ -71,15 +81,6 @@ describe('AP Advanced', () => {
   })
 
   it('should handle click Customize/Use Venue settings link', async () => {
-    const resetApLedSpy = jest.fn()
-    mockServer.use(
-      rest.delete(WifiUrlsInfo.resetApLed.url,
-        (req, res, ctx)=>{
-          resetApLedSpy()
-          return res(ctx.json({ requestId: '123' }))
-        })
-    )
-
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -125,15 +126,6 @@ describe('AP Advanced', () => {
   })
 
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
-    const updateApLedSpy = jest.fn()
-    mockServer.use(
-      rest.delete(WifiUrlsInfo.updateApLed.url,
-        (req, res, ctx)=>{
-          updateApLedSpy()
-          return res(ctx.json({ requestId: '123' }))
-        })
-    )
-
     render(
       <Provider>
         <ApDataContext.Provider value={{ apData: r760Ap }}>
