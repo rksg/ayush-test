@@ -2,6 +2,15 @@ import { Anchor as AntAnchor } from 'antd'
 import styled                  from 'styled-components/macro'
 
 export const Anchor = styled(AntAnchor)`
+  &.ant-anchor-wrapper {
+    background-color: var(--acx-neutrals-10);
+    border-radius: 4px;
+    margin-left: -2px;
+    padding-left: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
   .ant-anchor-ink:before {
     display: none;
   }
@@ -20,10 +29,13 @@ export const Anchor = styled(AntAnchor)`
     }
   }
   .ant-anchor-link-title {
-    width: fit-content;
     color: var(--acx-primary-black);
     font-size: var(--acx-subtitle-5-font-size);
     line-height: var(--acx-subtitle-5-line-height);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
   }
   .ant-anchor-link-active > .ant-anchor-link-title {
     font-weight: var(--acx-subtitle-5-font-weight);

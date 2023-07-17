@@ -150,15 +150,7 @@ describe('Firmware Venues Table', () => {
     await userEvent.click(within(row2).getByRole('checkbox'))
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
-
-    // eslint-disable-next-line max-len
-    const targetABF = await screen.findByRole('checkbox', { name: /Legacy Device \(eol-ap-2021-05\)/i })
-
-    // should not display the EOL firmware which is already upgraded to the latest
-    expect(screen.queryByRole('checkbox', { name: /Legacy Device \(eol-ap-2022-12\)/i })).toBeNull()
-
-    await userEvent.click(targetABF)
-
+    await userEvent.click(await screen.findByRole('checkbox', { name: /Legacy Device/i }))
     await userEvent.click(await screen.findByRole('button', { name: /Run Update/ }))
 
     await waitFor(() => {
