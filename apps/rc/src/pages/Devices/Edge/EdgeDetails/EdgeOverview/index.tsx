@@ -73,7 +73,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'speed_kbps',
       'mac',
       'duplex',
-      'sort_idx'
+      'sort_idx',
+      'interface_name'
     ],
     filters: { serialNumber: [serialNumber] },
     sortField: 'sortIdx',
