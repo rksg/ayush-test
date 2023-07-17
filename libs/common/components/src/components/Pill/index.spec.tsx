@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render } from '@acx-ui/test-utils'
+import { TrendTypeEnum } from '@acx-ui/analytics/utils'
+import { render }        from '@acx-ui/test-utils'
 
-import { TrendPill, SeverityPill, ProgressPill, TrendTypeEnum } from '.'
+import { TrendPill, SeverityPill, ProgressPill } from '.'
 
 describe('TrendPill', () => {
   it('renders negative trend', () => {

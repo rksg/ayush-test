@@ -4,14 +4,14 @@ import { Statistic }                                            from 'antd'
 import _                                                        from 'lodash'
 import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { GridCol, Tooltip, TrendTypeEnum } from '@acx-ui/components'
-import { formatter }                       from '@acx-ui/formatter'
-import { noDataDisplay }                   from '@acx-ui/utils'
+import { TrendTypeEnum }    from '@acx-ui/analytics/utils'
+import { GridCol, Tooltip } from '@acx-ui/components'
+import { formatter }        from '@acx-ui/formatter'
+import { noDataDisplay }    from '@acx-ui/utils'
 
 import { Pill } from './styledComponents'
 
 import { ConfigStatusEnum, getExecutionSectionData } from '.'
-
 
 interface StatusColumn {
   title: MessageDescriptor,

@@ -10,22 +10,23 @@ import {
   kpiConfig,
   useAnalyticsFilter,
   getFilterPayload,
-  productNames
+  productNames,
+  TrendTypeEnum
 } from '@acx-ui/analytics/utils'
-import { Loader, Tabs, TrendTypeEnum } from '@acx-ui/components'
-import { get }                         from '@acx-ui/config'
-import { FormatterType, formatter }    from '@acx-ui/formatter'
-import { noDataDisplay }               from '@acx-ui/utils'
+import { kpiDelta }      from '@acx-ui/analytics/utils'
+import { Loader, Tabs }  from '@acx-ui/components'
+import { get }           from '@acx-ui/config'
+import { formatter }     from '@acx-ui/formatter'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { useKPIChangesQuery } from '../services'
 
-import { kpiDelta }                               from './helper'
 import { Statistic, TransparentTrend, TrendPill } from './styledComponents'
 
 type ConfigChangeKPIConfig = {
   text?: MessageDescriptor
   apiMetric: string
-  format: FormatterType | ((x: number) => string)
+  format: ReturnType<typeof formatter> | ((x: number) => string)
   deltaSign: '+' | '-'
 }
 
@@ -40,20 +41,17 @@ type KPIProps = ConfigChangeKPIConfig & {
 
 const KPI = ({ apiMetric, label, format, deltaSign, values }: KPIProps) => {
   const { $t } = useIntl()
-  const formatterFn = (typeof format === 'string')
-    ? formatter(format as FormatterType)
-    : format as ((x: number) => string)
   const { trend, value } =
-    kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, formatterFn)
+    kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
   return <Statistic
     title={$t(label, productNames)}
     value={$t(
       { defaultMessage: 'Before: {before} | After: {after}' },
       {
         before: _.isNumber(values?.before[apiMetric])
-          ? formatterFn(values?.before[apiMetric]) : noDataDisplay,
+          ? format(values?.before[apiMetric]) : noDataDisplay,
         after: _.isNumber(values?.after[apiMetric])
-          ? formatterFn(values?.after[apiMetric]) : noDataDisplay
+          ? format(values?.after[apiMetric]) : noDataDisplay
       }
     )}
     suffix={trend !== 'transparent'

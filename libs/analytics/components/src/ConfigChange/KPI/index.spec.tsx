@@ -24,12 +24,12 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 
 describe('KPIs', () => {
   it('should render KPIs correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: kpiChanges })
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiChanges } })
     render(<KPIs kpiTimeRanges={[[0, 50], [950, 1000]]}/>, { wrapper: Provider, route: {} })
 
     expect(await screen.findByText('Connection Success')).toBeVisible()
     expect(await screen.findByText('Before: 74.76% | After: 69.2%')).toBeVisible()
-    expect(await screen.findByText('-7.44%')).toBeVisible()
+    expect(await screen.findByText('-5.56%')).toBeVisible()
 
     expect(await screen.findByText('Time To Connect')).toBeVisible()
     expect(await screen.findByText('Before: 895 ms | After: 26 ms')).toBeVisible()

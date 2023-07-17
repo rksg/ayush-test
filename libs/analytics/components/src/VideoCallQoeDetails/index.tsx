@@ -6,9 +6,9 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
+import { TimeSeriesDataType, TrendTypeEnum, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip,
-  TrendTypeEnum, cssStr,  Card, GridCol, GridRow,
+  cssStr,  Card, GridCol, GridRow,
   MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
   Drawer, SearchBar }                from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'

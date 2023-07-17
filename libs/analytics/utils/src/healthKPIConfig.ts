@@ -43,7 +43,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'connectionSuccess',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -74,7 +74,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'timeToConnect',
-      format: 'durationFormat',
+      format: formatter('durationFormat'),
       deltaSign: '-'
     }
   },
@@ -95,7 +95,7 @@ export const kpiConfig = {
     configChange: {
       text: defineMessage({ defaultMessage: 'Association Success' }),
       apiMetric: 'assocSuccess',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -116,7 +116,7 @@ export const kpiConfig = {
     configChange: {
       text: defineMessage({ defaultMessage: '802.11 Authentication Success' }),
       apiMetric: 'authSuccess',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -137,7 +137,7 @@ export const kpiConfig = {
     configChange: {
       text: defineMessage({ defaultMessage: 'EAP Success' }),
       apiMetric: 'eapSuccess',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -159,7 +159,7 @@ export const kpiConfig = {
     configChange: {
       text: defineMessage({ defaultMessage: 'DHCP Success' }),
       apiMetric: 'dhcpSuccess',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -180,7 +180,7 @@ export const kpiConfig = {
     configChange: {
       text: defineMessage({ defaultMessage: 'RADIUS Success' }),
       apiMetric: 'radiusSuccess',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -200,7 +200,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'roamingSuccess',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -233,7 +233,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'clientRss',
-      format: 'decibelMilliWattsFormat',
+      format: formatter('decibelMilliWattsFormat'),
       deltaSign: '-'
     }
   },
@@ -265,7 +265,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'clientThroughPut',
-      format: 'networkSpeedFormat',
+      format: formatter('networkSpeedFormat'),
       deltaSign: '+'
     }
   },
@@ -331,7 +331,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'apUpTime',
-      format: 'percentFormat',
+      format: formatter('percentFormat'),
       deltaSign: '+'
     }
   },
@@ -365,7 +365,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'apSzLatency',
-      format: 'durationFormat',
+      format: formatter('durationFormat'),
       deltaSign: '-'
     }
   },
@@ -403,7 +403,7 @@ export const kpiConfig = {
     },
     configChange: {
       apiMetric: 'szLatency',
-      format: 'durationFormat',
+      format: formatter('durationFormat'),
       deltaSign: '-'
     }
   },
@@ -453,7 +453,7 @@ export const kpiConfig = {
     configChange: {
       text: defineMessage({ defaultMessage: 'Online APs Count' }),
       apiMetric: 'onlineAPCount',
-      format: 'countFormat',
+      format: formatter('countFormat'),
       deltaSign: '+'
     }
   }

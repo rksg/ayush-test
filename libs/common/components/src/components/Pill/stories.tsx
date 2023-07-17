@@ -2,7 +2,9 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 
-import { TrendPill, SeverityPill, ProgressPill, TrendTypeEnum } from '.'
+import { TrendTypeEnum } from '@acx-ui/analytics/utils'
+
+import { TrendPill, SeverityPill, ProgressPill } from '.'
 
 storiesOf('Pill', module)
   .add('Trend', () => <>

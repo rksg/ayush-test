@@ -60,15 +60,20 @@ export const api = dataApi.injectEndpoints({
             $afterStart: DateTime, $afterEnd: DateTime,
             $filter: FilterInput
           ) {
-              before: KPI(path: $path, start: $beforeStart, end: $beforeEnd, filter: $filter) {
-                ${variables.kpis.join('\n')}
-              }
-              after: KPI(path: $path, start: $afterStart, end: $afterEnd, filter: $filter) {
-                ${variables.kpis.join('\n')}
+              network(filter: $filter) {
+                before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
+                  ${variables.kpis.join('\n')}
+                }
+                after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
+                  ${variables.kpis.join('\n')}
+                }
               }
           }
         `
-      })
+      }),
+      transformResponse: (response: { network: {
+        before: Record<string, number>, after: Record<string, number>
+      } } ) => response.network
     })
   })
 })

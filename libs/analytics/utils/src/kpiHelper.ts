@@ -1,14 +1,15 @@
 import _ from 'lodash'
 
-import { TrendTypeEnum }            from '@acx-ui/components'
-import { FormatterType, formatter } from '@acx-ui/formatter'
-import { noDataDisplay }            from '@acx-ui/utils'
+import { formatter }     from '@acx-ui/formatter'
+import { noDataDisplay } from '@acx-ui/utils'
+
+import { TrendTypeEnum } from './types/trendType'
 
 export function kpiDelta (
   before: number | null,
   after: number | null,
   sign: string,
-  format: FormatterType | ((x: number) => string)
+  format: ReturnType<typeof formatter> | ((x: number) => string)
 ) {
   const tolerance = 5 / 100 // 5%
 
@@ -16,7 +17,7 @@ export function kpiDelta (
     return { trend: 'transparent', value: noDataDisplay }
   }
 
-  const isPercentFormat = typeof format === 'string' && format === 'percentFormat' as FormatterType
+  const isPercentFormat = format(after - before).includes('%')
   const delta = isPercentFormat ? parseFloat((after - before).toFixed(4)) : after - before
   const percentChange = (isPercentFormat || before === 0) ? delta : (delta / before)
 
