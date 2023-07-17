@@ -131,7 +131,7 @@ export function MoreSettingsForm (props: {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
-  const ssidRateLimitingFeatureBundleFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const [
     enableDhcp,
@@ -432,7 +432,7 @@ export function MoreSettingsForm (props: {
             } />
         </div>
 
-        {ssidRateLimitingFeatureBundleFlag &&
+        {AmbAndDtimFlag &&
           <UI.FieldLabel width='250px'>
             {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
             <Form.Item
@@ -671,7 +671,7 @@ export function MoreSettingsForm (props: {
             </UI.FieldLabel></>
         }
 
-        {ssidRateLimitingFeatureBundleFlag &&
+        {AmbAndDtimFlag &&
           <Form.Item
             name={['wlan','advancedCustomization','dtimInterval']}
             label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
