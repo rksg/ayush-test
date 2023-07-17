@@ -8,8 +8,14 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                              from '@acx-ui/feature-toggle'
-import { useDeleteNetworkSegmentationGroupMutation, useGetEdgeListQuery, useGetNetworkSegmentationViewDataListQuery, useNetworkListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useDeleteNetworkSegmentationGroupMutation,
+  useGetEdgeListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
+  useNetworkListQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceListRoutePath,
