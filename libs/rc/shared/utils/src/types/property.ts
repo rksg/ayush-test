@@ -162,3 +162,12 @@ interface uiConfiguration {
     favIconFileName?: string
   }
 }
+
+export interface PropertyConfigQuery {
+  fields?: string[],
+  filters?: Map<string, string | number>
+  sortField?: string,
+  sortOrder: string,
+  page: number,
+  pageSize: number
+}
