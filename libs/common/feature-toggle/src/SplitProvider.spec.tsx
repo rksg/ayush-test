@@ -5,7 +5,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { UserUrlsInfo }               from '@acx-ui/user'
 
 import { useFFList, useIsTierAllowed } from './useIsTierAllowed'
-
+import { Provider }  from '@acx-ui/store'
 
 let split = require('@splitsoftware/splitio-react')
 
@@ -128,7 +128,8 @@ describe('useIsTierAllowed', () => {
       }))
     }))
 
-    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'))
+    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'),
+      { wrapper: ({ children }) => <Provider>{children}</Provider>})
 
     expect(result.current).toBe(true)
   })
