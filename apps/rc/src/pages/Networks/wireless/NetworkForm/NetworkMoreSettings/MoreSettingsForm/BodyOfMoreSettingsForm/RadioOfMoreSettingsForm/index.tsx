@@ -12,10 +12,11 @@ import {
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
-import { LoadControlForm } from '../../LoadControlForm'
-import * as UI             from '../../styledComponents'
+import { LoadControlForm } from '../../../../NetworkMoreSettings/LoadControlForm'
+import DataRateControl     from '../../../../NetworkMoreSettings/MoreSettingsForm/BodyOfMoreSettingsForm/RadioOfMoreSettingsForm/DataRateControl'
+import * as UI             from '../../../../NetworkMoreSettings/styledComponents'
 
-import DataRateControl from './DataRateControl'
+
 
 enum BssMinRateEnum {
     VALUE_NONE = 'default',
@@ -52,6 +53,7 @@ interface Props {
     enableOce: boolean
     enableBSSPriority: boolean
 }
+
 function RadioOfMoreSettingsForm (props: Props) {
   const { $t } = useIntl()
   const onOfdmChange = function (checked: boolean) {

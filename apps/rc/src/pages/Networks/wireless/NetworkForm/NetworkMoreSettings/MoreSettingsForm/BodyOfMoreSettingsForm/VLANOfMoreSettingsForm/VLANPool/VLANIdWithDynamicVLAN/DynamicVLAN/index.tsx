@@ -1,15 +1,13 @@
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import * as UI from '../../../../../styledComponents'
-
-
+import * as UI from '../../../../../../../NetworkMoreSettings/styledComponents'
 
 interface DynamicVLANProps {
     enableVxLan: boolean
 }
 
-const DynamicVLAN = ({ enableVxLan }: DynamicVLANProps) => {
+function DynamicVLAN ({ enableVxLan }: DynamicVLANProps) {
   const { $t } = useIntl()
 
   return (

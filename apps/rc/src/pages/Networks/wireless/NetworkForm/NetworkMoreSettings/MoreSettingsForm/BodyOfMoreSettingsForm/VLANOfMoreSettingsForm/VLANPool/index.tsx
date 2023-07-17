@@ -5,10 +5,12 @@ import { useIntl }             from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import VLANPoolInstance from '../../../../VLANPoolInstance'
-import * as UI          from '../../../styledComponents'
+import * as UI          from '../../../../../NetworkMoreSettings/styledComponents'
+import VLANPoolInstance from '../../../../../VLANPoolInstance'
+
 
 import VLANIdWithDynamicVLAN from './VLANIdWithDynamicVLAN'
+
 
 interface VLANPoolProps {
     enableVxLan: boolean

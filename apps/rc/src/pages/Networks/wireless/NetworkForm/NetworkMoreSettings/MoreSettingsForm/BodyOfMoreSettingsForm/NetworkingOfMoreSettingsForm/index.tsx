@@ -7,7 +7,7 @@ import { Tooltip }                                                              
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { BasicServiceSetPriorityEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import * as UI from '../../styledComponents'
+import * as UI from '../../../../NetworkMoreSettings/styledComponents'
 
 
 interface NetworkingOfMoreSettingsFormProps {
@@ -21,6 +21,7 @@ interface NetworkingOfMoreSettingsFormProps {
   enableOce: boolean
   enableBSSPriority: boolean
 }
+
 function NetworkingOfMoreSettingsForm (props: NetworkingOfMoreSettingsFormProps) {
   const { $t } = useIntl()
   const isNetworkWPASecured = props.wlanData?.wlan?.wlanSecurity ?
@@ -460,4 +461,5 @@ function Multicast () {
     </>
   )
 }
+
 export default NetworkingOfMoreSettingsForm

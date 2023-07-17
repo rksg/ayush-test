@@ -1,13 +1,12 @@
-import {
-  AccessControlForm
-} from '../../../../NetworkForm/NetworkMoreSettings/AccessControlForm'
-import { ServicesForm } from '../../ServicesForm'
+import { ServicesForm }      from '../../../../NetworkMoreSettings/ServicesForm'
+import { AccessControlForm } from '../../../AccessControlForm'
 
 
 interface Props
 {
   showSingleSessionIdAccounting: boolean
 }
+
 function NetworkControlOfMoreSettingsForm (props: Props) {
   return (
     <>

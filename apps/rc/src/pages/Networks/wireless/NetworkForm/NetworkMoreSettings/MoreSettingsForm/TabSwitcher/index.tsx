@@ -11,7 +11,7 @@ interface TabSwitcherProps {
     defaultValue: string
 }
 
-const TabSwitcher = ({ handleSelectedTabValueChange, defaultValue }: TabSwitcherProps) => {
+function TabSwitcher ({ handleSelectedTabValueChange, defaultValue }: TabSwitcherProps) {
   const { $t } = useIntl()
 
 

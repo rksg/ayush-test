@@ -7,13 +7,14 @@ interface RadiusOptionsOfMoreSettingsFormProps {
   onDataChanged?: ()=> void
 }
 
-const RadiusOptionsOfMoreSettingsForm = (
+function RadiusOptionsOfMoreSettingsForm (
   {
     context,
     showSingleSessionIdAccounting,
     isWispr,
     onDataChanged
-  }: RadiusOptionsOfMoreSettingsFormProps) => {
+  }: RadiusOptionsOfMoreSettingsFormProps) {
+
 
   return (
     <RadiusOptionsForm
