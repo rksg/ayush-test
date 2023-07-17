@@ -7,7 +7,7 @@ export const calculateGranularity = (
 ): string => {
   const interval = moment.duration(moment(end).diff(moment(start))).asHours()
   let gran = getGranularityByAPCount(interval, apCount)
-  if (overlapsRollup(start, end)) minGranularity = 'PT1H'
+  if (overlapsRollup(start)) minGranularity = 'PT1H'
   return minGranularity &&
     moment.duration(minGranularity).asSeconds() > moment.duration(gran).asSeconds()
     ? minGranularity
@@ -44,8 +44,7 @@ const getGranularityByAPCount = (interval: number, apCount: number) => {
       }
   }
 }
-const overlapsRollup = (start: string, end: string) => {
-  if (moment(end) < moment(start)) return false
+const overlapsRollup = (start: string) => {
   const rollupDays = parseInt(get('DRUID_ROLLUP_DAYS'), 10)
   const rollupDate = moment().utc().startOf('day').subtract(rollupDays, 'days')
   return rollupDays < 36500 && moment(start) < rollupDate

@@ -262,3 +262,4 @@ export const healthApi = dataApi.injectEndpoints({
     })
   })
 })
+export const { useApCountForNodeQuery } = healthApi
