@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent                     from '@testing-library/user-event'
+import { debounce }                  from 'lodash'
 import { IntlProvider }              from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
@@ -180,22 +181,25 @@ describe('VlanPortsModal', () => {
     const src1 = await screen.findAllByTestId('untagged_module1_10')
     fireEvent.mouseDown(src1[0])
     fireEvent.mouseMove(dst1[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst1[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst1[0])
+    }, 100)
 
     const dst2 = await screen.findAllByTestId('untagged_module2_0')
     const src2 = await screen.findAllByTestId('untagged_module2_1')
     fireEvent.mouseDown(src2[0])
     fireEvent.mouseMove(dst2[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst2[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst2[0])
+    }, 100)
 
     const dst3 = await screen.findAllByTestId('untagged_module3_0')
     const src3 = await screen.findAllByTestId('untagged_module3_3')
     fireEvent.mouseDown(src3[0])
     fireEvent.mouseMove(dst3[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst3[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst3[0])
+    }, 100)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
@@ -228,22 +232,25 @@ describe('VlanPortsModal', () => {
     const src1 = await screen.findAllByTestId('tagged_module1_10')
     fireEvent.mouseDown(src1[0])
     fireEvent.mouseMove(dst1[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst1[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst1[0])
+    }, 100)
 
     const dst2 = await screen.findAllByTestId('tagged_module2_0')
     const src2 = await screen.findAllByTestId('tagged_module2_1')
     fireEvent.mouseDown(src2[0])
     fireEvent.mouseMove(dst2[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst2[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst2[0])
+    }, 100)
 
     const dst3 = await screen.findAllByTestId('tagged_module3_0')
     const src3 = await screen.findAllByTestId('tagged_module3_3')
     fireEvent.mouseDown(src3[0])
     fireEvent.mouseMove(dst3[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst3[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst3[0])
+    }, 100)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
@@ -274,8 +281,9 @@ describe('VlanPortsModal', () => {
     const src1 = await screen.findAllByTestId('untagged_module1_10')
     fireEvent.mouseDown(src1[0])
     fireEvent.mouseMove(dst1[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst1[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst1[0])
+    }, 100)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -283,8 +291,9 @@ describe('VlanPortsModal', () => {
     const src2 = await screen.findAllByTestId('tagged_module1_20')
     fireEvent.mouseDown(src2[0])
     fireEvent.mouseMove(dst2[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst2[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst2[0])
+    }, 100)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })

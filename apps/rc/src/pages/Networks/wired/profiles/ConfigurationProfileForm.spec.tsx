@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { Modal } from 'antd'
-import { rest }  from 'msw'
+import userEvent    from '@testing-library/user-event'
+import { Modal }    from 'antd'
+import { debounce } from 'lodash'
+import { rest }     from 'msw'
 
 import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { switchApi, venueApi }                                    from '@acx-ui/rc/services'
@@ -331,8 +332,9 @@ describe('Wired', () => {
     const src = await screen.findAllByTestId('untagged_module1_10')
     fireEvent.mouseDown(src[0])
     fireEvent.mouseMove(dst[0])
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.mouseUp(dst[0])
+    debounce(() => {
+      fireEvent.mouseUp(dst[0])
+    }, 100)
     const nextTrustPortButton1 = await within(dialog).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton1)
 
