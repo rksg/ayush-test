@@ -154,11 +154,11 @@ export const DatePickerFooter = ({
 }
 
 interface DateTimePickerFooterProps {
-  onApply: CallableFunction;
-  onCancel: CallableFunction;
+  onApply: (value: Moment) => void;
+  onCancel: () => void;
   applyFooterMsg?: string;
   value: Moment;
-  setValue: CallableFunction;
+  setValue: (value: Moment) => void;
   initialDate: Moment;
 }
 
@@ -178,7 +178,9 @@ export const DateTimePickerFooter = ({
     for (let i = previousHour; i >= 0; i--) {
       hours.push(i)
     }
-    return initialDate.isSame(value, 'dates') ? hours : []
+    return initialDate.isSame(value, 'dates')
+      ? hours
+      : []
   }, [initialDate, value])
 
   const disabledMinutes = useCallback(() => {
@@ -187,13 +189,16 @@ export const DateTimePickerFooter = ({
     for (let i = pastMinute; i >= 0; i = i - 15) {
       minutes.push(i)
     }
-    return initialDate.isSame(value, 'dates') ? minutes : []
+    return initialDate.isSame(value, 'dates') && initialDate.isSame(value, 'hours')
+      ? minutes
+      : []
   }, [initialDate, value])
 
   return <UI.FooterWrapper>
     <UI.TimePickerRow>
       <UI.TimePickerWrapper
-        role='time-picker'
+        key='hours'
+        role='time-picker-hours'
         size='small'
         inputReadOnly
         hourStep={1}
@@ -215,7 +220,8 @@ export const DateTimePickerFooter = ({
       />
       <UI.TimePickerColon>:</UI.TimePickerColon>
       <UI.TimePickerWrapper
-        role='time-picker'
+        key='minutes'
+        role='time-picker-minutes'
         size='small'
         inputReadOnly
         value={value}
@@ -231,7 +237,7 @@ export const DateTimePickerFooter = ({
         disabledTime={() => ({ disabledMinutes })}
         getPopupContainer={(node: HTMLElement) => node}
         onSelect={(time) => {
-          setOpen(open => ({ ...open, minute: true }))
+          setOpen(open => ({ ...open, minute: false }))
           setValue(time)
         }}
       />
@@ -243,7 +249,7 @@ export const DateTimePickerFooter = ({
         <Divider />
       </>
       : <Divider />}
-    <Button type='secondary' size='small' onClick={() => onApply()} >Apply</Button>
+    <Button type='secondary' size='small' onClick={() => onApply(value)} >Apply</Button>
     <Button type='default' size='small' onClick={() => onCancel()}>Cancel</Button>
   </UI.FooterWrapper>
 }

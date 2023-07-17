@@ -168,7 +168,7 @@ interface DateTimePickerProps {
   disabled?: boolean;
   icon?: ReactNode;
   initialDate: MutableRefObject<Moment>;
-  onApply: CallableFunction;
+  onApply: (value: Moment) => void;
   title?: string
 }
 
@@ -196,8 +196,8 @@ export const DateTimePicker = ({
     setOpen(false)
   }
   const disabledDate = useCallback((value: Moment) =>
-    value.isBefore(moment(initialDate.current))
-    || value.isAfter(moment(initialDate.current).add(1, 'months')),
+    value.isBefore(moment(initialDate.current.clone()))
+    || value.isAfter(moment(initialDate.current.clone()).add(1, 'months')),
   [initialDate])
 
   return <Tooltip placement='top' title={title}>
@@ -220,7 +220,7 @@ export const DateTimePicker = ({
         suffixIcon={icon ? icon : <ClockOutlined />}
         disabledDate={disabledDate}
         getPopupContainer={(node) => node}
-        onSelect={(value) => {
+        onChange={(value) => {
           selectRef.current = true
           setDate(value!)
         }}
