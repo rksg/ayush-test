@@ -61,7 +61,7 @@ function ApplyCalender ({ disabled, type, id, code, filters }: ActionButtonProps
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
-    scheduleRecommendation({ id, scheduledAt: date.toISOString(), filters })
+    scheduleRecommendation({ id, scheduledAt: date.toISOString(), filters }).unwrap()
   }
   const futureDate = useRef(getFutureTime(moment()))
   const footerMsg = code.startsWith('c-crrm') && type === 'Apply'
@@ -83,7 +83,7 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type' | 'fil
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
   const onCancel = () => {
-    cancelRecommendation({ id })
+    cancelRecommendation({ id }).unwrap()
   }
   return <ActionWrapper key={`cancel-${id}`} $disabled={disabled}>
     { disabled
@@ -141,10 +141,6 @@ const getAvailableActions = (recommendation: Recommendation, filters: AnalyticsF
     case 'beforeapplyinterrupted':
     case 'afterapplyinterrupted':
     case 'reverted':
-      return [
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Apply' }) },
-        { icon: actions.schedule({ ...props, disabled: true, type: 'Revert' }) }
-      ]
     case 'applyscheduleinprogress':
     case 'revertscheduleinprogress':
       return [
