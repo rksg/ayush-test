@@ -53,7 +53,7 @@ exports[`Topology Switch Card should render orrectly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-iAvgwm bMGcmX"
+                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-evZas fBelZT"
                 style="padding: 0px;"
                 type="button"
               >
@@ -204,47 +204,6 @@ exports[`Topology Switch Card should render orrectly 1`] = `
                           class="ant-descriptions-item-label"
                         >
                           Incidents (Last 24 hrs)
-                        </span>
-                        <span
-                          class="ant-descriptions-item-content"
-                          style="align-self: center; display: inline-flex;"
-                        >
-                          <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-                          >
-                            <div
-                              class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
-                            >
-                              <span
-                                aria-label="loader"
-                                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
-                                role="img"
-                              >
-                                <div
-                                  aria-busy="true"
-                                  aria-live="polite"
-                                  class="ant-spin ant-spin-sm ant-spin-spinning"
-                                >
-                                  <span
-                                    class="ant-spin-dot ant-spin-dot-spin"
-                                  >
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                    <i
-                                      class="ant-spin-dot-item"
-                                    />
-                                  </span>
-                                </div>
-                              </span>
-                            </div>
-                          </div>
                         </span>
                       </div>
                     </td>
