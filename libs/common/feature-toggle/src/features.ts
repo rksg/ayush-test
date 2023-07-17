@@ -61,7 +61,8 @@ export enum Features {
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
-  DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle'
+  DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle',
+  ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -275,5 +275,10 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/mspCustomers/:tenantId/logoUrls',
     oldUrl: '/api/mspservice/tenant/:tenantId/logourl',
     newApi: true
+  },
+  assignMultiMspEcDelegatedAdmins: {
+    method: 'post',
+    url: '/mspCustomers/mspAdmins',
+    newApi: true
   }
 }

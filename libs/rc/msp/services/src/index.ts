@@ -660,6 +660,15 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    assignMultiMspEcDelegatedAdmins: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMultiMspEcDelegatedAdmins, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -712,5 +721,6 @@ export const {
   useAcceptRejectInvitationMutation,
   useGetGenerateLicenseUsageRptQuery,
   useGetParentLogoUrlQuery,
-  useLazyGetUserProfilePverQuery
+  useLazyGetUserProfilePverQuery,
+  useAssignMultiMspEcDelegatedAdminsMutation
 } = mspApi

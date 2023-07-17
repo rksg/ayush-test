@@ -113,7 +113,8 @@ export function MspCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
-  const isAssignMultipleEcEnabled = true//useIsSplitOn(Features.ASSIGN_MULTIPLE_EC)
+  const isAssignMultipleEcEnabled = true
+  // useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -122,6 +123,7 @@ export function MspCustomers () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerAssignEcMspAdminsVisible, setDrawerAssignEcMspAdminsVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
+  const [selEcTenantIds, setSelEcTenantIds] = useState([] as string[])
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -456,7 +458,8 @@ export function MspCustomers () {
           return (isAssignMultipleEcEnabled && selectedRows.length >= 2)
         },
         onClick: (selectedRows) => {
-          setTenantId(selectedRows[0].id)
+          const selectedEcIds = selectedRows.map(item => item.id)
+          setSelEcTenantIds(selectedEcIds)
           setDrawerAssignEcMspAdminsVisible(true)
         }
       },
@@ -664,7 +667,7 @@ export function MspCustomers () {
       />}
       {drawerAssignEcMspAdminsVisible && <AssignEcMspAdminsDrawer
         visible={drawerAssignEcMspAdminsVisible}
-        tenantId={ecTenantId}
+        tenantIds={selEcTenantIds}
         setVisible={setDrawerAssignEcMspAdminsVisible}
         setSelected={() => {}}
       />}

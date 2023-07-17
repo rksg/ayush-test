@@ -12,11 +12,10 @@ import {
 } from '@acx-ui/components'
 import {
   useMspAdminListQuery,
-  useUpdateMspEcDelegatedAdminsMutation
+  useAssignMultiMspEcDelegatedAdminsMutation
 } from '@acx-ui/msp/services'
 import {
-  MspAdministrator,
-  MspEcDelegatedAdmins
+  MspAdministrator
 } from '@acx-ui/msp/utils'
 import {
   roleDisplayText
@@ -26,15 +25,21 @@ import { RolesEnum } from '@acx-ui/types'
 
 interface AssignEcMspAdminsDrawerProps {
   visible: boolean
-  tenantId?: string
+  tenantIds: string[]
   setVisible: (visible: boolean) => void
   setSelected: (selected: MspAdministrator[]) => void
+}
+
+interface AssignedMultiEcMspAdmins {
+  mspAdminId: string
+  delegatedRole: RolesEnum
+  mspEcIds: string[]
 }
 
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, tenantId, setVisible, setSelected } = props
+  const { visible, tenantIds, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
 
@@ -50,22 +55,23 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
     onClose()
   }
 
-  const [ saveMspAdmins ] = useUpdateMspEcDelegatedAdminsMutation()
+  const [ saveMspAdmins ] = useAssignMultiMspEcDelegatedAdminsMutation()
 
   const handleSave = () => {
-    let payload: MspEcDelegatedAdmins[] = []
+    let payload: AssignedMultiEcMspAdmins[] = []
     if (selectedRows && selectedRows.length > 0) {
       selectedRows.forEach((element:MspAdministrator) => {
         payload.push ({
-          msp_admin_id: element.id,
-          msp_admin_role: element.role
+          mspAdminId: element.id,
+          delegatedRole: element.role,
+          mspEcIds: tenantIds
         })
       })
     } else {
       return
     }
-    if (tenantId) {
-      saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
+    if (tenantIds) {
+      saveMspAdmins({ payload })
         .then(() => {
           setSelected(selectedRows)
           setVisible(false)

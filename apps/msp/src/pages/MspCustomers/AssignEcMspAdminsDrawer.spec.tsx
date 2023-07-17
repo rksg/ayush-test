@@ -52,7 +52,7 @@ describe('AssignEcMspAdminsDrawer', () => {
     services.useMspAdminListQuery = jest.fn().mockImplementation(() => {
       return { data: list }
     })
-    jest.spyOn(services, 'useUpdateMspEcDelegatedAdminsMutation')
+    jest.spyOn(services, 'useAssignMultiMspEcDelegatedAdminsMutation')
     mockServer.use(
       rest.put(
         MspUrlsInfo.updateMspEcDelegatedAdmins.url,
@@ -72,7 +72,7 @@ describe('AssignEcMspAdminsDrawer', () => {
         <AssignEcMspAdminsDrawer visible={true}
           setVisible={jest.fn()}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantIds={[params.tenantId]} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/assign' }
       })
@@ -95,7 +95,7 @@ describe('AssignEcMspAdminsDrawer', () => {
         <AssignEcMspAdminsDrawer visible={true}
           setVisible={jest.fn()}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantIds={[params.tenantId]} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/assign' }
       })
@@ -119,7 +119,7 @@ describe('AssignEcMspAdminsDrawer', () => {
         <AssignEcMspAdminsDrawer visible={true}
           setVisible={jest.fn()}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantIds={[params.tenantId]} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/assign' }
       })
@@ -144,7 +144,7 @@ describe('AssignEcMspAdminsDrawer', () => {
         <AssignEcMspAdminsDrawer visible={true}
           setVisible={mockedCloseDialog}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantIds={[params.tenantId]} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
       })
@@ -167,7 +167,7 @@ describe('AssignEcMspAdminsDrawer', () => {
         <AssignEcMspAdminsDrawer visible={true}
           setVisible={mockedCloseDialog}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantIds={[params.tenantId]} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers/assign' }
       })
@@ -187,31 +187,9 @@ describe('AssignEcMspAdminsDrawer', () => {
       status: 'fulfilled'
     })]
     await waitFor(()=>
-      expect(services.useUpdateMspEcDelegatedAdminsMutation).toHaveLastReturnedWith(value))
+      expect(services.useAssignMultiMspEcDelegatedAdminsMutation).toHaveLastReturnedWith(value))
     await waitFor(() =>
       expect(mockedCloseDialog).toHaveBeenCalledTimes(3))
-    expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
-  })
-  xit('should handle save when no tenantId', async () => {
-    const mockedCloseDialog = jest.fn()
-    const mockedSetSelected = jest.fn()
-    render(
-      <Provider>
-        <AssignEcMspAdminsDrawer visible={true}
-          setVisible={mockedCloseDialog}
-          setSelected={mockedSetSelected} />
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
-      })
-
-    expect(await screen.findByRole('dialog')).toBeVisible()
-    const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(3)
-    await userEvent.click(checkboxes.at(1)!)
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
-
-    expect(mockedSetSelected).toHaveBeenCalledTimes(1)
-    expect(mockedCloseDialog).toHaveBeenCalledTimes(1)
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
 })
