@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom'
-import { Provider }                  from '@acx-ui/store'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { CommonUrlsInfo, RogueApUrls }           from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { VenueEditContext } from '../index'
 
@@ -18,8 +21,56 @@ jest.mock('./RadioTab/RadioTab', () => ({
   RadioTab: () => <div data-testid='radio-tab' />
 }))
 
+const venueDosProtection = {
+  enabled: true,
+  blockingPeriod: 50,
+  failThreshold: 6,
+  checkPeriod: 30
+}
+
+const venueRogueAp = {
+  enabled: true,
+  reportThreshold: 0,
+  roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+const policyListContent = [
+  {
+    id: 'policyId1',
+    name: 'test',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1664790827392,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  },
+  {
+    id: 'be62604f39aa4bb8a9f9a0733ac07add',
+    name: 'test6',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1667215711375,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  }
+]
+
 describe('WifiConfigTab', () => {
   it('should render correctly', async () => {
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json(venueDosProtection))),
+      rest.get(
+        CommonUrlsInfo.getVenueRogueAp.url,
+        (_, res, ctx) => res(ctx.json(venueRogueAp))),
+      rest.get(
+        RogueApUrls.getRoguePolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListContent)))
+    )
+
     render(
       <Provider>
         <VenueEditContext.Provider value={{

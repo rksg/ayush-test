@@ -9,6 +9,8 @@ import {
 import { getUserProfile }         from '@acx-ui/user'
 import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
+import { channelSelection } from './channelSelection'
+
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
 const hertz = [' Hz', ' daHz', ' hHz', ' kHz', ' MHz', ' GHz', ' THz']
@@ -187,6 +189,49 @@ function hertzFormat (number:number) {
   }
 }
 
+const handleAutoWidth = (text: string) => {
+  if (text === 'Auto') {
+    return text
+  } else {
+    return `${text} MHz`
+  }
+}
+
+const json2keymap = (
+  keyFields: string[],
+  field: keyof(typeof channelSelection)[0],
+  filter: string[]
+) =>
+  (mappings: typeof channelSelection) => mappings
+    .flatMap(items => items)
+    .filter(item => !filter.includes(item[field] as string))
+    .reduce((map, item) => map.set(
+      keyFields.map(keyField => item[keyField as keyof typeof item]).join('-'),
+      item[field]
+    ), new Map())
+
+type CrrmTextType =
+  string | Array<{ radio: string, channelMode: string, channelWidth: string }>
+
+const crrmText = (value: CrrmTextType) => {
+  const { $t } = getIntl()
+  const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(channelSelection)
+  const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
+  const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
+  if (typeof value === 'string') {
+    return $t({
+      defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection' })
+  }
+  return value.map(config => {
+    const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
+    const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
+    const radio = formats.radioFormat(config.radio)
+    return $t({
+      defaultMessage: '{channelMode} and {channelWidth} for {radio}' },
+    { channelMode, channelWidth, radio } )
+  }).join(', ')
+}
+
 export const formats = {
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
@@ -205,7 +250,9 @@ export const formats = {
   numberWithCommas: (number: number) =>
     number?.toLocaleString('en-US', { maximumFractionDigits: 0 }),
   fpsFormat: (value: number) => `${value} fps`,
-  percent: (value: number) => `${value} %`
+  percent: (value: number) => `${value} %`,
+  crrmFormat: (value: CrrmTextType) => crrmText(value),
+  noFormat: (value: unknown) => `${value}`
 } as const
 
 const enabledFormat: MessageDescriptor = defineMessage({
