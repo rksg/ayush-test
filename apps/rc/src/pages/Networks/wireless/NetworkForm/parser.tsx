@@ -339,6 +339,17 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     (advancedCustomization as DpskWlanAdvancedCustomization).enableAaaVlanOverride = false
   }
 
+  if (!get(data, 'wlan.advancedCustomization.dhcpOption82Enabled')) {
+    advancedCustomization.dhcpOption82SubOption1Enabled = false
+    advancedCustomization.dhcpOption82SubOption1Format = null
+    advancedCustomization.dhcpOption82SubOption2Enabled = false
+    advancedCustomization.dhcpOption82SubOption2Format = null
+    advancedCustomization.dhcpOption82SubOption150Enabled = false
+    advancedCustomization.dhcpOption82SubOption151Enabled = false
+    advancedCustomization.dhcpOption82SubOption151Format = null
+    advancedCustomization.dhcpOption82MacFormat = null
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     ...data,
