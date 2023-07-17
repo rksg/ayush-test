@@ -44,7 +44,7 @@ export const WifiCallingSettingContext = createContext({} as WifiCallingSettingC
 
 export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
-  const ssidRateLimitingFeatureBundleFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const [
     enableDnsProxy,
     enableAntiSpoofing,
@@ -302,7 +302,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
         />
       </UI.FieldLabel>
 
-      {ssidRateLimitingFeatureBundleFlag && <DhcpOption82Form/>}
+      {dhcpOption82Flag && <DhcpOption82Form/>}
 
       { showTunnelProfile &&
       <Form.Item
