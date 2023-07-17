@@ -13,7 +13,7 @@ import {
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { TenantLink, useLocation }     from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay }               from '@acx-ui/utils'
 
 import { RecommendationActions }  from './RecommendationActions'
@@ -38,11 +38,8 @@ export interface RecommendationRow extends Recommendation {
 }
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
-  let { pathname } = useLocation()
-  if (pathname.includes('/next')) {
-    pathname = pathname.replace('/next', '')
-  }
-  return <TenantLink to={`${pathname}/${value.id}`}>
+  const { activeTab } = useParams()
+  return <TenantLink to={`/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
@@ -67,14 +64,9 @@ export function RecommendationTable ({ filters, showCrrm }:
 
   const selectedRecommendation = selectedRowData[0]
 
-  const data = (() => {
-    const filterCrrm = queryResults.data?.filter((val) => showCrrm
-      ? val.code.includes('crrm')
-      : !val.code.includes('crrm'))
-    return (showMuted)
-      ? filterCrrm
-      : filterCrrm?.filter((r: Recommendation) => !r.isMuted)
-  })()
+  const data = queryResults?.data?.filter((row) =>
+    (showCrrm === row.code.includes('crrm')) && (showMuted || !row.isMuted)
+  )
 
   const rowActions: TableProps<Recommendation>['rowActions'] = [
     {
@@ -90,94 +82,88 @@ export function RecommendationTable ({ filters, showCrrm }:
     }
   ]
 
-  const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => {
-    const columns: TableProps<RecommendationRow>['columns'] = [
-      {
-        title: $t(defineMessage({ defaultMessage: 'Priority' })),
-        width: 90,
-        dataIndex: 'priority',
-        key: 'priority',
-        render: (_, value) => {
-          return <UI.Priority>
-            <UI.PriorityIcon value={value.priority} />
-            <span>{value.priorityLabel}</span>
-          </UI.Priority>
-        },
-        sorter: { compare: sortProp('priority', severitySort) },
-        fixed: 'left',
-        filterable: true,
-        defaultSortOrder: 'descend'
+  const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => [
+    {
+      title: $t(defineMessage({ defaultMessage: 'Priority' })),
+      width: 90,
+      dataIndex: 'priorityLabel',
+      key: 'priorityLabel',
+      render: (_, value) => {
+        return <UI.Priority>
+          <UI.PriorityIcon value={value.priority} />
+          <span>{value.priorityLabel}</span>
+        </UI.Priority>
       },
-      {
-        title: $t(defineMessage({ defaultMessage: 'Date' })),
-        width: 130,
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        render: (_, value) => {
-          return <DateLink value={value}/>
-        },
-        sorter: { compare: sortProp('updatedAt', dateSort) },
-        fixed: 'left'
+      sorter: { compare: sortProp('priority', severitySort) },
+      fixed: 'left',
+      filterable: true
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Date' })),
+      width: 130,
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: (_, value) => {
+        return <DateLink value={value}/>
       },
-      {
-        title: $t(defineMessage({ defaultMessage: 'Summary' })),
-        width: 250,
-        dataIndex: 'summary',
-        key: 'summary',
-        render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
-        sorter: { compare: sortProp('summary', defaultSort) },
-        ellipsis: true,
-        searchable: true
+      sorter: { compare: sortProp('updatedAt', dateSort) },
+      fixed: 'left'
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Summary' })),
+      width: 250,
+      dataIndex: 'summary',
+      key: 'summary',
+      render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
+      sorter: { compare: sortProp('summary', defaultSort) },
+      ellipsis: true,
+      searchable: true
+    },
+    ...(showCrrm ? [] : [{
+      title: $t(defineMessage({ defaultMessage: 'Category' })),
+      width: 130,
+      dataIndex: 'category',
+      key: 'category',
+      sorter: { compare: sortProp('category', defaultSort) },
+      fixed: 'left',
+      filterable: true
+    }] as TableProps<RecommendationRow>['columns']),
+    {
+      title: scopeType,
+      width: 150,
+      dataIndex: 'sliceValue',
+      key: 'sliceValue',
+      render: (_, value, __, highlightFn ) => {
+        return <Tooltip placement='top' title={value.scope}>
+          <UI.UnderlinedSpan>{highlightFn(value.sliceValue)}</UI.UnderlinedSpan>
+        </Tooltip>
       },
-      {
-        title: $t(defineMessage({ defaultMessage: 'Category' })),
-        width: 130,
-        dataIndex: 'category',
-        key: 'category',
-        sorter: { compare: sortProp('category', defaultSort) },
-        fixed: 'left',
-        filterable: true
+      sorter: { compare: sortProp('sliceValue', defaultSort) },
+      searchable: true
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Status' })),
+      width: 90,
+      dataIndex: 'status',
+      key: 'status',
+      render: (_, value ) => {
+        return <Tooltip placement='top' title={value.statusTooltip}>
+          <UI.UnderlinedSpan>{value.status}</UI.UnderlinedSpan>
+        </Tooltip>
       },
-      {
-        title: scopeType,
-        width: 150,
-        dataIndex: 'sliceValue',
-        key: 'sliceValue',
-        render: (_, value, __, highlightFn ) => {
-          return <Tooltip placement='top' title={value.scope}>
-            <UI.UnderlinedSpan>{highlightFn(value.sliceValue)}</UI.UnderlinedSpan>
-          </Tooltip>
-        },
-        sorter: { compare: sortProp('sliceValue', defaultSort) },
-        searchable: true
-      },
-      {
-        title: $t(defineMessage({ defaultMessage: 'Status' })),
-        width: 90,
-        dataIndex: 'status',
-        key: 'status',
-        render: (_, value ) => {
-          return <Tooltip placement='top' title={value.statusTooltip}>
-            <UI.UnderlinedSpan>{value.status}</UI.UnderlinedSpan>
-          </Tooltip>
-        },
-        sorter: { compare: sortProp('status', defaultSort) },
-        filterable: true
-      },
-      {
-        title: $t(defineMessage({ defaultMessage: 'Actions' })),
-        key: 'id',
-        dataIndex: 'id',
-        width: 90,
-        render: (_, value) =>
-          <RecommendationActions recommendation={value} filters={filters} />
-      }
-    ]
-    return showCrrm
-      ? columns.filter((val) => val.key !== 'category')
-      : columns
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showCrrm]) // '$t' 'basePath' 'intl' are not changing
+      sorter: { compare: sortProp('status', defaultSort) },
+      filterable: true
+    },
+    {
+      title: $t(defineMessage({ defaultMessage: 'Actions' })),
+      key: 'id',
+      dataIndex: 'id',
+      width: 90,
+      render: (_, value) =>
+        <RecommendationActions recommendation={value} filters={filters} />
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], [showCrrm]) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]} style={{ height: 400 }}>
