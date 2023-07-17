@@ -12,10 +12,10 @@ import {
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
-import { LoadControlForm } from '../../LoadControlForm'
-import * as UI             from '../../styledComponents'
+import { LoadControlForm } from '../../../LoadControlForm'
+import DataRateControl     from '../../../MoreSettingsForm/BodyOfMoreSettingsForm/RadioOfMoreSettingsForm/DataRateControl'
+import * as UI             from '../../../styledComponents'
 
-import DataRateControl from './DataRateControl'
 
 enum BssMinRateEnum {
     VALUE_NONE = 'default',

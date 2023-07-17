@@ -3,7 +3,8 @@ import React from 'react'
 import { Form, FormInstance, Select } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import * as UI from '../../../styledComponents'
+import * as UI from '../../../../styledComponents'
+
 const { Option } = Select
 
 enum BssMinRateEnum {

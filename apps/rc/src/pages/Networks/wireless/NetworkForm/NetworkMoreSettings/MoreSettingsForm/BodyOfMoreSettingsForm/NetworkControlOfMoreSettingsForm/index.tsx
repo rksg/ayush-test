@@ -1,7 +1,5 @@
-import {
-  AccessControlForm
-} from '../../../../NetworkForm/NetworkMoreSettings/AccessControlForm'
-import { ServicesForm } from '../../ServicesForm'
+import { AccessControlForm } from '../../../AccessControlForm'
+import { ServicesForm }      from '../../../ServicesForm'
 
 
 interface Props

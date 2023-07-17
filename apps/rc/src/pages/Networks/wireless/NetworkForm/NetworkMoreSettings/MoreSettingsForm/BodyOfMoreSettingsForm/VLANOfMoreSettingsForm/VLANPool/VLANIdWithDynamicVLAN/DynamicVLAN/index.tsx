@@ -1,7 +1,8 @@
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import * as UI from '../../../../../styledComponents'
+import * as UI from '../../../../../../styledComponents'
+
 
 
 

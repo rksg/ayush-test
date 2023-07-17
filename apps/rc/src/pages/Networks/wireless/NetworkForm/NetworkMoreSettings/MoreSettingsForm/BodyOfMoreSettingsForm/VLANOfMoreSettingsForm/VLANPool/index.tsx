@@ -5,10 +5,11 @@ import { useIntl }             from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import VLANPoolInstance from '../../../../VLANPoolInstance'
-import * as UI          from '../../../styledComponents'
+import * as UI          from '../../../../../NetworkMoreSettings/styledComponents'
+import VLANPoolInstance from '../../../../../VLANPoolInstance'
 
-import VLANIdWithDynamicVLAN from './VLANIdWithDynamicVLAN'
+import VLANIdWithDynamicVLAN from '.'
+
 
 interface VLANPoolProps {
     enableVxLan: boolean
@@ -17,12 +18,12 @@ interface VLANPoolProps {
     showDynamicWlan: boolean
 }
 
-const VLANPool = ({
+export default function VLANPool ({
   enableVxLan,
   enableVlanPooling,
   showDynamicWlan,
   isPortalDefaultVLANId
-}: VLANPoolProps) => {
+}: VLANPoolProps) {
   const { $t } = useIntl()
 
   return (
@@ -42,6 +43,7 @@ const VLANPool = ({
                         enableVxLan={enableVxLan}
                         isPortalDefaultVLANId={isPortalDefaultVLANId}
                         showDynamicWlan={showDynamicWlan}
+                        enableVlanPooling={enableVlanPooling}
                       />
       }
       {enableVxLan &&
@@ -63,5 +65,3 @@ const VLANPool = ({
     </>
   )
 }
-
-export default VLANPool
