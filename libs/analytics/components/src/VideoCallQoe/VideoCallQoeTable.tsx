@@ -6,12 +6,12 @@ import { startCase, toLower } from 'lodash'
 import { useIntl }            from 'react-intl'
 import { defineMessage }      from 'react-intl'
 
-import { defaultSort, dateSort, sortProp }                                                          from '@acx-ui/analytics/utils'
-import { Button, Table, TableProps, Tooltip, TrendPill, TrendTypeEnum, showActionModal, showToast } from '@acx-ui/components'
-import { Loader }                                                                                   from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
-import { TenantLink }                                                                               from '@acx-ui/react-router-dom'
-import { TABLE_DEFAULT_PAGE_SIZE }                                                                  from '@acx-ui/utils'
+import { defaultSort, dateSort, sortProp, TrendTypeEnum }                            from '@acx-ui/analytics/utils'
+import { Button, Table, TableProps, Tooltip, TrendPill, showActionModal, showToast } from '@acx-ui/components'
+import { Loader }                                                                    from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
+import { TenantLink }                                                                from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery, useDeleteCallQoeTestMutation } from '../VideoCallQoe/services'
 

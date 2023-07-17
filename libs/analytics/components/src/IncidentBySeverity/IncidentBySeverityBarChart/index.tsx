@@ -5,14 +5,13 @@ import { useIntl }            from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
 
-import { incidentSeverities, IncidentFilter, BarChartData } from '@acx-ui/analytics/utils'
+import { incidentSeverities, IncidentFilter, BarChartData, TrendTypeEnum } from '@acx-ui/analytics/utils'
 import {
   Card,
   BarChart,
   Loader,
   cssStr,
-  TrendPill,
-  TrendTypeEnum
+  TrendPill
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 

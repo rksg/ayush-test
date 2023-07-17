@@ -2,19 +2,12 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import type { IncidentSeverities } from '@acx-ui/analytics/utils'
-import { intlFormats }             from '@acx-ui/formatter'
+import type { IncidentSeverities, TrendTypeEnum } from '@acx-ui/analytics/utils'
+import { intlFormats }                            from '@acx-ui/formatter'
 
 import { cssStr } from '../../theme/helper'
 
 import * as UI from './styledComponents'
-
-
-export enum TrendTypeEnum {
-  None = 'none',
-  Positive = 'positive',
-  Negative = 'negative'
-}
 
 export type { IncidentSeverities }
 
@@ -22,7 +15,6 @@ interface TrendPillProps {
   trend: TrendTypeEnum
   value: string
 }
-
 
 export const TrendPill = React.forwardRef((
   { trend, value, ...rest }: TrendPillProps,

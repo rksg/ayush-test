@@ -11,6 +11,8 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
+import { devicePolicyListResponse } from '../../__tests__/fixtures'
+
 import DeviceOSDrawer from './index'
 
 const queryDevice = [
@@ -79,7 +81,7 @@ const queryDevice = [
 const queryDeviceUpdate = [
   ...queryDevice,
   {
-    id: 'fdd2bc421cb445daac8937dbb2366f5e',
+    id: 'acd2bc421cb445daac8937dbb2366f57',
     name: 'device1-another'
   }
 ]
@@ -146,7 +148,7 @@ jest.mock('antd', () => {
         onChange={e => onChange(e.target.value)}
         {...otherProps}>
         {options.map((option: { value: string }) =>
-          <option value={option.value}>{option.value}</option>)}
+          <option key={option.value} value={option.value}>{option.value}</option>)}
       </select>
     }
 
@@ -183,6 +185,15 @@ const selectOptionSet = async (device: string, vendor: string) => {
 }
 
 describe('DeviceOSDrawer Component setting I', () => {
+  beforeEach(async () => {
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyListResponse)
+      )
+    ))
+  })
+
   it('Render DeviceOSDrawer component successfully with Smartphone & Ios', async () => {
     mockServer.use(
       rest.post(
@@ -286,6 +297,8 @@ describe('DeviceOSDrawer Component setting I', () => {
 
     await selectOptionSet('Tablet', 'AmazonKindle')
 
+    expect(await screen.findByText('Tablet')).toBeInTheDocument()
+
   })
 
   it('Render DeviceOSDrawer component successfully with Voip & CiscoIpPhone', async () => {
@@ -331,10 +344,21 @@ describe('DeviceOSDrawer Component setting I', () => {
 
     await selectOptionSet('Voip', 'CiscoIpPhone')
 
+    expect(await screen.findByText('Voip')).toBeInTheDocument()
+
   })
 })
 
 describe('DeviceOSDrawer Component setting II', () => {
+  beforeEach(async () => {
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyListResponse)
+      )
+    ))
+  })
+
   it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
@@ -381,6 +405,8 @@ describe('DeviceOSDrawer Component setting II', () => {
     await userEvent.click(screen.getAllByText('Save')[1])
 
     await selectOptionSet('Gaming', 'Xbox360')
+
+    expect(await screen.findByText('Gaming')).toBeInTheDocument()
 
   })
 
@@ -562,6 +588,8 @@ describe('DeviceOSDrawer Component setting II', () => {
 
     await selectOptionSet('Printer', 'HpPrinter')
 
+    expect(await screen.findByText('Printer')).toBeInTheDocument()
+
   })
 
   it('Render DeviceOSDrawer component successfully with IotDevice & NextCamera', async () => {
@@ -611,10 +639,21 @@ describe('DeviceOSDrawer Component setting II', () => {
 
     await selectOptionSet('IotDevice', 'NestCamera')
 
+    expect(await screen.findByText('IotDevice')).toBeInTheDocument()
+
   })
 })
 
 describe('DeviceOSDrawer Component setting III', () => {
+  beforeEach(async () => {
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyListResponse)
+      )
+    ))
+  })
+
   it('Render DeviceOSDrawer component successfully with HomeAvEquipment & SonyPlayer', async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicy.url,
@@ -661,6 +700,8 @@ describe('DeviceOSDrawer Component setting III', () => {
     await userEvent.click(screen.getAllByText('Save')[1])
 
     await selectOptionSet('HomeAvEquipment', 'SonyPlayer')
+
+    expect(await screen.findByText('HomeAvEquipment')).toBeInTheDocument()
 
   })
 
@@ -711,10 +752,21 @@ describe('DeviceOSDrawer Component setting III', () => {
 
     await selectOptionSet('WdsDevice', 'TelenetCpe')
 
+    expect(await screen.findByText('WdsDevice')).toBeInTheDocument()
+
   })
 })
 
 describe('DeviceOSDrawer Component', () => {
+  beforeEach(async () => {
+    mockServer.use(rest.get(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(devicePolicyListResponse)
+      )
+    ))
+  })
+
   it('Render DeviceOSDrawer component successfully', async () => {
     mockServer.use(
       rest.post(
@@ -793,7 +845,7 @@ describe('DeviceOSDrawer Component', () => {
       )
     ))
 
-    await screen.findByRole('option', { name: 'device1-another' })
+    expect(await screen.findByRole('option', { name: 'device1-another' })).toBeInTheDocument()
   })
 
   it('Render DeviceDrawer component in viewMode successfully', async () => {
@@ -833,5 +885,7 @@ describe('DeviceOSDrawer Component', () => {
     await screen.findByText(/rules \(2\)/i)
 
     await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    expect(await screen.findByText('Rules (0)')).toBeInTheDocument()
   })
 })

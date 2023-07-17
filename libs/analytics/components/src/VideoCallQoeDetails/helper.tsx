@@ -2,13 +2,12 @@ import { Space }     from 'antd'
 import { maxBy }     from 'lodash'
 import { IntlShape } from 'react-intl'
 
-import { TrendTypeEnum } from '@acx-ui/components'
+import { TrendTypeEnum } from '@acx-ui/analytics/utils'
 
 import { rssGroups }   from '../VideoCallQoe/constants'
 import { WifiMetrics } from '../VideoCallQoe/types'
 
 import { TrendCircle } from './styledComponents'
-
 
 const getRSSConnectionQuality = (value:number|null) => {
   if (value === null || value === undefined) return null

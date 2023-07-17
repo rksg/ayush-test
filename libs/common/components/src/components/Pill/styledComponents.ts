@@ -1,9 +1,9 @@
 import { Progress as AntProgress } from 'antd'
 import styled, { css }             from 'styled-components/macro'
 
-import { incidentSeverities } from '@acx-ui/analytics/utils'
+import { TrendTypeEnum, incidentSeverities } from '@acx-ui/analytics/utils'
 
-import { TrendTypeEnum, IncidentSeverities } from '.'
+import { IncidentSeverities } from '.'
 
 const pillColor = ({ type }: { type: TrendTypeEnum | IncidentSeverities }) => {
   switch (type) {
