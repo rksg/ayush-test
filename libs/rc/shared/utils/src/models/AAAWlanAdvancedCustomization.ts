@@ -128,6 +128,24 @@ export class AAAWlanAdvancedCustomization {
   bssPriority: BasicServiceSetPriorityEnum
   radiusOptions?: RadiusOptions
 
+  dhcpOption82Enabled?: boolean
+
+  dhcpOption82SubOption1Enabled?: boolean
+
+  dhcpOption82SubOption1Format?: string | null
+
+  dhcpOption82SubOption2Enabled?: boolean
+
+  dhcpOption82SubOption2Format?: string | null
+
+  dhcpOption82SubOption150Enabled?: boolean
+
+  dhcpOption82SubOption151Enabled?: boolean
+
+  dhcpOption82SubOption151Format?: string | null
+
+  dhcpOption82MacFormat?: string | null
+
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
 
@@ -213,5 +231,23 @@ export class AAAWlanAdvancedCustomization {
     this.dnsProxy = new DnsProxy()
 
     this.bssPriority = BasicServiceSetPriorityEnum.HIGH
+
+    this.dhcpOption82Enabled = false
+
+    this.dhcpOption82SubOption1Enabled = false
+
+    this.dhcpOption82SubOption1Format = null
+
+    this.dhcpOption82SubOption2Enabled = false
+
+    this.dhcpOption82SubOption2Format = null
+
+    this.dhcpOption82SubOption150Enabled = false
+
+    this.dhcpOption82SubOption151Enabled = false
+
+    this.dhcpOption82SubOption151Format = null
+
+    this.dhcpOption82MacFormat = null
   }
 }
