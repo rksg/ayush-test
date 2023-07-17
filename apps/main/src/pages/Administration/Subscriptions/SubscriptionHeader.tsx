@@ -5,10 +5,11 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
-  useGetEntitlementSummaryQuery
+  useGetEntitlementSummaryQuery,
+  useGetAccountTierQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementDeviceType,
@@ -62,9 +63,12 @@ export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
 
-  const subscriptionVal = (getJwtTokenPayload().acx_account_tier
-  === AccountTier.PLATINUM? SubscriptionTierType.Platinum : SubscriptionTierType.Gold)
+  const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
+  const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
+  const subscriptionVal = ( tier === AccountTier.GOLD? SubscriptionTierType.Gold
+    : SubscriptionTierType.Platinum )
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))

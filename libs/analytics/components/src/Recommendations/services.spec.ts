@@ -37,7 +37,7 @@ describe('Recommendation services', () => {
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ],
       category: 'AI-Driven Cloud RRM',
-      priority: 3,
+      priority: 2,
       priorityLabel: 'High',
       scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
@@ -68,7 +68,7 @@ describe('Recommendation services', () => {
         { type: 'zone', name: 'EDU' }
       ],
       category: 'Wi-Fi Client Experience',
-      priority: 2,
+      priority: 1,
       priorityLabel: 'Medium',
       scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
