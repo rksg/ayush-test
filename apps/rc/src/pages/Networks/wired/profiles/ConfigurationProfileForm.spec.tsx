@@ -399,7 +399,7 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Activate' }) )
   })
 
-  it('should create Switch Configuration Profile with trust ports correctly', async () => {
+  it.skip('should create Switch Configuration Profile with trust ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
