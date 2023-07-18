@@ -65,7 +65,6 @@ const thirdStyle = css`
       > .ant-tabs-tab-btn {
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
-        font-weight: var(--acx-body-font-weight);
         text-shadow: none;
       }
       &.ant-tabs-tab-active {
@@ -73,6 +72,7 @@ const thirdStyle = css`
         border-color: var(--acx-accents-orange-50);
         > .ant-tabs-tab-btn {
           color: var(--acx-accents-orange-50);
+          font-weight: var(--acx-subtitle-4-font-weight);
         }
       }
     }
