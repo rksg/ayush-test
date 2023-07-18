@@ -478,9 +478,10 @@ export const breakoutPorts = [
     poeUsed: 0,
     poeTotal: 0,
     poeType: '',
-    usedInFormingStack: true,
     usedInUplink: true,
-    status: 'Down'
+    status: 'Down',
+    deviceStatus: SwitchStatusEnum.OPERATIONAL,
+    syncedSwitchConfig: true
   },
   {
     vlanIds: '1',

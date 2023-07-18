@@ -158,17 +158,24 @@ describe('FrontViewBreakoutPort', () => {
   it('should render breakout port drawer correctly', async () => {
     const mockDrawerVisible = jest.fn()
     render(<Provider>
-      <FrontViewBreakoutPortDrawer
-        portNumber={'1/2/1'}
-        setDrawerVisible={mockDrawerVisible}
-        drawerVisible={true}
-        breakoutPorts={breakoutPorts.filter(p=>p.portIdentifier.includes(':'))}
-      />
+      <SwitchPanelContext.Provider value={panelContext}>
+        <FrontViewBreakoutPortDrawer
+          portNumber={'1/2/1'}
+          setDrawerVisible={mockDrawerVisible}
+          drawerVisible={true}
+          breakoutPorts={breakoutPorts.filter(p=>p.portIdentifier.includes(':'))}
+        />
+      </SwitchPanelContext.Provider>
     </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/panel'
       }
     })
+    expect(await screen.findByRole('table')).toBeVisible()
+    const row1 = await screen.findByRole('cell', { name: '1/2/1:1' })
+    await userEvent.click(row1)
+    const editButton = await screen.findByText('Edit')
+    expect(editButton).toBeVisible()
   })
 })

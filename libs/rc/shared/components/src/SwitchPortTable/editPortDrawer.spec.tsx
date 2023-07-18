@@ -246,7 +246,7 @@ describe('EditPortDrawer', () => {
       })
 
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-      fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      fireEvent.click(await screen.findByRole('button', { name: 'Back' }))
       expect(onBackClickAction).toHaveBeenCalled()
     })
 
