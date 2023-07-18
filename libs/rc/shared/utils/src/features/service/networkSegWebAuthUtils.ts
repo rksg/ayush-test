@@ -39,3 +39,6 @@ export const getWebAuthLabelValidator = (): Rule => {
     message: $t({ defaultMessage: 'Accept only word characters.' })
   }
 }
+
+export const defaultWebAuthTemplateId = 'c34f7f07222941c7adbd6c22b5abce8a'
+export const isDefaultWebAuth = (id: string) => id === defaultWebAuthTemplateId

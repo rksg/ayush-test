@@ -31,7 +31,11 @@ describe( 'NetworkSegAuthForm', () => {
         (req, res, ctx) => res(ctx.json({
           id: 'zxzz',
           name: 'Mock Template name',
-          webAuthCustomTitle: 'Enter your Password below and press the button'
+          webAuthCustomTop: 'Header',
+          webAuthCustomTitle: 'Title',
+          webAuthPasswordLabel: 'Password Label',
+          webAuthCustomLoginButton: 'Button',
+          webAuthCustomBottom: 'Footer'
         }))
       ),
       rest.post(
@@ -55,13 +59,32 @@ describe( 'NetworkSegAuthForm', () => {
     expect(await screen.findByRole('heading', { level: 1 }))
       .toHaveTextContent('Add Network Segmentation Auth page for Switch')
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Page Name2' } })
+    fireEvent.change(screen.getByLabelText('Service Name'), { target: { value: 'Page Name2' } })
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[1])
+    fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[2])
+    fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[3])
+    fireEvent.click(screen.getAllByRole('button', { name: 'Reset to default' })[4])
 
     fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
     await waitFor(() => expect(mockedUsedNavigate).toBeCalled())
+  })
+
+  it( 'should render modalMode successfully', async () => {
+    const mockedCallback = jest.fn()
+    render(
+      <Provider>
+        <NetworkSegAuthForm modalMode={true} modalCallBack={mockedCallback}/>
+      </Provider>, { route: { params, path: '/:tenantId/t/services/webAuth/add' } }
+    )
+
+    expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    await waitFor(() => expect(mockedCallback).toBeCalled())
   })
 
   it( 'should render Edit form', async () => {
@@ -76,7 +99,7 @@ describe( 'NetworkSegAuthForm', () => {
 
     await waitFor(() =>
       expect(screen.getByDisplayValue(
-        'Enter your Password below and press the button')).toBeVisible())
+        'Password Label')).toBeVisible())
 
     fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
 

@@ -118,7 +118,7 @@ export function useStepsForm <T> ({
     ..._.omit(config, 'defaultFormValues'),
     ...props,
     // omit name for preventing prefix of id
-    ..._.omit(currentStep.props, ['children', 'name']),
+    ..._.omit(currentStep.props, ['children', 'name', 'title']),
     // Unable to take from props.initialValues
     // due to it is done via useEffect, which result in delayed
     initialValues: config.defaultFormValues,
