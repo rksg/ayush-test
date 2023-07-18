@@ -92,9 +92,9 @@ export function LanPorts () {
         const venueSettings = (await getVenueSettings({
           params: { tenantId, venueId } }, true).unwrap())
 
-        const lanPorts = (apLanPorts?.useVenueSettings
-          ? venueLanPorts : apLanPorts) as WifiApSetting
-        //const lanPorts = { ...apLanPorts } as WifiApSetting
+        //const lanPorts = (apLanPorts?.useVenueSettings
+        //  ? venueLanPorts : apLanPorts) as WifiApSetting
+        const lanPorts = { ...apLanPorts } as WifiApSetting
         setVenue(venue)
         setVenueLanPorts(venueLanPorts)
         setSelectedModel(lanPorts)
@@ -229,6 +229,7 @@ export function LanPorts () {
               <Form.Item
                 hidden={true}
                 name='useVenueSettings'
+                valuePropName='checked'
                 initialValue={useVenueSettings}
                 children={<Switch checked={useVenueSettings} />}
               />

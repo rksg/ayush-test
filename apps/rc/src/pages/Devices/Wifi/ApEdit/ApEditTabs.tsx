@@ -33,8 +33,8 @@ function ApEditTabs () {
     setEditNetworkingContextData,
     editNetworkControlContextData,
     setEditNetworkControlContextData,
-    editAdvanecdControlContextData,
-    setEditAdvanecdControlContextData,
+    editAdvancedContextData,
+    setEditAdvancedContextData,
     setPreviousPath,
     setIsOnlyOneTab
   } = useContext(ApEditContext)
@@ -101,8 +101,8 @@ function ApEditTabs () {
           setEditNetworkingContextData,
           editNetworkControlContextData,
           setEditNetworkControlContextData,
-          editAdvanecdControlContextData,
-          setEditAdvanecdControlContextData,
+          editAdvancedContextData,
+          setEditAdvancedContextData,
           tx.retry
         )
       })

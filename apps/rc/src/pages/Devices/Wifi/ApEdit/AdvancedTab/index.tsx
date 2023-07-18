@@ -28,8 +28,8 @@ export function AdvancedTab () {
     previousPath,
     editContextData,
     setEditContextData,
-    editAdvanecdControlContextData,
-    setEditAdvanecdControlContextData
+    editAdvancedContextData,
+    setEditAdvancedContextData
   } = useContext(ApEditContext)
 
 
@@ -76,22 +76,22 @@ export function AdvancedTab () {
       isDirty: false
     })
 
-    if (editAdvanecdControlContextData) {
-      const newData = { ...editAdvanecdControlContextData }
+    if (editAdvancedContextData) {
+      const newData = { ...editAdvancedContextData }
       delete newData.updateApLed
       delete newData.discardApLedChanges
       delete newData.updateBssColoring
       delete newData.discardBssColoringChanges
 
-      setEditAdvanecdControlContextData(newData)
+      setEditAdvancedContextData(newData)
     }
   }
 
   const handleUpdateSetting = async (redirect?: boolean) => {
 
     try {
-      await editAdvanecdControlContextData.updateApLed?.()
-      await editAdvanecdControlContextData.updateBssColoring?.()
+      await editAdvancedContextData.updateApLed?.()
+      await editAdvancedContextData.updateBssColoring?.()
 
       resetEditContextData()
 
@@ -108,8 +108,8 @@ export function AdvancedTab () {
 
   const handleDiscardChanges = async () => {
     try {
-      await editAdvanecdControlContextData.discardApLedChanges?.()
-      await editAdvanecdControlContextData.discardBssColoringChanges?.()
+      await editAdvancedContextData.discardApLedChanges?.()
+      await editAdvancedContextData.discardBssColoringChanges?.()
 
 
       resetEditContextData()

@@ -50,7 +50,7 @@ export function NetworkControlTab () {
       title: mPorxyTitle,
       content: (
         <>
-          <StepsFormLegacy.SectionTitle id='ip-settings'>
+          <StepsFormLegacy.SectionTitle>
             { mPorxyTitle }
           </StepsFormLegacy.SectionTitle>
           <MdnsProxy />
@@ -61,7 +61,7 @@ export function NetworkControlTab () {
       title: apSnmpTitle,
       content: (
         <>
-          <StepsFormLegacy.SectionTitle id='mesh'>
+          <StepsFormLegacy.SectionTitle>
             { apSnmpTitle }
           </StepsFormLegacy.SectionTitle>
           <ApSnmp />
@@ -74,7 +74,7 @@ export function NetworkControlTab () {
   const resetEditContextData = () => {
     setEditContextData({
       ...editContextData,
-      unsavedTabKey: 'networking',
+      unsavedTabKey: 'networkControl',
       isDirty: false
     })
 

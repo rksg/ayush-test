@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react'
-import userEvent          from '@testing-library/user-event'
-import { IntlProvider }   from 'react-intl'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import userEvent from '@testing-library/user-event'
 
+
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { ApRadioTypeDataKeyMap, ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -14,19 +15,20 @@ import { ApRadioTypeDataKeyMap, ApRadioTypeEnum,
 import { RadioSettingsForm } from './RadioSettingsForm'
 
 
+
 describe.skip('RadioSettingForm component', () => {
   it('should render Venue Radio 2.4G', async () => {
     const radioType = ApRadioTypeEnum.Radio24G
     const radioDataKey = VenueRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth24GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -53,13 +55,13 @@ describe.skip('RadioSettingForm component', () => {
     const radioDataKey = VenueRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth5GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -84,13 +86,13 @@ describe.skip('RadioSettingForm component', () => {
     const radioDataKey = VenueRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth6GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -121,14 +123,14 @@ describe.skip('RadioSettingForm component', () => {
     const radioDataKey = ApRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth24GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           context='ap'
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -154,7 +156,7 @@ describe.skip('RadioSettingForm component', () => {
     const bandwidthOptions = channelBandwidth5GOptions
     let isUseVenueSettings = true
     const { asFragment } = render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           context='ap'
           radioType={radioType}
@@ -162,7 +164,7 @@ describe.skip('RadioSettingForm component', () => {
           channelBandwidthOptions={bandwidthOptions}
           isUseVenueSettings={isUseVenueSettings}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
     // eslint-disable-next-line testing-library/no-node-access

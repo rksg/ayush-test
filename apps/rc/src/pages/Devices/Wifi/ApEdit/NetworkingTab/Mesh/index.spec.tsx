@@ -8,6 +8,7 @@ import { Provider, store }                                       from '@acx-ui/s
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { getUrlForTest }                                         from '@acx-ui/utils'
 
+import { ApNetworkingContext }          from '..'
 import { ApDataContext, ApEditContext } from '../..'
 import { r760Ap, venueData }            from '../../../../__tests__/fixtures'
 
@@ -101,7 +102,9 @@ describe('ApMeshTab', () => {
             updateChanges: jest.fn(),
             discardChanges: jest.fn()
           },
-          setEditContextData: jest.fn()
+          setEditContextData: jest.fn(),
+          editNetworkingContextData: {} as ApNetworkingContext,
+          setEditNetworkingContextData: jest.fn()
         }}>
           <ApDataContext.Provider value={{ apData: r760Ap }}>
             <ApMesh />

@@ -42,6 +42,7 @@ export function LanPortPoeSettings (props: {
     <Form.Item
       hidden={true}
       name='poeOut'
+      valuePropName='checked'
       initialValue={selectedModel?.poeOut}
       children={<Switch />}
     />}

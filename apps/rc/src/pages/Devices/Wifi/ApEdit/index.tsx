@@ -45,8 +45,8 @@ export interface ApEditContextProps {
   setEditNetworkingContextData: (data: ApNetworkingContext) => void
   editNetworkControlContextData: ApNetworkControlContext
   setEditNetworkControlContextData: (data: ApNetworkControlContext) => void
-  editAdvanecdControlContextData: ApAdvancedContext
-  setEditAdvanecdControlContextData: (data: ApAdvancedContext) => void
+  editAdvancedContextData: ApAdvancedContext
+  setEditAdvancedContextData: (data: ApAdvancedContext) => void
 }
 
 export interface ApEditContextExtendedProps extends ApEditContextProps {
@@ -71,7 +71,7 @@ export function ApEdit () {
       = useState({} as ApNetworkingContext)
   const [editNetworkControlContextData, setEditNetworkControlContextData]
       = useState({} as ApNetworkControlContext)
-  const [editAdvanecdControlContextData, setEditAdvanecdControlContextData]
+  const [editAdvancedContextData, setEditAdvancedContextData]
       = useState({} as ApAdvancedContext)
 
   const [apData, setApData] = useState<ApDeep>()
@@ -114,8 +114,8 @@ export function ApEdit () {
     setEditNetworkingContextData,
     editNetworkControlContextData,
     setEditNetworkControlContextData,
-    editAdvanecdControlContextData,
-    setEditAdvanecdControlContextData
+    editAdvancedContextData,
+    setEditAdvancedContextData
   }}>
     <ApEditPageHeader />
     { Tab &&
@@ -131,7 +131,7 @@ interface apEditSettingsProps {
   editRadioContextData: ApRadioContext
   editNetworkingContextData: ApNetworkingContext
   editNetworkControlContextData: ApNetworkControlContext
-  editAdvanecdControlContextData: ApAdvancedContext
+  editAdvancedContextData: ApAdvancedContext
 }
 
 const processApEditSettings = (props: apEditSettingsProps) => {
@@ -139,7 +139,7 @@ const processApEditSettings = (props: apEditSettingsProps) => {
     editRadioContextData,
     editNetworkingContextData,
     editNetworkControlContextData,
-    editAdvanecdControlContextData
+    editAdvancedContextData
   } = props
 
   switch(editContextData?.unsavedTabKey){
@@ -158,8 +158,8 @@ const processApEditSettings = (props: apEditSettingsProps) => {
       editNetworkControlContextData.updateApSnmp?.()
       break
     case 'advanced':
-      editAdvanecdControlContextData.updateApLed?.()
-      editAdvanecdControlContextData.updateBssColoring?.()
+      editAdvancedContextData.updateApLed?.()
+      editAdvancedContextData.updateBssColoring?.()
       break
     default: // General
       editContextData?.updateChanges?.()
@@ -172,7 +172,7 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
     editRadioContextData,
     editNetworkingContextData,
     editNetworkControlContextData,
-    editAdvanecdControlContextData
+    editAdvancedContextData
   } = props
 
   switch(editContextData?.unsavedTabKey){
@@ -191,8 +191,8 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
       editNetworkControlContextData.discardApSnmpChanges?.()
       break
     case 'advanced':
-      editAdvanecdControlContextData.discardApLedChanges?.()
-      editAdvanecdControlContextData.discardBssColoringChanges?.()
+      editAdvancedContextData.discardApLedChanges?.()
+      editAdvancedContextData.discardBssColoringChanges?.()
       break
     default: // General
       editContextData?.discardChanges?.()
@@ -210,8 +210,8 @@ const resetApEditContextData = (props: ApEditContextProps) => {
     setEditNetworkingContextData,
     editNetworkControlContextData,
     setEditNetworkControlContextData,
-    editAdvanecdControlContextData,
-    setEditAdvanecdControlContextData
+    editAdvancedContextData,
+    setEditAdvancedContextData
   } = props
 
   const newEditContextData = {
@@ -257,13 +257,13 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       setEditNetworkControlContextData(newNetworkControlContextData)
       break
     case 'advanced':
-      const newAdvanecdControlContextData = { ...editAdvanecdControlContextData }
-      delete newAdvanecdControlContextData.updateApLed
-      delete newAdvanecdControlContextData.discardApLedChanges
-      delete newAdvanecdControlContextData.updateBssColoring
-      delete newAdvanecdControlContextData.discardBssColoringChanges
+      const newAdvancedContextData = { ...editAdvancedContextData }
+      delete newAdvancedContextData.updateApLed
+      delete newAdvancedContextData.discardApLedChanges
+      delete newAdvancedContextData.updateBssColoring
+      delete newAdvancedContextData.discardBssColoringChanges
 
-      setEditAdvanecdControlContextData(newAdvanecdControlContextData)
+      setEditAdvancedContextData(newAdvancedContextData)
       break
   }
 }
@@ -277,8 +277,8 @@ export function showUnsavedModal (
   setEditNetworkingContextData: (data: ApNetworkingContext) => void,
   editNetworkControlContextData: ApNetworkControlContext,
   setEditNetworkControlContextData: (data: ApNetworkControlContext) => void,
-  editAdvanecdControlContextData: ApAdvancedContext,
-  setEditAdvanecdControlContextData: (data: ApAdvancedContext) => void,
+  editAdvancedContextData: ApAdvancedContext,
+  setEditAdvancedContextData: (data: ApAdvancedContext) => void,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -304,7 +304,7 @@ export function showUnsavedModal (
         editRadioContextData,
         editNetworkingContextData,
         editNetworkControlContextData,
-        editAdvanecdControlContextData
+        editAdvancedContextData
       })
 
       resetApEditContextData({
@@ -316,8 +316,8 @@ export function showUnsavedModal (
         setEditNetworkingContextData,
         editNetworkControlContextData,
         setEditNetworkControlContextData,
-        editAdvanecdControlContextData,
-        setEditAdvanecdControlContextData
+        editAdvancedContextData,
+        setEditAdvancedContextData
       })
 
       callback?.()
@@ -333,7 +333,7 @@ export function showUnsavedModal (
         editRadioContextData,
         editNetworkingContextData,
         editNetworkControlContextData,
-        editAdvanecdControlContextData
+        editAdvancedContextData
       })
 
       resetApEditContextData({
@@ -345,8 +345,8 @@ export function showUnsavedModal (
         setEditNetworkingContextData,
         editNetworkControlContextData,
         setEditNetworkControlContextData,
-        editAdvanecdControlContextData,
-        setEditAdvanecdControlContextData
+        editAdvancedContextData,
+        setEditAdvancedContextData
       })
 
       callback?.()
