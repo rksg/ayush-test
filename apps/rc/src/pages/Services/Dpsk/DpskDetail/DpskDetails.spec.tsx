@@ -51,15 +51,15 @@ describe('DpskDetails', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworks))
+        (req, res, ctx) => res(ctx.json({ ...mockedNetworks }))
       ),
       rest.get(
         DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json(mockedDpsk))
+        (req, res, ctx) => res(ctx.json({ ...mockedDpsk }))
       ),
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
-        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
+        (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       )
     )
   })
@@ -81,8 +81,8 @@ describe('DpskDetails', () => {
       }
     )
 
-    const targetTab = await screen.findByRole('tabpanel', { name: /Passphrase Management/ })
-    expect(targetTab).toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('tabpanel', { name: 'Passphrases (1 Active)' })).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly when feature flag is off', () => {
@@ -155,7 +155,7 @@ describe('DpskDetails', () => {
       }
     )
 
-    await userEvent.click(await screen.findByRole('tab', { name: /Passphrase Management/ }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Passphrases (1 Active)' }))
     expect(mockedUseNavigate).toHaveBeenCalledWith(passphraseTabPath.current)
   })
 
