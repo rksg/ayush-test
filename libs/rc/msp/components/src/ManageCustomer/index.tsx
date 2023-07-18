@@ -333,19 +333,9 @@ export function ManageCustomer () {
   const addressValidator = async (value: string) => {
     const isSameValue = value ===
       formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
-    const isSameCountry = (data && (data?.address?.country === address?.country)) || false
-    setSameCountry(isSameCountry)
-    if(!address.addressLine){
-      return Promise.reject(
-        intl.$t({ defaultMessage: 'Please select address from suggested list' })
-      )
-    }
     if (isEditMode && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
-        intl.$t(
-          { defaultMessage: 'Address must be in {country}' },
-          { country: data?.address?.country }
-        )
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} `
       )
     }
     return Promise.resolve()
@@ -1022,8 +1012,8 @@ export function ManageCustomer () {
   const CustomerSummary = () => {
     const intl = useIntl()
     const { Paragraph } = Typography
-    const wifiAssigned = trialSelected ? '25' : assignedWifiLicense
-    const switchAssigned = trialSelected ? '25' : assignedSwitchLicense
+    const wifiAssigned = trialSelected ? '25' : formData.wifiLicense
+    const switchAssigned = trialSelected ? '25' : formData.switchLicense
 
     return (
       <>
@@ -1242,7 +1232,13 @@ export function ManageCustomer () {
           </StepsFormLegacy.StepForm>
 
           <StepsFormLegacy.StepForm name='subscriptions'
-            title={intl.$t({ defaultMessage: 'Subscriptions' })}>
+            title={intl.$t({ defaultMessage: 'Subscriptions' })}
+            onFinish={async (data) => {
+              const subData = { ...formData, ...data }
+              setFormData(subData)
+              return true
+            }}
+          >
             <CustomerSubscription />
           </StepsFormLegacy.StepForm>
 
