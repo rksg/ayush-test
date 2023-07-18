@@ -174,7 +174,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], isEd
                   {$t({ defaultMessage: 'Data Usage Metering' })}
                   <Tooltip.Question
                     // eslint-disable-next-line max-len
-                    title={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected data usage metering policy' })}
+                    title={$t({ defaultMessage: 'All devices that belong to this unit will be applied to the selected data usage metering profile' })}
                     placement='top'
                   />
                 </>
