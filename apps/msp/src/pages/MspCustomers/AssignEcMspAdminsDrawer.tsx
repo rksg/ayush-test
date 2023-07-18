@@ -42,6 +42,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
   const { visible, tenantIds, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
+  const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
 
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
@@ -61,9 +62,10 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
     let payload: AssignedMultiEcMspAdmins[] = []
     if (selectedRows && selectedRows.length > 0) {
       selectedRows.forEach((element:MspAdministrator) => {
+        const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
         payload.push ({
           mspAdminId: element.id,
-          delegatedRole: element.role,
+          delegatedRole: role as RolesEnum,
           mspEcIds: tenantIds
         })
       })
@@ -118,10 +120,16 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
     }
   ]
 
+  const handleRoleChange = (id: string, value: string) => {
+    const updatedRole = { id: id, role: value }
+    setSelectedRoles([ ...selectedRoles.filter(row => row.id !== id), updatedRole ])
+  }
+
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = initialRole
     return <Select defaultValue={role}
-      style={{ width: '200px' }}>
+      style={{ width: '200px' }}
+      onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
           !(value === RolesEnum.DPSK_ADMIN)
