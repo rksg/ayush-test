@@ -22,15 +22,17 @@ export type ConfigChange = {
   newValues: string[]
 }
 
+type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
+
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
   chartBoundary: [ number, number],
   selectedData?: number,
-  onDotClick?: (params: ConfigChange) => void
-  onBrushPositionsChange?: (params: number[][]) => void
+  onDotClick?: (params: ConfigChange) => void,
+  onBrushPositionsChange?: (params: number[][]) => void,
+  chartZoom?: OnDatazoomEvent,
+  setChartZoom?: (params: OnDatazoomEvent) => void
 }
-
-type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 
 type ChartRowMappingType = { key: string, label: string, color: string }
 export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
@@ -282,7 +284,9 @@ export const draw = (
 export function useDataZoom (
   eChartsRef: RefObject<ReactECharts>,
   chartBoundary: number[],
-  setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>
+  setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>,
+  zoomBoundary: { start: number, end: number },
+  setZoomBoundary: Dispatch<SetStateAction<{ start: number, end: number }>>
 ) {
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
 
@@ -298,6 +302,9 @@ export function useDataZoom (
       min: event.batch[0].startValue,
       max: event.batch[0].endValue
     })
+    if (event.batch[0].startValue !== zoomBoundary.start || event.batch[0].endValue !== zoomBoundary.end){
+      setZoomBoundary({ start: event.batch[0].startValue, end: event.batch[0].endValue })
+    }
   }, [chartBoundary, setBoundary])
 
   useEffect(() => {
@@ -315,6 +322,16 @@ export function useDataZoom (
       }
     }
   }, [eChartsRef, onDatazoomCallback])
+
+  useEffect(() => {
+    if (!eChartsRef?.current ) return
+    if ((zoomBoundary.start === chartBoundary[0] && zoomBoundary.end === chartBoundary[1]) ) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({
+      type: 'dataZoom',
+      batch: [{ startValue: zoomBoundary.start, endValue: zoomBoundary.end }]
+    })
+  }, [eChartsRef, zoomBoundary.end, zoomBoundary.start])
 
   const resetZoomCallback = useCallback(() => {
     if (!eChartsRef?.current) return

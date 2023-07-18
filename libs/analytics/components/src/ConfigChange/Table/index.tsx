@@ -20,11 +20,14 @@ import { EntityType, enumTextMap, jsonMapping } from './util'
 export function Table (props: {
   selectedRow: ConfigChange | null,
   onRowClick: (params: ConfigChange) => void,
+  pagination: { current: number, pageSize: number },
+  setPagination: (params: { current: number, pageSize: number }) => void,
+  dotSelect: number | null
 }) {
   const { $t } = useIntl()
   const { filters: { filter, startDate: start, endDate: end } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({ ...getFilterPayload({ filter }), start, end })
-  const { selectedRow, onRowClick } = props
+  const { selectedRow, onRowClick, pagination, setPagination, dotSelect } = props
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -109,6 +112,10 @@ export function Table (props: {
     ...(selectedRow && { selectedRowKeys: [selectedRow.id!] })
   }
 
+  const handlePaginationChange = (current: number, pageSize: number) => {
+    setPagination({ current, pageSize })
+  }
+
   return (
     <Loader states={[queryResults]}>
       <CommonTable
@@ -120,6 +127,11 @@ export function Table (props: {
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
+        pagination={{
+          ...pagination,
+          onChange: handlePaginationChange
+        }}
+        key={dotSelect}
       />
     </Loader>
   )
