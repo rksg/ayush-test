@@ -154,6 +154,8 @@ export function ApForm () {
     const baseVersion = BASE_VERSION.split('.').map(Number)
     const compareVersion = version.split('.').map(Number)
     for (let i = 0; i < baseVersion.length; i++) {
+      if (compareVersion[i] > baseVersion[i])
+        return false
       if (baseVersion[i] > compareVersion[i])
         return true
     }
