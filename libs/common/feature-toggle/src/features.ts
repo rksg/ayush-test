@@ -62,7 +62,8 @@ export enum Features {
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   SWITCH_EDIT_PORTS_FROM_PANEL = 'acx-ui-edit-ports-from-panel',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
-  DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle'
+  DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle',
+  WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
