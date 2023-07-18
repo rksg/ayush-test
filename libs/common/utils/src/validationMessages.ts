@@ -396,7 +396,7 @@ export const validationMessages = {
     description: 'Validation - name for service and policy'
   }),
   colonSeparatedMacInvalid: defineMessage({
-    defaultMessage: 'Please provide a valid MAC address in semicolon-separated format.',
+    defaultMessage: 'Please provide a valid MAC address in colon-separated format.',
     description: 'Validation - colon separated MAC address checks'
   })
 }
