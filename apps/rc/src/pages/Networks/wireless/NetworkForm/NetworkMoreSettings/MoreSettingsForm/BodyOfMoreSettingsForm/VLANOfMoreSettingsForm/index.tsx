@@ -26,7 +26,7 @@ function VLANOfNetworkMoreSettingsForm (
         isPortalDefaultVLANId={isPortalDefaultVLANId}
         showDynamicWlan={showDynamicWlan}
       />
-      <ProxyArp enableVxLan={enableVxLan} />
+      <ProxyArp disabledOfSwitch={enableVxLan} />
     </>
   )
 }

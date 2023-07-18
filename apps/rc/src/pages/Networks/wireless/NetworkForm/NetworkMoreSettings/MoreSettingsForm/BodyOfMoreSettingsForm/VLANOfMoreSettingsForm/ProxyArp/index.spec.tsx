@@ -13,21 +13,21 @@ describe('ProxyArp', () => {
     render(
       <Provider>
         <Form>
-          <ProxyArp enableVxLan={false} />
+          <ProxyArp disabledOfSwitch={false} />
         </Form>
       </Provider>
     )
 
+    expect(screen.getByText(/Proxy ARP/i)).toBeInTheDocument()
     expect(screen.getByTestId('ProxyArp')).toBeInTheDocument()
-    expect(screen.getByText(/Proxy ARP:/i)).toBeVisible()
     expect(screen.getByTestId('ProxyArp-Switch')).toBeInTheDocument()
   })
 
-  it('switch is enabled when enableVxLan is false', () => {
+  it('switch should be enabled when disabledOfSwitch is false', () => {
     render(
       <Provider>
         <Form>
-          <ProxyArp enableVxLan={false} />
+          <ProxyArp disabledOfSwitch={false} />
         </Form>
       </Provider>
     )
@@ -35,11 +35,11 @@ describe('ProxyArp', () => {
     expect(screen.getByRole('switch')).toBeEnabled()
   })
 
-  it('switch is disabled when enableVxLan is true', () => {
+  it('switch should be disabled when disabledOfSwitch is true', () => {
     render(
       <Provider>
         <Form>
-          <ProxyArp enableVxLan={true} />
+          <ProxyArp disabledOfSwitch={true} />
         </Form>
       </Provider>
     )
@@ -47,11 +47,11 @@ describe('ProxyArp', () => {
     expect(screen.getByRole('switch')).toBeDisabled()
   })
 
-  it('switch initial value is false', () => {
+  it('initial value of switch should be false', () => {
     render(
       <Provider>
         <Form>
-          <ProxyArp enableVxLan={false} />
+          <ProxyArp disabledOfSwitch={false} />
         </Form>
       </Provider>
     )
@@ -63,7 +63,7 @@ describe('ProxyArp', () => {
     render(
       <Provider>
         <Form>
-          <ProxyArp enableVxLan={false}/>
+          <ProxyArp disabledOfSwitch={false}/>
         </Form>
       </Provider>
     )

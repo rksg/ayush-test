@@ -4,10 +4,10 @@ import { useIntl }      from 'react-intl'
 import * as UI from '../../../../../../../NetworkMoreSettings/styledComponents'
 
 interface DynamicVLANProps {
-    enableVxLan: boolean
+    disabledSwitch: boolean
 }
 
-function DynamicVLAN ({ enableVxLan }: DynamicVLANProps) {
+function DynamicVLAN ({ disabledSwitch }: DynamicVLANProps) {
   const { $t } = useIntl()
 
   return (
@@ -19,7 +19,7 @@ function DynamicVLAN ({ enableVxLan }: DynamicVLANProps) {
         style={{ marginBottom: '10px' }}
         valuePropName='checked'
         initialValue={true}
-        children={<Switch disabled={enableVxLan}/>}
+        children={<Switch disabled={disabledSwitch} />}
       />
     </UI.FieldLabel>
   )

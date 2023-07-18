@@ -7,16 +7,16 @@ import * as UI from '../../../../../NetworkMoreSettings/styledComponents'
 
 
 interface Props {
-    enableVxLan: boolean
+    disabledOfSwitch: boolean
 }
 
 
-function ProxyArp ({ enableVxLan }: Props) {
+function ProxyArp ({ disabledOfSwitch }: Props) {
   const { $t } = useIntl()
 
   return (
     <UI.FieldLabel width='250px'>
-      {$t({ defaultMessage: 'Proxy ARP:' })}
+      {$t({ defaultMessage: 'Proxy ARP' })}
       <Form.Item
         data-testid={'ProxyArp'}
         name={['wlan', 'advancedCustomization', 'proxyARP']}
@@ -26,7 +26,7 @@ function ProxyArp ({ enableVxLan }: Props) {
         children={
           <Switch
             data-testid={'ProxyArp-Switch'}
-            disabled={enableVxLan}
+            disabled={disabledOfSwitch}
           />
         }
       />

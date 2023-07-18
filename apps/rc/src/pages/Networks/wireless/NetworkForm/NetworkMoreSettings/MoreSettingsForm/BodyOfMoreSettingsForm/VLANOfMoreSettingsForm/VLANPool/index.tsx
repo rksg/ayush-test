@@ -19,18 +19,18 @@ interface VLANPoolProps {
     showDynamicWlan: boolean
 }
 
-const VLANPool = ({
+function VLANPool ({
   enableVxLan,
   enableVlanPooling,
   showDynamicWlan,
   isPortalDefaultVLANId
-}: VLANPoolProps) => {
+}: VLANPoolProps) {
   const { $t } = useIntl()
 
   return (
     <>
       <UI.FieldLabel width='250px'>
-        {$t({ defaultMessage: 'VLAN Pooling:' })}
+        {$t({ defaultMessage: 'VLAN Pooling' })}
         <Form.Item
           name='enableVlanPooling'
           style={{ marginBottom: '10px' }}

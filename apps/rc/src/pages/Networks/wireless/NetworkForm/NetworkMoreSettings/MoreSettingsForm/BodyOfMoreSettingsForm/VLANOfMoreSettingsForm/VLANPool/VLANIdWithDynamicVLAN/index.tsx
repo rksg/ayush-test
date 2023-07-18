@@ -1,3 +1,4 @@
+
 import React from 'react'
 
 import { Form, InputNumber } from 'antd'
@@ -7,11 +8,10 @@ import { validationMessages } from '@acx-ui/utils'
 
 import DynamicVLAN from './DynamicVLAN'
 
-
 interface VLANIdWithDynamicVLANProps {
-    enableVxLan: boolean,
-    isPortalDefaultVLANId: boolean,
-    showDynamicWlan: boolean
+  enableVxLan: boolean;
+  isPortalDefaultVLANId: boolean;
+  showDynamicWlan: boolean;
 }
 
 function VLANIdWithDynamicVLAN (
@@ -31,20 +31,29 @@ function VLANIdWithDynamicVLAN (
           label={$t({ defaultMessage: 'VLAN ID' })}
           initialValue={1}
           rules={[
-            { required: true }, {
+            { required: true },
+            {
               type: 'number', max: 4094, min: 1,
               message: $t(validationMessages.vlanRange)
-            }]}
+            }
+          ]}
           style={{ marginBottom: '10px' }}
           children={
             <InputNumber
-              data-testid='VLANIdWithDynamicVLAN-children'
+              data-testid='VLANIdWithDynamicVLAN-InputNumber'
               style={{ width: '80px' }}
-              disabled={isPortalDefaultVLANId || enableVxLan}/>
+              disabled={isPortalDefaultVLANId || enableVxLan}
+            />
           }
         />
       </div>
-      {showDynamicWlan && <DynamicVLAN enableVxLan={enableVxLan}/>}
+      {
+        showDynamicWlan &&
+              <DynamicVLAN
+                data-testid='DynamicVLAN'
+                disabledSwitch={enableVxLan}
+              />
+      }
     </>
   )
 }
