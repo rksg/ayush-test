@@ -9,6 +9,7 @@ import {
   RadioChangeEvent,
   Row,
   Switch } from 'antd'
+import _                     from 'lodash'
 import { includes, isEmpty } from 'lodash'
 import { useIntl }           from 'react-intl'
 import styled                from 'styled-components/macro'
@@ -182,7 +183,11 @@ export function RadioSettings () {
 
       setBandwidth24GOptions(getSupportBandwidth(channelBandwidth24GOptions, supportCh24g))
       setBandwidth5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g))
-      setBandwidth6GOptions(getSupportBandwidth(channelBandwidth6GOptions, supportCh6g))
+      let wifi7_320Bandwidtch = channelBandwidth6GOptions
+      if (!Wifi7_320Mhz_FeatureFlag) {
+        wifi7_320Bandwidtch = _.dropRight(channelBandwidth6GOptions)
+      }
+      setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidtch, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
     }

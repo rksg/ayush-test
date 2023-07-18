@@ -4,9 +4,11 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Radio, RadioChangeEvent, Row, Space } from 'antd'
 import { cloneDeep, includes, isEmpty }                   from 'lodash'
+import _                                                  from 'lodash'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 
 import { Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -47,6 +49,8 @@ export function RadioSettings () {
     editContextData,
     setEditContextData
   } = useContext(ApEditContext)
+
+  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const { apData, apCapabilities } = useContext(ApDataContext)
 
@@ -177,7 +181,12 @@ export function RadioSettings () {
 
         // 6G
         const supportCh6g = availableChannels['6GChannels'] || {}
-        const bandwidth6g = getSupportBandwidth(channelBandwidth6GOptions, supportCh6g, is6GHas160Mhz)
+
+        let wifi7_320Bandwidtch = channelBandwidth6GOptions
+        if (!Wifi7_320Mhz_FeatureFlag) {
+          wifi7_320Bandwidtch = _.dropRight(channelBandwidth6GOptions)
+        }
+        const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidtch, supportCh6g, is6GHas160Mhz)
         setSupport6GChannels(supportCh6g)
         setBandwidth6GOptions(bandwidth6g)
 
