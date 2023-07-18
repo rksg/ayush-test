@@ -801,7 +801,10 @@ export function MoreSettingsForm (props: {
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
                 initialValue={false}
-                children={<Switch/>}/>
+                children={<Switch
+                  data-testid='multicast-filter-enabled'
+                />}
+              />
             </div>
           </UI.FieldLabel>
         }
