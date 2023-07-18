@@ -7,19 +7,21 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
+import { useGetMspEcProfileQuery } from '@acx-ui/msp/services'
+import {
+  MspUserSettingType,
+  MSP_USER_SETTING,
+  MSPUtils
+} from '@acx-ui/msp/utils'
 import {
   useConvertNonVARToMSPMutation,
-  useGetMspEcProfileQuery,
   useLazyGetTenantDetailsQuery,
   useLazyGetDelegationsQuery
 } from '@acx-ui/rc/services'
 import {
   CatchErrorDetails,
   CommonErrorsResult,
-  MspUserSettingType,
-  MSP_USER_SETTING,
   TenantType,
-  MSPUtils,
   TenantDetails,
   Delegation
 } from '@acx-ui/rc/utils'
