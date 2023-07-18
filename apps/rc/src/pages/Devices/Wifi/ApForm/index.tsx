@@ -201,6 +201,13 @@ export function ApForm () {
   }, [venuesList])
 
   useEffect(() => {
+    if (selectedVenue.hasOwnProperty('id')) {
+      const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
+      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
+    }
+  }, [selectedVenue, venueVersionList])
+
+  useEffect(() => {
     handleUpdateContext()
   }, [deviceGps])
 
