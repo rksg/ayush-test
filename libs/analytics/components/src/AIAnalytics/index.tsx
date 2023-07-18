@@ -14,7 +14,8 @@ import { RecommendationTabContent } from '../Recommendations'
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
   CONFIG_CHANGE = 'configChange',
-  RECOMMENDATIONS = 'recommendations'
+  CRRM = 'recommendations/crrm',
+  AIOPS = 'recommendations/aiOps'
 }
 
 interface Tab {
@@ -39,12 +40,20 @@ const useTabs = () : Tab[] => {
     component: <ConfigChange/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: false })
   }
-  const recommendationTab = [{
-    key: AIAnalyticsTabEnum.RECOMMENDATIONS,
-    title: $t({ defaultMessage: 'Recommendations' }),
-    component: <RecommendationTabContent />,
-    headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
-  }]
+  const recommendationTab = [
+    {
+      key: AIAnalyticsTabEnum.CRRM,
+      title: $t({ defaultMessage: 'AI-Driven RRM' }),
+      component: <RecommendationTabContent />,
+      headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    },
+    {
+      key: AIAnalyticsTabEnum.AIOPS,
+      title: $t({ defaultMessage: 'AI Operations' }),
+      component: <RecommendationTabContent />,
+      headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+    }
+  ]
   return [
     incidentsTab,
     ...(get('IS_MLISA_SA') ? recommendationTab : []),
@@ -56,11 +65,13 @@ export function AIAnalytics ({ tab }:{ tab: AIAnalyticsTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
-  const onTabChange = (tab: string) =>
+  const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
+  }
+
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>

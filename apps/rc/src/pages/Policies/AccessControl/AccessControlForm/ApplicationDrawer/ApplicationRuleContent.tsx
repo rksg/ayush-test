@@ -327,7 +327,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       rules={[
         { required: true },
         { min: 2 },
-        { max: 64 },
+        { max: 32 },
         { validator: (_, value) => {
           if (!editMode && applicationsRuleList.findIndex(rule => rule.ruleName === value) !== -1) {
             return Promise.reject($t({ defaultMessage: 'This rule name has been existed.' }))
@@ -336,7 +336,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         } }
       ]}
       children={<Input
-        placeholder={$t({ defaultMessage: 'Enter a short description, up to 64 characters' })}
+        placeholder={$t({ defaultMessage: 'Enter a short description, up to 32 characters' })}
       />}
     />
     <DrawerFormItem

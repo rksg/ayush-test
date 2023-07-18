@@ -23,6 +23,7 @@ export enum Features {
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
   SWITCH_SUPPORT_ICX8200 = 'switch-support-icx8200',
+  SWITCH_DHCP_CLIENTS = 'switch-dhcp-clients',
   MDNS_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
@@ -60,6 +61,8 @@ export enum Features {
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
+  DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle',
+  WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
   MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle'
 }
 
