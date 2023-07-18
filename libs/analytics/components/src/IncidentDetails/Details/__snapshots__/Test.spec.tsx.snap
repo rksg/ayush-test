@@ -2876,7 +2876,7 @@ exports[`Test Details should render ApservHighNumReboots correctly 1`] = `
 exports[`Test Details should render ChannelDist correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -3428,7 +3428,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
 exports[`Test Details should render ChannelDist correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 cbMLbS"
+    class="styledComponents__Wrapper-sc-xov27h-0 DOqVh"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
