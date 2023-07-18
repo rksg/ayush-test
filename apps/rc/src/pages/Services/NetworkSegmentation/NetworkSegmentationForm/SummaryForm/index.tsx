@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
+import styled             from 'styled-components'
 
 import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 import { AccessSwitchTable, AccessSwitchTableDataType }   from '@acx-ui/rc/components'
@@ -12,6 +13,10 @@ import { DistributionSwitchTable }          from '../DistributionSwitchForm/Dist
 import * as UI                              from '../styledComponents'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
+
+const SummaryStepTitle = styled(Subtitle).attrs({ level: 4 })`
+  margin-top: 1.2em;
+`
 
 export const SummaryForm = () => {
 
@@ -61,9 +66,9 @@ export const SummaryForm = () => {
     }
     type='info'
     showIcon />
-    <Subtitle level={4}>
+    <SummaryStepTitle>
       { $t({ defaultMessage: 'General Settings' }) }
-    </Subtitle>
+    </SummaryStepTitle>
     <Row>
       <Col span={6}>
         <UI.FieldTitle>
@@ -98,15 +103,15 @@ export const SummaryForm = () => {
         </UI.FieldValue>
       </Col>
     </Row>
-    <Subtitle level={4}>
+    <SummaryStepTitle>
       { $t({ defaultMessage: 'SmartEdge' }) }
-    </Subtitle>
+    </SummaryStepTitle>
     <Form.Item>
       <SmartEdgeTable data={smartEdgeData} />
     </Form.Item>
-    <Subtitle level={4}>
+    <SummaryStepTitle>
       { $t({ defaultMessage: 'Wireless Network' }) }
-    </Subtitle>
+    </SummaryStepTitle>
     <Row>
       <Col span={6}>
         <UI.FieldTitle>
@@ -120,7 +125,8 @@ export const SummaryForm = () => {
     <Row gutter={20}>
       <Col span={24}>
         <UI.FieldTitle>
-          {$t({ defaultMessage: 'Wireless Networks' })}
+          {$t({ defaultMessage: 'Wireless Networks ({num})' },
+            { num: networkNames?.length??0 })}
         </UI.FieldTitle>
         <UI.FieldValue>
           {networkNames?.map((item, index) => (
@@ -131,17 +137,20 @@ export const SummaryForm = () => {
         </UI.FieldValue>
       </Col>
     </Row>
-    <Subtitle level={4}>
-      { $t({ defaultMessage: 'Distribution Switch' }) }
-    </Subtitle>
-    <Form.Item>
+    <SummaryStepTitle>
+      { $t({ defaultMessage: 'Distribution Switch ({num})' },
+        { num: distributionSwitchInfos?.length??0 }) }
+    </SummaryStepTitle>
+    { distributionSwitchInfos?.length && <Form.Item>
       <DistributionSwitchTable type='form'
-        dataSource={distributionSwitchInfos} /></Form.Item>
-    <Subtitle level={4}>
-      { $t({ defaultMessage: 'Access Switch' }) }
-    </Subtitle>
-    <Form.Item>
+        dataSource={distributionSwitchInfos} /></Form.Item>}
+    <SummaryStepTitle>
+      { $t({ defaultMessage: 'Access Switch ({num})' },
+        { num: accessSwitchData?.length??0 }) }
+    </SummaryStepTitle>
+    { accessSwitchData?.length && <Form.Item>
       <AccessSwitchTable type='form'
-        dataSource={accessSwitchData}/></Form.Item>
+        dataSource={accessSwitchData} /></Form.Item>}
+
   </>)
 }

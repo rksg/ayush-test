@@ -13,7 +13,8 @@ import {
   WebAuthTemplate,
   getServiceDetailsLink,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                     from '@acx-ui/user'
@@ -57,6 +58,15 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
   return <SummaryCard data={networkSegAuthInfo} colPerRow={4} />
 }
 
+type WebAuthSwitchType = {
+  switchId: string,
+  serialNumber: string,
+  switchModel: string,
+  switchName: string,
+  venueId: string,
+  venueName: string
+}
+
 export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
@@ -65,14 +75,20 @@ export default function NetworkSegAuthDetail () {
   const { data } = useGetWebAuthTemplateQuery({ params })
   const { data: switches } = useGetWebAuthTemplateSwitchesQuery({ params })
 
-  const columns: TableProps<{}>['columns'] = React.useMemo(() => {
+  const columns: TableProps<WebAuthSwitchType>['columns'] = React.useMemo(() => {
     return [{
       key: 'switchName',
       title: $t({ defaultMessage: 'Access Switches' }),
       dataIndex: 'switchName',
       sorter: true,
       width: 360,
-      fixed: 'left'
+      fixed: 'left',
+      render: (data, row) => (
+        <TenantLink
+          to={`/devices/switch/${row.switchId}/${row.serialNumber}/details/overview`}>
+          {data}
+        </TenantLink>
+      )
     }, {
       key: 'switchModel',
       title: $t({ defaultMessage: 'Model' }),
@@ -82,7 +98,10 @@ export default function NetworkSegAuthDetail () {
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
-      sorter: true
+      sorter: true,
+      render: (data, row) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      )
     }]
   }, [$t])
 
@@ -110,7 +129,9 @@ export default function NetworkSegAuthDetail () {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId as string
             })}>
-            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            <Button key='configure'
+              disabled={isDefaultWebAuth(params.serviceId as string)}
+              type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}
       />
@@ -121,7 +142,7 @@ export default function NetworkSegAuthDetail () {
         { count: switches?.switchVenueInfos?.length || 0 })}>
         <Table
           columns={columns}
-          dataSource={switches?.switchVenueInfos}
+          dataSource={switches?.switchVenueInfos as unknown as WebAuthSwitchType[]}
           type='form'
           rowKey='switchId' />
       </Card>
