@@ -1,11 +1,9 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
 
 import { Provider } from '@acx-ui/store'
 import { mockServer,
   render,
-  screen,
-  fireEvent
+  screen
 } from '@acx-ui/test-utils'
 
 import handlers from './__tests__/fixtures'
