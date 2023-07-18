@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, RogueApUrls, getPolicyListRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                            from '@acx-ui/store'
+import { AccessControlUrls, CommonUrlsInfo, RogueApUrls, getPolicyListRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -78,6 +78,10 @@ describe('PoliciesTable', () => {
       rest.delete(
         RogueApUrls.deleteRogueApPolicy.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
+      ),
+      rest.delete(
+        AccessControlUrls.deleteAccessControlProfile.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )
   })
@@ -132,6 +136,8 @@ describe('PoliciesTable', () => {
     await userEvent.click(within(row).getByRole('radio'))
 
     const delBtn = screen.queryByText('delete')
+
+
 
     expect(delBtn).not.toBeInTheDocument()
   })

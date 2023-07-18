@@ -164,6 +164,18 @@ describe('SyslogForm', () => {
     act(() => {
       store.dispatch(policyApi.util.resetApiState())
     })
+
+    mockServer.use(rest.get(
+      SyslogUrls.getSyslogPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(policyListContent)
+      )
+    ), rest.put(
+      SyslogUrls.updateSyslogPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(200)
+      )
+    ))
   })
 
   it('should render SyslogForm successfully', async () => {
@@ -171,11 +183,6 @@ describe('SyslogForm', () => {
       SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
-      )
-    ), rest.get(
-      SyslogUrls.getSyslogPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
       )
     ), rest.post(
       SyslogUrls.addSyslogPolicy.url,
@@ -282,11 +289,6 @@ describe('SyslogForm', () => {
       SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
-      )
-    ), rest.get(
-      SyslogUrls.getSyslogPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(policyListContent)
       )
     ), rest.get(
       RogueApUrls.getRoguePolicyList.url,

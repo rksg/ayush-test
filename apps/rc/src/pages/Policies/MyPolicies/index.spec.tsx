@@ -1,11 +1,16 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import {
+  AaaUrls,
+  AccessControlUrls,
+  ApSnmpUrls,
+  ClientIsolationUrls,
   CommonUrlsInfo,
+  ConnectionMeteringUrls,
   getSelectPolicyRoutePath,
-  PolicyType, RogueApUrls
+  PolicyType, RogueApUrls, SyslogUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -22,30 +27,65 @@ import {
 import MyPolicies from '.'
 
 
+const mockTableResult = {
+  totalCount: 0,
+  data: []
+}
+
 describe('MyPolicies', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
   }
 
   const path = '/:tenantId/t'
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        ClientIsolationUrls.getEnhancedClientIsolationList.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        SyslogUrls.syslogPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        ApSnmpUrls.getApSnmpFromViewModel.url,
+        (_, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.get(
+        ConnectionMeteringUrls.getConnectionMeteringList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getPoliciesList.url,
+        (req, res, ctx) => {
+          const type = _.get(req, 'body.filters.type') as string[]
 
-  mockServer.use(
-    rest.post(
-      CommonUrlsInfo.getPoliciesList.url,
-      (req, res, ctx) => {
-        const type = _.get(req, 'body.filters.type') as string[]
-
-        if (type.includes(PolicyType.ROGUE_AP_DETECTION)) {
-          return res(ctx.json({ ...mockedRogueApPoliciesList }))
+          if (type.includes(PolicyType.ROGUE_AP_DETECTION)) {
+            return res(ctx.json({ ...mockedRogueApPoliciesList }))
+          }
+          return res(ctx.json({ ...emptyPoliciesList }))
         }
-        return res(ctx.json({ ...emptyPoliciesList }))
-      }
-    ),
-    rest.post(
-      RogueApUrls.getEnhancedRoguePolicyList.url,
-      (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        RogueApUrls.getEnhancedRoguePolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      )
     )
-  )
+  })
+
 
   it('should render My Policies', async () => {
     render(
