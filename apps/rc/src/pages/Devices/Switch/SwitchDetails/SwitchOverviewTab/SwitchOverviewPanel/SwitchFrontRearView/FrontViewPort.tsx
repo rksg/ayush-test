@@ -31,7 +31,9 @@ export function FrontViewPort (props:{
     setEditPortDrawerVisible,
     setSelectedPorts,
     setEditLagModalVisible,
-    setEditLag
+    setEditLag,
+    setBreakoutPortDrawerVisible,
+    setEditBreakoutPortDrawerVisible
   } = useContext(SwitchPannelContext)
   const params = useParams()
   const [ getLagList ] = useLazyGetLagListQuery()
@@ -130,6 +132,10 @@ export function FrontViewPort (props:{
     if(!showEditIcon() || disabledClick) {
       return
     }
+    setEditLagModalVisible(false)
+    setEditPortDrawerVisible(false)
+    setBreakoutPortDrawerVisible(false)
+    setEditBreakoutPortDrawerVisible(false)
     if(portIcon ==='LagMember'){
       onEditLag()
     }else{

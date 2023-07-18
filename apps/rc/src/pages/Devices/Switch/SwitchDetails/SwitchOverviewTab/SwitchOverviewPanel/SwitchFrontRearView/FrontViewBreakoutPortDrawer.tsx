@@ -1,11 +1,11 @@
 
 import { useContext } from 'react'
 
-import { Drawer, Space, Tooltip } from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
+import { Space, Tooltip } from 'antd'
+import _                  from 'lodash'
+import { useIntl }        from 'react-intl'
 
-import { Table, TableProps }                                             from '@acx-ui/components'
+import { Table, TableProps, Drawer }                                     from '@acx-ui/components'
 import { getInactiveTooltip }                                            from '@acx-ui/rc/components'
 import {  SwitchPortStatus, defaultSort, sortProp, SwitchPortViewModel } from '@acx-ui/rc/utils'
 import { filterByAccess }                                                from '@acx-ui/user'
@@ -149,7 +149,6 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     onClose={() => {
       setDrawerVisible(false)
     }}
-    maskStyle={{ background: 'none' }}
     children={
       <div>
         <Table

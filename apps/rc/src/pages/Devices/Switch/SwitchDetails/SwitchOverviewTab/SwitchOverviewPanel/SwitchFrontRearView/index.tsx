@@ -15,10 +15,12 @@ interface SlotMember {
   data: StackMember[]
 }
 
-export const SwitchPannelContext = createContext({} as {
+export interface SwitchPannel {
   editPortsFromPanelEnabled: boolean
   editPortDrawerVisible: boolean
   setEditPortDrawerVisible: (data: boolean) => void
+  breakoutPortDrawerVisible: boolean
+  setBreakoutPortDrawerVisible: (data: boolean) => void
   editBreakoutPortDrawerVisible: boolean
   setEditBreakoutPortDrawerVisible: (data: boolean) => void
   selectedPorts: SwitchPortStatus[]
@@ -27,7 +29,9 @@ export const SwitchPannelContext = createContext({} as {
   setEditLagModalVisible: (data: boolean) => void
   editLag: Lag[]
   setEditLag: (data: Lag[]) => void
-})
+}
+
+export const SwitchPannelContext = createContext({} as SwitchPannel)
 
 export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
@@ -36,6 +40,7 @@ export function SwitchFrontRearView (props:{
   const editPortsFromPanelEnabled = useIsSplitOn(Features.SWITCH_EDIT_PORTS_FROM_PANEL)
   const params = useParams()
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [breakoutPortDrawerVisible, setBreakoutPortDrawerVisible] = useState(false)
   const [editBreakoutPortDrawerVisible, setEditBreakoutPortDrawerVisible] = useState(false)
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -82,6 +87,8 @@ export function SwitchFrontRearView (props:{
     editPortsFromPanelEnabled,
     editPortDrawerVisible,
     setEditPortDrawerVisible,
+    breakoutPortDrawerVisible,
+    setBreakoutPortDrawerVisible,
     editBreakoutPortDrawerVisible,
     setEditBreakoutPortDrawerVisible,
     selectedPorts,
