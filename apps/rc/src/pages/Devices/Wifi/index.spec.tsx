@@ -29,7 +29,7 @@ jest.mock('./ApsTable', () => ({
 }))
 
 jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/reports/components'),
+  ...jest.requireActual('@acx-ui/analytics/components'),
   NetworkFilter: () => <div data-testid='NetworkFilter' />
 }))
 
