@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -11,7 +12,8 @@ import {
   getServiceRoutePath,
   getServiceListRoutePath,
   useTableQuery,
-  WebAuthTemplateTableData
+  WebAuthTemplateTableData,
+  isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                      from '@acx-ui/user'
@@ -29,6 +31,7 @@ const getNetworkSegAuthPayload = {
 
 export default function NetworkSegAuthTable () {
   const { $t } = useIntl()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
@@ -44,7 +47,7 @@ export default function NetworkSegAuthTable () {
 
   const columns: TableProps<WebAuthTemplateTableData>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Service Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -93,7 +96,7 @@ export default function NetworkSegAuthTable () {
 
   const rowActions: TableProps<WebAuthTemplateTableData>['rowActions'] = [
     {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -106,7 +109,7 @@ export default function NetworkSegAuthTable () {
         }, { state: { from: location } })
       }
     }, {
-      visible: (selectedRows) => selectedRows.length === 1,
+      visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -147,7 +150,10 @@ export default function NetworkSegAuthTable () {
     <PageHeader
       title={$t({ defaultMessage: 'Network Segmentation Auth Page for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Network Control' }) },
+        { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+      ] : [
         { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
       ]}
       extra={filterByAccess([
