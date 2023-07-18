@@ -394,7 +394,8 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       label={$t({ defaultMessage: 'Application Name' })}
       initialValue={''}
       rules={[
-        { required: true }
+        { required: true },
+        { max: 255 }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter the application name' })}
