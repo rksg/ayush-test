@@ -77,6 +77,7 @@ describe('Wired', () => {
         route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
       })
 
+    expect(await screen.findByText('Add Switch Configuration Profile')).toBeVisible()
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
     const profileDescInput = await screen.findByLabelText('Profile Description')
@@ -86,7 +87,7 @@ describe('Wired', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
 
-    expect(await screen.findByText('Add Switch Configuration Profile')).toBeVisible()
+    expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is off', async () => {
@@ -396,7 +397,9 @@ describe('Wired', () => {
     const venueCheckbox = await screen.findAllByRole('checkbox')
     await userEvent.click(venueCheckbox[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Deactivate' }) )
+    expect(venueSwitch[0]).not.toBeChecked()
     await userEvent.click(await screen.findByRole('button', { name: 'Activate' }) )
+    expect(venueSwitch[0]).toBeChecked()
   })
 
   it.skip('should create Switch Configuration Profile with trust ports correctly', async () => {

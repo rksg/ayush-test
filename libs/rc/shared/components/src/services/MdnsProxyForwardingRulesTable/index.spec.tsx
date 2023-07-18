@@ -205,12 +205,16 @@ describe('MdnsProxyForwardingRulesTable', () => {
 
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Delete "' + targetRuleTypeLabel.current + '"?')).toBeInTheDocument()
+    const dialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', { name: /Delete Rule/i }))
 
 
     // eslint-disable-next-line max-len
     const targetAfterDelete = screen.queryByRole('cell', { name: targetRuleTypeLabel.current })
     expect(targetAfterDelete).toBeNull()
+    await waitFor(()=>{
+      expect(dialog).not.toBeVisible()
+    })
   })
 
   it('should behave that the rules have reached the max limit', async () => {
