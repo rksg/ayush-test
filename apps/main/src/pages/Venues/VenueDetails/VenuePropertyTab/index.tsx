@@ -417,7 +417,9 @@ export function VenuePropertyTab () {
     {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status'
+      dataIndex: 'status',
+      render: (_, row) => row.status === PropertyUnitStatus.ENABLED
+        ? $t({ defaultMessage: 'Activate' }) : $t({ defaultMessage: 'Suspended' })
     },
     {
       key: 'vlan',
