@@ -510,7 +510,7 @@ function Table <RecordType extends Record<string, any>> ({
           : content
       })}
     </UI.ActionsContainer>}
-    {!hasRowSelected && hasHeader && <UI.Header
+    {hasHeaderItems && <UI.Header
       style={props.floatRightFilters ? { justifyContent: 'flex-end' } : {}}
       children={headerItems}
     />}
