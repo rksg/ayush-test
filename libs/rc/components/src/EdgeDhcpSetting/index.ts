@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Form }          from 'antd'
 import _                 from 'lodash'
 import { defineMessage } from 'react-intl'
+import { v4 as uuidv4 }  from 'uuid'
 
 import { EdgeDhcpOptionsEnum } from '@acx-ui/rc/utils'
 
@@ -119,8 +120,9 @@ export const useDrawerControl = <T>(option: {
 
   const onSubmit = (data: T) => {
     if (data[key as keyof T] === initData[key as keyof T]) {
-      data[key as keyof T] = '_NEW_'+String(Date.now()) as unknown as ValueOf<T>
+      data[key as keyof T] = '_NEW_'+ uuidv4() as unknown as ValueOf<T>
     }
+
     onAddOrEdit(data)
     form.resetFields()
   }

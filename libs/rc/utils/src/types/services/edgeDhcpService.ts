@@ -26,6 +26,10 @@ export interface EdgeDhcpPool {
     activated?: boolean;
 }
 
+export interface EdgeDhcpPoolPayload extends Omit<EdgeDhcpPool, 'id'> {
+  id?: string;
+}
+
 export interface EdgeDhcpHost {
     id: string;
     hostName: string;
@@ -33,11 +37,19 @@ export interface EdgeDhcpHost {
     fixedAddress: string;
 }
 
+export interface EdgeDhcpHostPayload extends Omit<EdgeDhcpHost, 'id'> {
+  id?: string;
+}
+
 export interface EdgeDhcpOption {
   id: string;
   optionId: string;
   optionName: string;
   optionValue: string;
+}
+
+export interface EdgeDhcpOptionPayload extends Omit<EdgeDhcpOption, 'id'> {
+  id?: string;
 }
 
 export interface DhcpPoolStats {

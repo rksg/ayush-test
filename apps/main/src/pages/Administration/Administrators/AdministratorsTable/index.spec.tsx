@@ -355,6 +355,7 @@ describe('Administrators Table', () => {
 
 describe('Administrators table with MSP-EC FF enabled', () => {
   let params: { tenantId: string }
+  const adminAPIFn = jest.fn()
 
   beforeEach(() => {
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
@@ -366,15 +367,17 @@ describe('Administrators table with MSP-EC FF enabled', () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdministrators.url,
-        (req, res, ctx) => res(ctx.json([
-          {
+        (req, res, ctx) => {
+          adminAPIFn()
+
+          return res(ctx.json([{
             id: '0587cbeb13404f3b9943d21f9e1d1e9e',
             email: 'efg.cheng@email.com',
             role: 'PRIME_ADMIN',
             delegateToAllECs: true,
             detailLevel: 'debug'
-          }
-        ]))
+          }]))
+        }
       ),
       rest.get(
         AdministrationUrlsInfo.getRegisteredUsersList.url,
@@ -415,8 +418,10 @@ describe('Administrators table with MSP-EC FF enabled', () => {
       })
 
     await waitFor(async () => {
-      expect(await screen.findByRole('row', { name: /efg.cheng@email.com/ })).toBeVisible()
+      expect(adminAPIFn).toBeCalled()
     })
+
+    expect(await screen.findByRole('row', { name: /efg.cheng@email.com/ })).toBeVisible()
 
     const rows = await screen.findAllByRole('row')
     expect(rows.length).toBe(2)
