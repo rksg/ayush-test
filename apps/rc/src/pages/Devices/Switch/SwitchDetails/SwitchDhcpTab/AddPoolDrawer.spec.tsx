@@ -63,6 +63,31 @@ describe('AddPoolDrawer', () => {
     await waitFor(() => expect(optionDialog).not.toBeVisible())
   })
 
+  it('should save edit form correctly', async () => {
+    const saveSpy = jest.fn()
+    render(<Provider><AddPoolDrawer visible={true}
+      editPoolId={poolData.id}
+      onSavePool={saveSpy}
+    /></Provider>, {
+      route: { params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+      }
+    })
+
+    await screen.findByRole('row', { name: /Time Server/i })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await waitFor(() => expect(saveSpy).toBeCalled())
+
+    const addButton = await screen.findByRole('button', { name: 'Add Option' })
+    fireEvent.click(addButton)
+
+    const optionDialog = await screen.findByTestId('DhcpOptionModal')
+    fireEvent.click(await within(optionDialog).findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(optionDialog).not.toBeVisible())
+  })
+
   it('should render edit form correctly', async () => {
     render(<Provider><AddPoolDrawer visible={true} editPoolId={poolData.id} /></Provider>, {
       route: { params,
