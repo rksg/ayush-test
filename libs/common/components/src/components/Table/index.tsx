@@ -306,8 +306,7 @@ function Table <RecordType extends Record<string, any>> ({
     searchables.length,
     iconButton
   ].some(Boolean)
-  const hasHeaderItems = (!hasRowSelected || props.tableAlertRender === false) &&
-    (Boolean(filterables.length) || Boolean(searchables.length) || Boolean(iconButton))
+  const shouldRenderHeader = hasHeader && (!hasRowSelected || props.tableAlertRender === false)
   const selectAllRowSelection = {
     columnWidth: '45px',
     selections: [
@@ -424,7 +423,7 @@ function Table <RecordType extends Record<string, any>> ({
     })
   }))
 
-  const headerItems = hasHeaderItems ? <>
+  const headerItems = shouldRenderHeader ? <>
     <div>
       <Space size={12}>
         {Boolean(searchables.length) &&
@@ -483,7 +482,7 @@ function Table <RecordType extends Record<string, any>> ({
     } as React.CSSProperties}
     $type={type}
     $rowSelectionActive={
-      Boolean(props.rowSelection) && !hasHeaderItems && props.tableAlertRender !== false
+      Boolean(props.rowSelection) && !shouldRenderHeader && props.tableAlertRender !== false
     }
   >
     <UI.TableSettingsGlobalOverride />
@@ -510,7 +509,7 @@ function Table <RecordType extends Record<string, any>> ({
           : content
       })}
     </UI.ActionsContainer>}
-    {hasHeaderItems && <UI.Header
+    {shouldRenderHeader && <UI.Header
       style={props.floatRightFilters ? { justifyContent: 'flex-end' } : {}}
       children={headerItems}
     />}
