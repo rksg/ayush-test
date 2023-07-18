@@ -1,12 +1,12 @@
 /* eslint-disable testing-library/no-node-access */
-import React from 'react'
+import { cleanup } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { Form }    from 'antd'
 
-import { cleanup, render, screen } from '@testing-library/react'
-import userEvent                   from '@testing-library/user-event'
-import { Form }                    from 'antd'
-import { IntlProvider }            from 'react-intl'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -16,6 +16,7 @@ import { ApRadioTypeEnum,
   split5GChannels
 } from './RadioSettingsContents'
 import { SingleRadioSettings } from './SingleRadioSettings'
+
 
 describe('SignaleRadioSettings component', () => {
 
@@ -284,11 +285,6 @@ describe('SignaleRadioSettings component', () => {
     }
   }
 
-  const mockEditContext = React.createContext({
-    editContextData: {},
-    setEditContextData: jest.fn()
-  })
-
   afterEach(() => cleanup())
 
   it('should render Venue Radio 24G singleRadioSettings', async () => {
@@ -298,17 +294,16 @@ describe('SignaleRadioSettings component', () => {
     const resetToDefaultSpy = jest.fn()
 
     const { asFragment } = render (
-      <IntlProvider locale='en'>
+      <Provider>
         <Form>
           <SingleRadioSettings
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             onResetDefaultValue={resetToDefaultSpy}
           />
         </Form>
-      </IntlProvider>
+      </Provider>
     )
 
     await screen.findByText('Channel selection method')
@@ -346,17 +341,16 @@ describe('SignaleRadioSettings component', () => {
     const resetToDefaultSpy = jest.fn()
 
     const { asFragment } = render (
-      <IntlProvider locale='en'>
+      <Provider>
         <Form>
           <SingleRadioSettings
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             onResetDefaultValue={resetToDefaultSpy}
           />
         </Form>
-      </IntlProvider>
+      </Provider>
     )
 
     await screen.findByText('Channel selection method')
@@ -399,17 +393,16 @@ describe('SignaleRadioSettings component', () => {
     const resetToDefaultSpy = jest.fn()
 
     const { asFragment } = render (
-      <IntlProvider locale='en'>
+      <Provider>
         <Form>
           <SingleRadioSettings
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             onResetDefaultValue={resetToDefaultSpy}
           />
         </Form>
-      </IntlProvider>
+      </Provider>
     )
 
     await screen.findByText('Channel selection method')
@@ -444,21 +437,17 @@ describe('SignaleRadioSettings component', () => {
     const supportCh = validRadioChannels['2.4GChannels']
 
     const { asFragment } = render (
-      <IntlProvider locale='en'>
+      <Provider>
         <Form>
           <SingleRadioSettings
             context='ap'
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={React.createContext({
-              editContextData: {},
-              setEditContextData: jest.fn()
-            })}
             isUseVenueSettings={false}
           />
         </Form>
-      </IntlProvider>
+      </Provider>
     )
 
     await screen.findByText('Channel selection method')
@@ -488,18 +477,17 @@ describe('SignaleRadioSettings component', () => {
     const supportCh = validRadioChannels['6GChannels']
 
     const { asFragment } = render (
-      <IntlProvider locale='en'>
+      <Provider>
         <Form>
           <SingleRadioSettings
             context='ap'
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
             isUseVenueSettings={false}
           />
         </Form>
-      </IntlProvider>
+      </Provider>
     )
 
     await screen.findByText('Channel selection method')
@@ -536,16 +524,15 @@ describe('SignaleRadioSettings component', () => {
     const supportCh = validRadioChannels['6GChannels']
 
     render (
-      <IntlProvider locale='en'>
+      <Provider>
         <Form>
           <SingleRadioSettings
             radioType={radioType}
             bandwidthOptions={bandwidthOptions}
             supportChannels={supportCh}
-            editContext={mockEditContext}
           />
         </Form>
-      </IntlProvider>
+      </Provider>
     )
 
     const noSupportInfoDiv = await screen

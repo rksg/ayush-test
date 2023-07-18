@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
@@ -52,7 +52,7 @@ export function SingleRadioSettings (props:{
   radioType: ApRadioTypeEnum,
   bandwidthOptions: SelectItemOption[],
   supportChannels: any,
-  editContext: React.Context<any>,
+  handleChanged?: () => void,
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
@@ -72,13 +72,8 @@ export function SingleRadioSettings (props:{
     radioType,
     supportChannels,
     bandwidthOptions,
-    editContext,
+    handleChanged,
     supportDfsChannels } = props
-
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(editContext)
 
   const isSupportRadio = bandwidthOptions?.length > 0
   const radioDataKey = (context === 'venue') ?
@@ -289,11 +284,7 @@ export function SingleRadioSettings (props:{
     setOutdoorChannelErrMsg(outdoorErrMsg)
 
     // have error messages
-    const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
-    setEditContextData({
-      ...editContextData,
-      hasError: hasErrors
-    })
+    //const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
   }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels, channelMethod])
 
   const resetToDefaule = () => {
@@ -400,7 +391,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={channelBars}
                 disabled={inherit5G || disable || isUseVenueSettings}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>
@@ -428,7 +419,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>
@@ -457,7 +448,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={outdoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>
@@ -486,7 +477,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>

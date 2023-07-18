@@ -28,7 +28,6 @@ describe('RadioSettingsChannelse', () => {
             '128', '132', '136', '140', '144', '149', '153', '157', '161']
         }}
         disabled={false}
-        editContext={React.createContext({})}
       /></Provider>)
   })
   it('should render group size of 4 correctly', async () => {
@@ -53,7 +52,6 @@ describe('RadioSettingsChannelse', () => {
             '128', '132', '136', '140', '144', '149', '153', '157', '161']
         }}
         disabled={false}
-        editContext={React.createContext({})}
       /></Provider>)
     expect(asFragment()).toMatchSnapshot()
   })
