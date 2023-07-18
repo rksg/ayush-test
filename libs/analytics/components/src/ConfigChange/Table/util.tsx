@@ -1,13 +1,10 @@
 import { Map }               from 'immutable'
 import { MessageDescriptor } from 'react-intl'
 
-import { get } from '@acx-ui/config'
-
 import { apGroupKeyMap }    from './mapping/apGroupKeyMap'
 import { apKeyMap }         from './mapping/apKeyMap'
 import { apSpecificKeyMap } from './mapping/apSpecificKeyMap'
 import { enumMap }          from './mapping/enumMap'
-import { wlanGroupKeyMap }  from './mapping/wlanGroupKeyMap'
 import { wlanKeyMap }       from './mapping/wlanKeyMap'
 import { zoneKeyMap }       from './mapping/zoneKeyMap'
 
@@ -37,8 +34,7 @@ export const json2keymap = (keyFields: string[], field: string, filter: string[]
       item[field as MappingFields]!
     ), Map<string, MessageDescriptor | string>())
 
-const configMapGenerator = json2keymap(
-  ['value'], get('IS_MLISA_SA') ? 'text' : 'textAlto' , filteredConfigText)
+const configMapGenerator = json2keymap(['value'], 'textAlto' , filteredConfigText)
 
 const enumMapGenerator = json2keymap(['value'], 'enumType', [''])
 
@@ -46,22 +42,22 @@ export const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(e
 
 export const jsonMapping = {
   zone: {
+    label: 'Zone',
     configMap: configMapGenerator(zoneKeyMap),
     enumMap: enumMapGenerator(zoneKeyMap)
   },
-  wlanGroup: {
-    configMap: configMapGenerator(wlanGroupKeyMap),
-    enumMap: enumMapGenerator(wlanGroupKeyMap)
-  },
   wlan: {
+    label: 'WLAN',
     configMap: configMapGenerator(wlanKeyMap),
     enumMap: enumMapGenerator(wlanKeyMap)
   },
   apGroup: {
+    label: 'AP Group',
     configMap: configMapGenerator(apGroupKeyMap),
     enumMap: enumMapGenerator(apGroupKeyMap)
   },
   ap: {
+    label: 'AP',
     configMap: configMapGenerator(apKeyMap, apSpecificKeyMap),
     enumMap: enumMapGenerator(apKeyMap, apSpecificKeyMap)
   }

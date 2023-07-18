@@ -2,7 +2,6 @@ import { RefObject, useRef, useState } from 'react'
 
 import ReactECharts from 'echarts-for-react'
 
-import { get }             from '@acx-ui/config'
 import { act, renderHook } from '@acx-ui/test-utils'
 
 import { TooltipFormatterParams } from '../Chart/helper'
@@ -32,25 +31,6 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getIntl: () => ({ $t: jest.fn() })
 }))
-
-const mockGet = get as jest.Mock
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
-}))
-
-beforeEach(() => mockGet.mockReturnValue(''))
-
-describe('getConfigChangeEntityTypeMapping', () => {
-  it('should build map for ACX', ()=>{
-    const { result } = renderHook(() => getConfigChangeEntityTypeMapping())
-    expect(result.current.map(row=>row.key)).toEqual(['ap', 'apGroup', 'wlan', 'zone'])
-  })
-  it('should build map for RA', ()=>{
-    mockGet.mockReturnValue('true')
-    const { result } = renderHook(() => getConfigChangeEntityTypeMapping())
-    expect(result.current.map(row=>row.key)).toEqual(['ap', 'apGroup', 'wlan', 'wlanGroup', 'zone'])
-  })
-})
 
 describe('getChartLayoutConfig', () => {
   it('should return correct chart layout config', () => {

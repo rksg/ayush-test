@@ -5,7 +5,6 @@ import { ItemType }                       from 'antd/lib/menu/hooks/useItems'
 import { useIntl }                        from 'react-intl'
 
 import { GridRow, GridCol, Dropdown, CaretDownSolidIcon } from '@acx-ui/components'
-import { get }                                            from '@acx-ui/config'
 import { DateRange, dateRangeMap, defaultRanges }         from '@acx-ui/utils'
 
 import { NetworkFilter } from '../NetworkFilter'
@@ -45,7 +44,7 @@ export function useConfigChange () {
   ]
 
   const component = <GridRow>
-    <GridCol col={{ span: 24 }} style={{ minHeight: get('IS_MLISA_SA') ? '200px' : '170px' }}>
+    <GridCol col={{ span: 24 }} style={{ height: '170px' }}>
       <Chart timeRanges={timeRanges!} onBrushPositionsChange={setKpiTimeRanges}/>
     </GridCol>
     <GridCol col={{ span: 8 }}><KPIs kpiTimeRanges={kpiTimeRanges}/></GridCol>
