@@ -134,7 +134,7 @@ export function ApForm () {
       })}
       {
         checkBelowFwVersion(venueFwVersion) ? <><br/><br/>{$t({
-          defaultMessage: 'If you are adding an <b>R560 or R570</b> AP, ' +
+          defaultMessage: 'If you are adding an <b>R560 or R760</b> AP, ' +
             'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
             'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
           b: chunks => <strong>{chunks}</strong>,
