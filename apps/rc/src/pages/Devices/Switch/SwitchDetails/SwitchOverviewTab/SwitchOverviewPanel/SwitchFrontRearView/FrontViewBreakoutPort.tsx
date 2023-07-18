@@ -87,14 +87,14 @@ export function FrontViewBreakoutPort (props:{
     <div>
 
       <UI.Port portColor={getPortColorEnum()} editable={true}>
-        <UI.BreadkoutPortContainer
+        <UI.WithIconPortContainer
           data-testid='BreakoutPort'
           onClick={onPortClick}>
           <UI.BreakoutPortIcon />
           <UI.BreakOutPortFlag
             portColor={getPortColorEnum()}
           ></UI.BreakOutPortFlag>
-        </UI.BreadkoutPortContainer>
+        </UI.WithIconPortContainer>
       </UI.Port>
 
     </div>

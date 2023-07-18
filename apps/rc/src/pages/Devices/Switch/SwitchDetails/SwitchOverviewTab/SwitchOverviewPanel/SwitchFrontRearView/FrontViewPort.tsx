@@ -151,14 +151,14 @@ export function FrontViewPort (props:{
         {
           portIcon
             ? (
-              <UI.BreadkoutPortContainer data-testid='RegularPort'>
+              <UI.WithIconPortContainer data-testid='RegularPort'>
                 { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
                 { portIcon ==='Stack' && <UI.StackingPortIcon/> }
                 { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
                 { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
                 { portIcon ==='Breakout' && <UI.BreakoutPortIcon /> }
                 { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
-              </UI.BreadkoutPortContainer>
+              </UI.WithIconPortContainer>
             )
             : (
               <UI.RegularPortContainer>

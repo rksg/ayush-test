@@ -323,7 +323,7 @@ export const BreakoutPortTooltipItem = styled.div`
   padding-bottom: var(--acx-descriptions-space);
 `
 
-export const BreadkoutPortContainer = styled.div`
+export const WithIconPortContainer = styled.div`
   position: relative;
   font-size: 10px;
   svg {
