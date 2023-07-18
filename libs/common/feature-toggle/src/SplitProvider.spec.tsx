@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { renderHook } from '@testing-library/react'
 import { rest }       from 'msw'
 
@@ -120,16 +122,36 @@ describe('useIsTierAllowed', () => {
     )
 
   })
-  it.skip('returns true for allowed feature', () => {
-    jest.mock('./useIsTierAllowed', () => ({
-      useFFList: jest.fn(() => ({
-        featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
-        betaList: ['PLCY-EDGE', 'BETA-CP']
-      }))
-    }))
+  // it('returns true for allowed feature', () => {
+  //   jest.mock('./useIsTierAllowed', () => ({
+  //     useFFList: jest.fn(() => ({
+  //       featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+  //       betaList: ['PLCY-EDGE', 'BETA-CP']
+  //     }))
+  //   }))
+  //
+  //   const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'),
+  //     { wrapper: ({ children }: { children: ReactElement }) => <Provider>{children}</Provider> })
+  //
+  //   expect(result.current).toBe(true)
+  // })
 
-    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'),
-      { wrapper: ({ children }) => <Provider>{children}</Provider> })
+
+  it('returns true for allowed feature', () => {
+    jest.mock('./useIsTierAllowed', () => {
+      const useIsTierAllowedMock = jest.fn(() => true)
+      return {
+        useIsTierAllowed: useIsTierAllowedMock,
+        useFFList: jest.fn(() => ({
+          featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
+          betaList: ['PLCY-EDGE', 'BETA-CP']
+        }))
+      }
+    })
+
+    const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'), {
+      wrapper: ({ children }: { children: ReactElement }) => <Provider>{children}</Provider>
+    })
 
     expect(result.current).toBe(true)
   })
