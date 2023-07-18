@@ -41,7 +41,10 @@ import {
   ConnectionMetering,
   PropertyDpskSetting
 } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import {
+  useUserProfileContext
+} from '@acx-ui/user'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
 
 const Info = styled(Typography.Text)`
@@ -140,15 +143,16 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
 }
 
 
-function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
+function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], dateFormat?: string })
 {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data } = props
+  const { data, dateFormat } = props
   const [modalVisible, setModalVisible] = useState(false)
   const onModalClose = () => setModalVisible(false)
   const [profileMap, setProfileMap] = useState(new Map(data.map((p) => [p.id, p])))
   const profileId = useWatch('meteringProfileId', form)
+
 
   return (
     <>
@@ -209,7 +213,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 initialValue={form.getFieldValue('expirationDate')}
               >
                 <DatePicker
-                  format={'YYYY/MM/DD'}
+                  format={dateFormat?.toUpperCase() ?? 'YYYY/MM/DD'}
                   style={{ width: '100%' }}
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
@@ -378,6 +382,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
     { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
   )
+
+  const { data: userProfile } = useUserProfileContext()
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [enableGuestUnit, setEnableGuestUnit]
@@ -787,6 +793,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             {isConnectionMeteringEnabled &&
               <ConnectionMeteringSettingForm
                 data={connectionMeteringList}
+                dateFormat={userProfile?.dateFormat}
               />
             }
           </Form>

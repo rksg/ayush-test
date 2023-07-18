@@ -6,6 +6,13 @@ import { useIsSplitOn }                                                         
 import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                       from '@acx-ui/store'
 import {  mockServer, render, screen,  waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
+import { RolesEnum }                                                                      from '@acx-ui/types'
+import {
+  UserProfile as UserProfileInterface,
+  UserProfileContext,
+  UserProfileContextProps,
+  setUserProfile
+}         from '@acx-ui/user'
 
 import {
   mockPersonaGroupWithoutNSG,
@@ -21,6 +28,8 @@ import {
 } from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
+
+
 
 const closeFn = jest.fn()
 const params = {
@@ -47,12 +56,20 @@ const mockPersona: Persona = {
   expirationDate: moment().toISOString()
 }
 
+const userProfile = {
+  initials: 'FL',
+  fullName: 'First Last',
+  role: RolesEnum.ADMINISTRATOR,
+  email: 'dog12@email.com',
+  dateFormat: 'yyyy/mm/dd',
+  detailLevel: 'su'
+} as UserProfileInterface
+
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 describe('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
-
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
@@ -106,7 +123,11 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should render simple drawer', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)
 
@@ -120,12 +141,16 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should add no nsg drawer', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
     mockServer.use(
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,
         (_, res, ctx) => res(ctx.json(mockPropertyUnitList)))
     )
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
     </Provider>)
 
@@ -146,7 +171,11 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should edit no nsg drawer', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer
         isEdit
         visible
@@ -171,7 +200,11 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should edit nsg drawer', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
     render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      ></UserProfileContext.Provider>
       <PropertyUnitDrawer
         isEdit
         visible
