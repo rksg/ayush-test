@@ -364,26 +364,22 @@ describe('formatter', () => {
     })
 
     it('should return correct value for crrm object', () => {
-      const test_auto = formatter('crrmFormat')([{
+      expect(formatter('crrmFormat')([{
         radio: '2.4',
         channelWidth: '_AUTO',
         channelMode: 'BACKGROUND_SCANNING'
-      }])
-      expect(test_auto).toMatch('Background scanning and Auto for 2.4 GHz')
-
-      const test_normal = formatter('crrmFormat')([{
+      }])).toMatch('Background scanning and Auto for 2.4 GHz with static AP Power')
+      expect(formatter('crrmFormat')([{
         radio: '5.0',
         channelWidth: '_80MHZ',
-        channelMode: 'CHANNEL_FLY'
-      }])
-      expect(test_normal).toMatch('ChannelFly and 80 MHz for 5.0 GHz')
-
-      const test_null = formatter('crrmFormat')([{
-        radio: '5.0',
-        channelWidth: undefined,
-        channelMode: undefined
-      }])
-      expect(test_null).toMatch('undefined and undefined MHz for 5.0 GHz')
+        channelMode: 'CHANNEL_FLY',
+        autoCellSizing: true
+      }])).toMatch('ChannelFly and 80 MHz for 5.0 GHz with Auto Cell Sizing on')
+    })
+    it('returns txPower texts', () => {
+      expect(formatter('crrmFormat')({})).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with no change in AP transmit power') // eslint-disable-line max-len
+      expect(formatter('crrmFormat')({ txPowerAPCount: 1 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 1 AP') // eslint-disable-line max-len
+      expect(formatter('crrmFormat')({ txPowerAPCount: 2 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 2 APs') // eslint-disable-line max-len
     })
   })
 
