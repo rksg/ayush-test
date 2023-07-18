@@ -549,3 +549,18 @@ export const mockAvailablePropertyConfigs = {
   number: 0,
   empty: false
 }
+
+export const mockedNetworkOptions = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'networkId1',
+      name: 'network1'
+    },
+    {
+      id: 'networkId2',
+      name: 'network2'
+    }
+  ]
+}
