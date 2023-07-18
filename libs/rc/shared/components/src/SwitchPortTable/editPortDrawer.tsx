@@ -699,6 +699,10 @@ export function EditPortDrawer ({
   const onClose = () => {
     resetFields()
     setDrawerVisible(false)
+  }
+
+  const backClick = () => {
+    onClose()
     if(onBackClick) {
       onBackClick()
     }
@@ -737,7 +741,7 @@ export function EditPortDrawer ({
     title={$t({ defaultMessage: 'Edit Port' })}
     visible={visible}
     onClose={onClose}
-    onBackClick={onBackClick && onClose}
+    onBackClick={onBackClick && backClick}
     footer={footer}
     children={<Loader states={[{
       isLoading: loading,
