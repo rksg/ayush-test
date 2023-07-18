@@ -25,7 +25,9 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   useTableQuery,
-  DdosAttackType
+  DdosAttackType,
+  getDDoSAttackTypeString,
+  getACLDirectionString
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -109,16 +111,17 @@ const FirewallTable = () => {
             title={
               () => (
                 row.ddosRateLimitingRules &&
-                  Object.keys(row.ddosRateLimitingRules).map(key => (
-                    <Row>
+                  Object.keys(row.ddosRateLimitingRules).map(key => {
+                    const keyInType = key as DdosAttackType
+                    return <Row key={key}>
                       <Col>
                         {
                           // eslint-disable-next-line max-len
-                          `${key}: ${row.ddosRateLimitingRules![key as keyof typeof DdosAttackType]}`
+                          `${getDDoSAttackTypeString($t, keyInType)}: ${row.ddosRateLimitingRules![keyInType]}`
                         }
                       </Col>
                     </Row>
-                  ))
+                  })
               )
             }
           >
@@ -143,9 +146,9 @@ const FirewallTable = () => {
         return (
           row.statefulAclEnabled
             ? row.statefulAcls?.map((item) => (
-              <Row justify='center'>
+              <Row justify='center' key={item.aclDirection}>
                 <Col>
-                  {`${_.upperFirst(item.aclDirection.toLowerCase())}: ${item.aclRuleNum}`}
+                  {`${getACLDirectionString($t, item.aclDirection)}: ${item.aclRuleNum}`}
                 </Col>
               </Row>))
             : '--'
@@ -164,7 +167,7 @@ const FirewallTable = () => {
             placement='bottom'
             title={
               row.edgeIds.map(edgeSN => (
-                <Row>
+                <Row key={`firewall-edge-tooltip-${edgeSN}`}>
                   { _.find(edgeOptions, { key: edgeSN })?.value || '' }
                 </Row>
               ))

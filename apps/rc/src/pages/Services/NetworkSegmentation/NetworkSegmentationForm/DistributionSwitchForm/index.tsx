@@ -107,7 +107,13 @@ export function DistributionSwitchForm () {
         onClick: () => addHandler()
       }]}
       dataSource={distributionSwitchInfos}
-      rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.id] : [] }} />
+      rowSelection={{
+        type: 'radio',
+        selectedRowKeys: selected ? [selected.id] : [],
+        onChange: (_, selectedRows) => {
+          setSelected(selectedRows[0])
+        }
+      }} />
     <Form.Item name='distributionSwitchInfos' children={<Input type='hidden'/>} />
     <DistributionSwitchDrawer
       open={openDrawer}

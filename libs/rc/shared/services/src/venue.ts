@@ -1189,6 +1189,7 @@ export const {
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
+  useLazyGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
   useGetVenueLanPortsQuery,
   useLazyGetVenueLanPortsQuery,

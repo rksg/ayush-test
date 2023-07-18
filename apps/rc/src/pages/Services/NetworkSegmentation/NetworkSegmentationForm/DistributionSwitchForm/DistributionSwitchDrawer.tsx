@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Col, Form, Input, InputNumber, Row, Select, Space, Transfer } from 'antd'
 import _                                                               from 'lodash'
 import { useIntl }                                                     from 'react-intl'
+import styled                                                          from 'styled-components'
 
 import { Button, Drawer, Modal, Subtitle, Table, useStepFormContext } from '@acx-ui/components'
 import { useValidateDistributionSwitchInfoMutation }                  from '@acx-ui/rc/services'
@@ -18,6 +19,14 @@ import { useParams }                   from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { NetworkSegmentationGroupFormData } from '..'
+
+const RequiredMark = styled.span`
+  &:before {
+    color: var(--acx-accents-orange-50);
+    font-size: var(--acx-body-4-font-size);
+    content: '*';
+  }
+`
 
 export function DistributionSwitchDrawer (props: {
   open: boolean;
@@ -78,6 +87,9 @@ export function DistributionSwitchDrawer (props: {
       destroyOnClose={true}
       width={450}
       footer={<Drawer.FormFooter
+        buttonLabel={{
+          save: editRecord ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
+        }}
         onCancel={onClose}
         onSave={async () => {
           const values: DistributionSwitchSaveData = form.getFieldsValue()
@@ -152,7 +164,7 @@ export function DistributionSwitchDrawer (props: {
         <Row justify='space-between' style={{ padding: '30px 0 10px' }}>
           <Col>
             <Subtitle level={4}>
-              {$t({ defaultMessage: 'Select Access Switches' })}
+              {$t({ defaultMessage: 'Select Access Switches' })} <RequiredMark />
             </Subtitle>
           </Col>
           <Col>
