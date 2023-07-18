@@ -346,6 +346,11 @@ export interface ApLanPort {
   useVenueSettings: boolean
 }
 
+export interface ApLedSettings {
+  ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
 export interface ApRadio {
   enable24G: boolean,
   enable50G?: boolean,
