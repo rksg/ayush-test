@@ -46,7 +46,7 @@ export interface NewDpskPassphrase {
   mac?: string;
   numberOfDevices?: number;
   createdDate: string;
-  expirationDate: string;
+  expirationDate: string | null;
   email?: string;
   phoneNumber?: string;
   identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
