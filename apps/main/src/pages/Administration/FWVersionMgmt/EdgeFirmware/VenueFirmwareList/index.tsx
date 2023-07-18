@@ -96,10 +96,10 @@ export function VenueFirmwareList () {
     {
       visible: (selectedItems) => {
         const hasOutdatedFw = selectedItems?.some(
-          item => latestReleaseVersion?.id !== undefined &&
-          ((item.versions?.[0].id !== undefined
+          item => latestReleaseVersion?.id &&
+          ((item.versions?.[0].id
             && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)
-          || item.versions?.[0].id === undefined))
+          || !item.versions?.[0].id))
         return hasOutdatedFw
       },
       label: $t({ defaultMessage: 'Update Now' }),
