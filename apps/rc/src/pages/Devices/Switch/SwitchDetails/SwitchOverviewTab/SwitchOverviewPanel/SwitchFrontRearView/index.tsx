@@ -15,7 +15,7 @@ interface SlotMember {
   data: StackMember[]
 }
 
-export interface SwitchPannel {
+export interface SwitchPanel {
   editPortsFromPanelEnabled: boolean
   editPortDrawerVisible: boolean
   setEditPortDrawerVisible: (data: boolean) => void
@@ -31,7 +31,7 @@ export interface SwitchPannel {
   setEditLag: (data: Lag[]) => void
 }
 
-export const SwitchPannelContext = createContext({} as SwitchPannel)
+export const SwitchPanelContext = createContext({} as SwitchPanel)
 
 export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
@@ -83,7 +83,7 @@ export function SwitchFrontRearView (props:{
     }
   }
 
-  return <SwitchPannelContext.Provider value={{
+  return <SwitchPanelContext.Provider value={{
     editPortsFromPanelEnabled,
     editPortDrawerVisible,
     setEditPortDrawerVisible,
@@ -126,5 +126,5 @@ export function SwitchFrontRearView (props:{
       type='drawer'
     />
     }
-  </SwitchPannelContext.Provider>
+  </SwitchPanelContext.Provider>
 }

@@ -12,7 +12,7 @@ import { useParams }              from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-import { SwitchPannelContext } from '.'
+import { SwitchPanelContext } from '.'
 
 export function FrontViewPort (props:{
   portData: SwitchPortStatus
@@ -34,7 +34,7 @@ export function FrontViewPort (props:{
     setEditLag,
     setBreakoutPortDrawerVisible,
     setEditBreakoutPortDrawerVisible
-  } = useContext(SwitchPannelContext)
+  } = useContext(SwitchPanelContext)
   const params = useParams()
   const [ getLagList ] = useLazyGetLagListQuery()
   const getTooltip = (port: SwitchPortStatus) => {

@@ -9,7 +9,7 @@ import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { FrontViewBreakoutPortDrawer } from './FrontViewBreakoutPortDrawer'
 import * as UI                         from './styledComponents'
 
-import { SwitchPannelContext } from '.'
+import { SwitchPanelContext } from '.'
 
 export function FrontViewBreakoutPort (props:{
   ports: SwitchPortStatus[],
@@ -29,7 +29,7 @@ export function FrontViewBreakoutPort (props:{
     editBreakoutPortDrawerVisible,
     setEditBreakoutPortDrawerVisible,
     selectedPorts
-  } = useContext(SwitchPannelContext)
+  } = useContext(SwitchPanelContext)
   const portNumber = portData.portIdentifier.split(':')[0]
   const breakOutPorts = ports.filter(p => p.portIdentifier.includes(portNumber))
 

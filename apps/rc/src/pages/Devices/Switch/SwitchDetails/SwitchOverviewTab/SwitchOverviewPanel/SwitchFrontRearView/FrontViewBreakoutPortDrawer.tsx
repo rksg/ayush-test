@@ -12,7 +12,7 @@ import { filterByAccess }                                                from '@
 
 import * as UI from './styledComponents'
 
-import { SwitchPannelContext } from '.'
+import { SwitchPanelContext } from '.'
 
 
 export interface BreakOutPortDrawerType {
@@ -29,7 +29,7 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     editPortsFromPanelEnabled,
     setEditBreakoutPortDrawerVisible,
     setSelectedPorts
-  } = useContext(SwitchPannelContext)
+  } = useContext(SwitchPanelContext)
   const breakoutPortsData = breakoutPorts?.map((port) => {
     return {
       ...port,
