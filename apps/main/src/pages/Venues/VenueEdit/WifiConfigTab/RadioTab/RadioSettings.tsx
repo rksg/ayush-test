@@ -48,7 +48,7 @@ const RadioLegends = styled.div`
   .legends {
     position: absolute;
     display: grid;
-    grid-template-columns: 190px 314px 90px;
+    grid-template-columns: 190px 90px 314px ;
     grid-column-gap: 8px;
     height: 16px;
 
@@ -573,7 +573,7 @@ export function RadioSettings () {
                   <div></div>
                   <div></div>
                   <div className='legend'>
-                    <div className='legend-display'>R560</div>
+                    <div className='legend-display'>R760</div>
                   </div>
                 </div>
               }
@@ -589,6 +589,11 @@ export function RadioSettings () {
             <Tabs.TabPane key='Normal5GHz'
               tab={<RadioLable style={{ width: '36px' }}>
                 {$t({ defaultMessage: '5 GHz' })}</RadioLable>}/>
+            { isTriBandRadio &&
+              <Tabs.TabPane key='Normal6GHz'
+                tab={<RadioLable style={{ width: '36px' }}>
+                  {$t({ defaultMessage: '6 GHz' })}</RadioLable>}/>
+            }
             { isTriBandRadio && isDual5gMode && <>
               <Tabs.TabPane key='Lower5GHz'
                 tab={<RadioLable style={{ width: '100px' }}>
@@ -597,11 +602,6 @@ export function RadioSettings () {
                 tab={<RadioLable style={{ width: '100px' }}>
                   {$t({ defaultMessage: 'Upper 5 GHz' })}</RadioLable>}/>
             </>
-            }
-            { isTriBandRadio &&
-              <Tabs.TabPane key='Normal6GHz'
-                tab={<RadioLable style={{ width: '36px' }}>
-                  {$t({ defaultMessage: '6 GHz' })}</RadioLable>}/>
             }
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
