@@ -14,10 +14,9 @@ import { KpiWidget, getKpiInfoText } from './index'
 
 describe('KpiWidget', () => {
   const percentDivSelector = 'div > div:nth-child(2) > div > div'
-  const filters:AnalyticsFilter = {
+  const filters: AnalyticsFilter = {
     startDate: '2023-01-10T12:26:00+05:30',
     endDate: '2023-01-17T12:26:00+05:30',
-    path: [{ type: 'network', name: 'Network' }],
     range: DateRange.last24Hours,
     filter: {
       networkNodes: [

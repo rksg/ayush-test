@@ -18,8 +18,10 @@ import {
   InformationSolid,
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useExternalProvidersQuery, useGetMspEcProfileQuery }                                                                                                                                                                                                                                                from '@acx-ui/rc/services'
-import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, MSPUtils, AuthRadiusEnum } from '@acx-ui/rc/utils'
+import { useGetMspEcProfileQuery }                                                                                                                                                                                                                                                                 from '@acx-ui/msp/services'
+import { MSPUtils }                                                                                                                                                                                                                                                                                from '@acx-ui/msp/utils'
+import { useExternalProvidersQuery }                                                                                                                                                                                                                                                               from '@acx-ui/rc/services'
+import { NetworkSaveData, generateHexKey, GuestNetworkTypeEnum, hexRegExp, NetworkTypeEnum, passphraseRegExp, Providers, PskWlanSecurityEnum, Regions, SecurityOptionsDescription, SecurityOptionsPassphraseLabel, trailingNorLeadingSpaces, URLProtocolRegExp, WlanSecurityEnum, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -121,7 +123,7 @@ export function WISPrForm () {
     if(providerData.data){
       const providers = providerData.data.providers
       setExternalProviders(providers)
-      if(isMspEc){
+      if(isMspEc && providers.length === 1){
         form.setFieldValue(['guestPortal','wisprPage','externalProviderName'],providers[0].name)
         setProvider(providers[0].name, providers[0].regions)
       }
@@ -175,7 +177,9 @@ export function WISPrForm () {
     }
   },[providerData.data,data,isMspEc])
   useEffect(()=>{
-    form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
+    if(!data?.guestPortal?.wisprPage?.integrationKey){
+      form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
+    }
     if ([
       (data?.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT),
       (!data?.wlan?.bypassCPUsingMacAddressAuthentication)
@@ -239,22 +243,23 @@ export function WISPrForm () {
           }
           label={$t({ defaultMessage: 'Portal Provider' })}
           initialValue=''
-          children={!isMspEc?<Select onChange={(value)=>{
-            const regions = _.find(externalProviders,{ name: value })?.regions
-            setProvider(value, regions)
-          }}>
-            <Select.Option value={''}>
-              {$t({ defaultMessage: 'Select provider' })}
-            </Select.Option>
-            {externalProviders?.map(item=>{
-              return <Select.Option key={item.name} value={item.name}>
-                {item.name}
+          children={(!isMspEc||(externalProviders && externalProviders.length>1))?
+            <Select onChange={(value)=>{
+              const regions = _.find(externalProviders,{ name: value })?.regions
+              setProvider(value, regions)
+            }}>
+              <Select.Option value={''}>
+                {$t({ defaultMessage: 'Select provider' })}
               </Select.Option>
-            })}
-            <Select.Option value={'Custom Provider'}>
-              {$t({ defaultMessage: 'Custom Provider' })}
-            </Select.Option>
-          </Select>:externalProviders?.[0].name}
+              {externalProviders?.map(item=>{
+                return <Select.Option key={item.name} value={item.name}>
+                  {item.name}
+                </Select.Option>
+              })}
+              <Select.Option value={'Custom Provider'}>
+                {$t({ defaultMessage: 'Custom Provider' })}
+              </Select.Option>
+            </Select>:externalProviders?.[0].name}
         />
         {isOtherProvider&&<Form.Item
           name={['guestPortal','wisprPage','providerName']}

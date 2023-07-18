@@ -242,7 +242,7 @@ describe('Property Config Tab', () => {
     )
     await userEvent.type(confirmBox, 'disable')
 
-    const confirmButton = await screen.findByRole('button', { name: /switch off/i })
+    const confirmButton = await screen.findByRole('button', { name: /disable/i })
     await userEvent.click(confirmButton)
 
     // check switch has been OFF

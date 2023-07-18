@@ -5,7 +5,7 @@ import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
-import { AnalyticsFilter, kpiConfig }                                            from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, kpiConfig, productNames }                              from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 
@@ -77,7 +77,7 @@ function Histogram ({
   }, [kpi, setKpiThreshold, thresholds])
   const onButtonApply = async () => {
     const result =
-        await triggerSave({ path: filters.path, name: kpi, value: thresholdValue })
+        await triggerSave({ filter: filters.filter, name: kpi, value: thresholdValue })
           .unwrap() as unknown as { saveThreshold: boolean }
     if (result && result.saveThreshold) {
       showToast({
@@ -105,7 +105,7 @@ function Histogram ({
         ...rest,
         data: data! && [
           {
-            name: $t(text),
+            name: $t(text, productNames),
             data: transformHistogramResponse({ ...data, ...histogram }),
             rawData: data
           }

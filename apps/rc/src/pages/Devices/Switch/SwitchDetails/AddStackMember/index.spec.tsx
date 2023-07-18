@@ -23,6 +23,21 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const editStackData = {
+  id: 'FEK4124R28X',
+  venueId: '5c05180d54d84e609a4d653a3a8332d1',
+  enableStack: true,
+  igmpSnooping: 'none',
+  jumboMode: false,
+  softDeleted: false,
+  isPrimaryDeleted: false,
+  sendedHostname: true,
+  dhcpClientEnabled: true,
+  dhcpServerEnabled: false,
+  rearModule: 'none'
+}
+
 describe('Add Stack Member Form', () => {
   const params = {
     tenantId: 'tenant-id',
@@ -37,6 +52,8 @@ describe('Add Stack Member Form', () => {
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json(editStackData))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
     )
