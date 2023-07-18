@@ -8,9 +8,10 @@ import moment                                                                   
 import { useIntl }                                                                         from 'react-intl'
 import styled                                                                              from 'styled-components'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, Subtitle, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                      from '@acx-ui/rc/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { DatePicker }                                                              from '@acx-ui/main/components'
+import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }          from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -41,12 +42,8 @@ import {
   ConnectionMetering,
   PropertyDpskSetting
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import {
-  useUserProfileContext
-} from '@acx-ui/user'
+import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
-
 const Info = styled(Typography.Text)`
   overflow-wrap: anywhere;
   font-size: 12px;
@@ -143,11 +140,11 @@ function ConnectionMeteringPanel (props: { data:ConnectionMetering }) {
 }
 
 
-function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], dateFormat?: string })
+function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
 {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data, dateFormat } = props
+  const { data } = props
   const [modalVisible, setModalVisible] = useState(false)
   const onModalClose = () => setModalVisible(false)
   const [profileMap, setProfileMap] = useState(new Map(data.map((p) => [p.id, p])))
@@ -213,7 +210,6 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], date
                 initialValue={form.getFieldValue('expirationDate')}
               >
                 <DatePicker
-                  format={dateFormat?.toUpperCase() ?? 'YYYY/MM/DD'}
                   style={{ width: '100%' }}
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
@@ -383,7 +379,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
   )
 
-  const { data: userProfile } = useUserProfileContext()
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [enableGuestUnit, setEnableGuestUnit]
@@ -793,7 +788,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             {isConnectionMeteringEnabled &&
               <ConnectionMeteringSettingForm
                 data={connectionMeteringList}
-                dateFormat={userProfile?.dateFormat}
               />
             }
           </Form>
