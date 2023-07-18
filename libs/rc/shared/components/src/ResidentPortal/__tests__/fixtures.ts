@@ -1,9 +1,9 @@
-import { CreateResidentPortalFormFields } from '@acx-ui/rc/components'
 import {
   ServiceType,
   getServiceRoutePath,
   ServiceOperation } from '@acx-ui/rc/utils'
 
+import { CreateResidentPortalFormFields } from '../ResidentPortalForm/formParsing'
 
 export const mockedTenantId = '__Tenant_ID__'
 
