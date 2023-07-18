@@ -200,7 +200,6 @@ const discardApEditSettings = (props: apEditSettingsProps) => {
   }
 }
 
-
 const resetApEditContextData = (props: ApEditContextProps) => {
   const { editContextData,
     setEditContextData,

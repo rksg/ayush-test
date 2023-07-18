@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
@@ -35,7 +34,6 @@ describe('AP Led', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     resetApLedSpy.mockClear()
     mockServer.use(
