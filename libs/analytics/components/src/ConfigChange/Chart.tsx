@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
@@ -7,9 +9,10 @@ import type { ConfigChange }                    from '@acx-ui/components'
 
 import { useConfigChangeQuery } from './services'
 
-export function Chart (props: {
+function BasicChart (props: {
   selected: ConfigChange | null,
   onClick: (params: ConfigChange) => void,
+  onBrushPositionsChange: (params: number[][]) => void
 }){
   const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
   const { selected, onClick } = props
@@ -34,8 +37,11 @@ export function Chart (props: {
               onClick(params)
             }}
             selectedData={selected?.id}
+            onBrushPositionsChange={props.onBrushPositionsChange}
           />}
       </AutoSizer>
     </Card>
   </Loader>
 }
+
+export const Chart = memo(BasicChart)
