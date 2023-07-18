@@ -28,7 +28,8 @@ export function FrontViewBreakoutPort (props:{
     setBreakoutPortDrawerVisible,
     editBreakoutPortDrawerVisible,
     setEditBreakoutPortDrawerVisible,
-    selectedPorts
+    selectedPorts,
+    setSelectedPorts
   } = useContext(SwitchPanelContext)
   const portNumber = portData.portIdentifier.split(':')[0]
   const breakOutPorts = ports.filter(p => p.portIdentifier.includes(portNumber))
@@ -75,6 +76,7 @@ export function FrontViewBreakoutPort (props:{
   }
 
   const onPortClick = () => {
+    setSelectedPorts([])
     setEditLagModalVisible(false)
     setEditPortDrawerVisible(false)
     setBreakoutPortDrawerVisible(false)
@@ -125,6 +127,7 @@ export function FrontViewBreakoutPort (props:{
         selectedPorts={selectedPorts}
         onBackClick={() => {
           setBreakoutPortDrawerVisible(true)
+          setSelectedPorts([])
         }}
       />
       }
