@@ -62,11 +62,13 @@ export function RadioSettingsForm (props:{
   const [
     enableDownloadLimit,
     enableUploadLimit,
-    enableMulticastRateLimiting
+    enableMulticastRateLimiting,
+    channelBandwidth
   ] = [
     useWatch<boolean>('enableDownloadLimit'),
     useWatch<boolean>('enableUploadLimit'),
-    useWatch<boolean>('enableMulticastRateLimiting')
+    useWatch<boolean>('enableMulticastRateLimiting'),
+    useWatch<string>(['radioParams6G', 'channelBandwidth'])
   ]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -146,7 +148,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
-      {form.getFieldValue(['radioParams6G', 'channelBandwidth']) === '320MHz' ?
+      {channelBandwidth === '320MHz' ?
         <div style={{ color: cssStr('--acx-neutrals-50'), fontSize: '12px', marginBottom: '14px' }}>
           <InformationOutlined style={{
             height: '14px',
