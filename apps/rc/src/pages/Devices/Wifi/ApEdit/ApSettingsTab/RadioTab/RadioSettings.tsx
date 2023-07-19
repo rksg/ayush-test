@@ -180,12 +180,9 @@ export function RadioSettings () {
 
         // 6G
         const supportCh6g = availableChannels['6GChannels'] || {}
+        const wifi7_320Bandwidth = Wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
 
-        let wifi7_320Bandwidtch = channelBandwidth6GOptions
-        if (!Wifi7_320Mhz_FeatureFlag) {
-          wifi7_320Bandwidtch = dropRight(channelBandwidth6GOptions)
-        }
-        const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidtch, supportCh6g, is6GHas160Mhz)
+        const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidth, supportCh6g, is6GHas160Mhz)
         setSupport6GChannels(supportCh6g)
         setBandwidth6GOptions(bandwidth6g)
 
