@@ -256,7 +256,7 @@ export const healthApi = dataApi.injectEndpoints({
       `,
         variables: {
           ...payload,
-          path: getSelectedNodePath(payload.filter)
+          ...getFilterPayload(payload)
         }
       })
     })
