@@ -1,6 +1,4 @@
-
 import userEvent from '@testing-library/user-event'
-
 
 import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
@@ -13,7 +11,6 @@ import { ApRadioTypeDataKeyMap, ApRadioTypeEnum,
   VenueRadioTypeDataKeyMap
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
-
 
 
 describe.skip('RadioSettingForm component', () => {
@@ -116,6 +113,12 @@ describe.skip('RadioSettingForm component', () => {
     const mgmtTxRateSelect = await screen.findByRole('combobox', { name: /Mgmt Tx Rate/i })
     await userEvent.click(mgmtTxRateSelect)
     await userEvent.click((await screen.findByTitle('9 Mbps')))
+
+    // eslint-disable-next-line max-len
+    const multicastRateLimitSwitch = await screen.findByRole('Switch', { name: /Multicast Rate Limiting/i })
+    await userEvent.click(multicastRateLimitSwitch)
+    expect(await screen.findByTestId('enableUploadLimit')).toBeVisible()
+    expect(await screen.findByTestId('enableDownloadLimit')).toBeVisible()
   })
 
   it('should render AP Radio 24G', async () => {

@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
-import { Descriptions }                                                                                          from '@acx-ui/components'
-import { ConfigurationOutlined, FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
+import { Descriptions }                                                                                                                          from '@acx-ui/components'
+import { FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid, BreakoutPortSolid, LagMemberSolid, ConfigurationSolid } from '@acx-ui/icons'
 
 export const TitleBar = styled.div`
   background: var(--acx-neutrals-10);
@@ -96,6 +96,60 @@ export const RearViewWrapper = styled.div`
   float:left;
 `
 
+export const FrontViewTooltipContainer = styled.div`
+  float: right;
+  margin: 8px 2px 0 0;
+`
+
+export const FrontViewTooltip = styled.div`
+  display: grid;
+  grid-template-columns: 35px 160px 65px 80px;
+  h5.ant-typography {
+    color: var(--acx-primary-white);
+    padding: 2px 0 0 4px;
+  }
+  .title-left {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  .title-right {
+    grid-column-start: 3;
+    grid-column-end: 5;
+  }
+
+  .ports-description{
+    color: var(--acx-primary-white);
+    line-height: 28px;
+    &.right{
+      grid-column-start: 4;
+      grid-column-end: 5;
+    }
+  }
+ 
+  .ports {
+    svg {
+      path {
+        fill: var(--acx-primary-white);
+      }  
+    }
+    &.offline {
+      opacity: 0.3;
+    }
+    &.poe-icon{
+      svg{
+        height: 15px;
+        padding-top: 1px;
+        path {
+          stroke: var(--acx-primary-white);
+        }  
+      }
+    }
+    &.right{
+      grid-column-start: 3;
+      grid-column-end: 4;
+    }
+  }
+`
 const getPortColor = (portColor: string) => {
   const colorMap:{ [key:string]: string } = {
     lightgray: 'var(--acx-neutrals-25)',
@@ -105,8 +159,8 @@ const getPortColor = (portColor: string) => {
   return colorMap[portColor]
 }
 
-export const Port = styled.div<{ portColor: string }>`
-  border-width: ${(props) => props.portColor === 'green' ? '2px' : '1px'};
+export const Port = styled.div<{ portColor: string, editable?: boolean }>`
+  border-width: 1px;
   border-style: solid;
   border-color: ${(props) => getPortColor(props.portColor)};
   height: 20px;
@@ -115,6 +169,7 @@ export const Port = styled.div<{ portColor: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: ${(props) => props.editable ? 'pointer' : 'default'};
 `
 
 export const BreakOutPortFlag = styled.div<{ portColor: string }>`
@@ -123,8 +178,8 @@ export const BreakOutPortFlag = styled.div<{ portColor: string }>`
   border-style: solid;
   border-width: 0 0 5px 5px;
   border-color: transparent transparent  ${(props) => getPortColor(props.portColor)} transparent;
-  left: 8px;
-  top: 12px;
+  left: 12px;
+  top: 16px;
   position: absolute;
 `
 
@@ -138,8 +193,19 @@ export const UplinkPortIcon = styled(UplinkPortSolid)`
   width: 16px;
 `
 
+export const BreakoutPortIcon = styled(BreakoutPortSolid)`
+  height: 16px;
+  width: 16px;
+`
+
+export const LagMemberIcon = styled(LagMemberSolid)`
+  height: 16px;
+  width: 16px;
+`
+
 export const PoeUsageIcon = styled(PoeUsage)`
-  height: 10px;
+  height: 16px;
+  width: 16px;
 `
 
 export const TooltipStyle = styled(Descriptions)`
@@ -168,7 +234,7 @@ export const TagsSolidIcon = styled(TagsSolid)`
   }
 `
 
-export const SettingsIcon = styled(ConfigurationOutlined)`
+export const SettingsIcon = styled(ConfigurationSolid)`
   height: 18px;
 `
 
@@ -216,7 +282,8 @@ export const RearDescrption = styled.div<{ labelColor: string }>`
 `
 
 export const RearPowerIcon = styled(PoeUsage)`
-  height: 16px;
+  height: 18px;
+  width: 18px;
   path {
     fill: var(--acx-primary-black);
   }
@@ -256,8 +323,20 @@ export const BreakoutPortTooltipItem = styled.div`
   padding-bottom: var(--acx-descriptions-space);
 `
 
-export const BreadkoutPortContainer = styled.div`
+export const WithIconPortContainer = styled.div`
   position: relative;
-  cursor: pointer;
   font-size: 10px;
+  svg {
+    margin-top: 3px;
+  }
+`
+
+export const RegularPortContainer = styled.div`
+  position: relative;
+  font-size: 10px;
+  div {
+    margin-top: 3px;
+    left: 4px;
+    top: 2px;
+  }
 `
