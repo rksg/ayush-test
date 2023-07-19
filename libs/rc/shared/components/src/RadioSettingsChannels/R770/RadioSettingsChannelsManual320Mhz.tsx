@@ -63,6 +63,9 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   const handleClickGroupChannels = (event: RadioChangeEvent) => {
     setCheckGroup(event.target.value)
     form.setFieldValue(props.channelBandwidth320MhzGroupFieldName, event.target.value)
+
+    // If 320MHz-1's channel is selected, and that channel is overlap with 320MHz-2
+    // Keep that channel selected, clear state if it's not.
     if(_.intersection(ChannelGroup_320MHz_Manual[event.target.value], checkedChannel)) {
       return
     }
@@ -77,7 +80,10 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     })
   }
 
+
   const handleChannelChange = (checkedValues: CheckboxValueType[]) => {
+    // Only one channel can be selected, use lodash difference will return new selected everytime
+    // even default is nothing selected.
     const diff = _.difference(checkedValues, checkedChannel)
     setCheckedChannel(diff)
     form.setFieldValue(props.formName, diff)

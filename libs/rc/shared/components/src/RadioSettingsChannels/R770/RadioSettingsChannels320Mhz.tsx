@@ -54,6 +54,9 @@ export function RadioSettingsChannels320Mhz (props: {
 
     const selectedChannels = form.getFieldValue(props.formName)
     const systemChannelOptions = filterUnselectedChannels(channelList)
+
+    // Check does database has record, use the default if it's not.
+    // Usually it will be all channel selected if database has no record.
     if (!selectedChannels) {
       availableChannel = availableChannel.concat(systemChannelOptions)
     } else {
@@ -114,6 +117,13 @@ export function RadioSettingsChannels320Mhz (props: {
 
     let isolatedChannel = [] as CheckboxValueType[]
 
+    /**
+     * Once user click 320Mhz group botton, depends on the intersection with channel160Groups,
+     * unselect when both two checkbox(160Mhz) is selected.
+     *
+     * On the contray, no matter only 1 or none heckbox is selected, both 160Mhz checkbox in the
+     * channel160Groups will be selected.
+     */
     if(intersection.length === 2) {
       let removeIntersection = _.difference(unsavedStates.enabledCheckbox, intersection)
       _.set(unsavedStates, 'enabledCheckbox', removeIntersection)

@@ -13,6 +13,15 @@ export const ChannelGroup160MHzModel = [
   { value: '205', selected: true }
 ]
 
+/**
+ * This function is used for SingleRadioSettings, SingleRadioSettings will only pass selected channels into function.
+ *
+ * it will find if the input channels has intersection with specific 160Mhz group(Which mean that group is selected),
+ * and then it will pass the checked group into next function, findIsolatedGroup().
+ *
+ * @param selectedChannels String array that contains channels but not channel groups
+ * @returns String array contains that 160Mhz checkbox were isolated
+ */
 export const findIsolatedGroupByChannel = (selectedChannels: string[]) => {
   let checkedGroup = [] as CheckboxValueType[]
   _.forIn(defaultStates.ChannelGroup_160MHz, (value, key) => {
@@ -23,6 +32,20 @@ export const findIsolatedGroupByChannel = (selectedChannels: string[]) => {
   return findIsolatedGroup(checkedGroup)
 }
 
+/**
+ * Check if the adjunction checkbox is checked or not.
+ *
+ * The first element just needs to check the checkbox after it, the last is also same pattern.
+ *
+ * The element among the rest needs to check previous/next element are checked or not, it's isolated
+ * when both element are not checked.
+ *
+ * It will return the value(which is, group key) if it's isolated, return 0 if it's adjuncted.
+ * The array will filter out all the zero before return.
+ *
+ * @param checkedValues Selected 160Mhz checkbox, typically string array
+ * @returns String array contains that 160Mhz checkbox were isolated
+ */
 export const findIsolatedGroup = (checkedValues: CheckboxValueType[]) => {
   const currentModel = ChannelGroup160MHzModel.map((channel) => {
     if (!checkedValues.includes(channel.value)){
@@ -140,6 +163,7 @@ export const defaultStates : ChannelGroupType = {
       isolated: false
     }
   },
+  // Control RadioSettingsChannels320Mhz checkbox displaying
   enabledCheckbox: ['15','47','79','111','143','175','205'],
   getEnabledChannels () : CheckboxValueType[] {
     let enabledChannels = [] as CheckboxValueType[]
