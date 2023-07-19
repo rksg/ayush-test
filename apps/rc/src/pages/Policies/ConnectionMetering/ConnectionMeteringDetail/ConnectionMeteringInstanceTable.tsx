@@ -63,6 +63,12 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
     fetchPropertyUnits()
   }, [groupMap])
 
+  useEffect(()=> {
+    const interval = setInterval(()=> {fetchQosStats(props.data)}, 30 * 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+
   const toInstance = (personas: Persona[]): ConnectionMeteringInstanceItem[] => {
     const personaGroupSet = new Set<string>()
     const unitPersonaMap = new Map<string, Persona[]>()
