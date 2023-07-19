@@ -225,7 +225,7 @@ const SubscriptionTable = () => {
       ...response,
       status: GetStatus(response?.expirationDate)
     }
-  })
+  }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled)
 
   return (
     <Loader states={[queryResults]}>

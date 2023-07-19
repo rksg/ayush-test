@@ -7,7 +7,8 @@ import { mockServer, render, screen, waitFor }     from '@acx-ui/test-utils'
 
 import { mockNsgData, mockNsgSwitchInfoData, switchPortList, switchVlanUnion, switchLagList, webAuthList } from '../../__tests__/fixtures'
 
-import { AccessSwitchDrawer } from './AccessSwitchDrawer'
+import { AccessSwitchDrawer }  from './AccessSwitchDrawer'
+import { NetworkSegAuthModel } from './NetworkSegAuthModel'
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -27,6 +28,11 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+
+jest.mock('../../../NetworkSegWebAuth/NetworkSegAuthForm', () => ({
+  ...jest.requireActual('../../../NetworkSegWebAuth/NetworkSegAuthForm'),
+  default: () => <div data-testid={'NetworkSegAuthForm'}></div>
+}))
 
 describe('AccessSwitchDrawer', () => {
   const params = {
@@ -127,5 +133,20 @@ describe('AccessSwitchDrawer', () => {
     await user.click(await screen.findByText(/Save/))
 
     await waitFor(() => expect(saveSpy).toHaveBeenCalledTimes(1))
+  })
+})
+
+describe('NetworkSegAuthModel', () => {
+  const setWebAuthTemplateId = jest.fn()
+  it('Should render successfully', async () => {
+    render(<NetworkSegAuthModel setWebAuthTemplateId={setWebAuthTemplateId} />)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    expect(await screen.findByTestId('NetworkSegAuthForm')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(await screen.findByTestId('NetworkSegAuthForm')).not.toBeVisible()
   })
 })

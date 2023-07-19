@@ -35,6 +35,27 @@ exports[`Test getDeviceTypeIcon function should return device type icon 1`] = `
   <svg
     data-testid="WdsOutlined"
   />
+  <svg
+    data-testid="ApOutlined"
+  />
+  <svg
+    data-testid="RouterOutlined"
+  />
+  <svg
+    data-testid="StorageDeviceOutlined"
+  />
+  <svg
+    data-testid="PoSDeviceOutlined"
+  />
+  <svg
+    data-testid="PoSDeviceOutlined"
+  />
+  <svg
+    data-testid="GenericDeviceOutlined"
+  />
+  <svg
+    data-testid="GenericDeviceOutlined"
+  />
 </DocumentFragment>
 `;
 

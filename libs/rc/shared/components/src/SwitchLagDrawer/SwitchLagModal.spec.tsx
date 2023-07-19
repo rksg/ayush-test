@@ -90,6 +90,26 @@ describe('SwitchLagModal', () => {
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
+  it('should render lag drawer correctly', async () => {
+    mockServerQuery()
+    const user = userEvent.setup()
+    render(<Provider>
+      <SwitchLagModal
+        visible={true}
+        setVisible={mockedSetVisible}
+        isEditMode={false}
+        type='drawer'
+        editData={[]} />
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber'
+      }
+    })
+    expect(await screen.findByRole('button', { name: 'Apply' })).toBeVisible()
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+
   it('should render correctly with cancel', async () => {
     mockServerQuery()
     const lag = {

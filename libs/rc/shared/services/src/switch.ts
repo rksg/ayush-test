@@ -825,7 +825,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           const payload = {
             fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
               'clientName','clientDesc','clientType','switchPort','vlanName',
-              'switchName', 'venueName' ,'cog','id'],
+              'switchName', 'venueName' ,'cog','id', 'clientIpv4Addr',
+              'dhcpClientOsVendorName', 'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
             filters: {
               id: [_.get(params, 'clientId')]
             }
@@ -1265,6 +1266,7 @@ export const {
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
   useSwitchPortlistQuery,
+  useLazySwitchPortlistQuery,
   useGetPortSettingQuery,
   useLazyGetPortSettingQuery,
   useGetPortsSettingQuery,
@@ -1333,6 +1335,7 @@ export const {
   useLazyGetTroubleshootingCleanQuery,
   useUpdateDhcpServerStateMutation,
   useGetLagListQuery,
+  useLazyGetLagListQuery,
   useAddLagMutation,
   useUpdateLagMutation,
   useDeleteLagMutation,
