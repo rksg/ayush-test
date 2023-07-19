@@ -54,6 +54,11 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
       dataIndex: 'poolName'
     },
     {
+      title: $t({ defaultMessage: 'Subnet Mask' }),
+      key: 'subnetMask',
+      dataIndex: 'subnetMask'
+    },
+    {
       title: $t({ defaultMessage: 'Pool Range' }),
       key: 'poolStartIp',
       dataIndex: 'poolStartIp',

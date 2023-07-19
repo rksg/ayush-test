@@ -109,7 +109,6 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
         visible={visible}
         setVisible={setVisible}
         currentEdge={currentEdge}
-        edgePortsSetting={edgePortsSetting}
         dnsServers={dnsServers}
         passwordDetail={passwordDetail}
       />
