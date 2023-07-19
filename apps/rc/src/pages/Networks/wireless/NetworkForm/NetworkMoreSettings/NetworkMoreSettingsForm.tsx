@@ -11,10 +11,10 @@ import {
   Switch,
   Space
 } from 'antd'
-import { get }     from 'lodash'
-import { useIntl } from 'react-intl'
+import { get }                    from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Tooltip }                                                                                       from '@acx-ui/components'
+import { Button, Tabs, Tooltip }                                                                                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
 import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
@@ -25,10 +25,15 @@ import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile } from '../ut
 import VLANPoolInstance                                              from '../VLANPoolInstance'
 
 import { AccessControlForm }  from './AccessControlForm'
+import { AdvancedTab }        from './AdvancedTab'
 import { LoadControlForm }    from './LoadControlForm'
+import { NetworkControlTab }  from './NetworkControlTab'
+import { NetworkingTab }      from './NetworkingTab'
+import { RadioTab }           from './RadioTab'
 import { ServicesForm }       from './ServicesForm'
 import * as UI                from './styledComponents'
 import { UserConnectionForm } from './UserConnectionForm'
+import { VlanTab }            from './VlanTab'
 
 
 
@@ -105,7 +110,8 @@ export function NetworkMoreSettingsForm (props: {
   const [enableMoreSettings, setEnabled] = useState(cloneMode)
 
   if (data && editMode) {
-    return <MoreSettingsForm wlanData={wlanData} />
+    //return <MoreSettingsForm wlanData={wlanData} />
+    return <MoreSettingsTabs wlanData={wlanData} />
   } else {
     return <div>
       <Button
@@ -119,7 +125,8 @@ export function NetworkMoreSettingsForm (props: {
           $t({ defaultMessage: 'Show more settings' })}
       </Button>
       {enableMoreSettings &&
-        <MoreSettingsForm wlanData={wlanData} />}
+        //<MoreSettingsForm wlanData={wlanData} />}
+        <MoreSettingsTabs wlanData={wlanData} />}
     </div>
   }
 }
@@ -130,9 +137,13 @@ export function MoreSettingsForm (props: {
 }) {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
+
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
   const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
+  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
+  const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+
   const [
     enableDhcp,
     enableOfdmOnly,
@@ -158,8 +169,7 @@ export function MoreSettingsForm (props: {
 
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
-  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
-  const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -218,7 +228,6 @@ export function MoreSettingsForm (props: {
         })
       }
     }
-
   }
 
   const UserConnectionComponent = () => {
@@ -781,5 +790,68 @@ export function MoreSettingsForm (props: {
       </Panel>}
     </UI.CollapsePanel>
   )
+}
+
+const MoreSettingsTabsInfo = [
+  {
+    key: 'vlan',
+    display: defineMessage({ defaultMessage: 'VLAN' }),
+    style: { width: '10px' }
+  }, {
+    key: 'networkControl',
+    display: defineMessage({ defaultMessage: 'Network Control' }),
+    style: { width: '71px' }
+  }, {
+    key: 'radio',
+    display: defineMessage({ defaultMessage: 'Radio' }),
+    style: { width: '11px' }
+  }, {
+    key: 'networking',
+    display: defineMessage({ defaultMessage: 'Networking' }),
+    style: { width: '38px' }
+  }, {
+    key: 'advanced',
+    display: defineMessage({ defaultMessage: 'Advanced' }),
+    style: { width: '37px' }
+  }
+]
+
+export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
+  const { $t } = useIntl()
+  const { editMode } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
+
+  const [currentTab, setCurrentTab] = useState('vlan')
+
+  const onTabChange = (tab: string) => {
+    setCurrentTab(tab)
+  }
+
+  return (<>
+    <Tabs type='third'
+      activeKey={currentTab}
+      onChange={onTabChange}
+    > {MoreSettingsTabsInfo.map(({ key, display, style }) => ( <Tabs.TabPane key={key}
+        tab={<UI.TabLable style={style}>{$t(display)}</UI.TabLable>}
+      />))}
+    </Tabs>
+
+    <div style={{ display: currentTab === 'vlan' ? 'block' : 'none' }}>
+      <VlanTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'networkControl' ? 'block' : 'none' }}>
+      <NetworkControlTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'radio' ? 'block' : 'none' }}>
+      <RadioTab />
+    </div>
+    <div style={{ display: currentTab === 'networking' ? 'block' : 'none' }}>
+      <NetworkingTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'advanced' ? 'block' : 'none' }}>
+      <AdvancedTab wlanData={wlanData} />
+    </div>
+  </>)
 }
 
