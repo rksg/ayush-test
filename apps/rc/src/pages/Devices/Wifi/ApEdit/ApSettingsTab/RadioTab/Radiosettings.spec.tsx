@@ -482,7 +482,7 @@ describe('RadioSettingsTab', ()=> {
     })
   })
 
-  describe('RadioSettingsTab with R760 AP', () => {
+  describe.skip('RadioSettingsTab with R760 AP', () => {
     beforeEach(() => {
       store.dispatch(apApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())

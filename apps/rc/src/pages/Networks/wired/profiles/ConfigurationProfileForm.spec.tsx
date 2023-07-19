@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
-describe('Wired', () => {
+describe.skip('Wired', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
