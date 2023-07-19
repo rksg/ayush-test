@@ -161,16 +161,16 @@ const EdgeDhcpTable = () => {
       render (data, row) {
         return row.currentVersion || $t({ defaultMessage: 'NA' })
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
-      sorter: true,
-      render (data, row) {
-        return row.tags?.join(',')
-      }
     }
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   sorter: true,
+    //   render (data, row) {
+    //     return row.tags?.join(',')
+    //   }
+    // }
   ]
 
   const rowActions: TableProps<DhcpStats>['rowActions'] = [
