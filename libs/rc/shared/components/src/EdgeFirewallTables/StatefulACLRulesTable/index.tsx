@@ -28,7 +28,8 @@ export const useDefaultStatefulACLRulesColumns = () => {
       title: $t({ defaultMessage: 'Priority' }),
       key: 'priority',
       dataIndex: 'priority',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Description' }),
