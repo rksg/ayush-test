@@ -61,8 +61,8 @@ export function LoadControlForm () {
             if (value === MaxRateEnum.PER_AP) {
               form.setFieldValue('totalUplinkLimited', true)
               form.setFieldValue('totalDownlinkLimited', true)
-              form.setFieldValue(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 200)
-              form.setFieldValue(['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 200)
+              form.setFieldValue(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 500)
+              form.setFieldValue(['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 500)
             }
           }}>
           <Option value={MaxRateEnum.UNLIMITED}>
@@ -141,7 +141,7 @@ function PerApForm () {
               onChange={function (e: CheckboxChangeEvent) {
                 if (e.target.checked) {
                   form.setFieldValue(
-                    ['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 200)
+                    ['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 500)
                 } else {
                   form.setFieldValue(
                     ['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 0)
@@ -157,12 +157,12 @@ function PerApForm () {
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={200}
+                defaultValue={500}
                 min={1}
-                max={200}
+                max={500}
                 marks={{
                   1: { label: '1 Mbps' },
-                  200: { label: '200 Mbps' }
+                  500: { label: '500 Mbps' }
                 }}
               />
             </UI.FormItemNoLabel> :
@@ -185,7 +185,7 @@ function PerApForm () {
               onChange={function (e: CheckboxChangeEvent) {
                 if (e.target.checked) {
                   form.setFieldValue(
-                    ['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 200)
+                    ['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 500)
                 } else {
                   form.setFieldValue(
                     ['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 0)
@@ -202,10 +202,10 @@ function PerApForm () {
                 style={{ width: '245px' }}
                 defaultValue={20}
                 min={1}
-                max={200}
+                max={500}
                 marks={{
                   1: { label: '1 Mbps' },
-                  200: { label: '200 Mbps' }
+                  500: { label: '500 Mbps' }
                 }}
               />
             </UI.FormItemNoLabel> :
