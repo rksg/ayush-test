@@ -10,11 +10,11 @@ import { Button, cssStr }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
-import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/R770/ChannelComponentStates'
-import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/R770/RadioSettingsChannels320Mhz'
+import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
+import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
 import {
   RadioSettingsChannelsManual320Mhz
-} from '../RadioSettingsChannels/R770/RadioSettingsChannelsManual320Mhz'
+} from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
 import {

@@ -53,10 +53,10 @@ export { MapWidget, MapWidgetV2 } from './MapWidget'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
   RadioSettingsChannels320Mhz
-} from './RadioSettingsChannels/R770/RadioSettingsChannels320Mhz'
+} from './RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
 export {
   RadioSettingsChannelsManual320Mhz
-} from './RadioSettingsChannels/R770/RadioSettingsChannelsManual320Mhz'
+} from './RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 export { SingleRadioSettings, RadioSettingsForm } from './RadioSettings'
 export { StatusLight } from './StatusLight'
 export { SwitchConfigHistoryTable } from './SwitchConfigHistoryTable'
@@ -139,5 +139,5 @@ export * from './RadioSettings/RadioSettingsContents'
 export * from './SimpleListTooltip'
 export * from './RogueAPDetection'
 export * from './VlanSettingDrawer'
-export * from './RadioSettingsChannels/R770/ChannelComponentStates'
+export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
 export * from './ResidentPortal'
