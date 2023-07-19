@@ -75,9 +75,19 @@ describe('NetworkAssurance', () => {
       pathname: '/tenant-id/t/analytics/configChange', hash: '', search: ''
     }))
   })
+  it('should handle recommendation tab click in RA SA', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockGet.mockReturnValue(true)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('AI-Driven RRM'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/analytics/next/recommendations/crrm', hash: '', search: ''
+    }))
+  })
   it('should render config recommendation tab for RA SA', async () => {
     jest.mocked(mockGet).mockReturnValue(true)
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.RECOMMENDATIONS}/>,
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
@@ -86,10 +96,10 @@ describe('NetworkAssurance', () => {
   })
   it('should NOT render config recommendation tab for R1', async () => {
     jest.mocked(mockGet).mockReturnValue(false)
-    render(<AIAnalytics tab={AIAnalyticsTabEnum.RECOMMENDATIONS}/>,
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
-    expect(screen.queryByText('Recommendations')).toBeNull()
+    expect(screen.queryByText('AI-Driven RRM')).toBeNull()
   })
 })
