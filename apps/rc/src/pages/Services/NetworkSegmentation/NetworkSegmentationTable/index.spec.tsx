@@ -18,7 +18,7 @@ import {
   screen, within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockNsgStatsList, mockVenueData } from '../__tests__/fixtures'
+import { mockEdgeData, mockedNetworkOptions, mockNsgStatsList, mockVenueData } from '../__tests__/fixtures'
 
 import NetworkSegmentationTable from '.'
 
@@ -64,6 +64,10 @@ describe('NetworkSegmentationList', () => {
       rest.delete(
         NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockedNetworkOptions))
       )
     )
   })
