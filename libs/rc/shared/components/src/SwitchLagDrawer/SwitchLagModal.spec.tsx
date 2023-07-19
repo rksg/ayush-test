@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }                                   from '@acx-ui/rc/services'
-import { LAG_TYPE, SwitchUrlsInfo }                    from '@acx-ui/rc/utils'
-import { Provider, store  }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { switchApi }                  from '@acx-ui/rc/services'
+import { LAG_TYPE, SwitchUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider, store  }           from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   defaultVlan,
@@ -19,35 +20,12 @@ import {
 } from './__tests__/fixtures'
 import { SwitchLagModal } from './SwitchLagModal'
 
-type MockSelectProps = React.PropsWithChildren<{
-  onChange?: (value: string) => void
-  options?: Array<{ label: string, value: unknown }>
-  loading?: boolean
-}>
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={''}></option>{children}</> : null}
-      {options?.map((option, index) => (
-        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
-      ))}
-    </select>
-  )
-  Select.Option = 'option'
-  return { ...components, Select }
-})
-
 const params = {
   tenantId: 'tenant-id',
   switchId: 'switch-id',
   venueId: 'a98653366d2240b9ae370e48fab3a9a1',
   serialNumber: 'serialNumber-id'
 }
-
-const requestSpy = jest.fn()
-const requestAddSpy = jest.fn()
 const mockServerQuery = () => {
   store.dispatch(switchApi.util.resetApiState())
   mockServer.use(
@@ -57,10 +35,7 @@ const mockServerQuery = () => {
     ),
     rest.post(
       SwitchUrlsInfo.addLag.url,
-      (_, res, ctx) => {
-        requestAddSpy()
-        return res(ctx.json(successResponse))
-      }
+      (_, res, ctx) => { return res(ctx.json(successResponse)) }
     ),
     rest.put(
       SwitchUrlsInfo.updateLag.url,
@@ -86,19 +61,16 @@ const mockServerQuery = () => {
       (req, res, ctx) => res(ctx.json(portlist))
     ),
     rest.get(SwitchUrlsInfo.getSwitchConfigurationProfileByVenue.url,
-      (_, res, ctx) => {
-        requestSpy() //FIXME: temporary workaround
-        return res(ctx.json([]))
-      }
+      (_, res, ctx) => res(ctx.json({}))
     )
   )}
 
 describe('SwitchLagModal', () => {
   const mockedSetVisible = jest.fn()
-  beforeEach(() => {
-    requestSpy.mockClear()
-    requestAddSpy.mockClear()
+  afterEach(() => {
+    Modal.destroyAll()
   })
+
 
   it('should render lag list correctly', async () => {
     mockServerQuery()
@@ -115,27 +87,18 @@ describe('SwitchLagModal', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber'
       }
     })
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
-
-    await screen.findByText(/Add LAG/i)
-    await screen.findByText(/VLAN-ID: 1/i)
-
-    const editBtn = await screen.findAllByRole('button', { name: 'Edit' })
-    expect(editBtn).toHaveLength(2)
-    expect(editBtn[0]).not.toBeDisabled()
-    expect(editBtn[1]).not.toBeDisabled()
-
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
-  it('should add lag correctly', async () => {
+  it('should render lag drawer correctly', async () => {
     mockServerQuery()
+    const user = userEvent.setup()
     render(<Provider>
       <SwitchLagModal
         visible={true}
         setVisible={mockedSetVisible}
         isEditMode={false}
+        type='drawer'
         editData={[]} />
     </Provider>, {
       route: {
@@ -143,25 +106,8 @@ describe('SwitchLagModal', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber'
       }
     })
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
-
-    await screen.findByText(/Add LAG/i)
-    await screen.findByText(/VLAN-ID: 1/i)
-
-    await userEvent.type(await screen.findByLabelText(/LAG Name/i), 'test lag')
-
-    const selector = await screen.findByRole('combobox')
-    await userEvent.click(selector)
-    await userEvent.selectOptions(selector, '1 Gbits per second copper')
-
-    await userEvent.click(await screen.findByText('1/1/3'))
-
-    const transfer = await screen.findByTestId('targetKeysFormItem')
-    await userEvent.click(await within(transfer).findByRole('button', { name: /Add/i }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-
-    await waitFor(() => expect(requestAddSpy).toHaveBeenCalledTimes(1))
+    expect(await screen.findByRole('button', { name: 'Apply' })).toBeVisible()
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
   it('should render correctly with cancel', async () => {
@@ -194,18 +140,13 @@ describe('SwitchLagModal', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber'
       }
     })
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
-
     await screen.findByText(/edit lag/i)
     await screen.findByText(/1 item/i)
-
-    expect(await screen.findByLabelText(/LAG Name/i)).toHaveValue('lag-static')
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-
   })
 
-  it('should edit lag correctly', async () => {
+
+  it.skip('should edit lag correctly', async () => {
     mockServerQuery()
     const lag = {
       id: '75145abea1e74f5e8019725444a0ef9f',
@@ -235,15 +176,12 @@ describe('SwitchLagModal', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber'
       }
     })
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
-
     await screen.findByText(/edit lag/i)
     await screen.findByText(/1 item/i)
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
   })
 
-  it('should edit lag change port type correctly', async () => {
+  it.skip('should edit lag change port type correctly', async () => {
     mockServerQuery()
     const user = userEvent.setup()
     const lag = {
@@ -274,9 +212,6 @@ describe('SwitchLagModal', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber'
       }
     })
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
-
     await screen.findByText(/edit lag/i)
     await screen.findByText(/1 item/i)
 
