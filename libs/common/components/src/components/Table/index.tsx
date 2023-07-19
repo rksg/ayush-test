@@ -117,6 +117,10 @@ function useSelectedRowKeys <RecordType> (
     if (rowSelection?.selectedRowKeys !== undefined) {
       setSelectedRowKeys(rowSelection?.selectedRowKeys)
     }
+    if (rowSelection?.selectedRowKeys?.length === 0) {
+      setSelectedRows([])
+      setAllRows([])
+    }
   }, [rowSelection?.selectedRowKeys])
 
   return [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows, allRows, setAllRows]
