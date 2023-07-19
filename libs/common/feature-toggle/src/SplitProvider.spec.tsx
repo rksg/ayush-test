@@ -11,19 +11,6 @@ import { useFFList, useIsTierAllowed } from './useIsTierAllowed'
 
 let split = require('@splitsoftware/splitio-react')
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
-}))
-const user = require('@acx-ui/user')
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user')
-}))
-
-const tenantAccountTierValue = {
-  acx_account_tier: 'Gold'
-}
-
 jest.mock('@acx-ui/analytics/utils', () => (
   {
     ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -39,24 +26,6 @@ jest.mock('@acx-ui/utils', () => ({
     isBetaFlag: true
   }))
 }))
-
-const userProfile = {
-  adminId: '246b49448c7e490895e925d5a200da4d',
-  companyName: 'RUCKUS NETWORKS, INC',
-  dateFormat: 'mm/dd/yyyy',
-  detailLevel: 'debug',
-  email: 'support.employee9@ruckuswireless.com',
-  externalId: '0032h00000LV0XAAA1',
-  firstName: 'support',
-  lastName: 'employee9',
-  role: 'PRIME_ADMIN',
-  support: true,
-  tenantId: 'bcaeb185cbd046528615473518e0382a',
-  username: 'support.employee9@ruckuswireless.com',
-  var: true,
-  varTenantId: 'bcaeb185cbd046528615473518e0382a',
-  allowedRegions: []
-}
 
 function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string }) {
   jest.resetModules()
@@ -120,8 +89,8 @@ describe('useFFList', () => {
       rest.get(UserUrlsInfo.getBetaStatus.url as string,
         (req, res, ctx) => {
           return res(ctx.json({ data: {
-              enabled: true
-            } }))
+            enabled: true
+          } }))
         })
     )
     jest.mock('@acx-ui/user', () => ({
@@ -131,7 +100,7 @@ describe('useFFList', () => {
         }
       }))
     }))
-    
+
   })
 
   it.skip('returns correct feature and beta lists', () => {
@@ -163,20 +132,6 @@ describe('useIsTierAllowed', () => {
       }))
     }))
   })
-  // it('returns true for allowed feature', () => {
-  //   jest.mock('./useIsTierAllowed', () => ({
-  //     useFFList: jest.fn(() => ({
-  //       featureList: ['ADMN-ESNTLS', 'CNFG-ESNTLS'],
-  //       betaList: ['PLCY-EDGE', 'BETA-CP']
-  //     }))
-  //   }))
-  //
-  //   const { result } = renderHook(() => useIsTierAllowed('ADMN-ESNTLS'),
-  //     { wrapper: ({ children }: { children: ReactElement }) => <Provider>{children}</Provider> })
-  //
-  //   expect(result.current).toBe(true)
-  // })
-
 
   it.skip('returns true for allowed feature', () => {
     jest.mock('./useIsTierAllowed', () => {
