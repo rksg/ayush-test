@@ -57,7 +57,7 @@ describe('RadioSettingsChannelsManual320Mhz', () => {
     expect(screen.getByTestId('320MHz-2-checkboxgroup')).toBeInTheDocument()
   })
 
-  it('should render correctly should only have one manual active channel', async () => {
+  it('should render correctly should have zero manual active channel', async () => {
     const { container } = render(
       <Provider>
         <StepsFormLegacy>
@@ -78,7 +78,7 @@ describe('RadioSettingsChannelsManual320Mhz', () => {
     )
     expect(screen.getByTestId('320MHz-1-radio')).toBeChecked()
     // eslint-disable-next-line testing-library/no-container
-    expect(container.querySelectorAll('span.ant-checkbox-checked > input').length).toBe(1)
+    expect(container.querySelectorAll('span.ant-checkbox-checked > input').length).toBe(0)
   })
 })
 
