@@ -12,3 +12,9 @@ export const OverwriteFormItem = styled(Form.Item)`
     }
   }
 `
+
+export const DisplayFormItem = styled(Form.Item)`
+  &.ant-form-item {
+    margin-bottom: 0;
+  }
+`
