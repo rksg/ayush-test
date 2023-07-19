@@ -9,10 +9,9 @@ import {
   RadioChangeEvent,
   Row,
   Switch } from 'antd'
-import _                     from 'lodash'
-import { includes, isEmpty } from 'lodash'
-import { useIntl }           from 'react-intl'
-import styled                from 'styled-components/macro'
+import { includes, isEmpty, dropRight } from 'lodash'
+import { useIntl }                      from 'react-intl'
+import styled                           from 'styled-components/macro'
 
 import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
@@ -185,7 +184,7 @@ export function RadioSettings () {
       setBandwidth5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g))
       let wifi7_320Bandwidtch = channelBandwidth6GOptions
       if (!Wifi7_320Mhz_FeatureFlag) {
-        wifi7_320Bandwidtch = _.dropRight(channelBandwidth6GOptions)
+        wifi7_320Bandwidtch = dropRight(channelBandwidth6GOptions)
       }
       setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidtch, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
