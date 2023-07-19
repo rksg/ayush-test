@@ -77,21 +77,6 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     })
   }
 
-  const filterUnselectedChannels = (channels: RadioChannel[]) : string [] => {
-    const selectedChannels = [] as string[]
-    channels.forEach((channel)=> {
-      if (channel.selected === true) {
-        selectedChannels.push(channel.value)
-      }
-    })
-
-    if (selectedChannels.length > 1) {
-      return _.castArray(selectedChannels[0])
-    }
-
-    return selectedChannels
-  }
-
   const handleChannelChange = (checkedValues: CheckboxValueType[]) => {
     const diff = _.difference(checkedValues, checkedChannel)
     setCheckedChannel(diff)
@@ -104,7 +89,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   }
 
   useEffect(()=> {
-    const selectedChannels = filterUnselectedChannels(props.channelList)
+    const selectedChannels = form.getFieldValue(props.formName)
+
     if (selectedChannels) {
       setCheckedChannel(selectedChannels)
     }
@@ -113,7 +99,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     if(group) {
       setCheckGroup(group)
     }
-  }, [])
+  }, [form, props.formName])
 
   return(<>
     <Radio.Group onChange={handleClickGroupChannels} value={checkedGroup}>

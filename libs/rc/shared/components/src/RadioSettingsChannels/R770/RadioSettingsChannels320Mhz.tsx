@@ -49,34 +49,32 @@ export function RadioSettingsChannels320Mhz (props: {
   const [complexGroupChannelState, setComplexGroupChannelState] = useState(defaultStates)
 
   useEffect(()=> {
-    const selectedChannels = filterUnselectedChannels(channelList)
     let checked160MHzGroup = [] as CheckboxValueType[]
-    if(selectedChannels) {
-      _.forIn(complexGroupChannelState.ChannelGroup_160MHz, (value, key) => {
-        if(_.intersection(value.channels, selectedChannels).length !== 0){
-          checked160MHzGroup.push(key)
+    let availableChannel = [] as CheckboxValueType[]
+
+    const selectedChannels = form.getFieldValue(props.formName)
+    const systemChannelOptions = filterUnselectedChannels(channelList)
+    if (!selectedChannels) {
+      availableChannel = availableChannel.concat(systemChannelOptions)
+    } else {
+      systemChannelOptions.forEach((option) => {
+        if(selectedChannels.includes(option)) {
+          availableChannel.push(option)
         }
       })
     }
+
+    _.forIn(complexGroupChannelState.ChannelGroup_160MHz, (value, key) => {
+      if(_.intersection(value.channels, availableChannel).length !== 0){
+        checked160MHzGroup.push(key)
+      }
+    })
 
     let unsavedStates = _.cloneDeep(complexGroupChannelState)
     _.set(unsavedStates, 'enabledCheckbox', checked160MHzGroup)
 
     setComplexGroupChannelState(unsavedStates)
-
-    form.setFieldValue(props.formName, channelList)
-  }, [])
-
-
-  useEffect(()=> {
-    let enableChannels = [] as string[]
-    complexGroupChannelState.enabledCheckbox.forEach((channel) => {
-      /* eslint-disable max-len */
-      const groupChannels = _.get(complexGroupChannelState.ChannelGroup_160MHz, channel)
-      enableChannels = enableChannels.concat(groupChannels.channels)
-    })
-    form.setFieldValue(props.formName, enableChannels)
-  }, [complexGroupChannelState])
+  }, [channelList, form, props.formName])
 
   const handleClick160MhzGroupChannels = (checkedValues: CheckboxValueType[]) => {
     let unsavedStates = _.cloneDeep(complexGroupChannelState)
