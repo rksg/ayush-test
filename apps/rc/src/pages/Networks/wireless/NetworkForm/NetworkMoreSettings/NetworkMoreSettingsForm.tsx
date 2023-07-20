@@ -692,13 +692,18 @@ export function MoreSettingsForm (props: {
                 children={<Switch/>}/>
             </UI.FieldLabel>
             <UI.FieldLabel width='250px'>
-              {$t({ defaultMessage: 'GTK Rekey' })}
-              <Form.Item
-                name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
-                style={{ marginBottom: '10px' }}
-                valuePropName='checked'
-                initialValue={true}
-                children={<Switch/>}/>
+              <div style={{ display: 'grid', gridTemplateColumns: '62px 100px auto' }}>
+                {$t({ defaultMessage: 'GTK Rekey' })}
+                <Tooltip.Question
+                  title={$t({ defaultMessage: 'Toggle the periodic generation of a new group key for securing multicast/broadcast traffic' })}
+                  placement='right' />
+                <Form.Item
+                  name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
+                  style={{ marginBottom: '10px' }}
+                  valuePropName='checked'
+                  initialValue={true}
+                  children={<Switch/>} />
+              </div>
             </UI.FieldLabel></>
         }
 
@@ -728,12 +733,12 @@ export function MoreSettingsForm (props: {
                   name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']}
                   valuePropName='checked'
                   initialValue={enableMulticastUpLimit || enableMulticastDownLimit}
-                  style={{ lineHeight: '50px' }}
-                >
-                  {
-                    <Checkbox data-testid='enableMulticastUpLimit'
-                      children={$t({ defaultMessage: 'Upload Limit' })}
-                    />}
+                  style={{ lineHeight: '50px' }}>
+                  <Checkbox data-testid='enableMulticastUpLimit'
+                    children={$t({ defaultMessage: 'Upload Limit' })} />
+                  <Tooltip.Question
+                    title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
+                    placement='bottom' />
                 </UI.FormItemNoLabel>
                 {
                   enableMulticastUpLimit ?
