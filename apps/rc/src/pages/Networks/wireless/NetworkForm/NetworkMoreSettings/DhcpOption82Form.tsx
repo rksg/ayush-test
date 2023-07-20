@@ -72,9 +72,9 @@ export function DhcpOption82Form () {
     dhcpOption82SubOption2Format,
     dhcpOption82SubOption151Format
   ] = [
-    useWatch<boolean>(['wlan','advancedCustomization', 'dhcpOption82SubOption1Enabled']),
-    useWatch<boolean>(['wlan','advancedCustomization', 'dhcpOption82SubOption2Enabled']),
-    useWatch<boolean>(['wlan','advancedCustomization', 'dhcpOption82SubOption151Enabled']),
+    useWatch<boolean>(dhcpOption82SubOption1EnabledFieldName),
+    useWatch<boolean>(dhcpOption82SubOption2EnabledFieldName),
+    useWatch<boolean>(dhcpOption82SubOption151EnabledFieldName),
     useWatch<DhcpOption82SubOption2Enum>
     (['wlan','advancedCustomization', 'dhcpOption82SubOption2Format']),
     useWatch<DhcpOption82SubOption151Enum>
