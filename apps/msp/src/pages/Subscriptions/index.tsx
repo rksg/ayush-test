@@ -195,24 +195,26 @@ export function Subscriptions () {
         const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
         let wifiQuantity = 0
         let wifiUsed = 0
+        let wifiAssigned = 0
         wifiData.forEach(summary => {
           wifiQuantity += summary.quantity + summary.remainingDevices
           wifiUsed += summary.quantity
+          wifiAssigned += summary.myAssignments ?? 0
           setTotalWifiCount(wifiQuantity)
           setUsedWifiCount(wifiUsed)
-          // TODO
-          setAssignedWifiCount(0)
+          setAssignedWifiCount(wifiAssigned)
         })
         const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
         let switchQuantity = 0
         let switchUsed = 0
+        let switchAssigned = 0
         switchData.forEach(summary => {
           switchQuantity += summary.quantity + summary.remainingDevices
           switchUsed += summary.quantity
+          switchAssigned += summary.myAssignments ?? 0
           setTotalSwitchCount(switchQuantity)
           setUsedSwitchCount(switchUsed)
-          // TODO
-          setAssignedSwitchCount(0)
+          setAssignedSwitchCount(switchAssigned)
         })
       }
       if (summaryResults.data) {

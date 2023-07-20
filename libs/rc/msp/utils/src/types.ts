@@ -204,6 +204,7 @@ export interface MspAssignmentSummary {
   courtesyMspEntitlementsUsed: boolean;
   remainingDevices: number;
   trial: boolean;
+  myAssignments?: number;
 }
 
 export interface MspEcAdmin {

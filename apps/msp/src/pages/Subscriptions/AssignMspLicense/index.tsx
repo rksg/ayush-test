@@ -6,7 +6,7 @@ import {
   Input,
   Select
 } from 'antd'
-// import _           from 'lodash'
+import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -15,19 +15,24 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }                                   from '@acx-ui/formatter'
 import {
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery
+  useMspAssignmentHistoryQuery,
+  useAddMspAssignmentMutation,
+  useUpdateMspAssignmentMutation
+  // useDeleteMspAssignmentMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
   DateSelectionEnum,
+  MspAssignmentHistory,
   // MspAssignmentHistory,
-  MspAssignmentSummary
+  MspAssignmentSummary,
+  MspEc
 } from '@acx-ui/msp/utils'
 import {
-  EntitlementDeviceType
+  EntitlementDeviceType, EntitlementUtil
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -37,16 +42,30 @@ import {
 
 import * as UI from '../styledComponent'
 
+interface MspAssignment {
+  ownAssignments: boolean
+  startDate: string
+  endDate: string
+  assignments: Assignment[]
+}
+
+interface Assignment {
+  quantity: number
+  deviceType: EntitlementDeviceType
+}
+
+
 export function AssignMspLicense () {
   const intl = useIntl()
 
   const navigate = useNavigate()
   const linkToSubscriptions = useTenantLink('/msplicenses', 'v')
-  const { action, mspEcTenantId } = useParams()
+  const { action, tenantId } = useParams()
+  const [form] = Form.useForm()
 
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
-  // const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
+  const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   // const [assignedWifiLicense, setWifiLicense] = useState(0)
   // const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
@@ -58,21 +77,36 @@ export function AssignMspLicense () {
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const [addMspSubscription] = useAddMspAssignmentMutation()
+  const [updateMspSubscription] = useUpdateMspAssignmentMutation()
+  // const [deleteMspSubscription] = useDeleteMspAssignmentMutation()
+
+  const getAssignmentId = (deviceType: string) => {
+    const license =
+    assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
+    return license.length > 0 ? license[0].id : 0
+  }
 
   useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
 
       if (licenseAssignment) {
-        const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
-        // setAssignedLicense(assigned)
+        const assigned = licenseAssignment.filter(
+          en => en.mspEcTenantId === tenantId && en.status === 'VALID')
+        setAssignedLicense(assigned)
         const wifi = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
+          en.deviceType === EntitlementDeviceType.MSP_WIFI)
         const wLic = wifi.length > 0 ? wifi[0].quantity : 0
         const sw = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
+          en.deviceType === EntitlementDeviceType.MSP_SWITCH)
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
         checkAvailableLicense(licenseSummary, wLic, sLic)
+        form.setFieldsValue({
+          service_expiration_date: wifi.length > 0 ? moment(wifi[0].dateExpires) : '',
+          wifiLicenses: wLic,
+          switchLicenses: sLic
+        })
       }
     }
 
@@ -92,11 +126,57 @@ export function AssignMspLicense () {
     return Promise.resolve()
   }
 
-  // const handleAssignLicense = async (values: unknown) => {
-  // }
+  const handleAssignLicense = async (values: MspEc) => {
+    try {
+      const ecFormData = { ...values }
+      const today = EntitlementUtil.getServiceStartDate()
+      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
 
-  // const handleEditLicense = async (values: unknown) => {
-  // }
+      const addAssignment = []
+      const updateAssignment = []
+      if (_.isString(ecFormData.wifiLicenses)) {
+        const wifiAssignId = getAssignmentId(EntitlementDeviceType.MSP_WIFI)
+        const quantityWifi = parseInt(ecFormData.wifiLicenses, 10)
+        wifiAssignId ?
+          updateAssignment.push({
+            quantity: quantityWifi,
+            assignmentId: wifiAssignId
+          })
+          : addAssignment.push({
+            quantity: quantityWifi,
+            deviceType: EntitlementDeviceType.MSP_WIFI
+          })
+      }
+      if (_.isString(ecFormData.switchLicenses)) {
+        const switchAssignId = getAssignmentId(EntitlementDeviceType.MSP_SWITCH)
+        const quantitySwitch = parseInt(ecFormData.switchLicenses, 10)
+        switchAssignId ?
+          updateAssignment.push({
+            quantity: quantitySwitch,
+            assignmentId: switchAssignId
+          })
+          : addAssignment.push({
+            quantity: quantitySwitch,
+            deviceType: EntitlementDeviceType.MSP_SWITCH
+          })
+      }
+      if (addAssignment.length > 0) {
+        const mspAssignments: MspAssignment = {
+          ownAssignments: true,
+          startDate: today,
+          endDate: expirationDate,
+          assignments: addAssignment
+        }
+        await addMspSubscription({ payload: mspAssignments }).unwrap()
+      }
+      if (updateAssignment.length > 0) {
+        await updateMspSubscription({ payload: updateAssignment }).unwrap()
+      }
+      navigate(linkToSubscriptions, { replace: true })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const checkAvailableLicense =
   (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number) => {
@@ -151,7 +231,7 @@ export function AssignMspLicense () {
       <UI.FieldLabelSubs width='275px'>
         <label>{intl.$t({ defaultMessage: 'Assigned Wi-Fi Subscription' })}</label>
         <Form.Item
-          name='wifiLicense'
+          name='wifiLicenses'
           label=''
           initialValue={0}
           rules={[
@@ -167,7 +247,7 @@ export function AssignMspLicense () {
       <UI.FieldLabelSubs width='275px'>
         <label>{intl.$t({ defaultMessage: 'Assigned Switch Subscription' })}</label>
         <Form.Item
-          name='switchLicense'
+          name='switchLicenses'
           label=''
           initialValue={0}
           rules={[
@@ -220,7 +300,6 @@ export function AssignMspLicense () {
         />
       </UI.FieldLabeServiceDate>
     </div>
-
   }
 
   return (
@@ -233,12 +312,10 @@ export function AssignMspLicense () {
         ]}
       />
       <StepsForm
-        // formRef={formRef}
-        // onFinish={isEditMode ? handleEditLicense : handleAssignLicense}
+        // form={form}
+        onFinish={handleAssignLicense}
         onCancel={() => navigate(linkToSubscriptions)}
-        buttonLabel={{ submit: isEditMode ?
-          intl.$t({ defaultMessage: 'Save' }):
-          intl.$t({ defaultMessage: 'Assign' }) }}
+        buttonLabel={{ submit: intl.$t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm>
           <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>

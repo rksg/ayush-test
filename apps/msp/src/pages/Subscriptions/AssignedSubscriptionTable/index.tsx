@@ -9,13 +9,13 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  useMspEntitlementListQuery
+  useMspAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
+import { MspAssignmentHistory } from '@acx-ui/msp/utils'
 import {
   dateSort,
   defaultSort,
   EntitlementUtil,
-  MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -24,8 +24,9 @@ import * as UI from '../styledComponent'
 
 export function AssignedSubscriptionTable () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
 
-  const columns: TableProps<MspEntitlement>['columns'] = [
+  const columns: TableProps<MspAssignmentHistory>['columns'] = [
     {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'name',
@@ -37,7 +38,7 @@ export function AssignedSubscriptionTable () {
       key: 'deviceSubType',
       render: function (_, row) {
         if (row.deviceType === 'MSP_WIFI')
-          return EntitlementUtil.tempLicenseToString(row.isTrial)
+          return EntitlementUtil.tempLicenseToString(row.trialAssignment)
         return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
       }
     },
@@ -45,6 +46,7 @@ export function AssignedSubscriptionTable () {
       title: $t({ defaultMessage: 'Assigned Devices' }),
       dataIndex: 'quantity',
       key: 'quantity',
+      align: 'center',
       sorter: { compare: sortProp('quantity', defaultSort) },
       render: function (_, row) {
         return row.quantity
@@ -56,7 +58,7 @@ export function AssignedSubscriptionTable () {
       key: 'effectiveDate',
       sorter: { compare: sortProp('effectiveDate', dateSort) },
       render: function (_, row) {
-        const effectiveDate = new Date(Date.parse(row.effectiveDate))
+        const effectiveDate = new Date(Date.parse(row.dateEffective))
         return formatter(DateFormatEnum.DateFormat)(effectiveDate)
       }
     },
@@ -66,7 +68,7 @@ export function AssignedSubscriptionTable () {
       key: 'expirationDate',
       sorter: { compare: sortProp('expirationDate', dateSort) },
       render: function (_, row) {
-        const expirationDate = new Date(Date.parse(row.expirationDate))
+        const expirationDate = new Date(Date.parse(row.dateExpires))
         return formatter(DateFormatEnum.DateFormat)(expirationDate)
       }
     },
@@ -79,7 +81,7 @@ export function AssignedSubscriptionTable () {
       // active license should be first
       defaultSortOrder: 'descend',
       render: function (_, row) {
-        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.dateExpires)
         const TimeLeftWrapper = remainingDays < 0
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
@@ -104,7 +106,7 @@ export function AssignedSubscriptionTable () {
   ]
 
   const AssignedTable = () => {
-    const queryResults = useMspEntitlementListQuery({
+    const queryResults = useMspAssignmentHistoryQuery({
       params: useParams()
     },{
       selectFromResult: ({ data, ...rest }) => ({
@@ -112,12 +114,13 @@ export function AssignedSubscriptionTable () {
         ...rest
       })
     })
+
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
         name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
       }
-    }).filter(rec => rec.status === 'VALID')
+    }).filter(rec => rec.status === 'VALID' && rec.mspEcTenantId === tenantId)
 
     return (
       <Loader states={[queryResults]}>

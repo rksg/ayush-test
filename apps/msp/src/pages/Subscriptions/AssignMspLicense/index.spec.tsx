@@ -97,7 +97,7 @@ describe('AssignMspLicense', () => {
 
     expect(screen.getByText('Assign Subscription')).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Subscriptions' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Assign' })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
 
   })

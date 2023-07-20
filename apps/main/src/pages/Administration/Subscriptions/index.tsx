@@ -126,17 +126,19 @@ const SubscriptionTable = () => {
         return row.quantity
       }
     },
-    ...(isOnboardedMsp ? [
-      {
-        title: $t({ defaultMessage: 'Source' }),
-        dataIndex: 'source',
-        key: 'source',
-        render: function () {
-          // TODO
-          return 'Purchased'
-        }
+    // ...(isOnboardedMsp ? [
+    {
+      title: $t({ defaultMessage: 'Source' }),
+      dataIndex: 'assignedLicense',
+      key: 'assignedLicense',
+      show: isOnboardedMsp,
+      sorter: { compare: sortProp('assignedLicense', defaultSort) },
+      render: function (_, row) {
+        return row.assignedLicense
+          ? $t({ defaultMessage: 'Purchased' }) : $t({ defaultMessage: 'Assigned' })
       }
-    ] : []),
+    },
+    // ] : []),
     {
       title: $t({ defaultMessage: 'Starting Date' }),
       dataIndex: 'effectiveDate',
