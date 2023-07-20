@@ -159,8 +159,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'id',
       dataIndex: 'id',
       width: 90,
-      render: (_, value) =>
-        <RecommendationActions recommendation={value} filters={filters} />
+      render: (_, value) => <RecommendationActions recommendation={value} />
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], [showCrrm]) // '$t' 'basePath' 'intl' are not changing

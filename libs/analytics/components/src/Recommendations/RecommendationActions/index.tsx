@@ -4,7 +4,6 @@ import { Row, Col }               from 'antd'
 import moment, { Moment }         from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
 import { DateTimePicker, Tooltip } from '@acx-ui/components'
 import {
   CalendarOutlined,
@@ -52,16 +51,15 @@ function getFutureTime (value: Moment) {
 }
 
 type ActionButtonProps = Recommendation & {
-  disabled: boolean;
-  type: keyof typeof actionTooltip;
-  filters: AnalyticsFilter;
+  disabled: boolean
+  type: keyof typeof actionTooltip
 }
 
-function ApplyCalender ({ disabled, type, id, code, filters }: ActionButtonProps) {
+function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
   const { $t } = useIntl()
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const onApply = (date: Moment) => {
-    scheduleRecommendation({ id, scheduledAt: date.toISOString(), filters }).unwrap()
+    scheduleRecommendation({ id, scheduledAt: date.toISOString() })
   }
   const futureDate = useRef(getFutureTime(moment()))
   const footerMsg = code.startsWith('c-crrm') && type === 'Apply'
@@ -79,12 +77,9 @@ function ApplyCalender ({ disabled, type, id, code, filters }: ActionButtonProps
   />
 }
 
-function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type' | 'filters'>) {
+function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
   const { $t } = useIntl()
   const [cancelRecommendation] = useCancelRecommendationMutation()
-  const onCancel = () => {
-    cancelRecommendation({ id }).unwrap()
-  }
   return <ActionWrapper key={`cancel-${id}`} $disabled={disabled}>
     { disabled
       ? <CancelCircleSolid />
@@ -93,19 +88,19 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type' | 'fil
         arrowPointAtCenter
         title={$t({ defaultMessage: 'Cancel' })}
       >
-        <CancelCircleOutlined onClick={() => onCancel()} />
+        <CancelCircleOutlined onClick={() => { cancelRecommendation({ id }) }} />
       </Tooltip>}
   </ActionWrapper>
 }
 
 const actions = {
   schedule: (props: ActionButtonProps) => <ApplyCalender {...props} />,
-  cancel: (props: Omit<ActionButtonProps, 'type' | 'filters'>) => <CancelCalendar {...props} />
+  cancel: (props: Omit<ActionButtonProps, 'type'>) => <CancelCalendar {...props} />
 }
 
-const getAvailableActions = (recommendation: Recommendation, filters: AnalyticsFilter) => {
+const getAvailableActions = (recommendation: Recommendation) => {
   const { isMuted, statusEnum } = recommendation
-  const props = { ...recommendation, filters }
+  const props = { ...recommendation }
   if (isMuted) {
     return [
       { icon: actions.schedule({ ...props, disabled: true, type: 'Apply' }) },
@@ -151,11 +146,9 @@ const getAvailableActions = (recommendation: Recommendation, filters: AnalyticsF
   }
 }
 
-export const RecommendationActions = (props: {
-  recommendation: Recommendation,
-  filters: AnalyticsFilter }) => {
-  const { recommendation, filters } = props
-  const actionButtons = getAvailableActions(recommendation, filters)
+export const RecommendationActions = (props: { recommendation: Recommendation }) => {
+  const { recommendation } = props
+  const actionButtons = getAvailableActions(recommendation)
   return <Row gutter={[0, 0]}>
     {actionButtons.map((config, ind) => <Col
       key={ind}

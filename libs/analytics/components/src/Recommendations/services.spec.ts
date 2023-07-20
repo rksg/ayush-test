@@ -165,7 +165,7 @@ describe('Recommendation services', () => {
       { wrapper: Provider }
     )
     act(() => {
-      result.current[0]({ id: 'test', scheduledAt: '7-15-2023', filters: props })
+      result.current[0]({ id: 'test', scheduledAt: '7-15-2023' })
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

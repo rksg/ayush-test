@@ -5,8 +5,7 @@ import { defineMessage } from 'react-intl'
 import {
   nodeTypes,
   getFilterPayload,
-  formattedPath,
-  AnalyticsFilter
+  formattedPath
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { recommendationApi }         from '@acx-ui/store'
@@ -60,7 +59,6 @@ export interface MutationResponse {
 interface SchedulePayload {
   id: string
   scheduledAt: string
-  filters: AnalyticsFilter
 }
 
 interface ScheduleResponse {
@@ -201,8 +199,7 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: {
           id: payload.id,
-          scheduledAt: payload.scheduledAt,
-          path: getFilterPayload(payload.filters)
+          scheduledAt: payload.scheduledAt
         }
       }),
       invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
