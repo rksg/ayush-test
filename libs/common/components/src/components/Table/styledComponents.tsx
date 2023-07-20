@@ -48,6 +48,7 @@ export const FilterSelect = styled(Select)`
 export const CloseButton = styled(Button).attrs({ icon: <CancelCircle /> })`
   border: none;
   box-shadow: none;
+  color: var(--acx-accents-blue-50);
   &.ant-btn-icon-only {
     width: 16px;
     height: 16px;

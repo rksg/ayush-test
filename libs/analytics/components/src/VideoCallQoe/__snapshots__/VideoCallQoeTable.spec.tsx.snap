@@ -815,7 +815,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
+                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 ilAzXH"
                                   data-id="table-clear-btn"
                                   title="Clear selection"
                                   type="button"

@@ -27,15 +27,15 @@ describe('RecommendationActions', () => {
   it('should render active status icons correctly', async () => {
     const testCases = [
       { statusEnum: 'new' as 'new',
-        icons: ['CheckMarkCircleOutline', 'ChevronLeftCircleOutlined'] },
+        icons: ['CheckMarkCircleOutline', 'Reload'] },
       { statusEnum: 'applyscheduled' as 'applyscheduled', icons: [
-        'CalendarOutlined', 'CancelCircleOutlined', 'ChevronLeftCircleOutlined'] },
+        'CalendarOutlined', 'CancelCircleOutlined', 'Reload'] },
       { statusEnum: 'applied' as 'applied', icons: [
-        'CheckMarkCircleOutline', 'ChevronLeftCircleOutlined'] },
+        'CheckMarkCircleOutline', 'Reload'] },
       { statusEnum: 'revertscheduled' as 'revertscheduled', icons: [
         'CheckMarkCircleOutline', 'CancelCircleOutlined' ,'CalendarOutlined'] },
       { statusEnum: 'applyfailed' as 'applyfailed',
-        icons: ['CheckMarkCircleOutline', 'ChevronLeftCircleOutlined'] }
+        icons: ['CheckMarkCircleOutline', 'Reload'] }
     ].map(async ({ statusEnum, icons }) => {
       render(
         <RecommendationActions recommendation={{ ...mockedCrrm, statusEnum }} />,
@@ -55,7 +55,7 @@ describe('RecommendationActions', () => {
       { wrapper: Provider }
     )
     expect(screen.getByTestId('CheckMarkCircleOutline')).toBeVisible()
-    expect(screen.getByTestId('ChevronLeftCircleOutlined')).toBeVisible()
+    expect(screen.getByTestId('Reload')).toBeVisible()
   })
   it('should render delete status icon correctly', async () => {
     render(
@@ -66,7 +66,7 @@ describe('RecommendationActions', () => {
     expect(screen.queryByTestId('CancelCircleOutlined')).toBeNull()
     expect(screen.queryByTestId('CancelCircleSolid')).toBeNull()
     expect(screen.queryByTestId('CheckMarkCircleOutline')).toBeNull()
-    expect(screen.queryByTestId('ChevronLeftCircleOutlined')).toBeNull()
+    expect(screen.queryByTestId('Reload')).toBeNull()
   })
   it('should handle apply mutation correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
