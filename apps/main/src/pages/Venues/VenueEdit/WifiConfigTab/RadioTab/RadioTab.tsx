@@ -55,8 +55,9 @@ export function RadioTab () {
     )
   }]
 
+  // put load balancing before external
   if (supportLoadBalancing) {
-    anchorItems.push({
+    anchorItems.splice(-1, 0, {
       title: loadBalancingTitle,
       content: (
         <>
