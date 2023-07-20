@@ -45,12 +45,12 @@ describe('LoadControlForm', () => {
 
     const uploadLimitCheckbox = screen.getByTestId('uploadLimit')
     await userEvent.click(uploadLimitCheckbox)
-    expect(screen.getByText(/200 mbps/i)).toBeVisible()
+    expect(screen.getByText(/500 mbps/i)).toBeVisible()
     await userEvent.click(uploadLimitCheckbox)
 
     const downloadLimitCheckbox = screen.getByTestId('downloadLimit')
     await userEvent.click(downloadLimitCheckbox)
-    expect(screen.getByText(/200 mbps/i)).toBeVisible()
+    expect(screen.getByText(/500 mbps/i)).toBeVisible()
     await userEvent.click(downloadLimitCheckbox)
   })
 
