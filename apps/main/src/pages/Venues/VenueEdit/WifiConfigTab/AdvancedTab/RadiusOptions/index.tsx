@@ -20,8 +20,8 @@ export function RadiusOptions () {
   const {
     editContextData,
     setEditContextData,
-    editNetworkingContextData,
-    setEditNetworkingContextData
+    editAdvanceSettingContext,
+    setEditAdvanceSettingContext
   } = useContext(VenueEditContext)
 
   const form = Form.useFormInstance()
@@ -74,13 +74,13 @@ export function RadiusOptions () {
   const handleChanged = () => {
     setEditContextData && setEditContextData({
       ...editContextData,
-      unsavedTabKey: 'networking',
-      tabTitle: $t({ defaultMessage: 'Networking' }),
+      unsavedTabKey: 'settings',
+      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
       isDirty: true
     })
 
-    setEditNetworkingContextData && setEditNetworkingContextData({
-      ...editNetworkingContextData,
+    editAdvanceSettingContext && setEditAdvanceSettingContext({
+      ...editAdvanceSettingContext,
       updateRadiusOptions: handleUpdateRadiusOptions
     })
   }
@@ -89,7 +89,6 @@ export function RadiusOptions () {
     isLoading: getVenueRadiusOptions.isLoading,
     isFetching: isUpdatingVenueRadiusOptions
   }]}>
-
     <StepsForm.FieldLabel width={'280px'}>
       {$t({ defaultMessage: 'Override the settings in active networks' })}
       <Form.Item

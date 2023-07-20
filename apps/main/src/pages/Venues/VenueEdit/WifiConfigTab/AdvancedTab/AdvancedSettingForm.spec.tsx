@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider, store }                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { venueApi }                                                                  from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
+import { Provider, store }                                                           from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -15,10 +16,16 @@ import {
 } from '../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../index'
 
-import { AdvancedSettingForm } from './AdvancedSettingForm'
+import { AdvancedSettingForm, AdvanceSettingContext } from './AdvancedSettingForm'
+
+
+const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
+
 
 let editContextData = {} as EditContext
 const setEditContextData = jest.fn()
+let editAdvanceSettingContext = {} as AdvanceSettingContext
+const setEditAdvanceSettingContext = jest.fn()
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -61,7 +68,11 @@ describe('AdvancedSettingForm', () => {
     }
     render(
       <Provider>
-        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+        <VenueEditContext.Provider value={{
+          editContextData,
+          setEditContextData,
+          editAdvanceSettingContext,
+          setEditAdvanceSettingContext }}>
           <AdvancedSettingForm />
         </VenueEditContext.Provider>
       </Provider>, {
@@ -81,7 +92,11 @@ describe('AdvancedSettingForm', () => {
     }
     render(
       <Provider>
-        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+        <VenueEditContext.Provider value={{
+          editContextData,
+          setEditContextData,
+          editAdvanceSettingContext,
+          setEditAdvanceSettingContext }}>
           <AdvancedSettingForm />
         </VenueEditContext.Provider>
       </Provider>, {
@@ -113,7 +128,11 @@ describe('AdvancedSettingForm', () => {
     }
     render(
       <Provider>
-        <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
+        <VenueEditContext.Provider value={{
+          editContextData,
+          setEditContextData,
+          editAdvanceSettingContext,
+          setEditAdvanceSettingContext }}>
           <AdvancedSettingForm />
         </VenueEditContext.Provider>
       </Provider>, {
@@ -125,5 +144,32 @@ describe('AdvancedSettingForm', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should show Radius Options if feature flag is On', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const advanceSettingContext = {
+      updateAccessPointLED: jest.fn(),
+      updateRadiusOptions: jest.fn()
+    }
+
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        editContextData: {},
+        setEditContextData: jest.fn(),
+        editAdvanceSettingContext: advanceSettingContext,
+        setEditAdvanceSettingContext: jest.fn()
+      }}>
+        <AdvancedSettingForm />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => screen.findByText('Override the settings in active networks'))
+
+    userEvent.click(
+      await screen.findByRole('switch', { name: 'Override the settings in active networks' })
+    )
+    await screen.findByText('NAS ID')
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })

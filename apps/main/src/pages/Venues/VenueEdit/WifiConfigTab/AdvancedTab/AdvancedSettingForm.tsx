@@ -1,244 +1,98 @@
-import { useState, useEffect, useContext } from 'react'
+import { useContext } from 'react'
 
-import {
-  Select,
-  Switch,
-  Row,
-  Col,
-  Space
-} from 'antd'
-import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, StepsFormLegacy, Table, TableProps, Loader, showToast }                                                from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                                                           from '@acx-ui/icons'
-import { useGetVenueLedOnQuery, useGetVenueApModelsQuery, useUpdateVenueLedOnMutation, useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
-import { VenueLed, redirectPreviousPage }                                                                               from '@acx-ui/rc/utils'
+import { StepsFormLegacy, AnchorLayout } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { redirectPreviousPage }          from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
-  useParams
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext, EditContext } from '../../index'
+import { VenueEditContext } from '../../index'
+
+import { AccessPointLED } from './AccessPointLED'
+import { RadiusOptions }  from './RadiusOptions'
 
 export interface ModelOption {
   label: string
   value: string
 }
 
+export interface AdvanceSettingContext {
+  updateAccessPointLED?: (() => void),
+  updateRadiusOptions?: (() => void)
+}
+
 export function AdvancedSettingForm () {
   const { $t } = useIntl()
-  const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
-  const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
-  const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
-  const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
-  const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
-  const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
-  const defaultArray: VenueLed[] = []
-  const defaultOptionArray: ModelOption[] = []
-  const [tableData, setTableData] = useState(defaultArray)
-  const [selectedModels, setSelectedModels] = useState([] as string[])
-  const [modelOptions, setModelOptions] = useState(defaultOptionArray)
-  const [supportModelOptions, setSupportModelOptions] = useState(defaultOptionArray)
+  const {
+    editContextData,
+    setEditContextData,
+    editAdvanceSettingContext,
+    setEditAdvanceSettingContext,
+    previousPath } = useContext(VenueEditContext)
+  const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
 
-  useEffect(() => {
-    // set default data when switching sub tab
-    const tab = activeSubTab as keyof EditContext['tempData']
-    const data = editContextData?.tempData?.[tab] || undefined
-    setEditContextData({
-      ...editContextData,
-      unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
-      oldData: data,
-      newData: data,
-      isDirty: false,
-      updateChanges: handleUpdateSetting,
-      setData: setTableData
-    })
-  }, [navigate])
 
-  useEffect(() => {
-    const apModels = venueCaps?.data?.apModels
-    if (apModels?.length) {
-      // @ts-ignore
-      const supportModels: string[] = apModels?.filter(apModel => apModel.ledOn)
-        .map(apModel => apModel.model)
-      const venueApLeds = venueLed?.data?.map((item: VenueLed) => ({
-        ...item,
-        manual: !venueApModels?.data?.models?.includes(item.model)
-      }))
-      const existingModels = venueApLeds?.map((item: VenueLed) => item.model)
-      const availableModels = supportModels
-        ?.filter((item) => existingModels ? existingModels?.indexOf(item) === -1 : item)
-        .reduce((opts: ModelOption[], item) => [...opts, { label: item, value: item }], [])
-
-      setTableData((venueApLeds as VenueLed[])?.map(
-        (item: VenueLed) => ({ ...item, key: item.model, value: item.model })
-      ))
-      setSupportModelOptions(supportModels?.reduce((opts: ModelOption[], item) =>
-        [...opts, { label: item, value: item }], []))
-      setSelectedModels(existingModels as string[])
-      setModelOptions(availableModels)
-    }
-  }, [venueLed.data, venueCaps.data])
-
-  useEffect(() => {
-    setEditContextData({
-      ...editContextData,
-      unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
-      newData: tableData,
-      oldData: (venueLed?.data as VenueLed[])?.map(
-        (item: VenueLed) => ({
-          ...item,
-          key: item.model,
-          value: item.model,
-          manual: !venueApModels?.data?.models?.includes(item.model)
-        })
-      ),
-      isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, tableData) : false,
-      hasError: tableData?.filter(item => !item.model).length > 0,
-      setData: setTableData,
-      updateChanges: handleUpdateSetting
-    })
-  }, [tableData])
-
-  const columns: TableProps<VenueLed>['columns'] = [{
-    title: $t({ defaultMessage: 'Model' }),
-    dataIndex: 'model',
-    key: 'model',
-    width: 150,
-    render: function (data) {
-      return (data ? data : <Select
-        size='small'
-        options={modelOptions}
-        placeholder={$t({ defaultMessage: 'Select Model...' })}
-        onChange={handleChange}
-      />)
-    }
-  }, {
-    title: $t({ defaultMessage: 'LEDs Status' }),
-    dataIndex: 'ledEnabled',
-    key: 'ledEnabled',
-    render: function (data, row) {
-      return <Switch
-        checked={!!data}
-        onClick={(checked) => {
-          setTableData([
-            ...tableData.map((item) => {
-              if (item.model === row.model) item.ledEnabled = checked
-              return item
-            })
-          ])
-        }}
-      />
-    }
-  }, {
-    key: 'action',
-    dataIndex: 'action',
-    render: (data, row) => row.manual ? <Button
-      key='delete'
-      role='deleteBtn'
-      ghost={true}
-      icon={<DeleteOutlinedIcon />}
-      style={{ height: '16px' }}
-      onClick={() => handleDelete(row.model)}
-    /> : null
+  const items = [{
+    title: $t({ defaultMessage: 'Access Point LED' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='access-point-led'>
+        { $t({ defaultMessage: 'Access Point LED' }) }
+      </StepsFormLegacy.SectionTitle>
+      <AccessPointLED />
+    </>
   }]
 
-  const handleAdd = () => {
-    setTableData([...tableData, { ledEnabled: true, model: '', key: '', manual: true }])
-  }
-  const handleDelete = (model: string) => {
-    const models = selectedModels.filter((item) => item !== model)
-    setSelectedModels(models)
-    setTableData(tableData.filter(item => item.model !== model))
-    setModelOptions(supportModelOptions.filter(item =>
-      models.indexOf(item.value) === -1)
-    )
-  }
-  const handleChange = (model: string) => {
-    const models = [...selectedModels, model]
-    setSelectedModels(models)
-    setTableData([
-      ...tableData.map((item, index) => {
-        if (index === tableData.length - 1) {
-          item.model = model
-          item.key = model
-          item.manual = !venueApModels?.data?.models?.includes(item.model)
-        }
-        return item
-      })
-    ])
-    setModelOptions([
-      ...modelOptions.filter(item =>
-        models.indexOf(item.value) === -1
-      )])
+  if (supportRadiusOptions) {
+    items.push({
+      title: $t({ defaultMessage: 'RADIUS Options' }),
+      content: <>
+        <StepsFormLegacy.SectionTitle id='radius-options'>
+          { $t({ defaultMessage: 'RADIUS Options' }) }
+        </StepsFormLegacy.SectionTitle>
+        <RadiusOptions />
+      </> })
   }
 
-  const handleUpdateSetting = async () => {
-    const isValid = !tableData.find(data => !data.model)
-    if (!isValid) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Please select model' })
+  const handleUpdateAllSettings = async () => {
+    try {
+      await editAdvanceSettingContext?.updateAccessPointLED?.()
+      await editAdvanceSettingContext?.updateRadiusOptions?.()
+
+      setEditContextData({
+        ...editContextData,
+        unsavedTabKey: 'settings',
+        isDirty: false
       })
-    } else {
-      try {
-        setEditContextData({
-          ...editContextData,
-          oldData: editContextData?.newData,
-          isDirty: false
-        })
-        await updateVenueLedOn({
-          params: { tenantId, venueId },
-          payload: tableData.filter(data => data.model)
-        })
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
+
+      if(editAdvanceSettingContext) {
+        const newData = { ...editAdvanceSettingContext }
+        delete editAdvanceSettingContext.updateAccessPointLED
+        delete editAdvanceSettingContext.updateRadiusOptions
+        setEditAdvanceSettingContext(newData)
       }
+
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
   return (
     <StepsFormLegacy
-      onFinish={() => handleUpdateSetting()}
+      onFinish={() => handleUpdateAllSettings()}
       onCancel={() =>
         redirectPreviousPage(navigate, previousPath, basePath)
       }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <Row>
-          <Col span={7}>
-            <Loader states={[{
-              isLoading: venueLed.isLoading || venueCaps.isLoading,
-              isFetching: isUpdatingVenueLedOn
-            }]}>
-              <Space size={8} direction='vertical'>
-                <Table
-                  columns={columns}
-                  dataSource={tableData}
-                  type='form'
-                />
-                <Button
-                  onClick={handleAdd}
-                  type='link'
-                  disabled={venueLed.isLoading
-                    || !modelOptions.length
-                    || !!tableData?.find((item) => !item.model)
-                  }
-                  size='small'>
-                  {$t({ defaultMessage: 'Add Model' })}
-                </Button>
-              </Space>
-            </Loader>
-          </Col>
-        </Row>
+        <AnchorLayout items={items} offsetTop={275} />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )
