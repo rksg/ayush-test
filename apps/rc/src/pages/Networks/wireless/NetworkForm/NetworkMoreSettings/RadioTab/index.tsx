@@ -111,10 +111,10 @@ export function RadioTab () {
           name='bssMinimumPhyRate'
           label={$t({ defaultMessage: 'BSS Min Rate:' })}
           style={{ marginBottom: '15px' }}
+          initialValue={BssMinRateEnum.VALUE_NONE}
           children={
             <Select
               onChange={onBbsMinRateChange}
-              defaultValue={BssMinRateEnum.VALUE_NONE}
               style={{ width: '150px' }}>
               <Option value={BssMinRateEnum.VALUE_NONE}>
                 {$t({ defaultMessage: 'None' })}
@@ -145,12 +145,12 @@ export function RadioTab () {
           name='managementFrameMinimumPhyRate'
           label={$t({ defaultMessage: 'Mgmt Tx Rate:' })}
           style={{ marginBottom: '15px' }}
+          initialValue={MgmtTxRateEnum.VALUE_6}
           children={
             <Select
               data-testid='mgmtTxRateSelect'
               disabled={enableOfdmOnly ||
                   (bssMinimumPhyRate !== BssMinRateEnum.VALUE_NONE)}
-              defaultValue={MgmtTxRateEnum.VALUE_6}
               style={{ width: '150px' }}>
               <Option value={MgmtTxRateEnum.VALUE_1}>
                 {$t({ defaultMessage: '1 Mbps' })}

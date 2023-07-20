@@ -13,7 +13,8 @@ import { useParams } from 'react-router-dom'
 import { Button, Modal }                     from '@acx-ui/components'
 import { useGetWifiCallingServiceListQuery } from '@acx-ui/rc/services'
 
-import { WifiCallingSettingContext } from './ServicesForm'
+import { WifiCallingSettingContext } from './NetworkControlTab'
+
 
 export function WifiCallingSettingModal () {
   const form = Form.useFormInstance()

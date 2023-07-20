@@ -7,7 +7,9 @@ import { QosPriorityEnum, WifiCallingSetting } from '@acx-ui/rc/utils'
 
 import { wifiCallingQosPriorityLabelMapping } from '../../../../Services/contentsMap'
 
-import { WifiCallingSettingContext } from './ServicesForm'
+import { WifiCallingSettingContext } from './NetworkControlTab'
+
+
 
 
 const WifiCallingSettingTable = () => {

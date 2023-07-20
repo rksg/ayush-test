@@ -1,67 +1,22 @@
-import React, { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 import {
-  Checkbox,
-  Collapse,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Switch,
-  Space
-} from 'antd'
+  Form } from 'antd'
 import { get }                    from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Tabs, Tooltip }                                                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
-import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                                    from '@acx-ui/utils'
+import { Button, Tabs }    from '@acx-ui/components'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
 
-import NetworkFormContext                                            from '../NetworkFormContext'
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile } from '../utils'
-import VLANPoolInstance                                              from '../VLANPoolInstance'
+import NetworkFormContext from '../NetworkFormContext'
 
-import { AccessControlForm }  from './AccessControlForm'
-import { AdvancedTab }        from './AdvancedTab'
-import { LoadControlForm }    from './LoadControlForm'
-import { NetworkControlTab }  from './NetworkControlTab'
-import { NetworkingTab }      from './NetworkingTab'
-import { RadioTab }           from './RadioTab'
-import { ServicesForm }       from './ServicesForm'
-import * as UI                from './styledComponents'
-import { UserConnectionForm } from './UserConnectionForm'
-import { VlanTab }            from './VlanTab'
+import { AdvancedTab }       from './AdvancedTab'
+import { NetworkControlTab } from './NetworkControlTab'
+import { NetworkingTab }     from './NetworkingTab'
+import { RadioTab }          from './RadioTab'
+import * as UI               from './styledComponents'
+import { VlanTab }           from './VlanTab'
 
-
-
-const { Panel } = Collapse
-
-const { useWatch } = Form
-const { Option } = Select
-
-enum BssMinRateEnum {
-  VALUE_NONE = 'default',
-  VALUE_1 = '1',
-  VALUE_2 = '2',
-  VALUE_5_5 = '5.5',
-  VALUE_12 = '12',
-  VALUE_24 = '24'
-}
-
-enum MgmtTxRateEnum {
-  VALUE_1 = '1',
-  VALUE_2 = '2',
-  VALUE_5_5 = '5.5',
-  VALUE_6 = '6',
-  VALUE_9 = '9',
-  VALUE_11 = '11',
-  VALUE_12 = '12',
-  VALUE_18 = '18',
-  VALUE_24 = '24'
-}
 
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
@@ -131,7 +86,8 @@ export function NetworkMoreSettingsForm (props: {
   }
 }
 
-
+// This will be removed when this feature DoD.
+/*
 export function MoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
 }) {
@@ -791,6 +747,7 @@ export function MoreSettingsForm (props: {
     </UI.CollapsePanel>
   )
 }
+*/
 
 const MoreSettingsTabsInfo = [
   {
