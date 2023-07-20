@@ -24,6 +24,13 @@ const list =
             lastName: 'eleu1658',
             name: 'msp',
             role: RolesEnum.PRIME_ADMIN
+          },
+          {
+            id: '0c96c591260542c188f6a12c62bb3923',
+            email: 'guest@guest.com',
+            lastName: 'Smith',
+            name: 'Jack',
+            role: RolesEnum.GUEST_MANAGER
           }
         ]
 // const delegatedAdmins =
@@ -54,8 +61,8 @@ describe('AssignEcMspAdminsDrawer', () => {
     })
     jest.spyOn(services, 'useAssignMultiMspEcDelegatedAdminsMutation')
     mockServer.use(
-      rest.put(
-        MspUrlsInfo.updateMspEcDelegatedAdmins.url,
+      rest.post(
+        MspUrlsInfo.assignMultiMspEcDelegatedAdmins.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
@@ -126,7 +133,8 @@ describe('AssignEcMspAdminsDrawer', () => {
 
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(3)
+    expect(checkboxes).toHaveLength(4)
+    expect(checkboxes[3]).toBeDisabled()
 
     const input = screen.getByPlaceholderText('Search Email')
     await userEvent.type(input, 'ms')
@@ -151,7 +159,8 @@ describe('AssignEcMspAdminsDrawer', () => {
 
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(3)
+    expect(checkboxes).toHaveLength(4)
+    expect(checkboxes[3]).toBeDisabled()
     // await userEvent.click(checkboxes[1])
     // await userEvent.click(checkboxes.at(2)!)
 
@@ -160,7 +169,7 @@ describe('AssignEcMspAdminsDrawer', () => {
 
     expect(mockedCloseDialog).not.toHaveBeenCalledWith(false)
   })
-  xit('should assign correctly', async () => {
+  it('should assign correctly', async () => {
     const mockedCloseDialog = jest.fn()
     render(
       <Provider>
@@ -174,12 +183,24 @@ describe('AssignEcMspAdminsDrawer', () => {
 
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes).toHaveLength(3)
-    await userEvent.click(checkboxes.at(1)!)
+    expect(checkboxes).toHaveLength(4)
+    expect(checkboxes[3]).toBeDisabled()
+    await userEvent.click(checkboxes[0])
+    await userEvent.click(checkboxes[1])
     const dropdowns = screen.getAllByRole('combobox')
     expect(dropdowns).toHaveLength(2)
-    fireEvent.mouseDown(dropdowns.at(0)!)
-    await userEvent.click(screen.getByText('Prime Admin'))
+    // Click dropdown twice for options to become visible
+    fireEvent.mouseDown(dropdowns[0])
+    fireEvent.mouseDown(dropdowns[0])
+    expect(screen.getAllByText('Guest Manager')[0]).toBeVisible()
+    expect(screen.getAllByText('Guest Manager')[1]).toBeVisible()
+    fireEvent.click(screen.getAllByText('Guest Manager')[1])
+    // Click dropdown twice for options to become visible
+    fireEvent.mouseDown(dropdowns[1])
+    fireEvent.mouseDown(dropdowns[1])
+    expect(screen.getAllByText('Prime Admin')[0]).toBeVisible()
+    expect(screen.getAllByText('Prime Admin')[1]).toBeVisible()
+    fireEvent.click(screen.getAllByText('Prime Admin')[1])
     await userEvent.click(screen.getByRole('button', { name: 'Assign' }))
 
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
@@ -191,5 +212,82 @@ describe('AssignEcMspAdminsDrawer', () => {
     await waitFor(() =>
       expect(mockedCloseDialog).toHaveBeenCalledTimes(3))
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
+  })
+  it('should not assign if no tenantids given', async () => {
+    const mockedCloseDialog = jest.fn()
+    render(
+      <Provider>
+        <AssignEcMspAdminsDrawer visible={true}
+          setVisible={mockedCloseDialog}
+          setSelected={jest.fn()}
+          tenantIds={[]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers/assign' }
+      })
+
+    expect(await screen.findByRole('dialog')).toBeVisible()
+    expect(services.useAssignMultiMspEcDelegatedAdminsMutation).toHaveBeenCalledTimes(1)
+    const checkboxes = screen.getAllByRole('checkbox')
+    expect(checkboxes).toHaveLength(4)
+    expect(checkboxes[3]).toBeDisabled()
+    await userEvent.click(checkboxes[0])
+    await userEvent.click(checkboxes[1])
+    const dropdowns = screen.getAllByRole('combobox')
+    expect(dropdowns).toHaveLength(2)
+    // Click dropdown twice for options to become visible
+    fireEvent.mouseDown(dropdowns[0])
+    fireEvent.mouseDown(dropdowns[0])
+    expect(screen.getAllByText('Guest Manager')[0]).toBeVisible()
+    expect(screen.getAllByText('Guest Manager')[1]).toBeVisible()
+    fireEvent.click(screen.getAllByText('Guest Manager')[1])
+    // Click dropdown twice for options to become visible
+    fireEvent.mouseDown(dropdowns[1])
+    fireEvent.mouseDown(dropdowns[1])
+    expect(screen.getAllByText('Prime Admin')[0]).toBeVisible()
+    expect(screen.getAllByText('Prime Admin')[1]).toBeVisible()
+    fireEvent.click(screen.getAllByText('Prime Admin')[1])
+    await userEvent.click(screen.getByRole('button', { name: 'Assign' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+    await waitFor(()=>
+      expect(services.useAssignMultiMspEcDelegatedAdminsMutation).not.toHaveLastReturnedWith(value))
+    await waitFor(() =>
+      expect(mockedCloseDialog).toHaveBeenCalledTimes(3))
+    expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
+  })
+  it('should close correctly', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AssignEcMspAdminsDrawer visible={true}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+          tenantIds={[params.tenantId]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers/assign' }
+      })
+
+    expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+    expect(mockedCloseDrawer).toHaveBeenCalledWith(false)
+  })
+  it('cancel button should close drawer', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <AssignEcMspAdminsDrawer visible={true}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+          tenantIds={[params.tenantId]} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers/assign' }
+      })
+
+    expect(mockedCloseDrawer).not.toHaveBeenCalledWith(false)
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(mockedCloseDrawer).toHaveBeenCalledWith(false)
   })
 })

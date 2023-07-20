@@ -506,8 +506,8 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Reactivate' }),
         visible: (selectedRows) => {
-          if(selectedRows.length !== 1 && selectedRows[0] &&
-            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL')) {
+          if(selectedRows.length !== 1 || (selectedRows[0] &&
+            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL'))) {
             return false
           }
           return true

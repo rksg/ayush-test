@@ -60,6 +60,7 @@ const list = {
       id: '701fe9df5f6b4c17928a29851c07cc05',
       installer: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
+      mspInstallerAdminCount: 1,
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
       mspEcAdminCount: 1,
       name: 'ec 222',
@@ -76,6 +77,7 @@ const list = {
       id: '701fe9df5f6b4c17928a29851c07cc06',
       integrator: '675dc01dc28846c383219b00d2f28f48',
       mspAdminCount: 1,
+      mspIntegratorAdminCount: 1,
       mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
       mspEcAdminCount: 1,
       name: 'ec 333',
@@ -401,6 +403,33 @@ describe('MspCustomers', () => {
       expect(services.useDeleteMspEcMutation).toHaveLastReturnedWith(value))
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).toBeNull())
+  })
+  it('should open drawer for multi-selected rows', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    const row1 = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row1).getByRole('checkbox'))
+    const row2 = await screen.findByRole('row', { name: /ec 333/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+
+    expect(screen.getByText('2 selected')).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Resend Invitation Email' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Reactivate' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Deactivate' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toBeVisible()
+    expect(screen.getByText('Assign MSP Administrators')).toBeVisible()
   })
   it('should render table for support user', async () => {
     const supportUserProfile = { ...userProfile }

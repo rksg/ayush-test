@@ -60,26 +60,20 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
 
   const handleSave = () => {
     let payload: AssignedMultiEcMspAdmins[] = []
-    if (selectedRows && selectedRows.length > 0) {
-      selectedRows.forEach((element:MspAdministrator) => {
-        const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
-        payload.push ({
-          mspAdminId: element.id,
-          delegatedRole: role as RolesEnum,
-          mspEcIds: tenantIds
-        })
+    selectedRows.forEach((element:MspAdministrator) => {
+      const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
+      payload.push ({
+        mspAdminId: element.id,
+        delegatedRole: role as RolesEnum,
+        mspEcIds: tenantIds
       })
-    } else {
-      return
-    }
-    if (tenantIds) {
-      saveMspAdmins({ payload })
-        .then(() => {
-          setSelected(selectedRows)
-          setVisible(false)
-          resetFields()
-        })
-    }
+    })
+    saveMspAdmins({ payload })
+      .then(() => {
+        setSelected(selectedRows)
+        setVisible(false)
+        resetFields()
+      })
     setVisible(false)
   }
 
