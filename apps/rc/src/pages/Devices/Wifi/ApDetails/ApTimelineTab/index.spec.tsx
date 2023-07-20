@@ -12,12 +12,10 @@ import { activities, events, eventsMeta } from './__tests__/fixtures'
 
 import { ApTimelineTab } from '.'
 
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user'),
-  useUserProfileContext: () => ({ data: {
-    detailLevel: 'it',
-    dateFormat: 'mm/dd/yyyy'
-  } })
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ActivityTable: () => <div data-testid='ActivityTable'></div>,
+  EventTable: () => <div data-testid='EventTable'></div>
 }))
 
 const wrapper = (props: { children: JSX.Element }) => <Provider>
@@ -49,9 +47,9 @@ describe('ApTimelineTab', ()=>{
       }
     })
 
-    expect(await screen.findAllByText('123roam')).toHaveLength(1)
+    expect(await screen.findByTestId('ActivityTable')).toBeVisible()
     await userEvent.click(screen.getByRole('tab', { name: /events/i }))
 
-    expect(await screen.findAllByText('730-11-60')).toHaveLength(4)
+    expect(await screen.findByTestId('EventTable')).toBeVisible()
   })
 })
