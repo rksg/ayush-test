@@ -23,8 +23,8 @@ import {
   DnsProxyRule
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
-import { DnsProxyContext } from './NetworkControlTab'
 
+import { DnsProxyContext } from './NetworkControlTab'
 
 
 interface DnsProxyListData {
