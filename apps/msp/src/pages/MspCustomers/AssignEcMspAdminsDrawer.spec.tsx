@@ -10,40 +10,29 @@ import { RolesEnum }                                              from '@acx-ui/
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
 
 const list =
-        [
-          {
-            id: 'a22618b0701048c9820dfbeb87818252',
-            email: 'myreadonly@my.com',
-            lastName: 'Chou',
-            name: 'Kenny',
-            role: RolesEnum.READ_ONLY
-          },
-          {
-            id: '9b85c591260542c188f6a12c62bb3912',
-            email: 'msp.eleu1658@rwbigdog.com',
-            lastName: 'eleu1658',
-            name: 'msp',
-            role: RolesEnum.PRIME_ADMIN
-          },
-          {
-            id: '0c96c591260542c188f6a12c62bb3923',
-            email: 'guest@guest.com',
-            lastName: 'Smith',
-            name: 'Jack',
-            role: RolesEnum.GUEST_MANAGER
-          }
-        ]
-// const delegatedAdmins =
-// [
-//   {
-//     msp_admin_id: 'a22618b0701048c9820dfbeb87818252',
-//     msp_admin_role: RolesEnum.GUEST_MANAGER
-//   },
-//   {
-//     msp_admin_id: '9b85c591260542c188f6a12c62bb3912',
-//     msp_admin_role: RolesEnum.ADMINISTRATOR
-//   }
-// ]
+[
+  {
+    id: 'a22618b0701048c9820dfbeb87818252',
+    email: 'myreadonly@my.com',
+    lastName: 'Chou',
+    name: 'Kenny',
+    role: RolesEnum.READ_ONLY
+  },
+  {
+    id: '9b85c591260542c188f6a12c62bb3912',
+    email: 'msp.eleu1658@rwbigdog.com',
+    lastName: 'eleu1658',
+    name: 'msp',
+    role: RolesEnum.PRIME_ADMIN
+  },
+  {
+    id: '0c96c591260542c188f6a12c62bb3923',
+    email: 'guest@guest.com',
+    lastName: 'Smith',
+    name: 'Jack',
+    role: RolesEnum.GUEST_MANAGER
+  }
+]
 
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
@@ -112,11 +101,6 @@ describe('AssignEcMspAdminsDrawer', () => {
     expect(screen.getByText('msp')).toBeVisible()
     expect(screen.getByText('myreadonly@my.com')).toBeVisible()
     expect(screen.getByText('msp.eleu1658@rwbigdog.com')).toBeVisible()
-    // expect(screen.getByText('2 selected')).toBeVisible()
-
-    // Assert Role dropdown is populated correctly
-    // expect(screen.getByText('Guest Manager')).toBeVisible()
-    // expect(screen.getByText('Administrator')).toBeVisible()
     expect(screen.queryByText('Prime Admin')).toBeVisible()
     expect(screen.queryByText('Read Only')).toBeVisible()
   })
@@ -161,10 +145,6 @@ describe('AssignEcMspAdminsDrawer', () => {
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(4)
     expect(checkboxes[3]).toBeDisabled()
-    // await userEvent.click(checkboxes[1])
-    // await userEvent.click(checkboxes.at(2)!)
-
-    // expect(await screen.findByText('Please select at least one MSP administrator')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Assign' }))
 
     expect(mockedCloseDialog).not.toHaveBeenCalledWith(false)

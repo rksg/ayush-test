@@ -113,8 +113,8 @@ export function MspCustomers () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
-  const isAssignMultipleEcEnabled = true
-  // useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
+  const isAssignMultipleEcEnabled =
+    useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -441,7 +441,7 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Edit' }),
         visible: (selectedRows) => {
-          return (isAssignMultipleEcEnabled && selectedRows.length === 1)
+          return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
@@ -466,7 +466,7 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
         visible: (selectedRows) => {
-          return (isAssignMultipleEcEnabled && selectedRows.length === 1)
+          return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
@@ -534,7 +534,7 @@ export function MspCustomers () {
       {
         label: $t({ defaultMessage: 'Delete' }),
         visible: (selectedRows) => {
-          return (isAssignMultipleEcEnabled && selectedRows.length === 1)
+          return (selectedRows.length === 1)
         },
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({

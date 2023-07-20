@@ -30,10 +30,15 @@ interface AssignEcMspAdminsDrawerProps {
   setSelected: (selected: MspAdministrator[]) => void
 }
 
-interface AssignedMultiEcMspAdmins {
+interface SelectedMspMspAdmins {
   mspAdminId: string
   delegatedRole: RolesEnum
-  mspEcIds: string[]
+}
+
+interface AssignedMultiEcMspAdmins {
+  operation: string
+  mspEcId: string
+  mspAdminRoles: SelectedMspMspAdmins[]
 }
 
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
@@ -59,16 +64,24 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
   const [ saveMspAdmins ] = useAssignMultiMspEcDelegatedAdminsMutation()
 
   const handleSave = () => {
-    let payload: AssignedMultiEcMspAdmins[] = []
+    let selMspAdmins: SelectedMspMspAdmins[] = []
     selectedRows.forEach((element:MspAdministrator) => {
       const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
-      payload.push ({
+      selMspAdmins.push ({
         mspAdminId: element.id,
-        delegatedRole: role as RolesEnum,
-        mspEcIds: tenantIds
+        delegatedRole: role as RolesEnum
       })
     })
-    saveMspAdmins({ payload })
+    let assignedEcMspAdmins: AssignedMultiEcMspAdmins[] = []
+    tenantIds.forEach((id: string) => {
+      assignedEcMspAdmins.push ({
+        operation: 'ADD',
+        mspEcId: id,
+        mspAdminRoles: selMspAdmins
+      })
+    })
+
+    saveMspAdmins({ payload: { associations: assignedEcMspAdmins } })
       .then(() => {
         setSelected(selectedRows)
         setVisible(false)
@@ -106,7 +119,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
           }
         }
       },
-      render: function (data, row) {
+      render: function (_, row) {
         return row.role === RolesEnum.GUEST_MANAGER || row.role === RolesEnum.DPSK_ADMIN
           ? <span>{$t(roleDisplayText[row.role])}</span>
           : transformAdminRole(row.id, row.role)
