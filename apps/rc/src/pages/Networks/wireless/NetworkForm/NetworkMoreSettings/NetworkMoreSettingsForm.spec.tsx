@@ -432,6 +432,15 @@ describe('NetworkMoreSettingsForm', () => {
     expect(await screen.findByTestId('enableMulticastUpLimit6G')).toBeVisible()
     expect(await screen.findByTestId('enableMulticastDownLimit6G')).toBeVisible()
   })
+
+  it('Test case for Multicast Filter', async ()=> {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockContextData = { editMode: true, data: mockWlanData } as NetworkFormContextType
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData),{ route: { params } })
+    expect(await screen.findByTestId('multicast-filter-enabled')).toBeVisible()
+  })
+
 })
 
 // eslint-disable-next-line max-len
