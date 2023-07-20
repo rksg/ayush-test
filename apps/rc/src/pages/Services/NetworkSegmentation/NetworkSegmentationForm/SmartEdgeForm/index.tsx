@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
-import { useIntl }                                    from 'react-intl'
-import { useParams }                                  from 'react-router-dom'
+import { FormattedMessage, useIntl }                  from 'react-intl'
+import { useNavigate, useParams }                     from 'react-router-dom'
 
-import { Button, StepsForm, Tooltip, useStepFormContext }                        from '@acx-ui/components'
+import { Alert, Button, StepsForm, Tooltip, useStepFormContext }                 from '@acx-ui/components'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
-import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
+import { EdgeDhcpPool, ServiceOperation, ServiceType, getServiceDetailsLink }    from '@acx-ui/rc/utils'
+import { useTenantLink }                                                         from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupFormData } from '..'
 import { useWatch }                         from '../../useWatch'
@@ -28,6 +29,8 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const tenantBasePath = useTenantLink('')
   const { form } = useStepFormContext<NetworkSegmentationGroupFormData>()
   const venueId = useWatch('venueId', form)
   const edgeId = useWatch('edgeId', form)
@@ -128,6 +131,38 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     form.setFieldValue('poolName', poolName)
     form.validateFields(['poolId'])
   }
+
+  const navigateToDetailPage = () => {
+    navigate(
+      {
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
+          type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.DETAIL,
+          serviceId: params.serviceId!
+        })
+      })
+  }
+
+  const warningMsg = <FormattedMessage
+    defaultMessage={
+      `Please note that additional configuration is required in the external DHCP server 
+        for the pool & segment mgmt. and the available document will be exposed on 
+        this {detailPage}.`
+    }
+
+    values={{
+      detailPage: props.editMode ?
+        <Button
+          type='link'
+          size='small'
+          onClick={navigateToDetailPage}
+        >
+          {$t({ defaultMessage: 'service details page' })}
+        </Button>
+        : $t({ defaultMessage: 'service details page' })
+    }}
+  />
 
   return (
     <>
@@ -259,6 +294,11 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
               }
             </Form.Item>
           }
+        </Col>
+      </Row>
+      <Row gutter={20}>
+        <Col span={8}>
+          <Alert message={warningMsg} type='info' showIcon />
         </Col>
       </Row>
     </>
