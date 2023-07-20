@@ -355,4 +355,58 @@ describe('formatter', () => {
       })
     })
   })
+
+  describe('crrmFormat', () => {
+    it('should return correct value for string', () => {
+      const test_auto = formatter('crrmFormat')('Auto')
+      expect(test_auto)
+        .toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection')
+    })
+
+    it('should return correct value for crrm object', () => {
+      expect(formatter('crrmFormat')([{
+        radio: '2.4',
+        channelWidth: '_AUTO',
+        channelMode: 'BACKGROUND_SCANNING'
+      }])).toMatch('Background scanning and Auto for 2.4 GHz with static AP Power')
+      expect(formatter('crrmFormat')([{
+        radio: '5.0',
+        channelWidth: '_80MHZ',
+        channelMode: 'CHANNEL_FLY',
+        autoCellSizing: true
+      }])).toMatch('ChannelFly and 80 MHz for 5.0 GHz with Auto Cell Sizing on')
+    })
+    it('returns txPower texts', () => {
+      expect(formatter('crrmFormat')({})).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with no change in AP transmit power') // eslint-disable-line max-len
+      expect(formatter('crrmFormat')({ txPowerAPCount: 1 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 1 AP') // eslint-disable-line max-len
+      expect(formatter('crrmFormat')({ txPowerAPCount: 2 })).toMatch('AI-Driven Cloud RRM for channel planning and channel bandwidth selection with static AP transmit power and lower AP transmit power in 2 APs') // eslint-disable-line max-len
+    })
+  })
+
+  describe('noFormat', () => {
+    it('should return number as string', () => {
+      const test_number = formatter('noFormat')(3)
+      expect(test_number).toMatch('3')
+    })
+
+    it('should return function as string', () => {
+      const test_number = formatter('noFormat')(() => {})
+      expect(test_number).toMatch('() => {}')
+    })
+
+    it('should return correct null as string', () => {
+      const test_number = formatter('noFormat')(null)
+      expect(test_number).toMatch('--')
+    })
+
+    it('should return correct undefined as string', () => {
+      const test_number = formatter('noFormat')(undefined)
+      expect(test_number).toMatch('undefined')
+    })
+
+    it('should return correct object as string', () => {
+      const test_number = formatter('noFormat')({})
+      expect(test_number).toMatch('Object')
+    })
+  })
 })

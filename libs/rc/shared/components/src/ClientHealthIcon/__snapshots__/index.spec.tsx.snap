@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ClientHealthIcon should render correctly 1`] = `
+<DocumentFragment>
+  <svg
+    class="styledComponents__HealthIcon-sc-y7jstt-0 imGkSc"
+    data-testid="HealthSolid"
+  />
+</DocumentFragment>
+`;

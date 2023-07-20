@@ -2,8 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -113,7 +114,7 @@ describe('Add administrator dialog component', () => {
         email: 'c123@email.com',
         role: 'ADMIN',
         detailLevel: 'debug',
-        delegateToAllECs: true
+        delegateToAllECs: false
       })
     })
   })

@@ -4,11 +4,11 @@ import { Table, TableProps } from '@acx-ui/components'
 
 import { RecommendationRow } from './table'
 
-const colors = {
-  High: '--acx-semantics-red-60',
-  Medium: '--acx-semantics-yellow-60',
-  Low: '--acx-semantics-yellow-30'
-}
+const colors = [
+  '--acx-semantics-yellow-30',
+  '--acx-semantics-yellow-60',
+  '--acx-semantics-red-60'
+]
 
 export const withDottedUnderline = `
   text-decoration: dotted underline;
@@ -26,13 +26,13 @@ export const Priority = styled.div`
   display: flex;
   align-items: center
 `
-export const PriorityIcon = styled.span.attrs((props: { value: string }) => props)`
+export const PriorityIcon = styled.span.attrs((props: { value: number }) => props)`
   display: flex;
   margin-right: 5px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(${props => colors[props.value as keyof typeof colors]});
+  background-color: var(${props => colors[props.value]});
 `
 
 export const RecommendationTableWrapper =

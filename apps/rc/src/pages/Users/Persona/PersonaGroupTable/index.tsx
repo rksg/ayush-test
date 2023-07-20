@@ -11,6 +11,7 @@ import {
   useDeletePersonaGroupMutation,
   useGetDpskListQuery,
   useGetNetworkSegmentationGroupListQuery,
+  useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
@@ -32,6 +33,13 @@ import {
 } from '../LinkHelper'
 import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
 
+const propertyConfigDefaultPayload = {
+  sortField: 'venueName',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 100
+}
+
 function useColumns (
   macRegistrationPools: Map<string, string>,
   dpskPools: Map<string, string>,
@@ -49,6 +57,15 @@ function useColumns (
     { params: { page: '1', pageSize: '10000', sort: 'name,asc' } },
     { skip: !networkSegmentationEnabled }
   )
+  const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
+    payload: propertyConfigDefaultPayload }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        isVenueOptionsLoading: isLoading,
+        venueOptions: data?.data.map(item => ({ value: item.venueName!, key: item.venueId! })) ?? []
+      }
+    }
+  })
 
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
@@ -75,10 +92,11 @@ function useColumns (
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'propertyId',
       sorter: true,
+      filterMultiple: false,
+      filterable: isVenueOptionsLoading ? [] : venueOptions,
       render: (_, row) =>
         <VenueLink
-          // FIXME: After the property id does not present in UUID format, I will remove .replace()
-          name={venuesMap.get(row?.propertyId?.replaceAll('-', '') ?? '')}
+          name={venuesMap.get(row?.propertyId ?? '')}
           venueId={row?.propertyId}
         />
     },
@@ -182,8 +200,7 @@ export function PersonaGroupTable () {
       const { macRegistrationPoolId, dpskPoolId, propertyId, nsgId } = personaGroup
 
       if (propertyId) {
-        // FIXME: After the property id does not present in UUID format, I will remove .replace()
-        venueIds.push(propertyId.replaceAll('-', ''))
+        venueIds.push(propertyId)
       }
 
       if (macRegistrationPoolId) {
@@ -293,7 +310,9 @@ export function PersonaGroupTable () {
         ? customFilters?.dpskPoolId[0] : undefined,
       macRegistrationPoolId: Array.isArray(customFilters?.macRegistrationPoolId)
         ? customFilters?.macRegistrationPoolId[0] : undefined,
-      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined
+      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined,
+      propertyId: Array.isArray(customFilters?.propertyId)
+        ? customFilters?.propertyId[0] : undefined
     }
 
     tableQuery.setPayload(payload)

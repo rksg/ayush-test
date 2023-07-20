@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData } from '../../__tests__/fixtures'
+import { mockEdgeData, mockEdgeList } from '../../__tests__/fixtures'
 
 import EditEdge from './index'
 
@@ -46,6 +46,10 @@ describe('EditEdge', () => {
       rest.get(
         EdgeUrlsInfo.getEdge.url,
         (req, res, ctx) => res(ctx.json(mockEdgeData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
       )
     )
   })
@@ -58,8 +62,9 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    const generalSettingsTab = screen.getByRole('tab', { name: 'General Settings' })
-    expect(generalSettingsTab.getAttribute('aria-selected')).toBeTruthy()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('tab', { name: 'General Settings', selected: true })).toBeVisible()
+    expect(await screen.findByTestId('GeneralSettings')).toBeVisible()
   })
 
   it('Active Ports tab successfully', async () => {
@@ -70,7 +75,8 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    await screen.findByRole('tab', { name: 'Ports', selected: true })
+    expect(await screen.findByRole('tab', { name: 'Ports', selected: true })).toBeVisible()
+    expect(await screen.findByTestId('Ports')).toBeVisible()
   })
 
   it('Active DNS Server tab successfully', async () => {
@@ -81,7 +87,8 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    await screen.findByRole('tab', { name: 'DNS Server', selected: true })
+    expect(await screen.findByRole('tab', { name: 'DNS Server', selected: true })).toBeVisible()
+    expect(await screen.findByTestId('DnsServer')).toBeVisible()
   })
 
   it('Active Static Routes tab successfully', async () => {
@@ -92,7 +99,8 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    await screen.findByRole('tab', { name: 'Static Routes', selected: true })
+    expect(await screen.findByRole('tab', { name: 'Static Routes', selected: true })).toBeVisible()
+    expect(await screen.findByTestId('StaticRoutes')).toBeVisible()
   })
 
   it('switch tab', async () => {

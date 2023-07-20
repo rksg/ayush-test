@@ -119,7 +119,7 @@ export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {
   [OsVendorEnum.BoseSpeakers]: defineMessage({ defaultMessage: 'BoseSpeakers' }),
   [OsVendorEnum.SonosSpeakers]: defineMessage({ defaultMessage: 'SonosSpeakers' }),
   [OsVendorEnum.RokuStreamingStick]: defineMessage({ defaultMessage: 'RokuStreamingStick' }),
-  [OsVendorEnum.TelnetCpe]: defineMessage({ defaultMessage: 'TelnetCpe' })
+  [OsVendorEnum.TelenetCpe]: defineMessage({ defaultMessage: 'TelenetCpe' })
 }
 
 export const deviceTypeLabelMapping: Record<DeviceTypeEnum, MessageDescriptor> = {
