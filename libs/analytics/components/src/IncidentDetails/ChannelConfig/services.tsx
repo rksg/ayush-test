@@ -2,6 +2,7 @@ import { gql } from 'graphql-request'
 
 import type { Incident } from '@acx-ui/analytics/utils'
 import { dataApi }       from '@acx-ui/store'
+import { noDataDisplay } from '@acx-ui/utils'
 
 type ChannelDetails = {
   channel: string,
@@ -31,7 +32,7 @@ const getConfig = (data: ChannelResponse, name: keyof ChannelDetails): string =>
       return data[level as keyof ChannelResponse][name].slice(-1)[0].values.join(', ')
     }
   }
-  return ''
+  return noDataDisplay
 }
 
 export const api = dataApi.injectEndpoints({

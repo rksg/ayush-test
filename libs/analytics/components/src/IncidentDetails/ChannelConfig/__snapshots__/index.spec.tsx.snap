@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Channel Config should render for incidents on 2.4GHz 1`] = `
+exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"

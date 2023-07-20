@@ -31,9 +31,9 @@ export const ChannelConfig = (props: { incident: Incident }) => {
           </UI.Title>
           <Subtitle level={3}>
             {data?.channelWidth
-              ? (data?.channelWidth === '_AUTO'
+              ? data?.channelWidth === '_AUTO'
                 ? $t({ defaultMessage: 'Auto' })
-                : (data?.channelWidth.slice(1)).replace('MHZ', ' MHz').replace('_', '+'))
+                : data?.channelWidth.replace(/^_/, '').replace('MHZ', ' MHz').replace('_', '+')
               : ''}
           </Subtitle>
         </UI.GridCol>
