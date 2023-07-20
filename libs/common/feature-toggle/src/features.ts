@@ -35,6 +35,7 @@ export enum Features {
   WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
   WIFI_EDA_BYPASS_CNA_TOGGLE = 'wifi-eda-bypass-cna-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
+  CLOUDMOTE_BETA = 'BETA-ZD2R1',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
