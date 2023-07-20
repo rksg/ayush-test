@@ -224,6 +224,16 @@ describe('SmartEdgeForm', () => {
         </StepsForm>
       </Provider>,
       { route: { params, path: editNsgPath } })
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('option', { name: 'Smart Edge 1' })
+    )
+    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
+    await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
+    await user.selectOptions(
+      dhcpSelect,
+      await screen.findByRole('option', { name: 'TestDhcp-1' })
+    )
     await user.click(await screen.findByRole('button', { name: 'service details page' }))
     await waitFor(() => expect(mockedNavigate).toBeCalledWith({
       hash: '',

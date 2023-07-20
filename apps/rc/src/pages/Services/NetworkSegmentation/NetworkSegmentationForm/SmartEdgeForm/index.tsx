@@ -36,6 +36,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   const edgeId = useWatch('edgeId', form)
   const dhcpId = useWatch('dhcpId', form)
   const poolId = useWatch('poolId', form)
+  const dhcpRelay = useWatch('dhcpRelay', form)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [shouldDhcpDisabled, setShouldDhcpDisabled] = useState(true)
 
@@ -65,11 +66,17 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     { params: { ...params, edgeId: edgeId } },
     { skip: !!!edgeId }
   )
-  const { dhcpOptions, isLoading: isDhcpOptionsLoading, poolMap } = useGetEdgeDhcpListQuery(
+  const {
+    dhcpProfles,
+    dhcpOptions,
+    isLoading: isDhcpOptionsLoading,
+    poolMap
+  } = useGetEdgeDhcpListQuery(
     { params, payload: dhcpDefaultPayload },
     {
       selectFromResult: ({ data, isLoading }) => {
         return {
+          dhcpProfles: data?.content,
           dhcpOptions: data?.content.map(item => ({ label: item.serviceName, value: item.id })),
           poolMap: data?.content.reduce((acc, item) =>
             ({ ...acc, [item.id]: item.dhcpPools }), {}) as { [key: string]: EdgeDhcpPool[] },
@@ -81,7 +88,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   useEffect(() => {
     if(isGetDhcpByEdgeIdFetching) return
     if(!dhcpId) {
-      if(!!!edgeId || isGetDhcpByEdgeIdFail) {
+      if(!edgeId || isGetDhcpByEdgeIdFail) {
         form.setFieldValue('dhcpId', null)
         form.setFieldValue('dhcpName', null)
       } else {
@@ -89,6 +96,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         form.setFieldValue('dhcpName', currentEdgeDhcp?.serviceName)
       }
     }
+    form.setFieldValue('dhcpRelay', currentEdgeDhcp?.dhcpRelay)
     setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
 
   }, [
@@ -113,13 +121,15 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     form.setFieldValue('dhcpId', null)
     form.setFieldValue('poolId', null)
     form.setFieldValue('poolName', null)
+    form.setFieldValue('dhcpRelay', false)
   }
 
   const onDhcpChange = (value: string) => {
-    const dhcpItem = dhcpOptions?.find(item => item.value === value)
+    const dhcpPorilfe = dhcpProfles?.find(item => item.id === value)
     form.setFieldValue('poolId', null)
     form.setFieldValue('poolName', null)
-    form.setFieldValue('dhcpName', dhcpItem?.label)
+    form.setFieldValue('dhcpName', dhcpPorilfe?.serviceName)
+    form.setFieldValue('dhcpRelay', dhcpPorilfe?.dhcpRelay)
   }
 
   const openDrawer = () => {
@@ -296,11 +306,14 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
           }
         </Col>
       </Row>
-      <Row gutter={20}>
-        <Col span={8}>
-          <Alert message={warningMsg} type='info' showIcon />
-        </Col>
-      </Row>
+      {
+        dhcpRelay &&
+        <Row gutter={20}>
+          <Col span={8}>
+            <Alert message={warningMsg} type='info' showIcon />
+          </Col>
+        </Row>
+      }
     </>
   )
 }
