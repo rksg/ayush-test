@@ -141,7 +141,7 @@ const MigrationTable = () => {
       key: 'createTime',
       dataIndex: 'createTime',
       sorter: true,
-      // defaultSortOrder: 'descend',
+      defaultSortOrder: 'descend',
       render: (_, row) => {
         return row.createTime ? formatter(DateFormatEnum.DateTimeFormat)(row.createTime) : '--'
       }

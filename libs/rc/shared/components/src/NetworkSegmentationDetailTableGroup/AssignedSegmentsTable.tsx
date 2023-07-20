@@ -6,6 +6,7 @@ import {
   Persona,
   TableQuery
 } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export interface PersonaTableProps extends Omit<TableProps<Persona>, 'columns'>{
   tableQuery: TableQuery<Persona,
@@ -26,7 +27,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
 
   const columns: TableProps<Persona>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Segment #' }),
+      title: $t({ defaultMessage: 'Segment No.' }),
       key: 'vni',
       dataIndex: 'vni',
       fixed: 'left' as const
@@ -34,7 +35,14 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
     {
       title: $t({ defaultMessage: 'Persona' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: (data, row) => {
+        return <TenantLink
+          to={`users/persona-management/persona-group/${row.groupId}/persona/${row.id}`}
+        >
+          {row.name ?? row.id}
+        </TenantLink>
+      }
     },
     {
       title: $t({ defaultMessage: 'Devices' }),
@@ -74,7 +82,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
     <Loader>
       <Table
         columns={columns}
-        rowKey='serialNumber'
+        rowKey='vni'
         dataSource={personaListTableQuery.data?.data}
         pagination={personaListTableQuery.pagination}
         onChange={personaListTableQuery.handleTableChange}

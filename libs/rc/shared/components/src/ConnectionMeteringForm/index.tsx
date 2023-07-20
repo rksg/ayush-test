@@ -186,6 +186,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
       <StepsFormLegacy.StepForm<ConnectingMeteringFormField>
         name='settings'
         title={$t({ defaultMessage: 'Settings' })}
+        layout={'vertical'}
       >
         <Loader states={[{
           isLoading: isLoading,

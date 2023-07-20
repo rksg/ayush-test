@@ -24,7 +24,7 @@ import { mockedTenantId,
   mockedServiceId,
   editPath } from '../__tests__/fixtures'
 
-import ResidentPortalForm from './ResidentPortalForm'
+import { ResidentPortalForm } from './ResidentPortalForm'
 
 
 const mockedUseNavigate = jest.fn()
