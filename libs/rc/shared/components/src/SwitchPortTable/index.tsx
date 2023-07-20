@@ -274,7 +274,6 @@ export function SwitchPortTable ({ isVenueLevel }: {
       : item
   )
 
-  // TODO
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
@@ -350,7 +349,7 @@ function transformData (data?: SwitchPortViewModel[]) {
   })
 }
 
-function getInactiveTooltip (port: SwitchPortViewModel): string {
+export function getInactiveTooltip (port: SwitchPortViewModel): string {
   const { $t } = getIntl()
 
   if (!isOperationalSwitchPort(port)) {

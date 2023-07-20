@@ -48,11 +48,11 @@ export function RadioSettingsForm (props:{
   const txPowerFieldName = [...radioDataKey, 'txPower']
   const bssMinRate6gFieldName = [...radioDataKey, 'bssMinRate6G']
   const mgmtTxRate6gFieldName = [...radioDataKey, 'mgmtTxRate6G']
-  const enableMulticastRateLimitingFieldName = ''
-  const enableUploadLimitFieldName = [...radioDataKey, 'enableMulticastUplinkRateLimiting6G']
-  const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting6G']
-  const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting6G']
-  const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting6G']
+  const enableMulticastRateLimitingFieldName = [...radioDataKey, 'enableMulticastRateLimiting']
+  const enableUploadLimitFieldName = [...radioDataKey, 'enableMulticastUplinkRateLimiting']
+  const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting']
+  const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
+  const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -195,7 +195,7 @@ export function RadioSettingsForm (props:{
               name={enableMulticastRateLimitingFieldName}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
-              initialValue={false}
+              initialValue={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
             >
               {!isUseVenueSettings ? (
                 <Switch
