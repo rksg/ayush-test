@@ -10,7 +10,7 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useLazySearchPersonaGroupListQuery,
   useLazyVenuesListQuery,
-  useLazyGetQosStatsQuery
+  useGetQosStatsQuery
 } from '@acx-ui/rc/services'
 import { Persona, PersonaGroup, QosStats } from '@acx-ui/rc/utils'
 
@@ -48,11 +48,10 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
   const [searchPersonaGroups, { isLoading: isGroupLoading }] = useLazySearchPersonaGroupListQuery()
   const [getVenues, { isLoading: isVenueLoading }] = useLazyVenuesListQuery()
   const [getUnitById, { isLoading: isPropertyUnitLoading }] = useLazyGetPropertyUnitByIdQuery()
-  const [getQosStats, { isLoading: isQosStatsLoading }] = useLazyGetQosStatsQuery()
+
   const bytesFormatter = formatter('bytesFormat')
   useEffect(() => {
     setDatasource(toInstance(props.data))
-    fetchQosStats(props.data)
   }, [props.data])
 
   useEffect(() => {
@@ -62,12 +61,6 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
       .map((group)=> group.propertyId!!))
     fetchPropertyUnits()
   }, [groupMap])
-
-  useEffect(()=> {
-    const interval = setInterval(()=> {fetchQosStats(props.data)}, 30 * 1000)
-    return () => clearInterval(interval)
-  }, [])
-
 
   const toInstance = (personas: Persona[]): ConnectionMeteringInstanceItem[] => {
     const personaGroupSet = new Set<string>()
@@ -136,18 +129,21 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
     })
   }
 
-  const fetchQosStats = (personas: Persona[]) => {
-    const payload = [] as { field: string, value:string } [][]
-    personas.forEach(persona => {
-      payload.push([{ field: 'personaId', value: persona.id }])
-    })
-    getQosStats({ payload: payload })
-      .then(result=> {
-        if (result.data?.data) {
-          setStatsMap(new Map(result.data.data?.map(v => [v.personaId, { ...v }])))
-        }
-      })
-  }
+  const statsPayload = [] as { field: string, value:string } [][]
+  props.data.forEach(persona => {
+    statsPayload.push([{ field: 'personaId', value: persona.id }])
+  })
+  const qosStats = useGetQosStatsQuery( { payload: statsPayload }, {
+    pollingInterval: 30 * 1000
+  })
+
+  useEffect(()=> {
+    if (qosStats.isLoading || !qosStats.data) return
+    if (qosStats.data.data) {
+      setStatsMap(new Map(qosStats.data.data?.map(v => [v.personaId, { ...v }])))
+    }
+  }, [qosStats])
+
 
   const getQosStatsByInstance = (instance: ConnectionMeteringInstanceItem):
     QosStats| undefined => {
@@ -318,7 +314,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
         {$t({ defaultMessage: 'Instances ({size})' }, { size: propertyUnitMap.size })}
       </Card.Title>
       <Table<ConnectionMeteringInstanceItem>
-        loading={isGroupLoading || isVenueLoading || isPropertyUnitLoading || isQosStatsLoading}
+        loading={isGroupLoading || isVenueLoading || isPropertyUnitLoading}
         columns={columns}
         dataSource={datasource}
         columnState={columnState}
