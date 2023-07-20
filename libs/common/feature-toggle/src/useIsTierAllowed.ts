@@ -1,14 +1,14 @@
 import { useDebugValue, useMemo } from 'react'
 
 import { useTreatments } from '@splitsoftware/splitio-react'
+import { useParams }     from 'react-router-dom'
 
-import { useParams }                                        from '@acx-ui/react-router-dom'
+import { useGetAccountTierQuery }                           from '@acx-ui/rc/services'
 import { BetaStatus, useGetBetaStatusQuery }                from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
 
 import { Features }     from './features'
 import { useIsSplitOn } from './useIsSplitOn'
-
 
 type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList'
 
@@ -25,15 +25,20 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
 export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const params = useParams()
   const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG)
-  const request = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
-  const betaEnabled = request?.data?.enabled as BetaStatus
+  const request1 = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
+  const betaEnabled = request1?.data?.enabled as BetaStatus
 
   const jwtPayload = getJwtTokenPayload()
+  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
+
+  const request2 = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
+  const acx_account_tier = request2?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
+
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
     jwtPayload?.tenantType === AccountType.VAR) ? 'REC' : 'MSP'
   useDebugValue(`JWT tenantType: ${jwtPayload?.tenantType}, Tenant type: ${tenantType}`)
   const treatment = useTreatments([Features.PLM_FF], {
-    tier: jwtPayload?.acx_account_tier,
+    tier: acx_account_tier,
     vertical: jwtPayload?.acx_account_vertical,
     tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
