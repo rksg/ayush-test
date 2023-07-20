@@ -167,7 +167,7 @@ export function RecommendationTable ({ filters, showCrrm }:
   return (
     <Loader states={[queryResults]} style={{ height: 400 }}>
       <UI.RecommendationTableWrapper
-        settingsId='incident-table'
+        settingsId={`recommendation-table-${showCrrm}`}
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
