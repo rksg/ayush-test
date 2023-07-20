@@ -11,6 +11,24 @@ import NetworkFormContext from '../../NetworkFormContext'
 import * as UI            from '../styledComponents'
 
 
+const multicastFilterTooltipContent = (
+  <div>
+    <p>Drop all multicast or broadcast traffic from associated wireless clients,
+      except for the following which is always allowed:</p>
+    <ul style={{ paddingLeft: '40px' }}>
+      <li>ARP request</li>
+      <li>DHCPv4 request</li>
+      <li>DHCPv6 request</li>
+      <li>IPv6 NS</li>
+      <li>IPv6 NA</li>
+      <li>IPv6 RS</li>
+      <li>IGMP</li>
+      <li>MLD</li>
+      <li>All unicast packets</li>
+    </ul>
+  </div>
+)
+
 const { useWatch } = Form
 
 export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
@@ -24,6 +42,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
 
   const [
     enableFastRoaming,
@@ -273,6 +292,53 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           children={<Switch />}
         />
       </UI.FieldLabel>
+      {enableOce &&
+      <>
+        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
+          <UI.LabelOfInput>
+            { $t({ defaultMessage: 'ms' }) }
+          </UI.LabelOfInput>
+          <Form.Item
+            name={['wlan', 'advancedCustomization', 'broadcastProbeResponseDelay']}
+            label={$t({ defaultMessage: 'Broadcast Probe Response Delay:' })}
+            style={{ marginBottom: '15px' }}
+            initialValue={15}
+            rules={[{
+              type: 'number', max: 120, min: 8,
+              message: $t({
+                defaultMessage: 'Broadcast Probe Response Delay must be between 8 and 120'
+              })
+            }]}
+            valuePropName='value'
+            children={
+              <InputNumber style={{ width: '65px', marginRight: '10px' }} />
+            }
+          />
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
+          <UI.LabelOfInput>
+            { $t({ defaultMessage: 'dBm' }) }
+          </UI.LabelOfInput>
+          <Form.Item
+            name={['wlan','advancedCustomization','rssiAssociationRejectionThreshold']}
+            label={$t({ defaultMessage: 'RSSI-Based Association Rejection Threshold:' })}
+            style={{ marginBottom: '15px' }}
+            initialValue={-75}
+            rules={[{
+              type: 'number', max: -60, min: -90,
+              message: $t({
+                defaultMessage: 'RSSI-Based Association Rejection Threshold ' +
+                      'must be between -90 and -60'
+              })
+            }]}
+            valuePropName='value'
+            children={
+              <InputNumber style={{ width: '65px', marginRight: '10px' }} />
+            }
+          />
+        </div>
+      </>}
 
       {gtkRekeyFlag &&
         <UI.FieldLabel width={labelWidth}>
@@ -303,67 +369,43 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       }
 
-      {enableOce &&
-      <>
-        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
-          <UI.LabelOfInput>
-            { $t({ defaultMessage: 'ms' }) }
-          </UI.LabelOfInput>
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'broadcastProbeResponseDelay']}
-            label={$t({ defaultMessage: 'Broadcast Probe Response Delay:' })}
-            style={{ marginBottom: '15px' }}
-            initialValue={15}
-            rules={[{
-              type: 'number', max: 120, min: 8,
-              message: $t({
-                defaultMessage: 'Broadcast Probe Response Delay must be between 8 and 120'
-              })
-            }]}
-            valuePropName='value'
-            children={
-              <InputNumber style={{ width: '65px', marginRight: '10px' }} />
-            }
-          />
-
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
-          <UI.LabelOfInput>
-            { $t({ defaultMessage: 'dBm' }) }
-          </UI.LabelOfInput>
-          <Form.Item
-            name={['wlan','advancedCustomization','rssiAssociationRejectionThreshold']}
-            label={$t({ defaultMessage: 'RSSI-Based Association Rejection Threshold:' })}
-            style={{ marginBottom: '15px' }}
-            initialValue={-75}
-            rules={[{
-              type: 'number', max: -60, min: -90,
-              message: $t({
-                defaultMessage: 'RSSI-Based Association Rejection Threshold ' +
-                      'must be between -90 and -60'
-              })
-            }]}
-            valuePropName='value'
-            children={
-              <InputNumber style={{ width: '65px', marginRight: '10px' }} />
-            }
-          />
-        </div>
-      </>}
+      {(gtkRekeyFlag || multicastFilterFlag) &&
+        <UI.Subtitle>{$t({ defaultMessage: 'Multicast' })}</UI.Subtitle>
+      }
 
       {gtkRekeyFlag &&
-      <>
-        <UI.Subtitle>{$t({ defaultMessage: 'Multicast' })}</UI.Subtitle>
-        <UI.FieldLabel width={labelWidth}>
-          {$t({ defaultMessage: 'GTK Rekey' })}
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={true}
-            children={<Switch/>}/>
-        </UI.FieldLabel>
-      </>}
+      <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'GTK Rekey' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={true}
+          children={<Switch/>}/>
+      </UI.FieldLabel>
+      }
+
+      {multicastFilterFlag &&
+      <UI.FieldLabel width={labelWidth}>
+        <Space align='start'>
+          {$t({ defaultMessage: 'Multicast Filter' })}
+          <div style={{ paddingTop: '4px' }}>
+            <Tooltip.Question
+              title={multicastFilterTooltipContent}
+              placement='right'
+            />
+          </div>
+        </Space>
+
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch data-testid='multicast-filter-enabled' />}
+        />
+      </UI.FieldLabel>
+      }
 
       {enableBSSPriority &&
       <>
