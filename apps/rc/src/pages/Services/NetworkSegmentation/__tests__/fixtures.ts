@@ -564,3 +564,18 @@ export const mockedNetworkOptions = {
     }
   ]
 }
+
+export const mockedSwitchOptions = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      switchMac: 'c0:c5:20:78:df:32',
+      name: 'network1'
+    },
+    {
+      switchMac: 'c0:c5:20:78:df:31',
+      name: 'network2'
+    }
+  ]
+}
