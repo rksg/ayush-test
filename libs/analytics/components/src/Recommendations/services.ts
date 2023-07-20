@@ -5,7 +5,8 @@ import { defineMessage } from 'react-intl'
 import {
   nodeTypes,
   getFilterPayload,
-  formattedPath
+  formattedPath,
+  productNames
 } from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { recommendationApi }         from '@acx-ui/store'
@@ -98,6 +99,7 @@ const getStatusTooltip = (code: string, state: string, metadata: Metadata) => {
   }
   const stateConfig = states[state as keyof typeof states]
   return $t(stateConfig[tooltipKey as keyof typeof stateConfig], {
+    ...productNames,
     count: metadata.error?.details?.length || 1,
     errorMessage: errorMessage,
     updatedAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.updatedAt),
