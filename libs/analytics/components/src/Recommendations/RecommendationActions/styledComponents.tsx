@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { Reload } from '@acx-ui/icons'
+
 export const ActionWrapper = styled.span<{ $disabled?: boolean }>`
   ${props => props.$disabled
     ? `
@@ -8,7 +10,12 @@ export const ActionWrapper = styled.span<{ $disabled?: boolean }>`
       color: var(--acx-neutrals-50);
     `
     : `
-    cursor: pointer;
-    color: var(--acx-primary-black);
+      cursor: pointer;
+      color: var(--acx-primary-black);
     `}
+`
+
+export const RevertIcon = styled(Reload)`
+    height: 24px;
+    width: 24px;
 `

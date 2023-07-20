@@ -9,8 +9,7 @@ import {
   CalendarOutlined,
   CancelCircleOutlined,
   CancelCircleSolid,
-  CheckMarkCircleOutline,
-  ChevronLeftCircleOutlined
+  CheckMarkCircleOutline
 } from '@acx-ui/icons'
 
 import {
@@ -19,7 +18,7 @@ import {
   useScheduleRecommendationMutation
 } from '../services'
 
-import { ActionWrapper } from './styledComponents'
+import { ActionWrapper, RevertIcon } from './styledComponents'
 
 
 // eslint-disable-next-line max-len
@@ -32,7 +31,7 @@ const actionTooltip = {
   },
   Revert: {
     text: defineMessage({ defaultMessage: 'Revert' }),
-    icon: <ChevronLeftCircleOutlined />
+    icon: <RevertIcon />
   },
   ApplyScheduled: {
     text: defineMessage({ defaultMessage: 'Edit schedule' }),
