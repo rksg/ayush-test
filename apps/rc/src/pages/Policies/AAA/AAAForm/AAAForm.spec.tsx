@@ -88,8 +88,6 @@ const aaaList=[
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
   policyId: 'policy-id' }
 describe('AAAForm', () => {
-  const addRequestSpy = jest.fn()
-  const updateRequestSpy = jest.fn()
 
   beforeEach(()=>{
     mockServer.use(
