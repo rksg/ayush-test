@@ -16,7 +16,7 @@ exports[`Venue Marker Tooltip should not render any data 1`] = `
     </div>
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 kybRWx"
-      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
         class="ant-pro-table"
@@ -247,7 +247,7 @@ exports[`Venue Marker Tooltip should render tooltip without padding 1`] = `
     </div>
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 kybRWx"
-      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
         class="ant-pro-table"

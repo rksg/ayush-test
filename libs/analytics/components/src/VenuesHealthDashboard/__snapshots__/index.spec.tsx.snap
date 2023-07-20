@@ -206,7 +206,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-12 cKDhPW"
-                  style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+                  style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
                 >
                   <div
                     class="ant-pro-table"

@@ -300,13 +300,18 @@ function Table <RecordType extends Record<string, any>> ({
   })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
-  const hasHeader = [
-    props.rowSelection?.type,
+  const hasRowActionsOffset = [
+    props.rowSelection?.type && props.tableAlertRender !== false,
     filterables.length,
     searchables.length,
+    groupable.length,
     iconButton
   ].some(Boolean)
-  const shouldRenderHeader = hasHeader && (!hasRowSelected || props.tableAlertRender === false)
+  const shouldRenderHeader = !hasRowSelected || props.tableAlertRender === false
+  const hasHeaderItems = shouldRenderHeader && (
+    Boolean(filterables.length) || Boolean(searchables.length) ||
+    Boolean(groupable.length) || Boolean(iconButton)
+  )
   const selectAllRowSelection = {
     columnWidth: '45px',
     selections: [
@@ -423,7 +428,7 @@ function Table <RecordType extends Record<string, any>> ({
     })
   }))
 
-  const headerItems = shouldRenderHeader ? <>
+  const headerItems = hasHeaderItems ? <>
     <div>
       <Space size={12}>
         {Boolean(searchables.length) &&
@@ -464,7 +469,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   let offsetHeader = layout.y
   if (props.actions?.length) offsetHeader += 22
-  if (hasHeader) offsetHeader += 36
+  if (hasRowActionsOffset) offsetHeader += 36
   const sticky = type === 'tall' &&
     // disable in test env as it will result in 2 tables rendered
     // this is to prevent confusing/inconvenience for implementor
@@ -478,12 +483,9 @@ function Table <RecordType extends Record<string, any>> ({
       ...(style ?? {}),
       '--sticky-offset': `${layout.y}px`,
       '--sticky-has-actions': props.actions?.length ? '1' : '0',
-      '--sticky-has-filters': hasHeader ? '1' : '0'
+      '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
     } as React.CSSProperties}
     $type={type}
-    $rowSelectionActive={
-      Boolean(props.rowSelection) && !shouldRenderHeader && props.tableAlertRender !== false
-    }
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <UI.ActionsContainer
@@ -509,7 +511,7 @@ function Table <RecordType extends Record<string, any>> ({
           : content
       })}
     </UI.ActionsContainer>}
-    {shouldRenderHeader && <UI.Header
+    {hasRowActionsOffset && shouldRenderHeader && <UI.Header
       style={props.floatRightFilters ? { justifyContent: 'flex-end' } : {}}
       children={headerItems}
     />}

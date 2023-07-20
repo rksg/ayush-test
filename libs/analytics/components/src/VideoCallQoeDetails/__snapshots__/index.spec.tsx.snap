@@ -179,8 +179,8 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 etwYoZ"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
         class="ant-pro-table"
@@ -5202,8 +5202,8 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
       Participant Details
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 etwYoZ"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
         class="ant-pro-table"
@@ -9921,8 +9921,8 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 etwYoZ"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
         class="ant-pro-table"
@@ -11412,8 +11412,8 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 etwYoZ"
+      style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
     >
       <div
         class="ant-pro-table"

@@ -4,7 +4,7 @@ exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1abm7iv-12 jkLevt"
-    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
       class="ant-pro-table"
@@ -186,7 +186,7 @@ exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1abm7iv-12 jYwfQs"
-    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
       class="ant-pro-table"
@@ -367,8 +367,8 @@ exports[`Table component renders form table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fNInuX"
+    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
       class="ant-pro-table"
@@ -604,8 +604,8 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fNInuX"
+    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
       class="ant-pro-table"
@@ -941,8 +941,8 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fNInuX"
+    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
       class="ant-pro-table"
@@ -1382,8 +1382,8 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 gnXEKI"
-    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-filters: 0;"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 fNInuX"
+    style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
       class="ant-pro-table"

@@ -131,11 +131,10 @@ export const TableSettingsGlobalOverride = createGlobalStyle`
 
 const actionsHeight = '22px'
 const rowActionsHeight = '36px'
-const minColumnHeight = '45px'
+const toolbarHeight = '45px'
 
 type StyledTable = {
-  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered',
-  $rowSelectionActive: boolean
+  $type: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
 }
 
 export const ResizableHover = styled.div``
@@ -144,10 +143,6 @@ export const ResizableHandle = styled.div``
 /* eslint-disable max-len */
 const tallStyle = css<StyledTable>`
   .ant-pro-table {
-    .ant-table-wrapper {
-      margin-top: -${minColumnHeight};
-    }
-
     .ant-table {
       &-thead > tr:last-child > th,
       &-thead > tr:first-child > th[rowspan] {
@@ -192,13 +187,13 @@ const tallStyle = css<StyledTable>`
     }
 
     &-list-toolbar {
-      height: ${minColumnHeight};
+      height: 0;
       pointer-events: none; // prevent from blocking table header
       position: sticky;
       top: calc(
         var(--sticky-offset) +
         (${actionsHeight} * var(--sticky-has-actions)) +
-        (${rowActionsHeight} * var(--sticky-has-filters))
+        (${rowActionsHeight} * var(--sticky-has-row-actions-offset))
       );
       z-index: 4;
       overflow: visible;
@@ -208,7 +203,20 @@ const tallStyle = css<StyledTable>`
         height: 100%;
       }
       &-setting-item {
+        margin-top: ${toolbarHeight};
         pointer-events: all; // enable setting button to be clickable
+        svg {
+          margin-top: 3px;
+        }
+      }
+      &:has(+ .ant-pro-table-alert) {
+        top: calc(
+          var(--sticky-offset) +
+          (${actionsHeight} * var(--sticky-has-actions))
+        );
+        .ant-pro-table-list-toolbar-setting-item {
+          margin-top: calc(${toolbarHeight} + ${rowActionsHeight} * 2);
+        }
       }
     }
 
