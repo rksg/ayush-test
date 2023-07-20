@@ -1,12 +1,12 @@
 import { useContext, useEffect } from 'react'
 
 import {
-  Form
+  Form, Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy }                      from '@acx-ui/components'
-import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, StepsFormLegacy, Tooltip }                                                    from '@acx-ui/components'
+import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -32,6 +32,10 @@ export function GuestPassForm () {
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
       }
+      if(data.wlan?.wlanSecurity){
+        form.setFieldValue('enableOwe',
+          data.wlan.wlanSecurity === WlanSecurityEnum.OWE ? true : false)
+      }
     }
   }, [data])
   return (
@@ -39,6 +43,23 @@ export function GuestPassForm () {
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title children={intl.$t({ defaultMessage: 'Host Settings' })} />
         <RedirectUrlInput></RedirectUrlInput>
+        <Form.Item>
+          <Form.Item noStyle
+            name='enableOwe'
+            initialValue={false}
+            valuePropName='checked'
+            children={<Switch
+              onChange={function (checked: boolean) {
+                form.setFieldValue(['wlan', 'wlanSecurity'],
+                  checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.None)
+              }} />}
+          />
+          <span>{intl.$t({ defaultMessage: 'Enable OWE encryption' })}</span>
+          <Tooltip.Question
+            title={intl.$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
+            placement='bottom'
+          />
+        </Form.Item>
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox
           guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass} />

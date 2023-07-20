@@ -10,7 +10,7 @@ import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages }                      from '@acx-ui/rc/utils'
+import { WifiNetworkMessages, WlanSecurityEnum }    from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -81,6 +81,10 @@ function SettingsForm () {
     })
   }
   useEffect(()=>{
+    if(data?.wlan?.wlanSecurity){
+      form.setFieldValue('enableOwe',
+        data.wlan.wlanSecurity === WlanSecurityEnum.OWE ? true : false)
+    }
     form.setFieldsValue(data)
   },[data])
 
@@ -93,6 +97,23 @@ function SettingsForm () {
 
       <div>
         <Form.Item>
+          <Form.Item>
+            <Form.Item noStyle
+              name='enableOwe'
+              initialValue={false}
+              valuePropName='checked'
+              children={<Switch
+                onChange={function (checked: boolean) {
+                  form.setFieldValue(['wlan', 'wlanSecurity'],
+                    checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open)
+                }} />}
+            />
+            <span>{$t({ defaultMessage: 'Enable OWE encryption' })}</span>
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
+              placement='bottom'
+            />
+          </Form.Item>
           <Form.Item>
             <Form.Item noStyle
               name={['wlan', 'macAddressAuthentication']}
