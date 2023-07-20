@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { render, screen } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import { IntlProvider }   from 'react-intl'
@@ -114,6 +115,11 @@ describe.skip('RadioSettingForm component', () => {
     const mgmtTxRateSelect = await screen.findByRole('combobox', { name: /Mgmt Tx Rate/i })
     await userEvent.click(mgmtTxRateSelect)
     await userEvent.click((await screen.findByTitle('9 Mbps')))
+
+    const multicastRateLimitSwitch = await screen.findByRole('Switch', { name: /Multicast Rate Limiting/i })
+    await userEvent.click(multicastRateLimitSwitch)
+    expect(await screen.findByTestId('enableUploadLimit')).toBeVisible()
+    expect(await screen.findByTestId('enableDownloadLimit')).toBeVisible()
   })
 
   it('should render AP Radio 24G', async () => {
