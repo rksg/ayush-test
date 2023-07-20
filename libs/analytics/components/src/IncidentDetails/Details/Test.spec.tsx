@@ -39,6 +39,9 @@ jest.mock('../Insights', () => ({
 }))
 jest.mock('../NetworkImpact')
 jest.mock('../IncidentDetails/TimeSeries')
+jest.mock('../ChannelConfig', () => ({
+  ChannelConfig: () => <div data-testid='channelConfig' />
+}))
 jest.mock('../Charts/RssDistributionChart', () => ({
   RssDistributionChart: () => <div data-testid='rssDistributionChart' />
 }))
