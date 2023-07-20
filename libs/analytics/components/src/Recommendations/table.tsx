@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
 import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
@@ -81,6 +81,10 @@ export function RecommendationTable ({ filters, showCrrm }:
       }
     }
   ]
+
+  useEffect(() => {
+    setSelectedRowData([])
+  }, [queryResults.data])
 
   const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => [
     {
