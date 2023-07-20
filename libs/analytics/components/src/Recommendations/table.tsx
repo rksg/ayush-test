@@ -169,7 +169,7 @@ export function RecommendationTable ({ filters, showCrrm }:
   ], [showCrrm]) // '$t' 'basePath' 'intl' are not changing
 
   return (
-    <Loader states={[queryResults]} style={{ height: 400 }}>
+    <Loader states={[queryResults]}>
       <UI.RecommendationTableWrapper
         settingsId={`recommendation-table-${showCrrm}`}
         type='tall'
