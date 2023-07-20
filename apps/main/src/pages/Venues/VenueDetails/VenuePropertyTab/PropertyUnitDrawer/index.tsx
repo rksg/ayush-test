@@ -149,12 +149,12 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], isEd
   const onModalClose = () => setModalVisible(false)
   const [profileMap, setProfileMap] = useState(new Map(data.map((p) => [p.id, p])))
   const profileId = useWatch('meteringProfileId', form)
-  const bottonRef = useRef<HTMLDivElement>(null)
+  const bottomRef = useRef<HTMLDivElement>(null)
   const shouldScrollDown = useRef<boolean>(!isEdit)
 
   useEffect(()=> {
-    if (shouldScrollDown.current && profileId && bottonRef.current) {
-      bottonRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (shouldScrollDown.current && profileId && bottomRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [profileId])
 
@@ -225,7 +225,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[], isEd
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
               </Form.Item>
-              <div ref={bottonRef}></div>
+              <div ref={bottomRef}></div>
             </Col>
           </Row>
         </>}
