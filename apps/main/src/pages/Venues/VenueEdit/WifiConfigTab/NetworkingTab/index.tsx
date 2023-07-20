@@ -54,14 +54,6 @@ export function NetworkingTab () {
       <LanPorts />
     </>
   }, {
-    title: $t({ defaultMessage: 'Cellular Options' }),
-    content: <>
-      <StepsFormLegacy.SectionTitle id='cellular-options'>
-        { $t({ defaultMessage: 'Cellular Options' }) }
-      </StepsFormLegacy.SectionTitle>
-      <CellularOptionsForm />
-    </>
-  }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='mesh-network'>
@@ -69,13 +61,19 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <MeshNetwork />
     </>
-  // }, {
-  //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
-  //   content: 'Client Isolation Allowlist Content'
+  }, {
+    title: $t({ defaultMessage: 'Cellular Options' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='cellular-options'>
+        { $t({ defaultMessage: 'Cellular Options' }) }
+      </StepsFormLegacy.SectionTitle>
+      <CellularOptionsForm />
+    </>
   }]
 
+  // Put Directed Multicast before Cellular Options
   if (supportDirectedMulticast) {
-    items.push({
+    items.splice(-1, 0, {
       title: $t({ defaultMessage: 'Directed Multicast' }),
       content: <>
         <StepsFormLegacy.SectionTitle id='directed-multicast'>
