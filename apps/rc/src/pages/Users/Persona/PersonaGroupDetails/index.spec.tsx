@@ -6,7 +6,8 @@ import {
   MacRegListUrlsInfo,
   PersonaBaseUrl,
   DpskUrls,
-  PropertyUrlsInfo
+  PropertyUrlsInfo,
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
@@ -27,6 +28,23 @@ import PersonaGroupDetails from '.'
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 
+const venueData = {
+  address: {
+    addressLine: '1093 Main St, New York, NY, 10044, United States',
+    city: 'New York',
+    country: 'United States',
+    latitude: 40.7690084,
+    longitude: -73.9431541,
+    timezone: 'America/New_York'
+  },
+  createdDate: '2022-07-08T04:59:22.351+00:00',
+  description: 'My-Venue',
+  floorPlans: [],
+  id: '4c778ed630394b76b17bce7fe230cf9f',
+  name: 'My-Venue',
+  updatedDate: '2022-07-08T04:59:22.351+00:00'
+}
+
 describe('Persona Group Details', () => {
   let params: { tenantId: string, personaGroupId: string }
 
@@ -36,6 +54,9 @@ describe('Persona Group Details', () => {
         PersonaUrls.getPersonaGroupById.url,
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
         PersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))

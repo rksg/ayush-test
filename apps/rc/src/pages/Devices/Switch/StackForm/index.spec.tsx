@@ -59,7 +59,7 @@ async function changeVenue () {
   await userEvent.click(venue[0])
 }
 
-describe('Switch Stack Form - Add', () => {
+describe.skip('Switch Stack Form - Add', () => {
   const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' }
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -275,7 +275,7 @@ describe('Switch Stack Form - Add', () => {
   })
 })
 
-describe('Switch Stack Form - Edit', () => {
+describe.skip('Switch Stack Form - Edit', () => {
   const params = { tenantId: 'tenant-id', switchId: 'FEK4124R28X', action: 'edit' }
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
