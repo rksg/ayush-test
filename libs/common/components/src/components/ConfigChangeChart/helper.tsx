@@ -38,20 +38,20 @@ type ChartRowMappingType = { key: string, label: string, color: string }
 export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
   const { $t } = getIntl()
   const colors = qualitativeColorSet()
-  const R1Map = [
+  const rcMap = [
     { key: 'zone', label: $t({ defaultMessage: 'Venue' }) },
     { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
     { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
     { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
   ]
-  const RAMap = [
+  const raMap = [
     { key: 'zone', label: $t({ defaultMessage: 'Zone' }) },
     { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }) },
     { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
     { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
     { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
   ]
-  return (get('IS_MLISA_SA') ? RAMap : R1Map)
+  return (get('IS_MLISA_SA') ? raMap : rcMap)
     .slice(0).map((rec, index) => ({ ...rec, color: colors[index] })).reverse()
 }
 
