@@ -8,7 +8,6 @@ import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormConte
 import { useVenuesListQuery, useGetCliFamilyModelsQuery }                            from '@acx-ui/rc/services'
 import { CliConfiguration, Venue, useTableQuery }                                    from '@acx-ui/rc/utils'
 import { useParams }                                                                 from '@acx-ui/react-router-dom'
-import { hasAccess }                                                                 from '@acx-ui/user'
 
 import { cliFormMessages } from './'
 

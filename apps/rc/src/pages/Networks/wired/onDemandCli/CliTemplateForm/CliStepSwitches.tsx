@@ -8,7 +8,6 @@ import { PlusSquareOutlined, MinusSquareOutlined }                          from
 import { useGetVenuesQuery, useLazyGetSwitchListQuery }                     from '@acx-ui/rc/services'
 import { ApplySwitch, CliTemplateVenueSwitches, SwitchViewModel }           from '@acx-ui/rc/utils'
 import { useParams }                                                        from '@acx-ui/react-router-dom'
-import { hasAccess }                                                        from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
