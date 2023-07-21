@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState, useMemo } from 'react'
 
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -129,10 +129,10 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
     })
   }
 
-  const statsPayload = [] as { field: string, value:string } [][]
-  props.data.forEach(persona => {
-    statsPayload.push([{ field: 'personaId', value: persona.id }])
-  })
+  const statsPayload = useMemo(() => {
+    return [props.data.map(persona => ({ field: 'personaId', value: persona.id }))] }
+  ,[props.data])
+  
   const qosStats = useGetQosStatsQuery( { payload: statsPayload }, {
     pollingInterval: 30 * 1000
   })
