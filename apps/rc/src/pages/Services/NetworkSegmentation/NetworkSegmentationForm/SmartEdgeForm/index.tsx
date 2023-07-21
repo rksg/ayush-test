@@ -272,7 +272,6 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
           {
             dhcpId &&
             <Form.Item
-              name='poolId'
               label={$t({ defaultMessage: 'DHCP Pool ' })}
               rules={[
                 {
