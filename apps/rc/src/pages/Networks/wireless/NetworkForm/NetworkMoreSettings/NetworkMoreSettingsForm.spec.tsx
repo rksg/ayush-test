@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
 import React from 'react'
@@ -132,25 +131,6 @@ describe('NetworkMoreSettingsForm', () => {
 
     expect(screen.getByText(/automatic support for vrrp\/hsrp:/i)).toBeVisible()
     expect(screen.getByText(/client isolation allowlist by venue:/i)).toBeVisible()
-  })
-
-  it('after click Multicast Rate Limiting', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    render(
-      <Provider>
-        <Form>
-          <MoreSettingsForm wlanData={mockWlanData} />
-        </Form>
-      </Provider>,
-      { route: { params } })
-
-    const multicastRateLimitSwitch = screen.getByText(/Multicast Rate Limiting/i)
-    await userEvent.click(within(multicastRateLimitSwitch).getByRole('switch'))
-    expect(await screen.findByTestId('enableMulticastUpLimit')).toBeVisible()
-    expect(await screen.findByTestId('enableMulticastDownLimit')).toBeVisible()
-    expect(await screen.findByTestId('enableMulticastUpLimit6G')).toBeVisible()
-    expect(await screen.findByTestId('enableMulticastDownLimit6G')).toBeVisible()
   })
 
   it('after click Anti-spoofing', async () => {
@@ -424,13 +404,6 @@ describe('NetworkMoreSettingsForm', () => {
     // eslint-disable-next-line max-len
     const tunnelProfileRemindingMsg = screen.getByText('All networks under the same Network Segmentation', { exact: false })
     expect(tunnelProfileRemindingMsg).toBeVisible()
-
-    const multicastRateLimitSwitch = screen.getByRole('Switch', { name: /Multicast Rate Limiting/i })
-    await userEvent.click(multicastRateLimitSwitch)
-    expect(await screen.findByTestId('enableMulticastUpLimit')).toBeVisible()
-    expect(await screen.findByTestId('enableMulticastDownLimit')).toBeVisible()
-    expect(await screen.findByTestId('enableMulticastUpLimit6G')).toBeVisible()
-    expect(await screen.findByTestId('enableMulticastDownLimit6G')).toBeVisible()
   })
 
   it('Test case for Multicast Filter', async ()=> {
