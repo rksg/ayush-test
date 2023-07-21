@@ -1,6 +1,6 @@
-import { Radio } from 'antd'
-import styled    from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
+import { Tabs } from '@acx-ui/components'
 import {
   ArrowCorner,
   SignalDown,
@@ -58,28 +58,9 @@ export const WiredIcon = styled(Wired)`
   }
 `
 
-export const IconRadioGroup = styled(Radio.Group)`
-  padding: 16px 0px;
-  & > .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-    background: var(--acx-accents-orange-50);
-    border-color: var(--acx-accents-orange-50);
-    &::before {
-      background-color: var(--acx-accents-orange-50);
-    }
-
-    svg {
-      path[stroke] {
-        stroke: currentColor;
-      }
-      path[fill] {
-        fill: currentColor;
-      }
-    }
-  }
-  & > .ant-radio-button-wrapper{
-    svg {
-      width: 22px;
-      height: 22px;
-    }
+export const IconThirdTab = styled(Tabs).attrs({ type: 'third' })`
+  .ant-tabs-tab  {
+    padding: 3px 7px 1px !important;
+    height: 30px;
   }
 `
