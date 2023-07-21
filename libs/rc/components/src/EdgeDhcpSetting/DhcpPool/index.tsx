@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { showActionModal }                                                       from '@acx-ui/components'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                                                    from '@acx-ui/utils'
 
 import { useTableControl }           from '..'
 import { CsvSize, ImportFileDrawer } from '../../ImportFileDrawer'
@@ -18,6 +19,7 @@ type DhcpPoolTableProps = {
 }
 
 const importTemplateLink = 'assets/templates/edge_dhcp_import_template.csv'
+const MAX_IMPORT_ENTRIES = 128
 export default function DhcpPoolTable ({
   value = [],
   onChange
@@ -31,7 +33,7 @@ export default function DhcpPoolTable ({
     setVisible,
     onAddOrEdit,
     currentEditData
-  } = useTableControl({ value, onChange })
+  } = useTableControl<EdgeDhcpPool>({ value, onChange })
 
   const validateCSVData = async (data: EdgeDhcpPool[]): Promise<void> => {
     // find duplicate pool name
@@ -40,43 +42,45 @@ export default function DhcpPoolTable ({
     }), {} as { [key:string]: number })
 
     const hasDuplicates = Object.keys(count).filter((a) => count[a] > 1).length > 0
-    if (hasDuplicates)
-      return Promise.reject($t({ defaultMessage: 'Pool name should be unique' }))
+    if (hasDuplicates) {
+      const entityName = $t({ defaultMessage: 'Pool Name' })
+      return Promise.reject($t(validationMessages.duplication, {
+        entityName: entityName,
+        key: $t({ defaultMessage: 'name' }),
+        extra: ''
+      }))
+    }
 
 
     // validation on other fields
     for(let i = 0; i < data.length; i++) {
       const item = data[i]
+
       try {
-        await Promise.all([
-          subnetMaskIpRegExp(item.subnetMask),
-          networkWifiIpRegExp(item.poolStartIp),
-          networkWifiIpRegExp(item.poolEndIp),
-          networkWifiIpRegExp(item.gatewayIp),
-          IpInSubnetPool(
-            item.poolEndIp,
-            item.poolStartIp,
-            item.subnetMask
-          )])
-      } catch(er) {
-        return Promise.reject(er)
+        await subnetMaskIpRegExp(item.subnetMask)
+        await networkWifiIpRegExp(item.poolStartIp)
+        await networkWifiIpRegExp(item.poolEndIp)
+        await networkWifiIpRegExp(item.gatewayIp)
+        await IpInSubnetPool(
+          item.poolEndIp,
+          item.poolStartIp,
+          item.subnetMask
+        )
+      } catch (error) {
+        return Promise.reject(error)
       }
     }
 
     return Promise.resolve()
   }
 
-  const appendDHCPPools = async (content: string) => {
-    if (!onChange) return
-
-    const dataArray = content.split('\n')
-      .filter(row => {
-        const trimmed = row.trim()
-        return trimmed
+  const appendDHCPPools = async (content: string[], callback: () => void) => {
+    const dataArray = content.filter(row => {
+      const trimmed = row.trim()
+      return trimmed
           && !trimmed.startsWith('#')
-          && trimmed !== 'Pool Name Subnet Mask Start IP Address End IP Address Gateway IP'
-      })
-
+          && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
+    })
 
     const newValues: EdgeDhcpPool[] = dataArray.map((item) => {
       const fields = item.split(' ')
@@ -92,8 +96,8 @@ export default function DhcpPoolTable ({
 
     try {
       await validateCSVData(newValues)
-      if (onChange)
-        onChange(value.concat(newValues))
+      onChange && onChange(value.concat(newValues))
+      callback()
     } catch (error) {
       showActionModal({
         type: 'error',
@@ -118,20 +122,36 @@ export default function DhcpPoolTable ({
         data={currentEditData}
         allPool={value}
       />
-      <ImportFileDrawer
-        type='EdgeDHCP'
-        title={$t({ defaultMessage: 'Import from file' })}
-        maxSize={CsvSize['2MB']}
-        acceptType={['csv']}
-        templateLink={importTemplateLink}
-        visible={importModalvisible}
-        readAsText={true}
-        importRequest={(formData, values, content)=>{
-          appendDHCPPools(content!)
-          setImportModalvisible(false)
-        }}
-        onClose={()=>setImportModalvisible(false)}
-      />
+      { // prevent `Warning: Instance created by `useForm` is not connected to any Form element. Forget to pass `form` prop?`
+        importModalvisible &&
+        <ImportFileDrawer
+          type='EdgeDHCP'
+          title={$t({ defaultMessage: 'Import from file' })}
+          maxSize={CsvSize['5MB']}
+          maxEntries={MAX_IMPORT_ENTRIES}
+          acceptType={['csv']}
+          templateLink={importTemplateLink}
+          visible={importModalvisible}
+          readAsText={true}
+          importRequest={(formData, values, content) => {
+            const dataArray = content!.split('\n')
+            if (dataArray.length > MAX_IMPORT_ENTRIES) {
+              showActionModal({
+                type: 'error',
+                title: $t({ defaultMessage: 'Invalid Validation' }),
+                content: $t({ defaultMessage: 'Exceed maximum entries.' })
+              })
+              return
+            }
+
+            appendDHCPPools(
+              dataArray,
+              () => setImportModalvisible(false)
+            )
+          }}
+          onClose={() => setImportModalvisible(false)}
+        />
+      }
     </>
   )
 }

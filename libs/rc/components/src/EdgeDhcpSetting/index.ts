@@ -16,7 +16,6 @@ export const useTableControl = <T>(option:{
   const valueMap = useRef<Record<string, T>>({})
   const [visible, setVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<T>()
-
   useEffect(()=> {
     valueMap.current = value ? _.keyBy(value, key) : {}
   }, [value])
@@ -92,6 +91,7 @@ export const useDrawerControl = <T>(option: {
 }) => {
   type ValueOf<T> = T[keyof T]
   const { visible, setVisible, data, key='id', initData, onAddOrEdit } = option
+
   const [form] = Form.useForm()
 
   useEffect(() => {
@@ -118,7 +118,8 @@ export const useDrawerControl = <T>(option: {
     }
   }
 
-  const onSubmit = (data: T) => {
+  const onSubmit = () => {
+    const data = form.getFieldsValue(true) as T
     if (data[key as keyof T] === initData[key as keyof T]) {
       data[key as keyof T] = '_NEW_'+ uuidv4() as unknown as ValueOf<T>
     }

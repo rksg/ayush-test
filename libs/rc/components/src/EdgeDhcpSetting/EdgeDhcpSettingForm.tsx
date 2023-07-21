@@ -34,6 +34,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
 
   const { $t } = useIntl()
   const { form } = useStepFormContext<EdgeDhcpSetting>()
+
   const [
     dhcpRelay,
     enableSecondaryDNSServer,
@@ -71,6 +72,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
             }]}
             children={<Input />}
           />
+
           <StepsFormLegacy.FieldLabel width='100px'>
             {$t({ defaultMessage: 'DHCP Relay:' })}
             <Form.Item
@@ -80,6 +82,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
               children={<Switch />}
             />
           </StepsFormLegacy.FieldLabel>
+
           {dhcpRelay &&
             <>
               <Form.Item
@@ -126,6 +129,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                   ]}
                 />
               }
+
               <Form.Item
                 name='leaseTimeType'
                 label={$t({ defaultMessage: 'Lease Time' })}
@@ -164,13 +168,16 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                     </Radio>
                   </Space>
                 </Radio.Group>
+
               </Form.Item>
+
             </>
           }
         </Col>
       </Row>
 
       <SpaceWrapper direction='vertical' size='middle' fullWidth>
+
         <Row gutter={20}>
           <Col span={24}>
             <Subtitle level={3}>
@@ -187,6 +194,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
             />
           </Col>
         </Row>
+
 
         {
           !dhcpRelay &&
