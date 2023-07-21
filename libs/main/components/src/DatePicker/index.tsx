@@ -10,10 +10,8 @@ import {
 export const DatePicker = (props: AntDatePickerProps) => {
   const { data: userProfile } = useUserProfileContext()
   const dateFormat = userProfile?.dateFormat.toUpperCase()
-  return <RCDatePicker {
-    ... {
-      ...props,
-      format: props.format ? props.format : dateFormat
-    }
-  }/>
+  return <RCDatePicker
+    {...props}
+    format={props.format ? props.format : dateFormat}
+  />
 }
