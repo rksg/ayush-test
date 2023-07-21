@@ -4,7 +4,7 @@ import { useTreatments } from '@splitsoftware/splitio-react'
 import { useParams }     from 'react-router-dom'
 
 import { useGetAccountTierQuery }                           from '@acx-ui/rc/services'
-import { BetaStatus, useGetBetaStatusQuery }                from '@acx-ui/user'
+import { useGetBetaStatusQuery }                            from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
 
 import { Features }     from './features'
@@ -26,7 +26,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const params = useParams()
   const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG)
   const betaStatusResponse = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
-  const betaEnabled = Boolean(betaStatusResponse?.data?.enabled) as BetaStatus
+  const betaEnabled = Boolean(betaStatusResponse?.data?.enabled)
 
   const jwtPayload = getJwtTokenPayload()
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
