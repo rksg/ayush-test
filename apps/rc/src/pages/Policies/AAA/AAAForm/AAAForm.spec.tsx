@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { AaaUrls }                               from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                          from '@acx-ui/user'
+import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { AaaUrls }                                       from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                  from '@acx-ui/user'
 
 import AAAForm from './AAAForm'
 
@@ -175,7 +175,29 @@ describe('AAAForm', () => {
   it('should edit AAA successfully', async () => {
     await editAAA()
   })
+
+  it('should validate the length of the Shared Secret', async () => {
+    render(<Provider><AAAForm edit={false} networkView={false}/></Provider>, {
+      route: { params }
+    })
+
+    // eslint-disable-next-line max-len
+    const longSecret = '@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5Ag1'
+    const primarySecret = await screen.findByLabelText('Shared Secret')
+
+    await userEvent.type(primarySecret, longSecret)
+    const primaryAlert = await screen.findByRole('alert')
+    expect(primaryAlert).toHaveTextContent('255 characters')
+
+    await userEvent.click(await screen.findByRole('button', { name: /Add Secondary Server/ }))
+    const secondaryFieldset = await screen.findByRole('group', { name: /Secondary Server/ })
+    const secondarySecret = await within(secondaryFieldset).findByLabelText('Shared Secret')
+    await userEvent.type(secondarySecret, longSecret)
+    const secondaryAlert = await within(secondaryFieldset).findByRole('alert')
+    expect(secondaryAlert).toHaveTextContent('255 characters')
+  })
 })
+
 async function editAAA (){
   render(<Provider><AAAForm edit={true} networkView={false}/></Provider>, {
     route: { params }

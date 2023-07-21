@@ -549,3 +549,33 @@ export const mockAvailablePropertyConfigs = {
   number: 0,
   empty: false
 }
+
+export const mockedNetworkOptions = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'networkId1',
+      name: 'network1'
+    },
+    {
+      id: 'networkId2',
+      name: 'network2'
+    }
+  ]
+}
+
+export const mockedSwitchOptions = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      switchMac: 'c0:c5:20:78:df:32',
+      name: 'network1'
+    },
+    {
+      switchMac: 'c0:c5:20:78:df:31',
+      name: 'network2'
+    }
+  ]
+}

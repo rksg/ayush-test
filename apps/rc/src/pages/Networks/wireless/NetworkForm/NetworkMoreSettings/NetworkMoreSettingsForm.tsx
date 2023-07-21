@@ -131,7 +131,7 @@ export function MoreSettingsForm (props: {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
-  const ssidRateLimitingFeatureBundleFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const [
     enableDhcp,
@@ -160,6 +160,24 @@ export function MoreSettingsForm (props: {
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
+  const multicastFilterTooltipContent = (
+    <div>
+      <p>Drop all multicast or broadcast traffic from associated wireless clients,
+        except for the following which is always allowed:</p>
+      <ul style={{ paddingLeft: '40px' }}>
+        <li>ARP request</li>
+        <li>DHCPv4 request</li>
+        <li>DHCPv6 request</li>
+        <li>IPv6 NS</li>
+        <li>IPv6 NA</li>
+        <li>IPv6 RS</li>
+        <li>IGMP</li>
+        <li>MLD</li>
+        <li>All unicast packets</li>
+      </ul>
+    </div>
+  )
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -432,7 +450,7 @@ export function MoreSettingsForm (props: {
             } />
         </div>
 
-        {ssidRateLimitingFeatureBundleFlag &&
+        {AmbAndDtimFlag &&
           <UI.FieldLabel width='250px'>
             {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
             <Form.Item
@@ -666,12 +684,12 @@ export function MoreSettingsForm (props: {
                 name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
                 style={{ marginBottom: '10px' }}
                 valuePropName='checked'
-                initialValue={false}
+                initialValue={true}
                 children={<Switch/>}/>
             </UI.FieldLabel></>
         }
 
-        {ssidRateLimitingFeatureBundleFlag &&
+        {AmbAndDtimFlag &&
           <Form.Item
             name={['wlan','advancedCustomization','dtimInterval']}
             label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
@@ -767,6 +785,28 @@ export function MoreSettingsForm (props: {
             }
           />
         </>
+        }
+
+        {multicastFilterFlag &&
+          <UI.FieldLabel width='250px'>
+            <div style={{ display: 'grid', gridTemplateColumns: '85px 100px auto' }}>
+              {$t({ defaultMessage: 'Multicast Filter' })}
+              <Tooltip.Question
+              // eslint-disable-next-line max-len
+                title={multicastFilterTooltipContent}
+                placement='right'
+              />
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch
+                  data-testid='multicast-filter-enabled'
+                />}
+              />
+            </div>
+          </UI.FieldLabel>
         }
 
       </Panel>

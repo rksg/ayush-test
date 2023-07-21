@@ -2,9 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,

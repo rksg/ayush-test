@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { sum }     from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -13,7 +15,8 @@ import { formatter }                                from '@acx-ui/formatter'
 import { InformationOutlined }                      from '@acx-ui/icons'
 import { TimeStampRange }                           from '@acx-ui/types'
 
-import * as UI from '../styledComponents'
+import { HealthPageContext } from '../HealthPageContext'
+import * as UI               from '../styledComponents'
 
 
 type PillData = { success: number, total: number }
@@ -58,6 +61,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const { histogram, pill, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { $t } = useIntl()
   const [ startDate, endDate ] = timeWindow as [string, string]
+  const { apCount } = useContext(HealthPageContext)
   const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, startDate, endDate, kpi }, {
     skip: !Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
@@ -65,7 +69,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
       data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
     })
   })
-  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
+  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi, apCount }, {
     skip: Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,

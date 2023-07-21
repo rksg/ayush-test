@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { switchApi }                  from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
@@ -10,13 +11,29 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { SwitchDetailsContext }                                                                                       from '../../..'
 import { stackMemberStandalone, standaloneFront, standaloneRear, switchDetailSatckOnline, switchDetailSwitchOffline } from '../__tests__/fixtures'
 
-import { SwitchFrontRearView } from '.'
+import { SwitchFrontRearView, SwitchPanelContext } from '.'
 
+export const panelContext = {
+  editPortsFromPanelEnabled: true,
+  editPortDrawerVisible: false,
+  setEditPortDrawerVisible: () => {},
+  breakoutPortDrawerVisible: false,
+  setBreakoutPortDrawerVisible: () => {},
+  editBreakoutPortDrawerVisible: false,
+  setEditBreakoutPortDrawerVisible: () => {},
+  selectedPorts: [],
+  setSelectedPorts: () => {},
+  editLagModalVisible: false,
+  setEditLagModalVisible: () => {},
+  editLag: [],
+  setEditLag: () => {}
+}
 describe('SwitchFrontRearView', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getSwitchFrontView.url.split('?')[0],
+      rest.post(SwitchUrlsInfo.getSwitchPortlist.url,
         (_, res, ctx) => res(ctx.json(standaloneFront))),
       rest.get(SwitchUrlsInfo.getSwitchRearView.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(standaloneRear)))
@@ -39,7 +56,9 @@ describe('SwitchFrontRearView', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchFrontRearView stackMember={stackMemberStandalone} />
+        <SwitchPanelContext.Provider value={panelContext}>
+          <SwitchFrontRearView stackMember={stackMemberStandalone} />
+        </SwitchPanelContext.Provider>
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: {
@@ -49,7 +68,12 @@ describe('SwitchFrontRearView', () => {
     })
 
     expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
-    expect(await screen.findByText('Active')).toBeVisible()
+    const activeButton = await screen.findByText('Active')
+    await userEvent.click(activeButton)
+    expect(await screen.findByText('Stack membership')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
+    const portLabel = await screen.findByText('3')
+    expect(portLabel).toBeVisible()
     const rearViewButton = screen.getByRole('button', { name: /rear view/i })
     expect(rearViewButton).toBeVisible()
     await userEvent.click(rearViewButton)
@@ -73,7 +97,9 @@ describe('SwitchFrontRearView', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchFrontRearView stackMember={[]} />
+        <SwitchPanelContext.Provider value={panelContext}>
+          <SwitchFrontRearView stackMember={[]} />
+        </SwitchPanelContext.Provider>
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: {
@@ -84,5 +110,4 @@ describe('SwitchFrontRearView', () => {
     const rearViewButton = screen.getByRole('button', { name: /rear view/i })
     expect(rearViewButton).toBeDisabled()
   })
-
 })
