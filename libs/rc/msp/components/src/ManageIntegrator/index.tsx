@@ -352,6 +352,8 @@ export function ManageIntegrator () {
         tenant_type: type,
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
+        city: address.city,
+        country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
         admin_email: ecFormData.admin_email,
@@ -415,6 +417,8 @@ export function ManageIntegrator () {
         tenant_type: tenantType,
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
+        city: address.city,
+        country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate
       }
