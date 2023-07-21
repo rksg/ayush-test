@@ -142,10 +142,7 @@ export function SwitchDhcpPoolTable () {
         }])}
         rowKey='id'
         rowActions={!!switchDetail?.cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={!!switchDetail?.cliApplied ? undefined : {
-          type: 'checkbox',
-          selectedRowKeys: selected ? [selected]:[]
-        }} />
+        rowSelection={!!switchDetail?.cliApplied ? undefined : { type: 'checkbox' }} />
       <AddPoolDrawer
         visible={drawerVisible}
         isLoading={isCreating || isUpdating}

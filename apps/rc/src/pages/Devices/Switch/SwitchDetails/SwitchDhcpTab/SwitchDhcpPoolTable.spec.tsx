@@ -1,16 +1,34 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }                          from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                     from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { switchApi }                                   from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }                              from '@acx-ui/rc/utils'
+import { Provider, store }                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { poolData, switchDetailData } from '../__tests__/fixtures'
 
 import { SwitchDhcpPoolTable } from './SwitchDhcpPoolTable'
+
+type MockDrawerProps = React.PropsWithChildren<{
+  visible: boolean
+  onSavePool: () => void
+  onClose: () => void
+}>
+jest.mock('./AddPoolDrawer', () => ({
+  AddPoolDrawer: ({ onSavePool, onClose, visible }: MockDrawerProps) =>
+    visible && <div data-testid={'AddPoolDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onSavePool()
+      }}>Save</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>
+}))
 
 describe('SwitchDhcpPoolTable', () => {
   const params = {
@@ -43,9 +61,6 @@ describe('SwitchDhcpPoolTable', () => {
       )
     )
   })
-  afterEach(() => {
-    Modal.destroyAll()
-  })
 
   it('should render correctly', async () => {
     render(<Provider><SwitchDhcpPoolTable /></Provider>, {
@@ -60,7 +75,11 @@ describe('SwitchDhcpPoolTable', () => {
     await userEvent.click(await within(row).findByRole('checkbox'))
     const editButton = await screen.findByRole('button', { name: 'Edit' })
     await userEvent.click(editButton)
+
+    const dialog = await screen.findByTestId('AddPoolDrawer')
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should do deleting by action bar', async () => {
@@ -77,6 +96,7 @@ describe('SwitchDhcpPoolTable', () => {
 
     const deleteDialog = await screen.findByRole('dialog')
     await userEvent.click(await within(deleteDialog).findByRole('button', { name: /Delete Pool/i }))
+    await waitFor(() => expect(deleteDialog).not.toBeVisible())
   })
 
   it('should do adding by Add button', async () => {
@@ -89,7 +109,9 @@ describe('SwitchDhcpPoolTable', () => {
     const addButton = await screen.findByRole('button', { name: 'Add Pool' })
     await userEvent.click(addButton)
 
-    const poolDialog = await screen.findByRole('dialog')
+    const poolDialog = await screen.findByTestId('AddPoolDrawer')
     await userEvent.click(await within(poolDialog).findByRole('button', { name: 'Cancel' }))
+
+    await waitFor(() => expect(poolDialog).not.toBeVisible())
   })
 })
