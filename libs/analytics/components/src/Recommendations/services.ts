@@ -46,12 +46,10 @@ export interface MutationPayload {
 }
 
 export interface MutationResponse {
-  data: {
-    toggleMute: {
-      success: boolean
-      errorMsg: string
-      errorCode: string
-    }
+  toggleMute: {
+    success: boolean
+    errorMsg: string
+    errorCode: string
   }
 }
 const radioConfigMap = {
