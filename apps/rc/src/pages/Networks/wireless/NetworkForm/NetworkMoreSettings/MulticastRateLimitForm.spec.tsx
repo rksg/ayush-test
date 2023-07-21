@@ -5,26 +5,15 @@ import React from 'react'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
-import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  AccessControlUrls,
-  CommonUrlsInfo,
   NetworkSaveData,
-  NetworkTypeEnum,
-  WlanSecurityEnum,
   BasicServiceSetPriorityEnum,
   OpenWlanAdvancedCustomization,
-  DpskWlanAdvancedCustomization,
   TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, within, render, screen, cleanup, fireEvent } from '@acx-ui/test-utils'
-
-import { mockedTunnelProfileViewData }                                     from '../../../../Policies/TunnelProfile/__tests__/fixtures'
-import { devicePolicyListResponse, externalProviders, policyListResponse } from '../__tests__/fixtures'
-import NetworkFormContext, { NetworkFormContextType }                      from '../NetworkFormContext'
-import { hasVxLanTunnelProfile }                                           from '../utils'
 
 import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
@@ -42,9 +31,6 @@ const mockWlanData = {
 
 
 describe('NetworkMoreSettingsForm', () => {
-
-  // beforeEach(() => {
-  // })
 
   it('after click Multicast Rate Limiting', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
