@@ -44,6 +44,13 @@ const DateLink = ({ value }: { value: RecommendationRow }) => {
   </TenantLink>
 }
 
+const disableMuteStatus: Array<RecommendationRow['statusEnum']> = [
+  'applyscheduled',
+  'applyscheduleinprogress',
+  'revertscheduled',
+  'revertscheduleinprogress'
+]
+
 export function RecommendationTable ({ filters, showCrrm }:
   { filters: IncidentFilter, showCrrm?: boolean }) {
   const intl = useIntl()
@@ -59,7 +66,8 @@ export function RecommendationTable ({ filters, showCrrm }:
   const [muteRecommendation] = useMuteRecommendationMutation()
   const [selectedRowData, setSelectedRowData] = useState<{
     id: string,
-    isMuted: boolean
+    isMuted: boolean,
+    statusEnum: RecommendationRow['statusEnum']
   }[]>([])
 
   const selectedRecommendation = selectedRowData[0]
@@ -78,7 +86,10 @@ export function RecommendationTable ({ filters, showCrrm }:
         const { id, isMuted } = selectedRecommendation
         await muteRecommendation({ id, mute: !isMuted }).unwrap()
         setSelectedRowData([])
-      }
+      },
+      disabled: selectedRecommendation
+        && selectedRecommendation.statusEnum
+        && disableMuteStatus.includes(selectedRecommendation.statusEnum)
     }
   ]
 
@@ -183,7 +194,8 @@ export function RecommendationTable ({ filters, showCrrm }:
           onChange: (_, [row]) => {
             row && setSelectedRowData([{
               id: row.id,
-              isMuted: row.isMuted
+              isMuted: row.isMuted,
+              statusEnum: row.statusEnum
             }])
           }
         }}
