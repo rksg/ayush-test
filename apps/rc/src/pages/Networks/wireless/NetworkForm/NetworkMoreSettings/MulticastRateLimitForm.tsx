@@ -44,7 +44,7 @@ export function MulticastRateLimitForm () {
           name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
-          initialValue={false}
+          initialValue={enableMulticastUpLimit || enableMulticastDownLimit}
         >
           <Switch/>
         </Form.Item>
@@ -62,13 +62,16 @@ export function MulticastRateLimitForm () {
             <UI.FormItemNoLabel
               name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']}
               valuePropName='checked'
-              initialValue={enableMulticastUpLimit || enableMulticastDownLimit}
+              initialValue={false}
               style={{ lineHeight: '50px' }}>
               <Checkbox data-testid='enableMulticastUpLimit'
-                children={$t({ defaultMessage: 'Upload Limit' })} />
-              <Tooltip.Question
-                title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
-                placement='bottom' />
+                children={<>
+                  {$t({ defaultMessage: 'Upload Limit' })}
+                  <Tooltip.Question
+                    title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
+                    placement='bottom' />
+                </>} />
+
             </UI.FormItemNoLabel>
             {
               enableMulticastUpLimit ?

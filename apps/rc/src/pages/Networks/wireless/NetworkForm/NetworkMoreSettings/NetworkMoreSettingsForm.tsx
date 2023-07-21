@@ -29,6 +29,7 @@ import { LoadControlForm }    from './LoadControlForm'
 import { ServicesForm }       from './ServicesForm'
 import * as UI                from './styledComponents'
 import { UserConnectionForm } from './UserConnectionForm'
+import { MulticastRateLimitForm } from './MulticastRateLimitForm'
 
 
 
@@ -160,6 +161,7 @@ export function MoreSettingsForm (props: {
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
   const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
   const multicastFilterTooltipContent = (
     <div>
@@ -807,6 +809,9 @@ export function MoreSettingsForm (props: {
               />
             </div>
           </UI.FieldLabel>
+        }
+
+        { multicastRateLimitFlag && <MulticastRateLimitForm/>
         }
 
       </Panel>
