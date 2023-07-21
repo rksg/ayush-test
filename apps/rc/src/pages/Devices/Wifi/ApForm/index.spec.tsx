@@ -3,10 +3,10 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                      from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                      from '@acx-ui/store'
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                        from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -41,6 +41,76 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const venue = [
+  {
+    id: '0842f2133565438d85e1e46103889744',
+    name: 'Peter-Venue',
+    apCount: 1,
+    apModels: [
+      'R750'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: '8ee8acc996734a5dbe43777b72469857',
+    name: 'Ben-Venue-US',
+    apCount: 1,
+    apModels: [
+      'R610'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.413',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ],
+    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
+  },
+  {
+    id: '02b81f0e31e34921be5cf47e6dce1f3f',
+    name: 'My-Venue',
+    apCount: 0,
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.433',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['R300', 'R500', 'R550']
+      },
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.533',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['R500']
+      }
+    ]
+  }
+]
 
 async function fillInForm () {
   fireEvent.change(screen.getByLabelText(/AP Name/), { target: { value: 'apname' } })
@@ -91,11 +161,14 @@ async function changeCoordinates (data: string, applyData: boolean) {
 
 describe('AP Form - Add', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
+  const addRequestSpy = jest.fn()
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     initialize()
     mockServer.use(
+      rest.get(FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(venue))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getWifiCapabilities.url,
@@ -105,7 +178,10 @@ describe('AP Form - Add', () => {
       rest.get(CommonUrlsInfo.getApGroupList.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
+        (_, res, ctx) => {
+          addRequestSpy()
+          return res(ctx.json(successResponse))
+        }),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
@@ -119,6 +195,7 @@ describe('AP Form - Add', () => {
     )
   })
   afterEach(() => {
+    addRequestSpy.mockClear()
     Modal.destroyAll()
   })
   it('should render correctly', async () => {
@@ -174,6 +251,7 @@ describe('AP Form - Add', () => {
       await changeVenue()
       await fillInForm()
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+      await waitFor(() => expect(addRequestSpy).toHaveBeenCalledTimes(1))
     })
 
     it('should handle Add AP with custom coordinates', async () => {
@@ -189,6 +267,7 @@ describe('AP Form - Add', () => {
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+      await waitFor(() => expect(addRequestSpy).toHaveBeenCalledTimes(1))
     })
 
     it('should handle discard coordinates input', async () => {
