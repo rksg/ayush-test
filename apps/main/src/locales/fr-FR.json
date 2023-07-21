@@ -123,6 +123,9 @@
   "+cdm35": {
     "defaultMessage": "Échec d’authentification de l’ID invité"
   },
+  "+frS59": {
+    "defaultMessage": "Gestion des versions"
+  },
   "+iQZtX": {
     "defaultMessage": "{successCount} de {totalCount} sessions"
   },
@@ -6019,6 +6022,9 @@
   "QExggt": {
     "defaultMessage": "Utilisation du mot de passe configuré"
   },
+  "QF+PNv": {
+    "defaultMessage": "Gestion du compte"
+  },
   "QF20FV": {
     "defaultMessage": "query-end-time"
   },
@@ -6863,7 +6869,7 @@
     "defaultMessage": "Taux de réussite de la connexion"
   },
   "UOVi5a": {
-    "defaultMessage": "Ces codes peuvent être utilisés pour accéder à votre compte si vous ne parvenez pas à recevoir le code de sécurité par téléphone. Veillez à les copier et à les conserver en site sûr."
+    "defaultMessage": "Ces codes peuvent être utilisés pour accéder à votre compte si vous ne parvenez pas à recevoir le code de sécurité par téléphone. Veillez à les copier et à les conserver en lieu sûr."
   },
   "UOrao6": {
     "defaultMessage": "Membre de la pilejouter un serveurPoE power denied in {ut}"
@@ -7871,7 +7877,7 @@
     "defaultMessage": "Sous-interface"
   },
   "ZJqg2J": {
-    "defaultMessage": "Abus RTS"
+    "defaultMessage": "Abus CTS"
   },
   "ZJvcHR": {
     "defaultMessage": "{name}<br></br> <space><b>{formattedValue} {value, plural, one {événement} other {événements} }</b></space>"
@@ -10861,7 +10867,7 @@
     "defaultMessage": "({usedPercentage}%)"
   },
   "n/qhwR": {
-    "defaultMessage": "Abus RTS"
+    "defaultMessage": "Abus CTS"
   },
   "n/vWlL": {
     "defaultMessage": "Appliqué sur le site"
