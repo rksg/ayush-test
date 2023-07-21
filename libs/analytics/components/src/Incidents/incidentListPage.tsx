@@ -15,7 +15,7 @@ export const IncidentTabContent = (props: {
   const { filters: widgetFilters, disableGraphs } = props
   const { filters } = useAnalyticsFilter()
   const incidentsPageFilters = widgetFilters ? widgetFilters : filters
-  return (<>
+  return (
     <GridRow>
       {disableGraphs ? null : <>
         <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
@@ -25,9 +25,11 @@ export const IncidentTabContent = (props: {
           <NetworkHistory hideTitle filters={incidentsPageFilters} type='no-border' />
         </GridCol>
       </>}
+      <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
+        <IncidentTable filters={incidentsPageFilters} />
+      </GridCol>
     </GridRow>
-    <IncidentTable filters={incidentsPageFilters} />
-  </>)
+  )
 }
 
 export function IncidentListPage () {

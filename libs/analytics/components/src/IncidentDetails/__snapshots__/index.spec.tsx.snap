@@ -142,7 +142,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
             class="styledComponents__FixedAutoSizer-sc-sbdzeb-0 dpGfEK"
@@ -506,7 +506,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
             class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
@@ -582,7 +582,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                       >
                         <div
                           class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
@@ -599,7 +599,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
                       >
                         <div
                           class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
@@ -623,7 +623,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
           style="min-height: 228px;"
         >
           <div
@@ -636,7 +636,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 zzbxI"
+          class="Grid__Container-sc-5irhjd-1 dRhDDA"
           style="min-height: 250px;"
         >
           <div
