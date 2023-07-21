@@ -158,4 +158,18 @@ describe('Firmware Venues Table', () => {
     })
   })
 
+  it('should render Legacy AP Firmware column', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      })
+
+    const rowWithLegacyAp = await screen.findByRole('row', { name: /Ben-Venue-US/ })
+    expect(within(rowWithLegacyAp).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible()
+
+    const rowWithoutLegacyAp = await screen.findByRole('row', { name: /Legacy-Venue/ })
+    expect(within(rowWithoutLegacyAp).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull()
+  })
 })

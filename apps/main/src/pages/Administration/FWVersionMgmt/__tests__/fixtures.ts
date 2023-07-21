@@ -109,6 +109,30 @@ export const venue = [
         apModels: ['R500']
       }
     ]
+  },
+  {
+    id: 'aaa2f2133565438d85e1e46103889999',
+    name: 'Legacy-Venue',
+    apCount: 1,
+    apModels: [
+      'R512'
+    ],
+    versions: [
+      {
+        version: '6.1.0.10.433',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.513',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ]
   }
 ]
 

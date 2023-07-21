@@ -88,7 +88,7 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
       render: function (data, row) {
-        return row.versions ? row.versions[0].version : '--'
+        return getApVersion(row) ?? '--'
       }
     },
     {
@@ -96,14 +96,12 @@ function useColumns (
       key: 'eolApFirmwares',
       dataIndex: 'eolApFirmwares',
       sorter: false,
-      // filterable: filterables ? filterables['version'] : false,
-      // filterMultiple: false,
       render: function (data, row) {
-        const eolApFirmwares = row.eolApFirmwares
+        const firmwareText = getDisplayEolFirmwareText(row)
 
-        return eolApFirmwares
-          ? <Tooltip title={getEolFirmwareTooltipText(eolApFirmwares)}>
-            <UI.WithTooltip>{getEolFirmwareText(eolApFirmwares)}</UI.WithTooltip>
+        return firmwareText
+          ? <Tooltip title={getDisplayEolFirmwareTooltipText(row)}>
+            <UI.WithTooltip>{firmwareText}</UI.WithTooltip>
           </Tooltip>
           : '--'
       }
@@ -160,12 +158,19 @@ function sortCurrentApFirmware (a: FirmwareVenue, b: FirmwareVenue) {
   return compareVersions(getApVersion(a), getApVersion(b))
 }
 
-function getEolFirmwareTooltipText (eolApFirmwares: EolApFirmware[]): string {
-  return eolApFirmwares.map(eol => `${eol.currentEolVersion}: ${eol.apModels.join(',')}`).join('\n')
+function getDisplayEolFirmware (venue: FirmwareVenue): EolApFirmware[] {
+  const eolApFirmwares = venue.eolApFirmwares || []
+  const currentVersion = getApVersion(venue)
+  return eolApFirmwares.filter(eol => compareVersions(eol.currentEolVersion, currentVersion) < 0)
 }
 
-function getEolFirmwareText (eolApFirmwares: EolApFirmware[]): string {
-  return eolApFirmwares.map(eol => eol.currentEolVersion).join(', ')
+function getDisplayEolFirmwareTooltipText (venue: FirmwareVenue): string {
+  // eslint-disable-next-line max-len
+  return getDisplayEolFirmware(venue).map(eol => `${eol.currentEolVersion}: ${eol.apModels.join(',')}`).join('\n')
+}
+
+function getDisplayEolFirmwareText (venue: FirmwareVenue): string {
+  return getDisplayEolFirmware(venue).map(eol => eol.currentEolVersion).join(', ')
 }
 
 type VenueTableProps = {
