@@ -1,42 +1,41 @@
 import { useState, useEffect, useContext } from 'react'
 
-import {
-  Select,
-  Switch,
-  Row,
-  Col,
-  Space
-} from 'antd'
-import { isEqual } from 'lodash'
-import { useIntl } from 'react-intl'
+import { Select, Switch, Space } from 'antd'
+import { isEqual }               from 'lodash'
+import { useIntl }               from 'react-intl'
 
-import { Button, StepsFormLegacy, Table, TableProps, Loader, showToast }                                                from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                                                           from '@acx-ui/icons'
-import { useGetVenueLedOnQuery, useGetVenueApModelsQuery, useUpdateVenueLedOnMutation, useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
-import { VenueLed, redirectPreviousPage }                                                                               from '@acx-ui/rc/utils'
+import { Button, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                           from '@acx-ui/icons'
 import {
-  useNavigate,
-  useTenantLink,
-  useParams
-} from '@acx-ui/react-router-dom'
+  useGetVenueLedOnQuery,
+  useGetVenueApModelsQuery,
+  useUpdateVenueLedOnMutation,
+  useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
+import { VenueLed }               from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext, EditContext } from '../../index'
+import { VenueEditContext, EditContext } from '../../../index'
 
 export interface ModelOption {
-  label: string
-  value: string
-}
+    label: string
+    value: string
+  }
 
-export function AdvancedSettingForm () {
+export function AccessPointLED () {
+
   const { $t } = useIntl()
   const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/venues/')
   const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
   const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
   const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
-  const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
+  const {
+    editContextData,
+    setEditContextData,
+    editAdvancedContextData,
+    setEditAdvancedContextData
+  } = useContext(VenueEditContext)
 
   const defaultArray: VenueLed[] = []
   const defaultOptionArray: ModelOption[] = []
@@ -45,10 +44,13 @@ export function AdvancedSettingForm () {
   const [modelOptions, setModelOptions] = useState(defaultOptionArray)
   const [supportModelOptions, setSupportModelOptions] = useState(defaultOptionArray)
 
+
+
   useEffect(() => {
     // set default data when switching sub tab
     const tab = activeSubTab as keyof EditContext['tempData']
     const data = editContextData?.tempData?.[tab] || undefined
+
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'settings',
@@ -56,10 +58,15 @@ export function AdvancedSettingForm () {
       oldData: data,
       newData: data,
       isDirty: false,
-      updateChanges: handleUpdateSetting,
       setData: setTableData
     })
+
+    setEditAdvancedContextData({
+      ...editAdvancedContextData,
+      updateAccessPointLED: handleUpdateSetting
+    })
   }, [navigate])
+
 
   useEffect(() => {
     const apModels = venueCaps?.data?.apModels
@@ -102,8 +109,12 @@ export function AdvancedSettingForm () {
       ),
       isDirty: editContextData?.oldData ? !isEqual(editContextData?.oldData, tableData) : false,
       hasError: tableData?.filter(item => !item.model).length > 0,
-      setData: setTableData,
-      updateChanges: handleUpdateSetting
+      setData: setTableData
+    })
+
+    setEditAdvancedContextData({
+      ...editAdvancedContextData,
+      updateAccessPointLED: handleUpdateSetting
     })
   }, [tableData])
 
@@ -205,41 +216,27 @@ export function AdvancedSettingForm () {
   }
 
   return (
-    <StepsFormLegacy
-      onFinish={() => handleUpdateSetting()}
-      onCancel={() =>
-        redirectPreviousPage(navigate, previousPath, basePath)
-      }
-      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
-    >
-      <StepsFormLegacy.StepForm>
-        <Row>
-          <Col span={7}>
-            <Loader states={[{
-              isLoading: venueLed.isLoading || venueCaps.isLoading,
-              isFetching: isUpdatingVenueLedOn
-            }]}>
-              <Space size={8} direction='vertical'>
-                <Table
-                  columns={columns}
-                  dataSource={tableData}
-                  type='form'
-                />
-                <Button
-                  onClick={handleAdd}
-                  type='link'
-                  disabled={venueLed.isLoading
-                    || !modelOptions.length
-                    || !!tableData?.find((item) => !item.model)
-                  }
-                  size='small'>
-                  {$t({ defaultMessage: 'Add Model' })}
-                </Button>
-              </Space>
-            </Loader>
-          </Col>
-        </Row>
-      </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+    <Loader states={[{
+      isLoading: venueLed.isLoading || venueCaps.isLoading,
+      isFetching: isUpdatingVenueLedOn
+    }]}>
+      <Space size={8} direction='vertical'>
+        <Table
+          columns={columns}
+          dataSource={tableData}
+          type='form'
+        />
+        <Button
+          onClick={handleAdd}
+          type='link'
+          disabled={venueLed.isLoading
+                  || !modelOptions.length
+                  || !!tableData?.find((item) => !item.model)
+          }
+          size='small'>
+          {$t({ defaultMessage: 'Add Model' })}
+        </Button>
+      </Space>
+    </Loader>
   )
 }
