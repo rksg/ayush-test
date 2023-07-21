@@ -148,7 +148,7 @@ export function CliStepVenues () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowSelection={hasAccess() ? {
+          rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedRows,
             renderCell: (checked, record, index, originNode) => {
@@ -161,7 +161,7 @@ export function CliStepVenues () {
               disabled: (record as VenueExtend)?.inactiveRow
             }),
             onChange: onChangeVenues
-          } : undefined}
+          }}
         />
       </Loader>
 

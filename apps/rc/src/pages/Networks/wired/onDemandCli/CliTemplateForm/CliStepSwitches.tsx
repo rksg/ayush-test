@@ -172,7 +172,7 @@ export function CliStepSwitches () {
               }]}>
                 <Table
                   rowKey='id'
-                  rowSelection={hasAccess() ? {
+                  rowSelection={{
                     type: 'checkbox',
                     ...(selectedSwitches?.hasOwnProperty(v?.id)
                       && { selectedRowKeys: (
@@ -200,7 +200,7 @@ export function CliStepSwitches () {
                         form?.setFieldValue('applyNow', false)
                       }
                     }
-                  } : undefined}
+                  }}
                   tableAlertRender={false}
                   dataSource={getVenueSwitches(v.id, venueSwitches)}
                   columns={columns}

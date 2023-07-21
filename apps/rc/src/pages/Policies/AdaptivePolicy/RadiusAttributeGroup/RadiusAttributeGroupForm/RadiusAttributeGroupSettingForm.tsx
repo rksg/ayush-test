@@ -116,7 +116,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
             columns={useColumns()}
             dataSource={attributeAssignments}
             rowActions={rowActions}
-            rowSelection={hasAccess() && { type: 'radio' }}
+            rowSelection={{ type: 'radio' }}
             actions={[{
               label: $t({ defaultMessage: 'Add' }),
               onClick: () => {
