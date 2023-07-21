@@ -25,14 +25,14 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
 export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const params = useParams()
   const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG)
-  const request1 = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
-  const betaEnabled = request1?.data?.enabled as BetaStatus
+  const betaStatusResponse = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
+  const betaEnabled = Boolean(betaStatusResponse?.data?.enabled) as BetaStatus
 
   const jwtPayload = getJwtTokenPayload()
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
 
-  const request2 = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
-  const acx_account_tier = request2?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
+  const accTierResponse = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
+  const acx_account_tier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
 
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
     jwtPayload?.tenantType === AccountType.VAR) ? 'REC' : 'MSP'
@@ -42,7 +42,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
     vertical: jwtPayload?.acx_account_vertical,
     tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
-    isBetaFlag: (Boolean(betaEnabled)?? jwtPayload?.isBetaFlag)
+    isBetaFlag: betaEnabled?? jwtPayload?.isBetaFlag
   })[Features.PLM_FF]
 
   const userFFConfig = useMemo(() => {
@@ -58,7 +58,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   return {
     featureList: userFFConfig[featureKey],
-    betaList: (Boolean(betaEnabled)?? jwtPayload?.isBetaFlag) ? userFFConfig['betaList'] : []
+    betaList: (betaEnabled?? jwtPayload?.isBetaFlag) ? userFFConfig['betaList'] : []
   }
 }
 
