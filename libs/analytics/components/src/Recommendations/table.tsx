@@ -152,7 +152,7 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'status',
       render: (_, value ) => {
         return <Tooltip placement='top' title={value.statusTooltip}>
-          <UI.UnderlinedSpan>{value.status}</UI.UnderlinedSpan>
+          <UI.UnderlinedSpan $statusEnum={value.statusEnum}>{value.status}</UI.UnderlinedSpan>
         </Tooltip>
       },
       sorter: { compare: sortProp('status', defaultSort) },
