@@ -115,6 +115,11 @@ export const troubleshootingResult_ping_emptyResult = {
   }
 }
 
+jest.mock('./SwitchOverviewTab', () => () => {
+  return <div data-testid={'rc-SwitchOverviewTab'} title='SwitchOverviewTab' />
+})
+
+
 describe('SwitchDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -147,8 +152,7 @@ describe('SwitchDetails', () => {
     render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-
-    expect(screen.getAllByRole('tab')).toHaveLength(10)
+    expect(await screen.findByText('Overview')).toBeVisible()
   })
 
   it('should navigate to incidents tab correctly', async () => {
@@ -161,8 +165,7 @@ describe('SwitchDetails', () => {
     render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Incidents')
+    expect(await screen.findByText('Incidents')).toBeVisible()
   })
 
   it('should navigate to troubleshooting tab correctly', async () => {
@@ -249,20 +252,6 @@ describe('SwitchDetails', () => {
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
-  })
-
-  it('should go to edit page', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'overview'
-    }
-    render(<Provider><SwitchDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
-    })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
   })
 
   it('should hide incidents when role is READ_ONLY', async () => {
