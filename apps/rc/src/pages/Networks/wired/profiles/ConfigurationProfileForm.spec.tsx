@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
-describe.skip('Wired', () => {
+describe('Wired', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -66,7 +66,8 @@ describe.skip('Wired', () => {
 
   it('should render Switch Configuration Profile form correctly', async () => {
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -74,7 +75,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     expect(await screen.findByText('Add Switch Configuration Profile')).toBeVisible()
@@ -93,7 +94,8 @@ describe.skip('Wired', () => {
   it('should render breadcrumb correctly when feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -101,7 +103,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     expect(screen.getByRole('link', {
@@ -112,7 +114,8 @@ describe.skip('Wired', () => {
   it('should render breadcrumb correctly when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -120,7 +123,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     expect(await screen.findByText('Wired')).toBeVisible()
@@ -157,7 +160,8 @@ describe.skip('Wired', () => {
 
   it('should render create Switch Configuration Profile correctly', async () => {
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -165,7 +169,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -202,7 +206,8 @@ describe.skip('Wired', () => {
 
   it('should render Switch Configuration Profile form with VLAN correctly', async () => {
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -210,7 +215,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -234,11 +239,15 @@ describe.skip('Wired', () => {
     await userEvent.click(nextTrustPortButton)
 
     await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module1_0'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module2_0'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module3_0'))
     const nextTrustPortButton1 =
       await within(vlanSettingModal).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton1)
 
-    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module1_2'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module1_1'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module2_1'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module3_1'))
     const saveTrustPortButton =
       await within(vlanSettingModal).findAllByRole('button', { name: 'Finish' })
     await userEvent.click(saveTrustPortButton[0])
@@ -299,7 +308,8 @@ describe.skip('Wired', () => {
 
   it('should render Profile form with drag select VLAN ports correctly', async () => {
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -307,7 +317,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -360,7 +370,8 @@ describe.skip('Wired', () => {
 
   it('should render create Switch Configuration Profile with extended acl correctly', async () => {
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -368,7 +379,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -402,9 +413,10 @@ describe.skip('Wired', () => {
     expect(venueSwitch[0]).toBeChecked()
   })
 
-  it.skip('should create Switch Configuration Profile with trust ports correctly', async () => {
+  it('should create Switch Configuration Profile with trust ports correctly', async () => {
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -412,7 +424,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -436,15 +448,11 @@ describe.skip('Wired', () => {
       await within(vlansPortModal).findByRole('button', { name: 'Next' })
     await userEvent.click(nextVlansPortButton1)
 
-    await userEvent.click(await screen.findByTestId('untagged_module1_0'))
-    await userEvent.click(await screen.findByTestId('untagged_module2_0'))
-    await userEvent.click(await screen.findByTestId('untagged_module3_0'))
+    await userEvent.click(await within(vlansPortModal).findByTestId('untagged_module1_0'))
     const nextVlansPortButton2 =
       await within(vlansPortModal).findByRole('button', { name: 'Next' })
     await userEvent.click(nextVlansPortButton2)
-    await userEvent.click(await screen.findByTestId('tagged_module1_1'))
-    await userEvent.click(await screen.findByTestId('tagged_module2_1'))
-    await userEvent.click(await screen.findByTestId('tagged_module3_1'))
+    await userEvent.click(await within(vlansPortModal).findByTestId('tagged_module1_1'))
     const nextVlansPortButton3 =
       await within(vlansPortModal).findByRole('button', { name: 'Finish' })
     await userEvent.click(nextVlansPortButton3)
@@ -483,7 +491,8 @@ describe.skip('Wired', () => {
 
   it('should create Switch Configuration Profile with trust ports ICX7550 correctly', async () => {
     const params = {
-      tenantId: 'tenant-id'
+      tenantId: 'tenant-id',
+      action: 'add'
     }
     render(
       <Provider>
@@ -491,7 +500,7 @@ describe.skip('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/add' }
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
