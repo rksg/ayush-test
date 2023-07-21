@@ -150,6 +150,11 @@ export function AlarmsDrawer (props: AlarmsType) {
           return <UI.EmptyLink>{alarm.switchName}</UI.EmptyLink>
         }
       }
+      case EventTypeEnum.EDGE: {
+        return <TenantLink
+          to={`/devices/edge/${alarm.entityId}/details/overview`}>{alarm.edgeName}
+        </TenantLink>
+      }
       default: {
         return <UI.EmptyLink>{alarm.apName}</UI.EmptyLink>
       }
