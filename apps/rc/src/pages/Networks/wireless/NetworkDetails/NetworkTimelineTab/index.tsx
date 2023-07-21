@@ -42,17 +42,17 @@ const Activities = () => {
 const tabs : {
   key: TimelineTypes,
   title: MessageDescriptor,
-  component: () => JSX.Element
+  component: React.ReactNode
 }[] = [
   {
     key: 'activities',
     title: defineMessage({ defaultMessage: 'Activities' }),
-    component: Activities
+    component: <Activities />
   },
   {
     key: 'events',
     title: defineMessage({ defaultMessage: 'Events' }),
-    component: Events
+    component: <Events />
   }
 ]
 
@@ -70,13 +70,12 @@ export function NetworkTimelineTab () {
     })
   }
 
-  const Tab = tabs.find(tab => tab.key === activeSubTab)?.component
   return <Tabs
     onChange={onTabChange}
     activeKey={activeSubTab}
     type='card'
   >
-    {tabs.map(({ key, title }) =>
-      <Tabs.TabPane tab={$t(title)} key={key} >{Tab && <Tab/>}</Tabs.TabPane>)}
+    {tabs.map(({ key, title, component }) =>
+      <Tabs.TabPane tab={$t(title)} key={key} >{component}</Tabs.TabPane>)}
   </Tabs>
 }
