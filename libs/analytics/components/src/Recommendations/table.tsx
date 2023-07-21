@@ -162,7 +162,8 @@ export function RecommendationTable ({ filters, showCrrm }:
       title: $t(defineMessage({ defaultMessage: 'Actions' })),
       key: 'id',
       dataIndex: 'id',
-      width: 90,
+      width: 80,
+      align: 'left',
       render: (_, value) => <RecommendationActions recommendation={value} />
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

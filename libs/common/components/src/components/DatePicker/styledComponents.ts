@@ -275,7 +275,6 @@ export const ApplyMsgWrapper = styled.div`
 export const HiddenDateInput = styled.div`
   cursor: pointer;
   caret-color: transparent;
-  width: 16px !important;
 
   ${datePickerStyle}
 
@@ -290,6 +289,11 @@ export const HiddenDateInput = styled.div`
   .datepicker {
     border: 0px;
     padding: 0px;
+    
+    .ant-picker-input {
+      height: 24px;
+      width: 24px;
+    }
 
     .ant-picker-panel {
       .ant-picker-footer {

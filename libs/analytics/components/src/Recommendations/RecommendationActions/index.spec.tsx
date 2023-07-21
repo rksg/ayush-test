@@ -23,7 +23,20 @@ const mockedCrrm = {
   path: [] as []
 }
 
+jest.mock('moment-timezone', () => {
+  const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
+  return {
+    __esModule: true,
+    ...moment,
+    default: () => moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm')
+  }
+})
+
 describe('RecommendationActions', () => {
+  afterEach(() => {
+    cleanup()
+    jest.clearAllMocks()
+  })
   it('should render active status icons correctly', async () => {
     const testCases = [
       { statusEnum: 'new' as 'new',
@@ -68,7 +81,7 @@ describe('RecommendationActions', () => {
     expect(screen.queryByTestId('CheckMarkCircleOutline')).toBeNull()
     expect(screen.queryByTestId('Reload')).toBeNull()
   })
-  it('should handle apply mutation correctly', async () => {
+  it('should handle same day apply mutation correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
     render(
@@ -76,9 +89,37 @@ describe('RecommendationActions', () => {
       { wrapper: Provider }
     )
     const user = userEvent.setup()
-    await user.click(screen.getByTestId('CheckMarkCircleOutline'))
-    await user.click(await screen.findByRole('button', { name: 'Apply' }))
-    expect(await screen.findByRole('button', { name: 'Jul' })).not.toHaveFocus()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    expect(inputs[0]).toHaveValue('2023-07-15')
+    await user.click(await screen.findByTestId('CheckMarkCircleOutline'))
+    await user.click(inputs[0])
+    await user.click((await screen.findAllByRole('time-picker-minutes'))[0])
+    await screen.findByText('45')
+    await user.click((await screen.findAllByRole('time-picker-hours'))[0])
+    const checkHour = await screen.findAllByText('00')
+    await user.click(checkHour[0])
+    await user.click(await screen.findByText('Apply'))
+    expect(inputs[0]).toHaveValue('2023-07-15')
+  })
+  it('should handle non-same day apply mutation correctly', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={mockedCrrm} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    expect(inputs[0]).toHaveValue('2023-07-15')
+    await user.click(await screen.findByTestId('CheckMarkCircleOutline'))
+    await user.click(await screen.findByTitle('2023-07-16'))
+    await user.click((await screen.findAllByRole('time-picker-minutes'))[0])
+    await screen.findByText('45')
+    await user.click((await screen.findAllByRole('time-picker-hours'))[0])
+    const checkHour = await screen.findAllByText('00')
+    await user.click(checkHour[0])
+    await user.click(await screen.findByText('Apply'))
+    expect(inputs[0]).toHaveValue('2023-07-16')
   })
   it('should handle cancel mutation correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }

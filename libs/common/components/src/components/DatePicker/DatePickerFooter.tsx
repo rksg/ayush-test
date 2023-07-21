@@ -159,7 +159,8 @@ interface DateTimePickerFooterProps {
   applyFooterMsg?: string;
   value: Moment;
   setValue: (value: Moment) => void;
-  initialDate: Moment;
+  disabledHours?: (value: Moment) => number[];
+  disabledMinutes?: (value: Moment) => number[];
 }
 
 export const DateTimePickerFooter = ({
@@ -168,31 +169,10 @@ export const DateTimePickerFooter = ({
   onCancel,
   value,
   setValue,
-  initialDate
+  disabledHours,
+  disabledMinutes
 }: DateTimePickerFooterProps) => {
   const [open, setOpen] = useState({ hour: false, minute: false })
-
-  const disabledHours = useCallback(() => {
-    const hours = []
-    const previousHour = (initialDate.hours() - 1) % 24
-    for (let i = previousHour; i >= 0; i--) {
-      hours.push(i)
-    }
-    return initialDate.isSame(value, 'dates')
-      ? hours
-      : []
-  }, [initialDate, value])
-
-  const disabledMinutes = useCallback(() => {
-    const minutes = []
-    const pastMinute = (initialDate.minutes() - 15) % 60
-    for (let i = pastMinute; i >= 0; i = i - 15) {
-      minutes.push(i)
-    }
-    return initialDate.isSame(value, 'dates') && initialDate.isSame(value, 'hours')
-      ? minutes
-      : []
-  }, [initialDate, value])
 
   return <UI.FooterWrapper>
     <UI.TimePickerRow>
@@ -211,7 +191,8 @@ export const DateTimePickerFooter = ({
         placeholder={String(value.hours())}
         suffixIcon={<CaretDownSolid />}
         allowClear={false}
-        disabledTime={() => ({ disabledHours })}
+        disabledTime={() => ({ disabledHours:
+          disabledHours && (() => disabledHours(value)) })}
         getPopupContainer={(node: HTMLElement) => node}
         onSelect={(time) => {
           setOpen(open => ({ ...open, hour: false }))
@@ -234,7 +215,8 @@ export const DateTimePickerFooter = ({
         placeholder={String(value.minutes())}
         suffixIcon={<CaretDownSolid />}
         allowClear={false}
-        disabledTime={() => ({ disabledMinutes })}
+        disabledTime={() => ({ disabledMinutes:
+          disabledMinutes && (() => disabledMinutes(value)) })}
         getPopupContainer={(node: HTMLElement) => node}
         onSelect={(time) => {
           setOpen(open => ({ ...open, minute: false }))

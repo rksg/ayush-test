@@ -6,7 +6,6 @@ import {
   DatePickerProps as AntDatePickerProps
 } from 'antd'
 import _           from 'lodash'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {  DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -158,7 +157,7 @@ export const DatePicker = (props: AntDatePickerProps) => (
   <UI.Wrapper>
     <AntDatePicker
       {...props}
-      getPopupContainer={props.getPopupContainer || ((triggerNode: HTMLElement) => triggerNode)}
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
     />
   </UI.Wrapper>
 )
@@ -169,7 +168,12 @@ interface DateTimePickerProps {
   icon?: ReactNode;
   initialDate: MutableRefObject<Moment>;
   onApply: (value: Moment) => void;
-  title?: string
+  title?: string;
+  disabledDateTime?: {
+    disabledDate?: (value: Moment) => boolean,
+    disabledHours?: (value: Moment) => number[],
+    disabledMinutes?: (value: Moment) => number[],
+  }
 }
 
 export const DateTimePicker = ({
@@ -178,13 +182,15 @@ export const DateTimePicker = ({
   icon,
   initialDate,
   onApply,
-  title
+  title,
+  disabledDateTime
 }: DateTimePickerProps) => {
+  const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const selectRef = useRef(false)
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
-  const onOpenHandler = (val: boolean) => {
+  const onOpenChange = (val: boolean) => {
     if (selectRef.current) {
       selectRef.current = false
       return setOpen(true)
@@ -195,10 +201,6 @@ export const DateTimePicker = ({
     onApply(date)
     setOpen(false)
   }
-  const disabledDate = useCallback((value: Moment) =>
-    value.isBefore(moment(initialDate.current.clone()))
-    || value.isAfter(moment(initialDate.current.clone()).add(1, 'months')),
-  [initialDate])
 
   return <Tooltip placement='top' title={title}>
     <UI.HiddenDateInput ref={wrapperRef}>
@@ -209,7 +211,7 @@ export const DateTimePicker = ({
         disabled={disabled}
         value={date}
         open={open}
-        onOpenChange={onOpenHandler}
+        onOpenChange={onOpenChange}
         onClick={() => setOpen(true)}
         showTime={false}
         showNow={false}
@@ -227,11 +229,12 @@ export const DateTimePicker = ({
         renderExtraFooter={() =>
           <DateTimePickerFooter
             value={date}
-            initialDate={initialDate.current}
             setValue={setDate}
             applyFooterMsg={applyFooterMsg}
             onApply={onApplyHandler}
             onCancel={() => setOpen(false)}
+            disabledHours={disabledHours}
+            disabledMinutes={disabledMinutes}
           />
         }
       />

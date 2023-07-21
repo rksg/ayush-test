@@ -484,14 +484,19 @@ describe('DateTimePicker', () => {
     const mockApply = jest.fn()
     const title = 'testTitle'
     const MockIcon = () => <div data-testid='testIcon'>test icon</div>
-    render(<IntlProvider locale='en'>
-      <DateTimePicker
-        initialDate={{ current: mockedInitialDate }}
-        onApply={mockApply}
-        title={title}
-        icon={<MockIcon />}
-      />
-    </IntlProvider>)
+    const TestComp = ({ date }: { date: Moment }) => {
+      const timeRef = useRef(date)
+      return <IntlProvider locale='en'>
+        <DateTimePicker
+          title={title}
+          initialDate={timeRef}
+          onApply={mockApply}
+          icon={<MockIcon />}
+        />
+      </IntlProvider>
+
+    }
+    render(<TestComp date={mockedInitialDate} />)
     const user = userEvent.setup()
     await user.click(await screen.findByTestId('testIcon'))
     expect(await screen.findByPlaceholderText('Select date')).toHaveFocus()
@@ -526,12 +531,18 @@ describe('DateTimePicker', () => {
   it('should handle same date apply correctly', async () => {
     const mockedInitialDate = moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm')
     const mockApply = jest.fn()
+    const mockDisableHours = jest.fn()
+    const mockDisableMinutes = jest.fn()
     const TestComp = ({ date }: { date: Moment }) => {
       const timeRef = useRef(date)
       return <IntlProvider locale='en'>
         <DateTimePicker
           initialDate={timeRef}
           onApply={mockApply}
+          disabledDateTime={{
+            disabledHours: mockDisableHours,
+            disabledMinutes: mockDisableMinutes
+          }}
         />
       </IntlProvider>
 
@@ -540,19 +551,18 @@ describe('DateTimePicker', () => {
     const user = userEvent.setup()
     await waitFor(async () => {
       await user.click(await screen.findByTestId('ClockOutlined'))
-      const seperator = await screen.findByRole('separator')
       await user.click(await screen.findByRole('time-picker-minutes'))
       await user.click(await screen.findByText('45'))
-      await user.click(seperator)
       await user.click(await screen.findByRole('time-picker-hours'))
       const text23 = await screen.findAllByText('23')
       await user.click(text23[text23.length - 1])
-      await user.click(seperator)
       await user.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockApply).toHaveBeenCalledTimes(1)
     })
     expect(mockApply).toHaveBeenNthCalledWith(
       1,
       mockedInitialDate.clone().add(15, 'minutes').add(9, 'hours'))
+    expect(mockDisableHours).toBeCalled()
+    expect(mockDisableMinutes).toBeCalled()
   })
 })

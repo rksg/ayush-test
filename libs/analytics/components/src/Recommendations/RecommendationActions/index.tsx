@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
 import { Row, Col }               from 'antd'
 import moment, { Moment }         from 'moment-timezone'
@@ -46,7 +46,7 @@ const actionTooltip = {
 function getFutureTime (value: Moment) {
   const bufferedTime = value.add(15, 'minutes')
   const remainder = 15 - (bufferedTime.minute() % 15)
-  return moment(bufferedTime).add(remainder, 'minutes')
+  return moment(bufferedTime.clone()).add(remainder, 'minutes')
 }
 
 type ActionButtonProps = Recommendation & {
@@ -60,10 +60,45 @@ function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
   const onApply = (date: Moment) => {
     scheduleRecommendation({ id, scheduledAt: date.toISOString() })
   }
-  const futureDate = useRef(getFutureTime(moment()))
+  const futureDate = useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
   const footerMsg = code.startsWith('c-crrm') && type === 'Apply'
     ? $t(applyFooterMsg)
     : undefined
+
+  const disabledDate = useCallback((value: Moment) =>
+    value.isBefore(moment(futureDate.current.clone()), 'date')
+  || value.isAfter(moment(futureDate.current.clone()).add(1, 'months')), [futureDate])
+
+  const disabledHours = useCallback((value: Moment) => {
+    const hours = []
+    const previousHour = (futureDate.current.hours() - 1) % 24
+    for (let i = previousHour; i >= 0; i--) {
+      hours.push(i)
+    }
+    return futureDate.current.isSame(value, 'dates')
+      ? hours
+      : []
+  }, [futureDate])
+
+  const disabledMinutes = useCallback((value: Moment) => {
+    const minutes = []
+    const pastMinute = (futureDate.current.minutes() - 15) % 60
+    for (let i = pastMinute; i >= 0; i = i - 15) {
+      minutes.push(i)
+    }
+    return futureDate.current.isSame(value, 'dates') && futureDate.current.isSame(value, 'hours')
+      ? minutes
+      : []
+  }, [futureDate])
+
+
+  const disabledDateTime = useMemo(() => {
+    return {
+      disabledDate,
+      disabledHours,
+      disabledMinutes
+    }
+  }, [disabledDate, disabledHours, disabledMinutes])
 
   return <DateTimePicker
     key={`apply-${id}`}
@@ -73,6 +108,7 @@ function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
     initialDate={futureDate}
     onApply={onApply}
     applyFooterMsg={footerMsg}
+    disabledDateTime={disabledDateTime}
   />
 }
 
@@ -148,11 +184,11 @@ const getAvailableActions = (recommendation: Recommendation) => {
 export const RecommendationActions = (props: { recommendation: Recommendation }) => {
   const { recommendation } = props
   const actionButtons = getAvailableActions(recommendation)
-  return <Row gutter={[0, 0]}>
+  return <Row gutter={[0, 0]} align='middle' justify='start'>
     {actionButtons.map((config, ind) => <Col
       key={ind}
-      span={6}
-      push={ind === 1 && actionButtons.length === 3 ? 1 : undefined}
+      span={8}
+      push={ind === 1 && actionButtons.length > 2 ? 1 : undefined}
     >
       {config.icon}
     </Col>)}
