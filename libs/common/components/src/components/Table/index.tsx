@@ -471,7 +471,7 @@ function Table <RecordType extends Record<string, any>> ({
     </UI.HeaderComps>
   </> : null
 
-  let offsetHeader = layout.y
+  let offsetHeader = layout.pageHeaderY
   if (props.actions?.length) offsetHeader += 22
   if (hasRowActionsOffset) offsetHeader += 36
   const sticky = type === 'tall' &&
@@ -485,7 +485,7 @@ function Table <RecordType extends Record<string, any>> ({
   return <UI.Wrapper
     style={{
       ...(style ?? {}),
-      '--sticky-offset': `${layout.y}px`,
+      '--sticky-offset': `${layout.pageHeaderY}px`,
       '--sticky-has-actions': props.actions?.length ? '1' : '0',
       '--sticky-has-row-actions-offset': hasRowActionsOffset ? '1' : '0'
     } as React.CSSProperties}

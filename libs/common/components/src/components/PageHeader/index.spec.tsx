@@ -92,10 +92,10 @@ describe('PageHeader', () => {
   it('sets y for layout context', async () => {
     const { result } = renderHook(() => useLayoutContext())
 
-    const setY = jest.spyOn(result.current, 'setY').mockImplementation(() => {})
+    const setPageHeaderY = jest.spyOn(result.current, 'setPageHeaderY').mockImplementation(() => {})
 
     render(<PageHeader title='Title' />, { route: true })
 
-    await waitFor(() => expect(setY).toBeCalled())
+    await waitFor(() => expect(setPageHeaderY).toBeCalled())
   })
 })

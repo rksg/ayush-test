@@ -34,8 +34,9 @@ function PageHeader (props: PageHeaderProps) {
   pageHeaderProps.title = <Typography.Title ellipsis>{props.title}</Typography.Title>
 
   useLayoutEffect(() => {
-    const box = ref.current!.getBoundingClientRect()
-    layout.setY(box.top + box.height)
+    const top = parseInt(getComputedStyle(ref.current!).top, 10)
+    const height = ref.current!.getBoundingClientRect().height
+    layout.setPageHeaderY(top + height)
   })
 
   if (props.titleExtra) {

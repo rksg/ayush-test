@@ -154,10 +154,13 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 }
 
 type LayoutContextType = {
-  y: number
-  setY: (y: number) => void
+  pageHeaderY: number
+  setPageHeaderY: (y: number) => void
 }
-const LayoutContext = createContext({ y: 0, setY: () => {} } as LayoutContextType)
+const LayoutContext = createContext({
+  pageHeaderY: 0,
+  setPageHeaderY: () => {}
+} as LayoutContextType)
 export const useLayoutContext = () => useContext(LayoutContext)
 
 export function Layout ({
@@ -170,7 +173,7 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-  const [y, setY] = useState(0)
+  const [pageHeaderY, setPageHeaderY] = useState(0)
   const screenXL = parseInt(modifyVars['@screen-xl'], 10)
   const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
@@ -221,7 +224,7 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      <LayoutContext.Provider value={{ y, setY }}>
+      <LayoutContext.Provider value={{ pageHeaderY, setPageHeaderY }}>
         {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
           <UI.ResponsiveContent>
             <Content setShowScreen={onSubOptimalDisplay} />
