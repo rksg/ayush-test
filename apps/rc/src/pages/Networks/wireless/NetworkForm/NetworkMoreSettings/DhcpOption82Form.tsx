@@ -52,8 +52,10 @@ enum DhcpOption82MacEnum {
   NODELIMITER = 'NODELIMITER',
 }
 
-export function DhcpOption82Form () {
+export function DhcpOption82Form (props: { labelWidth?: string }) {
   const { $t } = useIntl()
+  const { labelWidth='250px' } = props
+
   const [
     dhcpOption82SubOption1Enabled,
     dhcpOption82SubOption2Enabled,
@@ -75,10 +77,10 @@ export function DhcpOption82Form () {
       name={['wlan', 'advancedCustomization', 'dhcpOption82Enabled']}
       label={$t({ defaultMessage: 'DHCP Option 82' })}
       initialValue={false}
-      switchStyle={{ marginLeft: '88px' }}
+      switchStyle={{ marginLeft: '155px' }}
       style={{ width: 'max-content', marginLeft: '-8px' }}>
 
-      <UI.FieldLabel width='190px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Sub-option 1' })}
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px' }}>
           <Form.Item
@@ -128,7 +130,7 @@ export function DhcpOption82Form () {
           }
         </div>
       </UI.FieldLabel>
-      <UI.FieldLabel width='190px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Sub-option 2' })}
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px auto' }}>
           <Form.Item
@@ -174,7 +176,7 @@ export function DhcpOption82Form () {
           }
         </div>
       </UI.FieldLabel>
-      <UI.FieldLabel width='190px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
         <div>
           <Form.Item
@@ -186,7 +188,7 @@ export function DhcpOption82Form () {
           />
         </div>
       </UI.FieldLabel>
-      <UI.FieldLabel width='190px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Sub-option 151' })}
         <div style={{ display: 'grid', gridTemplateColumns: '50px 150px auto' }}>
           <Form.Item
@@ -232,7 +234,7 @@ export function DhcpOption82Form () {
           DhcpOption82SubOption2Enum.SUBOPT2_AP_NAME !== dhcpOption82SubOption2Format) ||
         (dhcpOption82SubOption151Enabled &&
           DhcpOption82SubOption151Enum.SUBOPT151_ESSID === dhcpOption82SubOption151Format)) &&
-        <UI.FieldLabel width='190px'>
+        <UI.FieldLabel width={labelWidth}>
           <div style={{ display: 'grid', gridTemplateColumns: '240px' }}>
             <Form.Item
               name={['wlan','advancedCustomization','dhcpOption82MacFormat']}
