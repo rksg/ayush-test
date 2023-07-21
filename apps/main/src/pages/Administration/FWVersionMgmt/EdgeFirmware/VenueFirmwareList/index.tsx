@@ -55,7 +55,7 @@ export function VenueFirmwareList () {
       width: 120
     },
     {
-      title: $t({ defaultMessage: 'Current Edge Firmware' }),
+      title: $t({ defaultMessage: 'Current Firmware' }),
       key: 'versions[0].name',
       dataIndex: 'versions[0].name',
       sorter: { compare: sortProp('versions[0].name', defaultSort) },
