@@ -9,11 +9,11 @@ import {
   Slider,
   FormItemProps
 } from 'antd'
-
-import * as UI                       from './styledComponents'
 import { useIntl } from 'react-intl'
-import form                          from 'antd/lib/form'
-import { Button, Fieldset, Tooltip } from '@acx-ui/components'
+
+import { Fieldset, Tooltip } from '@acx-ui/components'
+
+import * as UI from './styledComponents'
 
 const { useWatch } = Form
 
@@ -21,12 +21,10 @@ export function MulticastRateLimitForm () {
 
   const { $t } = useIntl()
   const [
-    bssMinimumPhyRate, //BSS Min Rate
     enableMulticastRateLimiting,
     enableMulticastUpLimit,
     enableMulticastDownLimit
   ] = [
-    useWatch<string>('bssMinimumPhyRate'),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting'])
@@ -34,7 +32,6 @@ export function MulticastRateLimitForm () {
 
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
-
 
   return (
     <>

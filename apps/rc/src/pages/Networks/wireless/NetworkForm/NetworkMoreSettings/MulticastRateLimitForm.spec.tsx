@@ -6,16 +6,15 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import {
   NetworkSaveData,
   BasicServiceSetPriorityEnum,
-  OpenWlanAdvancedCustomization,
-  TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { mockServer, within, render, screen, cleanup, fireEvent } from '@acx-ui/test-utils'
+  OpenWlanAdvancedCustomization } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
+import { within, render, screen } from '@acx-ui/test-utils'
 
-import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
+import { MoreSettingsForm } from './NetworkMoreSettingsForm'
 
 const mockWlanData = {
   name: 'test',
