@@ -278,7 +278,7 @@ export function SelectVlanModal (props: {
       </Tabs>
     </Modal>
 
-    <VlanSettingDrawer
+    { vlanDrawerVisible && <VlanSettingDrawer
       editMode={false}
       visible={vlanDrawerVisible}
       setVisible={setVlanDrawerVisible}
@@ -307,7 +307,7 @@ export function SelectVlanModal (props: {
         }
       }}
       vlansList={props.venueVlans}
-    />
+    />}
 
   </>
 }
