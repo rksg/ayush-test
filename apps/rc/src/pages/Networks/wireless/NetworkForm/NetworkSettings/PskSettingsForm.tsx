@@ -139,6 +139,7 @@ function SettingsForm () {
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
   const securityOnChange = (value: string) => {
+    const wlanProtocolConfig = {} as { [key: string]: string | undefined | null }
     switch(value){
       case WlanSecurityEnum.WPA2Personal:
         form.setFieldsValue({
@@ -146,6 +147,7 @@ function SettingsForm () {
             managementFrameProtection: ManagementFrameProtectionEnum.Disabled
           }
         })
+        wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Disabled
         break
       case WlanSecurityEnum.WPA3:
         form.setFieldsValue({
@@ -153,6 +155,7 @@ function SettingsForm () {
             managementFrameProtection: ManagementFrameProtectionEnum.Required
           }
         })
+        wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Required
         break
       case WlanSecurityEnum.WPA23Mixed:
         form.setFieldsValue({
@@ -160,8 +163,26 @@ function SettingsForm () {
             managementFrameProtection: ManagementFrameProtectionEnum.Optional
           }
         })
+        wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Optional
         break
     }
+    wlanProtocolConfig.macRegistrationListId = value !== WlanSecurityEnum.WPA2Personal
+      ? null
+      : data?.wlan?.macRegistrationListId
+    wlanProtocolConfig.passphrase = value !== WlanSecurityEnum.WPA2Personal
+      ? null
+      : data?.wlan?.passphrase
+
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          wlanSecurity: value as WlanSecurityEnum,
+          ...wlanProtocolConfig
+        }
+      }
+    })
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -293,7 +314,7 @@ function SettingsForm () {
                 valuePropName='checked'>
                 <Switch disabled={
                   editMode || disablePolicies
-                  || wlanSecurity !== WlanSecurityEnum.WPA2Personal}
+                }
                 onChange={onMacAuthChange}
                 />
               </Form.Item>
@@ -311,7 +332,10 @@ function SettingsForm () {
             >
               <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
                 <Space direction='vertical'>
-                  <Radio value={true} disabled={!isCloudpathBetaEnabled}>
+                  <Radio value={true}
+                    disabled={
+                      !isCloudpathBetaEnabled
+                    }>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
                   </Radio>
                   <Radio value={false}>

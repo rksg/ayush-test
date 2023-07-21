@@ -1,11 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { rest } from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { switchApi }                  from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import Wired from '.'
+
 jest.mock('./profiles', () => ({
   ...jest.requireActual('./profiles'),
   ProfilesTab: () => <div data-testid={'profiles-id'} id='profiles-id' />
@@ -16,8 +20,18 @@ jest.mock('./onDemandCli', () => ({
 }))
 
 
-
 describe('Wired', () => {
+
+  beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getCliTemplates.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(SwitchUrlsInfo.getProfiles.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+  })
 
   it('should render profiles correctly', async () => {
     const params = {

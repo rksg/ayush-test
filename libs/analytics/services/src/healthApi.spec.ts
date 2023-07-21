@@ -241,4 +241,25 @@ describe('Services for health kpis', () => {
       expect(error).not.toBe(undefined)
     })
   })
+  describe('apCountForNode', () => {
+    afterEach(() => {
+      store.dispatch(healthApi.util.resetApiState())
+    })
+    const expectedResult = {
+      node: {
+        apCount: 100
+      }
+    }
+    it('should return correct data', async () => {
+      mockGraphqlQuery(dataApiURL, 'APCountForNode', {
+        data: expectedResult
+      })
+      const { status, data, error } = await store.dispatch(
+        healthApi.endpoints.apCountForNode.initiate(props)
+      )
+      expect(status).toBe('fulfilled')
+      expect(data).toStrictEqual(expectedResult)
+      expect(error).toBe(undefined)
+    })
+  })
 })

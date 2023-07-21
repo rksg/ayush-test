@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Row, Typography }   from 'antd'
+import { Col, Row }               from 'antd'
 import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -131,9 +131,6 @@ const StaticRoutes = () => {
                 data={currentEditData}
                 allRoutes={routesData}
               />
-              <Typography.Title level={3}>
-                {$t({ defaultMessage: 'Static Routes' })}
-              </Typography.Title>
               <Table<EdgeStaticRoute>
                 actions={filterByAccess(actionButtons)}
                 columns={columns}

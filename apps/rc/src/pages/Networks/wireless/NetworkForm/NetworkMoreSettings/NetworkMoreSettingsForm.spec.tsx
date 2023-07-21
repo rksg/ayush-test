@@ -405,6 +405,15 @@ describe('NetworkMoreSettingsForm', () => {
     const tunnelProfileRemindingMsg = screen.getByText('All networks under the same Network Segmentation', { exact: false })
     expect(tunnelProfileRemindingMsg).toBeVisible()
   })
+
+  it('Test case for Multicast Filter', async ()=> {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockContextData = { editMode: true, data: mockWlanData } as NetworkFormContextType
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData),{ route: { params } })
+    expect(await screen.findByTestId('multicast-filter-enabled')).toBeVisible()
+  })
+
 })
 
 // eslint-disable-next-line max-len

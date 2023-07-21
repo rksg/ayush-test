@@ -73,8 +73,16 @@ const EdgeDhcpTable = () => {
   const [patchDhcp, { isLoading: isPatchDhcpUpdating }] = usePatchEdgeDhcpServiceMutation()
 
   const isUpdateAvailable = (data: DhcpStats) => {
-    return Boolean(data?.currentVersion && data?.targetVersion &&
-      data?.currentVersion !== data?.targetVersion)
+    let isReadyToUpdate = false
+    if (data?.currentVersion && data?.targetVersion) {
+      data?.currentVersion.split(',').forEach(currentVersion=>{
+        if (currentVersion.trim() !== data?.targetVersion) {
+          isReadyToUpdate = true
+        }
+      })
+    }
+
+    return isReadyToUpdate
   }
 
   const columns: TableProps<DhcpStats>['columns'] = [
@@ -153,16 +161,16 @@ const EdgeDhcpTable = () => {
       render (data, row) {
         return row.currentVersion || $t({ defaultMessage: 'NA' })
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
-      sorter: true,
-      render (data, row) {
-        return row.tags?.join(',')
-      }
     }
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   sorter: true,
+    //   render (data, row) {
+    //     return row.tags?.join(',')
+    //   }
+    // }
   ]
 
   const rowActions: TableProps<DhcpStats>['rowActions'] = [

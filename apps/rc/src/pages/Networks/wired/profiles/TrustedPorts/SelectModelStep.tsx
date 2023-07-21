@@ -55,14 +55,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
   useEffect(() => {
-    if(family){
-      setModel('')
-    }
-
-    if(family !=='' && model !== ''){
-      modelChangeAction(family, model)
-    }
-
     if(ICX_MODELS_MODULES){
       const modules = switchSupportIcx8200FF ? Object.keys(ICX_MODELS_MODULES)
         : Object.keys(ICX_MODELS_MODULES).filter(key=> key !== 'ICX8200')
@@ -74,9 +66,12 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     if(editRecord){
       const selectedFamily = editRecord.model.split('-')[0]
       const selectedModel = editRecord.model.split('-')[1]
-      const selectedEnable2 = editRecord.slots.filter(item => item.slotNumber === 2)[0] || {}
-      const selectedEnable3 = editRecord.slots.filter(item => item.slotNumber === 3)[0] || {}
-      const selectedEnable4 = editRecord.slots.filter(item => item.slotNumber === 4)[0] || {}
+      const selectedEnable2 = editRecord.slots.filter(
+        (item: { slotNumber: number }) => item.slotNumber === 2)[0] || {}
+      const selectedEnable3 = editRecord.slots.filter(
+        (item: { slotNumber: number }) => item.slotNumber === 3)[0] || {}
+      const selectedEnable4 = editRecord.slots.filter(
+        (item: { slotNumber: number }) => item.slotNumber === 4)[0] || {}
       form.setFieldsValue({
         family: selectedFamily,
         model: selectedModel,
@@ -97,8 +92,30 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       setEnableSlot4(selectedEnable4.enable)
       checkIfModuleFixed(selectedFamily, selectedModel)
       setTrustedPorts(editRecord)
+    }else if(form.getFieldsValue()){
+      const {
+        family,
+        model,
+        enableSlot2,
+        enableSlot3,
+        enableSlot4
+      } = form.getFieldsValue()
+      if(family !== ''){
+        setFamily(family)
+        familyChangeAction(family)
+      }
+      if(model !== ''){
+        setModel(model)
+      }
+      if(family !== '' && model !== ''){
+        setEnableSlot2(enableSlot2)
+        setEnableSlot3(enableSlot3)
+        setEnableSlot4(enableSlot4)
+        modelChangeAction(family, model)
+        checkIfModuleFixed(family, model)
+      }
     }
-  }, [ICX_MODELS_MODULES, editRecord, family, model])
+  }, [])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -173,13 +190,13 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const onFamilyChange = (e: RadioChangeEvent) => {
     setFamily(e.target.value)
     familyChangeAction(e.target.value)
+    setModel('')
+    form.setFieldValue('model', '')
+    form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
+    setModuleSelectionEnable(false)
   }
 
   const familyChangeAction = (family: string) => {
-    if(!editRecord){
-      form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
-      setModuleSelectionEnable(false)
-    }
     const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
@@ -192,18 +209,18 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const onModelChange = (e: RadioChangeEvent) => {
     setModel(e.target.value)
     modelChangeAction(family, e.target.value)
+    form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
+    setEnableSlot2(false)
+    setEnableSlot3(false)
+    setEnableSlot4(false)
   }
 
   const modelChangeAction = (family: string, model: string) => {
     if(!editRecord){
-      form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
-      setEnableSlot2(false)
-      setEnableSlot3(false)
-      setEnableSlot4(false)
       setModuleSelectionEnable(true)
       setModule2SelectionEnable(true)
       setModule3SelectionEnable(true)
-    }else{
+    } else {
       setModuleSelectionEnable(true)
     }
     checkIfModuleFixed(family, model)
@@ -216,14 +233,17 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     switch(slot){
       case 'slot2':
         setEnableSlot2(e.target.checked)
+        form.setFieldValue('enableSlot2', e.target.checked)
         form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
         break
       case 'slot3':
         setEnableSlot3(e.target.checked)
+        form.setFieldValue('enableSlot3', e.target.checked)
         form.setFieldValue('selectedOptionOfSlot3', optionListForSlot3[0]?.value)
         break
       case 'slot4':
         setEnableSlot4(e.target.checked)
+        form.setFieldValue('enableSlot4', e.target.checked)
         form.setFieldValue('selectedOptionOfSlot4', optionListForSlot4[0]?.value)
         break
     }
@@ -266,7 +286,8 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         option = optionList[0] ? optionList[0].value : option
       }
 
-      const index = trustedPorts?.slots?.findIndex(s => s.slotNumber === slotNumber) || -1
+      const index = trustedPorts?.slots?.findIndex(
+        (s: { slotNumber: number }) => s.slotNumber === slotNumber) || -1
       if (!enable && index !== -1) {
         trustedPorts?.slots?.splice(index, 1)
       }
@@ -351,7 +372,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                 initialValue={family}
                 children={<Radio.Group
                   onChange={onFamilyChange}
-                  // defaultValue={family}
                 >
                   {families.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={!!editRecord}>
@@ -376,7 +396,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                 initialValue={model}
                 children={<Radio.Group
                   onChange={onModelChange}
-                  // defaultValue={model}
                 >
                   {models.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={!!editRecord}>
@@ -391,27 +410,31 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
             </Card>
           </UI.GroupListLayout>
         </Col>
-        <Col span={6} flex={'400px'} hidden={!moduleSelectionEnable || editRecord !== undefined}>
+        <Col span={9} flex={'400px'} hidden={!moduleSelectionEnable || editRecord !== undefined}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Select Modules' })}</Typography.Title>
           <Row style={{ paddingTop: '5px' }}
             hidden={!(slots && slots?.length > 1 && module2SelectionEnable)}>
-            <Col span={8} >
+            <Col span={optionListForSlot2.length===1 ? 24 : 7} >
               <Form.Item
                 name={'enableSlot2'}
                 initialValue={false}
                 valuePropName='checked'
                 children={
                   <Checkbox
-                    children={$t({ defaultMessage: 'Module 2' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot2') }}
-                  />
+                  >
+                    {$t({ defaultMessage: 'Module 2:' })}
+                    {optionListForSlot2.length===1 &&
+                      ' ' + optionListForSlot2[0]?.value.split('X').join(' X ')}
+                  </Checkbox>
                 }
               />
             </Col>
-            <Col span={16} >
+            <Col span={10} >
               <Form.Item
                 name={'selectedOptionOfSlot2'}
                 initialValue={optionListForSlot2[0]?.value}
+                hidden={optionListForSlot2.length===1}
               >
                 <Select
                   options={optionListForSlot2}
@@ -422,23 +445,24 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
             </Col>
           </Row>
           <Row hidden={!(slots && slots?.length > 2 && module3SelectionEnable)}>
-            <Col span={8} >
+            <Col span={optionListForSlot3.length===1 ? 24 : 7} >
               <Form.Item
                 name={'enableSlot3'}
                 initialValue={false}
                 valuePropName='checked'
                 children={
                   <Checkbox
-                    children={$t({ defaultMessage: 'Module 3' })}
+                    children={$t({ defaultMessage: 'Module 3:' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot3') }}
                   />
                 }
               />
             </Col>
-            <Col span={16} >
+            <Col span={10} >
               <Form.Item
                 name={'selectedOptionOfSlot3'}
                 initialValue={optionListForSlot3[0]?.value}
+                hidden={optionListForSlot3.length===1}
               >
                 <Select
                   options={optionListForSlot3}
@@ -449,23 +473,24 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
             </Col>
           </Row>
           <Row hidden={!(slots && slots?.length > 3)}>
-            <Col span={8} >
+            <Col span={optionListForSlot4.length===1 ? 24 : 7} >
               <Form.Item
                 name={'enableSlot4'}
                 initialValue={false}
                 valuePropName='checked'
                 children={
                   <Checkbox
-                    children={$t({ defaultMessage: 'Module 4' })}
+                    children={$t({ defaultMessage: 'Module 4:' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot4') }}
                   />
                 }
               />
             </Col>
-            <Col span={16} >
+            <Col span={10} >
               <Form.Item
                 name={'selectedOptionOfSlot4'}
                 initialValue={optionListForSlot4[0]?.value}
+                hidden={optionListForSlot4.length===1}
               >
                 <Select
                   options={optionListForSlot4}

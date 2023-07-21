@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }      from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
@@ -14,7 +15,8 @@ import {
   useImportPersonasMutation,
   useDeletePersonasMutation,
   useLazyGetPropertyUnitByIdQuery,
-  useGetPersonaGroupByIdQuery
+  useGetPersonaGroupByIdQuery,
+  useLazyGetDpskPassphraseDevicesQuery
 } from '@acx-ui/rc/services'
 import {
   FILTER,
@@ -34,7 +36,8 @@ import { PersonaBlockedIcon }                                     from '../style
 function useColumns (
   props: PersonaTableColProps,
   unitPool: Map<string, string>,
-  venueId: string
+  venueId: string,
+  dpskDeviceCount: Map<string, number>
 ) {
   const { $t } = useIntl()
 
@@ -82,13 +85,20 @@ function useColumns (
       sorter: true,
       ...props.description
     },
-    {
-      key: 'deviceCount',
-      dataIndex: 'deviceCount',
-      title: $t({ defaultMessage: 'Devices' }),
-      align: 'center',
-      ...props.deviceCount
-    },
+    ...(props.deviceCount?.disable)
+      ? []
+      : [{
+        key: 'deviceCount',
+        dataIndex: 'deviceCount',
+        title: $t({ defaultMessage: 'Devices' }),
+        align: 'center',
+        render: (_, row) => {
+          const dpskGuid = row.dpskGuid
+          const count = dpskDeviceCount.get(dpskGuid ?? '') ?? 0
+          return (row?.deviceCount ?? 0) + count
+        },
+        ...props.deviceCount
+      } as TableColumn<Persona>],
     ...(props.identityId?.disable)
       ? []
       : [{
@@ -170,10 +180,12 @@ export interface PersonaTableProps {
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, colProps } = props
+  const { tenantId } = useParams()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
-  const columns = useColumns(colProps, unitPool, venueId)
+  const [dpskDeviceCount, setDpskDeviceCount] = useState(new Map<string, number>())
+  const columns = useColumns(colProps, unitPool, venueId, dpskDeviceCount)
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
@@ -190,13 +202,15 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const { setPersonasCount } = useContext(PersonasContext)
 
-  const personaListQuery = useTableQuery({
+  const personaListQuery = useTableQuery<Persona>({
     useQuery: useSearchPersonaListQuery,
     defaultPayload: {
       keyword: '',
       groupId: personaGroupId
     }
   })
+
+  const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
 
   useEffect(() => {
     if (!propertyEnabled || personaListQuery.isLoading || personaGroupQuery.isLoading) return
@@ -220,6 +234,28 @@ export function BasePersonaTable (props: PersonaTableProps) {
     setVenueId(venueId)
     setUnitPool(pool)
   }, [personaListQuery.data, personaGroupQuery.data])
+
+  useEffect(() => {
+    if (!personaGroupId) return
+    if (personaGroupQuery.isLoading || personaListQuery.isLoading) return
+    if (!personaGroupQuery.data || !personaListQuery.data) return
+
+    const serviceId = personaGroupQuery.data?.dpskPoolId
+    if (!serviceId) return
+
+    personaListQuery.data.data.forEach(persona => {
+      const passphraseId = persona.dpskGuid
+      if (!passphraseId) return
+
+      getDpskDevices({ params: { tenantId, passphraseId, serviceId } })
+        .then(result => {
+          if (result.data) {
+            const count = result.data.filter(d => d.online).length
+            setDpskDeviceCount(prev => new Map(prev.set(passphraseId, count)))
+          }
+        })
+    })
+  }, [personaListQuery.isLoading, personaGroupQuery.isLoading])
 
   const toastDetailErrorMessage = (error: PersonaErrorResponse) => {
     const hasSubMessages = error.data?.subErrors

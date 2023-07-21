@@ -9,6 +9,7 @@ import { ApservDowntimeHigh }      from './Details/ApservDowntimeHigh'
 import { ApservHighNumReboots }    from './Details/ApservHighNumReboots'
 import { AssocFailure }            from './Details/AssocFailure'
 import { AuthFailure }             from './Details/AuthFailure'
+import { ChannelDist }             from './Details/ChannelDist'
 import { CovClientrssiLow }        from './Details/CovClientrssiLow'
 import { DhcpFailure }             from './Details/DhcpFailure'
 import { EapFailure }              from './Details/EapFailure'
@@ -34,7 +35,10 @@ export const incidentDetailsMap = {
   'i-apserv-downtime-high': ApservDowntimeHigh,
   'i-apserv-high-num-reboots': ApservHighNumReboots,
   'i-switch-poe-pd': SwitchPoePd,
-  'i-switch-vlan-mismatch': SwitchVlanMismatch
+  'i-switch-vlan-mismatch': SwitchVlanMismatch,
+  'p-channeldist-suboptimal-plan-24g': ChannelDist,
+  'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
+  'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist
 }
 
 export function IncidentDetails () {

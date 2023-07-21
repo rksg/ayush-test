@@ -32,7 +32,8 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1
 }
@@ -135,20 +136,20 @@ const DevicePolicyComponent = () => {
       <DeviceOSDrawer
         onlyAddMode={addModeStatus}
       />
+      <Table<DevicePolicy>
+        settingsId='policies-access-control-device-policy-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
+      />
     </Form>
-    <Table<DevicePolicy>
-      settingsId='policies-access-control-device-policy-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'checkbox' }}
-    />
   </Loader>
 }
 
@@ -192,13 +193,12 @@ function useColumns (
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

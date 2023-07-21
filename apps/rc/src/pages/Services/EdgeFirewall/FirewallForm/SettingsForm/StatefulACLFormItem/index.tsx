@@ -61,6 +61,7 @@ const StatefulACLTable = (props: StatefulACLTableProps) => {
       key: 'rules',
       dataIndex: 'rules',
       width: 100,
+      align: 'center',
       render: (_, row) => {
         return row.rules.length
       }
@@ -103,6 +104,7 @@ export const StatefulACLFormItem = () => {
         <Typography.Text>
           {$t({ defaultMessage: 'Stateful ACL' })}
         </Typography.Text>
+
       </Col>
       <Col span={6}>
         <Form.Item
@@ -113,8 +115,6 @@ export const StatefulACLFormItem = () => {
         >
           <Switch
             aria-label='acl'
-            checkedChildren={$t({ defaultMessage: 'ON' })}
-            unCheckedChildren={$t({ defaultMessage: 'OFF' })}
           />
         </Form.Item>
       </Col>

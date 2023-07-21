@@ -179,9 +179,9 @@ function useColumns () {
       }
     },
     {
-      key: 'venueIds',
+      key: 'venueCount',
       title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venueIds',
+      dataIndex: 'venueCount',
       align: 'center',
       filterKey: 'venueIds',
       filterable: venueNameMap,

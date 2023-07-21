@@ -8,8 +8,14 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { useDeleteNetworkSegmentationGroupMutation, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useDeleteNetworkSegmentationGroupMutation,
+  useGetEdgeListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
+  useNetworkListQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   getServiceListRoutePath,
@@ -34,6 +40,25 @@ const getNetworkSegmentationPayload = {
     'accessSwitchInfos'
   ]
 }
+const venueOptionsDefaultPayload = {
+  fields: ['name', 'id'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+const edgeOptionsDefaultPayload = {
+  fields: ['name', 'serialNumber'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+const networkDefaultPayload = {
+  fields: ['name', 'id'],
+  filters: { nwSubType: ['dpsk'] },
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 const NetworkSegmentationTable = () => {
 
@@ -48,6 +73,9 @@ const NetworkSegmentationTable = () => {
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
+    },
+    search: {
+      searchTargetFields: ['name']
     }
   })
   const [
@@ -55,12 +83,40 @@ const NetworkSegmentationTable = () => {
     { isLoading: isNetworkSegmentationGroupDeleting }
   ] = useDeleteNetworkSegmentationGroupMutation()
 
+  const { venueOptions = [] } = useVenuesListQuery(
+    { payload: venueOptionsDefaultPayload }, {
+      selectFromResult: ({ data }) => {
+        return {
+          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+        }
+      }
+    })
+
+  const { edgeOptions = [] } = useGetEdgeListQuery(
+    { payload: edgeOptionsDefaultPayload },
+    {
+      selectFromResult: ({ data }) => {
+        return {
+          edgeOptions: data?.data.map(item => ({ value: item.name, key: item.serialNumber }))
+        }
+      }
+    })
+
+  const { networkOptions = [] } = useNetworkListQuery(
+    { payload: networkDefaultPayload },
+    {
+      selectFromResult: ({ data }) => ({
+        networkOptions: data?.data.map(item => ({ key: item.id, value: item.name }))
+      })
+    })
+
   const columns: TableProps<NetworkSegmentationGroupViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: (data, row) => {
@@ -81,6 +137,8 @@ const NetworkSegmentationTable = () => {
       key: 'venue',
       dataIndex: 'venueInfos',
       sorter: true,
+      filterable: venueOptions,
+      filterKey: 'venueInfoIds',
       render: (data, row) => {
         const venueInfo = row.venueInfos[0]
         return (
@@ -95,6 +153,8 @@ const NetworkSegmentationTable = () => {
       key: 'edge',
       dataIndex: 'edgeInfos',
       sorter: true,
+      filterable: edgeOptions,
+      filterKey: 'edgeInfoIds',
       render: (data, row) => {
         const edgeInfo = row.edgeInfos[0]
         return (
@@ -109,6 +169,8 @@ const NetworkSegmentationTable = () => {
       key: 'networks',
       dataIndex: 'networkIds',
       align: 'center',
+      filterable: networkOptions,
+      filterKey: 'networkIds',
       render: (data, row) => {
         return (row.networkIds?.length)
       }
@@ -212,13 +274,15 @@ const NetworkSegmentationTable = () => {
       ]}>
         <Table
           settingsId='services-network-segmentation-table'
+          rowKey='id'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>

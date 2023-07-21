@@ -1,7 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
-// import { Checkbox } from 'antd'
-// import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { Checkbox }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -14,11 +13,17 @@ import {
 import { Loader, TableProps, Tooltip } from '@acx-ui/components'
 import { get }                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { TenantLink }                  from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { noDataDisplay }               from '@acx-ui/utils'
 
-import { useRecommendationListQuery, Recommendation } from './services'
-import * as UI                                        from './styledComponents'
+import {
+  useRecommendationListQuery,
+  Recommendation,
+  useMuteRecommendationMutation
+} from './services'
+import * as UI from './styledComponents'
+
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 
 export interface RecommendationRow extends Recommendation {
@@ -32,47 +37,49 @@ export interface RecommendationRow extends Recommendation {
 }
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
-  return <TenantLink to={`/recommendations/${value.id}`}>
+  const { activeTab } = useParams()
+  return <TenantLink to={`/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
 
-export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
+export function RecommendationTable ({ filters, showCrrm }:
+  { filters: IncidentFilter, showCrrm?: boolean }) {
   const intl = useIntl()
   const { $t } = intl
 
   const queryResults = useRecommendationListQuery(filters)
+
   const scopeType = get('IS_MLISA_SA')
     ? $t({ defaultMessage: 'Zone' })
     : $t({ defaultMessage: 'Venue' })
-  // const [ showMuted, setShowMuted ] = useState<boolean>(false)
+  const [ showMuted, setShowMuted ] = useState<boolean>(false)
 
-  // const [muteRecommendation] = useMuteRecommendationsMutation()
-  // const [selectedRowData, setSelectedRowData] = useState<{
-  //   id: string,
-  //   code: string,
-  //   severityLabel: string,
-  //   isMuted: boolean
-  // }[]>([])
+  const [muteRecommendation] = useMuteRecommendationMutation()
+  const [selectedRowData, setSelectedRowData] = useState<{
+    id: string,
+    isMuted: boolean
+  }[]>([])
 
-  // const selectedRecommendation = selectedRowData[0]
-  // const data = (showMuted)
-  //   ? queryResults.data
-  //   : filterMutedRecommendations(queryResults.data)
+  const selectedRecommendation = selectedRowData[0]
 
-  // const rowActions: TableProps<Recommendation>['rowActions'] = [
-  //   {
-  //     label: $t(selectedRecommendation?.isMuted
-  //       ? defineMessage({ defaultMessage: 'Unmute' })
-  //       : defineMessage({ defaultMessage: 'Mute' })
-  //     ),
-  //     onClick: async () => {
-  //       // const { id, code, severityLabel, isMuted } = selectedRecommendation
-  //       // await muteRecommendation({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()
-  //       // setSelectedRowData([])
-  //     }
-  //   }
-  // ]
+  const data = queryResults?.data?.filter((row) =>
+    (showCrrm === row.code.includes('crrm')) && (showMuted || !row.isMuted)
+  )
+
+  const rowActions: TableProps<Recommendation>['rowActions'] = [
+    {
+      label: $t(selectedRecommendation?.isMuted
+        ? defineMessage({ defaultMessage: 'Unmute' })
+        : defineMessage({ defaultMessage: 'Mute' })
+      ),
+      onClick: async () => {
+        const { id, isMuted } = selectedRecommendation
+        await muteRecommendation({ id, mute: !isMuted }).unwrap()
+        setSelectedRowData([])
+      }
+    }
+  ]
 
   const ColumnHeaders: TableProps<RecommendationRow>['columns'] = useMemo(() => [
     {
@@ -82,7 +89,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       key: 'priorityLabel',
       render: (_, value) => {
         return <UI.Priority>
-          <UI.PriorityIcon value={value.priorityLabel} />
+          <UI.PriorityIcon value={value.priority} />
           <span>{value.priorityLabel}</span>
         </UI.Priority>
       },
@@ -111,7 +118,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       ellipsis: true,
       searchable: true
     },
-    {
+    ...(showCrrm ? [] : [{
       title: $t(defineMessage({ defaultMessage: 'Category' })),
       width: 130,
       dataIndex: 'category',
@@ -119,7 +126,7 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       sorter: { compare: sortProp('category', defaultSort) },
       fixed: 'left',
       filterable: true
-    },
+    }] as TableProps<RecommendationRow>['columns']),
     {
       title: scopeType,
       width: 150,
@@ -147,44 +154,42 @@ export function RecommendationTable ({ filters }: { filters: IncidentFilter }) {
       filterable: true
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], []) // '$t' 'basePath' 'intl' are not changing
+  ], [showCrrm]) // '$t' 'basePath' 'intl' are not changing
 
   return (
     <Loader states={[queryResults]}>
       <UI.RecommendationTableWrapper
         settingsId='incident-table'
         type='tall'
-        dataSource={queryResults.data}
+        dataSource={data}
         columns={ColumnHeaders}
-        // rowActions={rowActions}
-        // rowSelection={{
-        //   type: 'radio',
-        //   selectedRowKeys: selectedRowData.map(val => val.id),
-        //   // onChange: (_, [row]) => {
-        //   //   // row && setSelectedRowData([{
-        //   //   //   id: row.id,
-        //   //   //   code: row.code,
-        //   //   //   severityLabel: row?.priority,
-        //   //   //   isMuted: row.isMuted
-        //   //   // }])
-        //   // }
-        // }}
+        rowActions={rowActions}
+        rowSelection={{
+          type: 'radio',
+          selectedRowKeys: selectedRowData.map(val => val.id),
+          onChange: (_, [row]) => {
+            row && setSelectedRowData([{
+              id: row.id,
+              isMuted: row.isMuted
+            }])
+          }
+        }}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}
-        // onResetState={() => {
-        //   setShowMuted(false)
-        //   setSelectedRowData([])
-        // }}
-        // extraSettings={[
-        //   <Checkbox
-        //     onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
-        //     checked={showMuted}
-        //     children={$t({ defaultMessage: 'Show Muted Recommendations' })}
-        //   />
-        // ]}
-        //rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        onResetState={() => {
+          setShowMuted(false)
+          setSelectedRowData([])
+        }}
+        extraSettings={[
+          <Checkbox
+            onChange={(e: CheckboxChangeEvent) => setShowMuted(e.target.checked)}
+            checked={showMuted}
+            children={$t({ defaultMessage: 'Show Muted Recommendations' })}
+          />
+        ]}
+        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
         filterableWidth={155}
         searchableWidth={240}
       />

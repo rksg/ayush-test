@@ -43,7 +43,8 @@ const defaultPayload = {
     'applicationPolicyId',
     'clientRateUpLinkLimit',
     'clientRateDownLinkLimit',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1
 }
@@ -252,9 +253,9 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       }
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
