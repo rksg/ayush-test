@@ -250,7 +250,10 @@ function ABFSelector (props: ABFSelectorProps) {
             : null
           }
           <UI.ApModelsContainer>
-            {$t({ defaultMessage: 'AP Models: {apModels}' }, { apModels })}
+            <span>{ $t({ defaultMessage: 'AP Models:' }) }&nbsp;</span>
+            <span className={apModels ? '' : 'empty'}>
+              { apModels ? apModels : 'No Access Point in selected venue(s)' }
+            </span>
           </UI.ApModelsContainer>
         </Space>
       </Radio.Group>

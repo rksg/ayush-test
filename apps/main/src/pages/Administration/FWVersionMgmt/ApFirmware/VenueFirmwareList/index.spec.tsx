@@ -172,4 +172,23 @@ describe('Firmware Venues Table', () => {
     const rowWithoutLegacyAp = await screen.findByRole('row', { name: /Legacy-Venue/ })
     expect(within(rowWithoutLegacyAp).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull()
   })
+
+  it('should show a message in the Update Now dialog when AP Models is empty', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      })
+
+    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
+
+    const dialog = await screen.findByRole('dialog', { name: 'Update Now' })
+    expect(await within(dialog).findByText('No Access Point in selected venue(s)')).toBeVisible()
+  })
 })
