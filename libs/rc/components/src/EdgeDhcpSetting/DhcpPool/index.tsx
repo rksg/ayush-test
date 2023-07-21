@@ -75,14 +75,7 @@ export default function DhcpPoolTable ({
   }
 
   const appendDHCPPools = async (content: string[], callback: () => void) => {
-    const dataArray = content.filter(row => {
-      const trimmed = row.trim()
-      return trimmed
-          && !trimmed.startsWith('#')
-          && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
-    })
-
-    const newValues: EdgeDhcpPool[] = dataArray.map((item) => {
+    const newValues: EdgeDhcpPool[] = content.map((item) => {
       const fields = item.split(' ')
       return {
         id: '_NEW_'+uuidv4(),
@@ -134,7 +127,13 @@ export default function DhcpPoolTable ({
           visible={importModalvisible}
           readAsText={true}
           importRequest={(formData, values, content) => {
-            const dataArray = content!.split('\n')
+            const dataArray = content!.split('\n').filter(row => {
+              const trimmed = row.trim()
+              return trimmed
+                  && !trimmed.startsWith('#')
+                  && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
+            })
+
             if (dataArray.length > MAX_IMPORT_ENTRIES) {
               showActionModal({
                 type: 'error',

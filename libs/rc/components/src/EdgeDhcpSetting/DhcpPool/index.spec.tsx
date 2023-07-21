@@ -260,5 +260,40 @@ describe('DHCP Pool table(Edge)', () => {
     await userEvent.click(within(drawer).getByRole('button', { name: 'Import' }))
     await screen.findByText('Invalid Validation')
     await screen.findByText('IP address is not in the subnet pool')
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
+  })
+
+  it('should check max entries when import by CSV', async () => {
+    let mockedData = [
+      'Pool Name,Subnet Mask,Pool Start IP,Pool End IP,Gateway\r\n'
+    ]
+    for(let i = 0; i <= 128; i++) {
+      mockedData.push(`mockPool${i},255.255.255.0,1.1.1.1,2.2.2.2,1.12.10.125\r\n`)
+    }
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Form form={formRef.current}>
+      <Form.Item
+        name='dhcpPools'
+        children={<DhcpPoolTable />}
+      />
+    </Form>)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Import from file' }))
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Browse' }))
+    const csvFile = new File(mockedData, 'edge_dhcp_pool.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Import' }))
+    await screen.findByText('Invalid Validation')
+    await screen.findByText('Exceed maximum entries.')
   })
 })
