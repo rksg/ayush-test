@@ -102,15 +102,9 @@ describe('NetworkMoreSettingsForm', () => {
 
   it('should render More settings form successfully with edit mode', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    render(
-      <Provider>
-        <NetworkFormContext.Provider value={{ editMode: true, data: mockGuestMoreData }} >
-          <Form>
-            <NetworkMoreSettingsForm wlanData={mockWlanData} />
-          </Form>
-        </NetworkFormContext.Provider>
-      </Provider>,
-      { route: { params } })
+    const mockContextData = { editMode: true, data: mockGuestMoreData } as NetworkFormContextType
+
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
 
     const tabs = await screen.findAllByRole('tab')
     expect(tabs.length).toBe(5)
@@ -267,6 +261,7 @@ describe('NetworkMoreSettingsForm', () => {
     await userEvent.click(screen.getByText(/5.5 Mbps/i))
     expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
   })
+
   it('Test case for Basic Service Set Radio Group', async ()=> {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
