@@ -5,10 +5,7 @@ import { useIntl } from 'react-intl'
 import { StepsFormLegacy, AnchorLayout } from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import {
-  useNavigate,
-  useTenantLink
-} from '@acx-ui/react-router-dom'
+import { useNavigate, useTenantLink }    from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -25,7 +22,7 @@ export interface AdvanceSettingContext {
   updateRadiusOptions?: (() => void)
 }
 
-export function AdvancedSettingForm () {
+export function AdvancedTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
@@ -33,10 +30,12 @@ export function AdvancedSettingForm () {
   const {
     editContextData,
     setEditContextData,
-    editAdvanceSettingContext,
-    setEditAdvanceSettingContext,
+    editAdvancedContextData,
+    setEditAdvancedContextData,
     previousPath } = useContext(VenueEditContext)
+
   const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
+  const supportBssColoring = false //useIsSplitOn(Features.RADIUS_OPTIONS)
 
 
   const items = [{
@@ -47,23 +46,33 @@ export function AdvancedSettingForm () {
       </StepsFormLegacy.SectionTitle>
       <AccessPointLED />
     </>
-  }]
+  },
+  ...(supportBssColoring? [{
+    title: $t({ defaultMessage: 'BSS Coloring' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='bss-coloring'>
+        { $t({ defaultMessage: 'BSS Coloring' }) }
+      </StepsFormLegacy.SectionTitle>
+      <div>implementing...</div>
+    </>
+  }] : []
+  ),
+  ...(supportRadiusOptions? [{
+    title: $t({ defaultMessage: 'RADIUS Options' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='radius-options'>
+        { $t({ defaultMessage: 'RADIUS Options' }) }
+      </StepsFormLegacy.SectionTitle>
+      <RadiusOptions />
+    </> }] : []
+  )]
 
-  if (supportRadiusOptions) {
-    items.push({
-      title: $t({ defaultMessage: 'RADIUS Options' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='radius-options'>
-          { $t({ defaultMessage: 'RADIUS Options' }) }
-        </StepsFormLegacy.SectionTitle>
-        <RadiusOptions />
-      </> })
-  }
+
 
   const handleUpdateAllSettings = async () => {
     try {
-      await editAdvanceSettingContext?.updateAccessPointLED?.()
-      await editAdvanceSettingContext?.updateRadiusOptions?.()
+      await editAdvancedContextData?.updateAccessPointLED?.()
+      await editAdvancedContextData?.updateRadiusOptions?.()
 
       setEditContextData({
         ...editContextData,
@@ -71,11 +80,11 @@ export function AdvancedSettingForm () {
         isDirty: false
       })
 
-      if(editAdvanceSettingContext) {
-        const newData = { ...editAdvanceSettingContext }
-        delete editAdvanceSettingContext.updateAccessPointLED
-        delete editAdvanceSettingContext.updateRadiusOptions
-        setEditAdvanceSettingContext(newData)
+      if (editAdvancedContextData) {
+        const newData = { ...editAdvancedContextData }
+        delete newData.updateAccessPointLED
+        delete newData.updateRadiusOptions
+        setEditAdvancedContextData(newData)
       }
 
     } catch (error) {

@@ -31,7 +31,7 @@ function VenueEditTabs () {
     editRadioContextData,
     editSecurityContextData,
     editServerContextData,
-    editAdvanceSettingContext,
+    editAdvancedContextData,
     setPreviousPath
   } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
@@ -67,7 +67,7 @@ function VenueEditTabs () {
           editRadioContextData,
           editSecurityContextData,
           editServerContextData,
-          editAdvanceSettingContext,
+          editAdvancedContextData,
           intl,
           tx.retry
         )

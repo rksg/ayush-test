@@ -58,7 +58,28 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <MeshNetwork />
     </>
-  }, {
+  },
+  ...(supportDirectedMulticast? [{
+    title: $t({ defaultMessage: 'Directed Multicast' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='directed-multicast'>
+        {<Space align='baseline'>
+          { $t({ defaultMessage: 'Directed Multicast' }) }
+          <Tooltip
+            title={$t( directedMulticastInfo )}
+            placement='right'>
+            <Button type='text'
+              style={{ height: '18px', width: '18px' }}
+              icon={
+                <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
+            />
+          </Tooltip>
+        </Space>
+        }
+      </StepsFormLegacy.SectionTitle>
+      <DirectedMulticast />
+    </> }] : []),
+  {
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='cellular-options'>
@@ -67,30 +88,6 @@ export function NetworkingTab () {
       <CellularOptionsForm />
     </>
   }]
-
-  // Put Directed Multicast before Cellular Options
-  if (supportDirectedMulticast) {
-    items.splice(-1, 0, {
-      title: $t({ defaultMessage: 'Directed Multicast' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='directed-multicast'>
-          {<Space align='baseline'>
-            { $t({ defaultMessage: 'Directed Multicast' }) }
-            <Tooltip
-              title={$t( directedMulticastInfo )}
-              placement='right'>
-              <Button type='text'
-                style={{ height: '18px', width: '18px' }}
-                icon={
-                  <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
-              />
-            </Tooltip>
-          </Space>
-          }
-        </StepsFormLegacy.SectionTitle>
-        <DirectedMulticast />
-      </> })
-  }
 
   const handleUpdateAllSettings = async () => {
     try {

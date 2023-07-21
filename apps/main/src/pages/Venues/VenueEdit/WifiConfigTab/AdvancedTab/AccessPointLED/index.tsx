@@ -1,21 +1,18 @@
 import { useState, useEffect, useContext } from 'react'
 
-import {
-  Select,
-  Switch,
-  Space
-} from 'antd'
-import { isEqual } from 'lodash'
-import { useIntl } from 'react-intl'
+import { Select, Switch, Space } from 'antd'
+import { isEqual }               from 'lodash'
+import { useIntl }               from 'react-intl'
 
-import { Button, Table, TableProps, Loader, showToast }                                                                 from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                                                           from '@acx-ui/icons'
-import { useGetVenueLedOnQuery, useGetVenueApModelsQuery, useUpdateVenueLedOnMutation, useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
-import { VenueLed }                                                                                                     from '@acx-ui/rc/utils'
+import { Button, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                           from '@acx-ui/icons'
 import {
-  useNavigate,
-  useParams
-} from '@acx-ui/react-router-dom'
+  useGetVenueLedOnQuery,
+  useGetVenueApModelsQuery,
+  useUpdateVenueLedOnMutation,
+  useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
+import { VenueLed }               from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../../../index'
 
@@ -36,8 +33,8 @@ export function AccessPointLED () {
   const {
     editContextData,
     setEditContextData,
-    editAdvanceSettingContext,
-    setEditAdvanceSettingContext
+    editAdvancedContextData,
+    setEditAdvancedContextData
   } = useContext(VenueEditContext)
 
   const defaultArray: VenueLed[] = []
@@ -53,6 +50,7 @@ export function AccessPointLED () {
     // set default data when switching sub tab
     const tab = activeSubTab as keyof EditContext['tempData']
     const data = editContextData?.tempData?.[tab] || undefined
+
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'settings',
@@ -62,8 +60,9 @@ export function AccessPointLED () {
       isDirty: false,
       setData: setTableData
     })
-    setEditAdvanceSettingContext({
-      ...editAdvanceSettingContext,
+
+    setEditAdvancedContextData({
+      ...editAdvancedContextData,
       updateAccessPointLED: handleUpdateSetting
     })
   }, [navigate])
@@ -112,8 +111,9 @@ export function AccessPointLED () {
       hasError: tableData?.filter(item => !item.model).length > 0,
       setData: setTableData
     })
-    setEditAdvanceSettingContext({
-      ...editAdvanceSettingContext,
+
+    setEditAdvancedContextData({
+      ...editAdvancedContextData,
       updateAccessPointLED: handleUpdateSetting
     })
   }, [tableData])

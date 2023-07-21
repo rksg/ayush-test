@@ -15,7 +15,7 @@ import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
 import VenueEditPageHeader          from './VenueEditPageHeader'
 import { WifiConfigTab }            from './WifiConfigTab'
-import { AdvanceSettingContext }    from './WifiConfigTab/AdvancedTab/AdvancedSettingForm'
+import { AdvanceSettingContext }    from './WifiConfigTab/AdvancedTab'
 import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
 import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
 import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
@@ -73,8 +73,8 @@ export const VenueEditContext = createContext({} as {
   editServerContextData: ServerSettingContext,
   setEditServerContextData: (data: ServerSettingContext) => void
 
-  editAdvanceSettingContext: AdvanceSettingContext,
-  setEditAdvanceSettingContext: (data: AdvanceSettingContext) => void
+  editAdvancedContextData: AdvanceSettingContext,
+  setEditAdvancedContextData: (data: AdvanceSettingContext) => void
 
   previousPath: string
   setPreviousPath: (data: string) => void
@@ -100,7 +100,7 @@ export function VenueEdit () {
   ] = useState({} as RadioContext)
 
   const [
-    editAdvanceSettingContext, setEditAdvanceSettingContext
+    editAdvancedContextData, setEditAdvancedContextData
   ] = useState({} as AdvanceSettingContext)
 
   return (
@@ -115,8 +115,8 @@ export function VenueEdit () {
       setEditSecurityContextData,
       editServerContextData,
       setEditServerContextData,
-      editAdvanceSettingContext,
-      setEditAdvanceSettingContext,
+      editAdvancedContextData: editAdvancedContextData,
+      setEditAdvancedContextData: setEditAdvancedContextData,
       previousPath,
       setPreviousPath
     }}>
@@ -152,12 +152,12 @@ function processWifiTab (
   editSecurityContextData: SecuritySettingContext,
   editServerContextData: ServerSettingContext,
   editRadioContextData: RadioContext,
-  editAdvanceSettingContext: AdvanceSettingContext
+  editAdvancedContextData: AdvanceSettingContext
 ){
   switch(editContextData?.unsavedTabKey){
     case 'settings':
-      editAdvanceSettingContext?.updateAccessPointLED?.()
-      editAdvanceSettingContext?.updateRadiusOptions?.()
+      editAdvancedContextData?.updateAccessPointLED?.()
+      editAdvancedContextData?.updateRadiusOptions?.()
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
@@ -197,7 +197,7 @@ export function showUnsavedModal (
   editRadioContextData: RadioContext,
   editSecurityContextData: SecuritySettingContext,
   editServerContextData: ServerSettingContext,
-  editAdvanceSettingContext: AdvanceSettingContext,
+  editAdvancedContextData: AdvanceSettingContext,
   intl: IntlShape,
   callback?: () => void
 ) {
@@ -265,7 +265,7 @@ export function showUnsavedModal (
           editSecurityContextData,
           editServerContextData,
           editRadioContextData,
-          editAdvanceSettingContext
+          editAdvancedContextData
         )
       }else{
         editContextData?.updateChanges?.()

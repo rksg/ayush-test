@@ -20,8 +20,8 @@ export function RadiusOptions () {
   const {
     editContextData,
     setEditContextData,
-    editAdvanceSettingContext,
-    setEditAdvanceSettingContext
+    editAdvancedContextData,
+    setEditAdvancedContextData
   } = useContext(VenueEditContext)
 
   const form = Form.useFormInstance()
@@ -79,8 +79,8 @@ export function RadiusOptions () {
       isDirty: true
     })
 
-    editAdvanceSettingContext && setEditAdvanceSettingContext({
-      ...editAdvanceSettingContext,
+    setEditAdvancedContextData && setEditAdvancedContextData({
+      ...editAdvancedContextData,
       updateRadiusOptions: handleUpdateRadiusOptions
     })
   }

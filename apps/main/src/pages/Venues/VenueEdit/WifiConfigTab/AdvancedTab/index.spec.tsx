@@ -16,16 +16,16 @@ import {
 } from '../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../index'
 
-import { AdvancedSettingForm, AdvanceSettingContext } from './AdvancedSettingForm'
+import { AdvancedTab, AdvanceSettingContext } from '.'
 
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 
-let editContextData = {} as EditContext
+const editContextData = {} as EditContext
 const setEditContextData = jest.fn()
-let editAdvanceSettingContext = {} as AdvanceSettingContext
-const setEditAdvanceSettingContext = jest.fn()
+let editAdvancedContextData = {} as AdvanceSettingContext
+const setEditAdvancedContextData = jest.fn()
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -33,7 +33,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('AdvancedSettingForm', () => {
+describe('AdvancedTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
@@ -71,9 +71,9 @@ describe('AdvancedSettingForm', () => {
         <VenueEditContext.Provider value={{
           editContextData,
           setEditContextData,
-          editAdvanceSettingContext,
-          setEditAdvanceSettingContext }}>
-          <AdvancedSettingForm />
+          editAdvancedContextData,
+          setEditAdvancedContextData }}>
+          <AdvancedTab />
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
@@ -95,9 +95,9 @@ describe('AdvancedSettingForm', () => {
         <VenueEditContext.Provider value={{
           editContextData,
           setEditContextData,
-          editAdvanceSettingContext,
-          setEditAdvanceSettingContext }}>
-          <AdvancedSettingForm />
+          editAdvancedContextData,
+          setEditAdvancedContextData }}>
+          <AdvancedTab />
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
@@ -131,9 +131,9 @@ describe('AdvancedSettingForm', () => {
         <VenueEditContext.Provider value={{
           editContextData,
           setEditContextData,
-          editAdvanceSettingContext,
-          setEditAdvanceSettingContext }}>
-          <AdvancedSettingForm />
+          editAdvancedContextData,
+          setEditAdvancedContextData }}>
+          <AdvancedTab />
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
@@ -155,12 +155,12 @@ describe('AdvancedSettingForm', () => {
 
     render(<Provider>
       <VenueEditContext.Provider value={{
-        editContextData: {},
-        setEditContextData: jest.fn(),
-        editAdvanceSettingContext: advanceSettingContext,
-        setEditAdvanceSettingContext: jest.fn()
+        editContextData,
+        setEditContextData,
+        editAdvancedContextData: advanceSettingContext,
+        setEditAdvancedContextData: jest.fn()
       }}>
-        <AdvancedSettingForm />
+        <AdvancedTab />
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
