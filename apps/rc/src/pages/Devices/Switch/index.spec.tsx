@@ -28,6 +28,11 @@ jest.mock('./SwitchesTable', () => ({
   })
 }))
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  NetworkFilter: () => <div data-testid='NetworkFilter' />
+}))
+
 jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: (props: { reportName: ReportType }) => <div data-testid={props.reportName} />
