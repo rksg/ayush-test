@@ -140,7 +140,7 @@ export function AddPoolDrawer (props: {
       footer={footer}
     >
       <Form layout='vertical' form={form} onFinish={handleFormFinish}>
-        <Form.Item name={'id'} hidden children={<input type='hidden' />} />
+        <Form.Item name={'id'} hidden children={<></>} />
         <Form.Item
           name='poolName'
           label={$t({ defaultMessage: 'Pool Name' })}

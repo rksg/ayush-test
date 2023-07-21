@@ -66,6 +66,21 @@ const thirdStyle = css`
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
         text-shadow: none;
+        > span {
+          display: inline-flex;
+          align-items: center;
+        }
+        svg {
+          margin: 0 5px;
+          width: 20px;
+          height: 20px;
+          path[stroke] {
+            stroke: currentColor;
+          }
+          path[fill] {
+            fill: currentColor;
+          }
+        }
       }
       &.ant-tabs-tab-active {
         z-index: 1;
