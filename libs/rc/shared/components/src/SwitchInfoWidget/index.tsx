@@ -9,7 +9,7 @@ import {
 import { AnalyticsFilter }                                         from '@acx-ui/analytics/utils'
 import { cssStr, Loader, Card, GridRow, GridCol, NoActiveContent } from '@acx-ui/components'
 import type { DonutChartData }                                     from '@acx-ui/components'
-import { Client, PoeUsage }                                        from '@acx-ui/icons'
+import { Client }                                                  from '@acx-ui/icons'
 import { useAlarmsListQuery }                                      from '@acx-ui/rc/services'
 import {
   Alarm,
@@ -211,7 +211,7 @@ export function SwitchInfoWidget (props:{
             <GridRow>
               <GridCol col={{ span: 24 }} >
                 <UI.Wrapper style={{ minHeight: '31px' }}>
-                  <PoeUsage />
+                  <UI.PoeUsageIcon />
                 </UI.Wrapper>
                 <UI.Wrapper>
                   <UI.ChartTopTitle>

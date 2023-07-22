@@ -342,9 +342,6 @@ export function ManageCustomer () {
   }
 
   const fieldValidator = async (value: string, remainingDevices: number) => {
-    const ecData = formRef.current?.getFieldsValue() as EcFormData
-    setSwitchLicense(ecData?.switchLicense)
-    setWifiLicense(ecData?.wifiLicense)
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
         `${intl.$t({ defaultMessage: 'Invalid number' })} `
@@ -435,6 +432,8 @@ export function ManageCustomer () {
         tenant_type: AccountType.MSP_EC,
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
+        city: address.city,
+        country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
         admin_delegations: delegations,
@@ -533,6 +532,8 @@ export function ManageCustomer () {
         tenant_type: AccountType.MSP_EC,
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
+        city: address.city,
+        country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate
       }
@@ -1011,8 +1012,8 @@ export function ManageCustomer () {
   const CustomerSummary = () => {
     const intl = useIntl()
     const { Paragraph } = Typography
-    const wifiAssigned = trialSelected ? '25' : assignedWifiLicense
-    const switchAssigned = trialSelected ? '25' : assignedSwitchLicense
+    const wifiAssigned = trialSelected ? '25' : formData.wifiLicense
+    const switchAssigned = trialSelected ? '25' : formData.switchLicense
 
     return (
       <>
@@ -1231,7 +1232,13 @@ export function ManageCustomer () {
           </StepsFormLegacy.StepForm>
 
           <StepsFormLegacy.StepForm name='subscriptions'
-            title={intl.$t({ defaultMessage: 'Subscriptions' })}>
+            title={intl.$t({ defaultMessage: 'Subscriptions' })}
+            onFinish={async (data) => {
+              const subData = { ...formData, ...data }
+              setFormData(subData)
+              return true
+            }}
+          >
             <CustomerSubscription />
           </StepsFormLegacy.StepForm>
 

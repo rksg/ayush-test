@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+    type="solid-bg"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+        >
+          <div
+            class="ant-row Grid__GridRow-sc-5irhjd-2"
+            style="margin: -10px -10px -10px -10px; flex-grow: 1; justify-content: space-around;"
+          >
+            <div
+              class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+              >
+                <div
+                  class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
+                >
+                  Channel
+                </div>
+                <h3
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                >
+                  Auto
+                </h3>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+              >
+                <div
+                  class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
+                >
+                  Channelization
+                </div>
+                <h3
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                >
+                  Auto
+                </h3>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+              >
+                <div
+                  class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
+                >
+                  Channel Range (2.4 GHz)
+                </div>
+                <h3
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                >
+                  10, 20
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -1,8 +1,7 @@
-import { useState } from 'react'
-
-import { Radio }     from 'antd'
+import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
+import { Tabs, Tooltip }                          from '@acx-ui/components'
 import { LineChartOutline, ListSolid, PortSolid } from '@acx-ui/icons'
 import { SwitchPortTable, SwitchTable }           from '@acx-ui/rc/components'
 import { useGetSwitchModelListQuery }             from '@acx-ui/rc/services'
@@ -11,11 +10,11 @@ import {
   ReportType
 } from '@acx-ui/reports/components'
 
-import { IconRadioGroup } from '../VenueWifi/styledComponents'
+import { IconThirdTab } from '../VenueWifi/styledComponents'
 
 export function VenueSwitch () {
+  const { $t } = useIntl()
   const params = useParams()
-  const [ showIdx, setShowIdx ] = useState(0)
 
   const { getSwitchModelList } = useGetSwitchModelListQuery({
     params: { tenantId: params.tenantId }, payload: {
@@ -31,26 +30,31 @@ export function VenueSwitch () {
     })
   })
 
-  return (<>
-    <IconRadioGroup value={showIdx}
-      size='small'
-      buttonStyle='solid'
-      onChange={e => setShowIdx(e.target.value)}>
-      <Radio.Button value={0}><LineChartOutline /></Radio.Button>
-      <Radio.Button value={1}><ListSolid /></Radio.Button>
-      <Radio.Button value={2}><PortSolid /></Radio.Button>
-    </IconRadioGroup>
-    { showIdx === 0 &&
-      <div style={{ paddingTop: 20 }}>
+  return (
+    <IconThirdTab>
+      <Tabs.TabPane key='overview'
+        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
+          <LineChartOutline />
+        </Tooltip>}>
         <EmbeddedReport
           reportName={ReportType.SWITCH}
           rlsClause={`"switchGroupLevelOneName" in ('${params?.venueId}')`}
         />
-      </div>
-    }
-    {showIdx === 1 && <SwitchTable searchable={true}
-      enableActions={true}
-      filterableKeys={{ model: getSwitchModelList }} />}
-    { showIdx === 2 && <SwitchPortTable isVenueLevel={true} />}
-  </>)
+      </Tabs.TabPane>
+      <Tabs.TabPane key='list'
+        tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
+          <ListSolid />
+        </Tooltip>}>
+        <SwitchTable searchable={true}
+          enableActions={true}
+          filterableKeys={{ model: getSwitchModelList }} />
+      </Tabs.TabPane>
+      <Tabs.TabPane key='port'
+        tab={<Tooltip title={$t({ defaultMessage: 'Port List' })}>
+          <PortSolid />
+        </Tooltip>}>
+        <SwitchPortTable isVenueLevel={true} />
+      </Tabs.TabPane>
+    </IconThirdTab>
+  )
 }
