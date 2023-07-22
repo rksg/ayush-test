@@ -186,8 +186,14 @@ const tallStyle = css<StyledTable>`
       }
     }
 
+    .ant-pro-card-body {
+      display: flex;
+      flex-direction: column;
+    }
+
     &-list-toolbar {
-      height: 0;
+      order: 2;
+      height: ${toolbarHeight};
       pointer-events: none; // prevent from blocking table header
       position: sticky;
       top: calc(
@@ -203,24 +209,15 @@ const tallStyle = css<StyledTable>`
         height: 100%;
       }
       &-setting-item {
-        margin-top: ${toolbarHeight};
         pointer-events: all; // enable setting button to be clickable
         svg {
           margin-top: 3px;
         }
       }
-      &:has(+ .ant-pro-table-alert) {
-        top: calc(
-          var(--sticky-offset) +
-          (${actionsHeight} * var(--sticky-has-actions))
-        );
-        .ant-pro-table-list-toolbar-setting-item {
-          margin-top: calc(${toolbarHeight} + ${rowActionsHeight} * 2);
-        }
-      }
     }
 
     &-alert {
+      order: 1;
       margin: 0px;
       position: sticky;
       top: calc(
@@ -241,6 +238,11 @@ const tallStyle = css<StyledTable>`
           line-height: var(--acx-body-4-line-height);
         }
       }
+    }
+
+    .ant-table-wrapper {
+      order: 3;
+      margin-top: -${toolbarHeight};
     }
 
     .ant-pagination {
