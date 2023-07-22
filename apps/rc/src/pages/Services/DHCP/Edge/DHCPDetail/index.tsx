@@ -102,12 +102,12 @@ const EdgeDHCPDetail = () => {
       dataIndex: 'remainsIps'
     },
     {
-      title: $t({ defaultMessage: 'Dropped packets' }),
+      title: $t({ defaultMessage: '# of packets' }),
       align: 'center',
       key: 'droppedPackets',
       dataIndex: 'droppedPackets',
       render (data, row) {
-        return `${row.droppedPackets}%`
+        return `${row.droppedPackets}`
       }
     }
   ]

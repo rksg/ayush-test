@@ -144,3 +144,8 @@ export interface CommonResult {
   requestId: string
   response?:{}
 }
+
+export interface BetaStatus {
+  enabled?: boolean,
+  startDate?: string
+}
