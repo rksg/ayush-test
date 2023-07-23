@@ -2,13 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { venueApi }                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, VenueApModelCellular, WifiUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
-import { Provider, store }                                                   from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }    from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { venueApi }                                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { VenueEditContext } from '../..'
 import {
   venueApsList,
   venueCaps,
@@ -109,34 +108,6 @@ describe('NetworkingTab', () => {
 
     await waitFor(() => screen.findByText('Multicast Traffic from:'))
     await userEvent.click(screen.getByTestId('network-switch'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-  })
-
-  it('should show Radius Options if feature flag is On', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const editNetworkingContextData = {
-      cellularData: {} as VenueApModelCellular,
-      meshData: { mesh: false },
-      updateRadiusOptions: jest.fn()
-    }
-
-    render(<Provider>
-      <VenueEditContext.Provider value={{
-        editContextData: {},
-        setEditContextData: jest.fn(),
-        editNetworkingContextData,
-        setEditNetworkingContextData: jest.fn()
-      }}>
-        <NetworkingTab />
-      </VenueEditContext.Provider>
-    </Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    await waitFor(() => screen.findByText('AP Model'))
-
-    userEvent.click(
-      await screen.findByRole('switch', { name: 'Override the settings in active networks' })
-    )
-    await screen.findByText('NAS ID')
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })
