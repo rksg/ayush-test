@@ -40,6 +40,7 @@ async function nameValidator (
 export const PoolDrawer = (props: PoolDrawerProps) => {
   const { $t } = useIntl()
   const { visible, setVisible, onAddOrEdit, data, allPool } = props
+
   const { form, onSubmit, onSave, onClose } = useDrawerControl({
     visible,
     setVisible,
@@ -54,13 +55,13 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
         $t({ defaultMessage: 'Add' }) })
   }
 
+
   const drawerContent = <Form
     form={form}
     layout='vertical'
     onFinish={onSubmit}
     initialValues={initPoolData}
   >
-    <Form.Item name='id' hidden />
     <Row>
       <Col span={12}>
         <Form.Item
@@ -120,11 +121,6 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
             { validator: (_, value) => networkWifiIpRegExp(value) }
           ]}
           children={<Input />}
-        />
-        <Form.Item
-          name='activated'
-          children={<Input />}
-          hidden
         />
       </Col>
     </Row>

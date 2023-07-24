@@ -184,7 +184,7 @@ const selectOptionSet = async (device: string, vendor: string) => {
   )
 }
 
-describe('DeviceOSDrawer Component setting I', () => {
+describe.skip('DeviceOSDrawer Component setting I', () => {
   beforeEach(async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,

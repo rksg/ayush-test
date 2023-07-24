@@ -7,7 +7,7 @@ RUN apk add curl
 
 ARG ENV_FILE
 COPY ${ENV_FILE} .
-RUN export $(cat ${ENV_FILE}) \
+RUN source ${ENV_FILE} \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
 
@@ -34,7 +34,7 @@ COPY libs ./libs
 COPY tools/tests ./tools/tests
 
 # dump git information
-RUN export $(cat ${ENV_FILE}) \
+RUN source ${ENV_FILE} \
   && echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
@@ -55,7 +55,7 @@ WORKDIR /app
 RUN apk add curl
 ARG ENV_FILE
 COPY ${ENV_FILE} .
-RUN export $(cat ${ENV_FILE}) \
+RUN source ${ENV_FILE} \
   && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
   && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
 COPY package.json ./

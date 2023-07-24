@@ -10,7 +10,8 @@ import {
   getServiceRoutePath,
   NetworkSegmentationUrls,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -18,7 +19,7 @@ import {
   screen, within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockNsgStatsList, mockVenueData } from '../__tests__/fixtures'
+import { mockEdgeData, mockedNetworkOptions, mockedSwitchOptions, mockNsgStatsList, mockVenueData } from '../__tests__/fixtures'
 
 import NetworkSegmentationTable from '.'
 
@@ -64,6 +65,14 @@ describe('NetworkSegmentationList', () => {
       rest.delete(
         NetworkSegmentationUrls.deleteNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockedNetworkOptions))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json(mockedSwitchOptions))
       )
     )
   })

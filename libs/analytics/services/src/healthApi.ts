@@ -42,7 +42,7 @@ export type KpiPayload = AnalyticsFilter & {
   kpi: string;
   threshold?: string;
   granularity?: string;
-}
+} & { apCount?: number }
 
 type ConfigCode = keyof typeof kpiConfig
 
@@ -76,10 +76,10 @@ const getKPIMetric = (kpi: string, threshold?: string) : string => {
     : apiMetric
 }
 
-const getGranularity = (start: string, end: string, kpi: string) => {
+const getGranularity = (start: string, end: string, kpi: string, apCount: number) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { timeseries: { minGranularity } } = config
-  return calculateGranularity(start, end, minGranularity)
+  return calculateGranularity(start, end, minGranularity, apCount)
 }
 const getHistogramQuery = (kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
@@ -111,7 +111,14 @@ interface ThresholdsApiResponse {
   switchPoeUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
 }
-
+interface APCountForNode {
+  apCount?: number
+}
+interface APCountResponse <APCountForNode> {
+  network: {
+    node: APCountForNode
+  }
+}
 type KpisHavingThreshold = keyof KpiThresholdType
 
 export type KpiThresholsPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
@@ -145,7 +152,7 @@ export const healthApi = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.granularity ||
-          getGranularity(payload.startDate, payload.endDate, payload.kpi),
+          getGranularity(payload.startDate, payload.endDate, payload.kpi, payload.apCount ?? 0),
           ...getHealthFilter(payload)
         }
       }),
@@ -232,6 +239,27 @@ export const healthApi = dataApi.injectEndpoints({
         }
       }
       )
+    }),
+    apCountForNode: build.query<APCountResponse<APCountForNode>, Omit<KpiPayload, 'kpi'>>({
+      query: (payload) => ({
+        document: gql`
+        query APCountForNode(
+          $path: [HierarchyNodeInput], $startDate: DateTime,
+          $endDate: DateTime, $filter: FilterInput
+        ){
+          network(start: $startDate, end: $endDate, filter: $filter) {
+            node: hierarchyNode(path:$path) {
+              apCount
+            }
+          }
+        }
+      `,
+        variables: {
+          ...payload,
+          ...getFilterPayload(payload)
+        }
+      })
     })
   })
 })
+export const { useApCountForNodeQuery } = healthApi

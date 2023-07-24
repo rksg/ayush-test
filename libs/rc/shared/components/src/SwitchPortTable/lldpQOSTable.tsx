@@ -5,7 +5,7 @@ import { useIntl }           from 'react-intl'
 
 import { Table, TableProps }                         from '@acx-ui/components'
 import { LldpQosModel, QOS_APP_Type, QOS_VLAN_Type } from '@acx-ui/rc/utils'
-import { filterByAccess }                            from '@acx-ui/user'
+import { filterByAccess, hasAccess }                 from '@acx-ui/user'
 
 import { EditLldpModal } from './editLldpModal'
 
@@ -94,7 +94,7 @@ export function LldpQOSTable (props : {
       rowActions={filterByAccess(rowActions)}
       pagination={false}
       rowKey='id'
-      rowSelection={{
+      rowSelection={hasAccess() && {
         type: 'radio',
         alwaysShowAlert: true
       }}

@@ -4,7 +4,7 @@ import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/com
 import { useDeleteProfilesMutation, useGetProfilesQuery }      from '@acx-ui/rc/services'
 import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
@@ -89,7 +89,7 @@ export function ProfilesTab () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Regular Profile' }),
           onClick: () => navigate(`${linkToProfiles.pathname}/add`)
