@@ -53,7 +53,7 @@ const mockSummary = {
 describe('DpskSummaryForm', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(DpskUrls.getDpskList.url,
+      rest.get(DpskUrls.getDpskList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(dpskListResponse)))
     )
   })
