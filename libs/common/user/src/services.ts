@@ -11,8 +11,7 @@ import {
   PlmMessageBanner,
   UserSettings,
   UserProfile,
-  UserSettingsUIModel,
-  BetaStatus
+  UserSettingsUIModel
 } from './types'
 
 export const UserUrlsInfo = {
@@ -121,14 +120,6 @@ export const UserUrlsInfo = {
   disableMFAMethod: {
     method: 'put',
     url: '/mfa/auth-method/:mfaMethod/disable'
-  },
-  getBetaStatus: {
-    method: 'get',
-    url: '/tenants/betaStatus'
-  },
-  toggleBetaStatus: {
-    method: 'put',
-    url: '/tenants/betaStatus/:enable'
   }
 }
 
@@ -153,9 +144,7 @@ export const {
   useMfaRegisterAdminMutation,
   useMfaRegisterPhoneQuery,
   useMfaResendOTPMutation,
-  useDisableMFAMethodMutation,
-  useGetBetaStatusQuery,
-  useToggleBetaStatusMutation
+  useDisableMFAMethodMutation
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -276,12 +265,6 @@ export const {
         body: payload
       }),
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
-    }),
-    getBetaStatus: build.query<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params)
-    }),
-    toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
     })
   })
 })

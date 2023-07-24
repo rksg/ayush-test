@@ -44,6 +44,15 @@ const networkDetailHeaderData = {
 
 jest.mock('socket.io-client')
 
+const mockedVenuesResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'v1',
+    name: 'My Venue'
+  }]
+}
+
 describe('NetworkDetails', () => {
   beforeEach(() => {
     mockServer.use(
@@ -54,6 +63,10 @@ describe('NetworkDetails', () => {
       rest.get(
         CommonUrlsInfo.getNetworksDetailHeader.url,
         (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenuesResult))
       )
     )
   })

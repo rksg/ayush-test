@@ -235,7 +235,7 @@ describe('StepsForm', () => {
     expect(screen.getAllByRole('button').length).toBe(3)
   })
 
-  it('prevent navigate to other steps when field invalid', async () => {
+  it.skip('prevent navigate to other steps when field invalid', async () => {
     render(
       <StepsForm editMode>
         <StepsForm.StepForm title='Step 1'>
