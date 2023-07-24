@@ -42,7 +42,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
     vertical: jwtPayload?.acx_account_vertical,
     tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
-    isBetaFlag: betaEnabled?? jwtPayload?.isBetaFlag
+    isBetaFlag: betaEnabled? betaEnabled : jwtPayload?.isBetaFlag
   })[Features.PLM_FF]
 
   const userFFConfig = useMemo(() => {
@@ -58,7 +58,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   return {
     featureList: userFFConfig[featureKey],
-    betaList: (betaEnabled?? jwtPayload?.isBetaFlag) ? userFFConfig['betaList'] : []
+    betaList: (betaEnabled? betaEnabled : jwtPayload?.isBetaFlag) ? userFFConfig['betaList'] : []
   }
 }
 
