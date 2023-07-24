@@ -29,7 +29,6 @@ import {
   UploadUrlResponse
 } from '@acx-ui/rc/utils'
 
-// import { loadImageWithJWT } from '@acx-ui/utils'
 import { reloadAuthTable } from '../AppTokenFormItem'
 
 import * as UI from './styledComponents'
@@ -54,6 +53,9 @@ interface ImportFileDrawerProps extends DrawerProps {
 const fileTypeMap: Record<AcceptableType, string[]>= {
   xml: ['text/xml']
 }
+
+// eslint-disable-next-line max-len
+const regexUrl = new RegExp (/^(http|https):\/\/[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](\.[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])+(:[1-9][0-9]{1,4})?((\/?)|(\/([a-zA-Z0-9~_.-]|(%[0-9]{2}))*)*)((\?|#).*)?$/)
 
 export const getFileExtension = function (fileName: string) {
   // eslint-disable-next-line max-len
@@ -91,21 +93,11 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     setFormData(undefined)
     setFileDescription('')
     setUploadFile(isEditMode)
-    // const fetchMetaData = async () => {
-    //   const url = await loadImageWithJWT(editData?.samlFileURL as string)
-    //   await fetch(url)
-    //     .then((response) => response.text())
-    //     .then((text) => {
-    //       setMetadata(text)
-    //     })
-    // }
     if (isEditMode) {
       const editFile = {
         uid: editData?.samlFileURL,
         name: editData?.name,
         fileName: editData?.name
-        // url: fileUrl,
-        // status: 'done'
       } as UploadFile
       setFile(editFile)
       setFileDescription(<Typography.Text><FileTextOutlined /> {editData?.name} </Typography.Text>)
@@ -183,35 +175,40 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
 
   const okHandler = async () => {
     try {
+      let fileURL
+      let fileType = SamlFileType.file
+      let directUrlPath = ''
       const metadataFile = new Blob([metadata ?? ''], { type: 'text/xml' }) as unknown as UploadFile
       metadataFile.name = 'mysaml.xml'
 
-      const fileURL = uploadFile && file ? await getFileUploadURL(file)
-        : !uploadFile ? await getFileUploadURL(metadataFile)
-          : undefined
-      // if (!(fileURL && fileURL.data && fileURL.data.fileId) && !metadata) {
-      //   throw 'Error uploading file'
-      // }
-      if (!fileURL) {
-        throw 'Error uploading file'
+      if (metadata && regexUrl.test(metadata)) {
+        directUrlPath = metadata
+        fileType = SamlFileType.direct_url
+      } else {
+        fileURL = uploadFile && file ? await getFileUploadURL(file)
+          : !uploadFile ? await getFileUploadURL(metadataFile)
+            : undefined
+        if (!fileURL) {
+          throw 'Error uploading file'
+        }
       }
 
       if(isEditMode) {
         const ssoEditData: TenantAuthentications = {
-          name: fileURL.fileName,
+          name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
-          samlFileType: SamlFileType.file,
-          samlFileURL: fileURL.data.fileId
+          samlFileType: fileType,
+          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
         }
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
         reloadAuthTable(2)
       } else {
         const ssoData: TenantAuthentications = {
-          name: fileURL.fileName,
+          name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
-          samlFileType: SamlFileType.file,
-          samlFileURL: fileURL.data.fileId
+          samlFileType: fileType,
+          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
         }
         await addSso({ payload: ssoData }).unwrap()
         reloadAuthTable(2)
@@ -253,11 +250,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       onClick={() => { setUploadFile(true) }}>
       {$t({ defaultMessage: 'Upload file instead' })}
     </Button>}
-    {!uploadFile && <Form.Item
-      // rules={[
-      //   { validator: (_, value) => xmlRegExp(value) }
-      // ]}
-    >
+    {!uploadFile && <Form.Item>
       <TextArea
         value={metadata}
         onChange={e => onMetadataChange(e.target.value)}
