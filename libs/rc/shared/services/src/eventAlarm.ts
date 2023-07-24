@@ -28,7 +28,7 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
 
         const metaListInfo = getMetaList<AlarmBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getAlarmsListMeta, arg.params),
-          fields: ['venueName', 'apName', 'switchName']
+          fields: ['venueName', 'apName', 'switchName', 'edgeName']
         })
         const metaListQuery = await fetchWithBQ(metaListInfo)
         const metaList = metaListQuery.data as TableResult<AlarmMeta>

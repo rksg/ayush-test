@@ -8,7 +8,7 @@ import { Loader, Button, Drawer, Table, TableProps }                       from 
 import { APStatus, seriesMappingAP }                                       from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                  from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                       from '@acx-ui/user'
 
 export interface SimpleApRecord {
   serialNumber: string;
@@ -195,7 +195,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
         rowActions={filterByAccess(rowActions)}
         dataSource={tableData}
         rowKey='serialNumber'
-        rowSelection={{ type: 'checkbox', selectedRowKeys }}
+        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}

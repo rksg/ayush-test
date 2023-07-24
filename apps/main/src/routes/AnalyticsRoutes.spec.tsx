@@ -11,7 +11,7 @@ import { mockGraphqlQuery, render, screen, waitFor, fireEvent } from '@acx-ui/te
 import { RolesEnum }                                            from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                       from '@acx-ui/user'
 
-import AnalyticsRoutes from './Routes'
+import AnalyticsRoutes from './AnalyticsRoutes'
 
 export const fetchServiceGuardSpec = {
   serviceGuardSpec: {

@@ -24,7 +24,7 @@ import {
   QosPriorityEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 
@@ -170,7 +170,7 @@ export default function WifiCallingTable () {
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
         />
       </Loader>
     </>
