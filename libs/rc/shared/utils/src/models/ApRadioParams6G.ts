@@ -1,4 +1,5 @@
 import { BssMinRate6GEnum }       from './BssMinRate6GEnum'
+import { Channel320MHzGroupEnum } from './Channel320MHzGroupEnum'
 import { Channel6GEnum }          from './Channel6GEnum'
 import { ChannelBandwidth6GEnum } from './ChannelBandwidth6GEnum'
 import { MgmtTxRate6GEnum }       from './MgmtTxRate6GEnum'
@@ -23,6 +24,8 @@ export class ApRadioParams6G {
   allowedChannels?: Channel6GEnum[]
 
   channelBandwidth: ChannelBandwidth6GEnum
+
+  channelBandwidth320MhzGroup?: Channel320MHzGroupEnum
 
   // BSS (Basic Service Set) minimum PHY rate for 6-GHz radio.
 
@@ -50,5 +53,7 @@ export class ApRadioParams6G {
     this.changeInterval = 33
 
     this.txPower = TxPowerEnum.MAX
+
+    this.channelBandwidth320MhzGroup = Channel320MHzGroupEnum.AUTO
   }
 }

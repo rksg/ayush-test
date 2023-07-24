@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, MacRegistration, MacRegistrationPool, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                           from '@acx-ui/user'
 
 import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
@@ -246,7 +246,7 @@ export function MacRegistrationsTab () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
