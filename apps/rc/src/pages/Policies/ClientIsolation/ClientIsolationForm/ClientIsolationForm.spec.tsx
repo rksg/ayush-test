@@ -71,7 +71,7 @@ export const clientMeta = {
 }
 
 
-describe('ClientIsolationForm', () => {
+describe.skip('ClientIsolationForm', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(

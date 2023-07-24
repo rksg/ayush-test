@@ -7,8 +7,8 @@ import { Provider  }                               from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
-  waitForElementToBeRemoved,
-  fireEvent } from '@acx-ui/test-utils'
+  fireEvent,
+  waitFor } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
 import { switchDetail, stackDetailData } from './__tests__/fixtures'
@@ -75,39 +75,43 @@ const filters:AnalyticsFilter = {
   path: [{ type: 'AP', name: '28:B3:71:28:6C:10' }],
   range: DateRange.last24Hours
 }
+
 describe('Switch Information Widget', () => {
+  const requestMetasSpy = jest.fn()
   beforeEach(() => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({})))
-    )
-  })
-
-  it('should render alarms chart correctly', async () => {
-    mockServer.use(
+        (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (_, res, ctx) => res(ctx.json(alarmList))
       ),
       rest.post(
         CommonUrlsInfo.getAlarmsListMeta.url,
-        (_, res, ctx) => res(ctx.json(alarmListMeta))
+        (_, res, ctx) => {
+          requestMetasSpy()
+          return res(ctx.json(alarmListMeta))}
       )
     )
+  })
+  afterEach(() => {
+    requestMetasSpy.mockClear()
+  })
 
+  it('should render alarms chart correctly', async () => {
     render(
       <Provider>
         <SwitchInfoWidget switchDetail={switchDetail as unknown as SwitchViewModel} filters={filters}/>
       </Provider>,
       { route: { params } }
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
     await screen.findByText('Alarms')
   })
 
   it('should render "No active alarms" when no alarms exist', async () => {
+    const requestEmptyMetasSpy = jest.fn()
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
@@ -115,71 +119,54 @@ describe('Switch Information Widget', () => {
       ),
       rest.post(
         CommonUrlsInfo.getAlarmsListMeta.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
+        (req, res, ctx) => {
+          requestEmptyMetasSpy()
+          return res(ctx.json({ data: [] }))
+        }
       )
     )
-
     render(
       <Provider>
         <SwitchInfoWidget switchDetail={switchDetail as unknown as SwitchViewModel} filters={filters}/>
       </Provider>,
       { route: { params } }
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(requestEmptyMetasSpy).toHaveBeenCalledTimes(1))
     expect(await screen.findByText('No active alarms')).toBeVisible()
   })
 
   it('should render switch drawer correctly', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getAlarmsList.url,
-        (_, res, ctx) => res(ctx.json(alarmList))
-      ),
-      rest.post(
-        CommonUrlsInfo.getAlarmsListMeta.url,
-        (_, res, ctx) => res(ctx.json(alarmListMeta))
-      )
-    )
-
     render(
       <Provider>
         <SwitchInfoWidget switchDetail={switchDetail as unknown as SwitchViewModel} filters={filters}/>
       </Provider>,
       { route: { params } }
     )
+    await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
     fireEvent.click(screen.getByText('More Details'))
     expect(screen.getByText('Switch Details')).toBeVisible()
     expect(await screen.findByText('FMF2249Q0JT')).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })
     fireEvent.click(button)
   })
-})
 
-it('should render stack drawer correctly', async () => {
-  mockServer.use(
-    rest.post(
-      CommonUrlsInfo.getAlarmsList.url,
-      (_, res, ctx) => res(ctx.json(alarmList))
-    ),
-    rest.post(
-      CommonUrlsInfo.getAlarmsListMeta.url,
-      (_, res, ctx) => res(ctx.json(alarmListMeta))
+
+  it('should render stack drawer correctly', async () => {
+    render(
+      <Provider>
+        <SwitchInfoWidget switchDetail={stackDetailData as unknown as SwitchViewModel} filters={filters} />
+      </Provider>,
+      { route: { params } }
     )
-  )
-
-  render(
-    <Provider>
-      <SwitchInfoWidget switchDetail={stackDetailData as unknown as SwitchViewModel} filters={filters}/>
-    </Provider>,
-    { route: { params } }
-  )
-  fireEvent.click(screen.getByText('More Details'))
-  expect(screen.getByText('Stack Details')).toBeVisible()
-  expect(await screen.findByText('FEK4224R19X')).toBeVisible()
-  const button = screen.getByRole('button', { name: /close/i })
-  fireEvent.click(button)
+    await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
+    fireEvent.click(screen.getByText('More Details'))
+    expect(screen.getByText('Stack Details')).toBeVisible()
+    expect(await screen.findByText('FEK4224R19X')).toBeVisible()
+    const button = screen.getByRole('button', { name: /close/i })
+    fireEvent.click(button)
+  })
 })
+
 
 describe('getChartData', () => {
   it('should return correct formatted data', async () => {
