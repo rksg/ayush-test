@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps } from '@acx-ui/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
 import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                       from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                            from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                                                 from '@acx-ui/user'
 
 import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
 import * as UI                from '../styledComponents'
@@ -155,7 +155,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
               onChange={tableQuery.handleTableChange}
               columns={columns}
               rowActions={filterByAccess(rowActions)}
-              rowSelection={{
+              rowSelection={hasAccess() && {
                 type: 'radio',
                 selectedRowKeys: selectedRows,
                 onChange: (key: Key[]) => {
