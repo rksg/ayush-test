@@ -17,8 +17,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { GoogleMapWithPreference }                        from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -27,7 +27,8 @@ import {
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
-  useWifiCapabilitiesQuery, useGetVenueVersionListQuery
+  useWifiCapabilitiesQuery,
+  useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -55,7 +56,7 @@ import {
   useTenantLink,
   useParams, TenantLink
 } from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { compareVersions, validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
@@ -150,16 +151,7 @@ export function ApForm () {
 
   const checkBelowFwVersion = (version: string) => {
     if (version === '-') return false
-
-    const baseVersion = BASE_VERSION.split('.').map(Number)
-    const compareVersion = version.split('.').map(Number)
-    for (let i = 0; i < baseVersion.length; i++) {
-      if (compareVersion[i] > baseVersion[i])
-        return false
-      if (baseVersion[i] > compareVersion[i])
-        return true
-    }
-    return false
+    return compareVersions(version, BASE_VERSION) < 0
   }
 
   useEffect(() => {

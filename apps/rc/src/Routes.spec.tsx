@@ -842,7 +842,6 @@ describe('RcRoutes: Policies', () => {
       }
     })
     expect(screen.getByTestId('RogueAPDetectionTable')).toBeVisible()
-    // expect(await screen.findByRole('heading', { level: 1, name: 'Rogue AP Detection' })).toBeVisible()
   })
 
   test('should navigate to Syslog Server table', async () => {
