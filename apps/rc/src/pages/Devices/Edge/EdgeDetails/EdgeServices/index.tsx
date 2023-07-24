@@ -105,7 +105,7 @@ export const EdgeServices = () => {
     }
   ]
 
-  const isRemovable = (selectedRows: EdgeService[]) => {
+  const isRemoveBtnDisable = (selectedRows: EdgeService[]) => {
     let isDhcpSelected = selectedRows
       .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.DHCP)
       .length > 0
@@ -124,8 +124,8 @@ export const EdgeServices = () => {
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
-      disabled: isRemovable,
-      tooltip: (selectedRows) => isRemovable(selectedRows)
+      disabled: isRemoveBtnDisable,
+      tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
         ? $t({ defaultMessage: 'DHCP cannot be removed when the Network Segmentation is applied on the Edge' }
         ) : undefined,
