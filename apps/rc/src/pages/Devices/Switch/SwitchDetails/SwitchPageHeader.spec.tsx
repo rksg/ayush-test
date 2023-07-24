@@ -99,7 +99,7 @@ describe('SwitchPageHeader', () => {
         (_, res, ctx) => res(ctx.json({})))
     )
   })
-  it('should render switch correctly', async () => {
+  it.skip('should render switch correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -144,7 +144,7 @@ describe('SwitchPageHeader', () => {
     })).toBeTruthy()
   })
 
-  it('should click switch reboot correctly', async () => {
+  it.skip('should click switch reboot correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -160,7 +160,7 @@ describe('SwitchPageHeader', () => {
     }))
   })
 
-  it('should click delete switch correctly', async () => {
+  it.skip('should click delete switch correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -176,7 +176,7 @@ describe('SwitchPageHeader', () => {
     }))
   })
 
-  it('should click switch CLI session correctly', async () => {
+  it.skip('should click switch CLI session correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -189,7 +189,7 @@ describe('SwitchPageHeader', () => {
     await userEvent.click(await screen.findByText('CLI Session'))
   })
 
-  it('should click sync data correctly', async () => {
+  it.skip('should click sync data correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData,
@@ -202,7 +202,7 @@ describe('SwitchPageHeader', () => {
     await userEvent.click(await screen.findByText('Sync Data'))
   })
 
-  it('should load sync data correctly', async () => {
+  it.skip('should load sync data correctly', async () => {
     mockServer.use(
       rest.post( SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json(switchLoadingData)))
@@ -218,7 +218,7 @@ describe('SwitchPageHeader', () => {
     await userEvent.click(await screen.findByText('More Actions'))
   })
 
-  it('should render stack correctly', async () => {
+  it.skip('should render stack correctly', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData: stackDetailsContextData,

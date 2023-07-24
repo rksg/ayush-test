@@ -7,6 +7,8 @@ import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from
 
 import { ClientDualTable } from './index'
 
+window.scrollTo = jest.fn()
+
 describe('ClientDualTable', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.USERS
   const params = {
@@ -35,6 +37,14 @@ describe('ClientDualTable', () => {
       rest.post(
         CommonUrlsInfo.getEventListMeta.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -55,13 +65,19 @@ describe('ClientDualTable', () => {
       route: { params, path: '/t/:tenantId/venues/:venueId/venue-details/clients' }
     })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     const input =
       await screen.findByPlaceholderText('Search for connected and historical clients...')
 
-    input.focus()
     fireEvent.change(input, { target: { value: 'a' } })
     fireEvent.change(input, { target: { value: 'aa' } })
 
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
     expect(await screen.findByText('Search Results', { exact: false })).toBeVisible()
+    expect(await screen.findByRole('link', { name: /0 Historical clients/i })).toBeVisible()
+
+    fireEvent.click(await screen.findByRole('link', { name: /0 Historical clients/i }))
   })
 })
