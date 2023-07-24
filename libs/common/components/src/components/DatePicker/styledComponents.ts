@@ -156,7 +156,7 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
     }
     > .ant-picker-suffix {
       position: absolute;
-      left: 3px;
+      left: 5px;
       width: 18px;
     }
     .ant-picker-active-bar {
