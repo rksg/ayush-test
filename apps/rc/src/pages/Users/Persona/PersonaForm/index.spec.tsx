@@ -31,6 +31,7 @@ const mockPersonaGroup = {
 }
 
 describe('Persona Form', () => {
+  const metaRequestSpy = jest.fn()
   it('should add devices', async () => {
     mockServer.use(
       rest.post(
@@ -44,6 +45,13 @@ describe('Persona Form', () => {
           venueName: 'UI-TEST-VENUE',
           apName: 'UI team ONLY'
         }] }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (req, res, ctx) => {
+          metaRequestSpy()
+          return res(ctx.json({ data: [] }))
+        }
       )
     )
     render(
@@ -56,6 +64,8 @@ describe('Persona Form', () => {
         />
       </Provider>
     )
+
+    await waitFor(() => expect(metaRequestSpy).toHaveBeenCalledTimes(1))
 
     const mode = await screen.findByRole('radio', { name: /Add manually/i })
     fireEvent.click(mode)
