@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { useEffect } from 'react'
+
 import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
 import { useIntl }                                            from 'react-intl'
@@ -75,6 +77,13 @@ export function RadioSettingsForm (props:{
     useWatch<boolean>(enableDownloadLimitFieldName),
     useWatch<string>(['radioParams6G', 'channelBandwidth'])
   ]
+
+  useEffect(() => {
+    form.setFieldValue(enableMulticastRateLimitingFieldName,
+      form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
+
+  }, [enableMulticastRateLimitingFieldName, enableUploadLimitFieldName, enableDownloadLimitFieldName, form] )
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {

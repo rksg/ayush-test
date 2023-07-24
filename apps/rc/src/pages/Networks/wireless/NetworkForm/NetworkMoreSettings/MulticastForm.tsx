@@ -1,7 +1,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable max-len */
 
-import { ReactNode, CSSProperties } from 'react'
+import { ReactNode, CSSProperties, useEffect } from 'react'
 
 import {
   Checkbox,
@@ -41,6 +41,11 @@ export function MulticastForm () {
 
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
+
+  useEffect(() => {
+    form.setFieldValue(enableMulticastRateLimitingFieldName,
+      form.getFieldValue(enableMulticastUpLimitFieldName) || form.getFieldValue(enableMulticastDownLimitFieldName))
+  }, [enableMulticastDownLimitFieldName, enableMulticastRateLimitingFieldName, enableMulticastUpLimitFieldName, form] )
 
   const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
   const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
