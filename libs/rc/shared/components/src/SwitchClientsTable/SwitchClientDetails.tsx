@@ -56,6 +56,10 @@ export function SwitchClientDetails () {
       ['clientType', $t({ defaultMessage: 'Device Type' })],
       (isDhcpClientsEnabled
         ? ['dhcpClientModelName', $t({ defaultMessage: 'Model Name' })] : ['', '']),
+      (isDhcpClientsEnabled
+        ? ['dhcpClientHostName', $t({ defaultMessage: 'Hostname' })] : ['', '']),
+      (isDhcpClientsEnabled
+        ? ['dhcpClientDeviceTypeName', $t({ defaultMessage: 'Device Type' })] : ['', '']),
       ['clientName', $t({ defaultMessage: 'Hostname' })],
       ['switchName', $t({ defaultMessage: 'Switch Name' })],
       ['venueName', $t({ defaultMessage: 'Venue Name' })],
@@ -176,7 +180,7 @@ export function SwitchClientDetails () {
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
-        title={data?.clientName}
+        title={data?.dhcpClientHostName || data?.clientName}
         breadcrumb={isNavbarEnhanced ? [
           { text: $t({ defaultMessage: 'Clients' }) },
           { text: $t({ defaultMessage: 'Wired' }) },
