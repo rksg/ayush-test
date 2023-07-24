@@ -86,7 +86,7 @@ export function PersonaGroupForm (props: {
             <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
           </Col>
           <Col span={21}>
-            <Form.Item label={'DPSK Service'} required>
+            <Form.Item label={'DPSK Pool'} required>
               <Form.Item
                 name='dpskPoolId'
                 children={
@@ -107,7 +107,7 @@ export function PersonaGroupForm (props: {
                 rules={
                   [{
                     required: true,
-                    message: $t({ defaultMessage: 'Please select a DPSK Service' })
+                    message: $t({ defaultMessage: 'Please select a DPSK pool' })
                   }]
                 }
               />

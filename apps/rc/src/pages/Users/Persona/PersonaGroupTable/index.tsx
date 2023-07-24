@@ -101,7 +101,7 @@ function useColumns (
     },
     {
       key: 'dpskPoolId',
-      title: $t({ defaultMessage: 'DPSK Service' }),
+      title: $t({ defaultMessage: 'DPSK Pool' }),
       dataIndex: 'dpskPoolId',
       sorter: true,
       filterMultiple: false,
