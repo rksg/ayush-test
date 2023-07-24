@@ -291,9 +291,8 @@ export const intlFormats = {
   scaleFormatRound
 } as const
 
-export function formatter (
-  name: keyof typeof formats | DateFormatEnum | keyof typeof intlFormats
-) {
+export type FormatterType = keyof typeof formats | DateFormatEnum | keyof typeof intlFormats
+export function formatter (name: FormatterType) {
   return function formatter (value: unknown, tz?: string): string {
     const intl = getIntl()
     if (value === null || value === noDataDisplay) {
@@ -328,4 +327,3 @@ function isDateTimeFormat (name: string): name is keyof typeof dateTimeFormats {
 function isFormat (name: string): name is keyof typeof formats {
   return name in formats
 }
-
