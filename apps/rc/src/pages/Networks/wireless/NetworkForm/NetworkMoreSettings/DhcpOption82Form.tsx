@@ -60,19 +60,6 @@ const dhcpOption82SubOption150EnabledFieldName =
 const dhcpOption82SubOption151EnabledFieldName =
   ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled']
 
-const dhcpOption82SubOption1TooltipContent = (
-  <div><p>Agent Circuit ID</p></div>
-)
-const dhcpOption82SubOption2TooltipContent = (
-  <div><p>Agent Remote ID</p></div>
-)
-const dhcpOption82SubOption150TooltipContent = (
-  <div><p>DHCPv4 Virtual Subnet Selection</p></div>
-)
-const dhcpOption82SubOption151TooltipContent = (
-  <div><p>DHCPv4 Virtual Subnet Selection Control</p></div>
-)
-
 
 export function DhcpOption82Form () {
   const { $t } = useIntl()
@@ -102,6 +89,13 @@ export function DhcpOption82Form () {
       form.setFieldValue(dhcpOption82SubOption1EnabledFieldName, true)
     }
   }
+
+  const dhcpOption82SubOption1TooltipContent = $t({ defaultMessage: 'Agent Circuit ID' })
+  const dhcpOption82SubOption2TooltipContent = $t({ defaultMessage: 'Agent Remote ID' })
+  const dhcpOption82SubOption150TooltipContent =
+      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection' })
+  const dhcpOption82SubOption151TooltipContent =
+      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection Control' })
 
   return (
     <FieldsetItem

@@ -178,12 +178,9 @@ export function MoreSettingsForm (props: {
       </ul>
     </div>
   )
-  const agileMultibandTooltipContent = (
-    <div>
-      <p>Agile Multiband prioritizes roaming performance in indoor environments,
-          supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.</p>
-    </div>
-  )
+  const agileMultibandTooltipContent = $t({ defaultMessage:
+      `Agile Multiband prioritizes roaming performance in indoor environments,
+       supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -715,7 +712,7 @@ export function MoreSettingsForm (props: {
             }]}
             style={{ marginBottom: '15px', width: '300px' }}
             // eslint-disable-next-line max-len
-            tooltip='Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.'
+            tooltip={$t({ defaultMessage: 'Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.' })}
             children={<InputNumber style={{ width: '150px' }} />}
           />
         }
