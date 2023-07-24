@@ -1,6 +1,5 @@
-
-import {Form, Collapse, Checkbox, Tooltip} from 'antd'
-import styled                       from 'styled-components/macro'
+import { Form, Collapse } from 'antd'
+import styled             from 'styled-components/macro'
 
 import { Subtitle }         from '@acx-ui/components'
 import { InformationSolid } from '@acx-ui/icons'
@@ -78,6 +77,4 @@ display: block;
 export const Description = styled.span`
 color: var(--acx-neutrals-50);
 font-size: var(--acx-body-4-font-size);
-`
-export const CheckboxTooltip = styled(Tooltip)`
 `
