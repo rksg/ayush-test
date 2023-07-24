@@ -28,7 +28,7 @@ jest.mock('moment-timezone', () => {
   return {
     __esModule: true,
     ...moment,
-    default: () => moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm')
+    default: () => moment('07-15-2023 14:15', 'MM-DD-YYYY HH:mm')
   }
 })
 
