@@ -18,7 +18,7 @@ import {
   Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
 import Layer3Drawer                        from '../AccessControlForm/Layer3Drawer'
@@ -149,7 +149,7 @@ const Layer3Component = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
       />
     </Form>
   </Loader>

@@ -124,8 +124,10 @@ describe('Administrators table without prime-admin itself', () => {
 
 describe('Administrators Table', () => {
   let params: { tenantId: string }
+  const mockReqAdminsData = jest.fn()
 
   beforeEach(() => {
+    mockReqAdminsData.mockReset()
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
@@ -133,7 +135,10 @@ describe('Administrators Table', () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdministrators.url,
-        (req, res, ctx) => res(ctx.json(fakedAdminLsit))
+        (req, res, ctx) => {
+          mockReqAdminsData()
+          return res(ctx.json(fakedAdminLsit))
+        }
       ),
       rest.delete(
         AdministrationUrlsInfo.deleteAdmin.url,
@@ -174,6 +179,9 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
+    await waitFor(() => {
+      expect(mockReqAdminsData).toBeCalled()
+    })
     await screen.findByRole('row', { name: /dog1551@email.com/i })
     const rows = await screen.findAllByRole('row', { name: /@email.com/i })
     expect(rows.length).toBe(3)
@@ -286,6 +294,9 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
+    await waitFor(() => {
+      expect(mockReqAdminsData).toBeCalled()
+    })
     const row = await screen.findByRole('row', { name: /dog1551@email.com/i })
     expect(within(row).getByRole('checkbox')).toBeDisabled()
   })
@@ -357,6 +368,7 @@ describe('Administrators Table', () => {
 
 describe('Administrators table with MSP-EC FF enabled', () => {
   let params: { tenantId: string }
+  const adminAPIFn = jest.fn()
 
   beforeEach(() => {
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
@@ -368,15 +380,18 @@ describe('Administrators table with MSP-EC FF enabled', () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdministrators.url,
-        (req, res, ctx) => res(ctx.json([
-          {
-            id: '0587cbeb13404f3b9943d21f9e1d1e9e',
-            email: 'efg.cheng@email.com',
-            role: 'PRIME_ADMIN',
-            delegateToAllECs: true,
-            detailLevel: 'debug'
-          }
-        ]))
+        (req, res, ctx) => {
+          adminAPIFn()
+          return res(ctx.json([
+            {
+              id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+              email: 'efg.cheng@email.com',
+              role: 'PRIME_ADMIN',
+              delegateToAllECs: true,
+              detailLevel: 'debug'
+            }
+          ]))
+        }
       ),
       rest.get(
         AdministrationUrlsInfo.getRegisteredUsersList.url,
@@ -419,8 +434,10 @@ describe('Administrators table with MSP-EC FF enabled', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     await waitFor(async () => {
-      expect(await screen.findByRole('row', { name: /efg.cheng@email.com/ })).toBeVisible()
+      expect(adminAPIFn).toBeCalled()
     })
+
+    expect(await screen.findByRole('row', { name: /efg.cheng@email.com/ })).toBeVisible()
 
     const rows = await screen.findAllByRole('row')
     expect(rows.length).toBe(2)

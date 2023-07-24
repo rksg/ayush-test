@@ -21,7 +21,7 @@ import {
 } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, defaultSort, DeviceRule, sortProp } from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                     from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../../constants'
 import { AddModeProps, editModeProps }     from '../AccessControlForm'
@@ -510,7 +510,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       rowKey='ruleName'
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={hasAccess() && { type: 'radio' }}
     />}
   </Form>
 

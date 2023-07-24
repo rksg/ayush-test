@@ -29,7 +29,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
-import { filterByAccess, hasRoles }                                from '@acx-ui/user'
+import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
 
 import { displayDefaultAccess } from '../utils'
 
@@ -130,7 +130,7 @@ export default function DpskTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
