@@ -8,6 +8,14 @@ import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, Password
 import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
 import { CopyOutlined }                                                                 from '@acx-ui/icons'
 import {
+  ConnectionMeteringLink,
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PersonaGroupLink,
+  PropertyUnitLink
+} from '@acx-ui/rc/components'
+import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
   useLazyGetMacRegListQuery,
@@ -22,14 +30,6 @@ import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
-import {
-  ConnectionMeteringLink,
-  DpskPoolLink,
-  MacRegistrationPoolLink,
-  NetworkSegmentationLink,
-  PersonaGroupLink,
-  PropertyUnitLink
-} from '../LinkHelper'
 import { PersonaDrawer }                       from '../PersonaDrawer'
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
