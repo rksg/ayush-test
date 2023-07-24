@@ -7,29 +7,12 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
 import { useIsSplitOn }           from '@acx-ui/feature-toggle'
-import {
-  NetworkSaveData,
-  BasicServiceSetPriorityEnum,
-  OpenWlanAdvancedCustomization } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import { within, render, screen } from '@acx-ui/test-utils'
 
-import { MoreSettingsForm } from './NetworkMoreSettingsForm'
+import { MulticastForm } from './MulticastForm'
 
-const mockWlanData = {
-  name: 'test',
-  type: 'open',
-  isCloudpathEnabled: false,
-  venues: [],
-  wlan: {
-    advancedCustomization: {
-      bssPriority: BasicServiceSetPriorityEnum.LOW
-    } as OpenWlanAdvancedCustomization
-  }
-} as NetworkSaveData
-
-
-describe('NetworkMoreSettingsForm', () => {
+describe('MulticastForm', () => {
 
   it('after click Multicast Rate Limiting', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -38,7 +21,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <MoreSettingsForm wlanData={mockWlanData} />
+          <MulticastForm/>
         </Form>
       </Provider>,
       { route: { params } })

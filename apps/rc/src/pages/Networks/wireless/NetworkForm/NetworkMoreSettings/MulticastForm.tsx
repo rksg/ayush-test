@@ -10,11 +10,10 @@ import {
   Slider,
   FormItemProps
 } from 'antd'
-import { Features }     from 'libs/common/feature-toggle/src/features'
-import { useIsSplitOn } from 'libs/common/feature-toggle/src/useIsSplitOn'
-import { useIntl }      from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Fieldset, Tooltip } from '@acx-ui/components'
+import { Fieldset, Tooltip }      from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 import * as UI from './styledComponents'
 
