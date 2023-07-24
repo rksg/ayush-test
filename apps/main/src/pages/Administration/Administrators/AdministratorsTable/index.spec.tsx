@@ -123,8 +123,10 @@ describe('Administrators table without prime-admin itself', () => {
 
 describe('Administrators Table', () => {
   let params: { tenantId: string }
+  const mockReqAdminsData = jest.fn()
 
   beforeEach(() => {
+    mockReqAdminsData.mockReset()
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
@@ -132,7 +134,10 @@ describe('Administrators Table', () => {
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdministrators.url,
-        (req, res, ctx) => res(ctx.json(fakedAdminLsit))
+        (req, res, ctx) => {
+          mockReqAdminsData()
+          return res(ctx.json(fakedAdminLsit))
+        }
       ),
       rest.delete(
         AdministrationUrlsInfo.deleteAdmin.url,
@@ -173,6 +178,9 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
+    await waitFor(() => {
+      expect(mockReqAdminsData).toBeCalled()
+    })
     await screen.findByRole('row', { name: /dog1551@email.com/i })
     const rows = await screen.findAllByRole('row', { name: /@email.com/i })
     expect(rows.length).toBe(3)
@@ -285,6 +293,9 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
+    await waitFor(() => {
+      expect(mockReqAdminsData).toBeCalled()
+    })
     const row = await screen.findByRole('row', { name: /dog1551@email.com/i })
     expect(within(row).getByRole('checkbox')).toBeDisabled()
   })
