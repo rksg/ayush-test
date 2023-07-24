@@ -47,10 +47,7 @@ This doc is for I18n management for local development
     }
     ```
 
-4. Use `getIntl function` for usage outside of React
-
-    Check the [IncidentTable services -> transformData method](apps/analytics/src/components/IncidentTable/services.ts) for usage outside of React.
-
+4. Use `getIntl function` outside of React
 
 ## Commands & Steps to extract strings & word count for translator
 ```sh
