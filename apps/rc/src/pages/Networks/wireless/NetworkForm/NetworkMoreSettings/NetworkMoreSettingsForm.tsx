@@ -26,6 +26,7 @@ import VLANPoolInstance                                              from '../VL
 
 import { AccessControlForm }  from './AccessControlForm'
 import { LoadControlForm }    from './LoadControlForm'
+import { MulticastForm }      from './MulticastForm'
 import { ServicesForm }       from './ServicesForm'
 import * as UI                from './styledComponents'
 import { UserConnectionForm } from './UserConnectionForm'
@@ -768,6 +769,9 @@ export function MoreSettingsForm (props: {
           />
         </>
         }
+
+        <MulticastForm/>
+
 
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>

@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs, PageHeader }           from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Tabs, PageHeader }                         from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetAdminListQuery,
   useGetDelegationsQuery,
@@ -25,7 +25,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
-  const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
+  const isCloudMoteEnabled = useIsTierAllowed(Features.CLOUDMOTE_BETA)
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const defaultPayload = {

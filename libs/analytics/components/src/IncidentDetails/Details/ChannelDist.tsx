@@ -4,6 +4,7 @@ import { useIntl }    from 'react-intl'
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
 
+import { ChannelConfig }                  from '../ChannelConfig'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
@@ -24,8 +25,6 @@ export const ChannelDist = (incident: Incident) => {
     Attributes.EventStartTime,
     Attributes.EventEndTime
   ]
-
-
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
     TimeSeriesChartTypes.ChannelChangeCount
   ]
@@ -35,11 +34,10 @@ export const ChannelDist = (incident: Incident) => {
     back: { value: 0, unit: 'hours' as unitOfTime.Base }
   }
 
-  // TODO
   const heatMapCharts = [
     'AP DISTRIBUTION BY CHANNEL',
     'ROGUE DISTRIBUTION BY CHANNEL',
-    ...(incident.code === 'p-channeldist-suboptimal-plan-24g') ? [] : ['DFS EVENTS BY CHANNEL']
+    ...incident.code.includes('24g') ? [] : ['DFS EVENTS BY CHANNEL']
   ]
   return (
     <>
@@ -59,12 +57,14 @@ export const ChannelDist = (incident: Incident) => {
           <UI.FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IncidentAttributes incident={incident} visibleFields={attributeList} />
-              CONFIGURATION SECTION TBD
             </div>)}
           </UI.FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
           <Insights incident={incident} />
+        </GridCol>
+        <GridCol col={{ offset: 4, span: 20 }}>
+          <ChannelConfig incident={incident} />
         </GridCol>
         {heatMapCharts.map((heatMap, index) =>
           <GridCol key={index} col={{ offset: 4, span: 20 }}>

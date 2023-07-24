@@ -23,7 +23,7 @@ export interface ChannelBars {
 }
 
 export const channelSelectionMethodsOptions = [
-  { label: defineMessage({ defaultMessage: 'Channel Fly' }), value: 'CHANNELFLY' },
+  { label: defineMessage({ defaultMessage: 'ChannelFly' }), value: 'CHANNELFLY' },
   { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' }
 ]
 
@@ -32,7 +32,7 @@ export const apChannelSelectionMethodsOptions = channelSelectionMethodsOptions.c
 ])
 
 export const apChannelSelectionMethods6GOptions = [
-  { label: defineMessage({ defaultMessage: 'Channel Fly' }), value: 'CHANNELFLY' },
+  { label: defineMessage({ defaultMessage: 'ChannelFly' }), value: 'CHANNELFLY' },
   { label: defineMessage({ defaultMessage: 'Manual channel selection' }), value: 'MANUAL' }
 ]
 
@@ -48,7 +48,8 @@ export const channelBandwidth5GOptions = channelBandwidth24GOptions.concat([
 ])
 
 export const channelBandwidth6GOptions = [
-  ...channelBandwidth5GOptions
+  ...channelBandwidth5GOptions,
+  { label: '320 MHz', value: '320MHz' }
 ]
 
 export const txPowerAdjustment6GOptions = [

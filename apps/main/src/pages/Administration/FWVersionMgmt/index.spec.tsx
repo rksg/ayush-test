@@ -78,6 +78,12 @@ describe('Firmware Version Management', () => {
   })
 
   it('should render correctly', async () => {
+    mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
     render(
       <Provider>
         <UserProfileContext.Provider value={{} as UserProfileContextProps}>
@@ -91,4 +97,45 @@ describe('Firmware Version Management', () => {
     await screen.findByTestId('mocked-SwitchFirmware-table')
   })
 
+  it('should render version banner (Recommended) correctly', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+          <FWVersionMgmt />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
+      })
+    await screen.findByTestId('mocked-ApFirmware-table')
+
+    expect(await screen.findByText(/Latest Version/i)).toBeVisible()
+    expect(await screen.findByText(/6.2.1.103.1580/i)).toBeVisible()
+    expect(await screen.findByText(/Recommended/i)).toBeVisible()
+    expect(await screen.findByText(/12\/16\/2022/i)).toBeVisible()
+  })
+
+  it('should render version banner (critical) correctly', async () => {
+    mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
+        (req, res, ctx) => res(ctx.json([{
+          ...versionLatest,
+          category: 'CRITICAL'
+        }]))
+      )
+    )
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+          <FWVersionMgmt />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
+      })
+    await screen.findByTestId('mocked-ApFirmware-table')
+
+    expect(await screen.findByText(/Latest Version/i)).toBeVisible()
+    expect(await screen.findByText(/6.2.1.103.1580/i)).toBeVisible()
+    expect(await screen.findByText(/Critical/i)).toBeVisible()
+  })
 })

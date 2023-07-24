@@ -24,7 +24,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
+import { filterByAccess, hasAccess }                    from '@acx-ui/user'
 
 import { policyTechnologyLabelMapping, policyTypeLabelMapping } from '../contentsMap'
 
@@ -201,7 +201,7 @@ export default function PoliciesTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
     </>

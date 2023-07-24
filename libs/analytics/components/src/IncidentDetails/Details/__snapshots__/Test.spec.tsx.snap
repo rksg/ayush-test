@@ -3343,7 +3343,6 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
                 </table>
               </div>
             </div>
-            CONFIGURATION SECTION TBD
           </div>
         </div>
         <div
@@ -3371,6 +3370,18 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
       >
         <div
           data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="channelConfig"
         />
       </div>
     </div>
@@ -3895,7 +3906,6 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
                 </table>
               </div>
             </div>
-            CONFIGURATION SECTION TBD
           </div>
         </div>
         <div
@@ -3923,6 +3933,18 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
       >
         <div
           data-testid="insights"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          data-testid="channelConfig"
         />
       </div>
     </div>

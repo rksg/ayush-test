@@ -77,6 +77,10 @@ export function AccessSwitchForm () {
     </Typography.Paragraph>
     <AccessSwitchTable rowActions={rowActions}
       rowSelection={{ type: 'checkbox', selectedRowKeys: selected.map(as=>as.id) }}
+      editHandler={(as)=>{
+        setSelected([as])
+        setOpen(true)
+      }}
       dataSource={accessSwitchData} />
     <Form.Item name='accessSwitchInfos'
       rules={[{
