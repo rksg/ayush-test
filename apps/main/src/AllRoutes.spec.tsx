@@ -38,7 +38,7 @@ jest.mock('@acx-ui/user', () => ({
 jest.mock('./pages/Dashboardv2', () => () => {
   return <div data-testid='dashboard' />
 })
-jest.mock('@analytics/Routes', () => () => {
+jest.mock('./routes/AnalyticsRoutes', () => () => {
   return <div data-testid='analytics' />
 }, { virtual: true })
 jest.mock('@reports/Routes', () => () => {
