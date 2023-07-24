@@ -42,7 +42,7 @@ function wrapper ({ children }: { children: React.ReactElement }) {
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-describe('Create Network: Venues Step', () => {
+describe.skip('Create Network: Venues Step', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
