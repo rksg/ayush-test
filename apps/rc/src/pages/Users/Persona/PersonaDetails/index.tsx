@@ -198,7 +198,7 @@ function PersonaDetails () {
   ]
 
   const netSeg = [
-    { label: $t({ defaultMessage: 'Assigned VNI' }),
+    { label: $t({ defaultMessage: 'Assigned Segment No.' }),
       value: personaDetailsQuery.data?.vni ??
         (vniRetryable ?
           <Space size={'middle'} align={'center'}>
@@ -209,7 +209,7 @@ function PersonaDetails () {
               onClick={allocateVni}
               loading={isVniAllocating}
             >
-              {$t({ defaultMessage: 'Retry VNI' })}
+              {$t({ defaultMessage: 'Retry Segment No.' })}
             </Button>
           </Space> : undefined)
     },

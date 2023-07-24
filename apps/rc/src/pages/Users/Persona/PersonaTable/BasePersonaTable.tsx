@@ -156,7 +156,7 @@ function useColumns (
     {
       key: 'vni',
       dataIndex: 'vni',
-      title: $t({ defaultMessage: 'VNI' }),
+      title: $t({ defaultMessage: 'Segment No.' }),
       sorter: true,
       ...props.vni
     }
