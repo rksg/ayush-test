@@ -11,7 +11,7 @@ import {
   useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import SyslogContext from '../SyslogContext'
 
@@ -173,7 +173,7 @@ const SyslogVenueTable = () => {
       onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={hasAccess() && { type: 'checkbox' }}
     />
   )
 }

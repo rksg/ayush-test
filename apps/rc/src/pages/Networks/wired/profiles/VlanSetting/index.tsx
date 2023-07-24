@@ -12,8 +12,8 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -202,7 +202,7 @@ export function VlanSetting () {
             columns={vlansColumns}
             rowActions={filterByAccess(rowActions)}
             dataSource={vlanTable}
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'radio',
               selectedRowKeys: selectedRows,
               onChange: (keys: React.Key[]) => {

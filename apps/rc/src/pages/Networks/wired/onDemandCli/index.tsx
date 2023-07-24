@@ -5,7 +5,7 @@ import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useNavigate }                                            from '@acx-ui/react-router-dom'
-import { filterByAccess }                                         from '@acx-ui/user'
+import { filterByAccess, hasAccess }                              from '@acx-ui/user'
 
 import { Notification  } from './styledComponents'
 
@@ -103,7 +103,7 @@ export function OnDemandCliTab () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
           onClick: () => {
