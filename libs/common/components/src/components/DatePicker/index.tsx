@@ -202,7 +202,7 @@ export const DateTimePicker = ({
     setOpen(false)
   }
 
-  return <Tooltip placement='top' title={title}>
+  return <Tooltip placement='right' title={title}>
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker
         className='datepicker'
