@@ -3,10 +3,10 @@ import { rest } from 'msw'
 import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
 
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
-
 
 let split = require('@splitsoftware/splitio-react')
 
@@ -112,6 +112,16 @@ describe('useIsTierAllowed', () => {
         (req, res, ctx) => {
           return res(ctx.json({ data: {
             acx_account_tier: 'Gold'
+          } }))
+        }
+      )
+    )
+
+    mockServer.use(
+      rest.get(UserUrlsInfo.getBetaStatus.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ data: {
+            enabled: true
           } }))
         }
       )
