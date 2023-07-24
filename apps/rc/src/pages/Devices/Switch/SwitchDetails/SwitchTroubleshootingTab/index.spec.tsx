@@ -32,6 +32,23 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./switchIpRouteForm', () => ({
+  SwitchIpRouteForm: () => <div data-testid={'switchIpRouteForm'}></div>
+}))
+
+
+jest.mock('./switchMacAddressForm', () => ({
+  SwitchMacAddressForm: () => <div data-testid={'switchMacAddressForm'}></div>
+}))
+
+jest.mock('./switchPingForm', () => ({
+  SwitchPingForm: () => <div data-testid={'switchPingForm'}></div>
+}))
+
+jest.mock('./switchTraceRouteForm', () => ({
+  SwitchTraceRouteForm: () => <div data-testid={'switchTraceRouteForm'}></div>
+}))
+
 describe('SwitchTroubleshootingTab', () => {
 
   it('should navigate to ping tab correctly', async () => {
@@ -55,7 +72,7 @@ describe('SwitchTroubleshootingTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
       }
     })
-    expect(await screen.findByText('Target host or IP address')).toBeVisible()
+    expect(screen.getByTestId('switchPingForm')).toBeVisible()
   })
 
   it('should navigate to trace route tab correctly', async () => {
@@ -79,7 +96,7 @@ describe('SwitchTroubleshootingTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
       }
     })
-    expect(await screen.findByText('Maximum TTL (Hops)')).toBeVisible()
+    expect(screen.getByTestId('switchTraceRouteForm')).toBeVisible()
   })
 
   it('should navigate to IP Route tab correctly', async () => {
@@ -104,7 +121,7 @@ describe('SwitchTroubleshootingTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
       }
     })
-    expect(await screen.findByText('Show Route')).toBeVisible()
+    expect(screen.getByTestId('switchIpRouteForm')).toBeVisible()
   })
 
   it.skip('should navigate to MAC Address Table tab correctly', async () => {
@@ -128,58 +145,10 @@ describe('SwitchTroubleshootingTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
       }
     })
-    expect(await screen.findByText('Show Table')).toBeVisible()
+
+    expect(screen.getByTestId('switchMacAddressForm')).toBeVisible()
   })
 
-  it('should navigate to IP route correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeSubTab: 'ping'
-    }
-    render(
-      <Provider>
-        <SwitchDetailsContext.Provider value={{
-          switchDetailsContextData,
-          setSwitchDetailsContextData: jest.fn()
-        }}>
-          <SwitchTroubleshootingTab />
-        </SwitchDetailsContext.Provider>
-      </Provider>, {
-        route: {
-          params,
-          // eslint-disable-next-line max-len
-          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
-        }
-      })
-    expect(await screen.findByText('Target host or IP address')).toBeVisible()
-  })
-
-  it('should handle tab changes correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeSubTab: 'ping'
-    }
-    render(<Provider>
-      <SwitchDetailsContext.Provider value={{
-        switchDetailsContextData,
-        setSwitchDetailsContextData: jest.fn()
-      }}>
-        <SwitchTroubleshootingTab />
-      </SwitchDetailsContext.Provider>
-    </Provider>, {
-      route: {
-        params,
-        // eslint-disable-next-line max-len
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
-      }
-    })
-    await waitFor(() => screen.findByText(/Trace Route/))
-    fireEvent.click(await screen.findByText(/Trace Route/))
-  })
 })
 
 
