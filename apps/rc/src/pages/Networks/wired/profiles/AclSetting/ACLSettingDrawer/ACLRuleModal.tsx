@@ -26,7 +26,6 @@ export function ACLRuleModal (props: {
   const [disabledField, setDisabledField] = useState(true)
 
   useEffect(()=>{
-    form.resetFields()
     setSourceSpecific(false)
     setDestinationSpecific(false)
     if (props.open && props.editRecord) {
