@@ -19,7 +19,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
+import { filterByAccess, hasAccess }              from '@acx-ui/user'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
@@ -161,16 +161,16 @@ const EdgeDhcpTable = () => {
       render (data, row) {
         return row.currentVersion || $t({ defaultMessage: 'NA' })
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Tags' }),
-      key: 'tags',
-      dataIndex: 'tags',
-      sorter: true,
-      render (data, row) {
-        return row.tags?.join(',')
-      }
     }
+    // {
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   sorter: true,
+    //   render (data, row) {
+    //     return row.tags?.join(',')
+    //   }
+    // }
   ]
 
   const rowActions: TableProps<DhcpStats>['rowActions'] = [
@@ -262,7 +262,7 @@ const EdgeDhcpTable = () => {
           settingsId='services-edge-dhcp-table'
           rowKey='id'
           columns={columns}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

@@ -19,7 +19,7 @@ import {
   ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
@@ -105,7 +105,7 @@ export default function ClientIsolationTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

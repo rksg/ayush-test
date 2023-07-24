@@ -12,7 +12,7 @@ import {
 import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }                          from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting, VenueMessages } from '@acx-ui/rc/utils'
 import { useParams }                                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                                           from '@acx-ui/user'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
@@ -310,7 +310,9 @@ export const AAAServerTable = (props: {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={cliApplied ? undefined : { type: 'checkbox', onChange: onSelectChange }}
+        rowSelection={cliApplied || !hasAccess()
+          ? undefined
+          : { type: 'checkbox', onChange: onSelectChange }}
       />
     </Loader>
   )

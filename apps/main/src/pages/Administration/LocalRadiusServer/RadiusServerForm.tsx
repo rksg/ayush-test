@@ -9,8 +9,8 @@ import {
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
-import { ClientConfig }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { ClientConfig }              from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -184,7 +184,7 @@ export function RadiusServerForm () {
                 // eslint-disable-next-line max-len
                 dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                 showHeader={false}
-                rowSelection={{ type: 'radio' }}
+                rowSelection={hasAccess() && { type: 'radio' }}
                 rowActions={filterByAccess(ipTableRowActions)}
                 type={'form'}
                 actions={filterByAccess([{

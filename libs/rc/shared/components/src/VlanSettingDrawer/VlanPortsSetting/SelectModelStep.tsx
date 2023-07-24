@@ -369,7 +369,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 required={true}
                 initialValue={family}
                 children={<Radio.Group onChange={onFamilyChange}
-                  // defaultValue={family}
                 >
                   {families.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={editMode}>
@@ -393,7 +392,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 required={true}
                 initialValue={model}
                 children={<Radio.Group onChange={onModelChange}
-                  defaultValue={model}
                 >
                   {models.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={editMode}>

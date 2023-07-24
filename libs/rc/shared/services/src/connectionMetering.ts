@@ -112,5 +112,6 @@ export const {
   useUpdateConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
   useLazySearchConnectionMeteringListQuery,
-  useLazyGetQosStatsQuery
+  useLazyGetQosStatsQuery,
+  useGetQosStatsQuery
 } = connectionMeteringApi
