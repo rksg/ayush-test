@@ -44,9 +44,9 @@ const actionTooltip = {
 }
 
 function getFutureTime (value: Moment) {
-  const bufferedTime = value.add(15, 'minutes')
+  const bufferedTime = value.clone().add(15, 'minutes')
   const remainder = 15 - (bufferedTime.minute() % 15)
-  return moment(bufferedTime.clone()).add(remainder, 'minutes')
+  return bufferedTime.clone().add(remainder, 'minutes')
 }
 
 type ActionButtonProps = Recommendation & {
@@ -66,8 +66,8 @@ function ApplyCalender ({ disabled, type, id, code }: ActionButtonProps) {
     : undefined
 
   const disabledDate = useCallback((value: Moment) =>
-    value.isBefore(moment(futureDate.current.clone()), 'date')
-  || value.isAfter(moment(futureDate.current.clone()).add(1, 'months')), [futureDate])
+    value.isBefore(futureDate.current, 'date')
+  || value.isAfter(futureDate.current.clone().add(1, 'months')), [futureDate])
 
   const disabledHours = useCallback((value: Moment) => {
     const hours = []
