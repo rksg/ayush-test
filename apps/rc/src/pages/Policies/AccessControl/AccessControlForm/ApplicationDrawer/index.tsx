@@ -29,7 +29,7 @@ import {
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY } from '../../constants'
 import { AddModeProps, editModeProps }          from '../AccessControlForm'
@@ -555,7 +555,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       rowKey='ruleName'
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'radio' }}
+      rowSelection={hasAccess() && { type: 'radio' }}
     />}
   </Form>
 
