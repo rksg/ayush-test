@@ -133,7 +133,7 @@ function PersonaGroupDetails () {
       content: detailsQuery.data?.personas?.length ?? 0
     },
     {
-      title: $t({ defaultMessage: 'DPSK Pool' }),
+      title: $t({ defaultMessage: 'DPSK Service' }),
       content:
       <DpskPoolLink
         name={dpskPoolDisplay?.name}
