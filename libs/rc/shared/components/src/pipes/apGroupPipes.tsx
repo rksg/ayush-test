@@ -60,10 +60,10 @@ const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveD
     // if allApgroups is defined and false and more than one apgroup is selected, then display the tooltip
     if (venue.isAllApGroups !== undefined && !venue.isAllApGroups && venue.apGroups && venue.apGroups.length > 1) {
       venue.apGroups.forEach(apGroup => {
-        name.push(<tr><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' : apGroup.apGroupName}</td></tr>)
-        radio.push(<tr><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
+        name.push(<tr key='name'><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' : apGroup.apGroupName}</td></tr>)
+        radio.push(<tr key='radio'><td>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
           apGroup.apGroupName}: </td><td>{apGroup.radioTypes && getRadioDescription(apGroup.radioTypes)}</td></tr>)
-        vlan.push(<tr><td style={{ minWidth: '80px' }}>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
+        vlan.push(<tr key='vlan'><td style={{ minWidth: '80px' }}>{!apGroup.apGroupName && apGroup.isDefault ? 'Unassigned APs' :
           apGroup.apGroupName}: </td><td style={{ minWidth: '150px' }}>{getVlanDescription(apGroup, network)}</td></tr>)
       })
     }
