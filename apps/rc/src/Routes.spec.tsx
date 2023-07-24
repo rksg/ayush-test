@@ -231,9 +231,11 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
   return <div data-testid='MacRegistrationListsTable' />
 })
 
-// jest.mock('./../../../libs/rc/components/src/RogueAPDetectionForm/RogueAPDetectionForm', () => () => {
-//   return <div data-testid='RogueAPDetectionForm' />
-// })
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  RogueAPDetectionForm: () => <div data-testid='RogueAPDetectionForm' />,
+  RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />
+}))
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
   return <div data-testid='RadiusAttributeGroupForm' />
@@ -631,18 +633,17 @@ describe('RcRoutes: Policies', () => {
     expect(screen.getByTestId('MyPolicies')).toBeVisible()
   })
 
-  test.skip('should navigate to create ROGUE_AP_DETECTION page', async () => {
+  test('should navigate to create ROGUE_AP_DETECTION page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
         wrapRoutes: false
       }
     })
-    // FIXME: Please mock it with jest and use "screen.getByTestId"
-    // expect(screen.getByText('Add Rogue AP Detection Policy')).toBeVisible()
+    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
   })
 
-  test.skip('should navigate to edit ROGUE_AP_DETECTION page', async () => {
+  test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
     let path = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })
     path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
@@ -651,8 +652,7 @@ describe('RcRoutes: Policies', () => {
         wrapRoutes: false
       }
     })
-    // FIXME: Please mock it with jest and use "screen.getByTestId"
-    // expect(screen.getByText('Edit Rogue AP Detection Policy')).toBeVisible()
+    expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
   })
 
   test.skip('should navigate to detail SYSLOG page', async () => {
@@ -840,15 +840,14 @@ describe('RcRoutes: Policies', () => {
     // expect(await screen.findByRole('heading', { level: 1, name: 'Client Isolation' })).toBeVisible()
   })
 
-  test.skip('should navigate to Rogue AP Detection table', async () => {
+  test('should navigate to Rogue AP Detection table', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/tenantId/t/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }),
         wrapRoutes: false
       }
     })
-    // FIXME: Please mock it with jest and use "screen.getByTestId"
-    // expect(await screen.findByRole('heading', { level: 1, name: 'Rogue AP Detection' })).toBeVisible()
+    expect(screen.getByTestId('RogueAPDetectionTable')).toBeVisible()
   })
 
   test.skip('should navigate to Syslog Server table', async () => {
