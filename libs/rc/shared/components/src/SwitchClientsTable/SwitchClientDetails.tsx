@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
-import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                   from '@acx-ui/rc/services'
-import { exportCSV, getOsTypeIcon, SwitchClient, SWITCH_CLIENT_TYPE }           from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                       from '@acx-ui/user'
-import { getCurrentDate }                                                       from '@acx-ui/utils'
+import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button }        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                          from '@acx-ui/rc/services'
+import { exportCSV, getOsTypeIcon, getClientIpAddr, SwitchClient, SWITCH_CLIENT_TYPE } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                                       from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                              from '@acx-ui/user'
+import { getCurrentDate }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -122,7 +122,7 @@ export function SwitchClientDetails () {
       title: <span>
         {$t({ defaultMessage: 'Description' })}
       </span>,
-      value: <span>{data?.clientDesc || 'N/A'}</span>
+      value: <span>{data?.clientDesc || '--'}</span>
     },
     ...(isDhcpClientsEnabled ? [{
       title: <span>
@@ -137,7 +137,7 @@ export function SwitchClientDetails () {
       title: <span>
         {$t({ defaultMessage: 'IP Address' })}
       </span>,
-      value: <span>{data?.clientIpv4Addr || '--'}</span>
+      value: <span>{getClientIpAddr(data)}</span>
     }] : []),
     {
       title: <span>

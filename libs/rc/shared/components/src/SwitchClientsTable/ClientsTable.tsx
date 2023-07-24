@@ -8,6 +8,7 @@ import { useGetSwitchClientListQuery }                    from '@acx-ui/rc/servi
 import {
   getOsTypeIcon,
   getDeviceTypeIcon,
+  getClientIpAddr,
   SwitchClient,
   usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
@@ -25,8 +26,9 @@ export const defaultSwitchClientPayload = {
     'venueName', 'switchName', 'clientVlan', 'switchPort'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
     'clientName','clientDesc','clientType','deviceType','switchPort','vlanName',
-    'switchName', 'venueName' ,'cog','id','switchPortFormatted',
-    'dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
+    'switchName', 'venueName' ,'cog','id','switchPortFormatted', 'clientIpv4Addr', 'clientIpv6Addr',
+    'dhcpClientOsVendorName', 'dhcpClientHostName',
+    'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
@@ -72,7 +74,9 @@ export function ClientsTable (props: {
       sorter: true,
       fixed: 'left',
       render: (data, row) => {
-        return <TenantLink to={`users/switch/clients/${row.id}`}>{data || '--'}</TenantLink>
+        return <TenantLink to={`users/switch/clients/${row.id}`}>{
+          row?.dhcpClientHostName || row?.clientName || '--'
+        }</TenantLink>
       }
     }, {
       key: 'dhcpClientOsVendorName',
@@ -102,9 +106,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'clientIpv4Addr',
       sorter: true,
-      render: (data) => {
-        return data || '--'
-      }
+      render: (data, row) => getClientIpAddr(row)
     }, {
       key: 'clientDesc',
       title: intl.$t({ defaultMessage: 'Description' }),
