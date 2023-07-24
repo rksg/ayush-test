@@ -381,14 +381,15 @@ describe('Administrators table with MSP-EC FF enabled', () => {
         AdministrationUrlsInfo.getAdministrators.url,
         (req, res, ctx) => {
           adminAPIFn()
-
-          return res(ctx.json([{
-            id: '0587cbeb13404f3b9943d21f9e1d1e9e',
-            email: 'efg.cheng@email.com',
-            role: 'PRIME_ADMIN',
-            delegateToAllECs: true,
-            detailLevel: 'debug'
-          }]))
+          return res(ctx.json([
+            {
+              id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+              email: 'efg.cheng@email.com',
+              role: 'PRIME_ADMIN',
+              delegateToAllECs: true,
+              detailLevel: 'debug'
+            }
+          ]))
         }
       ),
       rest.get(
