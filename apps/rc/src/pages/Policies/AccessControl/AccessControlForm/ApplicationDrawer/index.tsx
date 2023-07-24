@@ -544,6 +544,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       rules={[
         { validator: () => ruleValidator() }
       ]}
+      children={<></>}
     />
     {isOnlyViewMode && !editMode.isEdit ? <Table
       columns={basicColumns}

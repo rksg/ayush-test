@@ -474,6 +474,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       <Col>
         <Form.Item
           name='ports'
+          data-testid='targetKeysFormItem'
           valuePropName='targetKeys'
           rules={[{
             required: true,
