@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
 
-import {  SWITCH_TYPE }                       from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import {  SWITCH_TYPE }                                   from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { SwitchDetailsContext } from '..'
 
@@ -35,6 +37,19 @@ jest.mock('react-router-dom', () => ({
 describe('SwitchTroubleshootingTab', () => {
 
   it('should navigate to ping tab correctly', async () => {
+    mockServer.use(
+      rest.get(
+        '/switches/switchId/debugRequests/ping',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '373c9ddd-b1ae-46a6-8666-b83aa2e546f7',
+          response: {
+            traceRouteTtl: 0,
+            syncing: false,
+            troubleshootingType: 'ping'
+          }
+        }))
+      )
+    )
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',
@@ -59,6 +74,19 @@ describe('SwitchTroubleshootingTab', () => {
   })
 
   it('should navigate to trace route tab correctly', async () => {
+    mockServer.use(
+      rest.get(
+        '/switches/switchId/debugRequests/trace-route',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '231adbd9-0934-452f-ae59-f8eb20a821c1',
+          response: {
+            traceRouteTtl: 0,
+            syncing: false,
+            troubleshootingType: 'trace-route'
+          }
+        }))
+      )
+    )
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',
@@ -83,6 +111,19 @@ describe('SwitchTroubleshootingTab', () => {
   })
 
   it('should navigate to IP Route tab correctly', async () => {
+    mockServer.use(
+      rest.get(
+        '/switches/switchId/debugRequests/route-table',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '1c22376a-dba6-4414-b527-06094d9a2a04',
+          response: {
+            traceRouteTtl: 0,
+            syncing: false,
+            troubleshootingType: 'route-table'
+          }
+        }))
+      )
+    )
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',
@@ -132,6 +173,30 @@ describe('SwitchTroubleshootingTab', () => {
   })
 
   it('should navigate to IP route correctly', async () => {
+    mockServer.use(
+      rest.get(
+        '/switches/switchId/debugRequests/route-table',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '1c22376a-dba6-4414-b527-06094d9a2a04',
+          response: {
+            traceRouteTtl: 0,
+            syncing: false,
+            troubleshootingType: 'route-table'
+          }
+        }))
+      ),
+      rest.get(
+        '/switches/switchId/debugRequests/ping',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '373c9ddd-b1ae-46a6-8666-b83aa2e546f7',
+          response: {
+            traceRouteTtl: 0,
+            syncing: false,
+            troubleshootingType: 'ping'
+          }
+        }))
+      )
+    )
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',
@@ -157,6 +222,31 @@ describe('SwitchTroubleshootingTab', () => {
   })
 
   it('should handle tab changes correctly', async () => {
+    mockServer.use(
+      rest.get(
+        '/switches/switchId/debugRequests/trace-route',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '231adbd9-0934-452f-ae59-f8eb20a821c1',
+          response: {
+            traceRouteTtl: 0,
+            syncing: false,
+            troubleshootingType: 'trace-route'
+          }
+        }))
+      ),
+      rest.get(
+        '/switches/switchId/debugRequests/ping',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '373c9ddd-b1ae-46a6-8666-b83aa2e546f7',
+          response: {
+            traceRouteTtl: 0,
+            syncing: false,
+            troubleshootingType: 'ping'
+          }
+        }))
+      )
+    )
+
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',

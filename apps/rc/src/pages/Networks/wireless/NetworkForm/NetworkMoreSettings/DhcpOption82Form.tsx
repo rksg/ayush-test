@@ -52,8 +52,19 @@ enum DhcpOption82MacEnum {
   NODELIMITER = 'NODELIMITER',
 }
 
+const dhcpOption82SubOption1EnabledFieldName =
+  ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled']
+const dhcpOption82SubOption2EnabledFieldName =
+  ['wlan','advancedCustomization','dhcpOption82SubOption2Enabled']
+const dhcpOption82SubOption150EnabledFieldName =
+  ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled']
+const dhcpOption82SubOption151EnabledFieldName =
+  ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled']
+
+
 export function DhcpOption82Form () {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const [
     dhcpOption82SubOption1Enabled,
     dhcpOption82SubOption2Enabled,
@@ -61,14 +72,24 @@ export function DhcpOption82Form () {
     dhcpOption82SubOption2Format,
     dhcpOption82SubOption151Format
   ] = [
-    useWatch<boolean>(['wlan','advancedCustomization', 'dhcpOption82SubOption1Enabled']),
-    useWatch<boolean>(['wlan','advancedCustomization', 'dhcpOption82SubOption2Enabled']),
-    useWatch<boolean>(['wlan','advancedCustomization', 'dhcpOption82SubOption151Enabled']),
+    useWatch<boolean>(dhcpOption82SubOption1EnabledFieldName),
+    useWatch<boolean>(dhcpOption82SubOption2EnabledFieldName),
+    useWatch<boolean>(dhcpOption82SubOption151EnabledFieldName),
     useWatch<DhcpOption82SubOption2Enum>
     (['wlan','advancedCustomization', 'dhcpOption82SubOption2Format']),
     useWatch<DhcpOption82SubOption151Enum>
     (['wlan','advancedCustomization', 'dhcpOption82SubOption151Format'])
   ]
+
+  const onChangeDhcpOption82 = (checked: boolean) => {
+    if (checked
+        && !form.getFieldValue(dhcpOption82SubOption1EnabledFieldName)
+        && !form.getFieldValue(dhcpOption82SubOption2EnabledFieldName)
+        && !form.getFieldValue(dhcpOption82SubOption150EnabledFieldName)
+        && !form.getFieldValue(dhcpOption82SubOption151EnabledFieldName)) {
+      form.setFieldValue(dhcpOption82SubOption1EnabledFieldName, true)
+    }
+  }
 
   return (
     <FieldsetItem
@@ -76,13 +97,14 @@ export function DhcpOption82Form () {
       label={$t({ defaultMessage: 'DHCP Option 82' })}
       initialValue={false}
       switchStyle={{ marginLeft: '88px' }}
-      style={{ width: 'max-content', marginLeft: '-8px' }}>
+      style={{ width: 'max-content', marginLeft: '-8px' }}
+      onChange={onChangeDhcpOption82}>
 
       <UI.FieldLabel width='190px'>
         {$t({ defaultMessage: 'Sub-option 1' })}
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px' }}>
           <Form.Item
-            name={['wlan','advancedCustomization','dhcpOption82SubOption1Enabled']}
+            name={dhcpOption82SubOption1EnabledFieldName}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={true}
@@ -132,7 +154,7 @@ export function DhcpOption82Form () {
         {$t({ defaultMessage: 'Sub-option 2' })}
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px auto' }}>
           <Form.Item
-            name={['wlan','advancedCustomization','dhcpOption82SubOption2Enabled']}
+            name={dhcpOption82SubOption2EnabledFieldName}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -178,7 +200,7 @@ export function DhcpOption82Form () {
         {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
         <div>
           <Form.Item
-            name={['wlan','advancedCustomization','dhcpOption82SubOption150Enabled']}
+            name={dhcpOption82SubOption150EnabledFieldName}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -190,7 +212,7 @@ export function DhcpOption82Form () {
         {$t({ defaultMessage: 'Sub-option 151' })}
         <div style={{ display: 'grid', gridTemplateColumns: '50px 150px auto' }}>
           <Form.Item
-            name={['wlan','advancedCustomization','dhcpOption82SubOption151Enabled']}
+            name={dhcpOption82SubOption151EnabledFieldName}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
@@ -262,16 +284,19 @@ const FieldsetItem = ({
   children,
   label,
   switchStyle,
+  onChange,
   ...props
 }: FormItemProps &
   { label: string,
     children: ReactNode,
     switchStyle: CSSProperties,
+    onChange: (checked: boolean) => void
   }) => <Form.Item
   {...props}
   valuePropName='checked'
 >
   <Fieldset
     {...{ label, children }}
-    switchStyle={switchStyle}/>
+    switchStyle={switchStyle}
+    onChange={onChange}/>
 </Form.Item>

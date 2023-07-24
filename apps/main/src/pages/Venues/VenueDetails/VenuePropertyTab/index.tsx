@@ -62,11 +62,11 @@ import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { expired: boolean }) => props)`
 path:nth-child(1) {
-  fill: ${props => props.expired ? 'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+  fill: ${props => props.expired ? 'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 path:nth-child(3) {
   stroke: ${props => props.expired ?
-    'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+    'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 `
 
@@ -417,7 +417,9 @@ export function VenuePropertyTab () {
     {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status'
+      dataIndex: 'status',
+      render: (_, row) => row.status === PropertyUnitStatus.ENABLED
+        ? $t({ defaultMessage: 'Activate' }) : $t({ defaultMessage: 'Suspended' })
     },
     {
       key: 'vlan',

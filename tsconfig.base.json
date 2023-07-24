@@ -43,9 +43,9 @@
       "@acx-ui/types": ["libs/common/types/src/index.ts"],
       "@acx-ui/user": ["libs/common/user/src/index.ts"],
       "@acx-ui/utils": ["libs/common/utils/src/index.ts"],
+      "@rc/Routes": ["apps/rc/src/Routes.tsx"],
       "@analytics/Routes": ["apps/analytics/src/Routes.tsx"],
       "@msp/Routes": ["apps/msp/src/Routes.tsx"],
-      "@rc/Routes": ["apps/rc/src/Routes.tsx"],
       "@reports/Routes": ["apps/reports/src/Routes.tsx"]
     }
   },

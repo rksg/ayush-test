@@ -6,9 +6,9 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesDataType, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
+import { TimeSeriesDataType, TrendTypeEnum, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip,
-  TrendType, cssStr,  Card, GridCol, GridRow,
+  cssStr,  Card, GridCol, GridRow,
   MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
   Drawer, SearchBar }                from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
@@ -194,14 +194,14 @@ export function VideoCallQoeDetails (){
         const connectionQualityTooltip = getConnectionQualityTooltip(wifiMetrics, intl)
 
         if(connectionQuality){
-          let [trend,quality] = ['none', $t({ defaultMessage: 'Average' })]
+          let [trend,quality] = [TrendTypeEnum.None, $t({ defaultMessage: 'Average' })]
           if(connectionQuality === 'bad')
-            [trend,quality]=['negative', $t({ defaultMessage: 'Bad' })]
+            [trend,quality]=[TrendTypeEnum.Negative, $t({ defaultMessage: 'Bad' })]
           else if(connectionQuality === 'good')
-            [trend,quality]=['positive', $t({ defaultMessage: 'Good' })]
+            [trend,quality]=[TrendTypeEnum.Positive, $t({ defaultMessage: 'Good' })]
 
           return <Tooltip title={connectionQualityTooltip}>
-            <TrendPill value={quality} trend={trend as TrendType} />
+            <TrendPill value={quality} trend={trend} />
           </Tooltip>
         }
         else
@@ -212,10 +212,10 @@ export function VideoCallQoeDetails (){
   const getPill = (mos:number)=>{
     return mos >= 4 ? <UI.BigTrendPill
       value={$t({ defaultMessage: 'Good' })}
-      trend='positive' /> :
+      trend={TrendTypeEnum.Positive} /> :
       <UI.BigTrendPill
         value={$t({ defaultMessage: 'Bad' })}
-        trend='negative' />
+        trend={TrendTypeEnum.Negative} />
   }
 
   const seriesMapping = [{
