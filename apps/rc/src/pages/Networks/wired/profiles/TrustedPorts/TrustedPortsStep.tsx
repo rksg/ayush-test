@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react'
 
-import { Row, Col, Form, Select } from 'antd'
+import { Row, Col, Form, Select, Input } from 'antd'
 
 import { Card }        from '@acx-ui/components'
 import { TrustedPort } from '@acx-ui/rc/utils'
@@ -118,11 +118,26 @@ export function TrustedPortsStep (props: {
           </Card>
         </Col>
       </Row>
-      <Form.Item name={['trustedPorts', 'trustedPortType']} initialValue={'all'} />
-      <Form.Item name={['trustedPorts', 'model']} />
-      <Form.Item name={['trustedPorts', 'vlanDemand']} initialValue={false} />
-      <Form.Item name={['trustedPorts', 'slots']} />
-      {editRecord && <Form.Item name={'switchFamilyModels'} />}
+      <Form.Item
+        name={['trustedPorts', 'trustedPortType']}
+        initialValue={'all'}
+        hidden={true}
+        children={<Input />}
+      />
+      <Form.Item
+        name={['trustedPorts', 'model']}
+        hidden={true}
+        children={<Input />} />
+      <Form.Item
+        name={['trustedPorts', 'vlanDemand']}
+        initialValue={false}
+        hidden={true}
+        children={<Input />} />
+      <Form.Item
+        name={['trustedPorts', 'slots']}
+        hidden={true}
+        children={<Input />} />
+      {editRecord && <Form.Item name={'switchFamilyModels'} hidden={true} children={<Input />}/>}
     </>
   )
 }

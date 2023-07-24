@@ -351,6 +351,6 @@ describe('SwitchTable', () => {
     await userEvent.click(await screen.findByTitle('Model'))
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    expect(await screen.findAllByText(/Members\: 1/i)).toHaveLength(2)
+    expect(await screen.findAllByText(/Members: 1/i)).toHaveLength(2)
   })
 })

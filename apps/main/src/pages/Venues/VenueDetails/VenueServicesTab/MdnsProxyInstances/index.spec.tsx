@@ -39,15 +39,26 @@ describe('MdnsProxyInstances', () => {
   }
 
   const path = '/:tenantId/t/venues/:venueId/venue-details/services'
-
+  const removeMdnsProxyFn = jest.fn()
   beforeEach(async () => {
     mockServer.use(
       rest.get(
         MdnsProxyUrls.getMdnsProxyApsByVenue.url,
         (req, res, ctx) => res(ctx.json(mockedVenueApList))
+      ),
+      rest.delete(
+        MdnsProxyUrls.deleteMdnsProxyAps.url,
+        (req, res, ctx) => {
+          removeMdnsProxyFn()
+          return res(ctx.status(404), ctx.json({ requestId: '__REQUEST_ID__' }))
+        }
       )
     )
   })
+  afterEach(() => {
+    removeMdnsProxyFn.mockClear()
+  })
+
 
   it('should render table with the giving data', async () => {
     render(
@@ -80,11 +91,18 @@ describe('MdnsProxyInstances', () => {
 
     await userEvent.click(within(targetRow).getByRole('radio'))
 
+
+    expect(await screen.findByText(/remove/i)).toBeVisible()
+
     await userEvent.click(screen.getByRole('button', { name: /remove/i }))
 
     expect(await screen.findByText('Delete "' + targetAp.apName + '"?')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Instance/i }))
+    await waitFor(() => expect(removeMdnsProxyFn).toHaveBeenCalledTimes(1))
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should deactivate the AP instance from mDNS Proxy service', async () => {
@@ -104,6 +122,10 @@ describe('MdnsProxyInstances', () => {
     expect(await screen.findByText('Delete "' + targetAp.apName + '"?')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Instance/i }))
+    await waitFor(() => expect(removeMdnsProxyFn).toHaveBeenCalledTimes(1))
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should change the mDNS Proxy service', async () => {
@@ -136,9 +158,12 @@ describe('MdnsProxyInstances', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetVenueAp.apName) })
 
     await userEvent.click(within(targetRow).getByRole('radio'))
+    expect(await screen.findByText(/change/i)).toBeVisible()
+
     await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
 
     await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
+
     await userEvent.click(await screen.findByText(targetMdnsProxyService.serviceName))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
@@ -191,7 +216,8 @@ describe('MdnsProxyInstances', () => {
     await userEvent.click(await screen.findByText(targetAp.name))
 
     await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
-    await userEvent.click(screen.getByText(targetMdnsProxyService.serviceName))
+
+    await userEvent.click(await screen.findByText(targetMdnsProxyService.serviceName))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
