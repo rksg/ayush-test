@@ -3,16 +3,18 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { cloneDeep, includes, isEmpty }                   from 'lodash'
+import { cloneDeep, includes, isEmpty, dropRight }        from 'lodash'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 
 import { Button, Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
-  SelectItemOption } from '@acx-ui/rc/components'
+  SelectItemOption,
+  findIsolatedGroupByChannel } from '@acx-ui/rc/components'
 import {
   useGetApRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
@@ -46,6 +48,8 @@ export function RadioSettings () {
     editContextData,
     setEditContextData
   } = useContext(ApEditContext)
+
+  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const { apData, apCapabilities } = useContext(ApDataContext)
 
@@ -176,7 +180,9 @@ export function RadioSettings () {
 
         // 6G
         const supportCh6g = availableChannels['6GChannels'] || {}
-        const bandwidth6g = getSupportBandwidth(channelBandwidth6GOptions, supportCh6g, is6GHas160Mhz)
+        const wifi7_320Bandwidth = Wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+
+        const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidth, supportCh6g, is6GHas160Mhz)
         setSupport6GChannels(supportCh6g)
         setBandwidth6GOptions(bandwidth6g)
 
@@ -387,6 +393,23 @@ export function RadioSettings () {
       return true
     }
 
+    const validate320MHzIsolatedGroup = (channels: unknown[] | undefined, method: string | undefined, title: string) => {
+      const typeSafeChannels = channels as string[]
+      if (method !== 'MANUAL') {
+        const isolatedGroup = findIsolatedGroupByChannel(typeSafeChannels)
+        if (isolatedGroup.length > 0) {
+          showActionModal({
+            type: 'error',
+            title: title,
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'Please select two adjacent 160Mhz channels to combine one 320 MHz channel' })
+          })
+          return false
+        }
+      }
+      return true
+    }
+
     let title = ''
     const { allowedChannels: channel24, method: method24 } = apRadioParams24G || {}
     title = $t({ defaultMessage: '2.4 GHz - Channel selection' })
@@ -403,6 +426,7 @@ export function RadioSettings () {
       const { allowedChannels: channel6, method: method6 } = apRadioParams6G || {}
       title = $t({ defaultMessage: '6 GHz - Channel selection' })
       if (!validateChannels(channel6, method6, title)) return false
+      if (!validate320MHzIsolatedGroup(channel6, method6, title)) return false
     }
 
     if (hasRadioDual5G) {
