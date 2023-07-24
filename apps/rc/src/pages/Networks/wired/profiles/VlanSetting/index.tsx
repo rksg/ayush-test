@@ -108,11 +108,11 @@ export function VlanSetting () {
       }
     })
 
-    return <>{portTooltips.map(item => <div>
+    return <>{portTooltips.map((item, index) => (<div key={index}>
       <div>{item.model}</div>
       <div><UI.TagsOutlineIcon /><UI.PortSpan>{item.untaggedPorts || '--'}</UI.PortSpan></div>
       <div><UI.TagsSolidIcon /><UI.PortSpan>{item.taggedPorts || '--'}</UI.PortSpan></div>
-    </div>)
+    </div>))
     }</>
   }
 

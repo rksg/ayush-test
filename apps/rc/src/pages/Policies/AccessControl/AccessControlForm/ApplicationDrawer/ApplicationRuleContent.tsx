@@ -349,7 +349,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       children={
         <ContentSwitcher
           tabDetails={tabDetails}
-          defaultValue={drawerForm.getFieldValue('ruleType')}
           size='small'
         />
       }
@@ -453,7 +452,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         { required: true }
       ]}
       children={<Select
-        defaultValue={PROTOCOL_TYPE[0]}
         onChange={(value) => drawerForm.setFieldValue('protocol', value)}
         options={PROTOCOL_TYPE.map(protocol =>
           ({ label: protocol, value: protocol }))} />}
