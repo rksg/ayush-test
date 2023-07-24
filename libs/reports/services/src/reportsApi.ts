@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
+import { get }                                        from '@acx-ui/config'
 import { ApiInfo, createHttpRequest, RequestPayload } from '@acx-ui/rc/utils'
 
-export const BASE_RELATIVE_URL = '/api/a4rc/explorer'
+export const BASE_RELATIVE_URL = get('IS_MLISA_SA')? '/analytics/explorer' :'/api/a4rc/explorer'
 
 export const reportsBaseApi = createApi({
   baseQuery: fetchBaseQuery({

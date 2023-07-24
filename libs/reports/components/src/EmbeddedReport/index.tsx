@@ -7,6 +7,7 @@ import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
+import { get }                                                             from '@acx-ui/config'
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
@@ -111,7 +112,10 @@ export function EmbeddedReport (props: ReportProps) {
   * Use https://alto.local.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://dev.ruckus.cloud' // Dev
+    ? get('IS_MLISA_SA') ?
+      'https://staging.mlisa.io'
+      :
+      'https://dev.ruckus.cloud'
     : window.location.origin // Production
 
   useEffect(() => {
