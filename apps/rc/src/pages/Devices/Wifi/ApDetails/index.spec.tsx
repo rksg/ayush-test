@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { apApi }                                        from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider, store }                              from '@acx-ui/store'
 import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
 import { RolesEnum }                                    from '@acx-ui/types'
@@ -31,6 +31,22 @@ jest.mock('@acx-ui/rc/components', () => {
 jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
+jest.mock('./ApOverviewTab/ApPhoto', () => ({
+  ...jest.requireActual('./ApOverviewTab/ApPhoto'),
+  ApPhoto: () => <div data-testid='ApPhoto' />
+}))
+
+jest.mock('./ApOverviewTab/ApProperties', () => ({
+  ...jest.requireActual('./ApOverviewTab/ApProperties'),
+  ApProperties: () => <div data-testid='ApProperties' />
+}))
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
 }))
 
 const list = {
@@ -73,11 +89,14 @@ const list = {
   ]
 }
 
-describe.skip('ApDetails', () => {
+describe('ApDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(list))
@@ -90,11 +109,11 @@ describe.skip('ApDetails', () => {
   it('should render correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'overview'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
@@ -104,11 +123,11 @@ describe.skip('ApDetails', () => {
   it('should navigate to analytic tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'analytics'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('AI Analytics')
@@ -117,11 +136,11 @@ describe.skip('ApDetails', () => {
   it('should navigate to troubleshooting tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'troubleshooting'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Ping')
@@ -130,11 +149,11 @@ describe.skip('ApDetails', () => {
   it('should navigate to reports tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'reports'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Reports')
@@ -143,11 +162,19 @@ describe.skip('ApDetails', () => {
   it('should navigate to networks tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'networks'
     }
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApNetworkList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      )
+    )
+
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Networks ()')
@@ -156,11 +183,11 @@ describe.skip('ApDetails', () => {
   it('should navigate to clients tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'clients'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Clients ()')
@@ -169,11 +196,11 @@ describe.skip('ApDetails', () => {
   it.skip('should navigate to services tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'services'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Services (0)')
@@ -182,11 +209,11 @@ describe.skip('ApDetails', () => {
   it('should navigate to timeline tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'timeline'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Timeline')
@@ -196,11 +223,11 @@ describe.skip('ApDetails', () => {
   it('should not navigate to non-existent tab', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'not-exist'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
 
     const tabs = await screen.findAllByRole('tab')
@@ -211,14 +238,17 @@ describe.skip('ApDetails', () => {
   it('should go to edit page', async () => {
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'overview'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
+      `/${params.tenantId}/t/devices/wifi/${list?.data?.[0].serialNumber}/edit/details`
+    )
   })
 
   it('should hide analytics when role is READ_ONLY', async () => {
@@ -228,11 +258,11 @@ describe.skip('ApDetails', () => {
     })
     const params = {
       tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
+      apId: 'ap-id',
       activeTab: 'analytics'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:apId/details/:activeTab' }
     })
     expect(screen.queryByTestId('rc-ApAnalyticsTab')).toBeNull()
   })
