@@ -135,6 +135,14 @@ export class OpenWlanAdvancedCustomization {
 
   dhcpOption82MacFormat?: string | null
 
+  enableMulticastUplinkRateLimiting?: boolean
+
+  enableMulticastDownlinkRateLimiting?: boolean
+
+  enableMulticastUplinkRateLimiting6G?: boolean
+
+  enableMulticastDownlinkRateLimiting6G?: boolean
+
   constructor () {
     this.clientIsolation = true
 
@@ -232,5 +240,13 @@ export class OpenWlanAdvancedCustomization {
     this.dhcpOption82SubOption151Format = null
 
     this.dhcpOption82MacFormat = null
+
+    this.enableMulticastUplinkRateLimiting = false
+
+    this.enableMulticastDownlinkRateLimiting = false
+
+    this.enableMulticastUplinkRateLimiting6G = false
+
+    this.enableMulticastDownlinkRateLimiting6G = false
   }
 }

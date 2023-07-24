@@ -1,16 +1,16 @@
 import { Progress as AntProgress } from 'antd'
 import styled, { css }             from 'styled-components/macro'
 
-import { incidentSeverities } from '@acx-ui/analytics/utils'
+import { TrendTypeEnum, incidentSeverities } from '@acx-ui/analytics/utils'
 
-import { TrendType, IncidentSeverities } from '.'
+import { IncidentSeverities } from '.'
 
-const pillColor = ({ type }: { type: TrendType | IncidentSeverities }) => {
+const pillColor = ({ type }: { type: TrendTypeEnum | IncidentSeverities }) => {
   switch (type) {
-    case 'positive': return '--acx-semantics-green-50'
-    case 'negative': return '--acx-semantics-red-50'
-    case 'none': return '--acx-neutrals-50'
-    default: return incidentSeverities[type].color
+    case TrendTypeEnum.Positive: return '--acx-semantics-green-50'
+    case TrendTypeEnum.Negative: return '--acx-semantics-red-50'
+    case TrendTypeEnum.None: return '--acx-neutrals-50'
+    default: return incidentSeverities[type as IncidentSeverities].color
   }
 }
 

@@ -6,7 +6,7 @@ import { showActionModal, Table, TableProps }    from '@acx-ui/components'
 import {
   ClientIsolationClient, defaultSort, sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddNewClientDrawer }                               from './AddNewClientDrawer'
 import { ALLOW_LIST_MAX_COUNT }                             from './ClientIsolationSettingsForm'
@@ -192,7 +192,7 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
           }
         ])}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasAccess() && { type: 'radio' }}
       />
     </>
   )

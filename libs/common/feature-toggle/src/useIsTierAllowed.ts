@@ -18,7 +18,7 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
   'feature-REC-Education':   ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD'],
   'feature-MSP-Default':     ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
   'feature-MSP-Hospitality': ['ADMN-ESNTLS', 'CNFG-ESNTLS', 'NTFY-ESNTLS', 'ANLT-ESNTLS', 'ANLT-FNDT','ANLT-STUDIO', 'PLCY-ESNTLS', 'API-CLOUD', 'PLCY-SGMNT', 'ANLT-ADV'],
-  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-MESH']
+  'betaList':                ['PLCY-EDGE', 'BETA-CP', 'BETA-CLB', 'BETA-MESH', 'BETA-ZD2R1']
 }
 /* eslint-enable */
 

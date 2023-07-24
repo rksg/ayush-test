@@ -15,7 +15,7 @@
     "defaultMessage": "Connexion Wireless"
   },
   "+20FW7": {
-    "defaultMessage": "non IP"
+    "defaultMessage": "Equipements"
   },
   "+2O1Lz": {
     "defaultMessage": "Le 6 GHz n’est pas pris en charge pour le test de Client virtuel"
@@ -57,7 +57,7 @@
     "defaultMessage": "Détails de la stratégie de détection des AP non autorisés :{policyName}"
   },
   "+GUwuS": {
-    "defaultMessage": "Délai de connexion"
+    "defaultMessage": "Temps de connexion"
   },
   "+LXQUn": {
     "defaultMessage": "Acceptation d’accès RADIUS (RADIUS_ACCEPT_PROXY)"
@@ -122,6 +122,9 @@
   },
   "+cdm35": {
     "defaultMessage": "Échec d’authentification de l’ID invité"
+  },
+  "+frS59": {
+    "defaultMessage": "Gestion des versions"
   },
   "+iQZtX": {
     "defaultMessage": "{successCount} de {totalCount} sessions"
@@ -366,7 +369,7 @@
     "defaultMessage": "Ajouter un modèle"
   },
   "/wkhBU": {
-    "defaultMessage": "Mes cas ouverts"
+    "defaultMessage": "Mes tickets ouverts"
   },
   "/wvHFt": {
     "defaultMessage": "Stratégies et profils"
@@ -415,7 +418,7 @@
     "description": "Type de sécurité WLAN - Aucun"
   },
   "07a9rK": {
-    "defaultMessage": "Délai de connexion"
+    "defaultMessage": "Temps de connexion"
   },
   "08gBns": {
     "defaultMessage": "Proxy mDNS ({count})"
@@ -1239,7 +1242,7 @@
     "defaultMessage": "Liste des points d’accès"
   },
   "48INch": {
-    "defaultMessage": "Personnages"
+    "defaultMessage": "Personas"
   },
   "493J7R": {
     "defaultMessage": "Comparer"
@@ -2725,10 +2728,10 @@
     "defaultMessage": "Fabricant du client"
   },
   "Ar4vtA": {
-    "defaultMessage": "Ajouter un groupe de personnages"
+    "defaultMessage": "Ajouter un groupe de Personas"
   },
   "ArhATs": {
-    "defaultMessage": "Expérience du client"
+    "defaultMessage": "Expérience clients"
   },
   "AszHoG": {
     "defaultMessage": "Capture en cours…"
@@ -3665,7 +3668,7 @@
     "defaultMessage": "<b>Les abonnements MSP ont expiré</b>"
   },
   "FgqJyk": {
-    "defaultMessage": "Rapport câblé"
+    "defaultMessage": "Rapport filaire"
   },
   "FguTAO": {
     "defaultMessage": "Administrateur tiers"
@@ -3830,7 +3833,7 @@
     "defaultMessage": "Nous devons actualiser la page pour activer la région de la carte. Merci de votre compréhension."
   },
   "GQSMoL": {
-    "defaultMessage": "Fonctionnalité de l’AP"
+    "defaultMessage": "Capacité APs"
   },
   "GT/UvO": {
     "defaultMessage": "Temps de latence de l’AP à RUCKUS One"
@@ -4008,7 +4011,7 @@
     "defaultMessage": "Nom du destinataire"
   },
   "HDSu9X": {
-    "defaultMessage": "Adresse IP extérieure"
+    "defaultMessage": "Adresse IP"
   },
   "HDrDGP": {
     "defaultMessage": "SCTP"
@@ -4473,7 +4476,7 @@
     "defaultMessage": "Bande inférieure 5 GHz - Sélection du canal de l’AP en extérieur"
   },
   "JAB4A4": {
-    "defaultMessage": "AP en ligne"
+    "defaultMessage": "APs connectés"
   },
   "JAspuT": {
     "defaultMessage": "Client associé (802.11)"
@@ -5541,7 +5544,7 @@
     "defaultMessage": "L’appareil sera placé sur ce VLAN après s’être authentifié sur le réseau Wi-Fi. Si ce champ est laissé vide, la valeur par défaut du réseau sera utilisée."
   },
   "O0h2x8": {
-    "defaultMessage": "Informations d’identification de la carte d’invité"
+    "defaultMessage": "Comptes Invité"
   },
   "O0k4eg": {
     "defaultMessage": "Trame d’authentification abandonnée par un client bloqué"
@@ -6018,6 +6021,9 @@
   },
   "QExggt": {
     "defaultMessage": "Utilisation du mot de passe configuré"
+  },
+  "QF+PNv": {
+    "defaultMessage": "Gestion du compte"
   },
   "QF20FV": {
     "defaultMessage": "query-end-time"
@@ -6863,7 +6869,7 @@
     "defaultMessage": "Taux de réussite de la connexion"
   },
   "UOVi5a": {
-    "defaultMessage": "Ces codes peuvent être utilisés pour accéder à votre compte si vous ne parvenez pas à recevoir le code de sécurité par téléphone. Veillez à les copier et à les conserver en site sûr."
+    "defaultMessage": "Ces codes peuvent être utilisés pour accéder à votre compte si vous ne parvenez pas à recevoir le code de sécurité par téléphone. Veillez à les copier et à les conserver en lieu sûr."
   },
   "UOrao6": {
     "defaultMessage": "Membre de la pilejouter un serveurPoE power denied in {ut}"
@@ -7871,7 +7877,7 @@
     "defaultMessage": "Sous-interface"
   },
   "ZJqg2J": {
-    "defaultMessage": "Abus RTS"
+    "defaultMessage": "Abus CTS"
   },
   "ZJvcHR": {
     "defaultMessage": "{name}<br></br> <space><b>{formattedValue} {value, plural, one {événement} other {événements} }</b></space>"
@@ -8345,7 +8351,7 @@
     "defaultMessage": "Copier depuis votre rapport d’installation Wi-Fi4EU"
   },
   "bS/cRP": {
-    "defaultMessage": "Lieux"
+    "defaultMessage": "Sites"
   },
   "bT9NBq": {
     "defaultMessage": "Échec de l’association (station non autorisée\\')"
@@ -8432,7 +8438,7 @@
     "defaultMessage": "Veuillez sélectionner un logo"
   },
   "bnaSLU": {
-    "defaultMessage": "Clients connectés au fil du temps"
+    "defaultMessage": "Connexions Clients"
   },
   "bobOH0": {
     "defaultMessage": "Informations d’identification > ID des clients OAuth 2.0 > Cliquer sur le nom du client > URL de redirection autorisées"
@@ -9100,7 +9106,7 @@
     "defaultMessage": "Abonnement Wi-Fi"
   },
   "ehA2tj": {
-    "defaultMessage": "Délai de connexion"
+    "defaultMessage": "Temps de connexion"
   },
   "ejDjCV": {
     "defaultMessage": "<p>Pour remédier aux problèmes identifiés ci-dessus, suivez les actions recommandées correspondantes :</p> <ol> <li>Assurez-vous que la capacité du PSE (commutateur PoE ou injecteur PoE) correspond bien aux besoins en énergie des modèles d’AP déployés.</li> <li>Vérifiez la longueur et le type de câble pour une bonne utilisation du PoE.</li> </ol>"
@@ -10134,7 +10140,7 @@
     "defaultMessage": "[Today,] HH:mm"
   },
   "jh4nUh": {
-    "defaultMessage": "Gestion des personnages"
+    "defaultMessage": "Gestion des Personas"
   },
   "jhYpbe": {
     "defaultMessage": "Police X Window"
@@ -10861,7 +10867,7 @@
     "defaultMessage": "({usedPercentage}%)"
   },
   "n/qhwR": {
-    "defaultMessage": "Abus RTS"
+    "defaultMessage": "Abus CTS"
   },
   "n/vWlL": {
     "defaultMessage": "Appliqué sur le site"
@@ -12300,7 +12306,7 @@
     "defaultMessage": "Aucun profil n’est sélectionné"
   },
   "tWytGP": {
-    "defaultMessage": "Liste des clients câblés"
+    "defaultMessage": "Liste des clients filaires"
   },
   "tXMZ3F": {
     "defaultMessage": "Adresse Netinfo"
@@ -12452,7 +12458,7 @@
     "defaultMessage": "STP BPDU Guard"
   },
   "uJV0wU": {
-    "defaultMessage": "extérieure"
+    "defaultMessage": "Adresse IP"
   },
   "uKatq7": {
     "defaultMessage": "Modifier le réseau"

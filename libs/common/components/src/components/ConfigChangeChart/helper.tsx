@@ -1,6 +1,7 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 
 import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
+import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -25,7 +26,8 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
   data: ConfigChange[]
   chartBoundary: [ number, number],
   selectedData?: number,
-  onDotClick?: (params: unknown) => void
+  onDotClick?: (params: unknown) => void,
+  onBrushPositionsChange?: (params: number[][]) => void
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
@@ -119,7 +121,7 @@ export const adjuestDrawPosition = (
   return newPosition
 }
 
-export const getDrawPosition = (
+export const getDrawDragPosition = (
   xPosition: number,
   brushWidth: number,
   boundary: { min: number, max: number },
@@ -142,6 +144,7 @@ export const draw = (
   boundary: { min: number, max: number },
   setBrushPositions: Dispatch<SetStateAction<{ actual: number[][], show: number[][] }>>
 ) => {
+  const { $t } = getIntl()
   if (!eChartsRef || !eChartsRef.current) return
   const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
 
@@ -187,10 +190,10 @@ export const draw = (
                   draggable: width <= 0 ? false : 'horizontal',
                   ondrag: function () {
                     const [xPosition] = echartInstance.convertFromPixel('grid', [this.x])
-                    const newAreas = getDrawPosition(
+                    const newAreas = getDrawDragPosition(
                       xPosition, brushWidth, boundary, areas.actual, index)
-                    draw(eChartsRef, chartLayoutConfig, newAreas, boundary, setBrushPositions)
                     setBrushPositions(newAreas)
+                    draw(eChartsRef, chartLayoutConfig, newAreas, boundary, setBrushPositions)
                   }
                 },
                 {
@@ -204,7 +207,9 @@ export const draw = (
                     slient: true,
                     invisible: width <= 0,
                     style: {
-                      text: index === 0 ? 'BEFORE' : 'AFTER',
+                      text: index === 0
+                        ? $t({ defaultMessage: 'BEFORE' })
+                        : $t({ defaultMessage: 'AFTER' }),
                       fill: cssStr('--acx-accents-blue-50'),
                       fontSize: cssNumber('--acx-body-6-font-size'),
                       fontWeight: cssNumber('--acx-body-font-weight-bold')
@@ -385,8 +390,19 @@ export const useBoundaryChange = (
   eChartsRef: RefObject<ReactECharts>,
   chartLayoutConfig: Record<string, number>,
   chartBoundary: ConfigChangeChartProps['chartBoundary'],
-  brushWidth: number
+  brushWidth: number,
+  onBrushPositionsChange?: (params: number[][]) => void
 ) => {
+  const debouncedBrushChange = useRef(debounce((brush)=>{
+    onBrushPositionsChange?.(brush)
+  }, 1000))
+
+  useEffect(()=>{
+    debouncedBrushChange.current = debounce((brush)=>{
+      onBrushPositionsChange?.(brush)
+    }, 1000)
+  }, [ onBrushPositionsChange ])
+
   const [boundary, setBoundary] = useState(getInitBoundary(chartBoundary))
   const [brushPositions, setBrushPositions] =
     useState(getInitBrushPositions(chartBoundary, brushWidth))
@@ -407,6 +423,10 @@ export const useBoundaryChange = (
     draw(eChartsRef, chartLayoutConfig, newBrushPositions, boundary, setBrushPositions )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boundary])
+
+  useEffect(() => {
+    debouncedBrushChange.current(brushPositions.actual)
+  }, [brushPositions])
 
   return { boundary, brushPositions, setBoundary, setBrushPositions }
 }
