@@ -92,13 +92,6 @@ const baseUrl: BaseUrl =
     }
 
 const services = require('@acx-ui/msp/services')
-// jest.mock('@acx-ui/msp/services', () => ({
-//   ...jest.requireActual('@acx-ui/msp/services')
-//   // useAddMspLabelMutation: () => Promise.resolve({
-//   //   json: () => Promise.resolve({ requestId: '456' }),
-//   //   clone: () => Promise.resolve({ requestId: '456' })
-//   })
-// const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services'),
   useAddMspLabelMutation: () => (''),
@@ -150,12 +143,6 @@ describe('PortalSettings', () => {
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
-    // mockServer.use(
-    //   rest.post(
-    //     MspUrlsInfo.addMspLabel.url,
-    //     (req, res, ctx) => res(ctx.json({ requestId: '456'}, ctx.))
-    //   )
-    // )
     global.URL.createObjectURL = jest.fn()
     jest.spyOn(global.URL, 'createObjectURL')
     global.fetch = jest.fn().mockImplementation(() =>
@@ -836,21 +823,6 @@ describe('PortalSettings', () => {
     const deleteButton2 = screen.getAllByTitle('Remove file').at(1)!
     await userEvent.click(deleteButton2)
 
-    // Assert deleted logo is removed from logo preview dropdowns
-    // TODO: check below
-    // const deletedLogo2 = 'img3.png'
-    // const dropdowns2 = screen.getAllByRole('combobox')
-    // expect(dropdowns2).toHaveLength(4)
-    // expect(screen.queryByText(deletedLogo2)).toBeNull()
-    // fireEvent.mouseDown(dropdowns2.at(0)!)
-    // expect(screen.queryByText(deletedLogo2)).toBeNull()
-    // fireEvent.mouseDown(dropdowns2.at(1)!)
-    // expect(screen.queryByText(deletedLogo2)).toBeNull()
-    // fireEvent.mouseDown(dropdowns2.at(2)!)
-    // expect(screen.queryByText(deletedLogo2)).toBeNull()
-    // fireEvent.mouseDown(dropdowns2.at(3)!)
-    // expect(screen.queryByText(deletedLogo2)).toBeNull()
-
     // // Assert deleted logo image is removed from affected logo previews
     expect(screen.queryByRole('img', { name: 'portal header logo' })).toBeNull()
     expect(screen.queryByRole('img', { name: 'customer login logo' })).toBeNull()
@@ -895,11 +867,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled()
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
-    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/${params.tenantId}/v/dashboard`,
-    //   hash: '',
-    //   search: ''
-    // }, { replace: true })
   })
   it('should save correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
@@ -952,11 +919,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('button', { name: 'Create' })).toBeEnabled()
     await userEvent.click(screen.getByRole('button', { name: 'Create' }))
 
-    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/${params.tenantId}/v/dashboard`,
-    //   hash: '',
-    //   search: ''
-    // }, { replace: true })
   })
   xit('should catch error when saving for edit', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
