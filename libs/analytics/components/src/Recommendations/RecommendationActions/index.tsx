@@ -123,7 +123,8 @@ function CancelCalendar ({ disabled, id }: Omit<ActionButtonProps, 'type'>) {
         arrowPointAtCenter
         title={$t({ defaultMessage: 'Cancel' })}
       >
-        <CancelCircleOutlined onClick={() => { cancelRecommendation({ id }) }} />
+        <CancelCircleOutlined
+          onClick={async () => { await cancelRecommendation({ id }).unwrap() }} />
       </Tooltip>}
   </ActionWrapper>
 }
