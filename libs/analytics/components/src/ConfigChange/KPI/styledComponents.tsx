@@ -21,12 +21,19 @@ export const TransparentTrend = styled.div`
   text-align: center;
 `
 
-export const Statistic = styled(antStatistic)`
+export const Statistic = styled(antStatistic)<{ $selected: boolean }>`
   background-color: var(--acx-neutrals-10);
   padding: 4px 10px;
   margin-bottom: 3px;
   border-radius: 4px;
   position: relative;
+  cursor: pointer;
+
+  &.statistic-selected {
+    background-color: var(--acx-neutrals-80);
+    .ant-statistic-title { color: var(--acx-primary-white); }
+    .ant-statistic-content { color: var(--acx-primary-white); }
+  }
 
   .ant-statistic-title {
     font-weight: var(--acx-subtitle-4-font-weight);
@@ -36,12 +43,9 @@ export const Statistic = styled(antStatistic)`
     margin: 0px;
   }
   .ant-statistic-content {
+    color: var(--acx-primary-black);
     font-size: var(--acx-body-5-font-size);
     line-height: var(--acx-body-5-line-height);
-
-    &-value {
-      color: var(--acx-primary-black);
-    }
     &-suffix {
       position: absolute;
       right: 30px;
@@ -50,3 +54,5 @@ export const Statistic = styled(antStatistic)`
   }
 }
 `
+
+export const DrapDownWrapper = styled.div` padding-bottom: 15px; `
