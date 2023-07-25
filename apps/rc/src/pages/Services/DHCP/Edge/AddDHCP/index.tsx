@@ -1,4 +1,5 @@
 import { Form }    from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -27,10 +28,17 @@ const AddDhcp = () => {
 
   const handleAddEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
-      if(data.leaseTimeType === LeaseTimeType.INFINITE) {
-        data.leaseTime = -1 // -1 means infinite
+      const payload = _.cloneDeep(data)
+      if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
+        payload.leaseTime = -1 // -1 means infinite
       }
-      await addEdgeDhcp({ payload: data }).unwrap()
+
+      // should not create service with id
+      payload.dhcpPools.forEach(item => item.id = '')
+      payload.dhcpOptions?.forEach(item => item.id = '')
+      payload.hosts?.forEach(item => item.id = '')
+
+      await addEdgeDhcp({ payload }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

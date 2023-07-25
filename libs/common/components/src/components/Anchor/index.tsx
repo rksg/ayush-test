@@ -40,12 +40,15 @@ export const AnchorLayout = ({ items, offsetTop } : {
 
   return <Row gutter={20}>
     <Col span={4}>
-      <Anchor ref={anchorRef} offsetTop={offsetTop} onClick={(e) => handleClick(e)}>{
-        items.map(item => {
+      <Anchor ref={anchorRef}
+        offsetTop={offsetTop}
+        onClick={(e) => handleClick(e)}
+        $customType='layout'>
+        {items.map(item => {
           const linkId = item.title.split(' ').join('-')
           return <Link href={`#${linkId}`} title={item.title} key={linkId} />
-        })
-      }</Anchor>
+        })}
+      </Anchor>
     </Col>
     <Col span={20}>{
       items.map(item => {

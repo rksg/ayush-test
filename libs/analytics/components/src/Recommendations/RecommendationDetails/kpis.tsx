@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
-import { get, pick, snakeCase, isNumber } from 'lodash'
-import { useIntl }                        from 'react-intl'
+import { get, pick, snakeCase } from 'lodash'
+import { useIntl }              from 'react-intl'
 
-import { Card, Tooltip, TrendPill, TrendType } from '@acx-ui/components'
-import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
-import { noDataDisplay }                       from '@acx-ui/utils'
+import { TrendTypeEnum, kpiDelta }   from '@acx-ui/analytics/utils'
+import { Card, Tooltip, TrendPill }  from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import { codes } from '../config'
 
@@ -22,44 +23,6 @@ import {
   KpiLabelExtra,
   KpiWrapper
 } from './styledComponents'
-
-const kpiDelta = (
-  before: number,
-  after: number,
-  sign: string,
-  format: ReturnType<typeof formatter>) => {
-  const tolerance = 5 / 100 // 5%
-
-  let value: '-1' | '0' | '1'
-  let label: string = noDataDisplay
-  if (!isNumber(before) || !isNumber(after)) return { value: '0', label }
-  let d = after - before
-  const isPercent = format(d).includes('%')
-  if (isPercent) {
-    d = parseFloat(d.toFixed(4))
-  }
-  const percentChange = isPercent || before === 0 ? d : (d / before)
-  const formatted = formatter('percentFormat')(Math.abs(percentChange))
-
-  label = d > 0
-    ? `+${formatted}`
-    : d < 0
-      ? `-${formatted}`
-      : '='
-
-  switch (true) {
-    case percentChange >= tolerance:
-      value = sign === '+' ? '1' : '-1'
-      break
-    case percentChange <= -tolerance:
-      value = sign === '+' ? '-1' : '1'
-      break
-    default:
-      value = '0'
-  }
-
-  return { value, label }
-}
 
 const getKpis = (details: EnhancedRecommendation) => {
   const { code } = details
@@ -83,11 +46,9 @@ const getKpis = (details: EnhancedRecommendation) => {
     return {
       ...pick(config, ['key', 'label', 'tooltipContent', 'showAps']),
       delta,
-      deltaSign: delta?.value === '1'
-        ? 'positive'
-        : delta?.value === '-1'
-          ? 'negative'
-          : 'none',
+      deltaSign: delta?.trend === 'transparent'
+        ? TrendTypeEnum.None
+        : delta?.trend,
       value: current !== null ? format(current) : noDataDisplay
     }
   })
@@ -126,7 +87,7 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
       </KpiLabelValue>
       {delta ?
         <KpiLabelExtra>
-          <TrendPill value={delta.label} trend={deltaSign as TrendType} />
+          <TrendPill value={delta.value} trend={deltaSign as TrendTypeEnum} />
         </KpiLabelExtra>
         : null}
     </KpiLabelWrapper>
