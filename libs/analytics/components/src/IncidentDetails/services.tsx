@@ -45,7 +45,8 @@ export const api = dataApi.injectEndpoints({
         `
       }),
       transformResponse: (response: { incident: Incident }) =>
-        transformIncidentQueryResult(response.incident)
+        transformIncidentQueryResult(response.incident),
+      providesTags: [{ type: 'Monitoring', id: 'INCIDENT_DETAILS' }]
     })
   })
 })
