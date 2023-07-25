@@ -15,7 +15,8 @@ import { useParams } from 'react-router-dom'
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import {
-  InformationSolid
+  InformationSolid,
+  QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
 import { useGetMspEcProfileQuery }   from '@acx-ui/msp/services'
 import { MSPUtils }                  from '@acx-ui/msp/utils'
@@ -63,6 +64,7 @@ export function WISPrForm () {
   } = useContext(NetworkFormContext)
   const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
+  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
@@ -264,6 +266,9 @@ export function WISPrForm () {
     <Select.Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }
     </Select.Option>
   ))
+  const onEnabledPskChange = (e: CheckboxChangeEvent) => {
+    setEnablePreShared(e.target.checked)
+  }
   const region = regionOption?.length === 1? regionOption?.[0]:
     _.find(regionOption,{ name: externalProviderRegion })
   return (
@@ -370,8 +375,23 @@ export function WISPrForm () {
               </Button></div>}
           children={<Input readOnly style={{ width: 200 }} ref={inputKey}/>}
         />
-
-        <Form.Item
+        {!enableOweEncryption && <Form.Item>
+          <Form.Item name='enablePreShared'
+            noStyle
+            valuePropName='checked'
+            initialValue={false}
+            children={
+              <Checkbox onChange={onEnabledPskChange}>
+                {$t({ defaultMessage: 'Enable Pre-Shared Key (PSK)' })}
+              </Checkbox>
+            }
+          />
+          <Tooltip title={$t({ defaultMessage: 'Require users to enter a passphrase to connect' })}
+            placement='bottom'>
+            <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+          </Tooltip>
+        </Form.Item>}
+        {enableOweEncryption && <Form.Item
           name='networkSecurity'
           label={$t({ defaultMessage: 'Secure your network' })}
           extra={networkSecurityDescription()}
@@ -397,7 +417,7 @@ export function WISPrForm () {
                 setData && setData(mutableData)
               }}
             />}
-        />
+        />}
 
         {enablePreShared && wlanSecurity !== WlanSecurityEnum.WEP &&
          wlanSecurity !== WlanSecurityEnum.WPA3 &&

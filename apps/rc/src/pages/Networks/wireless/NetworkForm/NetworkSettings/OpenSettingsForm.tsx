@@ -89,6 +89,7 @@ function SettingsForm () {
   },[data])
 
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
+  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (
@@ -97,7 +98,7 @@ function SettingsForm () {
 
       <div>
         <Form.Item>
-          <Form.Item>
+          {enableOweEncryption && <Form.Item>
             <Form.Item noStyle
               name='enableOwe'
               initialValue={false}
@@ -113,7 +114,7 @@ function SettingsForm () {
               title={$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
               placement='bottom'
             />
-          </Form.Item>
+          </Form.Item>}
           <Form.Item>
             <Form.Item noStyle
               name={['wlan', 'macAddressAuthentication']}

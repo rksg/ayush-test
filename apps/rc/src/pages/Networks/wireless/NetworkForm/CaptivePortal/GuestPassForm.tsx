@@ -26,6 +26,7 @@ export function GuestPassForm () {
   } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
+  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
@@ -43,7 +44,7 @@ export function GuestPassForm () {
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title children={intl.$t({ defaultMessage: 'Host Settings' })} />
         <RedirectUrlInput></RedirectUrlInput>
-        <Form.Item>
+        {enableOweEncryption && <Form.Item>
           <Form.Item noStyle
             name='enableOwe'
             initialValue={false}
@@ -59,7 +60,7 @@ export function GuestPassForm () {
             title={intl.$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
             placement='bottom'
           />
-        </Form.Item>
+        </Form.Item>}
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox
           guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass} />
