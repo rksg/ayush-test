@@ -31,9 +31,9 @@ export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
 }
 
 export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
-
   const { $t } = useIntl()
   const { form } = useStepFormContext<EdgeDhcpSetting>()
+
   const [
     dhcpRelay,
     enableSecondaryDNSServer,
@@ -80,6 +80,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
               children={<Switch />}
             />
           </StepsFormLegacy.FieldLabel>
+
           {dhcpRelay &&
             <>
               <Form.Item
@@ -204,7 +205,6 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                 />
               </Col>
             </Row>
-
             <Row gutter={20}>
               <Col span={24}>
                 <Subtitle level={3}>
