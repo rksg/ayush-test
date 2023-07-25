@@ -53,6 +53,7 @@ import { BypassCaptiveNetworkAssistantCheckbox }                                
 import { WalledGardenTextArea }                                                                     from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import { WISPrAuthAccServer }                                                                       from './SharedComponent/WISPrAuthAccServer'
 import { statesCollection, WISPrAuthAccContext, WISPrAuthAccServerState, WISPrAuthAccServerAction } from './SharedComponent/WISPrAuthAccServer/WISPrAuthAccServerReducer'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 const mspUtils = MSPUtils()
 export function WISPrForm () {
