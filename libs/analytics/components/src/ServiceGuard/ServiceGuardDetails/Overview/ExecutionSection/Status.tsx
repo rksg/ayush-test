@@ -4,6 +4,7 @@ import { Statistic }                                            from 'antd'
 import _                                                        from 'lodash'
 import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
+import { TrendTypeEnum }    from '@acx-ui/analytics/utils'
 import { GridCol, Tooltip } from '@acx-ui/components'
 import { formatter }        from '@acx-ui/formatter'
 import { noDataDisplay }    from '@acx-ui/utils'
@@ -11,11 +12,6 @@ import { noDataDisplay }    from '@acx-ui/utils'
 import { Pill } from './styledComponents'
 
 import { ConfigStatusEnum, getExecutionSectionData } from '.'
-
-enum StatusBadgeEnum {
-  Positive = 'positive',
-  Negative = 'negative'
-}
 
 interface StatusColumn {
   title: MessageDescriptor,
@@ -25,7 +21,7 @@ interface StatusColumn {
   diff: (
     current: number | undefined, previous: number | undefined
   ) => number|null
-  badgeColor: (value: number) => StatusBadgeEnum
+  badgeColor: (value: number) => TrendTypeEnum
 }
 
 export const statusColumns: Record<string, StatusColumn> = {
@@ -35,7 +31,7 @@ export const statusColumns: Record<string, StatusColumn> = {
       ? noDataDisplay
       : formatter('percentFormat')(Math.abs(value || 0)),
     diff: (current, previous) => current! - previous!,
-    badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
+    badgeColor: value => (value > 0) ? TrendTypeEnum.Positive : TrendTypeEnum.Negative
   },
   avgPingTime: {
     title: defineMessage({ defaultMessage: 'Average Ping Time' }),
@@ -43,7 +39,7 @@ export const statusColumns: Record<string, StatusColumn> = {
       ? (value ? formatter('durationFormat')(Math.abs(value)) : noDataDisplay)
       : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataDisplay,
     diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
-    badgeColor: value => (value > 0) ? StatusBadgeEnum.Negative : StatusBadgeEnum.Positive
+    badgeColor: value => (value > 0) ? TrendTypeEnum.Negative : TrendTypeEnum.Positive
   },
   avgUpload: {
     title: defineMessage({ defaultMessage: 'Average Upload' }),
@@ -51,7 +47,7 @@ export const statusColumns: Record<string, StatusColumn> = {
       ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataDisplay)
       : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataDisplay,
     diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
-    badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
+    badgeColor: value => (value > 0) ? TrendTypeEnum.Positive : TrendTypeEnum.Negative
   },
   avgDownload: {
     title: defineMessage({ defaultMessage: 'Average Download' }),
@@ -59,7 +55,7 @@ export const statusColumns: Record<string, StatusColumn> = {
       ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataDisplay)
       : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataDisplay,
     diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
-    badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
+    badgeColor: value => (value > 0) ? TrendTypeEnum.Positive : TrendTypeEnum.Negative
   }
 }
 
