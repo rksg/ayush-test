@@ -8,7 +8,8 @@ import {
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -44,6 +45,17 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+const mockVenueData = {
+  fields: ['name', 'id'],
+  totalCount: 3,
+  page: 1,
+  data: [
+    { id: 'mock_venue_1', name: 'Mock Venue 1' },
+    { id: 'mock_venue_2', name: 'Mock Venue 2' },
+    { id: 'mock_venue_3', name: 'Mock Venue 3' }
+  ]
+}
+
 describe('SyslogTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -57,6 +69,10 @@ describe('SyslogTable', () => {
       rest.post(
         SyslogUrls.syslogPolicyList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueData))
       )
     )
   })

@@ -34,7 +34,8 @@ describe.skip('Create DHCP: Pool detail', () => {
 
     const button = screen.getAllByRole('switch')
     await userEvent.click(button[0])
-    await new Promise((r)=>{setTimeout(r, 1000)})
+    //FIXME: Do not use "setTimeout"
+    // await new Promise((r)=>{setTimeout(r, 1000)})
     await userEvent.click(button[0])
 
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Address' }), '10.20.30.0')

@@ -48,12 +48,10 @@ export interface MutationPayload {
 }
 
 export interface MutationResponse {
-  data: {
-    toggleMute: {
-      success: boolean
-      errorMsg: string
-      errorCode: string
-    }
+  toggleMute: {
+    success: boolean
+    errorMsg: string
+    errorCode: string
   }
 }
 
@@ -183,7 +181,10 @@ export const api = recommendationApi.injectEndpoints({
         }
       }),
       transformResponse: (response: MutationResponse) => response,
-      invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
     }),
     scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
       query: (payload) => ({
@@ -204,7 +205,10 @@ export const api = recommendationApi.injectEndpoints({
           scheduledAt: payload.scheduledAt
         }
       }),
-      invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
     }),
     cancelRecommendation: build
       .mutation<ScheduleResponse, { id: string }>({
@@ -224,7 +228,10 @@ export const api = recommendationApi.injectEndpoints({
             id: payload.id
           }
         }),
-        invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+        invalidatesTags: [
+          { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+          { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+        ]
       })
   })
 })

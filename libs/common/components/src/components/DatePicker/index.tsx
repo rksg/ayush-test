@@ -8,8 +8,8 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import {  DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { ClockOutlined }              from '@acx-ui/icons'
+import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
+import { ClockOutlined }                                  from '@acx-ui/icons'
 import {
   defaultRanges,
   DateRange,
@@ -157,6 +157,7 @@ export const DatePicker = (props: AntDatePickerProps) => (
   <UI.Wrapper>
     <AntDatePicker
       {...props}
+      format={userDateTimeFormat(DateFormatEnum.DateFormat)}
       getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
     />
   </UI.Wrapper>

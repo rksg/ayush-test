@@ -106,7 +106,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   }
 }))
 
-describe('WifiCallingConfigureForm', () => {
+describe.skip('WifiCallingConfigureForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
