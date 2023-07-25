@@ -28,8 +28,10 @@ describe('DistributionSwitchDrawer', () => {
     render(
       <Provider>
         <StepsForm>
-          <DistributionSwitchDrawer open={true}
-            availableSwitches={mockNsgSwitchInfoData.distributionSwitches} />
+          <StepsForm.StepForm>
+            <DistributionSwitchDrawer open={true}
+              availableSwitches={mockNsgSwitchInfoData.distributionSwitches} />
+          </StepsForm.StepForm>
         </StepsForm>
       </Provider>, {
         route: { params, path }
@@ -69,13 +71,15 @@ describe('DistributionSwitchDrawer', () => {
     render(
       <Provider>
         <StepsForm form={formRef.current}>
-          <DistributionSwitchDrawer open={true}
-            onSaveDS={saveSpy}
-            editRecord={{
-              ...mockNsgSwitchInfoData.distributionSwitches[0],
-              accessSwitches: mockNsgSwitchInfoData.accessSwitches
-            }}
-            availableSwitches={mockNsgSwitchInfoData.accessSwitches} />
+          <StepsForm.StepForm>
+            <DistributionSwitchDrawer open={true}
+              onSaveDS={saveSpy}
+              editRecord={{
+                ...mockNsgSwitchInfoData.distributionSwitches[0],
+                accessSwitches: mockNsgSwitchInfoData.accessSwitches
+              }}
+              availableSwitches={mockNsgSwitchInfoData.accessSwitches} />
+          </StepsForm.StepForm>
         </StepsForm>
       </Provider>, {
         route: { params, path }

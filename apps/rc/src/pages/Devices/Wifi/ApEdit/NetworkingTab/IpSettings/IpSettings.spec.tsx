@@ -18,6 +18,11 @@ import { ApEditContext } from '../..'
 
 import { IpSettings } from './IpSettings'
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 describe('AP Network IP settings', () => {
   const params = {
@@ -109,6 +114,10 @@ describe('AP Network IP settings', () => {
       rest.get(
         WifiUrlsInfo.getApNetworkSettings.url,
         (_, res, ctx) => res(ctx.json(null))
+      ),
+      rest.put(
+        WifiUrlsInfo.updateApNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(202))
       )
     )
 
@@ -155,6 +164,10 @@ describe('AP Network IP settings', () => {
       rest.get(
         WifiUrlsInfo.getApNetworkSettings.url,
         (_, res, ctx) => res(ctx.json(mockStaticIpSettings))
+      ),
+      rest.put(
+        WifiUrlsInfo.updateApNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(202))
       )
     )
 
