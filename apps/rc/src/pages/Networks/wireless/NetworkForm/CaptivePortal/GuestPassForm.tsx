@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react'
 import {
   Form, Switch
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy, Tooltip }                                                    from '@acx-ui/components'
@@ -23,7 +24,8 @@ export function GuestPassForm () {
   const {
     data,
     editMode,
-    cloneMode
+    cloneMode,
+    setData
   } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
@@ -52,8 +54,10 @@ export function GuestPassForm () {
             valuePropName='checked'
             children={<Switch
               onChange={function (checked: boolean) {
-                form.setFieldValue(['wlan', 'wlanSecurity'],
+                let mutableData = _.cloneDeep(data) ?? {}
+                _.set(mutableData, 'wlan.wlanSecurity',
                   checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.None)
+                setData && setData(mutableData)
               }} />}
           />
           <span>{intl.$t({ defaultMessage: 'Enable OWE encryption' })}</span>

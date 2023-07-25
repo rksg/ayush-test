@@ -6,6 +6,7 @@ import {
   Row, Space,
   Switch
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
@@ -105,8 +106,10 @@ function SettingsForm () {
               valuePropName='checked'
               children={<Switch
                 onChange={function (checked: boolean) {
-                  form.setFieldValue(['wlan', 'wlanSecurity'],
+                  let mutableData = _.cloneDeep(data) ?? {}
+                  _.set(mutableData, 'wlan.wlanSecurity',
                     checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open)
+                  setData && setData(mutableData)
                 }} />}
             />
             <span>{$t({ defaultMessage: 'Enable OWE encryption' })}</span>

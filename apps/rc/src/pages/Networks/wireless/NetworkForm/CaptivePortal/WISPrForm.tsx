@@ -8,9 +8,10 @@ import {
   Input,
   InputRef
 } from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import _                       from 'lodash'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
@@ -53,7 +54,6 @@ import { BypassCaptiveNetworkAssistantCheckbox }                                
 import { WalledGardenTextArea }                                                                     from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import { WISPrAuthAccServer }                                                                       from './SharedComponent/WISPrAuthAccServer'
 import { statesCollection, WISPrAuthAccContext, WISPrAuthAccServerState, WISPrAuthAccServerAction } from './SharedComponent/WISPrAuthAccServer/WISPrAuthAccServerReducer'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 const mspUtils = MSPUtils()
 export function WISPrForm () {
@@ -187,6 +187,8 @@ export function WISPrForm () {
           form.setFieldValue('pskProtocol', data.wlan?.wlanSecurity)
         }
         form.setFieldValue(['wlan', 'wlanSecurity'], data.wlan?.wlanSecurity)
+      } else {
+        form.setFieldValue('networkSecurity', 'NONE')
       }
       if(!pName?.trim() || pName==='Custom Provider'){
         form.setFieldValue(['guestPortal','wisprPage','externalProviderName'], 'Custom Provider')
@@ -398,8 +400,8 @@ export function WISPrForm () {
           extra={networkSecurityDescription()}
           children={
             <Select
-              allowClear
               placeholder={$t({ defaultMessage: 'Select...' })}
+              defaultValue={'NONE'}
               options={networkSecurityOptions}
               onChange={(selected) => {
                 let mutableData = _.cloneDeep(data) ?? {}
@@ -411,6 +413,11 @@ export function WISPrForm () {
                   case WisprSecurityEnum.OWE:
                     setEnablePreShared(false)
                     _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.OWE)
+                    break
+                  case WisprSecurityEnum.NONE:
+                    // disable secure network
+                    setEnablePreShared(false)
+                    _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.None)
                     break
                   default:
                     return

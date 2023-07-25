@@ -25,12 +25,14 @@ export enum SecurityOptionsDescription {
 }
 
 export enum WisprSecurityEnum {
+  NONE = 'Select...',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
 }
 
 export enum WisprSecurityOptionsDescription {
   /* eslint-disable max-len */
+  NONE = '',
   PSK = 'Require users to enter a passphrase to connect',
   OWE = 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network'
   /* eslint-enable */
