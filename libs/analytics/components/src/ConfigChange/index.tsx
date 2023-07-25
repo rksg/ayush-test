@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { GridRow, GridCol }                      from '@acx-ui/components'
 import type { ConfigChange as ConfigChangeType } from '@acx-ui/components'
 
-import { OnDatazoomEvent } from '../ClientTroubleshooting/config'
-
 import { Chart } from './Chart'
 import { KPIs }  from './KPI'
 import { Table } from './Table'
@@ -13,7 +11,7 @@ export function ConfigChange () {
   const [selected, setSelected] = useState<ConfigChangeType | null>(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([])
-  const [chartZoom, setChartZoom] = useState<OnDatazoomEvent | undefined>(undefined)
+  const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10
