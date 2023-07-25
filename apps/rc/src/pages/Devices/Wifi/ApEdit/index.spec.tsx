@@ -3,10 +3,10 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { apApi, venueApi }              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -54,7 +54,84 @@ async function showUnsavedChangesModal (tabKey, discard) {
   )
 }
 
-describe.skip('ApEdit', () => {
+const venue = [
+  {
+    id: '0842f2133565438d85e1e46103889744',
+    name: 'Peter-Venue',
+    apCount: 1,
+    apModels: [
+      'R750'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: '8ee8acc996734a5dbe43777b72469857',
+    name: 'Ben-Venue-US',
+    apCount: 1,
+    apModels: [
+      'R610'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.413',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ],
+    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
+  },
+  {
+    id: '02b81f0e31e34921be5cf47e6dce1f3f',
+    name: 'My-Venue',
+    apCount: 0,
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.433',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['R300', 'R500', 'R550']
+      },
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.533',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['R500']
+      }
+    ]
+  }
+]
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+xdescribe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -63,7 +140,7 @@ describe.skip('ApEdit', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
-      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(aplist))),
@@ -73,17 +150,46 @@ describe.skip('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
+      rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
+        (_, res, ctx) => res(ctx.json(apDetailsList))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
         (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(deviceAps))),
       rest.put(WifiUrlsInfo.updateAp.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(venue)))
     )
   })
   afterEach(() => Modal.destroyAll())
 
-  describe('Ap Edit - General', () => {
+  it('should render correct', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      venueId: 'venue-id',
+      serialNumber: 'serial-number',
+      action: 'edit',
+      activeTab: 'general'
+    }
+
+
+    render(<Provider><ApEdit /></Provider>, {
+      route: { params },
+      path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
+    })
+
+    await screen.findByText('test ap')
+    await waitFor(async () => {
+      expect(screen.getByLabelText(/AP Name/)).toHaveValue('test ap')
+    })
+
+    const tabs = await screen.findAllByRole('tab')
+    expect(tabs.length).toBe(1)
+
+  })
+
+  xdescribe('Ap Edit - General', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
