@@ -32,7 +32,7 @@ interface AssignEcMspAdminsDrawerProps {
 
 interface SelectedMspMspAdmins {
   mspAdminId: string
-  delegatedRole: RolesEnum
+  mspAdminRole: RolesEnum
 }
 
 interface AssignedMultiEcMspAdmins {
@@ -48,6 +48,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
+  const params = useParams()
 
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
@@ -69,7 +70,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
       selMspAdmins.push ({
         mspAdminId: element.id,
-        delegatedRole: role as RolesEnum
+        mspAdminRole: role as RolesEnum
       })
     })
     let assignedEcMspAdmins: AssignedMultiEcMspAdmins[] = []
@@ -81,7 +82,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       })
     })
 
-    saveMspAdmins({ payload: { associations: assignedEcMspAdmins } })
+    saveMspAdmins({ params, payload: { associations: assignedEcMspAdmins } })
       .then(() => {
         setSelected(selectedRows)
         setVisible(false)

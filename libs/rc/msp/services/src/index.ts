@@ -663,10 +663,11 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     assignMultiMspEcDelegatedAdmins: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.assignMultiMspEcDelegatedAdmins, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
