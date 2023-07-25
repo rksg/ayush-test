@@ -14,18 +14,31 @@ describe('Table', () => {
     store.dispatch(api.util.resetApiState())
   })
   const handleClick = jest.fn()
+  const setPagination = jest.fn()
 
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
+    render(<Table
+      selected={null}
+      onRowClick={handleClick}
+      pagination={{ current: 1, pageSize: 10 }}
+      setPagination={setPagination}
+      dotSelect={null}
+    />, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
   it('should render table with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
+      render(<Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -38,7 +51,13 @@ describe('Table', () => {
   it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
+      render(<Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -57,7 +76,13 @@ describe('Table', () => {
   it('should log rows when clicked', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table selected={null} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
+      render(<Table
+        selected={null}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const radio = await screen.findAllByRole('radio')
@@ -89,7 +114,13 @@ describe('Table', () => {
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table selected={selected} onRowClick={handleClick}/>, { wrapper: Provider, route: {} })
+      render(<Table
+        selected={selected}
+        onRowClick={handleClick}
+        pagination={{ current: 1, pageSize: 10 }}
+        setPagination={setPagination}
+        dotSelect={null}
+      />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
   })
 })

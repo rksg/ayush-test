@@ -40,10 +40,10 @@ export function ConfigChange () {
     <GridCol col={{ span: 8 }}><KPIs kpiTimeRanges={kpiTimeRanges}/></GridCol>
     <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}>
       <Table
-        selectedRow={selected}
+        selected={selected}
         onRowClick={handleClick}
         pagination={pagination}
-        setPagination={(newPagination) => setPagination(newPagination)}
+        setPagination={setPagination}
         dotSelect={dotSelect}
       />
     </GridCol>

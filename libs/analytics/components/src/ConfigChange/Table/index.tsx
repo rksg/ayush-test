@@ -18,7 +18,7 @@ import { Badge }                                from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
 export function Table (props: {
-  selectedRow: ConfigChange | null,
+  selected: ConfigChange | null,
   onRowClick: (params: ConfigChange) => void,
   pagination: { current: number, pageSize: number },
   setPagination: (params: { current: number, pageSize: number }) => void,
@@ -27,7 +27,7 @@ export function Table (props: {
   const { $t } = useIntl()
   const { filters: { filter, startDate: start, endDate: end } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({ ...getFilterPayload({ filter }), start, end })
-  const { selectedRow, onRowClick, pagination, setPagination, dotSelect } = props
+  const { selected, onRowClick, pagination, setPagination, dotSelect } = props
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -109,7 +109,7 @@ export function Table (props: {
     onChange: (_: React.Key[], selectedRows: ConfigChange[]) => {
       onRowClick?.(selectedRows[0])
     },
-    ...(selectedRow && { selectedRowKeys: [selectedRow.id!] })
+    ...(selected && { selectedRowKeys: [selected.id!] })
   }
 
   const handlePaginationChange = (current: number, pageSize: number) => {

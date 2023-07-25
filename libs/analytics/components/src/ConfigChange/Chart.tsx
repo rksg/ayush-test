@@ -37,9 +37,7 @@ function BasicChart (props: {
               moment(startDate).valueOf(),
               moment(endDate).valueOf()
             ]}
-            onDotClick={(params) => {
-              onClick(params)
-            }}
+            onDotClick={onClick}
             selectedData={selected?.id}
             onBrushPositionsChange={props.onBrushPositionsChange}
             setChartZoom={props.setChartZoom}
