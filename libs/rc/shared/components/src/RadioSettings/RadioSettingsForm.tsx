@@ -82,7 +82,7 @@ export function RadioSettingsForm (props:{
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
 
-  }, [enableMulticastRateLimitingFieldName, enableUploadLimitFieldName, enableDownloadLimitFieldName, form] )
+  }, [] )
 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -290,7 +290,7 @@ export function RadioSettingsForm (props:{
                   <Checkbox data-testid='enableDownloadLimit'
                     disabled={disabled || isUseVenueSettings}
                     onChange={function (e: CheckboxChangeEvent) {
-                      const value = e.target.checked ? 20 : 0
+                      const value = e.target.checked ? getDLMax(form.getFieldValue(bssMinRate6gFieldName)) : 0
                       form.setFieldValue(
                         downloadLimitFieldName, value)
                     }}
