@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import moment    from 'moment-timezone'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
@@ -6,7 +8,7 @@ import { Card, ConfigChangeChart, Loader }      from '@acx-ui/components'
 
 import { useConfigChangeQuery } from './services'
 
-export function Chart (){
+function BasicChart (props: { onBrushPositionsChange: (params: number[][]) => void }){
   const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
     ...getFilterPayload({ filter }),
@@ -25,6 +27,7 @@ export function Chart (){
               moment(startDate).valueOf(),
               moment(endDate).valueOf()
             ]}
+            onBrushPositionsChange={props.onBrushPositionsChange}
             // TODO: need to handle sync betweem chart and table
             // onDotClick={(params) => console.log(params)}
           />}
@@ -32,3 +35,5 @@ export function Chart (){
     </Card>
   </Loader>
 }
+
+export const Chart = memo(BasicChart)

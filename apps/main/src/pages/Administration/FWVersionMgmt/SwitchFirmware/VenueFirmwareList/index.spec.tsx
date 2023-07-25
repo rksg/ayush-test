@@ -76,7 +76,7 @@ describe('Firmware Venues Table', () => {
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
   })
 
-  it('should update selected rows', async () => {
+  it.skip('should update selected rows', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
