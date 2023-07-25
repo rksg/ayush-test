@@ -82,6 +82,9 @@ describe('IncidentDashboardv2', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
       error: new Error('something went wrong!')
     })
+    mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
+      data: { network: { hierarchyNode: [] } }
+    })
     render(
       <BrowserRouter>
         <Provider>
@@ -89,7 +92,7 @@ describe('IncidentDashboardv2', () => {
         </Provider>
       </BrowserRouter>
     )
-    await screen.findByText('Something went wrong.')
+    await screen.findByText('No reported incidents')
     jest.resetAllMocks()
   })
   it('should render message when no data', async () => {
