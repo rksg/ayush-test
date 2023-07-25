@@ -52,7 +52,6 @@ export function ConfigChangeChart ({
   } = chartLayoutConfig
 
   const [selected, setSelected] = useState<number|undefined>(selectedData)
-  const [zoomBoundary, setZoomBoundary] = useState({ start: chartBoundary[0], end: chartBoundary[1] })
 
   useEffect(() => {
     setSelected(selectedData)
@@ -69,7 +68,7 @@ export function ConfigChangeChart ({
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =
-    useDataZoom(eChartsRef, chartBoundary, setBoundary, zoomBoundary, setZoomBoundary)
+    useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom)
 
   const option: EChartsOption = {
     animation: false,
@@ -149,9 +148,7 @@ export function ConfigChangeChart ({
     toolbox: toolboxDataZoomOptions,
     dataZoom: [{
       ...dataZoomOptions([])[0],
-      minValueSpan: 60 * 60 * 1000, // an hour
-      startValue: zoomBoundary.start,
-      endValue: zoomBoundary.end
+      minValueSpan: 60 * 60 * 1000
     }],
     series: chartRowMapping.slice().reverse().map(
       ({ key, label }) =>
