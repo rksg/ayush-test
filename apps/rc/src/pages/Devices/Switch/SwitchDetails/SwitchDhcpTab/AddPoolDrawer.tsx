@@ -13,8 +13,8 @@ import {
   SwitchDhcp,
   SwitchDhcpOption
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { DhcpOptionModal } from './DhcpOptionModal'
 
@@ -140,7 +140,7 @@ export function AddPoolDrawer (props: {
       footer={footer}
     >
       <Form layout='vertical' form={form} onFinish={handleFormFinish}>
-        <Form.Item name={'id'} hidden children={<input type='hidden' />} />
+        <Form.Item name={'id'} hidden children={<></>} />
         <Form.Item
           name='poolName'
           label={$t({ defaultMessage: 'Pool Name' })}
@@ -229,7 +229,7 @@ export function AddPoolDrawer (props: {
         <Table
           rowKey='seq'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{
+          rowSelection={hasAccess() && {
             type: 'radio',
             selectedRowKeys: selected ? [selected.seq]:[],
             onChange: (keys: React.Key[]) => {

@@ -10,11 +10,12 @@ import { useEdgeExportCsv }                                          from '@acx-
 import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
 import {
   EdgeService,
-  RequestPayload,
+  EdgeServiceTypeEnum,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { RequestPayload }            from '@acx-ui/types'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
 import { getEdgeServiceTypeString } from './utils'
@@ -89,7 +90,7 @@ export const EdgeServices = () => {
       dataIndex: 'targetVersion',
       sorter: true,
       render: (_, row) => {
-        if(row.targetVersion && row.currentVersion !== row.targetVersion) {
+        if (row.targetVersion && row.currentVersion !== row.targetVersion) {
           return $t({ defaultMessage: 'Yes' })
         }
         return $t({ defaultMessage: 'No' })
@@ -104,9 +105,30 @@ export const EdgeServices = () => {
     }
   ]
 
+  const isRemoveBtnDisable = (selectedRows: EdgeService[]) => {
+    let isDhcpSelected = selectedRows
+      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.DHCP)
+      .length > 0
+
+    let isNsgSelected = selectedRows
+      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION)
+      .length > 0
+
+    let isNsgExist = tableQuery?.data?.data ? tableQuery?.data?.data?.filter(EdgeService =>
+      EdgeService.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION)
+      .length > 0 : false
+
+    return isDhcpSelected ? isNsgSelected ? false : isNsgExist : false
+  }
+
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
+      disabled: isRemoveBtnDisable,
+      tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'DHCP cannot be removed when the Network Segmentation is applied on the Edge' }
+        ) : undefined,
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -135,12 +157,14 @@ export const EdgeServices = () => {
                 key: 'ok',
                 closeAfterAction: true,
                 handler: () => {
-                  removeServices({ params, payload: {
-                    serviceList: selectedRows.map(item => ({
-                      serviceId: item.serviceId,
-                      serviceType: item.serviceType
-                    }))
-                  } }).then(clearSelection)
+                  removeServices({
+                    params, payload: {
+                      serviceList: selectedRows.map(item => ({
+                        serviceId: item.serviceId,
+                        serviceType: item.serviceType
+                      }))
+                    }
+                  }).then(clearSelection)
                 }
               }
             ]
@@ -157,7 +181,7 @@ export const EdgeServices = () => {
       <Table
         settingsId='edge-services-table'
         rowKey='serviceId'
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}
         dataSource={tableQuery?.data?.data}

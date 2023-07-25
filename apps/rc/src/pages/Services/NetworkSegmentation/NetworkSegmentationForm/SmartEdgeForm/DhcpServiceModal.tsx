@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast, StepsFormLegacy } from '@acx-ui/components'
@@ -17,7 +18,13 @@ export const DhcpServiceModal = () => {
 
   const handleAddEdgeDhcp = async (data: EdgeDhcpSetting) => {
     try {
-      const payload = { ...data }
+      const payload = _.cloneDeep(data)
+
+      // should not create service with id
+      payload.dhcpPools.forEach(item => item.id = '')
+      payload.dhcpOptions?.forEach(item => item.id = '')
+      payload.hosts?.forEach(item => item.id = '')
+
       await addEdgeDhcp({ payload: payload }).unwrap()
       setVisible(false)
     } catch {

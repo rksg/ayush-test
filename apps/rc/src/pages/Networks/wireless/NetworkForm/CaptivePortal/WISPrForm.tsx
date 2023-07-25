@@ -17,7 +17,9 @@ import { Features, useIsSplitOn }                                            fro
 import {
   InformationSolid
 } from '@acx-ui/icons'
-import { useExternalProvidersQuery, useGetMspEcProfileQuery } from '@acx-ui/rc/services'
+import { useGetMspEcProfileQuery }   from '@acx-ui/msp/services'
+import { MSPUtils }                  from '@acx-ui/msp/utils'
+import { useExternalProvidersQuery } from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   generateHexKey,
@@ -33,7 +35,6 @@ import {
   trailingNorLeadingSpaces,
   URLProtocolRegExp,
   WlanSecurityEnum,
-  MSPUtils,
   AuthRadiusEnum,
   WisprSecurityEnum,
   WisprSecurityOptionsDescription

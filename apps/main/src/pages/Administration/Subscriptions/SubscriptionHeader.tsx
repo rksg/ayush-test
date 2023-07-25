@@ -5,9 +5,11 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
+import { Features, useIsTierAllowed, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
-  useGetEntitlementSummaryQuery
+  useGetEntitlementSummaryQuery,
+  useGetAccountTierQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementDeviceType,
@@ -60,8 +62,13 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const subscriptionVal = (getJwtTokenPayload().acx_account_tier
-  === AccountTier.PLATINUM? SubscriptionTierType.Platinum : SubscriptionTierType.Gold)
+  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
+
+  const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
+  const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
+  const subscriptionVal = ( tier === AccountTier.GOLD? SubscriptionTierType.Gold
+    : SubscriptionTierType.Platinum )
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
     .filter(o => !o.value.startsWith('MSP'))
@@ -97,16 +104,18 @@ export const SubscriptionHeader = () => {
         </Row>
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
-            subscriptionDeviceTypeList.map((item) => {
-              const summary = summaryData[item.value]
-              return summary ? <SubscriptionUtilizationWidget
-                key={item.value}
-                deviceType={item.value}
-                title={item.label}
-                total={summary.total}
-                used={summary.used}
-              /> : ''
-            })
+            subscriptionDeviceTypeList.filter(data =>
+              data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled)
+              .map((item) => {
+                const summary = summaryData[item.value]
+                return summary ? <SubscriptionUtilizationWidget
+                  key={item.value}
+                  deviceType={item.value}
+                  title={item.label}
+                  total={summary.total}
+                  used={summary.used}
+                /> : ''
+              })
           }
         </SpaceWrapper>
       </SpaceWrapper>

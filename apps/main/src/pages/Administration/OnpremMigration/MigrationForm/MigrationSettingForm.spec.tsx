@@ -2,9 +2,9 @@ import { initialize } from '@googlemaps/jest-mocks'
 import { Form }       from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
-import { Provider }                      from '@acx-ui/store'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, getUrlForTest, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -62,6 +62,14 @@ describe('Venues Form', () => {
       rest.get(
         'https://maps.googleapis.com/maps/api/timezone/*',
         (req, res, ctx) => res(ctx.json(timezoneResult))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({
+          global: {
+            mapRegion: 'US'
+          }
+        }))
       )
     )
 

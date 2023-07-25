@@ -65,14 +65,29 @@ const thirdStyle = css`
       > .ant-tabs-tab-btn {
         font-size: var(--acx-body-4-font-size);
         line-height: var(--acx-body-4-line-height);
-        font-weight: var(--acx-body-font-weight);
         text-shadow: none;
+        > span {
+          display: inline-flex;
+          align-items: center;
+        }
+        svg {
+          margin: 0 5px;
+          width: 20px;
+          height: 20px;
+          path[stroke] {
+            stroke: currentColor;
+          }
+          path[fill] {
+            fill: currentColor;
+          }
+        }
       }
       &.ant-tabs-tab-active {
         z-index: 1;
         border-color: var(--acx-accents-orange-50);
         > .ant-tabs-tab-btn {
           color: var(--acx-accents-orange-50);
+          font-weight: var(--acx-subtitle-4-font-weight);
         }
       }
     }

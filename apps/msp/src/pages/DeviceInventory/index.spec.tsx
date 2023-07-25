@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ApDeviceStatusEnum, MspUrlsInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
+import { MspUrlsInfo }                          from '@acx-ui/msp/utils'
+import { ApDeviceStatusEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { Provider }                             from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -140,14 +141,33 @@ const list = {
   ]
 }
 
-const services = require('@acx-ui/rc/services')
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services')
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
 }))
 const utils = require('@acx-ui/rc/utils')
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils')
 }))
+
+const fakeTenantDetails = {
+  id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
+  createdDate: '2023-01-31T04:19:00.241+00:00',
+  updatedDate: '2023-02-15T02:34:21.877+00:00',
+  entitlementId: '140360222',
+  maintenanceState: false,
+  name: 'Dog Company 1551',
+  externalId: '0012h00000NrlYAAAZ',
+  upgradeGroup: 'production',
+  tenantMFA: {
+    mfaStatus: 'DISABLED',
+    recoveryCodes: '["825910","333815","825720","919107","836842"]' },
+  preferences: '{"global":{"mapRegion":"UA"}}',
+  ruckusUser: false,
+  isActivated: true,
+  status: 'active',
+  tenantType: 'REC'
+}
 
 describe('Device Inventory Table', () => {
   let params: { tenantId: string }
@@ -160,6 +180,10 @@ describe('Device Inventory Table', () => {
       rest.post(
         MspUrlsInfo.exportMspEcDeviceInventory.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.get(
+        MspUrlsInfo.getTenantDetail.url,
+        (req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
     global.URL.createObjectURL = jest.fn()

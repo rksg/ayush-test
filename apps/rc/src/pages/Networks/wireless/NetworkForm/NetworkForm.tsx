@@ -195,7 +195,6 @@ export default function NetworkForm (props:{
         settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
       }
       updateSaveData(settingSaveData)
-      return true
     }else {
       if(!(editMode||cloneMode)){
         if(_.get(data, 'lockoutPeriodUnit')&&data?.guestPortal?.lockoutPeriod){
@@ -215,8 +214,8 @@ export default function NetworkForm (props:{
         }
         updateSaveData(settingCaptiveSaveData)
       }
-      return true
     }
+    return true
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

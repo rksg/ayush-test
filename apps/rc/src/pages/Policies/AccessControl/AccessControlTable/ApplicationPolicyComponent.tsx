@@ -15,7 +15,7 @@ import {
 import {
   useTableQuery, ApplicationPolicy, AclOptionType, Network
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddModeProps }                         from '../AccessControlForm/AccessControlForm'
 import ApplicationDrawer                        from '../AccessControlForm/ApplicationDrawer'
@@ -132,20 +132,20 @@ const ApplicationPolicyComponent = () => {
       <ApplicationDrawer
         onlyAddMode={addModeStatus}
       />
+      <Table<ApplicationPolicy>
+        settingsId='policies-access-control-application-policy-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
+      />
     </Form>
-    <Table<ApplicationPolicy>
-      settingsId='policies-access-control-application-policy-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
-    />
   </Loader>
 }
 

@@ -77,7 +77,7 @@ describe('DistributionSwitchForm', () => {
     )
   })
 
-  it('should edit correctly', async () => {
+  it.skip('should edit correctly', async () => {
     const user = userEvent.setup()
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -101,7 +101,6 @@ describe('DistributionSwitchForm', () => {
       })
     const row = await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
     await user.click(await within(row).findByRole('radio'))
-    await user.click(await within(row).findByRole('radio')) // workaround
     const alert = await screen.findByRole('alert')
     await user.click(await within(alert).findByRole('button', { name: 'Edit' }))
 

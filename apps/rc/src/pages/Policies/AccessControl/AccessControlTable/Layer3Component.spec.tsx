@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  AccessControlUrls
+  AccessControlUrls, CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import {
@@ -16,7 +16,7 @@ import {
   aclList,
   enhancedLayer3PolicyListResponse,
   layer3PolicyListResponse,
-  layer3Response
+  layer3Response, networkListResponse
 } from '../__tests__/fixtures'
 
 import Layer3Component from './Layer3Component'
@@ -34,12 +34,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('AccessControlTable', () => {
+describe('AccessControlTable - Layer3', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
         AccessControlUrls.getEnhancedL3AclPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(
+          ctx.json(networkListResponse)
+        )
       )
     )
   })
