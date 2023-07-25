@@ -3,13 +3,12 @@ import { useDebugValue, useMemo } from 'react'
 import { useTreatments } from '@splitsoftware/splitio-react'
 import { useParams }     from 'react-router-dom'
 
-import { useGetAccountTierQuery }                           from '@acx-ui/rc/services'
-import { useGetBetaStatusQuery }                            from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
+import { useGetAccountTierQuery }                                        from '@acx-ui/rc/services'
+import { useGetBetaStatusQuery }                                         from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, getTenantId } from '@acx-ui/utils'
 
 import { Features }     from './features'
 import { useIsSplitOn } from './useIsSplitOn'
-
 type TierKey = `feature-${AccountType}-${AccountVertical}` | 'betaList'
 
 /* eslint-disable max-len, key-spacing */
@@ -24,13 +23,16 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
 
 export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const params = useParams()
-  const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG)
+  const isDelegationFlow = getJwtTokenPayload().tenantId !== getTenantId()
+  const jwtPayload = getJwtTokenPayload()
+  // only if it's delgation flow and FF true then call -
+  // getBetaStatus value
+  const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG) && isDelegationFlow
   const betaStatusResponse = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
   const betaEnabled = Boolean(betaStatusResponse?.data?.enabled)
 
-  const jwtPayload = getJwtTokenPayload()
-  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
-
+  // getAccountTier value
+  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationFlow
   const accTierResponse = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const acx_account_tier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
 
