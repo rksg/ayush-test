@@ -67,7 +67,9 @@ export enum Features {
   DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle',
   WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
   MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle',
-  WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle'
+  WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
+  WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
+  WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
