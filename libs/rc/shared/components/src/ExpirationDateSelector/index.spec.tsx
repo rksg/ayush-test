@@ -40,7 +40,7 @@ describe('ExpirationDateSelector', () => {
     )
 
     formRef.current.setFieldValue(mockedInputName, expirationByDate)
-    const selectDateElem = await screen.findByDisplayValue(expirationByDate.date!)
+    const selectDateElem = await screen.findByDisplayValue('12/01/2022')
 
     expect(selectDateElem).toBeInTheDocument()
 
@@ -78,12 +78,12 @@ describe('ExpirationDateSelector', () => {
     )
 
     formRef.current.setFieldValue(mockedInputName, expirationByDate)
-    const selectDateElem = await screen.findByDisplayValue(expirationByDate.date!)
+    const selectDateElem = await screen.findByDisplayValue('11/02/2022')
 
     await userEvent.click(selectDateElem)
     await userEvent.click(await screen.findByRole('cell', { name: /25/ }))
 
-    await screen.findByDisplayValue('2022-11-25')
+    await screen.findByDisplayValue('11/25/2022')
     const values = formRef.current.getFieldValue(mockedInputName)
 
     expect(values.date).toBe('2022-11-25T00:00:00.000Z')
