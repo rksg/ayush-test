@@ -60,8 +60,6 @@ export const HostDrawer = (props: HostDrawerProps) => {
     onFinish={onSubmit}
     initialValues={initHostData}
   >
-    <Form.Item name='id' hidden />
-
     <Row>
       <Col span={12}>
         <Form.Item

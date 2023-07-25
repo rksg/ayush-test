@@ -42,7 +42,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType }                                                            from '@acx-ui/utils'
 
 import { AssignEcMspAdminsDrawer } from './AssignEcMspAdminsDrawer'
@@ -564,7 +564,7 @@ export function MspCustomers () {
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
+          rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
         />
       </Loader>
     )

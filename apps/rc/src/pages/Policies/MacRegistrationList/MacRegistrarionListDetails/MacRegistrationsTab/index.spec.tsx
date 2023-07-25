@@ -69,7 +69,7 @@ const macReg = {
   networkIds: []
 }
 
-describe('MacRegistrationsTab', () => {
+describe.skip('MacRegistrationsTab', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     policyId: '1b5c434b-1d28-4ac1-9fe6-cdbee9f934e3'

@@ -9,7 +9,7 @@ import { Loader, StepsFormLegacy, Table, TableProps }             from '@acx-ui/
 import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
 import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
 import { useTenantLink }                                          from '@acx-ui/react-router-dom'
-import { filterByAccess }                                         from '@acx-ui/user'
+import { filterByAccess, hasAccess }                              from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -136,7 +136,7 @@ const StaticRoutes = () => {
                 columns={columns}
                 rowActions={filterByAccess(rowActions)}
                 dataSource={routesData}
-                rowSelection={{ type: 'checkbox' }}
+                rowSelection={hasAccess() && { type: 'checkbox' }}
                 rowKey='id'
               />
             </Loader>

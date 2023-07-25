@@ -15,7 +15,7 @@ import {
   SnmpColumnData,
   useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }            from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -159,7 +159,7 @@ export default function SnmpAgentTable () {
           enableApiFilter={true}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
     </>

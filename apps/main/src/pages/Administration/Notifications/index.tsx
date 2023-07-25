@@ -20,8 +20,8 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import RecipientDialog from './RecipientDialog'
 import * as UI         from './styledComponents'
@@ -171,7 +171,7 @@ export const NotificationsTable = () => {
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           actions={filterByAccess(tableActions)}
         />
       </Loader>

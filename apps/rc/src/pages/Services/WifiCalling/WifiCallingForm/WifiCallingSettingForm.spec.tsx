@@ -56,7 +56,28 @@ const wrapper = ({ children }: { children: React.ReactElement }) => {
   </Provider>
 }
 const setWifiCallingSetting = jest.fn()
-
+const wifiCallingSettingTable = [
+  {
+    profileName: 'AT&T',
+    description: 'AT&T des',
+    qosPriority: 'WIFICALLING_PRI_VOICE'
+  },
+  {
+    profileName: 'Sprint',
+    description: 'Sprint des',
+    qosPriority: 'WIFICALLING_PRI_VOICE'
+  },
+  {
+    profileName: 'Verizon',
+    description: 'Verizon des',
+    qosPriority: 'WIFICALLING_PRI_VOICE'
+  },
+  {
+    profileName: 'T-Mobile',
+    description: 'T-Mobile des',
+    qosPriority: 'WIFICALLING_PRI_VOICE'
+  }
+]
 
 describe('WifiCallingSettingForm', () => {
   beforeEach(() => {
@@ -70,6 +91,11 @@ describe('WifiCallingSettingForm', () => {
       WifiCallingUrls.getWifiCalling.url,
       (_, res, ctx) => res(
         ctx.json(wifiCallingResponse)
+      )
+    ), rest.get(
+      WifiCallingUrls.getWifiCallingList.url,
+      (_, res, ctx) => res(
+        ctx.json(wifiCallingSettingTable)
       )
     ))
     render(
