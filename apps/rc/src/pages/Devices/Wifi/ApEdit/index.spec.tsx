@@ -1,7 +1,6 @@
-import { initialize } from '@googlemaps/jest-mocks'
-import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
-import { rest }       from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
+import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
@@ -67,7 +66,6 @@ describe('ApEdit', () => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    initialize()
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
