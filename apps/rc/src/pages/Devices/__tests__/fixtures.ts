@@ -3040,3 +3040,74 @@ export const resultOfGetApSnmpAgentProfiles = [
     id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
   }
 ]
+
+export const venueVersionList = [
+  {
+    id: '0842f2133565438d85e1e46103889744',
+    name: 'Peter-Venue',
+    apCount: 1,
+    apModels: [
+      'R750'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: '8ee8acc996734a5dbe43777b72469857',
+    name: 'Ben-Venue-US',
+    apCount: 1,
+    apModels: [
+      'R610'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.413',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ],
+    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
+  },
+  {
+    id: '02b81f0e31e34921be5cf47e6dce1f3f',
+    name: 'My-Venue',
+    apCount: 0,
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.433',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['R300', 'R500', 'R550']
+      },
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.533',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['R500']
+      }
+    ]
+  }
+]

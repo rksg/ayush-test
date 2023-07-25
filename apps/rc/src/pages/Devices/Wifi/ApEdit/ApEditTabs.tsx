@@ -40,7 +40,6 @@ function ApEditTabs () {
   }
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
-  setIsOnlyOneTab(!currentAP?.model)
 
   const onTabChange = (tab: string) => {
     if (tab === 'settings') tab = (supportStaticIpSettings)? `${tab}/general` : `${tab}/radio`
@@ -75,6 +74,12 @@ function ApEditTabs () {
       unblockRef.current?.()
     }
   }, [editContextData])
+
+  useEffect(() => {
+    if (currentAP) {
+      setIsOnlyOneTab(!currentAP?.model)
+    }
+  }, [currentAP])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
