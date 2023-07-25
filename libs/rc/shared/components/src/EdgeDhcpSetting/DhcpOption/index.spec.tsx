@@ -89,7 +89,7 @@ describe('Option table(Edge)', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await user.click(await screen.findByRole('button', { name: 'Edit' }))
     const drawer = await screen.findByRole('dialog')
-    user.selectOptions(
+    await user.selectOptions(
       await within(drawer).findByRole('combobox', { name: 'Option Name' }),
       await screen.findByRole('option', { name: 'Domain name' })
     )
