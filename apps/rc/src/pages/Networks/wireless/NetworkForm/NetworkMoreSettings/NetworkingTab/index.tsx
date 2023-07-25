@@ -38,6 +38,10 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
 
   const labelWidth = '250px'
 
+  const agileMultibandTooltipContent = $t({ defaultMessage:
+    `Agile Multiband prioritizes roaming performance in indoor environments,
+     supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
+
   const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
@@ -80,7 +84,13 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
     <>
       {AmbAndDtimFlag &&
         <UI.FieldLabel width={labelWidth}>
-          {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+          <div style={{ display: 'grid', gridTemplateColumns: '170px 80px' }}>
+            {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+            <Tooltip.Question
+              title={agileMultibandTooltipContent}
+              placement='right'
+            />
+          </div>
           <Form.Item
             name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
             style={{ marginBottom: '10px' }}

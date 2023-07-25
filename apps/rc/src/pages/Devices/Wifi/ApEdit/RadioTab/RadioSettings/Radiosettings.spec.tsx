@@ -59,6 +59,9 @@ describe('RadioSettingsTab', ()=> {
           (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
         rest.put(
           WifiUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        rest.delete(
+          WifiUrlsInfo.deleteApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json({})))
       )
     })

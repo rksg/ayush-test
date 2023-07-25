@@ -297,7 +297,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
         />
       </UI.FieldLabel>
 
-      {dhcpOption82Flag && <DhcpOption82Form labelWidth={labelWidth} />}
+      {dhcpOption82Flag && <DhcpOption82Form labelWidth={'240px'} />}
 
       <AccessControlForm/>
 

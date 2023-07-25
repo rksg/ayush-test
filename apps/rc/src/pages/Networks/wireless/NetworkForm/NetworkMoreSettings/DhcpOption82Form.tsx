@@ -1,4 +1,4 @@
-
+/* eslint-disable max-len */
 import { ReactNode, CSSProperties } from 'react'
 
 import {
@@ -6,12 +6,12 @@ import {
   Form,
   Select,
   Switch,
-  FormItemProps
+  FormItemProps,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Fieldset } from '@acx-ui/components'
-
+import { Fieldset, Tooltip } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
@@ -56,6 +56,61 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
   const { $t } = useIntl()
   const { labelWidth='250px' } = props
 
+  const dhcp82SubOption1Options = [{
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
+    label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC: Location' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO,
+    label: $t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE,
+    label: $t({ defaultMessage: 'AP MAC; ESSID; Privacy Type' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX,
+    label: $t({ defaultMessage: 'AP MAC-hex' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX_ESSID,
+    label: $t({ defaultMessage: 'AP MAC-hex: ESSID' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_ESSID,
+    label: $t({ defaultMessage: 'ESSID' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC,
+    label: $t({ defaultMessage: 'AP MAC' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID,
+    label: $t({ defaultMessage: 'AP MAC: ESSID' })
+  }, {
+    value: DhcpOption82SubOption1Enum.SUBOPT1_AP_NAME_ESSID,
+    label: $t({ defaultMessage: 'AP Name: ESSID' })
+  }]
+
+  const dhcp82SubOption2Options = [{
+    value: DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC,
+    label: $t({ defaultMessage: 'Client MAC' })
+  }, {
+    value: DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC_HEX,
+    label: $t({ defaultMessage: 'Client MAC-hex' })
+  }, {
+    value: DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC_HEX_ESSID,
+    label: $t({ defaultMessage: 'Client MAC-hex: ESSID' })
+  }, {
+    value: DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC,
+    label: $t({ defaultMessage: 'AP MAC' })
+  }, {
+    value: DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC_HEX,
+    label: $t({ defaultMessage: 'AP MAC-hex' })
+  }, {
+    value: DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC_HEX_ESSID,
+    label: $t({ defaultMessage: 'AP MAC-hex: ESSID' })
+  }, {
+    value: DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC_ESSID,
+    label: $t({ defaultMessage: 'AP MAC: ESSID' })
+  }, {
+    value: DhcpOption82SubOption2Enum.SUBOPT2_AP_NAME,
+    label: $t({ defaultMessage: 'AP Name' })
+  }]
+
   const dhcpOption82SubOption1EnabledFieldName =
     ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled']
   const dhcpOption82SubOption2EnabledFieldName =
@@ -92,6 +147,13 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
     }
   }
 
+  const dhcpOption82SubOption1TooltipContent = $t({ defaultMessage: 'Agent Circuit ID' })
+  const dhcpOption82SubOption2TooltipContent = $t({ defaultMessage: 'Agent Remote ID' })
+  const dhcpOption82SubOption150TooltipContent =
+      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection' })
+  const dhcpOption82SubOption151TooltipContent =
+      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection Control' })
+
   return (
     <FieldsetItem
       name={['wlan', 'advancedCustomization', 'dhcpOption82Enabled']}
@@ -102,7 +164,13 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
       onChange={onChangeDhcpOption82}>
 
       <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Sub-option 1' })}
+        <Space align='start'>
+          {$t({ defaultMessage: 'Sub-option 1' })}
+          <Tooltip.Question
+            title={dhcpOption82SubOption1TooltipContent}
+            placement='right'
+          />
+        </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px' }}>
           <Form.Item
             name={dhcpOption82SubOption1EnabledFieldName}
@@ -116,43 +184,20 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
               name={['wlan','advancedCustomization','dhcpOption82SubOption1Format']}
               initialValue={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION}
               children={
-                <Select>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION}>
-                    {$t({ defaultMessage:
-                      'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC: Location' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO}>
-                    {$t({ defaultMessage: 'IF Name: VLAN ID: ESSID: AP Model: AP Name: AP MAC' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE}>
-                    {$t({ defaultMessage: 'AP MAC; ESSID; Privacy Type' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX}>
-                    {$t({ defaultMessage: 'AP MAC-hex' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_HEX_ESSID}>
-                    {$t({ defaultMessage: 'AP MAC-hex: ESSID' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_ESSID}>
-                    {$t({ defaultMessage: 'ESSID' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC}>
-                    {$t({ defaultMessage: 'AP MAC' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_MAC_ESSID}>
-                    {$t({ defaultMessage: 'AP MAC: ESSID' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption1Enum.SUBOPT1_AP_NAME_ESSID}>
-                    {$t({ defaultMessage: 'AP Name: ESSID' })}
-                  </Option>
-                </Select>
+                <Select options={dhcp82SubOption1Options} />
               }
             />
           }
         </div>
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Sub-option 2' })}
+        <Space align='start'>
+          {$t({ defaultMessage: 'Sub-option 2' })}
+          <Tooltip.Question
+            title={dhcpOption82SubOption2TooltipContent}
+            placement='right'
+          />
+        </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px auto' }}>
           <Form.Item
             name={dhcpOption82SubOption2EnabledFieldName}
@@ -166,52 +211,38 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
               name={['wlan','advancedCustomization','dhcpOption82SubOption2Format']}
               initialValue={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC}
               children={
-                <Select>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC}>
-                    {$t({ defaultMessage: 'Client MAC' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC_HEX}>
-                    {$t({ defaultMessage: 'Client MAC-hex' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC_HEX_ESSID}>
-                    {$t({ defaultMessage: 'Client MAC-hex: ESSID' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC}>
-                    {$t({ defaultMessage: 'AP MAC' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC_HEX}>
-                    {$t({ defaultMessage: 'AP MAC-hex' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC_HEX_ESSID}>
-                    {$t({ defaultMessage: 'AP MAC-hex: ESSID' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_AP_MAC_ESSID}>
-                    {$t({ defaultMessage: 'AP MAC: ESSID' })}
-                  </Option>
-                  <Option value={DhcpOption82SubOption2Enum.SUBOPT2_AP_NAME}>
-                    {$t({ defaultMessage: 'AP Name' })}
-                  </Option>
-                </Select>
+                <Select options={dhcp82SubOption2Options} />
               }
             />
           }
         </div>
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
-        <div>
-          <Form.Item
-            name={dhcpOption82SubOption150EnabledFieldName}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch />}
+        <Space align='start'>
+          {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
+          <Tooltip.Question
+            title={dhcpOption82SubOption150TooltipContent}
+            placement='right'
           />
-        </div>
+        </Space>
+        <Form.Item
+          name={dhcpOption82SubOption150EnabledFieldName}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch />}
+        />
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Sub-option 151' })}
+        <Space align='start'>
+          {$t({ defaultMessage: 'Sub-option 151' })}
+          <Tooltip.Question
+            title={dhcpOption82SubOption151TooltipContent}
+            placement='right'
+          />
+        </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 150px auto' }}>
+
           <Form.Item
             name={dhcpOption82SubOption151EnabledFieldName}
             style={{ marginBottom: '10px' }}
