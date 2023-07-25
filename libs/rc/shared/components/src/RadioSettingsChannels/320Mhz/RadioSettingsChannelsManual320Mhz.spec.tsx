@@ -19,9 +19,6 @@ describe('RadioSettingsChannelsManual320Mhz', () => {
               channelBandwidth320MhzGroupFieldName={['apRadioParams6G', 'channelBandwidth320MhzGroup']}
               channelList={TEST_CHANNEL_DATA}
               disabled={false}
-              editContext={React.createContext({
-                setEditContextData: jest.fn()
-              })}
             />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
@@ -43,9 +40,6 @@ describe('RadioSettingsChannelsManual320Mhz', () => {
               channelBandwidth320MhzGroupFieldName={['apRadioParams6G', 'channelBandwidth320MhzGroup']}
               channelList={TEST_CHANNEL_DATA}
               disabled={false}
-              editContext={React.createContext({
-                setEditContextData: jest.fn()
-              })}
             />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
@@ -68,9 +62,6 @@ describe('RadioSettingsChannelsManual320Mhz', () => {
               channelBandwidth320MhzGroupFieldName={['apRadioParams6G', 'channelBandwidth320MhzGroup']}
               channelList={TEST_CHANNEL_DATA}
               disabled={false}
-              editContext={React.createContext({
-                setEditContextData: jest.fn()
-              })}
             />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>

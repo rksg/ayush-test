@@ -16,7 +16,6 @@ import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
 import { DirectedMulticast }   from './DirectedMulticast'
 import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
-import { RadiusOptions }       from './RadiusOptions'
 
 
 export interface NetworkingSettingContext {
@@ -26,7 +25,6 @@ export interface NetworkingSettingContext {
   updateDirectedMulticast?: (() => void),
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
-  updateRadiusOptions?: (() => void)
 }
 
 export function NetworkingTab () {
@@ -35,7 +33,6 @@ export function NetworkingTab () {
   const basePath = useTenantLink('/venues/')
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
-  const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const {
     previousPath,
@@ -54,14 +51,6 @@ export function NetworkingTab () {
       <LanPorts />
     </>
   }, {
-    title: $t({ defaultMessage: 'Cellular Options' }),
-    content: <>
-      <StepsFormLegacy.SectionTitle id='cellular-options'>
-        { $t({ defaultMessage: 'Cellular Options' }) }
-      </StepsFormLegacy.SectionTitle>
-      <CellularOptionsForm />
-    </>
-  }, {
     title: $t({ defaultMessage: 'Mesh Network' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='mesh-network'>
@@ -69,44 +58,36 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <MeshNetwork />
     </>
-  // }, {
-  //   title: $t({ defaultMessage: 'Client Isolation Allowlist' }),
-  //   content: 'Client Isolation Allowlist Content'
+  },
+  ...(supportDirectedMulticast? [{
+    title: $t({ defaultMessage: 'Directed Multicast' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='directed-multicast'>
+        {<Space align='baseline'>
+          { $t({ defaultMessage: 'Directed Multicast' }) }
+          <Tooltip
+            title={$t( directedMulticastInfo )}
+            placement='right'>
+            <Button type='text'
+              style={{ height: '18px', width: '18px' }}
+              icon={
+                <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
+            />
+          </Tooltip>
+        </Space>
+        }
+      </StepsFormLegacy.SectionTitle>
+      <DirectedMulticast />
+    </> }] : []),
+  {
+    title: $t({ defaultMessage: 'Cellular Options' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='cellular-options'>
+        { $t({ defaultMessage: 'Cellular Options' }) }
+      </StepsFormLegacy.SectionTitle>
+      <CellularOptionsForm />
+    </>
   }]
-
-  if (supportDirectedMulticast) {
-    items.push({
-      title: $t({ defaultMessage: 'Directed Multicast' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='directed-multicast'>
-          {<Space align='baseline'>
-            { $t({ defaultMessage: 'Directed Multicast' }) }
-            <Tooltip
-              title={$t( directedMulticastInfo )}
-              placement='right'>
-              <Button type='text'
-                style={{ height: '18px', width: '18px' }}
-                icon={
-                  <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
-              />
-            </Tooltip>
-          </Space>
-          }
-        </StepsFormLegacy.SectionTitle>
-        <DirectedMulticast />
-      </> })
-  }
-
-  if (supportRadiusOptions) {
-    items.push({
-      title: $t({ defaultMessage: 'RADIUS Options' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='radius-options'>
-          { $t({ defaultMessage: 'RADIUS Options' }) }
-        </StepsFormLegacy.SectionTitle>
-        <RadiusOptions />
-      </> })
-  }
 
   const handleUpdateAllSettings = async () => {
     try {
@@ -114,7 +95,6 @@ export function NetworkingTab () {
       await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.()
       await editNetworkingContextData?.updateDirectedMulticast?.()
-      await editNetworkingContextData?.updateRadiusOptions?.()
 
       setEditContextData({
         ...editContextData,
@@ -129,7 +109,6 @@ export function NetworkingTab () {
         delete newData.updateCellular
         delete newData.updateMesh
         delete newData.updateDirectedMulticast
-        delete newData.updateRadiusOptions
 
         setEditNetworkingContextData(newData)
       }
