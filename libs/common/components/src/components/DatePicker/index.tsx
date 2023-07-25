@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useRef, useCallback, Component, MutableRefObject, ReactNode } from 'react'
+import { useMemo, useEffect, useState, useRef, useCallback, Component, MutableRefObject, ReactNode, RefObject } from 'react'
 
 
 import {
@@ -177,6 +177,14 @@ interface DateTimePickerProps {
   }
 }
 
+let currentDateTimePicker: {
+  ref: RefObject<HTMLDivElement>,
+  onCancel: CallableFunction
+} = {
+  ref: { current: null },
+  onCancel: () => {}
+}
+
 export const DateTimePicker = ({
   applyFooterMsg,
   disabled,
@@ -191,9 +199,9 @@ export const DateTimePicker = ({
   const selectRef = useRef(false)
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
+  const onChange = (val: boolean) => { selectRef.current = val }
   const onOpenChange = (val: boolean) => {
     if (selectRef.current) {
-      selectRef.current = false
       return setOpen(true)
     }
     setOpen(val)
@@ -201,7 +209,28 @@ export const DateTimePicker = ({
   const onApplyHandler = () => {
     onApply(date)
     setOpen(false)
+    onChange(false)
   }
+  const onCancel = useCallback(() => {
+    setOpen(false)
+    onChange(false)
+  }, [])
+
+  useEffect(() => {
+    if (open && wrapperRef.current) {
+      if (!currentDateTimePicker.ref.current) {
+        currentDateTimePicker.ref = wrapperRef
+        currentDateTimePicker.onCancel = onCancel
+        return
+      }
+
+      if (!currentDateTimePicker.ref.current.isSameNode(wrapperRef.current)) {
+        currentDateTimePicker.onCancel()
+        currentDateTimePicker.ref = wrapperRef
+        currentDateTimePicker.onCancel = onCancel
+      }
+    }
+  }, [onCancel, open])
 
   return <Tooltip placement='right' title={title}>
     <UI.HiddenDateInput ref={wrapperRef}>
@@ -233,9 +262,10 @@ export const DateTimePicker = ({
             setValue={setDate}
             applyFooterMsg={applyFooterMsg}
             onApply={onApplyHandler}
-            onCancel={() => setOpen(false)}
+            onCancel={onCancel}
             disabledHours={disabledHours}
             disabledMinutes={disabledMinutes}
+            onChange={onChange}
           />
         }
       />

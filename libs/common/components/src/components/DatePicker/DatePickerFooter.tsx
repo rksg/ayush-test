@@ -156,6 +156,7 @@ export const DatePickerFooter = ({
 interface DateTimePickerFooterProps {
   onApply: (value: Moment) => void;
   onCancel: () => void;
+  onChange: (value: boolean) => void;
   applyFooterMsg?: string;
   value: Moment;
   setValue: (value: Moment) => void;
@@ -167,6 +168,7 @@ export const DateTimePickerFooter = ({
   applyFooterMsg,
   onApply,
   onCancel,
+  onChange,
   value,
   setValue,
   disabledHours,
@@ -185,7 +187,10 @@ export const DateTimePickerFooter = ({
         value={value}
         open={open.hour}
         onOpenChange={(val) => setOpen(open => ({ ...open, hour: val }))}
-        onClick={() => setOpen(open => ({ ...open, hour: true }))}
+        onClick={() => {
+          setOpen(open => ({ ...open, hour: true }))
+          onChange(true)
+        }}
         showNow={false}
         format={'HH'}
         placeholder={String(value.hours())}
@@ -208,7 +213,10 @@ export const DateTimePickerFooter = ({
         value={value}
         open={open.minute}
         onOpenChange={val => setOpen(open => ({ ...open, minute: val }))}
-        onClick={() => setOpen(open => ({ ...open, minute: true }))}
+        onClick={() => {
+          setOpen(open => ({ ...open, minute: true }))
+          onChange(true)
+        }}
         showNow={false}
         format={'mm'}
         minuteStep={15}
