@@ -162,7 +162,10 @@ export const api = recommendationApi.injectEndpoints({
         }
       }),
       transformResponse: (response: MutationResponse) => response,
-      invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
     })
   })
 })
