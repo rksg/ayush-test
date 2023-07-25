@@ -3,11 +3,11 @@ import React from 'react'
 import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { serviceApi }                                    from '@acx-ui/rc/services'
+import { useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { serviceApi }                                                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
-import { mockServer, render, screen }                    from '@acx-ui/test-utils'
+import { Provider, store }                                               from '@acx-ui/store'
+import { mockServer, render, screen }                                    from '@acx-ui/test-utils'
 
 import WifiCallingDetailView, { WifiCallingDetailContext } from './WifiCallingDetailView'
 
