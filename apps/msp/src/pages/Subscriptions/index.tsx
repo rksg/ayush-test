@@ -102,7 +102,6 @@ export function Subscriptions () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: { compare: sortProp('expirationDate', dateSort) },
-      defaultSortOrder: 'descend',
       render: function (_, row) {
         const expirationDate = new Date(Date.parse(row.expirationDate))
         return formatter(DateFormatEnum.DateFormat)(expirationDate)
@@ -115,6 +114,7 @@ export function Subscriptions () {
       key: 'timeLeft',
       sorter: { compare: sortProp('expirationDate', dateSort) },
       // active license should be first
+      defaultSortOrder: 'descend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
         const TimeLeftWrapper = remainingDays < 0

@@ -42,9 +42,6 @@ jest.mock('@acx-ui/msp/services', () => ({
 describe('AssignEcMspAdminsDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    // services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
-    //   return { data: delegatedAdmins }
-    // })
     services.useMspAdminListQuery = jest.fn().mockImplementation(() => {
       return { data: list }
     })
