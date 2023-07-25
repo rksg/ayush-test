@@ -15,8 +15,7 @@ import { useParams } from 'react-router-dom'
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import {
-  InformationSolid,
-  QuestionMarkCircleOutlined
+  InformationSolid
 } from '@acx-ui/icons'
 import { useExternalProvidersQuery, useGetMspEcProfileQuery } from '@acx-ui/rc/services'
 import {
