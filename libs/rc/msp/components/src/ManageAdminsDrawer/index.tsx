@@ -146,7 +146,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       },
       render: function (data, row) {
         return row.role === RolesEnum.DPSK_ADMIN
-          ? <span>{$t(roleDisplayText[row.role])}</span>
+          ? <span>DPSK Manager</span>
           : transformAdminRole(row.id, row.role)
       }
     }
