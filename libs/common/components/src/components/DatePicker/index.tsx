@@ -188,21 +188,12 @@ export const DateTimePicker = ({
 }: DateTimePickerProps) => {
   const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
   const wrapperRef = useRef<HTMLDivElement | null>(null)
-  const selectRef = useRef(false)
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
-  const onOpenChange = (val: boolean) => {
-    if (selectRef.current) {
-      selectRef.current = false
-      return setOpen(true)
-    }
-    setOpen(val)
-  }
   const onApplyHandler = () => {
     onApply(date)
     setOpen(false)
   }
-
   return <Tooltip placement='right' title={title}>
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker
@@ -212,7 +203,6 @@ export const DateTimePicker = ({
         disabled={disabled}
         value={date}
         open={open}
-        onOpenChange={onOpenChange}
         onClick={() => setOpen(true)}
         showTime={false}
         showNow={false}
@@ -223,10 +213,7 @@ export const DateTimePicker = ({
         suffixIcon={icon ? icon : <ClockOutlined />}
         disabledDate={disabledDate}
         getPopupContainer={(node) => node}
-        onChange={(value) => {
-          selectRef.current = true
-          setDate(value!)
-        }}
+        onChange={value => setDate(value!)}
         renderExtraFooter={() =>
           <DateTimePickerFooter
             value={date}
