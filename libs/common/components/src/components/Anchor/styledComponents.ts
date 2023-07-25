@@ -1,7 +1,8 @@
 import { Anchor as AntAnchor } from 'antd'
-import styled                  from 'styled-components/macro'
+import styled, { css }         from 'styled-components/macro'
 
-export const Anchor = styled(AntAnchor)`
+export const Anchor = styled(AntAnchor)<{ $customType?: string }>`
+  ${props => props.$customType === 'layout' ? css`
   &.ant-anchor-wrapper {
     background-color: var(--acx-neutrals-10);
     border-radius: 4px;
@@ -10,11 +11,8 @@ export const Anchor = styled(AntAnchor)`
     padding-top: 10px;
     padding-bottom: 10px;
   }
-
-  .ant-anchor-ink:before {
-    display: none;
-  }
   .ant-anchor-ink-ball {
+    display: inline-block;
     height: 20px;
     margin-top: -6px;
     border-width: 1px;
@@ -30,8 +28,6 @@ export const Anchor = styled(AntAnchor)`
   }
   .ant-anchor-link-title {
     color: var(--acx-primary-black);
-    font-size: var(--acx-subtitle-5-font-size);
-    line-height: var(--acx-subtitle-5-line-height);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -39,6 +35,19 @@ export const Anchor = styled(AntAnchor)`
   }
   .ant-anchor-link-active > .ant-anchor-link-title {
     font-weight: var(--acx-subtitle-5-font-weight);
+  }
+  ` : `
+  .ant-anchor-ink-ball {
+    display: none;
+  }
+  `}
+
+  .ant-anchor-ink:before {
+    display: none;
+  }
+  .ant-anchor-link-title {
+    font-size: var(--acx-subtitle-5-font-size);
+    line-height: var(--acx-subtitle-5-line-height);
   }
 `
 

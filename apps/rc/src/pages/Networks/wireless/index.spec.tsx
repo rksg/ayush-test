@@ -33,6 +33,11 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: (props: { reportName: ReportType }) => <div data-testid={props.reportName} />
 }))
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  NetworkFilter: () => <div data-testid='NetworkFilter' />
+}))
+
 describe('NetworksList with feature toggle', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   it('should render networks table tab', async () => {
@@ -67,5 +72,6 @@ describe('NetworksList with feature toggle', () => {
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/tenant-id/t/networks/wireless/reports/applications', hash: '', search: ''
     }))
+    // TODO: fix warning
   })
 })
