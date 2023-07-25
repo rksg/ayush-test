@@ -72,7 +72,7 @@ describe('AddNetworkSegmentation', () => {
     await screen.findByTestId('SummaryForm')
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
+  it('should render breadcrumb correctly when feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<AddNetworkSegmentation />, {
       wrapper: Provider,
@@ -83,6 +83,7 @@ describe('AddNetworkSegmentation', () => {
     expect(screen.getByRole('link', {
       name: 'Services'
     })).toBeVisible()
+    await screen.findByTestId('GeneralSettingsForm')
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -98,5 +99,6 @@ describe('AddNetworkSegmentation', () => {
     expect(screen.getByRole('link', {
       name: 'Network Segmentation'
     })).toBeVisible()
+    await screen.findByTestId('GeneralSettingsForm')
   })
 })

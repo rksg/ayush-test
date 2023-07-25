@@ -3,7 +3,6 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { AnalyticsFilter }          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
-import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }   from '@acx-ui/formatter'
 import { noDataDisplay }            from '@acx-ui/utils'
 
@@ -23,12 +22,10 @@ interface BoxProps {
 }
 
 export const Box = (props: BoxProps) => {
-  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
   const { $t } = useIntl()
   const box = <Wrapper
     $type={props.type}
     $isOpen={props.isOpen}
-    $disabled={!toggleEnable}
     onClick={props.onClick}
   >
     <Statistic
@@ -37,11 +34,10 @@ export const Box = (props: BoxProps) => {
       value={props.value}
       suffix={props.suffix}
     />
-    {toggleEnable
-      ? (props.isOpen)
-        ? <UpArrow $type={props.type}/>
-        : <DownArrow $type={props.type}/>
-      : null}
+    {props.isOpen
+      ? <UpArrow $type={props.type}/>
+      : <DownArrow $type={props.type}/>
+    }
   </Wrapper>
   return box
 }

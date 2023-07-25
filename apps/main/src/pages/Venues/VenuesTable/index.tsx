@@ -20,11 +20,11 @@ import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
-  RequestPayload,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                     from '@acx-ui/user'
+import { RequestPayload }                     from '@acx-ui/types'
+import { filterByAccess, hasAccess }          from '@acx-ui/user'
 
 function useColumns (
   searchable?: boolean,
@@ -282,7 +282,7 @@ export const VenueTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={rowSelection}
+        rowSelection={hasAccess() && rowSelection}
       />
     </Loader>
   )

@@ -16,7 +16,7 @@ import {
   VLAN_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 export default function VLANPoolTable () {
   const { $t } = useIntl()
@@ -114,7 +114,7 @@ export default function VLANPoolTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

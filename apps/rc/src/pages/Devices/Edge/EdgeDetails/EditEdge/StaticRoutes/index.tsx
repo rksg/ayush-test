@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Row, Typography }   from 'antd'
+import { Col, Row }               from 'antd'
 import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -9,7 +9,7 @@ import { Loader, StepsFormLegacy, Table, TableProps }             from '@acx-ui/
 import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
 import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
 import { useTenantLink }                                          from '@acx-ui/react-router-dom'
-import { filterByAccess }                                         from '@acx-ui/user'
+import { filterByAccess, hasAccess }                              from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -131,15 +131,12 @@ const StaticRoutes = () => {
                 data={currentEditData}
                 allRoutes={routesData}
               />
-              <Typography.Title level={3}>
-                {$t({ defaultMessage: 'Static Routes' })}
-              </Typography.Title>
               <Table<EdgeStaticRoute>
                 actions={filterByAccess(actionButtons)}
                 columns={columns}
                 rowActions={filterByAccess(rowActions)}
                 dataSource={routesData}
-                rowSelection={{ type: 'checkbox' }}
+                rowSelection={hasAccess() && { type: 'checkbox' }}
                 rowKey='id'
               />
             </Loader>

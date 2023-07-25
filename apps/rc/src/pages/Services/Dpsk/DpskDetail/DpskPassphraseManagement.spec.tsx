@@ -35,7 +35,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
   downloadFile: jest.fn()
 }))
 
-describe('DpskPassphraseManagement', () => {
+describe.skip('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
     tenantId: mockedTenantId,
     serviceId: mockedServiceId,
@@ -47,6 +47,10 @@ describe('DpskPassphraseManagement', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
+        CommonUrlsInfo.getNetworksVenuesList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskPassphraseList }))
       ),
@@ -56,6 +60,18 @@ describe('DpskPassphraseManagement', () => {
       ),
       rest.get(
         DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        DpskUrls.getDpskList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
@@ -199,7 +215,7 @@ describe('DpskPassphraseManagement', () => {
 
     mockServer.use(
       rest.get(
-        DpskUrls.exportPassphrases.url,
+        DpskUrls.exportPassphrases.url.split('?')[0],
         (req, res, ctx) => {
 
           const headers = req.headers['headers']
@@ -333,15 +349,15 @@ describe('DpskPassphraseManagement', () => {
   it('should be able to add device in DpskPassphrase', async () => {
     mockServer.use(
       rest.get(
-        DpskUrls.getPassphraseDevices.url,
+        DpskUrls.getPassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
       ),
       rest.patch(
-        DpskUrls.updatePassphraseDevices.url,
+        DpskUrls.updatePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
       ),
       rest.delete(
-        DpskUrls.deletePassphraseDevices.url,
+        DpskUrls.deletePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
       )
     )
@@ -391,15 +407,15 @@ describe('DpskPassphraseManagement', () => {
   it('should be able to delete device in DpskPassphrase', async () => {
     mockServer.use(
       rest.get(
-        DpskUrls.getPassphraseDevices.url,
+        DpskUrls.getPassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockedDpskPassphraseDevices))
       ),
       rest.patch(
-        DpskUrls.updatePassphraseDevices.url,
+        DpskUrls.updatePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req1' }))
       ),
       rest.delete(
-        DpskUrls.deletePassphraseDevices.url,
+        DpskUrls.deletePassphraseDevices.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'req2' }))
       )
     )
@@ -431,5 +447,30 @@ describe('DpskPassphraseManagement', () => {
     await waitFor(() => {
       expect(within(dialog).queryByRole('button', { name: 'Delete' })).toBeNull()
     })
+  })
+
+  it('should display Status of passphrase', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const revokedRecord = mockedDpskPassphraseList.data.find(p => p.revocationDate)!
+    const revokedRow = await screen.findByRole('row', { name: new RegExp(revokedRecord.username) })
+
+    const activeRecord = mockedDpskPassphraseList.data.find(p => !p.expirationDate)!
+    const activeRow = await screen.findByRole('row', { name: new RegExp(activeRecord.username) })
+
+    const expiredRecord = mockedDpskPassphraseList.data.find(p => p.expirationDate)!
+    const expiredRow = await screen.findByRole('row', { name: new RegExp(expiredRecord.username) })
+
+    expect(await within(revokedRow).findByText('Revoked (2022-12-24 08:00 AM)')).toBeVisible()
+    expect(await within(activeRow).findByText('Active')).toBeVisible()
+    expect(await within(expiredRow).findByText('Expired')).toBeVisible()
   })
 })

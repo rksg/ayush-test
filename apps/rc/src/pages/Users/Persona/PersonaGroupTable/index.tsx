@@ -21,7 +21,7 @@ import {
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                              from '@acx-ui/user'
+import { filterByAccess, hasAccess }                   from '@acx-ui/user'
 
 import { PersonaGroupContext } from '..'
 import {
@@ -336,7 +336,7 @@ export function PersonaGroupTable () {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasAccess() && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           onClick: downloadPersonaGroups

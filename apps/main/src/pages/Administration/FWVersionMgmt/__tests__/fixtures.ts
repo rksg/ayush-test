@@ -71,6 +71,15 @@ export const venue = [
         category: 'RECOMMENDED'
       }
     ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2021-05',
+        currentEolVersion: '6.1.0.10.413',
+        latestEolVersion: '6.1.0.10.453',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ],
     lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
   },
   {
@@ -169,17 +178,55 @@ export const switchVenue = {
           id: '09010f_b401',
           name: '09010f_b401',
           category: 'RECOMMENDED'
+        },
+        {
+          id: '09010f_b19',
+          name: '09010f_b19',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '09010f_b403',
+          name: '09010f_b403',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc2',
+          name: '10010_rc2',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc3',
+          name: '10010_rc3',
+          category: 'RECOMMENDED'
         }
       ],
+      nextSchedule: {
+        timeSlot: {
+          startDateTime: '2023-07-11T08:00:00-07:00',
+          endDateTime: '2023-07-11T10:00:00-07:00'
+        },
+        version: {
+          id: '09010f_b401',
+          name: '09010f_b401',
+          category: 'RECOMMENDED'
+        },
+        versionAboveTen: {
+          id: '10010_rc2',
+          name: '10010_rc2',
+          category: 'RECOMMENDED'
+        }
+      },
       preDownload: false,
+      switchCount: 2,
+      aboveTenSwitchCount: 3,
       upgradeVenueViewList: null
     },
     {
       id: '923f6df894c340498894a6b7c68feaae',
       name: 'My-Venue',
       switchFirmwareVersion: {
-        id: '09010e_b392',
-        name: '09010e_b392',
+        id: '09010f_b19',
+        name: '09010f_b19',
         category: 'RECOMMENDED'
       },
       switchFirmwareVersionAboveTen: {
@@ -192,9 +239,31 @@ export const switchVenue = {
           id: '09010f_b401',
           name: '09010f_b401',
           category: 'RECOMMENDED'
+        },
+        {
+          id: '09010e_b392',
+          name: '09010e_b392',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '09010f_b403',
+          name: '09010f_b403',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc2',
+          name: '10010_rc2',
+          category: 'RECOMMENDED'
+        },
+        {
+          id: '10010_rc3',
+          name: '10010_rc3',
+          category: 'RECOMMENDED'
         }
       ],
       preDownload: false,
+      switchCount: 1,
+      aboveTenSwitchCount: 1,
       upgradeVenueViewList: null
     }
   ]
@@ -211,23 +280,38 @@ export const switchLatest = [
 
 export const switchRelease = [
   {
+    id: '09010e_b392',
+    name: '09010e_b392',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '09010f_b19',
+    name: '09010f_b19',
+    category: 'RECOMMENDED'
+  },
+  {
     id: '09010f_b401',
     name: '09010f_b401',
     category: 'RECOMMENDED'
   },
   {
-    id: '09010e_b399',
-    name: '09010e_b399',
-    category: 'RECOMMENDED'
-  },
-  {
-    id: '09010e_b397',
-    name: '09010e_b397',
-    category: 'RECOMMENDED'
-  },
-  {
     id: '09010f_b403',
     name: '09010f_b403',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '10010_b176',
+    name: '10010_b176',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '10010_rc2',
+    name: '10010_rc2',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '10010_rc3',
+    name: '10010_rc3',
     category: 'RECOMMENDED'
   }
 ]
@@ -235,9 +319,61 @@ export const switchRelease = [
 export const switchCurrentVersions = {
   currentVersions: [
     '09010e_b392',
-    '09010e_b399'
+    '09010f_b19'
   ],
   currentVersionsAboveTen: [
-    '10010_b176'
+    '10010_b176',
+    '10010_rc3'
   ]
 }
+
+export const availableABFList = [
+  {
+    abf: 'active',
+    releaseDate: '2023-06-15T18:54:43.177+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-05-31T02:31:12.682+0000',
+    name: '7.0.0.103.288',
+    id: '7.0.0.103.288'
+  },
+  {
+    abf: 'eol-ap-2022-12',
+    releaseDate: '2023-05-05T19:29:20.563+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-05-05T10:14:59.048+0000',
+    name: '6.2.0.103.533',
+    id: '6.2.0.103.533'
+  },
+  {
+    abf: 'eol-ap-2022-12',
+    releaseDate: '2023-04-18T23:33:30.771+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-04-18T08:04:31.098+0000',
+    name: '6.2.0.103.513',
+    id: '6.2.0.103.513'
+  },
+  {
+    abf: 'eol-ap-2021-05',
+    releaseDate: '2023-02-10T19:03:37.166+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-02-07T09:16:58.390+0000',
+    name: '6.1.0.10.453',
+    id: '6.1.0.10.453'
+  },
+  {
+    abf: 'eol-ap-2021-05',
+    releaseDate: '2023-02-05T19:03:37.166+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-02-01T09:16:58.390+0000',
+    name: '6.1.0.10.433',
+    id: '6.1.0.10.433'
+  },
+  {
+    abf: 'eol-ap-2021-05',
+    releaseDate: '2023-02-01T18:54:43.177+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-01-31T02:31:12.682+0000',
+    name: '6.1.0.10.413',
+    id: '6.1.0.10.413'
+  }
+]

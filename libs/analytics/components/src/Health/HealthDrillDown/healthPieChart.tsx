@@ -12,6 +12,7 @@ import {
   NoData,
   qualitativeColorSet
 } from '@acx-ui/components'
+import { get }         from '@acx-ui/config'
 import { formatter }   from '@acx-ui/formatter'
 import { NodesFilter } from '@acx-ui/utils'
 
@@ -61,6 +62,7 @@ const transformData = (
 }
 
 export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
+  const isMLISA = get('IS_MLISA_SA')
   const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
     case 'zone':
@@ -74,9 +76,14 @@ export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
         other {APs}
       }` })
     default:
-      return defineMessage({ defaultMessage: `{ count, plural,
+      return !isMLISA ?
+        defineMessage({ defaultMessage: `{ count, plural,
         one {Venue}
         other {Venues}
+      }` })
+        : defineMessage({ defaultMessage: `{ count, plural,
+        one {Zone}
+        other {Zones}
       }` })
   }
 }

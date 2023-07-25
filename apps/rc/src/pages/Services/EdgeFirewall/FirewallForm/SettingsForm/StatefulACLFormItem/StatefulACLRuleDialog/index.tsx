@@ -240,6 +240,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
             required: true,
             message: $t({ defaultMessage: 'Please select protocol type' })
           }]}
+          initialValue={ProtocolType.ANY}
         >
           <Select>
             {protocolTypes.map(({ label, value }) =>
@@ -287,6 +288,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
               required: true,
               message: $t({ defaultMessage: 'Please select source address type' })
             }]}
+            initialValue={AddressType.ANY_IP_ADDRESS}
           >
             <Radio.Group style={{ width: '100%' }}>
               <SpaceWrapper full direction='vertical' size='large'>
@@ -305,7 +307,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                           const sourceAddressType = getFieldValue('sourceAddressType')
                           return sourceAddressType === AddressType.SUBNET_ADDRESS &&
                           <Form.Item>
-                            <Row>
+                            <Row justify='space-between'>
                               <Col span={12}>
                                 <Form.Item
                                   name='sourceAddress'
@@ -320,7 +322,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                                   <Input placeholder={$t({ defaultMessage: 'Network address' })} />
                                 </Form.Item>
                               </Col>
-                              <Col span={12}>
+                              <Col span={11}>
                                 <Form.Item
                                   name='sourceAddressMask'
                                   noStyle
@@ -360,7 +362,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                               { validator: (_, value) => networkWifiIpRegExp(value) }
                               ]}
                             >
-                              <Input placeholder={$t({ defaultMessage: 'IP Address' })}/>
+                              <Input />
                             </Form.Item>
                         }}
                       </Form.Item>
@@ -370,7 +372,27 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
 
                   return <Row key={`srcAddressType_${value}`} justify='space-between'>
                     <Col span={8}>
-                      <Radio value={value}>{label}</Radio>
+                      <Form.Item
+                        noStyle
+                        shouldUpdate={(prevValues, currentValues) => {
+                          // eslint-disable-next-line max-len
+                          return prevValues.sourceAddressType !== currentValues.sourceAddressType
+                        }}
+                      >
+                        {({ getFieldValue }) => {
+                          const sourceAddressType = getFieldValue('sourceAddressType')
+                          return <Radio
+                            value={value}
+                            className={classNames(
+                              // eslint-disable-next-line max-len
+                              (value !== AddressType.ANY_IP_ADDRESS && value === sourceAddressType)
+                              && 'required'
+                            )}
+                          >
+                            {label}
+                          </Radio>
+                        }}
+                      </Form.Item>
                     </Col>
                     <Col span={16}>
                       {inputContainer}
@@ -405,6 +427,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
               required: true,
               message: $t({ defaultMessage: 'Please select destination address type' })
             }]}
+            initialValue={AddressType.ANY_IP_ADDRESS}
           >
             <Radio.Group style={{ width: '100%' }}>
               <SpaceWrapper full direction='vertical' size='large'>
@@ -424,7 +447,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                           const destinationAddressType = getFieldValue('destinationAddressType')
                           return destinationAddressType === AddressType.SUBNET_ADDRESS &&
                           <Form.Item>
-                            <Row>
+                            <Row justify='space-between'>
                               <Col span={12}>
                                 <Form.Item
                                   name='destinationAddress'
@@ -439,7 +462,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                                   <Input placeholder={$t({ defaultMessage: 'Network address' })} />
                                 </Form.Item>
                               </Col>
-                              <Col span={12}>
+                              <Col span={11}>
                                 <Form.Item
                                   name='destinationAddressMask'
                                   noStyle
@@ -479,7 +502,7 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
                             { validator: (_, value) => networkWifiIpRegExp(value) }
                             ]}
                           >
-                            <Input placeholder={$t({ defaultMessage: 'IP Address' })} />
+                            <Input />
                           </Form.Item>
                         }}
                       </Form.Item>
@@ -489,7 +512,27 @@ export const StatefulACLRuleDialog = styled((props: StatefulACLRuleDialogProps) 
 
                   return <Row key={`desAddressType_${value}`} justify='space-between'>
                     <Col span={8}>
-                      <Radio value={value}>{label}</Radio>
+                      <Form.Item
+                        noStyle
+                        shouldUpdate={(prevValues, currentValues) => {
+                          // eslint-disable-next-line max-len
+                          return prevValues.destinationAddressType !== currentValues.destinationAddressType
+                        }}
+                      >
+                        {({ getFieldValue }) => {
+                          const destinationAddressType = getFieldValue('destinationAddressType')
+                          return <Radio
+                            value={value}
+                            className={classNames(
+                              // eslint-disable-next-line max-len
+                              (value !== AddressType.ANY_IP_ADDRESS && value === destinationAddressType)
+                              && 'required'
+                            )}
+                          >
+                            {label}
+                          </Radio>
+                        }}
+                      </Form.Item>
                     </Col>
                     <Col span={16}>
                       {inputContainer}

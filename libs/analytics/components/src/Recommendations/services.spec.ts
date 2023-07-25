@@ -37,7 +37,7 @@ describe('Recommendation services', () => {
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ],
       category: 'AI-Driven Cloud RRM',
-      priority: 3,
+      priority: 2,
       priorityLabel: 'High',
       scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
@@ -68,7 +68,7 @@ describe('Recommendation services', () => {
         { type: 'zone', name: 'EDU' }
       ],
       category: 'Wi-Fi Client Experience',
-      priority: 2,
+      priority: 1,
       priorityLabel: 'Medium',
       scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
@@ -76,6 +76,42 @@ describe('Recommendation services', () => {
       statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
       summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
       type: 'Venue'
+    },
+    {
+      category: 'Wi-Fi Client Experience',
+      code: 'c-bandbalancing-enable',
+      createdAt: '2023-06-12T07:05:14.900Z',
+      id: '3',
+      isMuted: true,
+      metadata: {},
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        {
+          name: 'vsz34',
+          type: 'system'
+        },
+        {
+          name: '27-US-CA-D27-Peat-home',
+          type: 'domain'
+        },
+        {
+          name: 'Deeps Place',
+          type: 'zone'
+        }
+      ],
+      priority: 0,
+      priorityLabel: 'Low',
+      scope: `vsz34 (SZ Cluster)
+> 27-US-CA-D27-Peat-home (Domain)
+> Deeps Place (Venue)`,
+      sliceType: 'zone',
+      sliceValue: 'Deeps Place',
+      status: 'New',
+      statusTooltip: 'Schedule a day and time to apply this recommendation.',
+      summary: 'Enable band balancing',
+      type: 'Venue',
+      updatedAt: '2023-07-06T06:05:21.004Z'
     }
   ]
 
