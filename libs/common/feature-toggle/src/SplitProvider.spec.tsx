@@ -1,18 +1,13 @@
-import { useTreatments } from '@splitsoftware/splitio-react'
-import { rest }          from 'msw'
+import { rest } from 'msw'
 
-import { useGetAccountTierQuery }     from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
 import { UserUrlsInfo }               from '@acx-ui/user'
-import { useGetBetaStatusQuery }      from '@acx-ui/user'
 
-import { Features }                    from './features'
-import { useIsSplitOn }                from './useIsSplitOn'
-import { useIsTierAllowed, useFFList } from './useIsTierAllowed'
-
-
+import { Features }         from './features'
+import { useIsSplitOn }     from './useIsSplitOn'
+import { useIsTierAllowed } from './useIsTierAllowed'
 
 let split = require('@splitsoftware/splitio-react')
 
