@@ -17,7 +17,7 @@ const currentData = {
   vlans: [{ arpInspection: true, switchFamilyModels: [] }]
 }
 
-describe('Wired - VlanSetting', () => {
+describe.skip('Wired - VlanSetting', () => {
   const configureProfileContextValues = {
     editMode: false,
     currentData

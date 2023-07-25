@@ -13,7 +13,7 @@ import {
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                     from '@acx-ui/user'
+import { filterByAccess, hasAccess }                          from '@acx-ui/user'
 
 import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
 import Layer2Drawer                        from '../AccessControlForm/Layer2Drawer'
@@ -145,7 +145,7 @@ const Layer2Component = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
       />
     </Form>
   </Loader>

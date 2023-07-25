@@ -35,7 +35,7 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const edgeOptionsDefaultPayload = {
   fields: ['name', 'serialNumber'],
@@ -298,7 +298,7 @@ const FirewallTable = () => {
           settingsId='services-firewall-table'
           rowKey='id'
           columns={columns}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

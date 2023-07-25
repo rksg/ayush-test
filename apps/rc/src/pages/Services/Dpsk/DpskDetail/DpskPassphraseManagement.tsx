@@ -32,10 +32,10 @@ import {
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                from '@acx-ui/react-router-dom'
-import { RolesEnum }                from '@acx-ui/types'
-import { filterByAccess, hasRoles } from '@acx-ui/user'
-import { getIntl }                  from '@acx-ui/utils'
+import { useParams }                           from '@acx-ui/react-router-dom'
+import { RolesEnum }                           from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
+import { getIntl }                             from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
@@ -351,7 +351,7 @@ export default function DpskPassphraseManagement () {
         onChange={tableQuery.handleTableChange}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

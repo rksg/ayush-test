@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 
 import {
-  findTBody, render, screen, within
+  findTBody, render, renderHook, screen, within
 } from '@acx-ui/test-utils'
 
 import { mockedHostData } from '../__tests__/fixtures'
@@ -57,5 +58,117 @@ describe('Host table(Edge)', () => {
     await userEvent.click(within(rows[0]).getByRole('checkbox'))
     await userEvent.click(within(rows[1]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+  })
+
+  it('should add host', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Form form={formRef.current}>
+      <Form.Item
+        name='hosts'
+        children={<HostTable />}
+      />
+    </Form>)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add Host' }))
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.type(within(drawer).getByRole('textbox', { name: 'Host Name' }), 'host1')
+    await userEvent.type(
+      within(drawer).getByRole('textbox', { name: 'MAC Address' }), '11:22:33:44:55:66'
+    )
+    await userEvent.type(within(drawer).getByRole('textbox', { name: 'Fixed Address' }), '1.2.3.4')
+
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
+  })
+
+  it('should show alert for duplicate host name', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Form form={formRef.current}>
+      <Form.Item
+        name='hosts'
+        children={<HostTable />}
+      />
+    </Form>)
+
+    const addNewHostButton = screen.getByRole('button', { name: 'Add Host' })
+    await userEvent.click(addNewHostButton)
+    const drawer1 = await screen.findByRole('dialog')
+    await userEvent.type(within(drawer1).getByRole('textbox', { name: 'Host Name' }), 'host1')
+    await userEvent.type(
+      within(drawer1).getByRole('textbox', { name: 'MAC Address' }), '11:22:33:44:55:66'
+    )
+    await userEvent.type(within(drawer1).getByRole('textbox', { name: 'Fixed Address' }), '1.2.3.4')
+
+    await userEvent.click(within(drawer1).getByRole('button', { name: 'Add' }))
+
+    await userEvent.click(addNewHostButton)
+    const drawer2 = await screen.findByRole('dialog')
+    await userEvent.type(within(drawer2).getByRole('textbox', { name: 'Host Name' }), 'host1')
+    const alertElement = await screen.findByRole('alert')
+    expect(alertElement).toBeVisible()
+  })
+
+  it('should update host', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Form form={formRef.current}>
+      <Form.Item
+        name='hosts'
+        children={<HostTable />}
+      />
+    </Form>)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add Host' }))
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.type(within(drawer).getByRole('textbox', { name: 'Host Name' }), 'host1')
+    await userEvent.type(
+      within(drawer).getByRole('textbox', { name: 'MAC Address' }), '11:22:33:44:55:66'
+    )
+    await userEvent.type(within(drawer).getByRole('textbox', { name: 'Fixed Address' }), '1.2.3.4')
+
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
+
+    userEvent.click(screen.getByText('host1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+  })
+
+  it('should delete host', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Form form={formRef.current}>
+      <Form.Item
+        name='hosts'
+        children={<HostTable />}
+      />
+    </Form>)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add Host' }))
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.type(within(drawer).getByRole('textbox', { name: 'Host Name' }), 'host1')
+    await userEvent.type(
+      within(drawer).getByRole('textbox', { name: 'MAC Address' }), '11:22:33:44:55:66'
+    )
+    await userEvent.type(within(drawer).getByRole('textbox', { name: 'Fixed Address' }), '1.2.3.4')
+
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
+    await userEvent.click(within(drawer).getByRole('button', { name: 'Cancel' }))
+
+    userEvent.click(screen.getByText('host1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
   })
 })

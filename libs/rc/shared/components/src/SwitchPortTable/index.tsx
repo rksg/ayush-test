@@ -17,9 +17,9 @@ import {
   SwitchVlan,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
@@ -299,7 +299,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       enableApiFilter={true}
       rowKey='portId'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{
+      rowSelection={hasAccess() ? {
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record?.inactiveRow
@@ -311,7 +311,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
             disabled: record?.inactiveRow
           }
         }
-      }}
+      } : undefined}
       actions={!isVenueLevel
         ? filterByAccess([{
           label: $t({ defaultMessage: 'Manage LAG' }),
