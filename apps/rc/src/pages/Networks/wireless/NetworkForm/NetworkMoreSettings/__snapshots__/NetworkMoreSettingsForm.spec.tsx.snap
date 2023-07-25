@@ -566,8 +566,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 DHCP
               </h4>
               <div
-                class="styledComponents__FieldLabel-sc-ijp2z4-0 dMkdaN"
-                width="182px"
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 eQeFKz"
+                width="207px"
               >
                 Force DHCP
                 <div

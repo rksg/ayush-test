@@ -10,8 +10,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Fieldset } from '@acx-ui/components'
-
+import { Fieldset, Tooltip } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
@@ -91,18 +90,29 @@ export function DhcpOption82Form () {
     }
   }
 
+  const dhcpOption82SubOption1TooltipContent = $t({ defaultMessage: 'Agent Circuit ID' })
+  const dhcpOption82SubOption2TooltipContent = $t({ defaultMessage: 'Agent Remote ID' })
+  const dhcpOption82SubOption150TooltipContent =
+      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection' })
+  const dhcpOption82SubOption151TooltipContent =
+      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection Control' })
+
   return (
     <FieldsetItem
       name={['wlan', 'advancedCustomization', 'dhcpOption82Enabled']}
       label={$t({ defaultMessage: 'DHCP Option 82' })}
       initialValue={false}
-      switchStyle={{ marginLeft: '88px' }}
+      switchStyle={{ marginLeft: '113px' }}
       style={{ width: 'max-content', marginLeft: '-8px' }}
       onChange={onChangeDhcpOption82}>
 
-      <UI.FieldLabel width='190px'>
+      <UI.FieldLabel width='75px'>
         {$t({ defaultMessage: 'Sub-option 1' })}
-        <div style={{ display: 'grid', gridTemplateColumns: '50px 480px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '140px 50px 480px' }}>
+          <Tooltip.Question
+            title={dhcpOption82SubOption1TooltipContent}
+            placement='right'
+          />
           <Form.Item
             name={dhcpOption82SubOption1EnabledFieldName}
             style={{ marginBottom: '10px' }}
@@ -150,9 +160,13 @@ export function DhcpOption82Form () {
           }
         </div>
       </UI.FieldLabel>
-      <UI.FieldLabel width='190px'>
+      <UI.FieldLabel width='75px'>
         {$t({ defaultMessage: 'Sub-option 2' })}
-        <div style={{ display: 'grid', gridTemplateColumns: '50px 480px auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '140px 50px 480px auto' }}>
+          <Tooltip.Question
+            title={dhcpOption82SubOption2TooltipContent}
+            placement='right'
+          />
           <Form.Item
             name={dhcpOption82SubOption2EnabledFieldName}
             style={{ marginBottom: '10px' }}
@@ -197,8 +211,12 @@ export function DhcpOption82Form () {
         </div>
       </UI.FieldLabel>
       <UI.FieldLabel width='190px'>
-        {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
-        <div>
+        <div style={{ display: 'grid', gridTemplateColumns: '165px 50px auto' }}>
+          {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
+          <Tooltip.Question
+            title={dhcpOption82SubOption150TooltipContent}
+            placement='right'
+          />
           <Form.Item
             name={dhcpOption82SubOption150EnabledFieldName}
             style={{ marginBottom: '10px' }}
@@ -208,9 +226,13 @@ export function DhcpOption82Form () {
           />
         </div>
       </UI.FieldLabel>
-      <UI.FieldLabel width='190px'>
+      <UI.FieldLabel width='90px'>
         {$t({ defaultMessage: 'Sub-option 151' })}
-        <div style={{ display: 'grid', gridTemplateColumns: '50px 150px auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '125px 50px 150px auto' }}>
+          <Tooltip.Question
+            title={dhcpOption82SubOption151TooltipContent}
+            placement='right'
+          />
           <Form.Item
             name={dhcpOption82SubOption151EnabledFieldName}
             style={{ marginBottom: '10px' }}
