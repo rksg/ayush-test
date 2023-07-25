@@ -80,7 +80,7 @@ const VenueDHCPForm = (props: {
   let natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
   useEffect(() => {
     const initVal = getInitValue()
-    setGateways(initVal.gateways)
+    setGateways(initVal.gateways ?? [])
     form.setFieldsValue(initVal)
     setServiceEnabled(initVal.enabled)
     setDHCPServiceID(dhcpInfo.id as string)
@@ -91,7 +91,7 @@ const VenueDHCPForm = (props: {
 
   const resetForm = ()=>{
     const initVal = getInitValue()
-    setGateways(initVal.gateways)
+    setGateways(initVal.gateways ?? [])
     form.setFieldsValue(initVal)
     setServiceEnabled(initVal.enabled)
     setDHCPServiceID(dhcpInfo.id as string)

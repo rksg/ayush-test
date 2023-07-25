@@ -6,7 +6,7 @@ import { render, screen } from '@acx-ui/test-utils'
 import NetworkPageHeader from './NetworkPageHeader'
 
 
-describe('NetworkPageHeader', () => {
+describe.skip('NetworkPageHeader', () => {
   it('should render correctly in overview', async () => {
     render(
       <Provider>

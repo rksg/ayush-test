@@ -10,7 +10,8 @@ import {
   mockServer,
   waitForElementToBeRemoved,
   within,
-  fireEvent
+  fireEvent,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { aclList, freeVePortVlans, routedList, successResponse, switchDetailHeader, switchList, switchesList, venueRoutedList } from './__tests__/fixtures'
@@ -155,7 +156,12 @@ describe('Switch VE Table', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText(/delete "test\-ve3"\?/i)
+
+    const dialog = await screen.findByRole('dialog')
     await userEvent.click(screen.getByRole('button', { name: /delete routed interface/i }))
+    await waitFor(()=>{
+      expect(dialog).not.toBeVisible()
+    })
   })
 
   it('should delete VEs correctly', async () => {
@@ -178,7 +184,12 @@ describe('Switch VE Table', () => {
     await userEvent.click(within(row2).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText(/delete "2 routed interface"\?/i)
+
+    const dialog = await screen.findByRole('dialog')
     await userEvent.click(screen.getByRole('button', { name: /delete routed interface/i }))
+    await waitFor(()=>{
+      expect(dialog).not.toBeVisible()
+    })
   })
 
   it('should not delete default VE correctly', async () => {
