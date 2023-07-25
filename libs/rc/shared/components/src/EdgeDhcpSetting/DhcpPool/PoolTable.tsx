@@ -11,10 +11,11 @@ export function PoolTable (props:{
   data: EdgeDhcpPool[]
   openDrawer: (data?: EdgeDhcpPool) => void
   onDelete?: (data:EdgeDhcpPool[]) => void
+  openImportModal: (visible: boolean) => void
 }) {
 
   const { $t } = useIntl()
-  const { data, openDrawer, onDelete } = props
+  const { data, openDrawer, onDelete, openImportModal } = props
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
@@ -66,9 +67,12 @@ export function PoolTable (props:{
     }
   ]
 
-  let actions = [{
+  const actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
     onClick: () => openDrawer()
+  },{
+    label: $t({ defaultMessage: 'Import from file' }),
+    onClick: () => openImportModal(true)
   }]
 
   return (

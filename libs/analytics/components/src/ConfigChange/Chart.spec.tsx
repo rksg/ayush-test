@@ -13,13 +13,13 @@ describe('Chart', () => {
   it('should render page correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Chart/>, { wrapper: Provider, route: {} })
+    render(<Chart onBrushPositionsChange={jest.fn()}/>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
   it('should show empty chart', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Chart/>, { wrapper: Provider, route: {} })
+    render(<Chart onBrushPositionsChange={jest.fn()}/>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
 })

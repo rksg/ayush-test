@@ -1,10 +1,9 @@
-import userEvent from '@testing-library/user-event'
 
 import { EdgeStatus }     from '@acx-ui/rc/utils'
-import { Provider  }      from '@acx-ui/store'
+import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { tenantID, currentEdge, edgePortsSetting, edgeDnsServers, passwordDetail } from '../__tests__/fixtures'
+import { currentEdge, edgeDnsServers, passwordDetail, tenantID } from '../__tests__/fixtures'
 
 import EdgeDetailsDrawer from '.'
 
@@ -24,12 +23,10 @@ describe('Edge Detail Drawer', () => {
         setVisible={() => {}}
         currentEdge={currentEdge}
         dnsServers={edgeDnsServers}
-        edgePortsSetting={edgePortsSetting}
         passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
 
-    expect(await screen.findByText('Properties')).toBeVisible()
     expect(screen.queryByText('Login Password')).toBeNull()
     expect(screen.queryByText('Enable Password')).toBeNull()
   })
@@ -45,7 +42,6 @@ describe('Edge Detail Drawer', () => {
         setVisible={() => {}}
         currentEdge={edgeWithoutModel}
         dnsServers={edgeDnsServers}
-        edgePortsSetting={edgePortsSetting}
         passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
@@ -62,7 +58,6 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={undefinedEdge}
-        edgePortsSetting={edgePortsSetting}
         dnsServers={edgeDnsServers}
         passwordDetail={passwordDetail}
       />
@@ -79,7 +74,6 @@ describe('Edge Detail Drawer', () => {
         setVisible={() => {}}
         currentEdge={currentEdge}
         dnsServers={edgeDnsServers}
-        edgePortsSetting={edgePortsSetting}
         passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
@@ -91,20 +85,16 @@ describe('Edge Detail Drawer', () => {
   })
 
   it('should render -- if dnsServers is not setting', async () => {
-    const user = userEvent.setup()
     render(<Provider>
       <EdgeDetailsDrawer
         visible={true}
         setVisible={() => {}}
         currentEdge={currentEdge}
         dnsServers={{ primary: '', secondary: '' }}
-        edgePortsSetting={edgePortsSetting}
         passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
 
-    await user.click(screen.getByRole('radio', { name: 'Settings' }))
-    await screen.findAllByText('DNS Server')
     const emptyLabel = await screen.findAllByText('--')
     expect(emptyLabel.length).toBe(2)
   })
@@ -120,7 +110,6 @@ describe('Edge Detail Drawer', () => {
         setVisible={() => {}}
         currentEdge={currentEdge}
         dnsServers={edgeDnsServers}
-        edgePortsSetting={edgePortsSetting}
         passwordDetail={passwordDetail}
       />
     </Provider>, { route: { params } })
