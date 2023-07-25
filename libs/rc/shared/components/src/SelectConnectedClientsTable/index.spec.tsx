@@ -14,6 +14,9 @@ describe('Select connected clients table', () => {
 
   it('Should render connected client table', async () => {
     mockServer.use(
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(
         ClientUrlsInfo.getClientList.url,
         (_, res, ctx) => res(ctx.json({ data: [{
@@ -36,5 +39,6 @@ describe('Select connected clients table', () => {
     )
 
     await screen.findByText('MAC Address')
+    await screen.findByText('28:B3:71:28:78:50')
   })
 })

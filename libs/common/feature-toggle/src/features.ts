@@ -35,6 +35,7 @@ export enum Features {
   WIFI_EDA_READY_TOGGLE = 'wifi-eda-ready-toggle',
   WIFI_EDA_BYPASS_CNA_TOGGLE = 'wifi-eda-bypass-cna-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
+  CLOUDMOTE_BETA = 'BETA-ZD2R1',
   RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
@@ -55,6 +56,7 @@ export enum Features {
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   MSPEC_OPTIONAL_ADMIN = 'mspservice-mspec-adminoptional',
   MSPEC_ALLOW_DELETE_ADMIN = 'mspservice-allow-last-ec-admin-deletion',
+  WIFI_EDA_WIFI7_320MHZ = 'wifi-eda-wifi7-320mhz-toggle',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
   WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
@@ -64,7 +66,8 @@ export enum Features {
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
   DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle',
   WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
-  MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle'
+  MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle',
+  WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

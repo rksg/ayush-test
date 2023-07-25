@@ -11,7 +11,7 @@ import { Button,
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
+import { filterByAccess, hasAccess }  from '@acx-ui/user'
 import { getIntl }                    from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
@@ -156,7 +156,7 @@ export function ConfigProfileModal (props: {
             columns={columns}
             dataSource={cliProfiles}
             rowKey='id'
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'checkbox',
               alwaysShowAlert: true,
               defaultSelectedRowKeys: selectedCLIKeys,

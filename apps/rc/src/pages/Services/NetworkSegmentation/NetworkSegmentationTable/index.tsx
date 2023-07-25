@@ -14,6 +14,7 @@ import {
   useGetEdgeListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useNetworkListQuery,
+  useSwitchListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -26,7 +27,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -55,6 +56,12 @@ const edgeOptionsDefaultPayload = {
 const networkDefaultPayload = {
   fields: ['name', 'id'],
   filters: { nwSubType: ['dpsk'] },
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+const switchDefaultPayload = {
+  fields: ['name', 'switchMac'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -107,6 +114,14 @@ const NetworkSegmentationTable = () => {
     {
       selectFromResult: ({ data }) => ({
         networkOptions: data?.data.map(item => ({ key: item.id, value: item.name }))
+      })
+    })
+
+  const { switchOptions = [] } = useSwitchListQuery(
+    { payload: switchDefaultPayload },
+    {
+      selectFromResult: ({ data }) => ({
+        switchOptions: data?.data.map(item => ({ key: item.switchMac, value: item.name }))
       })
     })
 
@@ -180,6 +195,8 @@ const NetworkSegmentationTable = () => {
       key: 'switches',
       dataIndex: 'switches',
       align: 'center',
+      filterable: switchOptions,
+      filterKey: 'distributionSwitchInfoIds',
       render: (data, row) => {
         return (row.distributionSwitchInfos?.length || 0) + (row.accessSwitchInfos?.length || 0)
       }
@@ -276,7 +293,7 @@ const NetworkSegmentationTable = () => {
           settingsId='services-network-segmentation-table'
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}

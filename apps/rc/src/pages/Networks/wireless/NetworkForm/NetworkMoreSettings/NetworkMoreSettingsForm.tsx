@@ -26,6 +26,7 @@ import VLANPoolInstance                                              from '../VL
 
 import { AccessControlForm }  from './AccessControlForm'
 import { LoadControlForm }    from './LoadControlForm'
+import { MulticastForm }      from './MulticastForm'
 import { ServicesForm }       from './ServicesForm'
 import * as UI                from './styledComponents'
 import { UserConnectionForm } from './UserConnectionForm'
@@ -160,6 +161,10 @@ export function MoreSettingsForm (props: {
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+
+  const agileMultibandTooltipContent = $t({ defaultMessage:
+      `Agile Multiband prioritizes roaming performance in indoor environments,
+       supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -434,13 +439,19 @@ export function MoreSettingsForm (props: {
 
         {AmbAndDtimFlag &&
           <UI.FieldLabel width='250px'>
-            {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
-            <Form.Item
-              name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
-              style={{ marginBottom: '10px' }}
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch/>}/>
+            <div style={{ display: 'grid', gridTemplateColumns: '170px 80px auto' }}>
+              {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+              <Tooltip.Question
+                title={agileMultibandTooltipContent}
+                placement='right'
+              />
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </div>
           </UI.FieldLabel>
         }
 
@@ -684,6 +695,8 @@ export function MoreSettingsForm (props: {
               })
             }]}
             style={{ marginBottom: '15px', width: '300px' }}
+            // eslint-disable-next-line max-len
+            tooltip={$t({ defaultMessage: 'Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.' })}
             children={<InputNumber style={{ width: '150px' }} />}
           />
         }
@@ -768,6 +781,9 @@ export function MoreSettingsForm (props: {
           />
         </>
         }
+
+        <MulticastForm/>
+
 
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>

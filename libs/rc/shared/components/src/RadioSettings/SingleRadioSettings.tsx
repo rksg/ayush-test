@@ -9,7 +9,12 @@ import { useIntl }                from 'react-intl'
 import { Button, cssStr }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import { RadioSettingsChannels } from '../RadioSettingsChannels'
+import { RadioSettingsChannels }       from '../RadioSettingsChannels'
+import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
+import { RadioSettingsChannels320Mhz } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannels320Mhz'
+import {
+  RadioSettingsChannelsManual320Mhz
+} from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
 import { ChannelBarControlPopover } from './ChannelBarControlPopover'
 import {
@@ -86,6 +91,7 @@ export function SingleRadioSettings (props:{
 
   const methodFieldName = [...radioDataKey, 'method']
   const channelBandwidthFieldName = [...radioDataKey, 'channelBandwidth']
+  const channelBandwidth320MhzGroupFieldName = [...radioDataKey, 'channelBandwidth320MhzGroup']
   const allowedChannelsFieldName = [...radioDataKey, 'allowedChannels']
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
@@ -116,6 +122,7 @@ export function SingleRadioSettings (props:{
   let hasIndoorForOutdoor = false
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
+  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
@@ -142,14 +149,16 @@ export function SingleRadioSettings (props:{
     allowedChannels,
     allowedIndoorChannels,
     allowedOutdoorChannels,
-    combinChannels
+    combinChannels,
+    channelBandwidth320MhzGroup
   ] = [
     useWatch<string>(methodFieldName),
     useWatch<string>(channelBandwidthFieldName),
     useWatch<string[]>(allowedChannelsFieldName),
     useWatch<string[]>(allowedIndoorChannelsFieldName),
     useWatch<string[]>(allowedOutdoorChannelsFieldName),
-    useWatch<boolean>(combinChannelsFieldName)
+    useWatch<boolean>(combinChannelsFieldName),
+    useWatch<string>(channelBandwidth320MhzGroupFieldName)
   ]
 
   useEffect(() => {
@@ -174,6 +183,16 @@ export function SingleRadioSettings (props:{
     if (channelBandwidth !== 'AUTO' &&
         !bandwidthOptions.find(option => option.value === channelBandwidth)) {
       form.setFieldValue(channelBandwidthFieldName, 'AUTO')
+    }
+
+    if (radioType === ApRadioTypeEnum.Radio6G) {
+      if (channelBandwidth === '320MHz' && channelMethod === 'MANUAL') {
+        if (!channelBandwidth320MhzGroup || channelBandwidth320MhzGroup === 'AUTO') {
+          form.setFieldValue(channelBandwidth320MhzGroupFieldName, '320MHz-1')
+        }
+      } else {
+        form.setFieldValue(channelBandwidth320MhzGroupFieldName, 'AUTO')
+      }
     }
 
     const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
@@ -270,11 +289,18 @@ export function SingleRadioSettings (props:{
       const isManualSelect = channelMethod === 'MANUAL'
       const channelLength = channelList.length || 0
 
+      const isolatedGroup = findIsolatedGroupByChannel(channelList)
+
       if (isManualSelect) {
         if (channelLength !== 1) {
           errorMessage = $t({ defaultMessage: 'Please select one channel' })
         }
-      } else if (channelLength < 2) {
+      }
+      else if (channelBandwidth === '320MHz' && isolatedGroup.length !== 0) {
+        // eslint-disable-next-line max-len
+        errorMessage = $t({ defaultMessage: 'Please select two adjacent 160Mhz channels to combine one 320 MHz channel' })
+      }
+      else if (channelLength < 2) {
         errorMessage = $t({ defaultMessage: 'Please select at least two channels' })
       }
       return errorMessage
@@ -316,6 +342,55 @@ export function SingleRadioSettings (props:{
 
   const handleCombinChannelsChanged = () => {
     combinChannelOnChanged.current = true
+  }
+
+  const selectRadioChannelSelectionType = () => {
+    if(channelBandwidth === '320MHz' && Wifi7_320Mhz_FeatureFlag) {
+      if (channelMethod === 'MANUAL' && context === 'ap') {
+        return (
+          <Row gutter={20}>
+            <Col span={channelColSpan}>
+              <RadioSettingsChannelsManual320Mhz
+                formName={allowedChannelsFieldName}
+                channelBandwidth320MhzGroupFieldName={channelBandwidth320MhzGroupFieldName}
+                channelList={channelList}
+                disabled={inherit5G || disable || isUseVenueSettings}
+                editContext={editContext}
+              />
+            </Col>
+          </Row>
+        )
+      }
+      return (
+        <Row gutter={20}>
+          <Col span={channelColSpan}>
+            <RadioSettingsChannels320Mhz
+              context={context}
+              formName={allowedChannelsFieldName}
+              channelList={channelList}
+              disabled={inherit5G || disable || isUseVenueSettings}
+              editContext={editContext}
+            />
+          </Col>
+        </Row>
+      )
+    } else {
+      return (
+        <Row gutter={20}>
+          <Col span={channelColSpan}>
+            <RadioSettingsChannels
+              formName={allowedChannelsFieldName}
+              groupSize={groupSize}
+              channelList={channelList}
+              displayBarSettings={displayRadioBarSettings}
+              channelBars={channelBars}
+              disabled={inherit5G || disable || isUseVenueSettings}
+              editContext={editContext}
+            />
+          </Col>
+        </Row>
+      )
+    }
   }
 
   return (
@@ -390,21 +465,12 @@ export function SingleRadioSettings (props:{
             </Col>
           </Row>
         }
-        {!hasIndoorBandwidth && !hasOutdoorBandwidth &&
-          <Row gutter={20}>
-            <Col span={channelColSpan}>
-              <RadioSettingsChannels
-                formName={allowedChannelsFieldName}
-                groupSize={groupSize}
-                channelList={channelList}
-                displayBarSettings={displayRadioBarSettings}
-                channelBars={channelBars}
-                disabled={inherit5G || disable || isUseVenueSettings}
-                editContext={editContext}
-              />
-            </Col>
-          </Row>
+
+        {
+          // Channel Selection Component
+          !hasIndoorBandwidth && !hasOutdoorBandwidth && selectRadioChannelSelectionType()
         }
+
         {hasIndoorBandwidth && !combinChannels &&
         <>
           <Row gutter={20} style={{ paddingTop: '10px' }}>

@@ -1,7 +1,9 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
+import { debounce }   from 'lodash'
 import { rest }       from 'msw'
+import { act }        from 'react-dom/test-utils'
 
 import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi }     from '@acx-ui/rc/services'
@@ -25,6 +27,9 @@ import {
   editStackMembers,
   standaloneSwitches
 } from '../__tests__/fixtures'
+import {
+  vlansByVenueListResponse
+} from '../SwitchForm/__tests__/fixtures'
 
 import { StackForm } from '.'
 
@@ -35,19 +40,26 @@ jest.mock('react-router-dom', () => ({
 }))
 
 async function fillInForm () {
-  fireEvent.change(await screen.findByLabelText(/Stack Name/), { target: { value: 'test stack' } })
-  fireEvent.change(await screen.findByLabelText(/Description/),
-    { target: { value: 'test description' } })
-  fireEvent.change(await screen.findByTestId(/serialNumber1/), { target: { value: 'FMK4124R20X' } })
-  fireEvent.change(await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
-  screen.getByTestId(/serialNumber1/i).focus()
-  screen.getByTestId(/serialNumber1/i).blur()
-
+  const stackNameInput = await screen.findByLabelText(/Stack Name/)
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    fireEvent.change(stackNameInput, { target: { value: '' } })
+    fireEvent.change(stackNameInput, { target: { value: 'test stack' } })
+    fireEvent.change(await screen.findByLabelText(/Description/),
+      { target: { value: 'test description' } })
+    fireEvent.change(
+      await screen.findByTestId(/serialNumber1/), { target: { value: 'FMK4124R20X' } })
+    fireEvent.change(
+      await screen.findByTestId(/serialNumber2/), { target: { value: 'FMK4124R21X' } })
+    screen.getByTestId(/serialNumber1/i).focus()
+    screen.getByTestId(/serialNumber1/i).blur()
+  })
 }
 
 async function changeVenue () {
   fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
-  await userEvent.click(screen.getAllByText('My-Venue')[0])
+  const venue = await screen.findAllByText('My-Venue')
+  await userEvent.click(venue[0])
 }
 
 describe('Switch Stack Form - Add', () => {
@@ -62,10 +74,18 @@ describe('Switch Stack Form - Add', () => {
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json(editStackData))),
       rest.post(SwitchUrlsInfo.addSwitch.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+        (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(editStackDetail)))
+        (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.post(SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))),
+      rest.post(SwitchUrlsInfo.convertToStack.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
   afterEach(() => {
@@ -73,19 +93,24 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should render correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
-
-    expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+    await waitFor(async () => {
+      expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+    })
 
     await changeVenue()
     await fillInForm()
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(addButton)
+    })
   })
   it('should save stack without name and description correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -102,12 +127,16 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should add row and delete row correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
 
-    await fillInForm()
-    await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
+    await waitFor(async () => {
+      expect(await screen.findByText('Add Switch Stack')).toBeVisible()
+    })
+
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
+    await fillInForm()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -118,7 +147,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should trigger switch serial number validation 1 correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -128,14 +157,18 @@ describe('Switch Stack Form - Add', () => {
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
     const serialNumber2 = await screen.findByTestId(/serialNumber2/)
-    fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
-    fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
-    serialNumber2.focus()
-    serialNumber2.blur()
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
+      fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
+      serialNumber2.focus()
+      serialNumber2.blur()
+    })
   })
   it('should show disabled delete button correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -151,7 +184,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should trigger radio onchange correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -166,7 +199,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should render empty venue list correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -180,16 +213,8 @@ describe('Switch Stack Form - Add', () => {
       venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/:action' }
     })
-
-    mockServer.use(
-      rest.post(SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))
-      ),
-      rest.post(SwitchUrlsInfo.convertToStack.url,
-        (_, res, ctx) => res(ctx.json({})))
-    )
 
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
@@ -204,13 +229,10 @@ describe('Switch Stack Form - Add', () => {
       venueId: 'switch-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/:action' }
     })
 
     mockServer.use(
-      rest.post(SwitchUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))
-      ),
       rest.post(SwitchUrlsInfo.convertToStack.url,
         (_, res, ctx) => res(ctx.status(404), ctx.json({})))
     )
@@ -228,7 +250,7 @@ describe('Switch Stack Form - Add', () => {
   it('should render correct breadcrumb when feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -246,7 +268,7 @@ describe('Switch Stack Form - Add', () => {
   it('should render correct breadcrumb when feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/stack/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/:action' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -298,7 +320,7 @@ describe('Switch Stack Form - Edit', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
   })
-  it.skip('should submit edit stack form correctly', async () => {
+  it('should submit edit stack form correctly', async () => {
     // TODO:
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
@@ -310,12 +332,11 @@ describe('Switch Stack Form - Edit', () => {
     const src = await screen.findByTestId('1_Icon')
 
     const dst = await screen.findByTestId('dropContainer')
-    fireEvent.dragStart(src)
-    fireEvent.dragEnter(dst)
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    fireEvent.drop(dst)
-    fireEvent.dragLeave(dst)
-    fireEvent.dragEnd(src)
+    fireEvent.mouseDown(src)
+    fireEvent.mouseMove(dst)
+    debounce(() => {
+      fireEvent.mouseUp(dst)
+    }, 100)
   })
   it('should render edit stack form with real module correctly', async () => {
     editStackDetail.model = 'ICX7650-C12P'
@@ -333,7 +354,10 @@ describe('Switch Stack Form - Edit', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
 
     const applyButton = await screen.findByRole('button', { name: /apply/i })
-    fireEvent.click(applyButton)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(applyButton)
+    })
   })
   it('should render edit stack form with readonly mode correctly', async () => {
     editStackDetail.cliApplied = true
@@ -347,6 +371,12 @@ describe('Switch Stack Form - Edit', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
+
+    const applyButton = await screen.findByRole('button', { name: /apply/i })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(applyButton)
+    })
   })
 
 
