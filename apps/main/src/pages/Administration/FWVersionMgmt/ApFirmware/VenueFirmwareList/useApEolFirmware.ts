@@ -1,3 +1,4 @@
+
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
@@ -17,8 +18,19 @@ type MaxEolABFVersionMap = {
 }
 
 export function useApEolFirmware () {
-  // eslint-disable-next-line max-len
-  const { data: releasedABFList } = useGetAvailableABFListQuery({}, { refetchOnMountOrArgChange: false })
+  const { releasedABFList, latestEolVersionByABFs } = useGetAvailableABFListQuery({}, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        releasedABFList: data,
+        latestEolVersionByABFs: data
+          ? _.uniqBy(data, 'abf')
+            .filter(abfVersion => abfVersion.abf !== 'active')
+            .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
+          : []
+      }
+    }
+  })
   const intl = getIntl()
 
   const compactEolApFirmwares = (selectedRows: FirmwareVenue[]): EolApFirmware[] => {
@@ -145,6 +157,7 @@ export function useApEolFirmware () {
     getAvailableEolApFirmwares,
     getEolABFOtherVersionsOptions,
     canUpdateEolApFirmware,
-    getDefaultEolVersionLabel
+    getDefaultEolVersionLabel,
+    latestEolVersionByABFs
   }
 }
