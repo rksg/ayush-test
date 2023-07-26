@@ -17,7 +17,7 @@ import { Table, TableProps, Modal }                            from '@acx-ui/com
 import { useAddAclMutation }                                   from '@acx-ui/rc/services'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName } from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 import { ACLRuleModal } from './ACLRuleModal'
 
@@ -308,7 +308,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         rowKey='sequence'
         rowActions={filterByAccess(rowActions)}
         columns={columns}
-        rowSelection={{
+        rowSelection={hasAccess() && {
           type: 'radio',
           selectedRowKeys: selected ? [selected.sequence] : [],
           onChange: (keys: React.Key[]) => {

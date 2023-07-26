@@ -350,6 +350,13 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.dhcpOption82MacFormat = null
   }
 
+  if (!get(data, 'wlan.advancedCustomization.enableMulticastRateLimiting')) {
+    advancedCustomization.enableMulticastUplinkRateLimiting = false
+    advancedCustomization.enableMulticastDownlinkRateLimiting = false
+    advancedCustomization.enableMulticastUplinkRateLimiting6G = false
+    advancedCustomization.enableMulticastDownlinkRateLimiting6G = false
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     ...data,

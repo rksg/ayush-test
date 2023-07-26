@@ -58,6 +58,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
   const { createdAt } = statusTrail[statusTrail.length - 1]
   const { kpis } = codes[code]
+  const isRrm = code.includes('crrm')
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
     <span>{$t(priority.label)}</span>
@@ -66,7 +67,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     { label: $t({ defaultMessage: 'Priority' }), children: <Icon /> },
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
-    { label: $t({ defaultMessage: 'Category' }), children: $t(category) },
+    ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),
     { label: get('IS_MLISA_SA')
       ? $t({ defaultMessage: 'Zone' })
       : $t({ defaultMessage: 'Venue' }), children: sliceValue },

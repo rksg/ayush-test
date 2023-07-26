@@ -28,7 +28,7 @@ import {
 import { useTableQuery }                                                          from '@acx-ui/rc/utils'
 import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -220,7 +220,7 @@ export function Integrators () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
     )

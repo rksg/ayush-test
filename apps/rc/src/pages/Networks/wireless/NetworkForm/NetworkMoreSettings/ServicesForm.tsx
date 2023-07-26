@@ -291,7 +291,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       <UI.Subtitle>
         {$t({ defaultMessage: 'DHCP' })}
       </UI.Subtitle>
-      <UI.FieldLabel width='182px'>
+      <UI.FieldLabel width='207px'>
         {$t({ defaultMessage: 'Force DHCP' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}

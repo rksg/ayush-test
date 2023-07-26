@@ -2,6 +2,7 @@ import { createContext, ReactNode, useCallback, useEffect, useMemo, useState } f
 
 import moment from 'moment-timezone'
 
+import { useApCountForNodeQuery } from '@acx-ui/analytics/services'
 import {
   useAnalyticsFilter,
   AnalyticsFilter
@@ -14,7 +15,9 @@ export interface HealthFilter extends AnalyticsFilter {
   setTimeWindow: (timeWindow: TimeStampRange, isReset?: boolean) => void
 }
 
-export const HealthPageContext = createContext(null as unknown as HealthFilter)
+export const HealthPageContext = createContext(
+  null as unknown as HealthFilter & { apCount?: number }
+)
 
 const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
 
@@ -24,6 +27,7 @@ export const formatTimeWindow = (window: TimeStampRange) : TimeStampRange => win
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const analyticsFilter = useAnalyticsFilter()
+  const { data, isLoading } = useApCountForNodeQuery(analyticsFilter.filters)
   const { startDate, endDate } = analyticsFilter.filters
   const [timeWindow, setTimeWindow] = useState<TimeStampRange>([
     moment(startDate).format(),
@@ -44,6 +48,8 @@ export function HealthPageContextProvider (props: { children: ReactNode }) {
     setTimeWindow: setTimeWindowCallback,
     timeWindow
   }), [analyticsFilter.filters, setTimeWindowCallback, timeWindow])
-
-  return <HealthPageContext.Provider {...props} value={context} />
+  const apCount = data?.network.node.apCount
+  return isLoading
+    ? null
+    : <HealthPageContext.Provider {...props} value={{ ...context, apCount }} />
 }

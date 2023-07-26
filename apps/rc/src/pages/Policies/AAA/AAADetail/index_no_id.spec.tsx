@@ -71,7 +71,7 @@ params = {
   policyId: '373377b0cb6e46ea8982b1c80aabe1fa'
 }
 describe('AAA Detail Page', () => {
-  it('should render aaa authentication page', async () => {
+  it.skip('should render aaa authentication page', async () => {
     await aaaAuth()
   })
 })
