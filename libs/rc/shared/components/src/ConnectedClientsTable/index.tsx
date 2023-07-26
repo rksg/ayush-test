@@ -341,6 +341,11 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       show: !!showAllColumns,
       render: (data) => data || '--'
     }
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: intl.$t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags'
+    // }
   ]
   return columns
 }
