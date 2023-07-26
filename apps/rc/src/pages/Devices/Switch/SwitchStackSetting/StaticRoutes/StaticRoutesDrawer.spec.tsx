@@ -1,6 +1,7 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
+import { act }        from 'react-dom/test-utils'
 
 import { venueApi }        from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
@@ -15,7 +16,6 @@ import {
 import { staticRoutes } from '../../__tests__/fixtures'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
-import { act } from 'react-dom/test-utils'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
