@@ -7,8 +7,9 @@ import { useParams }                                            from '@acx-ui/re
 
 import { SwitchDetailsContext } from '../../..'
 
-import * as UI  from './styledComponents'
-import { Unit } from './Unit'
+import { FrontViewBreakoutPortDrawer } from './FrontViewBreakoutPortDrawer'
+import * as UI                         from './styledComponents'
+import { Unit }                        from './Unit'
 
 interface SlotMember {
   isStack: boolean
@@ -25,6 +26,8 @@ export interface SwitchPanel {
   setEditBreakoutPortDrawerVisible: (data: boolean) => void
   selectedPorts: SwitchPortStatus[]
   setSelectedPorts: (data: SwitchPortStatus[]) => void
+  breakoutPorts: SwitchPortStatus[]
+  setBreakoutPorts: (data: SwitchPortStatus[]) => void
   editLagModalVisible: boolean
   setEditLagModalVisible: (data: boolean) => void
   editLag: Lag[]
@@ -45,6 +48,7 @@ export function SwitchFrontRearView (props:{
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
+  const [breakoutPorts, setBreakoutPorts] = useState([] as SwitchPortStatus[])
   const { serialNumber } = params
   const {
     switchDetailsContextData
@@ -96,7 +100,9 @@ export function SwitchFrontRearView (props:{
     editLagModalVisible,
     setEditLagModalVisible,
     editLag,
-    setEditLag
+    setEditLag,
+    breakoutPorts,
+    setBreakoutPorts
   }}>
     {
       slotMember && slotMember.data.map((member, index) => (
@@ -124,6 +130,28 @@ export function SwitchFrontRearView (props:{
       visible={editLagModalVisible}
       setVisible={setEditLagModalVisible}
       type='drawer'
+    />
+    }
+    {
+      breakoutPorts && <FrontViewBreakoutPortDrawer
+        portNumber={breakoutPorts[0]?.portIdentifier.split(':')[0]}
+        setDrawerVisible={setBreakoutPortDrawerVisible}
+        drawerVisible={breakoutPortDrawerVisible}
+        breakoutPorts={breakoutPorts}
+      />
+    }
+    { editBreakoutPortDrawerVisible && <EditPortDrawer
+      key='edit-breakout-port'
+      visible={editBreakoutPortDrawerVisible}
+      setDrawerVisible={setEditBreakoutPortDrawerVisible}
+      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
+      isMultipleEdit={selectedPorts?.length > 1}
+      isVenueLevel={false}
+      selectedPorts={selectedPorts}
+      onBackClick={() => {
+        setBreakoutPortDrawerVisible(true)
+        setSelectedPorts([])
+      }}
     />
     }
   </SwitchPanelContext.Provider>

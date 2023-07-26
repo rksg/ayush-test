@@ -52,6 +52,10 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     return mspAdmins.filter(rec => admins.includes(rec.id))
   }
 
+  function rowNotSelected (email: string) {
+    return selectedRows.find(rec => rec.email === email) ? false : true
+  }
+
   const delegatedAdmins =
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId } },
         { skip: isSkip })
@@ -145,8 +149,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
         }
       },
       render: function (data, row) {
-        return row.role === RolesEnum.DPSK_ADMIN
-          ? <span>DPSK Manager</span>
+        return row.role === RolesEnum.DPSK_ADMIN ||
+              (row.role === RolesEnum.GUEST_MANAGER && rowNotSelected(row.email))
+          ? <span>{$t(roleDisplayText[row.role])}</span>
           : transformAdminRole(row.id, row.role)
       }
     }
@@ -192,7 +197,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
               setSelectedRows(selRows)
             },
             getCheckboxProps: (record: MspAdministrator) => ({
-              disabled: record.role === RolesEnum.DPSK_ADMIN
+              disabled:
+                 record.role === RolesEnum.DPSK_ADMIN ||
+                (record.role === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email))
             })
           }}
         />
