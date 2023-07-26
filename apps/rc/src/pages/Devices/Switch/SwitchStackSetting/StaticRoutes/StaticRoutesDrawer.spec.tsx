@@ -15,6 +15,7 @@ import {
 import { staticRoutes } from '../../__tests__/fixtures'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
+import { act } from 'react-dom/test-utils'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -57,17 +58,22 @@ describe('edit static routes form', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
     })
 
-    const destIp = screen.getByLabelText('Destination IP')
-    fireEvent.change(destIp, { target: { value: '0.0.0.0/0' } })
+    const destIp = await screen.findByLabelText('Destination IP')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(destIp, { target: { value: '0.0.0.0/0' } })
+    })
     // userEvent.type(destIp, '0.0.0.0/0')
     // fireEvent.focus(destIp)
     // fireEvent.blur(destIp)
-
-    destIp.focus()
-    destIp.blur()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      destIp.focus()
+      destIp.blur()
+    })
     await userEvent.tab()
-    const applyButton = screen.getByRole('button', { name: /apply/i })
-    fireEvent.click(applyButton)
+    const applyButton = await screen.findByRole('button', { name: /apply/i })
+    await userEvent.click(applyButton)
   })
 
 
@@ -80,15 +86,21 @@ describe('edit static routes form', () => {
     })
 
     const destIp = screen.getByLabelText('Destination IP')
-    fireEvent.change(destIp, { target: { value: '0.0.0.0/1' } })
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(destIp, { target: { value: '0.0.0.0/1' } })
+    })
     // userEvent.type(destIp, '0.0.0.0/0')
     // fireEvent.focus(destIp)
     // fireEvent.blur(destIp)
 
-    destIp.focus()
-    destIp.blur()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      destIp.focus()
+      destIp.blur()
+    })
     await userEvent.tab()
-    const applyButton = screen.getByRole('button', { name: /apply/i })
-    fireEvent.click(applyButton)
+    const applyButton = await screen.findByRole('button', { name: /apply/i })
+    await userEvent.click(applyButton)
   })
 })

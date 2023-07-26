@@ -8,8 +8,7 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
