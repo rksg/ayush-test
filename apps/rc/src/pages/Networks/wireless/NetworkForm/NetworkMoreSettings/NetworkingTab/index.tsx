@@ -190,7 +190,6 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         children={<InputNumber style={{ width: '150px' }} />}
       />
 
-
       <UI.FieldLabel width={labelWidth}>
         { $t({ defaultMessage: 'Airtime Decongestion:' }) }
         <Form.Item
@@ -457,7 +456,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       </>
       }
-      { wifi6AndWifi7Flag && <WiFi7 /> }
+      {wifi6AndWifi7Flag && <WiFi7 /> }
     </>
   )
 }

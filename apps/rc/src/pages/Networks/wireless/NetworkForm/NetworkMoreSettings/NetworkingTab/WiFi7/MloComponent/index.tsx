@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Form, Switch } from 'antd'
-import { useIntl }      from 'react-intl'
+import { Form, Space, Switch } from 'antd'
+import { useIntl }             from 'react-intl'
 
 import { Tooltip } from '@acx-ui/components'
 
@@ -31,7 +31,7 @@ export const MloComponent = (
   return (
     <div data-testid={'EnableMLO'}>
       <UI.FieldLabel width='250px'>
-        <div>
+        <Space>
           {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
           <Tooltip.Question
             title={`This feature allows a Wi-Fi 7 device to
@@ -40,9 +40,9 @@ export const MloComponent = (
             Most relevant in high-density environments.
             The radios for MLO need to be active on APs`}
             placement='right'
-            style={{ height: 10, marginLeft: -5, marginBottom: -3 }}
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
           />
-        </div>
+        </Space>
         <Form.Item
           name={['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']}
           initialValue={initialValue}

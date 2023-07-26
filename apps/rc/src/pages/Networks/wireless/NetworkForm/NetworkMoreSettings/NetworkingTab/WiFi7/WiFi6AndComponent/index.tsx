@@ -1,5 +1,5 @@
-import { Form, Switch } from 'antd'
-import { useIntl }      from 'react-intl'
+import { Form, Space, Switch } from 'antd'
+import { useIntl }             from 'react-intl'
 
 import { Tooltip } from '@acx-ui/components'
 
@@ -23,14 +23,15 @@ export const Wifi6And7Component = (
   return (
     <div data-testid='EnableWiFi'>
       <UI.FieldLabel width='250px'>
-        <div>
+        <Space>
           {$t({ defaultMessage: 'Enable WiFi 6/ 7' })}
           <Tooltip.Question
-            title={`Use this feature to allow some legacy Wi-Fi 5 clients
-                    with out-of-date drivers to inter-operate with a Wi-Fi 6/7 AP.`}
+            title={$t({ defaultMessage: `Use this feature to allow some legacy Wi-Fi 5 clients
+                    with out-of-date drivers to inter-operate with a Wi-Fi 6/7 AP.` })}
             placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
           />
-        </div>
+        </Space>
         <Form.Item
           name={['wlan', 'advancedCustomization', 'enableWifi7']}
           style={{ marginBottom: '10px', width: '300px' }}

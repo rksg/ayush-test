@@ -50,6 +50,7 @@ export const WiFi7 = () => {
         <Tooltip.Question
           title={'Only work with Wi-Fi Aps, e.g., R770'}
           placement='right'
+          iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
         />
       </UI.Subtitle>
       <Wifi6And7Component
