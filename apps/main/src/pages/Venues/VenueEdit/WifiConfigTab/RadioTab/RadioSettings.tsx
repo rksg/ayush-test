@@ -15,6 +15,7 @@ import styled                           from 'styled-components/macro'
 
 import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -47,7 +48,7 @@ const RadioLegends = styled.div`
   .legends {
     position: absolute;
     display: grid;
-    grid-template-columns: 190px 90px 314px ;
+    grid-template-columns: 190px 114px 314px ;
     grid-column-gap: 8px;
     height: 16px;
 
@@ -588,8 +589,19 @@ export function RadioSettings () {
                 {$t({ defaultMessage: '5 GHz' })}</RadioLable>}/>
             { isTriBandRadio &&
               <Tabs.TabPane key='Normal6GHz'
-                tab={<RadioLable style={{ width: '36px' }}>
-                  {$t({ defaultMessage: '6 GHz' })}</RadioLable>}/>
+                style={
+                  { width: '50px' }
+                }
+                tab={<RadioLable style={{ width: '60px' }}>
+                  {$t({ defaultMessage: '6 GHz' })}
+                  <Tooltip
+                    placement='topRight'
+                    title={'6 GHz only supports R770 and R560.'}
+                  >
+                    <QuestionMarkCircleOutlined
+                      style={{ height: '16px' }} />
+                  </Tooltip>
+                </RadioLable>}/>
             }
             { isTriBandRadio && isDual5gMode && <>
               <Tabs.TabPane key='Lower5GHz'
