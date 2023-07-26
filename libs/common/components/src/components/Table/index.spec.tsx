@@ -1059,7 +1059,7 @@ describe('Table component', () => {
       fireEvent.click(clearBtn)
     })
 
-    it.skip('should render select data from all pages option correctly', async () => {
+    it('should render select data from all pages option correctly', async () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox'
       }} />)
@@ -1074,7 +1074,8 @@ describe('Table component', () => {
       await userEvent.hover(icon)
       const selectAllOption = await screen.findByText('Select data from all pages')
       await userEvent.click(selectAllOption)
-      expect(await screen.findByText('3 selected')).toBeVisible()
+      const selected = await screen.findByText('3 selected')
+      expect(selected).toBeVisible()
     })
 
     it('should render groupBy disabled rows correctly', async () => {

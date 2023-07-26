@@ -27,6 +27,7 @@ import { IconButton }                   from './IconButton'
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
+import { useSelectedRowKeys }           from './useSelectedRowKeys'
 
 import type {
   TableColumn,
@@ -100,31 +101,7 @@ const defaultPagination = {
   showSizeChanger: true
 }
 
-function useSelectedRowKeys <RecordType> (
-  rowSelection?: TableProps<RecordType>['rowSelection']
-): [Key[], React.Dispatch<React.SetStateAction<Key[]>>,
-  RecordType[], React.Dispatch<React.SetStateAction<RecordType[]>>,
-  RecordType[], React.Dispatch<React.SetStateAction<RecordType[]>>
-] {
-  const [selectedRowKeys, setSelectedRowKeys]
-    = useState<Key[]>(rowSelection?.defaultSelectedRowKeys ?? [])
-  const [selectedRows, setSelectedRows]
-    = useState<RecordType[]>([])
-  const [allRows, setAllRows]
-    = useState<RecordType[]>([])
 
-  useEffect(() => {
-    if (rowSelection?.selectedRowKeys !== undefined) {
-      setSelectedRowKeys(rowSelection?.selectedRowKeys)
-    }
-    if (rowSelection?.selectedRowKeys?.length === 0) {
-      setSelectedRows([])
-      setAllRows([])
-    }
-  }, [rowSelection?.selectedRowKeys])
-
-  return [selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows, allRows, setAllRows]
-}
 
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -172,6 +149,19 @@ function Table <RecordType extends Record<string, any>> ({
       : getFilteredData<RecordType>(
         dataSource, filterValues, activeFilters, searchables, searchValue)) ?? [])
   }, [dataSource, onDisplayRowChange, searchValue, filterValues])
+
+  useEffect(() => {
+    const tmp: React.SetStateAction<RecordType[]> = []
+    selectedRows.forEach(row => {
+      const tmpRow = dataSource?.find(item => getRowKey(item) == getRowKey(row))
+      if(tmpRow) {
+        tmp.push(tmpRow)
+      }else {
+        tmp.push(row)
+      }
+    })
+    setSelectedRows(tmp)
+  }, [dataSource])
 
   const baseColumns = useMemo(() => {
     const settingsColumn = {
