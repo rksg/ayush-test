@@ -424,7 +424,6 @@ export const clientList = [{
   networkId: '423c3673e74f44e69c0f3b35cd579ecc',
   networkName: 'NMS-app6-WLAN-QA',
   networkSsid: 'NMS-app6-WLAN-QA',
-  //eric_test noiseFloor_dBm: -96,
   osType: 'Windows',
   receiveSignalStrength_dBm: -32,
   receivedBytes: 104098725,

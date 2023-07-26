@@ -9,7 +9,6 @@ import {
 import {
   getClientHealthClass,
   getDeviceTypeIcon,
-  //eric_test getNoiseFloorStatus,
   getRssiStatus,
   getOsTypeIcon
 } from '.'
@@ -103,21 +102,3 @@ describe('getRssiStatus', () => {
     })
   })
 })
-
-/*eric_text
-
-describe('getNoiseFloorStatus', () => {
-  it('Should take care of low value correctly', async () => {
-    expect(renderHook(() => getNoiseFloorStatus(useIntl(), -80)).result.current).toEqual({
-      tooltip: 'Low',
-      color: '#23AB36'
-    })
-  })
-  it('Should take care of high value correctly', async () => {
-    expect(renderHook(() => getNoiseFloorStatus(useIntl(), -60)).result.current).toEqual({
-      tooltip: 'High',
-      color: '#ED1C24'
-    })
-  })
-})
-*/

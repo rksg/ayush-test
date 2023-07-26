@@ -233,7 +233,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
           networkName: null,
           receiveSignalStrength_dBm: -70,
           snr_dB: null,
-          //eric_test noiseFloor_dBm: null,
           wifiCallingClient: true,
           wifiCallingCarrierName: 'att1',
           wifiCallingQosPriority: 'WIFICALLING_PRI_VOICE',
@@ -269,7 +268,6 @@ describe('ClientOverviewTab - ClientProperties', () => {
           ...clientList[0],
           osType: 'apple',
           networkName: null,
-          //eric_test noiseFloor_dBm: -60,
           receiveSignalStrength_dBm: -90
         }
 

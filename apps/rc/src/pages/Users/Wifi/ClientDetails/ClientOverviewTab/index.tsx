@@ -37,7 +37,7 @@ const clientPayload = {
     'sessStartTime', 'clientAnalytics', 'clientVlan', 'deviceTypeStr', 'modelName',
     'totalTraffic', 'trafficToClient', 'trafficFromClient', 'receiveSignalStrength', 'rssi',
     'radio.mode', 'cpeMac', 'authmethod', 'status', 'encryptMethod', 'packetsToClient',
-    'packetsFromClient', 'packetsDropFrom', 'radio.channel', //eric_test 'noiseFloor',
+    'packetsFromClient', 'packetsDropFrom', 'radio.channel',
     'cog', 'venueName', 'apName', 'clientVlan', 'networkId', 'switchName', 'healthStatusReason', 'lastUpdateTime']
 }
 

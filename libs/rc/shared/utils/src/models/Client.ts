@@ -29,7 +29,6 @@ export class Client {
   framesDropped?: number
   receiveSignalStrength_dBm?: number
   snr_dB?: number
-  //eric_test noiseFloor_dBm: number
   lastSeenDateTime?: string
   clientIP?: string
   ssid?: string
@@ -65,6 +64,5 @@ export class Client {
     this.networkSsid = ''
     this.snr_dB = 0
     this.timeConnectedMs = 0
-    //eric_test this.noiseFloor_dBm = 0
   }
 }
