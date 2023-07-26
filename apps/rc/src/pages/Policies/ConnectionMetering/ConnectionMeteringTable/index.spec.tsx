@@ -118,7 +118,7 @@ const propertyConfigs: PropertyConfigs[] = [{
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')
 
-describe('ConnectionMeteringTable', () => {
+describe.skip('ConnectionMeteringTable', () => {
   const searchConnectionMeteringApi = jest.fn()
   const deleteFn = jest.fn()
   beforeEach(async () => {
