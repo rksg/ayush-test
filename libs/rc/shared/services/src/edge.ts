@@ -33,8 +33,8 @@ import {
   EdgesTopResources,
   EdgePasswordDetail
 } from '@acx-ui/rc/utils'
-import { baseEdgeApi } from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
+import { baseEdgeApi }       from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
 export type EdgesExportPayload = {
@@ -86,7 +86,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         EdgeStatusTransformer(result.data)
         return result
       },
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'Add Edge',
@@ -133,7 +133,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse(result: TableResult<EdgeStatus>) {
+      transformResponse (result: TableResult<EdgeStatus>) {
         EdgeStatusTransformer(result.data)
         return result.data[0]
       }
@@ -165,7 +165,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'PORT' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'Update ports'
@@ -195,7 +195,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           params: { page, pageSize }
         }
       },
-      transformResponse(response: PaginationQueryResult<EdgeSubInterface>) {
+      transformResponse (response: PaginationQueryResult<EdgeSubInterface>) {
         return {
           data: response.content,
           page: response.page,
@@ -260,7 +260,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse(result: TableResult<EdgePortStatus>) {
+      transformResponse (result: TableResult<EdgePortStatus>) {
         return result?.data
       }
     }),
@@ -290,7 +290,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'Update Edge Firmware Now'
@@ -410,7 +410,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'SERVICE' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'Remove Services'
