@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
 
 import { Provider } from '@acx-ui/store'
 import { mockServer,
@@ -21,31 +22,33 @@ describe('Venue DHCP Instance', () => {
     })
 
     await screen.findByText('abcd')
-    expect(screen.getByRole('button', { name: 'Manage Local Service' })).toBeVisible()
-    // FIXME:
-    // await userEvent.click(buttonmanage)
-    // expect(screen.getByRole('button', { name: 'Add gateway' })).toBeVisible()
+    const buttonmanage = screen.getByRole('button', { name: 'Manage Local Service' })
+    await userEvent.click(buttonmanage)
+    await userEvent.click(screen.getByRole('button', { name: 'Add gateway' }))
+    await screen.findAllByText('Select AP...')
 
-    // await userEvent.click(screen.getByRole('button', { name: 'Add gateway' }))
-    // await screen.findByText('Apply')
-    // await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    // await screen.findByText('Manage Local Service')
-    // await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
-    // await screen.findByText('Cancel')
-    // await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
+    await screen.findByText(/manage local dhcp for wi-fi service/i)
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
-    // const button = screen.getAllByRole('switch')
-    // await userEvent.click(button[1])
-    // let activeButton = await screen.findByText('Confirm')
-    // fireEvent.click(activeButton)
+    const button = screen.getAllByRole('switch')
+    await userEvent.click(button[1])
+    let activeButton = await screen.findByText('Confirm')
+    await userEvent.click(activeButton)
 
-    // await userEvent.click(button[0])
-    // activeButton = await screen.findByText('Confirm')
+    await userEvent.click(button[0])
+    activeButton = await screen.findByText('Confirm')
+    await userEvent.click(activeButton)
 
-    // fireEvent.click(activeButton)
+    const radioButton = screen.getByRole('radio', { name: 'Lease Table (1 Online)' })
+    await userEvent.click(radioButton)
 
+    await screen.findByRole('cell', {
+      name: /dhcp-3/i
+    })
 
-    // await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
+    expect(radioButton).toBeChecked()
   })
 
 })

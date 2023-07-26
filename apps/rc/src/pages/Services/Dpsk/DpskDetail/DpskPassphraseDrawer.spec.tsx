@@ -43,6 +43,10 @@ describe('DpskPassphraseDrawer', () => {
       rest.post(
         DpskUrls.getEnhancedPassphraseList.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
