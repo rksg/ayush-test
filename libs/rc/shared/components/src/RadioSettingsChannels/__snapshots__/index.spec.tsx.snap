@@ -2,265 +2,269 @@
 
 exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
 <DocumentFragment>
-  <div>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div>
+      <button
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 eGGUhQ gCPDLj"
+        style="width: 250px;"
+        type="button"
+      >
+        <span>
+          Lower 5G
+        </span>
+      </button>
+      <button
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 eGGUhQ gCPDLj"
+        style="width: 506px;"
+        type="button"
+      >
+        <span>
+          Upper 5G
+        </span>
+      </button>
+    </div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 eGGUhQ gCPDLj"
-      style="width: 250px;"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButtonDFS-sc-tbspz7-8 eGGUhQ kmLxbt"
+      style="width: 506px; left: 128px;"
       type="button"
     >
       <span>
-        Lower 5G
+        DFS
       </span>
     </button>
-    <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 eGGUhQ gCPDLj"
-      style="width: 506px;"
-      type="button"
-    >
-      <span>
-        Upper 5G
-      </span>
-    </button>
-  </div>
-  <button
-    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButtonDFS-sc-tbspz7-8 eGGUhQ kmLxbt"
-    style="width: 506px; left: 128px;"
-    type="button"
-  >
-    <span>
-      DFS
-    </span>
-  </button>
-  <div
-    class="ant-space ant-space-horizontal ant-space-align-center"
-    style="display: flex;"
-  >
     <div
-      class="ant-space-item"
+      class="ant-space ant-space-horizontal ant-space-align-center"
+      style="display: flex;"
     >
       <div
-        class="ant-form-item"
+        class="ant-space-item"
       >
         <div
-          class="ant-row ant-form-item-row"
+          class="ant-form-item"
         >
           <div
-            class="ant-col ant-form-item-control"
+            class="ant-row ant-form-item-row"
           >
             <div
-              class="ant-form-item-control-input"
+              class="ant-col ant-form-item-control"
             >
               <div
-                class="ant-form-item-control-input-content"
+                class="ant-form-item-control-input"
               >
                 <div
-                  class="ant-checkbox-group styledComponents__CheckboxGroup-sc-tbspz7-3 howlOE group-4"
-                  id="apRadioParams24G_allowedChannels"
+                  class="ant-form-item-control-input-content"
                 >
-                  <label
-                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                  <div
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-tbspz7-3 howlOE group-4"
+                    id="apRadioParams50G_allowedChannels"
                   >
-                    <span
-                      class="ant-checkbox"
+                    <label
+                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                     >
-                      <input
-                        class="ant-checkbox-input"
-                        type="checkbox"
-                        value="36"
-                      />
                       <span
-                        class="ant-checkbox-inner"
-                      />
-                    </span>
-                    <span>
-                      <span
-                        class="channels"
+                        class="ant-checkbox ant-checkbox-checked"
                       >
-                        <span>
-                          36
-                        </span>
-                        <span>
-                          40
-                        </span>
-                        <span>
-                          44
-                        </span>
-                        <span>
-                          48
+                        <input
+                          class="ant-checkbox-input"
+                          type="checkbox"
+                          value="36"
+                        />
+                        <span
+                          class="ant-checkbox-inner"
+                        />
+                      </span>
+                      <span>
+                        <span
+                          class="channels"
+                        >
+                          <span>
+                            36
+                          </span>
+                          <span>
+                            40
+                          </span>
+                          <span>
+                            44
+                          </span>
+                          <span>
+                            48
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </label>
-                  <label
-                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                  >
-                    <span
-                      class="ant-checkbox"
+                    </label>
+                    <label
+                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                     >
-                      <input
-                        class="ant-checkbox-input"
-                        type="checkbox"
-                        value="52"
-                      />
                       <span
-                        class="ant-checkbox-inner"
-                      />
-                    </span>
-                    <span>
-                      <span
-                        class="channels"
+                        class="ant-checkbox ant-checkbox-checked"
                       >
-                        <span>
-                          52
-                        </span>
-                        <span>
-                          56
-                        </span>
-                        <span>
-                          60
-                        </span>
-                        <span>
-                          64
+                        <input
+                          class="ant-checkbox-input"
+                          type="checkbox"
+                          value="52"
+                        />
+                        <span
+                          class="ant-checkbox-inner"
+                        />
+                      </span>
+                      <span>
+                        <span
+                          class="channels"
+                        >
+                          <span>
+                            52
+                          </span>
+                          <span>
+                            56
+                          </span>
+                          <span>
+                            60
+                          </span>
+                          <span>
+                            64
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </label>
-                  <label
-                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                  >
-                    <span
-                      class="ant-checkbox"
+                    </label>
+                    <label
+                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                     >
-                      <input
-                        class="ant-checkbox-input"
-                        type="checkbox"
-                        value="100"
-                      />
                       <span
-                        class="ant-checkbox-inner"
-                      />
-                    </span>
-                    <span>
-                      <span
-                        class="channels"
+                        class="ant-checkbox ant-checkbox-checked"
                       >
-                        <span>
-                          100
-                        </span>
-                        <span>
-                          104
-                        </span>
-                        <span>
-                          108
-                        </span>
-                        <span>
-                          112
+                        <input
+                          class="ant-checkbox-input"
+                          type="checkbox"
+                          value="100"
+                        />
+                        <span
+                          class="ant-checkbox-inner"
+                        />
+                      </span>
+                      <span>
+                        <span
+                          class="channels"
+                        >
+                          <span>
+                            100
+                          </span>
+                          <span>
+                            104
+                          </span>
+                          <span>
+                            108
+                          </span>
+                          <span>
+                            112
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </label>
-                  <label
-                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                  >
-                    <span
-                      class="ant-checkbox"
+                    </label>
+                    <label
+                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                     >
-                      <input
-                        class="ant-checkbox-input"
-                        type="checkbox"
-                        value="116"
-                      />
                       <span
-                        class="ant-checkbox-inner"
-                      />
-                    </span>
-                    <span>
-                      <span
-                        class="channels"
+                        class="ant-checkbox ant-checkbox-checked"
                       >
-                        <span>
-                          116
-                        </span>
-                        <span>
-                          120
-                        </span>
-                        <span>
-                          124
-                        </span>
-                        <span>
-                          128
+                        <input
+                          class="ant-checkbox-input"
+                          type="checkbox"
+                          value="116"
+                        />
+                        <span
+                          class="ant-checkbox-inner"
+                        />
+                      </span>
+                      <span>
+                        <span
+                          class="channels"
+                        >
+                          <span>
+                            116
+                          </span>
+                          <span>
+                            120
+                          </span>
+                          <span>
+                            124
+                          </span>
+                          <span>
+                            128
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </label>
-                  <label
-                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                  >
-                    <span
-                      class="ant-checkbox"
+                    </label>
+                    <label
+                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                     >
-                      <input
-                        class="ant-checkbox-input"
-                        type="checkbox"
-                        value="132"
-                      />
                       <span
-                        class="ant-checkbox-inner"
-                      />
-                    </span>
-                    <span>
-                      <span
-                        class="channels"
+                        class="ant-checkbox ant-checkbox-checked"
                       >
-                        <span>
-                          132
-                        </span>
-                        <span>
-                          136
-                        </span>
-                        <span>
-                          140
-                        </span>
-                        <span>
-                          144
+                        <input
+                          class="ant-checkbox-input"
+                          type="checkbox"
+                          value="132"
+                        />
+                        <span
+                          class="ant-checkbox-inner"
+                        />
+                      </span>
+                      <span>
+                        <span
+                          class="channels"
+                        >
+                          <span>
+                            132
+                          </span>
+                          <span>
+                            136
+                          </span>
+                          <span>
+                            140
+                          </span>
+                          <span>
+                            144
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </label>
-                  <label
-                    class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
-                  >
-                    <span
-                      class="ant-checkbox"
+                    </label>
+                    <label
+                      class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                     >
-                      <input
-                        class="ant-checkbox-input"
-                        type="checkbox"
-                        value="149"
-                      />
                       <span
-                        class="ant-checkbox-inner"
-                      />
-                    </span>
-                    <span>
-                      <span
-                        class="channels"
+                        class="ant-checkbox ant-checkbox-checked"
                       >
-                        <span>
-                          149
-                        </span>
-                        <span>
-                          153
-                        </span>
-                        <span>
-                          157
-                        </span>
-                        <span>
-                          161
+                        <input
+                          class="ant-checkbox-input"
+                          type="checkbox"
+                          value="149"
+                        />
+                        <span
+                          class="ant-checkbox-inner"
+                        />
+                      </span>
+                      <span>
+                        <span
+                          class="channels"
+                        >
+                          <span>
+                            149
+                          </span>
+                          <span>
+                            153
+                          </span>
+                          <span>
+                            157
+                          </span>
+                          <span>
+                            161
+                          </span>
                         </span>
                       </span>
-                    </span>
-                  </label>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -268,6 +272,6 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </DocumentFragment>
 `;
