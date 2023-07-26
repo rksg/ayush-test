@@ -139,8 +139,7 @@ export const migrationApi = baseMigrationApi.injectEndpoints({
         return {
           ...req
         }
-      },
-      providesTags: [{ type: 'Migration', id: 'LIST' }]
+      }
     })
   })
 })
