@@ -55,6 +55,7 @@ enum DhcpOption82MacEnum {
 export function DhcpOption82Form (props: { labelWidth?: string }) {
   const { $t } = useIntl()
   const { labelWidth='250px' } = props
+  const iconStyle: CSSProperties = { height: '16px', width: '16px', marginBottom: '-3px' }
 
   const dhcp82SubOption1Options = [{
     value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
@@ -111,30 +112,38 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
     label: $t({ defaultMessage: 'AP Name' })
   }]
 
+  const dhcpOption82EnabledFieldName =
+    ['wlan', 'advancedCustomization', 'dhcpOption82Enabled']
   const dhcpOption82SubOption1EnabledFieldName =
     ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled']
+  const dhcpOption82SubOption1FormatFieldName =
+    ['wlan','advancedCustomization','dhcpOption82SubOption1Format']
   const dhcpOption82SubOption2EnabledFieldName =
     ['wlan','advancedCustomization','dhcpOption82SubOption2Enabled']
+  const dhcpOption82SubOption2FormatFieldName =
+    ['wlan','advancedCustomization','dhcpOption82SubOption2Format']
   const dhcpOption82SubOption150EnabledFieldName =
     ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled']
   const dhcpOption82SubOption151EnabledFieldName =
     ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled']
+  const dhcpOption82SubOption151FormatFieldName =
+    ['wlan','advancedCustomization','dhcpOption82SubOption151Format']
 
   const form = Form.useFormInstance()
   const [
+    dhcpOption82Enabled,
     dhcpOption82SubOption1Enabled,
     dhcpOption82SubOption2Enabled,
     dhcpOption82SubOption151Enabled,
     dhcpOption82SubOption2Format,
     dhcpOption82SubOption151Format
   ] = [
+    useWatch<boolean>(dhcpOption82EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption1EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption2EnabledFieldName),
     useWatch<boolean>(dhcpOption82SubOption151EnabledFieldName),
-    useWatch<DhcpOption82SubOption2Enum>
-    (['wlan','advancedCustomization', 'dhcpOption82SubOption2Format']),
-    useWatch<DhcpOption82SubOption151Enum>
-    (['wlan','advancedCustomization', 'dhcpOption82SubOption151Format'])
+    useWatch<DhcpOption82SubOption2Enum>(dhcpOption82SubOption2FormatFieldName),
+    useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName)
   ]
 
   const onChangeDhcpOption82 = (checked: boolean) => {
@@ -159,7 +168,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
       name={['wlan', 'advancedCustomization', 'dhcpOption82Enabled']}
       label={$t({ defaultMessage: 'DHCP Option 82' })}
       initialValue={false}
-      switchStyle={{ marginLeft: '155px' }}
+      switchStyle={{ marginLeft: dhcpOption82Enabled? '140px' : '155px' }}
       style={{ width: 'max-content', marginLeft: '-8px' }}
       onChange={onChangeDhcpOption82}>
 
@@ -168,7 +177,8 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           {$t({ defaultMessage: 'Sub-option 1' })}
           <Tooltip.Question
             title={dhcpOption82SubOption1TooltipContent}
-            placement='right'
+            placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px' }}>
@@ -181,7 +191,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           />
           { dhcpOption82SubOption1Enabled &&
             <Form.Item
-              name={['wlan','advancedCustomization','dhcpOption82SubOption1Format']}
+              name={dhcpOption82SubOption1FormatFieldName}
               initialValue={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION}
               children={
                 <Select options={dhcp82SubOption1Options} />
@@ -195,7 +205,8 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           {$t({ defaultMessage: 'Sub-option 2' })}
           <Tooltip.Question
             title={dhcpOption82SubOption2TooltipContent}
-            placement='right'
+            placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px auto' }}>
@@ -208,7 +219,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           />
           { dhcpOption82SubOption2Enabled &&
             <Form.Item
-              name={['wlan','advancedCustomization','dhcpOption82SubOption2Format']}
+              name={dhcpOption82SubOption2FormatFieldName}
               initialValue={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC}
               children={
                 <Select options={dhcp82SubOption2Options} />
@@ -222,7 +233,8 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
           <Tooltip.Question
             title={dhcpOption82SubOption150TooltipContent}
-            placement='right'
+            placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <Form.Item
@@ -238,7 +250,8 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           {$t({ defaultMessage: 'Sub-option 151' })}
           <Tooltip.Question
             title={dhcpOption82SubOption151TooltipContent}
-            placement='right'
+            placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 150px auto' }}>
@@ -252,7 +265,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           />
           { dhcpOption82SubOption151Enabled &&
             <Form.Item
-              name={['wlan','advancedCustomization','dhcpOption82SubOption151Format']}
+              name={dhcpOption82SubOption151FormatFieldName}
               initialValue={DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME}
               children={
                 <Select>

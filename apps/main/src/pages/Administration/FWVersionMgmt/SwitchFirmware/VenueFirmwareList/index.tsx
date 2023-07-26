@@ -128,13 +128,12 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type VenueTableProps = {
   tableQuery: TableQuery<FirmwareSwitchVenue, RequestPayload<unknown>, unknown>,
-  rowSelection?: TableProps<FirmwareSwitchVenue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
 export const VenueFirmwareTable = (
-  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
+  { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
@@ -143,6 +142,7 @@ export const VenueFirmwareTable = (
   const [modelVisible, setModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [venues, setVenues] = useState<FirmwareSwitchVenue[]>([])
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
@@ -187,6 +187,7 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
+      setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -201,6 +202,7 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
+      setSelectedRowKeys([])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -339,7 +341,7 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
-        rowSelection={rowSelection}
+        rowSelection={{ type: 'checkbox', selectedRowKeys }}
         actions={[{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
@@ -407,7 +409,6 @@ export function VenueFirmwareList () {
 
   return (
     <VenueFirmwareTable tableQuery={tableQuery}
-      rowSelection={{ type: 'checkbox' }}
       searchable={true}
       filterables={{
         version: versionFilterOptions,
