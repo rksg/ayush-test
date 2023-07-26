@@ -107,28 +107,26 @@ const RadioBandsOfMlo = () => {
 
 
   return (
-    <div>
-      <Form.Item
-        {...!isSelectTwoRadioBands(options) ? {
-          validateStatus: 'error',
-          help: 'At least 2 bands are selected'
-        } : undefined}
-        label={$t({ defaultMessage: 'Select 2 bands for MLO: ' })}
-        name={[
-          'wlan',
-          'advancedCustomization',
-          'multiLinkOperationOptions'
-        ]}
-        initialValue={[options[0], options[1]]}
-        valuePropName='checked'
-        style={{ marginBottom: '15px', width: '300px' }}
-        children={<CustomCheckbox
-          options={options}
-          onOptionChange={onOptionChange}
-          isDisabledOptionOf6GHz={isDisabledOptionOf6GHz(network)}
-        />}
-      />
-    </div>
+    <Form.Item
+      {...!isSelectTwoRadioBands(options) ? {
+        validateStatus: 'error',
+        help: 'At least 2 bands are selected'
+      } : undefined}
+      label={$t({ defaultMessage: 'Select 2 bands for MLO: ' })}
+      name={[
+        'wlan',
+        'advancedCustomization',
+        'multiLinkOperationOptions'
+      ]}
+      initialValue={[options[0], options[1]]}
+      valuePropName='checked'
+      style={{ marginBottom: '15px', width: '300px' }}
+      children={<CustomCheckbox
+        options={options}
+        onOptionChange={onOptionChange}
+        isDisabledOptionOf6GHz={isDisabledOptionOf6GHz(network)}
+      />}
+    />
   )
 }
 

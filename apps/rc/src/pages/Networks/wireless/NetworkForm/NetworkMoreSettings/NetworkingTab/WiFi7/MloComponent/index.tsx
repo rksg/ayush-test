@@ -14,14 +14,14 @@ interface MloComponentProps {
     initialValue: boolean
     checked: boolean
     isDisableMlo: boolean
-    onEnableMLOChange: (checked: boolean) => void
+    onEnableMloChange: (checked: boolean) => void
 }
 
 const MloComponent = (
   { initialValue,
     checked,
     isDisableMlo,
-    onEnableMLOChange
+    onEnableMloChange
   }: MloComponentProps
 ) => {
   const { $t } = useIntl()
@@ -50,7 +50,7 @@ const MloComponent = (
             <Switch
               defaultChecked={initialValue}
               disabled={isDisableMlo}
-              onChange={onEnableMLOChange}
+              onChange={onEnableMloChange}
               checked={checked}
             />
           }

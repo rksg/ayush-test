@@ -27,7 +27,7 @@ describe('MloComponent', () => {
               checked={checked}
               initialValue={initialValue}
               isDisableMlo={isDisableMlo}
-              onEnableMLOChange={onEnableMLOChange}
+              onEnableMloChange={onEnableMLOChange}
             />
           </Form>
         </Provider>, {
@@ -59,7 +59,7 @@ describe('MloComponent', () => {
               initialValue={initialValue}
               checked={checked}
               isDisableMlo={isDisableMlo}
-              onEnableMLOChange={onEnableMLOChange}
+              onEnableMloChange={onEnableMLOChange}
             />
           </Form>
         </Provider>, {
@@ -97,7 +97,7 @@ describe('MloComponent', () => {
               initialValue={initialValue}
               checked={checked}
               isDisableMlo={isDisableMlo}
-              onEnableMLOChange={onEnableMLOChange}
+              onEnableMloChange={onEnableMLOChange}
             />
           </Form>
         </Provider>, {

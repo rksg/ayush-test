@@ -18,7 +18,7 @@ const WiFi7 = () => {
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const form = Form.useFormInstance()
 
-  const [enableWiFi, enableMLO] = [
+  const [enableWiFi, enableMlo] = [
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableWifi7']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'])
   ]
@@ -27,11 +27,11 @@ const WiFi7 = () => {
     form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi6'], enableWiFi)
     form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi7'], enableWiFi)
     form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'],
-      enableWiFi ? enableMLO : false)
+      enableWiFi ? enableMlo : false)
   }
 
-  const onEnableMLOChange = (enableMLO: boolean) => {
-    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], enableMLO)
+  const onEnableMloChange = (enableMlo: boolean) => {
+    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], enableMlo)
   }
 
 
@@ -52,10 +52,10 @@ const WiFi7 = () => {
       />
       { wifi7MloFlag &&
               <MloComponent
-                initialValue={enableMLO}
-                checked={enableMLO}
+                initialValue={enableMlo}
+                checked={enableMlo}
                 isDisableMlo={!enableWiFi}
-                onEnableMLOChange={onEnableMLOChange}
+                onEnableMloChange={onEnableMloChange}
               />
       }
     </>
