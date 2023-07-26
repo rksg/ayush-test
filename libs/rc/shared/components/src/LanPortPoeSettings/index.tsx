@@ -28,7 +28,7 @@ export function LanPortPoeSettings (props: {
     <Form.Item
       name='poeMode'
       label={$t({ defaultMessage: 'PoE Operating Mode' })}
-      initialValue={selectedModel?.poeMode}
+      initialValue={selectedModel?.poeMode || 'Auto'}
       style={{ paddingTop: '20px' }}
       children={<Select
         options={selectedModelCaps?.poeModeCapabilities?.map(item => ({
