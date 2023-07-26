@@ -234,18 +234,14 @@ export function RadioSettingsChannels320Mhz (props: {
     >
       <div style={{ marginTop: '10px' }}>
         <Row style={
-          { marginBottom: '10px',
-            height: '50px',
-            paddingTop: '10px' }}>
+          { height: '30px' }}>
           <Col span={2}>
             <p>320 MHz-1</p>
           </Col>
           {render320MHzGroup(ChannelGroup320MhzEnum.Group1)}
         </Row>
         <Row style={
-          { marginBottom: '10px',
-            height: '50px',
-            paddingTop: '10px' }}>
+          { height: '50px' }}>
           <Col span={2}>
             <p>320 MHz-2</p>
           </Col>
@@ -253,9 +249,7 @@ export function RadioSettingsChannels320Mhz (props: {
           {render320MHzGroup(ChannelGroup320MhzEnum.Group2)}
         </Row>
         <Row style={
-          { marginBottom: '10px',
-            height: '50px',
-            paddingTop: '10px' }}>
+          { height: '50px' }}>
           <Col span={2}></Col>
           {render160MHzGroup()}
         </Row>
