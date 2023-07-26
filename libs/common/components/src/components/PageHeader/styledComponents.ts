@@ -23,10 +23,6 @@ export const Wrapper = styled.div`
         margin: 0;
         > .ant-space {
           gap: 12px !important;
-          button.ant-dropdown-trigger {
-            padding-left: 11px;
-            padding-right: 7px;
-          }
         }
       }
       &-title {
