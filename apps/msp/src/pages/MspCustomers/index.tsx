@@ -142,7 +142,7 @@ export function MspCustomers () {
       return data.mspInstallerAdminCount
     else if (data?.mspIntegratorAdminCount)
       return data.mspIntegratorAdminCount
-    return data.mspAdminCount
+    return isIntegrator ? 0 : data.mspAdminCount
   }
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
