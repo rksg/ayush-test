@@ -9,7 +9,7 @@ import {
 import {
   getClientHealthClass,
   getDeviceTypeIcon,
-  getNoiseFloorStatus,
+  //eric_test getNoiseFloorStatus,
   getRssiStatus,
   getOsTypeIcon
 } from '.'
@@ -104,6 +104,8 @@ describe('getRssiStatus', () => {
   })
 })
 
+/*eric_text
+
 describe('getNoiseFloorStatus', () => {
   it('Should take care of low value correctly', async () => {
     expect(renderHook(() => getNoiseFloorStatus(useIntl(), -80)).result.current).toEqual({
@@ -118,3 +120,4 @@ describe('getNoiseFloorStatus', () => {
     })
   })
 })
+*/

@@ -340,15 +340,15 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       show: !!showAllColumns,
       render: (data) => data || '--'
-    },
-    {
-      key: 'noiseFloor',
-      title: intl.$t({ defaultMessage: 'Noise Floor' }),
-      dataIndex: 'noiseFloor',
-      sorter: true,
-      show: !!showAllColumns,
-      render: (data) => data || '--'
     }
+    // eric_test{
+    //   key: 'noiseFloor',
+    //   title: intl.$t({ defaultMessage: 'Noise Floor' }),
+    //   dataIndex: 'noiseFloor',
+    //   sorter: true,
+    //   show: !!showAllColumns,
+    //   render: (data) => data || '--'
+    // }
     // { // TODO: Waiting for TAG feature support
     //   key: 'tags',
     //   title: intl.$t({ defaultMessage: 'Tags' }),
@@ -367,8 +367,8 @@ export const defaultClientPayload = {
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
     'trafficToClient','trafficFromClient','receiveSignalStrength','rssi','radio.mode','cpeMac','authmethod','status',
-    'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel','noiseFloor','cog','venueName',
-    'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
+    'encryptMethod','packetsToClient','packetsFromClient','packetsDropFrom','radio.channel', //eric_test 'noiseFloor',
+    'cog','venueName','apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
 export const ConnectedClientsTable = (props: {

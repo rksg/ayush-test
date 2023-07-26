@@ -23,7 +23,7 @@ export const clientList = {
       Username: '3c22fb97c7ef',
       clientVlan: 1,
       healthStatusReason: 'RSSI is Good\nSNR is Good\nThroughput is Good',
-      noiseFloor: -96,
+      //eric_test noiseFloor: -96,
       packetsDropFrom: 0,
       status: 0,
       lastUpdateTime: '2022-11-29T07:43:15.658Z'
@@ -52,7 +52,7 @@ export const clientList = {
       clientVlan: 1,
       authmethod: 'Standard+Open',
       healthStatusReason: 'RSSI is Good\nSNR is Good\nThroughput is Good',
-      noiseFloor: -96,
+      //eric_test noiseFloor: -96,
       packetsDropFrom: 0,
       status: 1,
       lastUpdateTime: '2022-11-29T07:43:15.658Z'

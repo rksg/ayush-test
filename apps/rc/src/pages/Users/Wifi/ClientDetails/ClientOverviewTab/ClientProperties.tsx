@@ -17,7 +17,7 @@ import {
   ApDeep,
   Client,
   ClientStatusEnum,
-  getNoiseFloorStatus,
+  //eric_test getNoiseFloorStatus,
   getRssiStatus,
   getOsTypeIcon,
   NetworkSaveData,
@@ -408,7 +408,8 @@ function OperationalData ({ client }: { client: ClientExtended }) {
           </Tooltip>
         </Space>}
       />
-      <Descriptions.Item
+
+      {/*eric_test <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Noise Floor' })}
         children={<Space
           style={{ color: getNoiseFloorStatus(intl, client?.noiseFloor_dBm)?.color }}
@@ -421,7 +422,7 @@ function OperationalData ({ client }: { client: ClientExtended }) {
           </Tooltip>
         </Space>
         }
-      />
+      /> */}
     </Descriptions>
   </>
 }
