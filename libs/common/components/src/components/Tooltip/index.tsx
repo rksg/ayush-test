@@ -36,7 +36,7 @@ Tooltip.Question = function QuestionTooltip (props: PredefinedTooltipProps) {
 }
 
 Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
-  const { iconStyle, isFilled=false , ...tooltipProps } = props
+  const { iconStyle, isFilled=false, ...tooltipProps } = props
   return <Tooltip {...tooltipProps} >
     {!isFilled
       ? <InformationOutlined {...(iconStyle && { style: iconStyle })} />
