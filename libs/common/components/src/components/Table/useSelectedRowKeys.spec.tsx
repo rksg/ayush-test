@@ -34,7 +34,7 @@ describe('Table component: mock useSelectedRowKeys', () => {
   it('updates selected rows after the table data source changes', async () => {
     const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
     const data = [
-      { key: '1', name: 'John Doe' },
+      { key: '1', name: 'R1' },
       { key: '2', name: 'Jane Doe' },
       { key: '3', name: 'Will Smith' }
     ]
@@ -55,6 +55,6 @@ describe('Table component: mock useSelectedRowKeys', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
-    expect(await body.findByText(/john/i)).toBeVisible()
+    expect(await body.findByText(/r1/i)).toBeVisible()
   })
 })
