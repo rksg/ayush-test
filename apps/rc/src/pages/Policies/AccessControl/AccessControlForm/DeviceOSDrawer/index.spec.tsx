@@ -184,7 +184,7 @@ const selectOptionSet = async (device: string, vendor: string) => {
   )
 }
 
-describe.skip('DeviceOSDrawer Component setting I', () => {
+describe('DeviceOSDrawer Component setting I', () => {
   beforeEach(async () => {
     mockServer.use(rest.get(
       AccessControlUrls.getDevicePolicyList.url,
@@ -195,12 +195,14 @@ describe.skip('DeviceOSDrawer Component setting I', () => {
   })
 
   it('Render DeviceOSDrawer component successfully with Smartphone & Ios', async () => {
+    const mockedAddDevice = jest.fn()
     mockServer.use(
       rest.post(
         AccessControlUrls.addDevicePolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(deviceResponse)
-        )
+        (_, res, ctx) => {
+          mockedAddDevice()
+          return res(ctx.json(deviceResponse))
+        }
       ))
 
     render(
@@ -251,7 +253,11 @@ describe.skip('DeviceOSDrawer Component setting I', () => {
 
     await screen.findByText(/delete rule/i)
 
-    await userEvent.click(screen.getByText(/delete rule/i))
+    await userEvent.click(screen.getByRole('button', {
+      name: /delete rule/i
+    }))
+
+    await userEvent.click(screen.getAllByText('Save')[0])
   })
 
   it('Render DeviceOSDrawer component successfully with Tablet & AmazonKindle', async () => {
@@ -478,7 +484,7 @@ describe('DeviceOSDrawer Component setting II', () => {
 
   })
 
-  it.skip('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
+  it('Render DeviceOSDrawer component successfully with Gaming & PlayStation', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(rest.get(
