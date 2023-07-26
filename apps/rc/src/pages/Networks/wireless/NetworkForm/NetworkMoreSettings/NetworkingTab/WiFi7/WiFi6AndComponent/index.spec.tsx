@@ -7,7 +7,7 @@ import { Form } from 'antd'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { Wifi6And7Component } from '.'
+import Wifi6And7Component from '.'
 
 
 describe('Wifi6And7Component', () => {
@@ -15,7 +15,6 @@ describe('Wifi6And7Component', () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const checked = true
     const initialValue = true
-    const enableWifi7 = true
     const onEnableWiFiChange = jest.fn()
 
     render(
@@ -24,7 +23,6 @@ describe('Wifi6And7Component', () => {
           <Wifi6And7Component
             checked={checked}
             initialValue={initialValue}
-            enableWifi7={enableWifi7}
             onEnableWiFiChange={onEnableWiFiChange}
           />
         </Form>
@@ -42,11 +40,10 @@ describe('Wifi6And7Component', () => {
     expect(screen.queryByTestId('Description')).not.toBeInTheDocument()
   })
 
-  it('should show Description correctly when enableWifi7 is false', function () {
+  it('should show Description correctly when initialValue is false', function () {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const checked = true
-    const initialValue = true
-    const enableWifi7 = false
+    const checked = false
+    const initialValue = false
     const onEnableWiFiChange = jest.fn()
 
     render(
@@ -55,7 +52,6 @@ describe('Wifi6And7Component', () => {
           <Wifi6And7Component
             checked={checked}
             initialValue={initialValue}
-            enableWifi7={enableWifi7}
             onEnableWiFiChange={onEnableWiFiChange}
           />
         </Form>
@@ -68,7 +64,7 @@ describe('Wifi6And7Component', () => {
     expect(screen.getByTestId('QuestionMarkCircleOutlined')).toBeInTheDocument()
     const switchElement = screen.getByRole('switch')
     expect(switchElement).toBeInTheDocument()
-    expect(switchElement).toBeChecked()
+    expect(switchElement).not.toBeChecked()
     expect(screen.getByTestId('Description')).toBeInTheDocument()
   })
 
@@ -76,7 +72,6 @@ describe('Wifi6And7Component', () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     const checked = true
     const initialValue = true
-    const enableWifi7 = true
     const onEnableWiFiChange = jest.fn()
 
     render(
@@ -85,7 +80,6 @@ describe('Wifi6And7Component', () => {
           <Wifi6And7Component
             checked={checked}
             initialValue={initialValue}
-            enableWifi7={enableWifi7}
             onEnableWiFiChange={onEnableWiFiChange}
           />
         </Form>

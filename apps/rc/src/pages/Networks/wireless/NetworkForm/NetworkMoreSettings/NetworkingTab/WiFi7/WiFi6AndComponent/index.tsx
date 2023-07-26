@@ -6,22 +6,21 @@ import { Tooltip } from '@acx-ui/components'
 import * as UI from '../../../../NetworkMoreSettings/styledComponents'
 
 interface Wifi6And7ComponentProps {
-    initialValue: boolean
     checked: boolean
-    enableWifi7: boolean
+    initialValue: boolean
     onEnableWiFiChange: (checked: boolean) => void
 }
 
-export const Wifi6And7Component = (
-  { initialValue,
-    checked,
-    enableWifi7,
+const Wifi6And7Component = (
+  { checked,
+    initialValue,
     onEnableWiFiChange
   }: Wifi6And7ComponentProps) => {
   const { $t } = useIntl()
 
+
   return (
-    <div data-testid='EnableWiFi'>
+    <div>
       <UI.FieldLabel width='250px'>
         <Space>
           {$t({ defaultMessage: 'Enable WiFi 6/ 7' })}
@@ -36,13 +35,16 @@ export const Wifi6And7Component = (
           name={['wlan', 'advancedCustomization', 'enableWifi7']}
           style={{ marginBottom: '10px', width: '300px' }}
           valuePropName='checked'
-          initialValue={initialValue}
           children={
-            <Switch onChange={onEnableWiFiChange} checked={checked} />
+            <Switch
+              onChange={onEnableWiFiChange}
+              checked={checked}
+              defaultChecked={initialValue}
+            />
           }
         />
       </UI.FieldLabel>
-      {!enableWifi7 && (
+      {!checked && (
         <div
           data-testid='Description'
           style={{ marginBottom: '10px', width: '300px', display: 'flex' }}
@@ -58,3 +60,6 @@ export const Wifi6And7Component = (
     </div>
   )
 }
+
+
+export default Wifi6And7Component

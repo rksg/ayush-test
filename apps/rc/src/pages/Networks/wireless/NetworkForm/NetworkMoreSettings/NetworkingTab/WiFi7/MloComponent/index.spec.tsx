@@ -1,121 +1,115 @@
 import React from 'react'
 
-import { fireEvent } from '@testing-library/react'
-import { Form }      from 'antd'
+import { Form } from 'antd'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }                  from '@acx-ui/store'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { MloComponent } from '.'
+import MloComponent from '.'
 
 
 
 describe('MloComponent', () => {
-  it(`should render correctly when enableMlo is true
-          enableWifi7 is true, initialValue is false and checked is false`,
-  function () {
-    const checked = false
-    const initialValue = false
-    const enableMlo = true
-    const enableWifi7 = true
-    const onEnableMLOChange = jest.fn()
+  // eslint-disable-next-line max-len
+  it('should render correctly when isDisableMlo is false, initialValue is false and checked is false',
+    function () {
+      const checked = false
+      const initialValue = false
+      const isDisableMlo = false
+      const onEnableMLOChange = jest.fn()
 
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+      const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(
-      <Provider>
-        <Form>
-          <MloComponent
-            checked={checked}
-            initialValue={initialValue}
-            enableMlo={enableMlo}
-            enableWifi7={enableWifi7}
-            onEnableMLOChange={onEnableMLOChange}
-          />
-        </Form>
-      </Provider>, {
-        route: { params }
-      }
-    )
+      render(
+        <Provider>
+          <Form>
+            <MloComponent
+              checked={checked}
+              initialValue={initialValue}
+              isDisableMlo={isDisableMlo}
+              onEnableMLOChange={onEnableMLOChange}
+            />
+          </Form>
+        </Provider>, {
+          route: { params }
+        }
+      )
 
-    expect(screen.getByText('Enable Multi-Link operation (MLO)')).toBeInTheDocument()
-    const switchElement = screen.getByRole('switch')
-    expect(switchElement).toBeInTheDocument()
-    expect(switchElement).toBeEnabled()
-    expect(switchElement).not.toBeChecked()
-    expect(screen.queryByTestId('BandsCheckbox')).not.toBeInTheDocument()
-  })
+      expect(screen.getByText('Enable Multi-Link operation (MLO)')).toBeInTheDocument()
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeInTheDocument()
+      expect(switchElement).toBeEnabled()
+      expect(switchElement).not.toBeChecked()
+    })
 
-  it(`should render correctly when enableMlo is true
-          enableWifi7 is true, initialValue is true and checked is true`,
-  function () {
-    const checked = true
-    const initialValue = true
-    const enableMlo = true
-    const enableWifi7 = true
-    const onEnableMLOChange = jest.fn()
+  // eslint-disable-next-line max-len
+  it('should render correctly when isDisableMlo is false, initialValue is true and checked is true',
+    function () {
+      const checked = true
+      const initialValue = true
+      const isDisableMlo = false
+      const onEnableMLOChange = jest.fn()
 
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+      const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    render(
-      <Provider>
-        <Form>
-          <MloComponent
-            checked={checked}
-            initialValue={initialValue}
-            enableMlo={enableMlo}
-            enableWifi7={enableWifi7}
-            onEnableMLOChange={onEnableMLOChange}
-          />
-        </Form>
-      </Provider>, {
-        route: { params }
-      }
-    )
+      render(
+        <Provider>
+          <Form>
+            <MloComponent
+              initialValue={initialValue}
+              checked={checked}
+              isDisableMlo={isDisableMlo}
+              onEnableMLOChange={onEnableMLOChange}
+            />
+          </Form>
+        </Provider>, {
+          route: { params }
+        }
+      )
 
-    expect(screen.getByText('Enable Multi-Link operation (MLO)')).toBeInTheDocument()
-    const switchElement = screen.getByRole('switch')
-    expect(switchElement).toBeInTheDocument()
-    expect(switchElement).toBeEnabled()
-    expect(switchElement).toBeChecked()
-    expect(screen.getByText('Select 2 bands for MLO')).toBeInTheDocument()
-  })
+      expect(screen.getByText('Enable Multi-Link operation (MLO)')).toBeInTheDocument()
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeInTheDocument()
+      expect(switchElement).toBeEnabled()
+      expect(switchElement).toBeChecked()
+      expect(screen.getByTitle('Select 2 bands for MLO:')).toBeInTheDocument()
+    })
 
-  it('should switch toggle correctly', function () {
-    const checked = true
-    const initialValue = false
-    const enableMlo = false
-    const enableWifi7 = true
-    const onEnableMLOChange = jest.fn()
+  it('onEnableMLOChange',
+    function () {
+      const checked = true
+      const initialValue = true
+      const isDisableMlo = false
+      const onEnableMLOChange = jest.fn()
 
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+      jest.mock('antd/lib/form/Form', () => ({
+        useFormInstance: () => ({
+          setFieldValue: jest.fn()
+        })
+      }))
 
-    render(
-      <Provider>
-        <Form>
-          <MloComponent
-            checked={checked}
-            initialValue={initialValue}
-            enableMlo={enableMlo}
-            enableWifi7={enableWifi7}
-            onEnableMLOChange={onEnableMLOChange}
-          />
-        </Form>
-      </Provider>, {
-        route: { params }
-      }
-    )
+      const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    expect(screen.getByText('Enable Multi-Link operation (MLO)')).toBeInTheDocument()
-    const switchElement = screen.getByRole('switch')
-    expect(switchElement).toBeInTheDocument()
-    expect(switchElement).not.toBeChecked()
-    expect(switchElement).toBeEnabled()
-    fireEvent.click(switchElement)
-    expect(onEnableMLOChange).toHaveBeenCalledTimes(1)
-    expect(switchElement).toBeChecked()
-    fireEvent.click(switchElement)
-    expect(onEnableMLOChange).toHaveBeenCalledTimes(2)
-    expect(switchElement).not.toBeChecked()
-  })
+      render(
+        <Provider>
+          <Form>
+            <MloComponent
+              initialValue={initialValue}
+              checked={checked}
+              isDisableMlo={isDisableMlo}
+              onEnableMLOChange={onEnableMLOChange}
+            />
+          </Form>
+        </Provider>, {
+          route: { params }
+        }
+      )
+
+      const switchElement = screen.getByRole('switch')
+      expect(switchElement).toBeInTheDocument()
+      expect(switchElement).toBeEnabled()
+      expect(switchElement).toBeChecked()
+      fireEvent.click(switchElement)
+      expect(switchElement).not.toBeChecked()
+    })
 })

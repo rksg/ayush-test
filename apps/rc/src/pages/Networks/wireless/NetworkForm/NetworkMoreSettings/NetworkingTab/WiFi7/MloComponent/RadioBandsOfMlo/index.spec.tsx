@@ -6,7 +6,7 @@ import { Form } from 'antd'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { isSelectTwoRadioBands, RadioBandsOfMlo } from '.'
+import RadioBandsOfMlo, { isSelectTwoRadioBands } from '.'
 
 
 describe('RadioBandsOfMlo', () => {

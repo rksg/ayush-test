@@ -14,9 +14,7 @@ exports[`WiFi7 should render correctly when useIsSplitOn return false 1`] = `
         style="height: 16px; width: 16px; margin-bottom: -3px;"
       />
     </h4>
-    <div
-      data-testid="EnableWiFi"
-    >
+    <div>
       <div
         class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
         width="250px"
@@ -56,8 +54,8 @@ exports[`WiFi7 should render correctly when useIsSplitOn return false 1`] = `
                   class="ant-form-item-control-input-content"
                 >
                   <button
-                    aria-checked="true"
-                    class="ant-switch ant-switch-checked"
+                    aria-checked="false"
+                    class="ant-switch"
                     id="wlan_advancedCustomization_enableWifi7"
                     role="switch"
                     type="button"
@@ -74,6 +72,21 @@ exports[`WiFi7 should render correctly when useIsSplitOn return false 1`] = `
             </div>
           </div>
         </div>
+      </div>
+      <div
+        data-testid="Description"
+        style="margin-bottom: 10px; width: 300px; display: flex;"
+      >
+        <svg
+          class="styledComponents__ExclamationCircleFilledIcon-sc-ijp2z4-11 cQMOFk"
+          data-testid="ExclamationCircleFilled"
+        />
+        <span
+          class="styledComponents__Description-sc-ijp2z4-9 jRtjUl"
+        >
+          Clients connecting to this WLAN will not be able to use Wi-Fi 6/7 features,
+                    such as 6GHz operation, 320MHz bandwidth and MLO.
+        </span>
       </div>
     </div>
   </form>

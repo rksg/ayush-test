@@ -7,57 +7,59 @@ import { Tooltip } from '@acx-ui/components'
 
 import * as UI from '../../../../NetworkMoreSettings/styledComponents'
 
-import { RadioBandsOfMlo } from './RadioBandsOfMlo'
+import RadioBandsOfMlo from './RadioBandsOfMlo'
 
 
 interface MloComponentProps {
     initialValue: boolean
     checked: boolean
-    enableWifi7: boolean
-    enableMlo: boolean
+    isDisableMlo: boolean
     onEnableMLOChange: (checked: boolean) => void
 }
 
-export const MloComponent = (
+const MloComponent = (
   { initialValue,
     checked,
-    enableWifi7,
-    enableMlo,
+    isDisableMlo,
     onEnableMLOChange
   }: MloComponentProps
 ) => {
   const { $t } = useIntl()
 
+
   return (
-    <div data-testid={'EnableMLO'}>
+    <div>
       <UI.FieldLabel width='250px'>
         <Space>
           {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
           <Tooltip.Question
-            title={`This feature allows a Wi-Fi 7 device to
+            title={$t({ defaultMessage: `This feature allows a Wi-Fi 7 device to
             utilize multiple radio channels concurrently,
             for better throughput and increased network efficiency.
             Most relevant in high-density environments.
-            The radios for MLO need to be active on APs`}
+            The radios for MLO need to be active on APs` })}
             placement='right'
             iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
           />
         </Space>
         <Form.Item
           name={['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']}
-          initialValue={initialValue}
           valuePropName='checked'
           style={{ marginBottom: '15px', width: '300px' }}
           children={
             <Switch
-              disabled={!enableWifi7}
+              defaultChecked={initialValue}
+              disabled={isDisableMlo}
               onChange={onEnableMLOChange}
               checked={checked}
             />
           }
         />
       </UI.FieldLabel>
-      { enableMlo && <RadioBandsOfMlo /> }
+      { checked && <RadioBandsOfMlo /> }
     </div>
   )
 }
+
+
+export default MloComponent

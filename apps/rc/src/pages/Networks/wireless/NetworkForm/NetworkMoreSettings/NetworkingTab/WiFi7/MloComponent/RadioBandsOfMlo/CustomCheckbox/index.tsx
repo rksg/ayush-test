@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Checkbox }            from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { useIntl }             from 'react-intl'
 
 import * as UI                   from '../../../../../../NetworkMoreSettings/styledComponents'
 import { LABEL_OF_6GHZ, Option } from '../../RadioBandsOfMlo'
@@ -12,8 +13,7 @@ interface CustomCheckboxProps {
     onOptionChange: (event: CheckboxChangeEvent) => void
 }
 
-
-export const CustomCheckbox = (
+const CustomCheckbox = (
   { options,
     isDisabledOptionOf6GHz,
     onOptionChange }: CustomCheckboxProps) => {
@@ -23,11 +23,12 @@ export const CustomCheckbox = (
     option: Option,
     onOptionChange: (event: CheckboxChangeEvent) => void
   ) => {
+    const { $t } = useIntl()
+
     return (
       <UI.CheckboxTooltip
-        title={
-          '6GHz only works when this network is using WPA3 or OWE encryption'
-        }
+        title={$t({ defaultMessage: `6GHz only works 
+        when this network is using WPA3 or OWE encryption` })}
         placement='topRight'
         style={{
           height: 10,
@@ -74,3 +75,5 @@ export const CustomCheckbox = (
     </>
   )
 }
+
+export default CustomCheckbox

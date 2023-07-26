@@ -8,7 +8,7 @@ import { NetworkSaveData } from '@acx-ui/rc/utils'
 
 import { useGetNetwork } from '../../../../../../../wireless/NetworkDetails/services'
 
-import { CustomCheckbox } from './CustomCheckbox'
+import CustomCheckbox from './CustomCheckbox'
 
 
 export const LABEL_OF_6GHZ = '6 GHz'
@@ -32,7 +32,7 @@ export interface Option {
     disabled?: boolean;
 }
 
-export const RadioBandsOfMlo = () => {
+const RadioBandsOfMlo = () => {
   const { $t } = useIntl()
   const network: NetworkSaveData | null | undefined = useGetNetwork().data
 
@@ -107,25 +107,30 @@ export const RadioBandsOfMlo = () => {
 
 
   return (
-    <Form.Item
-      {...!isSelectTwoRadioBands(options) ? {
-        validateStatus: 'error',
-        help: 'At least 2 bands are selected'
-      } : undefined}
-      label={$t({ defaultMessage: 'Select 2 bands for MLO: ' })}
-      name={[
-        'wlan',
-        'advancedCustomization',
-        'multiLinkOperationOptions'
-      ]}
-      initialValue={[options[0], options[1]]}
-      valuePropName='checked'
-      style={{ marginBottom: '15px', width: '300px' }}
-      children={<CustomCheckbox
-        options={options}
-        onOptionChange={onOptionChange}
-        isDisabledOptionOf6GHz={isDisabledOptionOf6GHz(network)}
-      />}
-    />
+    <div>
+      <Form.Item
+        {...!isSelectTwoRadioBands(options) ? {
+          validateStatus: 'error',
+          help: 'At least 2 bands are selected'
+        } : undefined}
+        label={$t({ defaultMessage: 'Select 2 bands for MLO: ' })}
+        name={[
+          'wlan',
+          'advancedCustomization',
+          'multiLinkOperationOptions'
+        ]}
+        initialValue={[options[0], options[1]]}
+        valuePropName='checked'
+        style={{ marginBottom: '15px', width: '300px' }}
+        children={<CustomCheckbox
+          options={options}
+          onOptionChange={onOptionChange}
+          isDisabledOptionOf6GHz={isDisabledOptionOf6GHz(network)}
+        />}
+      />
+    </div>
   )
 }
+
+
+export default RadioBandsOfMlo

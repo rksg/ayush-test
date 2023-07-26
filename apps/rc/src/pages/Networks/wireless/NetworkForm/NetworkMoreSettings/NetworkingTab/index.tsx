@@ -15,7 +15,7 @@ import {
 import NetworkFormContext from '../../NetworkFormContext'
 import * as UI            from '../styledComponents'
 
-import { WiFi7 } from './WiFi7'
+import WiFi7 from './WiFi7'
 
 const multicastFilterTooltipContent = (
   <div>

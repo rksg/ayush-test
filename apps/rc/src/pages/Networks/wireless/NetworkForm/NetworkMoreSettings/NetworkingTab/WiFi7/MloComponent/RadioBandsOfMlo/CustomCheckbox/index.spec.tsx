@@ -2,7 +2,7 @@ import React from 'react'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import { CustomCheckbox } from '.'
+import CustomCheckbox from '.'
 
 const options = [
   // eslint-disable-next-line max-len

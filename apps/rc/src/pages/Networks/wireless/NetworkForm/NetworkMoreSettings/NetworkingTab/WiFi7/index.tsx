@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Form }     from 'antd'
 import { useWatch } from 'antd/lib/form/Form'
@@ -9,65 +9,58 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
-import { MloComponent }       from './MloComponent'
-import { Wifi6And7Component } from './WiFi6AndComponent'
+import MloComponent       from './MloComponent'
+import Wifi6And7Component from './WiFi6AndComponent'
 
 
-export const WiFi7 = () => {
+const WiFi7 = () => {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
   const form = Form.useFormInstance()
-  const [
-    enableWifi7,
-    enableMlo
-  ] = [
+
+  const [enableWiFi, enableMLO] = [
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableWifi7']),
-    useWatch<boolean>(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'])]
+    useWatch<boolean>(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'])
+  ]
 
-
-  const [isChecks, setChecks] = useState([true, false])
-
-  const onEnableWiFiChange = (isWiFiEnabled: boolean) => {
-    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi6'], isWiFiEnabled)
-    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi7'], isWiFiEnabled)
-    if (!isWiFiEnabled) {
-      // eslint-disable-next-line max-len
-      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], isWiFiEnabled)
-    }
-
-    setChecks([isWiFiEnabled, isWiFiEnabled ? isChecks[1] : false])
+  const onEnableWiFiChange = (enableWiFi: boolean) => {
+    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi6'], enableWiFi)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi7'], enableWiFi)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'],
+      enableWiFi ? enableMLO : false)
   }
 
-  const onEnableMLOChange = (isMLOEnabled: boolean) => {
-    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], isMLOEnabled)
-    setChecks([isChecks[0], isMLOEnabled])
+  const onEnableMLOChange = (enableMLO: boolean) => {
+    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], enableMLO)
   }
+
 
   return (
     <>
       <UI.Subtitle>
         {$t({ defaultMessage: 'Wi-Fi 7' })}
         <Tooltip.Question
-          title={'Only work with Wi-Fi Aps, e.g., R770'}
+          title={$t({ defaultMessage: 'Only work with Wi-Fi Aps, e.g., R770' })}
           placement='right'
           iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
         />
       </UI.Subtitle>
       <Wifi6And7Component
-        checked={isChecks[0]}
-        initialValue={isChecks[0]}
-        enableWifi7={enableWifi7}
+        initialValue={enableWiFi}
+        checked={enableWiFi}
         onEnableWiFiChange={onEnableWiFiChange}
       />
       { wifi7MloFlag &&
               <MloComponent
-                checked={isChecks[1]}
-                initialValue={isChecks[1]}
-                enableMlo={enableMlo}
-                enableWifi7={enableWifi7}
+                initialValue={enableMLO}
+                checked={enableMLO}
+                isDisableMlo={!enableWiFi}
                 onEnableMLOChange={onEnableMLOChange}
               />
       }
     </>
   )
 }
+
+
+export default WiFi7
