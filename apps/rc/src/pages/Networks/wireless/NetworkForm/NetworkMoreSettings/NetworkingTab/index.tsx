@@ -84,13 +84,14 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
     <>
       {AmbAndDtimFlag &&
         <UI.FieldLabel width={labelWidth}>
-          <div style={{ display: 'grid', gridTemplateColumns: '170px 80px' }}>
+          <Space align='start'>
             {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
             <Tooltip.Question
               title={agileMultibandTooltipContent}
               placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
             />
-          </div>
+          </Space>
           <Form.Item
             name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
             style={{ marginBottom: '10px' }}

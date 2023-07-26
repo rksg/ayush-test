@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react'
+
 import { Tooltip as AntTooltip } from 'antd'
 
 import { InformationOutlined, InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
@@ -20,23 +22,25 @@ function Tooltip ({ ...props }: TooltipProps) {
 
 export { Tooltip, TooltipProps }
 
-type PredefinedTooltipProps = Omit<TooltipProps, 'children'>
+
+type PredefinedTooltipProps = Omit<TooltipProps, 'children'> & {
+  iconStyle?: CSSProperties,
+  isFilled?: boolean
+}
 
 Tooltip.Question = function QuestionTooltip (props: PredefinedTooltipProps) {
-  return <Tooltip {...props}>
-    <QuestionMarkCircleOutlined />
+  const { iconStyle, ...tooltipProps } = props
+  return <Tooltip {...tooltipProps}>
+    <QuestionMarkCircleOutlined {...(iconStyle && { style: iconStyle })}/>
   </Tooltip>
 }
 
 Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
-  return <Tooltip {...props} >
-    <InformationOutlined />
-  </Tooltip>
-}
-
-
-Tooltip.InfoFilled = function InfoFilledTooltip (props: PredefinedTooltipProps) {
-  return <Tooltip {...props} >
-    <InformationSolid />
+  const { iconStyle, isFilled=false , ...tooltipProps } = props
+  return <Tooltip {...tooltipProps} >
+    {!isFilled
+      ? <InformationOutlined {...(iconStyle && { style: iconStyle })} />
+      : <InformationSolid {...(iconStyle && { style: iconStyle })} />
+    }
   </Tooltip>
 }

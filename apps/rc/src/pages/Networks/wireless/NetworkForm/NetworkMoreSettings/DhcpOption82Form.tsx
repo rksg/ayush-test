@@ -55,6 +55,7 @@ enum DhcpOption82MacEnum {
 export function DhcpOption82Form (props: { labelWidth?: string }) {
   const { $t } = useIntl()
   const { labelWidth='250px' } = props
+  const iconStyle: CSSProperties = { height: '16px', width: '16px', marginBottom: '-3px' }
 
   const dhcp82SubOption1Options = [{
     value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
@@ -177,6 +178,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           <Tooltip.Question
             title={dhcpOption82SubOption1TooltipContent}
             placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px' }}>
@@ -204,6 +206,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           <Tooltip.Question
             title={dhcpOption82SubOption2TooltipContent}
             placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px auto' }}>
@@ -231,6 +234,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           <Tooltip.Question
             title={dhcpOption82SubOption150TooltipContent}
             placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <Form.Item
@@ -247,6 +251,7 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
           <Tooltip.Question
             title={dhcpOption82SubOption151TooltipContent}
             placement='bottom'
+            iconStyle={iconStyle}
           />
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 150px auto' }}>
