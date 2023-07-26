@@ -53,6 +53,7 @@ export function PersonaContextForm (props: {
         validateTrigger={['onBlur']}
         rules={[
           { required: true },
+          { max: 255 },
           { validator: (_, value) => nameValidator(value) }
         ]}
         children={<Input />}
@@ -67,7 +68,10 @@ export function PersonaContextForm (props: {
       <Form.Item
         name='description'
         label={$t({ defaultMessage: 'Description' })}
-        children={<TextArea rows={3} maxLength={64} />}
+        children={<TextArea rows={3} />}
+        rules={[
+          { max: 255 }
+        ]}
       />
       <Form.Item
         name='groupId'

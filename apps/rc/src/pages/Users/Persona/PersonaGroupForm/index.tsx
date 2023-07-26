@@ -69,6 +69,7 @@ export function PersonaGroupForm (props: {
               rules={
                 [
                   { required: true },
+                  { max: 255 },
                   { validator: (_, value) => nameValidator(value) }
                 ]
               }
@@ -77,7 +78,10 @@ export function PersonaGroupForm (props: {
             <Form.Item
               name='description'
               label={$t({ defaultMessage: 'Description' })}
-              children={<TextArea rows={3} maxLength={64} />}
+              children={<TextArea rows={3} />}
+              rules={[
+                { max: 255 }
+              ]}
             />
           </Col>
         </Row>
