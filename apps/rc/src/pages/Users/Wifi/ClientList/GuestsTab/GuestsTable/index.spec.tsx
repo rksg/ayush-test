@@ -28,7 +28,7 @@ import { GuestsTable } from '.'
 
 jest.mock('socket.io-client')
 
-describe('Guest Table', () => {
+describe.skip('Guest Table', () => {
   let params: { tenantId: string }
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()

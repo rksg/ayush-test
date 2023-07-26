@@ -4,4 +4,5 @@ export enum ChannelBandwidth6GEnum {
   _40MHz = '40MHz',
   _80MHz = '80MHz',
   _160MHz = '160MHz',
+  _320MHz = '320MHz'
 }

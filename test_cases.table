@@ -2,10 +2,10 @@ Group1=(
 "run rc:test --coverage --maxWorkers=50% --memoryLimit=1024"
 )
 Group2=(
-  "run rc-components:test --coverage --maxWorkers=50% --memoryLimit=1024"
+"run rc-components:test --coverage --maxWorkers=50% --memoryLimit=1024"
 )
 Group3=(
-  "run-many --target=test --all --exclude=rc,rc-components --coverage --runInBand --verbos --memoryLimit=1024"
+"run-many --target=test --all --exclude=rc,rc-components --coverage --runInBand --verbos --memoryLimit=1024"
 )
 Group4=()
 Group5=()

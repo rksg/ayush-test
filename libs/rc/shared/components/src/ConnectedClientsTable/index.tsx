@@ -22,7 +22,7 @@ function GetVenueFilterOptions (tenantId: string|undefined) {
     sortOrder: 'ASC'
   } }, {
     selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+      venueFilterOptions: data?.data?.map(v=>({ key: v.id, value: v.name })) || true
     })
   })
   return venueFilterOptions
@@ -37,7 +37,7 @@ function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefin
     filters: venueId ? { venueId: [venueId] } : {}
   } }, {
     selectFromResult: ({ data }) => ({
-      apFilterOptions: data?.data.map(v=>({ key: v.serialNumber, value: v.name? v.name : v.serialNumber })) || true
+      apFilterOptions: data?.data?.map(v=>({ key: v.serialNumber, value: v.name? v.name : v.serialNumber })) || true
     })
   })
   return apFilterOptions

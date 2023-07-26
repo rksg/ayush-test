@@ -49,7 +49,6 @@ export function VlanPortsModal (props: {
     })
 
   useEffect(()=>{
-    form.resetFields()
     setEditMode(open && !!editRecord)
 
     if (open && editRecord) {

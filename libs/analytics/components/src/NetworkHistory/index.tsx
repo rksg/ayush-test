@@ -24,7 +24,8 @@ interface NetworkHistoryWidgetComponentProps {
   type?: CardTypes;
   filters: IncidentFilter;
   hideIncidents?: boolean;
-  brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void }
+  brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void },
+  apCount?: number
 }
 
 export const NetworkHistory = forwardRef<
@@ -36,7 +37,8 @@ export const NetworkHistory = forwardRef<
     type = 'default',
     filters,
     hideIncidents=false,
-    brush
+    brush,
+    apCount
   } = props
   const { $t } = useIntl()
   let seriesMapping = [
@@ -55,7 +57,7 @@ export const NetworkHistory = forwardRef<
       name: $t({ defaultMessage: 'Impacted Clients' })
     })
   }
-  const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents }, {
+  const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents, apCount }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest

@@ -36,7 +36,7 @@ export function useMenuConfig () {
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
-  const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
+  const isCloudMoteEnabled = useIsTierAllowed(Features.CLOUDMOTE_BETA)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
