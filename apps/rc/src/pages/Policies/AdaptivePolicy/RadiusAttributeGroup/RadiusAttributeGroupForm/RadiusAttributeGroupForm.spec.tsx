@@ -55,7 +55,7 @@ describe('RadiusAttributeGroupForm', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(
@@ -71,7 +71,7 @@ describe('RadiusAttributeGroupForm', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(attributeGroupReturnByQuery))
       )
     )
