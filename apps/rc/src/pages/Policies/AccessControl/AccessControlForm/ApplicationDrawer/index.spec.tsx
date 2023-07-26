@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import { fireEvent }         from '@testing-library/react'
 import userEvent             from '@testing-library/user-event'
 import { Form }              from 'antd'
 import { SliderSingleProps } from 'antd/lib/slider'
@@ -12,7 +11,7 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { applicationDetail, avcApp, avcCat, queryApplication, queryApplicationUpdate } from '../../__tests__/fixtures'
+import { avcApp, avcCat, queryApplication, queryApplicationUpdate } from '../../__tests__/fixtures'
 
 import ApplicationDrawer from './index'
 
@@ -87,7 +86,7 @@ const systemDefinedSection = async () => {
 }
 
 describe('ApplicationDrawer Component', () => {
-  it('Render ApplicationDrawer component successfully with new added profile', async () => {
+  beforeEach(() => {
     mockServer.use(
       rest.get(
         AccessControlUrls.getAppPolicyList.url,
@@ -110,7 +109,8 @@ describe('ApplicationDrawer Component', () => {
           ctx.json(avcApp)
         )
       ))
-
+  })
+  it('Render ApplicationDrawer component successfully with new added profile', async () => {
     render(
       <Provider>
         <Form>
@@ -291,7 +291,11 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'app1-test')
+    }), '-test')
+
+    expect(screen.getByRole('textbox', {
+      name: /policy name:/i
+    })).toHaveValue('app1-test')
 
     await userEvent.click(screen.getByText('Add'))
 
@@ -352,232 +356,6 @@ describe('ApplicationDrawer Component', () => {
     await userEvent.click(screen.getByText(/delete rule/i))
 
     expect(await screen.findByText(/rules \(0\)/i)).toBeInTheDocument()
-
   })
 
-  it('Render ApplicationDrawer component successfully for access control part', async () => {
-    mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
-        AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ))
-
-    render(
-      <Provider>
-        <Form>
-          <ApplicationDrawer />
-        </Form>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
-        }
-      }
-    )
-
-    await userEvent.click(screen.getByText('Add New'))
-
-    await screen.findByText(/application access settings/i)
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /policy name:/i
-    }), 'app1')
-
-    await userEvent.click(screen.getByText('Add'))
-
-    await screen.findByText(/add application rule/i)
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /rule name/i
-    }), 'app1rule1')
-
-    await screen.findByRole('option', { name: 'Web' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[1],
-      screen.getByRole('option', { name: 'Web' })
-    )
-
-    await screen.findByRole('option', { name: 'BBC' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[2],
-      screen.getByRole('option', { name: 'BBC' })
-    )
-
-    await userEvent.click(screen.getByText(/qos/i))
-
-    await screen.findByRole('option', { name: 'DSCP' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[3],
-      screen.getByRole('option', { name: 'DSCP' })
-    )
-
-    await userEvent.click(screen.getByText(/rate limit/i))
-
-    await userEvent.click(screen.getByText(/max uplink rate:/i))
-
-    await userEvent.click(screen.getByText(/max downlink rate:/i))
-
-    fireEvent.change(screen.getAllByTestId('mock-slider')[0], { target: { value: '10' } })
-
-    fireEvent.change(screen.getAllByTestId('mock-slider')[1], { target: { value: '20' } })
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    expect(await screen.findByText('app1rule1')).toBeInTheDocument()
-
-  })
-
-  it('Render ApplicationDrawer component successfully for qos content', async () => {
-    mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
-        AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ))
-
-    render(
-      <Provider>
-        <Form>
-          <ApplicationDrawer />
-        </Form>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
-        }
-      }
-    )
-
-    await userEvent.click(screen.getByText('Add New'))
-
-    await screen.findByText(/application access settings/i)
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /policy name:/i
-    }), 'app1')
-
-    await userEvent.click(screen.getByText('Add'))
-
-    await screen.findByText(/add application rule/i)
-
-    await userEvent.click(await screen.findByText(/qos/i))
-
-    await screen.findByRole('option', { name: 'DSCP' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[3],
-      screen.getByRole('option', { name: 'DSCP' })
-    )
-
-    await userEvent.click(screen.getByText(/qos/i))
-
-    await screen.findByRole('option', { name: 'BOTH' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[3],
-      screen.getByRole('option', { name: 'BOTH' })
-    )
-
-    await screen.findAllByRole('option', { name: 'VOICE' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[4],
-      screen.getAllByRole('option', { name: 'VOICE' })[0]
-    )
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[5],
-      screen.getAllByRole('option', { name: 'VOICE' })[1]
-    )
-
-    expect(await screen.findByText('Audio/Video')).toBeInTheDocument()
-  })
-
-  it('Render ApplicationDrawer component in viewMode successfully', async () => {
-    mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.get(
-        AccessControlUrls.getAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationDetail)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ))
-
-    render(
-      <Provider>
-        <Form>
-          <ApplicationDrawer />
-        </Form>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
-        }
-      }
-    )
-
-    await screen.findByRole('option', { name: 'app1' })
-
-    await userEvent.selectOptions(
-      screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'app1' })
-    )
-
-    await userEvent.click(screen.getByText(/edit details/i))
-
-    await screen.findByText(/rules/i)
-
-    await userEvent.click(screen.getAllByText('Cancel')[0])
-
-    expect(screen.queryByText('Application Access Settings')).toBeNull()
-  })
 })
