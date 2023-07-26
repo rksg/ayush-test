@@ -26,7 +26,9 @@ export const panelContext = {
   editLagModalVisible: false,
   setEditLagModalVisible: () => {},
   editLag: [],
-  setEditLag: () => {}
+  setEditLag: () => {},
+  breakoutPorts: [],
+  setBreakoutPorts: () => {}
 }
 describe('SwitchFrontRearView', () => {
   beforeEach(() => {
