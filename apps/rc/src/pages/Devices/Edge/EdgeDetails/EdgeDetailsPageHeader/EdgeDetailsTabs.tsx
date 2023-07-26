@@ -6,7 +6,7 @@ import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useGetEdgeServiceListQuery }            from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-const EdgeDetailsTabs = () => {
+const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
@@ -32,15 +32,13 @@ const EdgeDetailsTabs = () => {
     })
   })
 
-  // const { currentEdge } = props
-  // const currentEdgeOperational = (currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL)
-
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      {/* { currentEdgeOperational &&
+      {
+        isEdgeReady && props.isOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
-          key='troubleshooting' />} */}
+          key='troubleshooting' />}
       {
         isEdgeReady &&
         <Tabs.TabPane
