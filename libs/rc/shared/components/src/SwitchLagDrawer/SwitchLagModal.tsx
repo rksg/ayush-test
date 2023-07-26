@@ -351,7 +351,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       </Button>
       <Button
         key='okBtn'
-        type='secondary'
+        type='primary'
         onClick={() => form.submit()}>
         {isEditMode ? $t({ defaultMessage: 'Edit' }): $t({ defaultMessage: 'Add' })}
       </Button>
@@ -366,7 +366,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       <Button
         loading={loading}
         key='apply'
-        type='secondary'
+        type='primary'
         onClick={() => form.submit()}>
         {$t({ defaultMessage: 'Apply' })}
       </Button>

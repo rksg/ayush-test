@@ -116,7 +116,7 @@ function ClientDetailPageHeader () {
       extra={filterByAccess([
         <DatePicker key='date-filter' />,
         <Dropdown overlay={menu}>{()=>
-          <Button type='secondary'>
+          <Button type='primary'>
             <Space>
               {$t({ defaultMessage: 'Actions' })}
               <CaretDownSolidIcon />

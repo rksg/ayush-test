@@ -310,7 +310,7 @@ export function ApPacketCaptureForm () {
 
     <Button
       style={{ marginTop: '10px' }}
-      type='secondary'
+      type='primary'
       htmlType='submit'
       disabled={!isValid || isPrepare}
       onClick={handlePackeCapture}>

@@ -233,7 +233,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     <Button key='cancel' onClick={onCancel}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>,
-    <Button key='ok' onClick={onOk} type='secondary'>
+    <Button key='ok' onClick={onOk} type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>
   ]

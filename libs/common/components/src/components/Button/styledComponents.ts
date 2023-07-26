@@ -1,7 +1,7 @@
 import { Button as AntButton } from 'antd'
 import styled, { css }         from 'styled-components/macro'
 
-export const Button = styled(AntButton)<{ $customType: string | null }>`
+export const Button = styled(AntButton)`
   ${props => props.type === 'primary' ? css`
     background-color: var(--acx-accents-orange-50);
     border-color: var(--acx-accents-orange-50);

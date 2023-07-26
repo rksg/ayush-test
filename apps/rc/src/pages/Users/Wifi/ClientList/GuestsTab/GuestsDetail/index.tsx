@@ -257,7 +257,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   return (<>
     <div style={{ textAlign: 'right' }}>
       <Dropdown overlay={menu} key='actions'>{()=>
-        <Button type='secondary'>
+        <Button type='primary'>
           <Space>
             {$t({ defaultMessage: 'Actions' })}
             <CaretDownSolidIcon />
