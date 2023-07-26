@@ -218,9 +218,15 @@ const NetworkSegmentationTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
-      key: 'version',
-      dataIndex: ['version'],
-      sorter: true
+      key: 'serviceVersion',
+      dataIndex: 'edgeInfos',
+      sorter: true,
+      render: (data, row) => {
+        const edgeInfo = row.edgeInfos[0]
+        return (
+          edgeInfo?.serviceVersion
+        )
+      }
     }
   ]
 
