@@ -37,6 +37,7 @@ export interface EdgeInfo {
   devices: number
   dhcpInfoId: string
   dhcpPoolId: string
+  serviceVersion: string
 }
 
 export interface WebAuthTemplate {
