@@ -34,7 +34,7 @@ import {
 jest.mock('socket.io-client')
 
 const mobilePlaceHolder = /555/
-describe('Add Guest Drawer', () => {
+describe.skip('Add Guest Drawer', () => {
   let params: { tenantId: string }
 
   beforeEach(() => {

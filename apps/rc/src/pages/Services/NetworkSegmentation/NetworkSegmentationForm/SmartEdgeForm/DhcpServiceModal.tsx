@@ -22,8 +22,8 @@ export const DhcpServiceModal = () => {
 
       // should not create service with id
       payload.dhcpPools.forEach(item => item.id = '')
-      payload.dhcpOptions.forEach(item => item.id = '')
-      payload.hosts.forEach(item => item.id = '')
+      payload.dhcpOptions?.forEach(item => item.id = '')
+      payload.hosts?.forEach(item => item.id = '')
 
       await addEdgeDhcp({ payload: payload }).unwrap()
       setVisible(false)

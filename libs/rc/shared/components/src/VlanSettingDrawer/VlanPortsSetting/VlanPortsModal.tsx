@@ -38,7 +38,7 @@ export function VlanPortsModal (props: {
 }) {
   const { $t } = useIntl()
   const { open, editRecord, onSave, onCancel, vlanList } = props
-  const form = Form.useFormInstance()
+  const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
   const [vlanSettingValues, setVlanSettingValues] =
