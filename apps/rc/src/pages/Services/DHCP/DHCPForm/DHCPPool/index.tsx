@@ -5,7 +5,7 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }  from '@acx-ui/components'
+import { Drawer }      from '@acx-ui/components'
 import {
   DHCPPool,
   LeaseUnit,
@@ -15,9 +15,9 @@ import {
   countIpMaxRange,
   countIpSize,
   IpInSubnetPool,
-  IpUtilsService
+  IpUtilsService,
+  DHCPConfigTypeEnum
 } from '@acx-ui/rc/utils'
-import { DHCPConfigTypeEnum }          from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { PoolTable } from './PoolTable'
@@ -159,7 +159,7 @@ export default function DHCPPoolTable ({
     onFinish={onSubmit}
     initialValues={initPoolData}
   >
-    <Form.Item name='id' hidden />
+    <Form.Item name='id' children={<></>} hidden />
 
     <Row>
       <Col span={12}>
@@ -226,10 +226,15 @@ export default function DHCPPoolTable ({
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => IpInSubnetPool(
-              value,
-              form.getFieldValue('subnetAddress'),
-              form.getFieldValue('subnetMask')) }
+            { validator: (_, value) => {
+              if (!value) {
+                return Promise.reject($t(validationMessages.ipNotInSubnetPool))
+              }
+              return IpInSubnetPool(
+                value,
+                form.getFieldValue('subnetAddress'),
+                form.getFieldValue('subnetMask'))
+            } }
           ]}
           children={<Input />}
         />
@@ -239,9 +244,12 @@ export default function DHCPPoolTable ({
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => countIpMaxRange(
-              form.getFieldValue('startIpAddress'), value)
-            },
+            { validator: (_, value) => {
+              if (!value) {
+                return Promise.reject($t(validationMessages.ipRangeInvalid))
+              }
+              return countIpMaxRange(form.getFieldValue('startIpAddress'), value)
+            } },
             { validator: (_, value) => {
               if(dhcpMode===DHCPConfigTypeEnum.MULTIPLE){
                 if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 10){
@@ -336,7 +344,7 @@ export default function DHCPPoolTable ({
             min={1}
             max={4094} />}
         />
-        <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
+        <Form.Item name='dhcpOptions' children={<></>} style={{ height: 0 }} />
       </Col>
     </Row>
   </Form>
