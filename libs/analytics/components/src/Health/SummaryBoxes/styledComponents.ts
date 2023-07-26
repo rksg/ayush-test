@@ -1,4 +1,4 @@
-import { Statistic as antStatistic } from 'antd'
+import { Statistic as AntStatistic } from 'antd'
 import styled, { css }               from 'styled-components/macro'
 
 import { CaretDoubleDownOutlined, CaretDoubleUpOutlined } from '@acx-ui/icons'
@@ -54,7 +54,7 @@ export const Wrapper = styled.button
     ? hoverAndOpenStyle(props.$type as Type)
     : css`background: var(${colors[props.$type as Type].background});`}
 `
-export const Statistic = styled(antStatistic)<{ $type: string }>`
+export const Statistic = styled(AntStatistic)<{ $type: string }>`
   display: flex;
   flex-direction: column-reverse;
   .ant-statistic-title {

@@ -78,6 +78,6 @@ describe('PortalTable', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: new RegExp(targetPortal.serviceName) })).toBeVisible()
     await userEvent.click(await screen.findByLabelText('78f92fbf80334e8b83cddd3210db4920'))
-    await new Promise((r)=>{setTimeout(r, 500)})
+    expect(await screen.findByText('1 selected')).toBeVisible()
   })
 })

@@ -316,7 +316,7 @@ describe('SignaleRadioSettings component', () => {
     const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
     expect(channelSelect).not.toHaveAttribute('disabled')
     await userEvent.click(channelSelect)
-    await userEvent.click((await screen.findByTitle('Channel Fly')))
+    await userEvent.click((await screen.findByTitle('ChannelFly')))
 
     const bandwidthSelect = await screen.findByRole('combobox', { name: /Bandwidth/i })
     await userEvent.click(bandwidthSelect)
@@ -364,7 +364,7 @@ describe('SignaleRadioSettings component', () => {
     const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
     expect(channelSelect).not.toHaveAttribute('disabled')
     await userEvent.click(channelSelect)
-    await userEvent.click((await screen.findByTitle('Channel Fly')))
+    await userEvent.click((await screen.findByTitle('ChannelFly')))
 
     const bandwidthSelect = await screen.findByRole('combobox', { name: /Bandwidth/i })
     await userEvent.click(bandwidthSelect)
