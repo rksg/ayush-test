@@ -146,29 +146,27 @@ export function FrontViewPort (props:{
 
   const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
-    <div>
-      <UI.Port portColor={portColor} onClick={onPortClick} editable={showEditIcon()}>
-        {
-          portIcon
-            ? (
-              <UI.WithIconPortContainer data-testid='RegularPort'>
-                { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
-                { portIcon ==='Stack' && <UI.StackingPortIcon/> }
-                { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
-                { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
-                { portIcon ==='Breakout' && <UI.BreakoutPortIcon /> }
-                { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
-              </UI.WithIconPortContainer>
-            )
-            : (
-              <UI.RegularPortContainer>
-                { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
-              </UI.RegularPortContainer>
-            )
-        }
+    <UI.Port portColor={portColor} onClick={onPortClick} editable={showEditIcon()}>
+      {
+        portIcon
+          ? (
+            <UI.WithIconPortContainer data-testid='RegularPort'>
+              { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
+              { portIcon ==='Stack' && <UI.StackingPortIcon/> }
+              { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
+              { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
+              { portIcon ==='Breakout' && <UI.BreakoutPortIcon /> }
+              { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
+            </UI.WithIconPortContainer>
+          )
+          : (
+            <UI.RegularPortContainer>
+              { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
+            </UI.RegularPortContainer>
+          )
+      }
 
-      </UI.Port>
-    </div>
+    </UI.Port>
     { labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel> }
   </UI.PortWrapper>
 
