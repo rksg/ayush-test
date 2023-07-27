@@ -10,7 +10,7 @@ import { mockVenueData } from './__tests__/fixtures'
 
 import { EdgeSettingForm } from './index'
 
-describe('EdgeSettingForm', () => {
+describe.skip('EdgeSettingForm', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     params = {

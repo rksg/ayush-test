@@ -195,8 +195,15 @@ const FirewallTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
-      key: 'serviceVersion',
-      dataIndex: 'serviceVersion'
+      key: 'serviceVersions',
+      dataIndex: 'serviceVersions',
+      render: (data, row) => {
+        return (
+          (row.serviceVersions && Object.keys(row.serviceVersions).length)
+            ? _.uniq(Object.values(row.serviceVersions)).join(', ')
+            : '--'
+        )
+      }
     }
     // {
     //   title: $t({ defaultMessage: 'Tags' }),

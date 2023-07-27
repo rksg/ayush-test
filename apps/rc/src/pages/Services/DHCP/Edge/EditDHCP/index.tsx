@@ -64,10 +64,10 @@ const EditDhcp = () => {
       payload.dhcpPools.forEach(item => {
         if (item.id.startsWith('_NEW_')) item.id = ''
       })
-      payload.dhcpOptions.forEach(item => {
+      payload.dhcpOptions?.forEach(item => {
         if (item.id.startsWith('_NEW_')) item.id = ''
       })
-      payload.hosts.forEach(item => {
+      payload.hosts?.forEach(item => {
         if (item.id.startsWith('_NEW_')) item.id = ''
       })
 

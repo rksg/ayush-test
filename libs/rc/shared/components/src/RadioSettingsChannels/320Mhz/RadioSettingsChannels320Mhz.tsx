@@ -188,7 +188,7 @@ export function RadioSettingsChannels320Mhz (props: {
     _.forIn(complexGroupChannelState.ChannelGroup_320MHz, function (value, key){
       if(value.group === assignedGroup)
         node.push(
-          <Col span={6}>
+          <Col span={6} key={key}>
             <BarButton6G
               disabled={disabled}
               data-testid={`320-button-${key}`}
@@ -207,7 +207,7 @@ export function RadioSettingsChannels320Mhz (props: {
     let node: React.ReactNode[] = []
     _.forIn(complexGroupChannelState.ChannelGroup_160MHz, function (value, key){
       node.push(
-        <Col span={3}>
+        <Col span={3} key={key}>
           <Checkbox
             disabled={disabled}
             className={value.isolated ? 'isolated' : ''}

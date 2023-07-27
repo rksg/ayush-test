@@ -38,6 +38,12 @@ const mockApDirectedMulticast = {
   networkEnabled: true
 }
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 describe('AP Directed Multicast', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -52,7 +58,13 @@ describe('AP Directed Multicast', () => {
         (_, res, ctx) => res(ctx.json(mockVenueDirectedMulticast))),
       rest.get(
         getUrlForTest(WifiUrlsInfo.getApDirectedMulticast),
-        (_, res, ctx) => res(ctx.json(mockApDirectedMulticast)))
+        (_, res, ctx) => res(ctx.json(mockApDirectedMulticast))),
+      rest.delete(
+        getUrlForTest(WifiUrlsInfo.resetApDirectedMulticast),
+        (req, res, ctx) => res(ctx.status(202))),
+      rest.put(
+        getUrlForTest(WifiUrlsInfo.updateApDirectedMulticast),
+        (req, res, ctx) => res(ctx.status(202)))
     )
   })
 
