@@ -50,9 +50,9 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
 
   useEffect(() => {
     if (enableSwitchTwoVersionUpgrade) {
-      setDisableSave( !selectionChanged && !selectionAboveTenChanged)
+      setDisableSave(!selectionChanged && !selectionAboveTenChanged)
     } else {
-      setDisableSave( !selectionChanged)
+      setDisableSave(!selectionChanged)
     }
   }, [enableSwitchTwoVersionUpgrade, selectionChanged, selectionAboveTenChanged])
 
