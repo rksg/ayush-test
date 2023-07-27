@@ -1,20 +1,21 @@
 import '@testing-library/jest-dom'
 
-import { render } from '@acx-ui/test-utils'
+import { TrendTypeEnum } from '@acx-ui/analytics/utils'
+import { render }        from '@acx-ui/test-utils'
 
 import { TrendPill, SeverityPill, ProgressPill } from '.'
 
 describe('TrendPill', () => {
   it('renders negative trend', () => {
-    const { asFragment } = render(<TrendPill value='-123' trend='negative' />)
+    const { asFragment } = render(<TrendPill value='-123' trend={TrendTypeEnum.Negative} />)
     expect(asFragment()).toMatchSnapshot()
   })
   it('renders positive trend', () => {
-    const { asFragment } = render(<TrendPill value='123' trend='positive' />)
+    const { asFragment } = render(<TrendPill value='123' trend={TrendTypeEnum.Positive} />)
     expect(asFragment()).toMatchSnapshot()
   })
   it('renders no trend', () => {
-    const { asFragment } = render(<TrendPill value='0' trend='none' />)
+    const { asFragment } = render(<TrendPill value='0' trend={TrendTypeEnum.None} />)
     expect(asFragment()).toMatchSnapshot()
   })
 })

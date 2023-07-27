@@ -5,6 +5,7 @@ import { Path }  from 'react-router-dom'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
+  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
@@ -73,7 +74,12 @@ describe('AAATable', () => {
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json({ ...mockTableResult }))
-      )
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [],
+          totalCount: 0
+        })))
     )
   })
 

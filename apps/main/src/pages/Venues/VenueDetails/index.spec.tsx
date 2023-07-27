@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { rest } from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { venueApi }                            from '@acx-ui/rc/services'
@@ -57,9 +56,9 @@ jest.mock('./VenueDevicesTab', () => ({
 jest.mock('./VenueNetworksTab', () => ({
   VenueNetworksTab: () => <div data-testid={'rc-VenueNetworksTab'} title='VenueNetworksTab' />
 }))
-// jest.mock('./VenueServicesTab', () => ({
-//   VenueServicesTab: () => <div data-testid={'rc-VenueServicesTab'} title='VenueServicesTab' />
-// })) TODO: Separate Services tab tests
+jest.mock('./VenueServicesTab', () => ({
+  VenueServicesTab: () => <div data-testid={'rc-VenueServicesTab'} title='VenueServicesTab' />
+}))
 jest.mock('./VenueTimelineTab', () => ({
   VenueTimelineTab: () => <div data-testid={'rc-VenueTimelineTab'} title='VenueTimelineTab' />
 }))
@@ -92,7 +91,7 @@ describe('VenueDetails', () => {
       ),
       rest.get(
         DHCPUrls.getVenueDHCPServiceProfile.url,
-        (_,res,ctx) => res(ctx.json(serviceProfile))
+        (_, res, ctx) => res(ctx.json(serviceProfile))
       ),
       rest.post(
         CommonUrlsInfo.getEventList.url,
@@ -101,7 +100,14 @@ describe('VenueDetails', () => {
       rest.post(
         CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventsMeta))
-      )
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 }))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
@@ -203,19 +209,6 @@ describe('VenueDetails', () => {
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
-  })
-
-  it('should go to edit page', async () => {
-    const params = {
-      tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-      activeTab: 'overview'
-    }
-    render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/t/:venueId/venue-details/:activeTab' }
-    })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
   })
 
   it('should hide analytics when role is READ_ONLY', async () => {

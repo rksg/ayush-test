@@ -177,7 +177,7 @@ export function ApPhoto () {
                 onVisibleChange: (vis) => { setVisible(vis) }
               }}
             >
-              {imageList.map((item) => <Image src={item} />)}
+              {imageList.map((item, index) => <Image src={item} key={index} />)}
             </Image.PreviewGroup>
           </div>
         </PhotoDiv>

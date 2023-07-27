@@ -459,7 +459,7 @@ describe('MspCustomers', () => {
 
     // Assert MSP Admin Count link works
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+    fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()

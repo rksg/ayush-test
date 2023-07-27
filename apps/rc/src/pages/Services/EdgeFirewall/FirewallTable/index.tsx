@@ -35,7 +35,7 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const edgeOptionsDefaultPayload = {
   fields: ['name', 'serialNumber'],
@@ -195,8 +195,15 @@ const FirewallTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Service Version' }),
-      key: 'serviceVersion',
-      dataIndex: 'serviceVersion'
+      key: 'serviceVersions',
+      dataIndex: 'serviceVersions',
+      render: (data, row) => {
+        return (
+          (row.serviceVersions && Object.keys(row.serviceVersions).length)
+            ? _.uniq(Object.values(row.serviceVersions)).join(', ')
+            : '--'
+        )
+      }
     }
     // {
     //   title: $t({ defaultMessage: 'Tags' }),
@@ -298,7 +305,7 @@ const FirewallTable = () => {
           settingsId='services-firewall-table'
           rowKey='id'
           columns={columns}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
