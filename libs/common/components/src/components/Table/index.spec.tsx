@@ -1117,9 +1117,9 @@ describe('Table component', () => {
       fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
       const icon = await screen.findByRole('img', { name: 'down' })
       await userEvent.hover(icon)
-      const selectAllOption = await screen.findByText('Select data from all pages')
+      await screen.findByText('Select data from all pages')
       act(()=>{
-        fireEvent.click(selectAllOption)
+        screen.getByText('Select data from all pages').click()
       })
       const selected = await screen.findByText('3 selected')
       expect(selected).toBeVisible()
