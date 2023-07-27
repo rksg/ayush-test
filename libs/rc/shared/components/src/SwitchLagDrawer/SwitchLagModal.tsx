@@ -353,7 +353,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         key='okBtn'
         type='secondary'
         onClick={() => form.submit()}>
-        {isEditMode ? $t({ defaultMessage: 'Edit' }): $t({ defaultMessage: 'Add' })}
+        {isEditMode ? $t({ defaultMessage: 'Apply' }): $t({ defaultMessage: 'Add' })}
       </Button>
     </Space>
   ]
@@ -474,6 +474,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       <Col>
         <Form.Item
           name='ports'
+          data-testid='targetKeysFormItem'
           valuePropName='targetKeys'
           rules={[{
             required: true,

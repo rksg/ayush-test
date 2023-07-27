@@ -39,15 +39,20 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
     })
   }
   const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
+    skip: !hasAdministratorTab || !isNavbarEnhanced,
     pollingInterval: 30_000
   })
   const notificationList = useGetNotificationRecipientsQuery({
     params: { tenantId },
     payload: defaultPayload
   }, {
+    skip: !isNavbarEnhanced,
     pollingInterval: 30_000
   })
-  const thirdPartyAdminList = useGetDelegationsQuery({ params })
+  const thirdPartyAdminList = useGetDelegationsQuery(
+    { params },
+    { skip: !hasAdministratorTab || !isNavbarEnhanced }
+  )
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
@@ -101,7 +106,6 @@ const tabPanes = {
   subscriptions: Subscriptions,
   fwVersionMgmt: FWVersionMgmt,
   localRadiusServer: LocalRadiusServer
-
 }
 
 export default function Administration () {
