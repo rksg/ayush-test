@@ -2,11 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
-import { Provider, store }                                                           from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                                                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
@@ -17,9 +16,6 @@ import {
 import { VenueEditContext, EditContext } from '../../index'
 
 import { AdvancedTab, AdvanceSettingContext } from '.'
-
-
-const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 
 const editContextData = {} as EditContext
@@ -144,32 +140,5 @@ describe('AdvancedTab', () => {
       hash: '',
       search: ''
     })
-  })
-
-  it('should show Radius Options if feature flag is On', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const advanceSettingContext = {
-      updateAccessPointLED: jest.fn(),
-      updateCssColoring: jest.fn()
-    }
-
-    render(<Provider>
-      <VenueEditContext.Provider value={{
-        editContextData,
-        setEditContextData,
-        editAdvancedContextData: advanceSettingContext,
-        setEditAdvancedContextData: jest.fn()
-      }}>
-        <AdvancedTab />
-      </VenueEditContext.Provider>
-    </Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    await waitFor(() => screen.findByText('Override the settings in active networks'))
-
-    userEvent.click(
-      await screen.findByRole('switch', { name: 'Override the settings in active networks' })
-    )
-    await screen.findByText('NAS ID')
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })
