@@ -3,9 +3,10 @@ import { useDebugValue, useMemo } from 'react'
 import { useTreatments } from '@splitsoftware/splitio-react'
 import { useParams }     from 'react-router-dom'
 
-import { useGetAccountTierQuery }                                        from '@acx-ui/rc/services'
-import { useGetBetaStatusQuery }                                         from '@acx-ui/user'
-import { AccountType, AccountVertical, getJwtTokenPayload, getTenantId } from '@acx-ui/utils'
+import { useGetAccountTierQuery }                           from '@acx-ui/rc/services'
+import { isDelegationMode }                                 from '@acx-ui/rc/utils'
+import { useGetBetaStatusQuery }                            from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload } from '@acx-ui/utils'
 
 import { Features }     from './features'
 import { useIsSplitOn } from './useIsSplitOn'
@@ -23,16 +24,15 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
 
 export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const params = useParams()
-  const isDelegationFlow = getJwtTokenPayload().tenantId !== getTenantId()
   const jwtPayload = getJwtTokenPayload()
   // only if it's delgation flow and FF true then call -
   // getBetaStatus value
-  const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG) && isDelegationFlow
-  const betaStatusResponse = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
-  const betaEnabled = Boolean(betaStatusResponse?.data?.enabled)
+  const isBetaFFlag = useIsSplitOn(Features.BETA_FLAG) && isDelegationMode()
+  const { data } = useGetBetaStatusQuery({ params }, { skip: !isBetaFFlag })
+  const betaEnabled = isBetaFFlag? ((data?.enabled === 'true')? true : false)
+    : jwtPayload?.isBetaFlag
 
-  // getAccountTier value
-  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationFlow
+  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
   const accTierResponse = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const acx_account_tier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
 
@@ -44,7 +44,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
     vertical: jwtPayload?.acx_account_vertical,
     tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
-    isBetaFlag: betaEnabled? betaEnabled : jwtPayload?.isBetaFlag
+    isBetaFlag: betaEnabled
   })[Features.PLM_FF]
 
   const userFFConfig = useMemo(() => {
@@ -60,7 +60,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   return {
     featureList: userFFConfig[featureKey],
-    betaList: (betaEnabled? betaEnabled : jwtPayload?.isBetaFlag) ? userFFConfig['betaList'] : []
+    betaList: betaEnabled? userFFConfig['betaList'] : []
   }
 }
 

@@ -278,7 +278,9 @@ export const {
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params)
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
+      transformResponse: (betaStatus: { 'Start Date': string, enabled: string }) =>
+        ({ startDate: betaStatus['Start Date'], enabled: betaStatus.enabled })
     }),
     toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)
