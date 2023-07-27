@@ -75,6 +75,17 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should update selected row', async () => {
+    const updateNowFn = jest.fn()
+    mockServer.use(
+      rest.patch(
+        FirmwareUrlsInfo.updateNow.url,
+        (req, res, ctx) => {
+          updateNowFn(req.body)
+          return res(ctx.json({ ...successResponse }))
+        }
+      )
+    )
+
     render(
       <Provider>
         <VenueFirmwareList />
@@ -93,9 +104,12 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
-    await screen.findByText('Active Device')
-    const updateVenueButton = await screen.findByText('Run Update')
-    fireEvent.click(updateVenueButton)
+    expect(await screen.findByText('Active Device')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /Run Update/ }))
+
+    await waitFor(() => {
+      expect(updateNowFn).toHaveBeenCalled()
+    })
   })
 
   it.skip('should update multiple selected row', async () => {
