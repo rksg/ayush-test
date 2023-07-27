@@ -54,7 +54,7 @@ export function AccessPointLED () {
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
+      tabTitle: $t({ defaultMessage: 'Advanced' }),
       oldData: data,
       newData: data,
       isDirty: false,

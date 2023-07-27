@@ -2,15 +2,14 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, AnchorLayout } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { redirectPreviousPage }          from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }    from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }            from '@acx-ui/components'
+import { redirectPreviousPage }       from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
 import { AccessPointLED } from './AccessPointLED'
-import { RadiusOptions }  from './RadiusOptions'
+
 
 export interface ModelOption {
   label: string
@@ -19,7 +18,7 @@ export interface ModelOption {
 
 export interface AdvanceSettingContext {
   updateAccessPointLED?: (() => void),
-  updateRadiusOptions?: (() => void)
+  updateCssColoring?: (() => void)
 }
 
 export function AdvancedTab () {
@@ -34,21 +33,25 @@ export function AdvancedTab () {
     setEditAdvancedContextData,
     previousPath } = useContext(VenueEditContext)
 
-  const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
+
   const supportBssColoring = false //useIsSplitOn(Features.RADIUS_OPTIONS)
 
 
-  const items = [{
+  const anchorItems = [{
     title: $t({ defaultMessage: 'Access Point LED' }),
+    key: 'apLed',
     content: <>
       <StepsFormLegacy.SectionTitle id='access-point-led'>
         { $t({ defaultMessage: 'Access Point LED' }) }
       </StepsFormLegacy.SectionTitle>
-      <AccessPointLED />
+      <div style={{ maxWidth: '465px' }}>
+        <AccessPointLED />
+      </div>
     </>
   },
   ...(supportBssColoring? [{
     title: $t({ defaultMessage: 'BSS Coloring' }),
+    key: 'bssColoring',
     content: <>
       <StepsFormLegacy.SectionTitle id='bss-coloring'>
         { $t({ defaultMessage: 'BSS Coloring' }) }
@@ -56,15 +59,6 @@ export function AdvancedTab () {
       <div>implementing...</div>
     </>
   }] : []
-  ),
-  ...(supportRadiusOptions? [{
-    title: $t({ defaultMessage: 'RADIUS Options' }),
-    content: <>
-      <StepsFormLegacy.SectionTitle id='radius-options'>
-        { $t({ defaultMessage: 'RADIUS Options' }) }
-      </StepsFormLegacy.SectionTitle>
-      <RadiusOptions />
-    </> }] : []
   )]
 
 
@@ -72,7 +66,7 @@ export function AdvancedTab () {
   const handleUpdateAllSettings = async () => {
     try {
       await editAdvancedContextData?.updateAccessPointLED?.()
-      await editAdvancedContextData?.updateRadiusOptions?.()
+      await editAdvancedContextData?.updateCssColoring?.()
 
       setEditContextData({
         ...editContextData,
@@ -83,7 +77,7 @@ export function AdvancedTab () {
       if (editAdvancedContextData) {
         const newData = { ...editAdvancedContextData }
         delete newData.updateAccessPointLED
-        delete newData.updateRadiusOptions
+        delete newData.updateCssColoring
         setEditAdvancedContextData(newData)
       }
 
@@ -101,7 +95,15 @@ export function AdvancedTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={items} offsetTop={275} />
+        {/*
+        <AnchorLayout items={anchorItems} offsetTop={275} />
+        */}
+        {
+          anchorItems.map(item => (
+            <div key={item.key} style={{ paddingBottom: '50px' }}>
+              {item.content}
+            </div>))
+        }
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

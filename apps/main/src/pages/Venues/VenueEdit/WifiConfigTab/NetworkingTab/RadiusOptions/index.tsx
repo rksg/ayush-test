@@ -20,8 +20,8 @@ export function RadiusOptions () {
   const {
     editContextData,
     setEditContextData,
-    editAdvancedContextData,
-    setEditAdvancedContextData
+    editNetworkingContextData,
+    setEditNetworkingContextData
   } = useContext(VenueEditContext)
 
   const form = Form.useFormInstance()
@@ -74,13 +74,13 @@ export function RadiusOptions () {
   const handleChanged = () => {
     setEditContextData && setEditContextData({
       ...editContextData,
-      unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
+      unsavedTabKey: 'networking',
+      tabTitle: $t({ defaultMessage: 'Networking' }),
       isDirty: true
     })
 
-    setEditAdvancedContextData && setEditAdvancedContextData({
-      ...editAdvancedContextData,
+    setEditNetworkingContextData && setEditNetworkingContextData({
+      ...editNetworkingContextData,
       updateRadiusOptions: handleUpdateRadiusOptions
     })
   }
