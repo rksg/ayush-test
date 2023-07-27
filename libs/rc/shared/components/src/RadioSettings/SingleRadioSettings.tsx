@@ -122,7 +122,7 @@ export function SingleRadioSettings (props:{
   let hasIndoorForOutdoor = false
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
-  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
@@ -345,7 +345,7 @@ export function SingleRadioSettings (props:{
   }
 
   const selectRadioChannelSelectionType = () => {
-    if(channelBandwidth === '320MHz' && Wifi7_320Mhz_FeatureFlag) {
+    if(channelBandwidth === '320MHz' && wifi7_320Mhz_FeatureFlag) {
       if (channelMethod === 'MANUAL' && context === 'ap') {
         return (
           <Row gutter={20}>

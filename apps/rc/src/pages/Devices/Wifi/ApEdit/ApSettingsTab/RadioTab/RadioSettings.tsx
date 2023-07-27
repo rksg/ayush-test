@@ -49,7 +49,7 @@ export function RadioSettings () {
     setEditContextData
   } = useContext(ApEditContext)
 
-  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const { apData, apCapabilities } = useContext(ApDataContext)
 
@@ -186,7 +186,7 @@ export function RadioSettings () {
 
         // 6G
         const supportCh6g = availableChannels['6GChannels'] || {}
-        const wifi7_320Bandwidth = Wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+        const wifi7_320Bandwidth = wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
 
         const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidth, supportCh6g, is6GHas160Mhz, is6GHas320Mhz)
         setSupport6GChannels(supportCh6g)
