@@ -166,7 +166,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         }
       </UI.IpAndMac>
       <Row>
-        <Col span={9}>
+        <Col span={12}>
           <SubInterfaceDrawer
             mac={props.mac}
             visible={drawerVisible}
