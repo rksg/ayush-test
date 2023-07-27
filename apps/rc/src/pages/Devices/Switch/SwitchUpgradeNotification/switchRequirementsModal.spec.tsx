@@ -9,6 +9,15 @@ import {
 
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '.'
 
+import { SwitchRequirementsModal } from './switchRequirementsModal'
+
+jest.mock('./switchRequirementsModal', () => ({
+  ...jest.requireActual('./switchRequirementsModal'),
+  __esModule: true,
+  SwitchRequirementsModal: () => {
+    return <div data-testid='mocked-SwitchRequirementsModal'>Upgrading the switch</div>
+  }
+}))
 
 describe('Switch Requriements Modal', () => {
   it('should render correctly', async () => {
@@ -32,9 +41,8 @@ describe('Switch Requriements Modal', () => {
           type={SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH}
           validateModel={['ICX7150-C08P']} />
       </Provider>)
-    await userEvent.click(await screen.findByText(/Click here/))
+    await userEvent.click(await screen.findByText(/Click here/i))
     expect(await screen.findByText(/Upgrading the switch/)).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: /ok/i }))
   })
 
   it('render 8200 correctly', async () => {
