@@ -92,6 +92,7 @@ const baseUrl: BaseUrl =
     }
 
 const services = require('@acx-ui/msp/services')
+const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services'),
   useAddMspLabelMutation: () => (''),
@@ -113,7 +114,7 @@ describe('PortalSettings', () => {
   const fileUrl: string = '/api/file/tenant/' + params.tenantId + '/'
 
   beforeEach(async () => {
-    services.useExternalProvidersQuery = jest.fn().mockImplementation(() => {
+    rcServices.useExternalProvidersQuery = jest.fn().mockImplementation(() => {
       return { data: externalProviders }
     })
     services.useGetMspBaseURLQuery = jest.fn().mockImplementation(() => {
@@ -326,8 +327,9 @@ describe('PortalSettings', () => {
     expect(formItem).toHaveValue('demo-msp')
 
     fireEvent.click(screen.getByRole('button', { name: '3rd Party Portal Providers' }))
+    expect(screen.queryByRole('alert')).toBeNull()
     await waitFor(() => {
-      expect(screen.queryByRole('alert')).toBeNull()
+      expect(screen.queryByDisplayValue('demo-msp')).toBeNull()
     })
   })
   it('logo form item should load correctly for add', async () => {
