@@ -34,13 +34,13 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
   const accTierResponse = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
-  const acx_account_tier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
+  const acxAccountTier = accTierResponse?.data?.acx_account_tier?? jwtPayload?.acx_account_tier
 
   const tenantType = (jwtPayload?.tenantType === AccountType.REC ||
     jwtPayload?.tenantType === AccountType.VAR) ? 'REC' : 'MSP'
   useDebugValue(`JWT tenantType: ${jwtPayload?.tenantType}, Tenant type: ${tenantType}`)
   const treatment = useTreatments([Features.PLM_FF], {
-    tier: acx_account_tier,
+    tier: acxAccountTier,
     vertical: jwtPayload?.acx_account_vertical,
     tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
