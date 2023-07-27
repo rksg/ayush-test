@@ -144,3 +144,69 @@ export const profile = {
   profileType: 'Regular',
   venues: ['f8da55210928402fa5a470642d80de53']
 }
+
+export const profilewithtp = {
+  id: '0c90ce8d0d104a46a182ef4bcfa653ce',
+  name: 'test',
+  vlans: [
+    {
+      id: '4109a93dee844ed7a0c237b92f7d6824',
+      vlanId: 1,
+      ipv4DhcpSnooping: true,
+      arpInspection: true,
+      igmpSnooping: 'none',
+      spanningTreeProtocol: 'none',
+      spanningTreePriority: 32768,
+      switchFamilyModels: [
+        {
+          id: '51354bd168e24924a92cc9a217f7d79a',
+          model: 'ICX7150-24',
+          untaggedPorts: '1/1/1',
+          slots: [
+            {
+              slotNumber: 2,
+              enable: true,
+              option: '2X1G'
+            },
+            {
+              slotNumber: 3,
+              enable: true,
+              option: '4X1/10G'
+            },
+            {
+              slotNumber: 1,
+              enable: true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  trustedPorts: [
+    {
+      id: 'a5640fa830b24be4a16ad7a7ef319d4c',
+      trustedPortType: 'all',
+      model: 'ICX7150-24',
+      vlanDemand: true,
+      trustPorts: [
+        '1/1/1'
+      ],
+      slots: [
+        {
+          slotNumber: 1,
+          enable: true
+        },
+        {
+          slotNumber: 3,
+          enable: true
+        },
+        {
+          slotNumber: 2,
+          enable: true
+        }
+      ]
+    }
+  ],
+  profileType: 'Regular',
+  venueCount: 0
+}

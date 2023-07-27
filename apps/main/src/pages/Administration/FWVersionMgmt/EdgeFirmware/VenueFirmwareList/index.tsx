@@ -20,10 +20,11 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import {
-  toUserDate
+  toUserDate,
+  compareVersions
 } from '../../FirmwareUtils'
 
 import { UpdateNowDialog } from './UpdateNowDialog'
@@ -95,8 +96,10 @@ export function VenueFirmwareList () {
     {
       visible: (selectedItems) => {
         const hasOutdatedFw = selectedItems?.some(
-          item => item.versions?.[0].id !== latestReleaseVersion?.id
-        )
+          item => latestReleaseVersion?.id &&
+          ((item.versions?.[0].id
+            && compareVersions(item.versions?.[0].id, latestReleaseVersion?.id) <= 0)
+          || !item.versions?.[0].id))
         return hasOutdatedFw
       },
       label: $t({ defaultMessage: 'Update Now' }),
@@ -134,7 +137,7 @@ export function VenueFirmwareList () {
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
       />
       <UpdateNowDialog
         visible={updateModelVisible}

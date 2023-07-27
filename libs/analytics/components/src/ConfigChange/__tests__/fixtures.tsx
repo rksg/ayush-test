@@ -64,3 +64,22 @@ export const configChanges = [
     newValues: []
   }
 ]
+
+export const kpiChanges = {
+  before: {
+    connectionSuccess: 0.7476334721696327,
+    timeToConnect: 895.2461538461538,
+    clientThroughPut: 232617.69735006973,
+    apCapacity: 10,
+    apUpTime: null,
+    onlineAPCount: 7
+  },
+  after: {
+    connectionSuccess: 0.692,
+    timeToConnect: 26,
+    clientThroughPut: null,
+    apCapacity: null,
+    apUpTime: null,
+    onlineAPCount: 3
+  }
+}

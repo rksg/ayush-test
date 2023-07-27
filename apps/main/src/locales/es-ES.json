@@ -1915,7 +1915,7 @@
     "defaultMessage": "FORCERENEW_NONCE_CAPABLE"
   },
   "7NfnJg": {
-    "defaultMessage": "Conexión correcta"
+    "defaultMessage": "Conexiones satisfactorias"
   },
   "7O0zzE": {
     "defaultMessage": "Dirección del servidor"
@@ -2728,7 +2728,7 @@
     "defaultMessage": "Añadir grupo de usuarios"
   },
   "ArhATs": {
-    "defaultMessage": "Experiencia del cliente"
+    "defaultMessage": "Experiencia de usuario"
   },
   "AszHoG": {
     "defaultMessage": "Capturando..."
@@ -3160,7 +3160,7 @@
     "defaultMessage": "La modificación del puerto de enlace ascendente puede provocar problemas de conectividad. ¿Seguro que quiere aplicar estos cambios?"
   },
   "CvT+kc": {
-    "defaultMessage": "Tiempo de conexión"
+    "defaultMessage": "Tiempo en conectarse"
   },
   "CzRokW": {
     "defaultMessage": "WEP",
@@ -3830,7 +3830,7 @@
     "defaultMessage": "Necesitamos actualizar la página para activar la región del mapa. Gracias por su comprensión"
   },
   "GQSMoL": {
-    "defaultMessage": "Capacidad del AP"
+    "defaultMessage": "Capacidad de AP"
   },
   "GT/UvO": {
     "defaultMessage": "Latencia del AP a RUCKUS One"
@@ -4473,7 +4473,7 @@
     "defaultMessage": "Inferior a 5 GHz: selección del canal del AP exterior"
   },
   "JAB4A4": {
-    "defaultMessage": "AP online"
+    "defaultMessage": "APs conectados"
   },
   "JAspuT": {
     "defaultMessage": "Cliente asociado (802.11)"
@@ -5983,7 +5983,7 @@
     "defaultMessage": "Socios tecnológicos"
   },
   "Q7nVr8": {
-    "defaultMessage": "Rendimiento del cliente"
+    "defaultMessage": "Caudal de usuario"
   },
   "Q7q6D5": {
     "defaultMessage": "Escriba un número de teléfono válido",
@@ -8432,7 +8432,7 @@
     "defaultMessage": "Seleccione el logotipo"
   },
   "bnaSLU": {
-    "defaultMessage": "Clientes conectados a lo largo del tiempo"
+    "defaultMessage": "Histórico de clientes"
   },
   "bobOH0": {
     "defaultMessage": "Credenciales > Id. de cliente OAuth 2.0 > Haga clic en el nombre del cliente > URI de redirección autorizadas"
@@ -9800,7 +9800,7 @@
     "defaultMessage": "Xgrid"
   },
   "hzSNj4": {
-    "defaultMessage": "Tablero de información"
+    "defaultMessage": "Tablero principal"
   },
   "hzXHmo": {
     "defaultMessage": "modelos"
@@ -10848,7 +10848,7 @@
     "defaultMessage": "También se utilizará como SSID de red por defecto. La longitud está limitada entre 2 y 32 caracteres (dependiendo del idioma que utilice)"
   },
   "mtr3R4": {
-    "defaultMessage": "Incidentes"
+    "defaultMessage": "Incidencias"
   },
   "mu/IQL": {
     "defaultMessage": "Tipo",
@@ -11665,7 +11665,7 @@
     "defaultMessage": "Restablezca la configuración por defecto"
   },
   "qci724": {
-    "defaultMessage": "No se ha informado de ningún incidente"
+    "defaultMessage": "No se ha detectado ninguna incidencia"
   },
   "qeLeFb": {
     "defaultMessage": "Valor de opción"

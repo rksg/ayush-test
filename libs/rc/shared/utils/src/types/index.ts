@@ -144,8 +144,9 @@ export interface AlarmMeta {
   id: AlarmBase['id']
   venueName: string
   apName: string
-  switchName: string,
+  switchName: string
   isSwitchExists: boolean
+  edgeName: string
 }
 
 export type Alarm = AlarmBase & AlarmMeta
@@ -164,7 +165,8 @@ export enum EventTypeEnum {
   SWITCH = 'SWITCH',
   NETWORK = 'NETWORK',
   NOTIFICATION = 'Notification',
-  DP = 'DP'
+  DP = 'DP',
+  EDGE = 'EDGE'
 }
 
 export enum AlaramSeverity {
@@ -479,4 +481,8 @@ export interface SwitchClient {
   venueId: string
   venueName: string
   isRuckusAP: boolean
+  dhcpClientOsVendorName?: string
+  dhcpClientDeviceTypeName?: string
+  dhcpClientModelName?: string
+  dhcpClientHostName?: string
 }

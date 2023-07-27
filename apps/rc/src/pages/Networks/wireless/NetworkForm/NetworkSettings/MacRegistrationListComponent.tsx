@@ -58,6 +58,7 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
           }]}
           children={
             <Select
+              style={{ width: '150px' }}
               placeholder={intl.$t({ defaultMessage: 'Select...' })}
               children={macRegListOption}
             />

@@ -1,11 +1,14 @@
 import React from 'react'
 
 import { useIntl } from 'react-intl'
+import styled      from 'styled-components'
 
 import {
+  Button,
   Table,
   TableProps
 } from '@acx-ui/components'
+import { ConfigurationSolid }                from '@acx-ui/icons'
 import { useWebAuthTemplateListQuery }       from '@acx-ui/rc/services'
 import { AccessSwitch, defaultTemplateData } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
@@ -16,11 +19,18 @@ export interface AccessSwitchTableDataType extends AccessSwitch {
   distributionSwitchName: string
 }
 
-interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitchTableDataType>, 'columns'> {}
+interface AccessSwitchesTableProps extends Omit<TableProps<AccessSwitchTableDataType>, 'columns'> {
+  editHandler?: ( as: AccessSwitch )=>void;
+}
+
+const EditTdButton = styled(Button).attrs({ type: 'link' })`
+  svg path { stroke: currentColor }
+`
 
 export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const { editHandler } = props
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
@@ -28,6 +38,10 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   })
 
   const columns: TableProps<AccessSwitchTableDataType>['columns'] = React.useMemo(() => {
+    const EditBtn = (row: AccessSwitchTableDataType) => editHandler ?
+      <EditTdButton onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton> :
+      <span>-</span>
+
     return [{
       key: 'name',
       title: $t({ defaultMessage: 'Access Switch' }),
@@ -52,13 +66,16 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: ['uplinkInfo', 'uplinkId'],
       sorter: true,
       render: (data, row) => {
-        return row.uplinkInfo ? `${row.uplinkInfo.uplinkType} ${data}` : ''
+        return row.uplinkInfo?.uplinkId ? `${row.uplinkInfo.uplinkType} ${data}` : EditBtn(row)
       }
     }, {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN ID' }),
       dataIndex: 'vlanId',
-      sorter: true
+      sorter: true,
+      render: (data, row) => {
+        return row.vlanId ? data : EditBtn(row)
+      }
     }, {
       key: 'templateId',
       title: $t({ defaultMessage: 'Net Seg Auth Page' }),
@@ -78,7 +95,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
         return <SimpleListTooltip displayText={displayText} items={items}/>
       }
     }]
-  }, [$t, templateListResult])
+  }, [$t, templateListResult, editHandler])
 
   return (
     <Table

@@ -1,14 +1,37 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { DHCP_OPTION_TYPE, SwitchDhcpOption, SwitchUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { poolData } from '../__tests__/fixtures'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 
+const mockOptionData = {
+  seq: 122,
+  type: DHCP_OPTION_TYPE.HEX,
+  value: 'abc'
+}
+type MockDrawerProps = React.PropsWithChildren<{
+  open: boolean
+  onSave: (values: SwitchDhcpOption) => void
+  onCancel: () => void
+}>
+jest.mock('./DhcpOptionModal', () => ({
+  DhcpOptionModal: ({ onSave, onCancel, open }: MockDrawerProps) =>
+    open && <div data-testid={'DhcpOptionModal'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onSave(mockOptionData)
+      }}>OK</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onCancel()
+      }}>Cancel</button>
+    </div>
+}))
 
 describe('AddPoolDrawer', () => {
   const params = {
@@ -35,11 +58,37 @@ describe('AddPoolDrawer', () => {
     const addButton = await screen.findByRole('button', { name: 'Add Option' })
     fireEvent.click(addButton)
 
-    const optionDialog = await screen.findByRole('dialog', { name: /Add DHCP Option/i })
-    fireEvent.click(await within(optionDialog).findByRole('button', { name: 'Cancel' }))
+    const optionDialog = await screen.findByTestId('DhcpOptionModal')
+    fireEvent.click(await within(optionDialog).findByRole('button', { name: 'OK' }))
+    await waitFor(() => expect(optionDialog).not.toBeVisible())
   })
 
-  it.skip('should render edit form correctly', async () => {
+  it('should save edit form correctly', async () => {
+    const saveSpy = jest.fn()
+    render(<Provider><AddPoolDrawer visible={true}
+      editPoolId={poolData.id}
+      onSavePool={saveSpy}
+    /></Provider>, {
+      route: { params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+      }
+    })
+
+    await screen.findByRole('row', { name: /Time Server/i })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await waitFor(() => expect(saveSpy).toBeCalled())
+
+    const addButton = await screen.findByRole('button', { name: 'Add Option' })
+    fireEvent.click(addButton)
+
+    const optionDialog = await screen.findByTestId('DhcpOptionModal')
+    fireEvent.click(await within(optionDialog).findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(optionDialog).not.toBeVisible())
+  })
+
+  it('should render edit form correctly', async () => {
     render(<Provider><AddPoolDrawer visible={true} editPoolId={poolData.id} /></Provider>, {
       route: { params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
@@ -48,28 +97,18 @@ describe('AddPoolDrawer', () => {
 
     const row = await screen.findByRole('row', { name: /Time Server/i })
     fireEvent.click(row)
-    const editButton = screen.getByRole('button', { name: 'Edit' })
+    const editButton = await screen.findByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
 
-    const optionDialog = await screen.findByRole('dialog', { name: /Edit DHCP Option/i })
-
-    const combobox = await within(optionDialog).findByLabelText('DHCP Option')
-    fireEvent.change(combobox, { target: { value: '122' } })
-    combobox.focus()
-    fireEvent.click(await screen.findByText('CCC', { exact: false })) // option "122 CCC"
-
-    const radio = await within(optionDialog).findByRole('radio', { name: 'HEX' })
-    expect(radio).toBeEnabled()
-    fireEvent.click(radio)
-
-    const input = await within(optionDialog).findByLabelText('Option Value')
-    fireEvent.change(input, { target: { value: 'abc' } })
-    input.focus()
-
+    const optionDialog = await screen.findByTestId('DhcpOptionModal')
     fireEvent.click(await within(optionDialog).findByRole('button', { name: 'OK' }))
 
     fireEvent.click(await screen.findByRole('row', { name: /CCC/i }))
-    const deleteButton = screen.getByRole('button', { name: 'Delete' })
+
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButton)
+
+    await waitFor(() =>
+      expect(screen.queryByRole('row', { name: /CCC/i })).not.toBeInTheDocument())
   })
 })
