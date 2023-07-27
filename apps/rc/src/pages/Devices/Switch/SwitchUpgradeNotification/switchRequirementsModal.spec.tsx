@@ -9,7 +9,6 @@ import {
 
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '.'
 
-import { SwitchRequirementsModal } from './switchRequirementsModal'
 
 jest.mock('./switchRequirementsModal', () => ({
   ...jest.requireActual('./switchRequirementsModal'),
