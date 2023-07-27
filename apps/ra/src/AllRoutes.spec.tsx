@@ -10,6 +10,9 @@ jest.mock('@acx-ui/analytics/components', () => ({
   RecommendationDetails: () => <div data-testid='recommendationDetails'></div>,
   NetworkAssurance: () => <div data-testid='NetworkAssurance'/>
 }))
+jest.mock('@reports/Routes', () => () => {
+  return <div data-testid='reports' />
+}, { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -57,5 +60,15 @@ describe('AllRoutes', () => {
       route: { path: '/analytics/next/recommendations/aiOps' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
+  })
+  it('should render reports correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/reports/overview' }
+      , wrapper: Provider })
+    await screen.findByTestId('reports')
+  })
+  it('should render datastudio correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/dataStudio' }
+      , wrapper: Provider })
+    await screen.findByTestId('reports')
   })
 })
