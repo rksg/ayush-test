@@ -1,19 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { get }                        from '@acx-ui/config'
+import {
+  reportsApi as reportsBaseApi,
+  REPORT_BASE_RELATIVE_URL as BASE_RELATIVE_URL } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-export const BASE_RELATIVE_URL = get('IS_MLISA_SA')? '/analytics/explorer' :'/api/a4rc/explorer'
-
-export const reportsBaseApi = createApi({
-  baseQuery: fetchBaseQuery({
-    mode: 'cors'
-  }),
-  reducerPath: 'reportsApi',
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export interface GuestToken {
   token: string

@@ -10,7 +10,6 @@ jest.mock('./ReportHeader', () => ({
   ReportHeader: () => <div data-testid='reportHeader' />
 }))
 jest.mock('./EmbeddedReport', () => ({
-  //...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: () => <div data-testid='reportPage' />
 }))
 

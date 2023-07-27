@@ -7,11 +7,12 @@ import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
-import { get }                                                             from '@acx-ui/config'
-import { useParams }                                                       from '@acx-ui/react-router-dom'
-import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
-import { useReportsFilter }                                                from '@acx-ui/reports/utils'
-import { useDateFilter, getJwtToken, NetworkPath }                         from '@acx-ui/utils'
+import { get }                                          from '@acx-ui/config'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { useGuestTokenMutation, useEmbeddedIdMutation } from '@acx-ui/reports/services'
+import { useReportsFilter }                             from '@acx-ui/reports/utils'
+import { REPORT_BASE_RELATIVE_URL }                     from '@acx-ui/store'
+import { useDateFilter, getJwtToken, NetworkPath }      from '@acx-ui/utils'
 
 import { bandDisabledReports, ReportType, reportTypeDataStudioMapping, reportModeMapping } from '../mapping/reportsMapping'
 
@@ -167,7 +168,7 @@ export function EmbeddedReport (props: ReportProps) {
     if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0) {
       embeddedObj = embedDashboard({
         id: dashboardEmbeddedId,
-        supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
+        supersetDomain: `${HOST_NAME}${REPORT_BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById(`acx-report-${embedDashboardName}`)!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
         dashboardUiConfig: {
