@@ -13,12 +13,12 @@ describe('HelpButton', () => {
   it('should render HelpButton correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
     render(<Provider>
@@ -34,12 +34,12 @@ describe('HelpButton', () => {
   it('should render HelpButton disabled correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           't/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
     render(<Provider>
@@ -49,12 +49,12 @@ describe('HelpButton', () => {
   })
   it('should not trigger chat if tdi.chat is not defined', async () => {
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
     const mockChatFn = jest.fn()
@@ -72,12 +72,12 @@ describe('HelpButton', () => {
   })
   it('should trigger chat if support status is ready', async () => {
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
     const mockChatFn = jest.fn()
@@ -95,12 +95,12 @@ describe('HelpButton', () => {
   })
   it('should enable chat support button if support status is chatting', async () => {
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
     const mockChatFn = jest.fn()
@@ -119,12 +119,12 @@ describe('HelpButton', () => {
   })
   it('should show warning icon with tooltip when fetchbot not ready for 30 secs', async () => {
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
     jest.mocked(useIsSplitOn).mockReturnValue(true)

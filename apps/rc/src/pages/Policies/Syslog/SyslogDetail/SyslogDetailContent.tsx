@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
-import { useParams }  from 'react-router-dom'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { useGetSyslogPolicyQuery }        from '@acx-ui/rc/services'
+import { Loader, SummaryCard }     from '@acx-ui/components'
+import { useGetSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum
@@ -16,7 +15,6 @@ import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
 import { SyslogDetailContext } from './SyslogDetailView'
 
 const SyslogDetailContent = () => {
-  const { Paragraph } = Typography
   const { $t } = useIntl()
 
   const { data, isLoading } = useGetSyslogPolicyQuery({
@@ -33,45 +31,33 @@ const SyslogDetailContent = () => {
     }
   }, [data])
 
+  const syslogInfo = [
+    {
+      title: $t({ defaultMessage: 'Primary Server' }),
+      content: `${data?.primary.server}
+      :${data?.primary.port} ${data?.primary.protocol}`,
+      visible: Boolean(data)
+    },
+    {
+      title: $t({ defaultMessage: 'Secondary Server' }),
+      content: data?.secondary?.server ? `${data?.secondary?.server}
+      :${data?.secondary?.port} ${data?.secondary?.protocol}` : '',
+      visible: Boolean(data)
+    },
+    {
+      title: $t({ defaultMessage: 'Event Facility' }),
+      content: data?.facility ? $t(facilityLabelMapping[data?.facility as FacilityEnum]) : '',
+      visible: Boolean(data)
+    },
+    {
+      title: $t({ defaultMessage: 'Send Logs' }),
+      content: data?.flowLevel ? $t(flowLevelLabelMapping[data?.flowLevel as FlowLevelEnum]) : '',
+      visible: Boolean(data)
+    }
+  ]
+
   return <Loader states={[{ isLoading }]}>
-    <Card>
-      {data && <GridRow>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Primary Server' })}
-          </Card.Title>
-          <Paragraph>
-            {`${data.primary.server}
-            :${data.primary.port} ${data.primary.protocol}`}
-          </Paragraph>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Secondary Server' })}
-          </Card.Title>
-          <Paragraph>
-            {data.secondary?.server ? `${data.secondary?.server}
-            :${data.secondary?.port} ${data.secondary?.protocol}` : ''}
-          </Paragraph>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Event Facility' })}
-          </Card.Title>
-          <Paragraph>
-            {data.facility ? $t(facilityLabelMapping[data.facility as FacilityEnum]) : ''}
-          </Paragraph>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Send Logs' })}
-          </Card.Title>
-          <Paragraph>
-            {data.flowLevel ? $t(flowLevelLabelMapping[data.flowLevel as FlowLevelEnum]) : ''}
-          </Paragraph>
-        </GridCol>
-      </GridRow>}
-    </Card>
+    <SummaryCard data={syslogInfo} colPerRow={6} />
   </Loader>
 }
 

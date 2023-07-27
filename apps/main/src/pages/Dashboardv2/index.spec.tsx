@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
-import { useIsTierAllowed }          from '@acx-ui/feature-toggle'
-import { BrowserRouter }             from '@acx-ui/react-router-dom'
-import { Provider }                  from '@acx-ui/store'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { BrowserRouter }                  from '@acx-ui/react-router-dom'
+import { Provider }                       from '@acx-ui/store'
+import { fireEvent, render, screen }      from '@acx-ui/test-utils'
 
 import Dashboard from '.'
 
@@ -32,6 +32,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   MapWidgetV2: () => <div data-testid={'rc-MapWidgetV2'} title='MapWidgetV2' />,
   VenuesDashboardWidgetV2: () => <div data-testid={'rc-VenuesDashboardWidgetV2'} title='VenuesDashboardWidgetV2' />
 }))
+jest.mock('@acx-ui/main/components', () => ({
+  VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
+}))
 /* eslint-enable */
 
 jest.mock(
@@ -44,11 +47,12 @@ describe('Dashboard', () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(6)
   })
 
   it('switches between tabs', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(localStorage.getItem('dashboard-tab')).toBe(undefined)
 
@@ -85,7 +89,7 @@ describe('Dashboard', () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(8)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(6)
   })
 
   it('should show report link correctly', async () => {
@@ -95,6 +99,14 @@ describe('Dashboard', () => {
 
   it('should hide edge tab when FF is off', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+    expect(await screen.findAllByRole('radio')).toHaveLength(2)
+  })
+
+  it('should hide edge tab when EDGE_STATS_TOGGLE is off', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(await screen.findAllByRole('radio')).toHaveLength(2)
   })

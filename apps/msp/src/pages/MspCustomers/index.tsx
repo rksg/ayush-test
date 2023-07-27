@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import {
   ManageAdminsDrawer,
   ResendInviteModal,
@@ -26,19 +26,23 @@ import {
   useSupportMspCustomerListQuery,
   useGetMspLabelQuery,
   useIntegratorCustomerListQuery,
-  useGetTenantDetailsQuery,
   useDelegateToMspEcPath,
   useCheckDelegateAdmin
-} from '@acx-ui/rc/services'
+} from '@acx-ui/msp/services'
 import {
   DelegationEntitlementRecord,
+  MspEc
+} from '@acx-ui/msp/utils'
+import {
+  useGetTenantDetailsQuery
+} from '@acx-ui/rc/services'
+import {
   EntitlementNetworkDeviceType,
-  MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, hasRoles }                        from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import { AccountType }                                                            from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {
@@ -88,15 +92,14 @@ const transformExpirationDate = (row: MspEc) => {
   const entitlements = row.entitlements
   let target: DelegationEntitlementRecord
   entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    target = entitlement
-    const consumed = parseInt(entitlement.quantity, 10)
+    const consumed = parseInt(entitlement.consumed, 10)
     const quantity = parseInt(entitlement.quantity, 10)
     if (consumed > 0 || quantity > 0) {
       if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
         target = entitlement
       }
     }
-    expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
+    expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
   })
   return expirationDate
 }
@@ -107,6 +110,7 @@ export function MspCustomers () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -138,7 +142,7 @@ export function MspCustomers () {
       return data.mspInstallerAdminCount
     else if (data?.mspIntegratorAdminCount)
       return data.mspIntegratorAdminCount
-    return data.mspAdminCount
+    return isIntegrator ? 0 : data.mspAdminCount
   }
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
@@ -534,7 +538,7 @@ export function MspCustomers () {
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
         />
       </Loader>
     )
@@ -596,6 +600,9 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
+        breadcrumb={isNavbarEnhanced
+          ? [{ text: $t({ defaultMessage: 'My Customers' }) }]
+          : undefined}
         extra={isAdmin ?
           [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>

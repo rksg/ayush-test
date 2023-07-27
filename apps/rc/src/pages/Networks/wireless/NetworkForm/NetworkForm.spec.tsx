@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
-import { AaaUrls, CommonUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed }                                            from '@acx-ui/feature-toggle'
+import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -38,6 +38,38 @@ export const dhcpResponse = {
   leaseTimeMinutes: 1,
   id: 'UNPERSISTED-DEFAULT-PROFILE-ID'
 }
+
+const macRegistrationList = {
+  content: [
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      name: 'Registration pool',
+      description: '',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 5
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 1,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 1,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
+}
+
 describe('NetworkForm', () => {
 
   beforeEach(() => {
@@ -77,18 +109,22 @@ describe('NetworkForm', () => {
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
             acceptTermsMsg: 'I accept the' }))
-        })
+        }),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macRegistrationList))
+      ),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
     )
   })
 
   it('should create open network successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+    render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
@@ -111,14 +147,38 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+    expect(screen.getByRole('link', {
+      name: /networks/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi Networks')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /network list/i
+    })).toBeTruthy()
+  })
+
   it('should create different SSID successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+    render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })

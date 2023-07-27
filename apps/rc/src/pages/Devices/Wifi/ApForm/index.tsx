@@ -27,7 +27,8 @@ import {
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
-  useWifiCapabilitiesQuery
+  useWifiCapabilitiesQuery,
+  useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -53,9 +54,9 @@ import {
 import {
   useNavigate,
   useTenantLink,
-  useParams
+  useParams, TenantLink
 } from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { compareVersions, validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
@@ -74,6 +75,7 @@ const defaultApPayload = {
 }
 
 export function ApForm () {
+  const params = useParams()
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
   const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
@@ -85,6 +87,7 @@ export function ApForm () {
   const {
     editContextData, setEditContextData, previousPath, isOnlyOneTab
   } = useContext(ApEditContext)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
   const { data: venuesList, isLoading: isVenuesListLoading }
@@ -93,6 +96,7 @@ export function ApForm () {
     // eslint-disable-next-line max-len
     = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
   const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
+  const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
 
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
@@ -101,6 +105,7 @@ export function ApForm () {
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
+  const [venueFwVersion, setVenueFwVersion] = useState('-')
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
@@ -109,6 +114,8 @@ export function ApForm () {
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
   const [cellularApModels, setCellularApModels] = useState([] as string[])
+
+  const BASE_VERSION = '6.2.1'
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -119,6 +126,32 @@ export function ApForm () {
       const result = dhcpApResponse as DhcpApResponse
       return result.response?.[0]
     }
+  }
+
+  const venueInfos = (venueFwVersion: string) => {
+    return <span>
+      {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
+        fwVersion: venueFwVersion
+      })}
+      {
+        checkBelowFwVersion(venueFwVersion) ? <><br/><br/>{$t({
+          defaultMessage: 'If you are adding an <b>R560 or R760</b> AP, ' +
+            'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
+            'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
+          b: chunks => <strong>{chunks}</strong>,
+          baseVersion: BASE_VERSION,
+          fwManagementLink: (<TenantLink
+            to={'/administration/fwVersionMgmt'}>{
+              $t({ defaultMessage: 'Firmware Management' })
+            }</TenantLink>)
+        })}</> : ''
+      }
+    </span>
+  }
+
+  const checkBelowFwVersion = (version: string) => {
+    if (version === '-') return false
+    return compareVersions(version, BASE_VERSION) < 0
   }
 
   useEffect(() => {
@@ -160,6 +193,13 @@ export function ApForm () {
       })) ?? [])
     }
   }, [venuesList])
+
+  useEffect(() => {
+    if (selectedVenue.hasOwnProperty('id')) {
+      const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
+      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
+    }
+  }, [selectedVenue, venueVersionList])
 
   useEffect(() => {
     handleUpdateContext()
@@ -276,6 +316,8 @@ export function ApForm () {
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
+    const venueInfo = venueVersionList?.data.find(venue => venue.id === value)
+    setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
   }
 
   const onSaveCoordinates = (latLng: DeviceGps | null) => {
@@ -311,7 +353,11 @@ export function ApForm () {
   return <>
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Wi-Fi' }) },
+        { text: $t({ defaultMessage: 'Access Points' }) },
+        { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
+      ] : [
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />}
@@ -337,6 +383,7 @@ export function ApForm () {
             }]}>
               <Form.Item
                 name='venueId'
+                style={{ marginBottom: '0px' }}
                 label={<>
                   {$t({ defaultMessage: 'Venue' })}
                   {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip.Question
@@ -385,6 +432,11 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
+              <Form.Item
+                name='venueInfos'
+              >
+                {venueInfos(venueFwVersion)}
+              </Form.Item>
               <Form.Item
                 name='apGroupId'
                 label={$t({ defaultMessage: 'AP Group' })}

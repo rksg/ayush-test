@@ -2,6 +2,7 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
+import { act }        from 'react-dom/test-utils'
 
 import { switchApi }       from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
@@ -23,6 +24,21 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const editStackData = {
+  id: 'FEK4124R28X',
+  venueId: '5c05180d54d84e609a4d653a3a8332d1',
+  enableStack: true,
+  igmpSnooping: 'none',
+  jumboMode: false,
+  softDeleted: false,
+  isPrimaryDeleted: false,
+  sendedHostname: true,
+  dhcpClientEnabled: true,
+  dhcpServerEnabled: false,
+  rearModule: 'none'
+}
+
 describe('Add Stack Member Form', () => {
   const params = {
     tenantId: 'tenant-id',
@@ -37,6 +53,8 @@ describe('Add Stack Member Form', () => {
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json(editStackData))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
     )
@@ -79,7 +97,10 @@ describe('Add Stack Member Form', () => {
     const serialNumber2 = await screen.findByTestId(/serialNumber2/)
     fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
     serialNumber2.focus()
-    serialNumber2.blur()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      serialNumber2.blur()
+    })
     await userEvent.click(await screen.findByTestId('deleteBtn2'))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
@@ -99,7 +120,10 @@ describe('Add Stack Member Form', () => {
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
     fireEvent.change(serialNumber1, { target: { value: 'FMG4124R20X' } })
     serialNumber1.focus()
-    serialNumber1.blur()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      serialNumber1.blur()
+    })
 
     expect(
       await screen.findByText('Serial number is invalid since it\'s not support stacking')
@@ -122,7 +146,10 @@ describe('Add Stack Member Form', () => {
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
     fireEvent.change(serialNumber1, { target: { value: 'aaa' } })
     serialNumber1.focus()
-    serialNumber1.blur()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      serialNumber1.blur()
+    })
 
     expect(await screen.findByText('Serial number is invalid')).toBeVisible()
   })
@@ -142,17 +169,23 @@ describe('Add Stack Member Form', () => {
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
     fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
     serialNumber1.focus()
-    serialNumber1.blur()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      serialNumber1.blur()
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add another member' }))
     const serialNumber2 = await screen.findByTestId(/serialNumber2/)
     fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
     serialNumber2.focus()
-    serialNumber2.blur()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      serialNumber2.blur()
+    })
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    expect(
-      await screen.findByText('Serial number is invalid since it\'s not unique in stack')
-    ).toBeVisible()
+    const msg = await screen
+      .findAllByText('Serial number is invalid since it\'s not unique in stack')
+    expect(msg[0]).toBeVisible()
   })
 })

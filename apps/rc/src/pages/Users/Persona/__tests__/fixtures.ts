@@ -47,15 +47,16 @@ export const mockPersona: Persona = {
   revoked: false,
   devices: [
     {
-      macAddress: '11:11:11:11:11:11',
+      macAddress: '11-11-11-11-11-11',
+      personaId: 'persona-id-1',
+      hasMacRegistered: true
+    },
+    {
+      macAddress: '11-11-11-11-11-12',
       personaId: 'persona-id-1'
     },
     {
-      macAddress: '11:11:11:11:11:12',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:13',
+      macAddress: '11-11-11-11-11-13',
       personaId: 'persona-id-1'
     }
   ],
@@ -157,9 +158,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     name: 'Class C',
     description: '',
     macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-100',
-    propertyId: 'propertyId-600'
+    dpskPoolId: 'dpsk-pool-1'
   }]
 }
 

@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { switchApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -115,6 +116,30 @@ describe('Cli Profile Form - Add', () => {
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   }, 30000)
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><CliProfileForm /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
+    })
+
+    expect(screen.getByRole('link', {
+      name: /wired networks/i
+    })).toBeTruthy()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
+    render(<Provider><CliProfileForm /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/cli/add' }
+    })
+
+    expect(await screen.findByText('Wired')).toBeVisible()
+    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: /configuration profiles/i
+    })).toBeTruthy()
+  })
 
   it('should handle models changed', async () => {
     render(<Provider><CliProfileForm /></Provider>, {

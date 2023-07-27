@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { FetchBaseQueryError }            from '@reduxjs/toolkit/dist/query/react'
-import { Col, Form, Row, Select, Switch } from 'antd'
+import { FetchBaseQueryError }                                                         from '@reduxjs/toolkit/dist/query/react'
+import { Col, Form, Row, Select, Switch, Modal as AntModal, Input, Typography, Space } from 'antd'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupLink } from 'apps/rc/src/pages/Users/Persona/LinkHelper'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -9,9 +9,22 @@ import { PersonaGroupDrawer } from 'apps/rc/src/pages/Users/Persona/PersonaGroup
 import { FormFinishInfo }     from 'rc-field-form/lib/FormContext'
 import { useIntl }            from 'react-intl'
 
-import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance, Subtitle, Tabs } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                               from '@acx-ui/feature-toggle'
-import { PersonaGroupSelect, TemplateSelector }                                     from '@acx-ui/rc/components'
+import {
+  Button,
+  Card,
+  Loader,
+  Modal,
+  ModalRef,
+  ModalType,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
+  Subtitle,
+  Tabs,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
+import { InformationSolid }                                         from '@acx-ui/icons'
+import { PersonaGroupSelect, ResidentPortalForm, TemplateSelector } from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
@@ -23,15 +36,15 @@ import {
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
 import {
+  EditPropertyConfigMessages,
   getServiceDetailsLink,
   PropertyConfigs,
   PropertyConfigStatus,
+  ResidentPortalType,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-// FIXME: move this component to common folder.
 
 import { VenueEditContext } from '../index'
 
@@ -39,12 +52,14 @@ import { VenueEditContext } from '../index'
 
 const defaultPropertyConfigs: PropertyConfigs = {
   status: PropertyConfigStatus.DISABLED,
+  residentPortalType: ResidentPortalType.NO_PORTAL,
   unitConfig: {
     type: 'unitConfig',
     maxUnitCount: 0,
     useMaxUnitCount: false,
     guestAllowed: false,
-    residentPortalAllowed: false
+    residentPortalAllowed: false,
+    residentApiAllowed: false
   },
   communicationConfig: {
     type: 'communicationConfig',
@@ -80,6 +95,8 @@ export function PropertyManagementTab () {
   const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const [residentPortalModalVisible, setResidentPortalModalVisible] = useState(false)
+  const [isPropertyEnable, setIsPropertyEnable] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const [groupData, setGroupData] = useState<{ id?: string, name?: string }>()
   const [selectedGroupId, setSelectedGroupId] = useState<string|undefined>()
@@ -96,7 +113,6 @@ export function PropertyManagementTab () {
   })
   const hasUnits = (unitQuery?.totalCount ?? -1) > 0
   const personaGroupHasBound = formRef?.current?.getFieldValue('personaGroupId') && hasUnits
-  const residentPortalHasBound = !!propertyConfigsQuery?.data?.residentPortalId && hasUnits
 
   const { data: residentPortalList } = useGetResidentPortalListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' }
@@ -104,8 +120,24 @@ export function PropertyManagementTab () {
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
+  const residentPortalTypeOptions = [
+    {
+      value: ResidentPortalType.NO_PORTAL,
+      label: $t({ defaultMessage: 'No Resident Portal' })
+    },
+    {
+      value: ResidentPortalType.RUCKUS_PORTAL,
+      label: $t({ defaultMessage: 'Use RUCKUS Portal' })
+    },
+    {
+      value: ResidentPortalType.OWN_PORTAL,
+      label: $t({ defaultMessage: 'Use Your Own Portal' })
+    }
+  ]
+
   useEffect(() => {
     if (propertyConfigsQuery.isLoading || !formRef.current || !propertyConfigsQuery.data) return
+    let residentPortalType = ResidentPortalType.NO_PORTAL
     let enabled
 
     // If the user disable the Property, it will get 404 for this venue.
@@ -116,7 +148,27 @@ export function PropertyManagementTab () {
       enabled = propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED
       formRef?.current.setFieldsValue(propertyConfigsQuery.data)
 
-      const groupId = propertyConfigsQuery.data?.personaGroupId
+      const {
+        personaGroupId: groupId,
+        unitConfig,
+        residentPortalId
+      } = propertyConfigsQuery.data
+
+      if (unitConfig) {
+        const { residentPortalAllowed = false, residentApiAllowed = false } = unitConfig
+        if (residentPortalId) {
+          residentPortalType = ResidentPortalType.RUCKUS_PORTAL
+        } else {
+          if (residentApiAllowed) {
+            if (residentPortalAllowed) {
+              residentPortalType = ResidentPortalType.RUCKUS_PORTAL
+            } else {
+              residentPortalType = ResidentPortalType.OWN_PORTAL
+            }
+          }
+        }
+      }
+
       if (groupId) {
         setSelectedGroupId(groupId)
         getPersonaGroupById({ params: { groupId } })
@@ -125,7 +177,8 @@ export function PropertyManagementTab () {
           })
       }
     }
-    formRef?.current.setFieldValue('isPropertyEnable', enabled)
+    formRef?.current.setFieldValue('residentPortalType', residentPortalType)
+    setIsPropertyEnable(enabled)
   }, [propertyConfigsQuery.data, formRef])
 
   const registerMessageTemplates = async () => {
@@ -155,22 +208,46 @@ export function PropertyManagementTab () {
     await Promise.all(registerPromises)
   }
 
+  const toResidentPortalPayload = (type: ResidentPortalType) => {
+    const payload = {
+      residentPortalAllowed: false,
+      residentApiAllowed: false
+    }
+
+    if (type === ResidentPortalType.RUCKUS_PORTAL) {
+      payload.residentApiAllowed = true
+      payload.residentPortalAllowed = true
+    } else if (type === ResidentPortalType.OWN_PORTAL){
+      payload.residentApiAllowed = true
+    }
+
+    return payload
+  }
+
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
-    const enableProperty = info.values.isPropertyEnable
+    const {
+      unitConfig,
+      residentPortalType,
+      ...formValues
+    } = info.values
 
     try {
-      if (enableProperty) {
+      if (isPropertyEnable) {
         await registerMessageTemplates()
         await updatePropertyConfigs({
           params: { venueId },
           payload: {
-            ...info.values,
+            ...formValues,
             venueName: venueData?.name ?? venueId,
             description: venueData?.description,
             address: venueData?.address,
-            status: enableProperty
+            status: isPropertyEnable
               ? PropertyConfigStatus.ENABLED
-              : PropertyConfigStatus.DISABLED
+              : PropertyConfigStatus.DISABLED,
+            unitConfig: {
+              ...unitConfig,
+              ...toResidentPortalPayload(residentPortalType)
+            }
           }
         }).unwrap()
       } else {
@@ -189,6 +266,50 @@ export function PropertyManagementTab () {
     }
   }
 
+  const handlePropertyEnable = (enabled: boolean) => {
+    if (!enabled) {
+      showConfirmModal(() => setIsPropertyEnable(false))
+    } else {
+      setIsPropertyEnable(enabled)
+    }
+  }
+
+  const showConfirmModal = (callback: () => void) => {
+    const modal = AntModal['confirm']({})
+
+    modal.update({
+      title: $t({ defaultMessage: 'Disable Property Management?' }),
+      content: <>
+        {$t(EditPropertyConfigMessages.DISABLE_PROPERTY_MESSAGE)}
+        {confirmForm({ text: 'Disable', modal })}
+      </>,
+      okText: $t({ defaultMessage: 'Disable' }),
+      okButtonProps: { disabled: true },
+      onOk: () => {callback()},
+      icon: <> </>
+    })
+
+  }
+
+  const confirmForm = (props: {
+    text: string,
+    modal: ModalRef
+  }) => {
+    const label = $t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: props.text })
+    return (
+      <Form>
+        <Form.Item name='name' label={label}>
+          <Input onChange={(e) => {
+            const disabled = e.target.value.toLowerCase() !== props.text.toLowerCase()
+            props.modal.update({
+              okButtonProps: { disabled: disabled }
+            })
+          }} />
+        </Form.Item>
+      </Form>
+    )
+  }
+
   const handleFormChange = async () => {
     setEditContextData({
       ...editContextData,
@@ -196,6 +317,10 @@ export function PropertyManagementTab () {
       tabTitle: $t({ defaultMessage: 'Property' }),
       updateChanges: () => formRef?.current?.submit()
     })
+  }
+
+  const onResidentPortalModalClose = () => {
+    setResidentPortalModalVisible(false)
   }
 
   return (
@@ -218,20 +343,35 @@ export function PropertyManagementTab () {
         <StepsFormLegacy.StepForm
           initialValues={defaultPropertyConfigs}
         >
-          <StepsFormLegacy.FieldLabel width={'200px'}>
-            {$t({ defaultMessage: 'Enable Property Management' })}
-            <Form.Item
-              name='isPropertyEnable'
-              valuePropName={'checked'}
-              children={<Switch />}
-            />
-          </StepsFormLegacy.FieldLabel>
-          {formRef?.current?.getFieldValue('isPropertyEnable') &&
+          <Row gutter={20} style={{ marginBottom: '12px' }}>
+            <Col span={8}>
+              <Typography.Text>
+                {$t({ defaultMessage: 'Enable Property Management' })}
+              </Typography.Text>
+              <Switch
+                data-testid={'property-enable-switch'}
+                checked={isPropertyEnable}
+                onChange={handlePropertyEnable}
+                style={{ marginLeft: '20px' }}
+              />
+              <Tooltip.Question
+                title={$t(EditPropertyConfigMessages.ENABLE_PROPERTY_TOOLTIP)}
+                placement={'bottom'}
+              />
+            </Col>
+          </Row>
+          {isPropertyEnable &&
             <Row gutter={20}>
               <Col span={8}>
                 <Form.Item
                   name='personaGroupId'
-                  label={$t({ defaultMessage: 'Persona Group' })}
+                  label={<>
+                    {$t({ defaultMessage: 'Persona Group' })}
+                    <Tooltip.Question
+                      title={$t(EditPropertyConfigMessages.BIND_PERSONA_GROUP_TOOLTIP)}
+                      placement={'bottom'}
+                    />
+                  </>}
                   rules={[{ required: true }]}
                 >
                   {personaGroupHasBound
@@ -270,23 +410,26 @@ export function PropertyManagementTab () {
                     children={<Switch disabled={hasUnits} />}
                   />
                 </StepsFormLegacy.FieldLabel>
-                <StepsFormLegacy.FieldLabel width={'190px'} hidden={residentPortalHasBound}>
-                  {$t({ defaultMessage: 'Enable Resident Portal' })}
-                  <Form.Item
-                    hidden={residentPortalHasBound}
-                    name={['unitConfig', 'residentPortalAllowed']}
-                    rules={[{ required: true }]}
-                    valuePropName={'checked'}
-                    children={<Switch />}
-                  />
-                </StepsFormLegacy.FieldLabel>
-                {formRef?.current?.getFieldValue(['unitConfig', 'residentPortalAllowed']) &&
+                <Form.Item
+                  name='residentPortalType'
+                  label={$t({ defaultMessage: 'Resident Portal' })}
+                  rules={[{ required: true }]}
+                  children={
+                    <Select
+                      disabled={hasUnits}
+                      options={residentPortalTypeOptions}
+                    />
+                  }
+                />
+                {/* eslint-disable-next-line max-len */}
+                {formRef?.current?.getFieldValue( 'residentPortalType') === ResidentPortalType.RUCKUS_PORTAL &&
+                  <>
                     <Form.Item
                       name='residentPortalId'
                       label={$t({ defaultMessage: 'Resident Portal profile' })}
                       rules={[{ required: true }]}
                       children={
-                        residentPortalHasBound
+                        hasUnits
                           ? <ResidentPortalLink
                             id={formRef?.current?.getFieldValue('residentPortalId')}
                             name={residentPortalList?.data
@@ -294,34 +437,71 @@ export function PropertyManagementTab () {
                                 ?.getFieldValue('residentPortalId'))?.name}
                           />
                           : <Select
+                            showSearch
+                            filterOption={(input, option) =>
+                              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                            }
                             options={residentPortalList?.data
                               .map(r => ({ value: r.id, label: r.name })) ?? []}
                           />
                       }
                     />
+                    <Form.Item
+                      noStyle
+                      hidden={hasUnits}
+                    >
+                      <Button
+                        type={'link'}
+                        size={'small'}
+                        onClick={() => setResidentPortalModalVisible(true)}
+                      >
+                        {$t({ defaultMessage: 'Add Resident Portal' })}
+                      </Button>
+                    </Form.Item>
+                  </>
+                }
+                {/* eslint-disable-next-line max-len */}
+                {formRef?.current?.getFieldValue( 'residentPortalType') === ResidentPortalType.OWN_PORTAL &&
+                  <Form.Item
+                    // Once the Resident Portal document ready, it needs to show the text
+                    hidden
+                    children={<Card type={'solid-bg'}>
+                      <Space align='start'>
+                        <InformationSolid />
+                        {$t({
+                          // eslint-disable-next-line max-len
+                          defaultMessage: 'Please refer to the resident portal documentation for more information about how to set up your own portal via API'
+                        })}
+                      </Space>
+                    </Card>}
+                  />
                 }
 
                 {msgTemplateEnabled &&
                   <>
                     <Form.Item
                       hidden
-                      name={['communicationConfig', 'type']}/><Subtitle level={4}>
+                      name={['communicationConfig', 'type']}/>
+                    <Subtitle level={4} style={{ paddingTop: '8px' }}>
                       {$t({ defaultMessage: 'Communication Templates' })}
-                    </Subtitle><StepsFormLegacy.FieldLabel width={'190px'}>
+                    </Subtitle>
+                    <StepsFormLegacy.FieldLabel width={'190px'}>
                       {$t({ defaultMessage: 'Enable Email Notification' })}
                       <Form.Item
                         name={['communicationConfig', 'sendEmail']}
                         rules={[{ required: true }]}
                         valuePropName={'checked'}
                         children={<Switch/>}/>
-                    </StepsFormLegacy.FieldLabel><StepsFormLegacy.FieldLabel width={'190px'}>
+                    </StepsFormLegacy.FieldLabel>
+                    <StepsFormLegacy.FieldLabel width={'190px'}>
                       {$t({ defaultMessage: 'Enable SMS Notification' })}
                       <Form.Item
                         name={['communicationConfig', 'sendSms']}
                         rules={[{ required: true }]}
                         valuePropName={'checked'}
                         children={<Switch/>}/>
-                    </StepsFormLegacy.FieldLabel><Tabs
+                    </StepsFormLegacy.FieldLabel>
+                    <Tabs
                       defaultActiveKey={'email'}
                     >
                       <Tabs.TabPane
@@ -333,7 +513,9 @@ export function PropertyManagementTab () {
                           key={id}
                           formItemProps={{ name: id }}
                           scopeId={id}
-                          registrationId={venueId}/>)}/>
+                          registrationId={venueId}
+                        />)}
+                      />
                       <Tabs.TabPane
                         forceRender
                         key={'sms'}
@@ -343,7 +525,9 @@ export function PropertyManagementTab () {
                           key={id}
                           formItemProps={{ name: id }}
                           scopeId={id}
-                          registrationId={venueId}/>)}/>
+                          registrationId={venueId}
+                        />)}
+                      />
                     </Tabs>
                   </>
                 }
@@ -362,6 +546,24 @@ export function PropertyManagementTab () {
           }
           setPersonaGroupVisible(false)
         }}
+      />
+
+      <Modal
+        title={$t({ defaultMessage: 'Add Resident Portal service' })}
+        type={ModalType.ModalStepsForm}
+        visible={residentPortalModalVisible}
+        children={<ResidentPortalForm
+          modalMode
+          modalCallBack={(result?: string) => {
+            if (result) {
+              formRef?.current?.setFieldValue('residentPortalId', result?.split('/')?.pop())
+            }
+            onResidentPortalModalClose()
+          }}
+        />}
+        onCancel={onResidentPortalModalClose}
+        width={1200}
+        destroyOnClose={true}
       />
     </Loader>
   )

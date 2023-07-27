@@ -25,6 +25,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedDeleteApi = jest.fn()
+const mockedRebootApi = jest.fn()
+const mockedResetApi = jest.fn()
+
 describe('Edge Detail Page Header', () => {
   const currentEdge = mockEdgeList.data[0]
   let params: { tenantId: string, serialNumber: string } =
@@ -38,15 +42,24 @@ describe('Edge Detail Page Header', () => {
       ),
       rest.delete(
         EdgeUrlsInfo.deleteEdge.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedDeleteApi()
+          return res(ctx.status(202))
+        }
       ),
       rest.post(
         EdgeUrlsInfo.reboot.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedRebootApi()
+          return res(ctx.status(202))
+        }
       ),
       rest.post(
         EdgeUrlsInfo.factoryReset.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedResetApi()
+          return res(ctx.status(202))
+        }
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
@@ -96,10 +109,18 @@ describe('Edge Detail Page Header', () => {
     const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete SmartEdge' })
     await userEvent.click(deleteBtn)
 
-    await screen.findByText(`Delete "${currentEdge.name}"?`)
-    await userEvent.click(screen.getByRole('button', { name: 'Delete SmartEdge' }))
+    const deleteDialog = await screen.findByRole('dialog')
+    await within(deleteDialog).findByText(`Delete "${currentEdge.name}"?`)
+    await userEvent.type(await within(deleteDialog).findByRole('textbox'), 'Delete')
+    await userEvent.click(within(deleteDialog).getByRole('button', { name: 'Delete' }))
+    await waitFor(() => {
+      expect(mockedDeleteApi).toBeCalledTimes(1)
+    })
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/edge`)
+    })
+    await waitFor(() => {
+      expect(deleteDialog).not.toBeVisible()
     })
   })
 
@@ -120,6 +141,12 @@ describe('Edge Detail Page Header', () => {
     const rebootDialog = await screen.findByRole('dialog')
     await within(rebootDialog).findByText(`Reboot "${currentEdge.name}"?`)
     await userEvent.click(within(rebootDialog).getByRole('button', { name: 'Reboot' }))
+    await waitFor(() => {
+      expect(mockedRebootApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(rebootDialog).not.toBeVisible()
+    })
   })
 
   it('should factory rest edge correctly', async () => {
@@ -139,6 +166,12 @@ describe('Edge Detail Page Header', () => {
     const resetDialog = await screen.findByRole('dialog')
     await within(resetDialog).findByText(`Reset and recover "${currentEdge.name}"?`)
     await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
+    await waitFor(() => {
+      expect(mockedResetApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(resetDialog).not.toBeVisible()
+    })
   })
 
   it('should do nothing if serialNumber in URL is "undefined"', async () => {

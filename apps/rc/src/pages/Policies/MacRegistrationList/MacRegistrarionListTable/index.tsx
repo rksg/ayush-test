@@ -10,8 +10,8 @@ import {
   Loader,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }          from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegListMutation,
@@ -42,6 +42,7 @@ export default function MacRegistrationListsTable () {
   const [policySetMap, setPolicySetMap] = useState(new Map())
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
@@ -76,7 +77,9 @@ export default function MacRegistrationListsTable () {
     getNetworkList({
       params,
       payload: {
-        fields: [ 'venues', 'id' ]
+        fields: [ 'venues', 'id' ],
+        page: 1,
+        pageSize: 10000
       } }).then(result => {
       const networkList = new Map()
       result.data?.data.forEach(n => networkList.set(n.id, n.venues.names))
@@ -237,11 +240,14 @@ export default function MacRegistrationListsTable () {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          [
-            { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true) }
-          ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true) }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={filterByAccess([
           <TenantLink

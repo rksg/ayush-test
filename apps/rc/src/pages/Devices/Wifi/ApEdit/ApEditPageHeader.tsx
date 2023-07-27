@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
-import { useGetApQuery }      from '@acx-ui/rc/services'
+import { Button, PageHeader }     from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useGetApQuery }          from '@acx-ui/rc/services'
 import {
   useNavigate,
   useTenantLink,
@@ -15,6 +16,7 @@ function ApEditPageHeader () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const { data } = useGetApQuery({ params: { tenantId, serialNumber } })
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
@@ -22,7 +24,11 @@ function ApEditPageHeader () {
   return (
     <PageHeader
       title={data?.name || ''}
-      breadcrumb={[
+      breadcrumb={isNavbarEnhanced ? [
+        { text: $t({ defaultMessage: 'Wi-Fi' }) },
+        { text: $t({ defaultMessage: 'Access Points' }) },
+        { text: $t({ defaultMessage: 'AP List' }), link: '/devices/wifi' }
+      ] : [
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
       extra={filterByAccess([

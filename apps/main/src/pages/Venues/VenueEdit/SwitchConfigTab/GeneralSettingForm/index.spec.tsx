@@ -44,7 +44,7 @@ describe('GeneralSettingForm', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
           <GeneralSettingForm />
@@ -52,8 +52,7 @@ describe('GeneralSettingForm', () => {
       </Provider>, { route: { params } }
     )
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('profile01 (Regular)'))
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('profile01 (Regular)')).toBeVisible()
   })
 
   it('should render regular profile details correctly', async () => {
@@ -150,7 +149,10 @@ describe('GeneralSettingForm', () => {
   it('should handle DNS update', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
-        (_, res, ctx) => res(ctx.json(venueSwitchSetting[1])))
+        (_, res, ctx) => res(ctx.json({
+          ...venueSwitchSetting[1],
+          cliApplied: false
+        })))
     )
     render(<Provider>
       <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>
@@ -171,7 +173,10 @@ describe('GeneralSettingForm', () => {
   it('should handle Syslog Server change and setting update', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
-        (_, res, ctx) => res(ctx.json(venueSwitchSetting[1])))
+        (_, res, ctx) => res(ctx.json({
+          ...venueSwitchSetting[1],
+          cliApplied: false
+        })))
     )
     render(<Provider>
       <VenueEditContext.Provider value={{ editContextData, setEditContextData }}>

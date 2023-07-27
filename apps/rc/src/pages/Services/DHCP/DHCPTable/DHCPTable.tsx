@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
@@ -16,16 +17,18 @@ import {
   IpUtilsService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
 import * as UI                     from '../DHCPForm/styledComponents'
+
 export default function DHCPTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
@@ -35,6 +38,7 @@ export default function DHCPTable () {
         'name',
         'dhcpPools',
         'venueIds',
+        'venueCount',
         'technology'
       ]
     },
@@ -98,9 +102,14 @@ export default function DHCPTable () {
             count: tableQuery.data?.totalCount
           })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-        ]}
+        ]
+          : [
+            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+          ]
+        }
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}>
@@ -120,7 +129,7 @@ export default function DHCPTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -228,7 +237,7 @@ function useColumns () {
     {
       key: 'venues',
       title: $t({ defaultMessage: 'Venues' }),
-      dataIndex: 'venueIds',
+      dataIndex: 'venueCount',
       filterable: venueNameMap,
       align: 'center',
       sorter: true,

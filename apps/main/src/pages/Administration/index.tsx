@@ -2,8 +2,13 @@ import { useIntl } from 'react-intl'
 
 import { Tabs, PageHeader }                         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                    from '@acx-ui/user'
+import {
+  useGetAdminListQuery,
+  useGetDelegationsQuery,
+  useGetNotificationRecipientsQuery
+} from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                 from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -15,18 +20,42 @@ import Subscriptions     from './Subscriptions'
 
 const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
   const { $t } = useIntl()
-  const { activeTab } = useParams()
+  const params = useParams()
+  const { activeTab, tenantId, venueId, serialNumber } = params
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
-  const isRadiusClientEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isCloudMoteEnabled = useIsSplitOn(Features.CLOUDMOTE_SERVICE)
+  const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
+  const isCloudMoteEnabled = useIsTierAllowed(Features.CLOUDMOTE_BETA)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
+  const defaultPayload = {
+    filters: venueId ? { venueId: [venueId] } :
+      serialNumber ? { serialNumber: [serialNumber] } : {}
+  }
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
   }
+  const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
+    skip: !hasAdministratorTab || !isNavbarEnhanced,
+    pollingInterval: 30_000
+  })
+  const notificationList = useGetNotificationRecipientsQuery({
+    params: { tenantId },
+    payload: defaultPayload
+  }, {
+    skip: !isNavbarEnhanced,
+    pollingInterval: 30_000
+  })
+  const thirdPartyAdminList = useGetDelegationsQuery(
+    { params },
+    { skip: !hasAdministratorTab || !isNavbarEnhanced }
+  )
+
+  const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
+  const notificationCount = notificationList?.data?.length || 0
 
   return (
     <Tabs
@@ -34,11 +63,26 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
       activeKey={activeTab}
       onChange={onTabChange}
     >
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Account Settings' })} key='accountSettings' />
-      { hasAdministratorTab &&
-      ( <Tabs.TabPane tab={$t({ defaultMessage: 'Administrators' })} key='administrators' /> )
+      <Tabs.TabPane tab={isNavbarEnhanced
+        ? $t({ defaultMessage: 'Settings' })
+        : $t({ defaultMessage: 'Account Settings' })
       }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='notifications' />
+      key='accountSettings' />
+      { hasAdministratorTab &&
+      ( <Tabs.TabPane
+        tab={isNavbarEnhanced
+          ? $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })
+          : $t({ defaultMessage: 'Administrators' })
+        }
+        key='administrators' /> )
+      }
+      <Tabs.TabPane
+        tab={isNavbarEnhanced
+          ? $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })
+          : $t({ defaultMessage: 'Notifications' })
+        }
+        key='notifications'
+      />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Version Management' })}
@@ -62,13 +106,13 @@ const tabPanes = {
   subscriptions: Subscriptions,
   fwVersionMgmt: FWVersionMgmt,
   localRadiusServer: LocalRadiusServer
-
 }
 
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
   const { data: userProfileData } = useUserProfileContext()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   // support dashboard - his own account
   let isSupport: boolean = false
@@ -86,9 +130,12 @@ export default function Administration () {
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Administration' })}
+      title={isNavbarEnhanced
+        ? $t({ defaultMessage: 'Account Management' })
+        : $t({ defaultMessage: 'Administration' })
+      }
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Administration' }), link: '/administration' }
+        { text: $t({ defaultMessage: 'Administration' }) }
       ]}
       footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
     />

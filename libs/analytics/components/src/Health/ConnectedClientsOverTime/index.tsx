@@ -9,9 +9,15 @@ import { NetworkHistory }    from '../../NetworkHistory'
 import { HealthPageContext } from '../HealthPageContext'
 
 const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
-  const healthFilter = useContext(HealthPageContext)
+  const {
+    startDate,
+    endDate,
+    range,
+    timeWindow,
+    setTimeWindow,
+    apCount
+  } = useContext(HealthPageContext)
   const { filters: healthPageFilters } = props
-  const { startDate, endDate, range, timeWindow, setTimeWindow } = healthFilter
   const filters = { ...healthPageFilters, startDate, endDate, range }
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -28,6 +34,7 @@ const ConnectedClientsOverTime = (props: { filters : AnalyticsFilter }) => {
       type='no-border'
       hideTitle
       hideIncidents
+      apCount={apCount}
     />
   )}
 

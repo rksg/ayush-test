@@ -8,9 +8,9 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }   from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages }        from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { WifiNetworkMessages }                      from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -83,6 +83,8 @@ function SettingsForm () {
   useEffect(()=>{
     form.setFieldsValue(data)
   },[data])
+
+  const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (
@@ -95,7 +97,7 @@ function SettingsForm () {
             <Form.Item noStyle
               name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'>
-              <Switch onChange={onMacAuthChange} disabled={editMode || !isCloudpathBetaEnabled}/>
+              <Switch onChange={onMacAuthChange} disabled={editMode || disablePolicies}/>
             </Form.Item>
             <span>{$t({ defaultMessage: 'MAC Authentication' })}</span>
             <Tooltip.Question

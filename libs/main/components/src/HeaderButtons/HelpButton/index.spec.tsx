@@ -39,14 +39,14 @@ describe('HelpPage Component', () => {
 
   it('should render <HelpPage/> component correctly', async () => {
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
           'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
           'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(ctx.text('<p class=shortdesc>Dashboard test</p>'))
       ))
 
@@ -64,7 +64,7 @@ describe('HelpPage Component', () => {
 
   it('Render <HelpPage/> component failing case', async () => {
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           empty: ''
         }))
@@ -80,14 +80,13 @@ describe('HelpPage Component', () => {
         wrapRoutes: false
       }
     })
-    await new Promise((r)=>{setTimeout(r, 300)})
     expect(await screen.findByText(('The content is not available.'))).toBeInTheDocument()
   })
 
   it('Render <HelpPage/> component retrieve mapping file failing case', async () => {
 
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(
           // Send a valid HTTP status code
           ctx.status(404),
@@ -110,21 +109,20 @@ describe('HelpPage Component', () => {
           wrapRoutes: false
         }
       })
-    await new Promise((r)=>{setTimeout(r, 300)})
     expect(await screen.findByText(('The content is not available.'))).toBeInTheDocument()
   })
 
   it('Render <HelpPage/> component retrieve HTML file failing case', async () => {
 
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
           'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
           'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(
           // Send a valid HTTP status code
           ctx.status(404),
@@ -144,7 +142,6 @@ describe('HelpPage Component', () => {
           wrapRoutes: false
         }
       })
-    await new Promise((r)=>{setTimeout(r, 300)})
     expect(await screen.findByText(('The content is not available.'))).toBeInTheDocument()
   })
 })
@@ -163,9 +160,9 @@ describe('HelpPage Component URLs', () => {
     process.env = originalEnv
   })
   it('<HelpPage/> component retrieve URL correctly', async () => {
-    const mappingURL = getMappingURL()
+    const mappingURL = getMappingURL(false)
     expect(mappingURL).not.toBeNull()
-    const docURL = getDocsURL()
+    const docURL = getDocsURL(false)
     expect(docURL).not.toBeNull()
   })
 
@@ -178,14 +175,14 @@ describe('HelpPage menus Button', () => {
   it('should invoke menus link correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(getMappingURL(), (_, res, ctx) =>
+      rest.get(getMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
           'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
           'venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
-      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL(false)+':docID', (_, res, ctx) =>
         res(
           // Send a valid HTTP status code
           ctx.status(404),
@@ -202,7 +199,7 @@ describe('HelpPage menus Button', () => {
     </Provider>, { route: { params } })
     const helpBtn = screen.getByRole('button')
     await userEvent.click(helpBtn)
-    await userEvent.click(screen.getByRole('menuitem', { name: 'Documentation Center' }))
+    await userEvent.click(screen.getByRole('menuitem', { name: 'What’s New' }))
 
     await userEvent.click(helpBtn)
     await userEvent.click(screen.getByRole('menuitem', { name: 'My Open Cases' }))

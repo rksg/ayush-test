@@ -3,10 +3,11 @@ import React from 'react'
 import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
-import { serviceApi }                                    from '@acx-ui/rc/services'
-import { WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
-import { mockServer, render, screen }                    from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { serviceApi }                                                    from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
+import { mockServer, render, screen }                                    from '@acx-ui/test-utils'
 
 import WifiCallingDetailView, { WifiCallingDetailContext } from './WifiCallingDetailView'
 
@@ -24,6 +25,9 @@ const wifiCallingDetail = {
     {
       ip: '1.2.3.4',
       domain: 'abc.com'
+    },
+    {
+      domain: 'a.b.c.com'
     }
   ]
 }
@@ -35,16 +39,21 @@ describe('WifiCallingDetailView', () => {
     act(() => {
       store.dispatch(serviceApi.util.resetApiState())
     })
+    mockServer.use(
+      rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(wifiCallingDetail))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+        res(ctx.json({
+          fields: ['name', 'id'],
+          totalCount: 0,
+          page: 1,
+          data: []
+        }))
+      )
+    )
   })
 
   it('should render wifiCallingDetailContent successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCalling.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingDetail)
-      )
-    ))
-
     render(
       <WifiCallingDetailContext.Provider value={initState}>
         <Provider>
@@ -57,7 +66,50 @@ describe('WifiCallingDetailView', () => {
         }
       }
     )
-
     await screen.findByText(/for test/i)
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <WifiCallingDetailContext.Provider value={initState}>
+        <Provider>
+          <WifiCallingDetailView />
+        </Provider>
+      </WifiCallingDetailContext.Provider>
+      , {
+        route: {
+          params: { serviceId: 'wifiCallingServiceId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <WifiCallingDetailContext.Provider value={initState}>
+        <Provider>
+          <WifiCallingDetailView />
+        </Provider>
+      </WifiCallingDetailContext.Provider>
+      , {
+        route: {
+          params: { serviceId: 'wifiCallingServiceId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Wi-Fi Calling'
+    })).toBeVisible()
   })
 })

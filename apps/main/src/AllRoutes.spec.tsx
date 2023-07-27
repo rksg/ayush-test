@@ -38,7 +38,7 @@ jest.mock('@acx-ui/user', () => ({
 jest.mock('./pages/Dashboardv2', () => () => {
   return <div data-testid='dashboard' />
 })
-jest.mock('@analytics/Routes', () => () => {
+jest.mock('./routes/AnalyticsRoutes', () => () => {
   return <div data-testid='analytics' />
 }, { virtual: true })
 jest.mock('@reports/Routes', () => () => {
@@ -51,6 +51,8 @@ jest.mock('@rc/Routes', () => () => {
       <div data-testid='networks' />
       <div data-testid='services' />
       <div data-testid='policies' />
+      <div data-testid='users' />
+      <div data-testid='timeline' />
     </>
   )
 },{ virtual: true })
@@ -68,6 +70,11 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 describe('AllRoutes', () => {
+  beforeEach(() => {
+    global.window.innerWidth = 1920
+    global.window.innerHeight = 1080
+  })
+
   afterEach(cleanup)
   test('should navigate to dashboard', async () => {
     render(<Provider><AllRoutes /></Provider>, {
@@ -153,7 +160,7 @@ describe('AllRoutes', () => {
   })
 
   test('should navigate to policies/* if the feature flag is on', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -166,7 +173,7 @@ describe('AllRoutes', () => {
   })
 
   test('should not navigate to policies/* if the feature flag is off', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(<Provider><AllRoutes /></Provider>, {
       route: {
@@ -194,6 +201,22 @@ describe('AllRoutes', () => {
       }
     })
     expect(await screen.findByTestId('msp')).toBeVisible()
+  })
+  test('should navigate to users/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/users/some-page'
+      }
+    })
+    await screen.findByTestId('users')
+  })
+  test('should navigate to timeline/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/tenantId/t/timeline/some-page'
+      }
+    })
+    await screen.findByTestId('timeline')
   })
 
   test('should not see anayltics & service validation if not admin', async () => {

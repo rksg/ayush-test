@@ -17,8 +17,8 @@ import {
   Tooltip,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }           from '@acx-ui/icons'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }                         from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -139,6 +139,7 @@ function SettingsForm () {
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
   const securityOnChange = (value: string) => {
+    const wlanProtocolConfig = {} as { [key: string]: string | undefined | null }
     switch(value){
       case WlanSecurityEnum.WPA2Personal:
         form.setFieldsValue({
@@ -146,6 +147,7 @@ function SettingsForm () {
             managementFrameProtection: ManagementFrameProtectionEnum.Disabled
           }
         })
+        wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Disabled
         break
       case WlanSecurityEnum.WPA3:
         form.setFieldsValue({
@@ -153,6 +155,7 @@ function SettingsForm () {
             managementFrameProtection: ManagementFrameProtectionEnum.Required
           }
         })
+        wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Required
         break
       case WlanSecurityEnum.WPA23Mixed:
         form.setFieldsValue({
@@ -160,8 +163,26 @@ function SettingsForm () {
             managementFrameProtection: ManagementFrameProtectionEnum.Optional
           }
         })
+        wlanProtocolConfig.managementFrameProtection = ManagementFrameProtectionEnum.Optional
         break
     }
+    wlanProtocolConfig.macRegistrationListId = value !== WlanSecurityEnum.WPA2Personal
+      ? null
+      : data?.wlan?.macRegistrationListId
+    wlanProtocolConfig.passphrase = value !== WlanSecurityEnum.WPA2Personal
+      ? null
+      : data?.wlan?.passphrase
+
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          wlanSecurity: value as WlanSecurityEnum,
+          ...wlanProtocolConfig
+        }
+      }
+    })
   }
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -188,6 +209,7 @@ function SettingsForm () {
   },[data])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const disablePolicies = !useIsSplitOn(Features.POLICIES)
 
   return (
     <>
@@ -290,7 +312,11 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode || !isCloudpathBetaEnabled} onChange={onMacAuthChange} />
+                <Switch disabled={
+                  editMode || disablePolicies
+                }
+                onChange={onMacAuthChange}
+                />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
               <Tooltip.Question
@@ -306,7 +332,10 @@ function SettingsForm () {
             >
               <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
                 <Space direction='vertical'>
-                  <Radio value={true} disabled={!isCloudpathBetaEnabled}>
+                  <Radio value={true}
+                    disabled={
+                      !isCloudpathBetaEnabled
+                    }>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
                   </Radio>
                   <Radio value={false}>

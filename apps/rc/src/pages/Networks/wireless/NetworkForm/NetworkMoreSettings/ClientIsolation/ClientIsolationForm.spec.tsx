@@ -3,7 +3,7 @@ import { Form }         from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
 import { rest }         from 'msw'
 
-import { useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { ClientIsolationUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import {
@@ -62,7 +62,7 @@ describe('ClientIsolationForm', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: mockedTenantId }
 
   beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(mockedVenues))),

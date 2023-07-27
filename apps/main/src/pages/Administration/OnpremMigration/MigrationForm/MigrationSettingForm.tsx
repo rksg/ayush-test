@@ -7,7 +7,10 @@ import {
   Row,
   Typography
 } from 'antd'
-import { useIntl }   from 'react-intl'
+import {
+  FormattedMessage,
+  useIntl
+} from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
@@ -280,9 +283,14 @@ const MigrationSettingForm = styled((props: MigrationSettingFormProps) => {
         <Col span={12}>
           <Typography.Text>
             {countryCode ?
-              // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Wi-Fi country code will set to {countryCode}.' }, { countryCode }) :
-              $t({ defaultMessage: 'Wi-Fi country code will converted from selected address.' })
+              <FormattedMessage
+                defaultMessage={
+                  'Wi-Fi country code will set to {countryCode} as ZD configuration.'}
+                values={{
+                  countryCode: <strong>{countryCode}</strong>
+                }}
+              />
+              : $t({ defaultMessage: 'Wi-Fi country code will converted from selected address.' })
             }
           </Typography.Text>
         </Col>

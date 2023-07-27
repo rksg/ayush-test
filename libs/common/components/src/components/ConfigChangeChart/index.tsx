@@ -14,14 +14,13 @@ import {
   toolboxDataZoomOptions
 } from '../Chart/helper'
 
-
 import {
   ConfigChangeChartProps,
   useDataZoom,
   useDotClick,
   useLegendSelectChanged,
   useBoundaryChange,
-  chartRowMapping,
+  getConfigChangeEntityTypeMapping,
   getSymbol,
   getChartLayoutConfig,
   tooltipFormatter,
@@ -36,12 +35,14 @@ export function ConfigChangeChart ({
   chartBoundary,
   selectedData,
   onDotClick,
+  onBrushPositionsChange,
   ...props
 }: ConfigChangeChartProps) {
 
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
 
+  const chartRowMapping = getConfigChangeEntityTypeMapping()
   const chartLayoutConfig = getChartLayoutConfig(props.style?.width as number, chartRowMapping)
   const {
     chartPadding, legendHeight, brushTextHeight, rowHeight, rowGap,
@@ -57,8 +58,8 @@ export function ConfigChangeChart ({
 
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
-  const { setBoundary } =
-    useBoundaryChange(eChartsRef, chartLayoutConfig, chartBoundary, brushWidth)
+  const { setBoundary } = useBoundaryChange(
+    eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =
     useDataZoom(eChartsRef, chartBoundary, setBoundary)
 
@@ -138,7 +139,7 @@ export function ConfigChangeChart ({
       ]
     },
     toolbox: toolboxDataZoomOptions,
-    dataZoom: [ {
+    dataZoom: [{
       ...dataZoomOptions([])[0],
       minValueSpan: 60 * 60 * 1000 // an hour
     }],

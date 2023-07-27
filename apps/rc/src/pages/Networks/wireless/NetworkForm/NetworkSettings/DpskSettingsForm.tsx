@@ -11,7 +11,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { useGetDpskListQuery }                       from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
@@ -77,7 +77,7 @@ function SettingsForm () {
   useEffect(()=>{
     form.setFieldsValue({ ...data })
   },[data])
-  const disableAAA = !useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>

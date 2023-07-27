@@ -20,7 +20,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
 import DeviceOSDrawer    from '../AccessControlForm/DeviceOSDrawer'
@@ -43,7 +43,8 @@ const defaultPayload = {
     'applicationPolicyId',
     'clientRateUpLinkLimit',
     'clientRateDownLinkLimit',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1
 }
@@ -149,7 +150,7 @@ const AccessControlSet = () => {
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={hasAccess() && { type: 'checkbox' }}
     />
   </Loader>
 }
@@ -252,9 +253,9 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       }
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,

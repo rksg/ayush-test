@@ -4,6 +4,7 @@ import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
 import { showActionModal, Table, TableProps, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { VlanSettingDrawer }                                            from '@acx-ui/rc/components'
 import {
   Vlan,
   SwitchModel,
@@ -11,14 +12,13 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'
 import * as UI               from './styledComponents'
-import { VlanSettingDrawer } from './VlanSettingDrawer'
 
 export function VlanSetting () {
   const { $t } = getIntl()
@@ -108,11 +108,11 @@ export function VlanSetting () {
       }
     })
 
-    return <>{portTooltips.map(item => <div>
+    return <>{portTooltips.map((item, index) => (<div key={index}>
       <div>{item.model}</div>
       <div><UI.TagsOutlineIcon /><UI.PortSpan>{item.untaggedPorts || '--'}</UI.PortSpan></div>
       <div><UI.TagsSolidIcon /><UI.PortSpan>{item.taggedPorts || '--'}</UI.PortSpan></div>
-    </div>)
+    </div>))
     }</>
   }
 
@@ -202,7 +202,7 @@ export function VlanSetting () {
             columns={vlansColumns}
             rowActions={filterByAccess(rowActions)}
             dataSource={vlanTable}
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'radio',
               selectedRowKeys: selectedRows,
               onChange: (keys: React.Key[]) => {

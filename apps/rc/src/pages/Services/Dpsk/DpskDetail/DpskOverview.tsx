@@ -1,7 +1,6 @@
-import { Typography } from 'antd'
 
-import { Card, GridRow, GridCol }     from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Card, GridCol, GridRow, SummaryCard } from '@acx-ui/components'
+import { Features, useIsTierAllowed }          from '@acx-ui/feature-toggle'
 import {
   DpskNetworkType,
   DpskSaveData,
@@ -24,56 +23,42 @@ export default function DpskOverview (props: DpskOverviewProps) {
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { data } = props
 
+  const dpskInfo = [
+    {
+      title: intl.$t({ defaultMessage: 'Passphrase Format' }),
+      content: data && transformDpskNetwork(intl, DpskNetworkType.FORMAT, data.passphraseFormat)
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Passphrase Length' }),
+      content: data && transformDpskNetwork(intl, DpskNetworkType.LENGTH, data.passphraseLength)
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
+      content: data && transformAdvancedDpskExpirationText(
+        intl,
+        {
+          expirationType: data.expirationType,
+          expirationDate: data.expirationDate,
+          expirationOffset: data.expirationOffset
+        }
+      )
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
+      content: data && displayDeviceCountLimit(data.deviceCountLimit),
+      visible: isCloudpathEnabled
+    },
+    {
+      title: intl.$t({ defaultMessage: 'Default Access' }),
+      content: data && displayDefaultAccess(data.policyDefaultAccess),
+      visible: isCloudpathEnabled
+    }
+  ]
+
   return (
     <GridRow>
       <GridCol col={{ span: 24 }}>
-        <Card>
-          <GridRow>
-            <GridCol col={{ span: 6 }}>
-              <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Format' })}</Card.Title>
-              <Typography.Paragraph>
-                {data && transformDpskNetwork(intl, DpskNetworkType.FORMAT, data.passphraseFormat)}
-              </Typography.Paragraph>
-            </GridCol>
-            <GridCol col={{ span: 6 }}>
-              <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Length' })}</Card.Title>
-              <Typography.Paragraph>
-                {data && transformDpskNetwork(intl, DpskNetworkType.LENGTH, data.passphraseLength)}
-              </Typography.Paragraph>
-            </GridCol>
-            <GridCol col={{ span: 6 }}>
-              <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Expiration' })}</Card.Title>
-              <Typography.Paragraph>
-                {data && transformAdvancedDpskExpirationText(
-                  intl,
-                  {
-                    expirationType: data.expirationType,
-                    expirationDate: data.expirationDate,
-                    expirationOffset: data.expirationOffset
-                  }
-                )}
-              </Typography.Paragraph>
-            </GridCol>
-          </GridRow>
-          {isCloudpathEnabled &&
-            <GridRow>
-              <GridCol col={{ span: 6 }}>
-                <Card.Title>
-                  {intl.$t({ defaultMessage: 'Devices allowed per passphrase' })}
-                </Card.Title>
-                <Typography.Paragraph>
-                  {data && displayDeviceCountLimit(data.deviceCountLimit)}
-                </Typography.Paragraph>
-              </GridCol>
-              <GridCol col={{ span: 6 }}>
-                <Card.Title>{intl.$t({ defaultMessage: 'Default Access' })}</Card.Title>
-                <Typography.Paragraph>
-                  {data && displayDefaultAccess(data.policyDefaultAccess)}
-                </Typography.Paragraph>
-              </GridCol>
-            </GridRow>
-          }
-        </Card>
+        <SummaryCard data={dpskInfo} />
       </GridCol>
       <GridCol col={{ span: 24 }}>
         <Card>

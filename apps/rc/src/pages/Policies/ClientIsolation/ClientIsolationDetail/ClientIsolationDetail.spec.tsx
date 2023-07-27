@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientIsolationUrls,
   getPolicyDetailsLink,
@@ -55,6 +56,40 @@ describe('ClientIsolationDetail', () => {
     const targetVenue = mockedVenueUsage.data[0]
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('row', { name: new RegExp(targetVenue.venueName) })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <ClientIsolationDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('Policies & Profiles')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Client Isolation'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <ClientIsolationDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Client Isolation'
+    })).toBeVisible()
   })
 
   it('should navigate to the edit page', async () => {

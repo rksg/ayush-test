@@ -23,8 +23,8 @@ import {
   PersonaDevice,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
@@ -33,7 +33,7 @@ const defaultPayload = {
   searchString: '',
   searchTargetFields: ['clientMac', 'ipAddress', 'Username', 'hostname', 'osType'],
   fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName',
-    'apName', 'lastUpdateTime']
+    'apName', 'lastUpdateTime', 'authmethod']
 }
 
 export function PersonaDevicesTable (props: {
@@ -46,7 +46,7 @@ export function PersonaDevicesTable (props: {
   const [modelVisible, setModelVisible] = useState(false)
   const [macDevices, setMacDevices] = useState<PersonaDevice[]>([])
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
-  const [clientMac, setClientMac] = useState<Set<string>>(new Set())
+  const [clientMac, setClientMac] = useState<Set<string>>(new Set())  // including the MAC auth and DPSK devices
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
 
   const [getClientList] = useLazyGetClientListQuery()
@@ -58,21 +58,22 @@ export function PersonaDevicesTable (props: {
     }
   }, { skip: !persona?.dpskGuid || !dpskPoolId })
 
-  const toClientMacFormat = (devices: PersonaDevice[]) => {
-    return devices.map(d => d.macAddress.replaceAll('-', ':'))
+  // ClientMac format should be: 11:22:33:44:55:66
+  const toClientMacFormat = (macAddress: string) => {
+    return macAddress.replaceAll('-', ':')
   }
 
   useEffect(() => {
     if (!persona?.devices) return
     setMacDevices(persona.devices)
-    toClientMacFormat(persona.devices).forEach(mac => addClientMac(mac))
+    persona.devices.forEach(d => addClientMac(toClientMacFormat(d.macAddress)))
   }, [persona?.devices])
 
   useEffect(() => {
     if (!dpskDevicesData) return
-    const aggregatedDpskDevices = aggregateDpskDevices(dpskDevicesData)
-    setDpskDevices(aggregatedDpskDevices)
-    toClientMacFormat(aggregatedDpskDevices).forEach(mac => addClientMac(mac))
+    const dpskOnlineDevices = toOnlinePersonaDevice(dpskDevicesData)
+    setDpskDevices(dpskOnlineDevices)
+    dpskOnlineDevices.forEach(d => addClientMac(toClientMacFormat(d.macAddress)))
   }, [dpskDevicesData])
 
   useEffect(() => {
@@ -87,21 +88,53 @@ export function PersonaDevicesTable (props: {
     })
       .then(result => {
         if (!result.data?.data) return
-        setMacDevices(aggregatePersonaDevices(macDevices, result.data.data))
-        setDpskDevices(aggregatePersonaDevices(dpskDevices, result.data.data))
+        setMacDevices(aggregateMacAuthDevices(macDevices, result.data.data))
+        setDpskDevices(aggregateDpskDevices(dpskDevices, result.data.data))
       })
   }, [clientMac])
 
-  const aggregatePersonaDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
-    // Combine client data and persona devices data
+  const aggregateDpskDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
     return devices.map(device => {
       // PersonaMAC format: AB-AB-AB-AB-AB-AB
       // ClientMAC format: ab:ab:ab:ab:ab:ab
-      const deviceMac = device.macAddress.replaceAll('-', ':')
+      const deviceMac = toClientMacFormat(device.macAddress)
       const client = clientList
         .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+      // if UE connected
+      //  via MAC auth, the authmethod would be: "Standard+Mac"
+      //  via DPSK,     the authmethod would be: "Standard+Open"
+      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
 
-      return client
+      return client && !isMacAuth
+        ? {
+          ...device,
+          os: client.osType,
+          deviceName: client.hostname
+        }
+        : {
+          ...device,
+          lastSeenAt: undefined // this device connected via MacAuth not DPSK, do not show lastSeenAt
+        }
+    }) ?? []
+  }
+
+  const aggregateMacAuthDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
+    // Combine client data and persona devices data
+    return devices.map(device => {
+      // this device does not register to MAC pool successfully.
+      if (!device.hasMacRegistered) return device
+
+      // PersonaMAC format: AB-AB-AB-AB-AB-AB
+      // ClientMAC format: ab:ab:ab:ab:ab:ab
+      const deviceMac = toClientMacFormat(device.macAddress)
+      const client = clientList
+        .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+      // if UE connected
+      //  via MAC auth, the authmethod would be: "Standard+Mac"
+      //  via DPSK,     the authmethod would be: "Standard+Open"
+      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
+
+      return client && isMacAuth
         ? {
           ...device,
           os: client.osType,
@@ -112,13 +145,15 @@ export function PersonaDevicesTable (props: {
     }) ?? []
   }
 
-  const aggregateDpskDevices = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
-    return dpskDevices.map(device => ({
-      personaId: persona?.id ?? '',
-      macAddress: device.mac,
-      lastSeenAt: moment.utc(device.lastConnected).toISOString(),
-      hasDpskRegistered: true
-    }))
+  const toOnlinePersonaDevice = (dpskDevices: DPSKDeviceInfo[]): PersonaDevice[] => {
+    return dpskDevices
+      .filter(d => d.online)
+      .map(device => ({
+        personaId: persona?.id ?? '',
+        macAddress: device.mac,
+        lastSeenAt: moment.utc(device.lastConnected).toISOString(),
+        hasDpskRegistered: true
+      }))
   }
 
   const [
@@ -167,7 +202,8 @@ export function PersonaDevicesTable (props: {
       key: 'macAddress',
       dataIndex: 'macAddress',
       title: $t({ defaultMessage: 'MAC Address' }),
-      sorter: { compare: sortProp('macAddress', defaultSort) }
+      sorter: { compare: sortProp('macAddress', defaultSort) },
+      render: (_, row) => row.macAddress.replaceAll(':', '-').toUpperCase()
     },
     {
       key: 'hasDpskRegistered',
@@ -264,13 +300,13 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={{
+        rowSelection={hasAccess() ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page
             disabled: !!item?.hasDpskRegistered
           })
-        }}
+        } : undefined}
         pagination={{ defaultPageSize: 5 }}
       />
 

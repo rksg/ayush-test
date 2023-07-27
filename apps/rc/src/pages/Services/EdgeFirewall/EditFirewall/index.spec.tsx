@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import {
   ACLDirection, AccessAction, AddressType,
   CommonUrlsInfo, DdosAttackType, EdgeFirewallSetting,
@@ -133,6 +134,8 @@ describe('Edit edge firewall service', () => {
 
     // edit ddos rule
     await click(body.getByRole('switch', { name: 'ddos' }))
+    // drawer won't open when ddos rule is not first-time setup
+    await click(await body.findByRole('button', { name: 'Change' }))
     const drawer = await screen.findByRole('dialog')
     expect(await screen.findByText('DDoS Rate-limiting Settings')).toBeVisible()
 
@@ -205,6 +208,34 @@ describe('Edit edge firewall service', () => {
     })
 
     cleanup()
+  }, 30000)
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<EditFirewall />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
+    })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Firewall'
+    })).toBeVisible()
+  }, 30000)
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<EditFirewall />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
+    })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Firewall'
+    })).toBeVisible()
   }, 30000)
 
   it.skip('should correctly edit stateful ACL rule', async () => {
@@ -319,7 +350,8 @@ describe('Edit edge firewall service', () => {
     await type(within(dialog1).getByRole('spinbutton', { name: 'Protocol Value' }), '20')
     let src = await screen.findByRole('group', { name: 'Source' })
     await click(await within(src).findByRole('radio', { name: 'IP Address' }))
-    await type(within(src).getByPlaceholderText('IP Address'), '1.2.3.4')
+    await type(within(src).getAllByRole('textbox')
+      .filter(ele => ele.id === 'sourceAddress')[0], '1.2.3.4')
     let destination = await screen.findByRole('group', { name: 'Destination' })
     await click(await within(destination).findByRole('radio', { name: 'Any IP Address' }))
     await type(within(destination).getByRole('textbox', { name: 'Port' }), '120')
@@ -367,9 +399,9 @@ describe('Edit edge firewall service', () => {
     const rows = await body.findAllByRole('row', { name: /Smart Edge/i })
     expect(rows.length).toBe(5)
     // eslint-disable-next-line max-len
-    expect(within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch')).toBeChecked()
+    expect(within(body.getByRole('row', { name: /Smart Edge 2/i })).getByRole('switch')).toBeChecked()
     await click(
-      within(await body.findByRole('row', { name: /Smart Edge 2/i })).getByRole('checkbox'))
+      within(body.getByRole('row', { name: /Smart Edge 2/i })).getByRole('checkbox'))
     await click(await body.findByRole('button', { name: 'Deactivate' }))
 
 

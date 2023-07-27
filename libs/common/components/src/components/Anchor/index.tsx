@@ -1,10 +1,9 @@
 import { ReactNode, useRef, useEffect } from 'react'
 
+import { Col, Row }            from 'antd'
 import { InternalAnchorClass } from 'antd/lib/anchor/Anchor'
 
 import { useNavigate, useLocation } from '@acx-ui/react-router-dom'
-
-import { GridRow, GridCol } from '../Grid'
 
 import { Anchor, Container } from './styledComponents'
 
@@ -39,22 +38,25 @@ export const AnchorLayout = ({ items, offsetTop } : {
     }
   }, [])
 
-  return <GridRow >
-    <GridCol col={{ span: 4 }}>
-      <Anchor ref={anchorRef} offsetTop={offsetTop} onClick={(e) => handleClick(e)}>{
-        items.map(item => {
+  return <Row gutter={20}>
+    <Col span={4}>
+      <Anchor ref={anchorRef}
+        offsetTop={offsetTop}
+        onClick={(e) => handleClick(e)}
+        $customType='layout'>
+        {items.map(item => {
           const linkId = item.title.split(' ').join('-')
           return <Link href={`#${linkId}`} title={item.title} key={linkId} />
-        })
-      }</Anchor>
-    </GridCol>
-    <GridCol col={{ span: 20 }}>{
+        })}
+      </Anchor>
+    </Col>
+    <Col span={20}>{
       items.map(item => {
         const linkId = item.title.split(' ').join('-')
         return <Container id={linkId} key={linkId}>
           {item.content}
         </Container>
       })
-    }</GridCol>
-  </GridRow>
+    }</Col>
+  </Row>
 }

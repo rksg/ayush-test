@@ -3,7 +3,7 @@ import { fireEvent, within } from '@testing-library/react'
 import { rest }              from 'msw'
 
 
-import { useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { RadiusClientConfigUrlsInfo }                            from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -18,7 +18,7 @@ describe('RadiusServerTab', () => {
   const radiusSetting = { host: '31.2.5.12', authenticationPort: 1812, accountingPort: 1813 }
 
   beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
       rest.get(
@@ -83,8 +83,8 @@ describe('RadiusServerTab', () => {
     expect(generateButton).toBeTruthy()
     await userEvent.click(generateButton)
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
     await userEvent.click(saveButton)
+    await screen.findByText('Shared Secret was changed')
   })
 
   it('should change secret and cancel correctly', async () => {

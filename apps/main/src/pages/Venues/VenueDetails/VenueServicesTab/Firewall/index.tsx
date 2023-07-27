@@ -1,19 +1,18 @@
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { Loader, SummaryCard }            from '@acx-ui/components'
 import { EdgeFirewallGroupedStatsTables } from '@acx-ui/rc/components'
 import { useGetEdgeFirewallQuery }        from '@acx-ui/rc/services'
 import {
   ACLDirection,
   EdgeStatus,
-  getServiceDetailsLink,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  getServiceDetailsLink
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
 
 interface EdgeFirewallServiceProps {
   className?: string;
@@ -78,6 +77,14 @@ const EdgeFirewall = ({ className, edgeData }: EdgeFirewallServiceProps) => {
           )
           : $t({ defaultMessage: 'OFF' })
       )
+    },
+    {
+      title: $t({ defaultMessage: 'SmartEdge' }),
+      content: (
+        <TenantLink to={`/devices/edge/${edgeData?.serialNumber}/details/overview`}>
+          {edgeData?.name}
+        </TenantLink>
+      )
     }
   ] : []
 
@@ -86,24 +93,7 @@ const EdgeFirewall = ({ className, edgeData }: EdgeFirewallServiceProps) => {
     isLoading: isFWInfoLoading
   }]}>
     <Space direction='vertical' size={30} className={className}>
-      <Card type='solid-bg'>
-        <UI.InfoMargin>
-          <GridRow>
-            {infoFields.map(item =>
-              (<GridCol col={{ span: 3 }} key={item.title}>
-                <Space direction='vertical' size={10}>
-                  <Typography.Text>
-                    {item.title}
-                  </Typography.Text>
-                  <Typography.Text>
-                    {item.content()}
-                  </Typography.Text>
-                </Space>
-              </GridCol>)
-            )}
-          </GridRow>
-        </UI.InfoMargin>
-      </Card>
+      <SummaryCard data={infoFields} />
       <EdgeFirewallGroupedStatsTables
         edgeData={edgeData}
         edgeFirewallData={edgeFirewallData!}

@@ -1,8 +1,9 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { useGetEdgeFirewallViewDataListQuery }                from '@acx-ui/rc/services'
+import { Button, Card, Loader, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { useGetEdgeFirewallViewDataListQuery }           from '@acx-ui/rc/services'
 import {
   ACLDirection,
   EdgeFirewallViewData,
@@ -22,6 +23,7 @@ const FirewallDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const getEdgeFirewallPayload = {
     filters: { id: [params.serviceId] }
   }
@@ -35,7 +37,7 @@ const FirewallDetail = () => {
     }
   )
 
-  const infoFields = [
+  const firewallInfo = [
     {
       title: $t({ defaultMessage: 'Service Status' }),
       content: () => (<></>)
@@ -79,8 +81,17 @@ const FirewallDetail = () => {
     <>
       <PageHeader
         title={edgeFirewallData.firewallName}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'Firewall' }),
+            link: getServiceRoutePath({
+              type: ServiceType.EDGE_FIREWALL,
+              oper: ServiceOperation.LIST
+            })
+          }
+        ] : [
           {
             text: $t({ defaultMessage: 'Firewall' }),
             link: getServiceRoutePath({
@@ -106,24 +117,7 @@ const FirewallDetail = () => {
         }
       ]}>
         <Space direction='vertical' size={30}>
-          <Card type='solid-bg'>
-            <UI.InfoMargin>
-              <GridRow>
-                {infoFields.map(item =>
-                  (<GridCol col={{ span: 3 }} key={item.title}>
-                    <Space direction='vertical' size={10}>
-                      <Typography.Text>
-                        {item.title}
-                      </Typography.Text>
-                      <Typography.Text>
-                        {item.content()}
-                      </Typography.Text>
-                    </Space>
-                  </GridCol>)
-                )}
-              </GridRow>
-            </UI.InfoMargin>
-          </Card>
+          <SummaryCard data={firewallInfo} />
           <Card>
             <UI.InstancesMargin>
               <Typography.Title level={2}>

@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
 import { Provider }                 from '@acx-ui/store'
 import {
@@ -78,5 +79,38 @@ describe('DHCP Detail Page', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(('Number of Pools'))).toBeInTheDocument()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <DHCPServiceDetail />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
+      })
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.queryByText('My Services')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'DHCP Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <DHCPServiceDetail />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
+      })
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'DHCP'
+    })).toBeVisible()
+
   })
 })

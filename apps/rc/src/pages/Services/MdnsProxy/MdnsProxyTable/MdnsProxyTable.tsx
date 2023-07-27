@@ -9,6 +9,7 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                from '@acx-ui/rc/components'
 import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
@@ -22,7 +23,7 @@ import {
   MdnsProxyForwardingRule
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'rules', 'venueIds'],
@@ -36,6 +37,7 @@ export default function MdnsProxyTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteMdnsProxyMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedMdnsProxyListQuery,
@@ -80,7 +82,10 @@ export default function MdnsProxyTable () {
         title={
           $t({ defaultMessage: 'mDNS Proxy ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ] : [
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([
@@ -98,7 +103,7 @@ export default function MdnsProxyTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

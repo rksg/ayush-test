@@ -16,11 +16,11 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import { CloudMessageBanner }  from '@acx-ui/rc/components'
 import {
-  useGetTenantDetailQuery,
-  useMspEntitlementListQuery
-} from '@acx-ui/rc/services'
+  useMspEntitlementListQuery,
+  useGetTenantDetailQuery
+} from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                           from '@acx-ui/rc/components'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                              from '@acx-ui/user'
@@ -33,6 +33,7 @@ function Layout () {
   const [hasLicense, setHasLicense] = useState(false)
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
+  const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
 
@@ -41,6 +42,7 @@ function Layout () {
   const companyName = userProfile?.companyName
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
 
@@ -51,11 +53,17 @@ function Layout () {
         pathname: `${basePath.pathname}`
       })
     }
-  }, [isGuestManager, params['*']])
+    if (isDPSKAdmin && params['*'] !== 'dpskAdmin') {
+      navigate({
+        ...dpskBasePath,
+        pathname: `${dpskBasePath.pathname}`
+      })
+    }
+  }, [isGuestManager, isDPSKAdmin, params['*']])
 
   useEffect(() => {
     if (data && userProfile) {
-      if (userProfile?.support) {
+      if (userProfile?.support || userProfile?.dogfood) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)
@@ -84,7 +92,7 @@ function Layout () {
       </>}
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-        {!isGuestManager &&
+        {!(isGuestManager || isDPSKAdmin) &&
           <>
             <AlarmsButton/>
             <ActivityButton/>

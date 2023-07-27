@@ -2,15 +2,17 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useGetEdgeServiceListQuery }            from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-const EdgeDetailsTabs = () => {
+const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/details`)
   const navigate = useNavigate()
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'
     navigate({
@@ -20,28 +22,30 @@ const EdgeDetailsTabs = () => {
   }
   const { servicesCount = 0 } = useGetEdgeServiceListQuery({
     payload: {
-      fields: ['id'],
+      fields: ['serviceId'],
       filters: { edgeId: [serialNumber] }
     }
   }, {
+    skip: !isEdgeReady,
     selectFromResult: ({ data }) => ({
       servicesCount: data?.totalCount
     })
   })
 
-  // const { currentEdge } = props
-  // const currentEdgeOperational = (currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL)
-
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      {/* { currentEdgeOperational &&
+      {
+        isEdgeReady && props.isOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
-          key='troubleshooting' />} */}
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
-        key='services'
-      />
+          key='troubleshooting' />}
+      {
+        isEdgeReady &&
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
+          key='services'
+        />
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>

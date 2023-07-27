@@ -1,29 +1,21 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { VLANPoolPolicyType }     from '@acx-ui/rc/utils'
+import { SummaryCard }        from '@acx-ui/components'
+import { VLANPoolPolicyType } from '@acx-ui/rc/utils'
 
 export default function VLANPoolOverview (props: { vlanPoolProfile: VLANPoolPolicyType }) {
   const { $t } = useIntl()
   const { vlanPoolProfile } = props
+  const VLANPoolInfo = [
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      content: vlanPoolProfile.description?.toString()
+    },
+    {
+      title: $t({ defaultMessage: 'VLANs' }),
+      content: vlanPoolProfile.vlanMembers
+    }
+  ]
 
-  return (
-    <Card>
-      <GridRow>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Description' })}
-          </Card.Title>
-          <Typography.Text>{vlanPoolProfile.description?.toString()}</Typography.Text>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'VLANs' })}
-          </Card.Title>
-          <Typography.Text>{vlanPoolProfile.vlanMembers}</Typography.Text>
-        </GridCol>
-      </GridRow>
-    </Card>
-  )
+  return <SummaryCard data={VLANPoolInfo} />
 }

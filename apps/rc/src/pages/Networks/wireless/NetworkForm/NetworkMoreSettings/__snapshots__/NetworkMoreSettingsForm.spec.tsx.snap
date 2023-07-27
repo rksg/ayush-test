@@ -520,47 +520,6 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 </div>
               </div>
               <div
-                class="styledComponents__FieldLabel-sc-ijp2z4-0 zFFEs"
-                width="125px"
-              >
-                Force DHCP
-                <div
-                  class="ant-form-item"
-                  style="margin-bottom: 10px;"
-                >
-                  <div
-                    class="ant-row ant-form-item-row"
-                  >
-                    <div
-                      class="ant-col ant-form-item-control"
-                    >
-                      <div
-                        class="ant-form-item-control-input"
-                      >
-                        <div
-                          class="ant-form-item-control-input-content"
-                        >
-                          <button
-                            aria-checked="false"
-                            class="ant-switch"
-                            id="wlan_advancedCustomization_forceMobileDeviceDhcp"
-                            role="switch"
-                            type="button"
-                          >
-                            <div
-                              class="ant-switch-handle"
-                            />
-                            <span
-                              class="ant-switch-inner"
-                            />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
                 class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
                 width="250px"
               >
@@ -585,6 +544,52 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                             aria-checked="false"
                             class="ant-switch"
                             id="wlan_advancedCustomization_enableSyslog"
+                            role="switch"
+                            type="button"
+                          >
+                            <div
+                              class="ant-switch-handle"
+                            />
+                            <span
+                              class="ant-switch-inner"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h4
+                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-6 fPbHyn fGlyWi"
+              >
+                DHCP
+              </h4>
+              <div
+                class="styledComponents__FieldLabel-sc-ijp2z4-0 eQeFKz"
+                width="207px"
+              >
+                Force DHCP
+                <div
+                  class="ant-form-item"
+                  style="margin-bottom: 10px;"
+                >
+                  <div
+                    class="ant-row ant-form-item-row"
+                  >
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <button
+                            aria-checked="false"
+                            class="ant-switch"
+                            id="wlan_advancedCustomization_forceMobileDeviceDhcp"
                             role="switch"
                             type="button"
                           >
@@ -1843,7 +1848,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                 class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
                 width="250px"
               >
-                Optimized Connectivity Experience (OCE):
+                Optimized Connectivity Experience (OCE)
                 <div
                   class="ant-form-item"
                   style="margin-bottom: 10px;"

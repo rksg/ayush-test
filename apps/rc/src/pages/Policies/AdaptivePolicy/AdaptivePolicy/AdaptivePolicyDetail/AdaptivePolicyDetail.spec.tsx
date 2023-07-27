@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { RadiusAttributeGroupUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen }                            from '@acx-ui/test-utils'
@@ -52,4 +53,33 @@ describe('AdaptivePolicyDetail', () => {
     await screen.findByText('rag9')
   })
 
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><AdaptivePolicyDetail /></Provider>, {
+      route: { params, path }
+    })
+
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Adaptive Policy'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><AdaptivePolicyDetail /></Provider>, {
+      route: { params, path }
+    })
+
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Adaptive Policy'
+    })).toBeVisible()
+  })
 })

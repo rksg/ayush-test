@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo }               from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -12,6 +13,9 @@ import EdgeDetails from '.'
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeStatusLight: () => <div data-testid={'rc-EdgeStatusLight'} title='EdgeStatusLight' />
+}))
+jest.mock('./EdgeTroubleshooting', () => ({
+  EdgeTroubleshooting: () => <div data-testid='EdgeTroubleshooting' />
 }))
 jest.mock('./EdgeDhcp', () => ({
   EdgeDhcp: () => <div data-testid='EdgeDhcp' />
@@ -36,6 +40,7 @@ describe('EdgeDetails', () => {
   let params: { tenantId: string, serialNumber: string, activeTab: string }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serialNumber: currentEdge.serialNumber,
@@ -65,19 +70,18 @@ describe('EdgeDetails', () => {
     expect(tab.getAttribute('aria-selected')).toBe('true')
   })
 
-  // Troubleshooting TBD
-  // it('should display troubleshooting tab correctly', async () => {
-  //   params['activeTab'] = 'troubleshooting'
+  it('should display troubleshooting tab correctly', async () => {
+    params['activeTab'] = 'troubleshooting'
 
-  //   render(<Provider>
-  //     <EdgeDetails />
-  //   </Provider>, {
-  //     route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
-  //   })
+    render(<Provider>
+      <EdgeDetails />
+    </Provider>, {
+      route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+    })
 
-  //   const tab = await screen.findByRole('tab', { name: 'Troubleshooting' })
-  //   expect(tab.getAttribute('aria-selected')).toBe('true')
-  // })
+    const tab = await screen.findByRole('tab', { name: 'Troubleshooting' })
+    expect(tab.getAttribute('aria-selected')).toBe('true')
+  })
 
   it('should display service tab correctly', async () => {
     params['activeTab'] = 'services'

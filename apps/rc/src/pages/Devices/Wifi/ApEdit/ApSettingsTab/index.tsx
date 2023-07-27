@@ -2,16 +2,17 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }               from '@acx-ui/icons'
-import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApModel }                          from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                    from '@acx-ui/utils'
+import { Tabs, Tooltip }                                          from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
+import { useGetApCapabilitiesQuery, useGetApQuery }               from '@acx-ui/rc/services'
+import { ApDeep, ApModel }                                        from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                                  from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
+import { Advanced }          from './AdvancedTab'
 import { ApSnmp }            from './ApSnmpTab'
 import { DirectedMulticast } from './DirectedMulticast'
 //import { ApExternalAntenna } from './ExternalAntenna/ApExternalAntenna'
@@ -39,7 +40,11 @@ export function ApSettingsTab () {
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const supportMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+  const supportAdvanced = useIsSplitOn(Features.WIFI_FR_6029_FG3_2_TOGGLE)
+
+  const isTierAllowMeshEnhancement = useIsTierAllowed(TierFeatures.BETA_MESH)
+  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
+  const supportMeshEnhancement = isTierAllowMeshEnhancement && isFeatureOnMeshEnhancement
 
   const getAp = useGetApQuery({ params })
   const getApCapabilities = useGetApCapabilitiesQuery({ params })
@@ -92,7 +97,8 @@ export function ApSettingsTab () {
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
       multicast: $t({ defaultMessage: 'Directed Multicast' }),
       snmp: $t({ defaultMessage: 'AP SNMP' }),
-      mesh: $t({ defaultMessage: 'Mesh' })
+      mesh: $t({ defaultMessage: 'Mesh' }),
+      advanced: $t({ defaultMessage: 'Advanced' })
     }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
@@ -152,6 +158,11 @@ export function ApSettingsTab () {
         {(supportMeshEnhancement && isSupportMesh) &&
         <TabPane tab={tabTitleMap('mesh')} key='mesh'>
           <ApMesh />
+        </TabPane>
+        }
+        {supportAdvanced &&
+        <TabPane tab={tabTitleMap('advanced')} key='advanced'>
+          <Advanced />
         </TabPane>
         }
       </Tabs>

@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WifiSignal should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  >
+    <span>
+      49 dB
+      <svg
+        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 ceUMlw"
+        data-testid="SNRSolid"
+      />
+    </span>
+  </div>
+  <div
+    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  >
+    <span>
+      35 dB
+      <svg
+        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 kWFGMd"
+        data-testid="SNRSolid"
+      />
+    </span>
+  </div>
+  <div
+    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  >
+    <span>
+      20 dB
+      <svg
+        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 gKUQIb"
+        data-testid="SNRSolid"
+      />
+    </span>
+  </div>
+  <div
+    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  >
+    <span>
+      <svg
+        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 jtOeon"
+        data-testid="SNRSolid"
+      />
+    </span>
+  </div>
+  <div
+    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  >
+    <span>
+      <svg
+        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 dkPSSs"
+        data-testid="SNRSolid"
+      />
+    </span>
+  </div>
+</DocumentFragment>
+`;

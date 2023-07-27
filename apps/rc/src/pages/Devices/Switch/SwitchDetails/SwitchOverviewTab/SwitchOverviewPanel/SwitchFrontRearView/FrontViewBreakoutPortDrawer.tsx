@@ -1,12 +1,18 @@
 
-import { Drawer, Space } from 'antd'
-import _                 from 'lodash'
-import { useIntl }       from 'react-intl'
+import { useContext } from 'react'
 
-import { Table, TableProps }                        from '@acx-ui/components'
-import {  SwitchPortStatus, defaultSort, sortProp } from '@acx-ui/rc/utils'
+import { Space, Tooltip } from 'antd'
+import _                  from 'lodash'
+import { useIntl }        from 'react-intl'
+
+import { Table, TableProps, Drawer }                                     from '@acx-ui/components'
+import { getInactiveTooltip }                                            from '@acx-ui/rc/components'
+import {  SwitchPortStatus, defaultSort, sortProp, SwitchPortViewModel } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                from '@acx-ui/user'
 
 import * as UI from './styledComponents'
+
+import { SwitchPanelContext } from '.'
 
 
 export interface BreakOutPortDrawerType {
@@ -19,7 +25,19 @@ export interface BreakOutPortDrawerType {
 export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
   const { $t } = useIntl()
   const { drawerVisible, setDrawerVisible, breakoutPorts, portNumber } = props
-
+  const {
+    editPortsFromPanelEnabled,
+    setEditBreakoutPortDrawerVisible,
+    selectedPorts,
+    setSelectedPorts
+  } = useContext(SwitchPanelContext)
+  const breakoutPortsData = breakoutPorts?.map((port) => {
+    return {
+      ...port,
+      inactiveRow: !!getInactiveTooltip(port),
+      inactiveTooltip: getInactiveTooltip(port)
+    }
+  })
 
   const statusFilterOpts = [
     { key: '', value: $t({ defaultMessage: 'All Statuses' }) },
@@ -115,7 +133,14 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     }
   ]
 
-
+  const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      setSelectedPorts(selectedRows)
+      setEditBreakoutPortDrawerVisible(true)
+      setDrawerVisible(false)
+    }
+  }]
 
   return <Drawer
     // eslint-disable-next-line max-len
@@ -125,14 +150,28 @@ export function FrontViewBreakoutPortDrawer (props: BreakOutPortDrawerType) {
     onClose={() => {
       setDrawerVisible(false)
     }}
-    mask={false}
     children={
       <div>
         <Table
           type={'compactBordered'}
           columns={columns}
-          dataSource={breakoutPorts}
+          dataSource={breakoutPortsData}
           rowKey='portIdentifier'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={editPortsFromPanelEnabled ? {
+            type: 'checkbox',
+            renderCell: (checked, record, index, originNode) => {
+              return record?.inactiveRow
+                ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
+                : originNode
+            },
+            getCheckboxProps: (record) => {
+              return {
+                disabled: record?.inactiveRow
+              }
+            },
+            selectedRowKeys: selectedPorts.map(i=>i.portIdentifier)
+          }: undefined}
         />
       </div>
     }

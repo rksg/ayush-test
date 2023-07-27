@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   useDelSyslogPoliciesMutation,
@@ -19,11 +20,10 @@ import {
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
 import { PROFILE_MAX_COUNT }                           from '../constants'
-
 
 const defaultPayload = {
   fields: [
@@ -47,6 +47,7 @@ export default function SyslogTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelSyslogPoliciesMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
@@ -94,10 +95,16 @@ export default function SyslogTable () {
             defaultMessage: 'Syslog Server'
           })
         }
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
-        ]}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [{
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}>
@@ -116,7 +123,7 @@ export default function SyslogTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={hasAccess() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

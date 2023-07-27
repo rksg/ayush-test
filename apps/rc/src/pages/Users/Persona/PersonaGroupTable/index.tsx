@@ -1,14 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                     from '@acx-ui/icons'
 import {
+  doProfileDelete,
   useDeletePersonaGroupMutation,
   useGetDpskListQuery,
   useGetNetworkSegmentationGroupListQuery,
+  useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
@@ -18,8 +21,9 @@ import {
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                              from '@acx-ui/user'
+import { filterByAccess, hasAccess }                   from '@acx-ui/user'
 
+import { PersonaGroupContext } from '..'
 import {
   DpskPoolLink,
   MacRegistrationPoolLink,
@@ -29,7 +33,12 @@ import {
 } from '../LinkHelper'
 import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
 
-
+const propertyConfigDefaultPayload = {
+  sortField: 'venueName',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 100
+}
 
 function useColumns (
   macRegistrationPools: Map<string, string>,
@@ -48,6 +57,15 @@ function useColumns (
     { params: { page: '1', pageSize: '10000', sort: 'name,asc' } },
     { skip: !networkSegmentationEnabled }
   )
+  const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
+    payload: propertyConfigDefaultPayload }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        isVenueOptionsLoading: isLoading,
+        venueOptions: data?.data.map(item => ({ value: item.venueName!, key: item.venueId! })) ?? []
+      }
+    }
+  })
 
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
@@ -73,10 +91,11 @@ function useColumns (
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'propertyId',
       sorter: true,
+      filterMultiple: false,
+      filterable: isVenueOptionsLoading ? [] : venueOptions,
       render: (_, row) =>
         <VenueLink
-          // FIXME: After the property id does not present in UUID format, I will remove .replace()
-          name={venuesMap.get(row?.propertyId?.replaceAll('-', '') ?? '')}
+          name={venuesMap.get(row?.propertyId ?? '')}
           venueId={row?.propertyId}
         />
     },
@@ -150,6 +169,7 @@ export function PersonaGroupTable () {
     visible: false,
     data: {} as PersonaGroup | undefined
   })
+  const { setPersonaGroupCount } = useContext(PersonaGroupContext)
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
@@ -179,8 +199,7 @@ export function PersonaGroupTable () {
       const { macRegistrationPoolId, dpskPoolId, propertyId, nsgId } = personaGroup
 
       if (propertyId) {
-        // FIXME: After the property id does not present in UUID format, I will remove .replace()
-        venueIds.push(propertyId.replaceAll('-', ''))
+        venueIds.push(propertyId)
       }
 
       if (macRegistrationPoolId) {
@@ -232,16 +251,33 @@ export function PersonaGroupTable () {
     })
   }
 
+  const doDelete = (selectedRow: PersonaGroup, callback: () => void) => {
+    const { id, name } = selectedRow
+    doProfileDelete(
+      [selectedRow],
+      $t({ defaultMessage: 'Persona Group' }),
+      selectedRow.name,
+      [
+        { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Network segmentation' }) },
+        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
+      ],
+      async () => deletePersonaGroup({ params: { groupId: id } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
+          })
+          callback()
+        })
+    )
+  }
+
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Persona Group' }),
       onClick: () => {
         setDrawerState({ isEdit: false, visible: true, data: undefined })
       }
-    },
-    {
-      label: $t({ defaultMessage: 'Export To File' }),
-      onClick: downloadPersonaGroups
     }
   ]
 
@@ -259,29 +295,8 @@ export function PersonaGroupTable () {
         (selectedItem && selectedItem.personaCount)
           ? selectedItem.personaCount > 0 : false
       ),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Persona Group' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deletePersonaGroup({ params: { groupId: id } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
-                })
-                clearSelection()
-              })
-              .catch((error) => {
-                console.log(error) // eslint-disable-line no-console
-              })
-          }
-        })
+      onClick: ([selectedRow], clearSelection) => {
+        doDelete(selectedRow, clearSelection)
       }
     }
   ]
@@ -294,12 +309,15 @@ export function PersonaGroupTable () {
         ? customFilters?.dpskPoolId[0] : undefined,
       macRegistrationPoolId: Array.isArray(customFilters?.macRegistrationPoolId)
         ? customFilters?.macRegistrationPoolId[0] : undefined,
-      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined
+      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined,
+      propertyId: Array.isArray(customFilters?.propertyId)
+        ? customFilters?.propertyId[0] : undefined
     }
 
     tableQuery.setPayload(payload)
   }
 
+  setPersonaGroupCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[
@@ -318,7 +336,11 @@ export function PersonaGroupTable () {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasAccess() && { type: 'radio' }}
+        iconButton={{
+          icon: <DownloadOutlined data-testid={'export-persona-group'} />,
+          onClick: downloadPersonaGroups
+        }}
       />
 
       <PersonaGroupDrawer

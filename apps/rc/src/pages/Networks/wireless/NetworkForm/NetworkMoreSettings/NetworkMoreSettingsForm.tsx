@@ -15,7 +15,7 @@ import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Tooltip }                                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
 import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                                                    from '@acx-ui/utils'
@@ -26,6 +26,7 @@ import VLANPoolInstance                                              from '../VL
 
 import { AccessControlForm }  from './AccessControlForm'
 import { LoadControlForm }    from './LoadControlForm'
+import { MulticastForm }      from './MulticastForm'
 import { ServicesForm }       from './ServicesForm'
 import * as UI                from './styledComponents'
 import { UserConnectionForm } from './UserConnectionForm'
@@ -131,7 +132,8 @@ export function MoreSettingsForm (props: {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
-
+  const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
+  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const [
     enableDhcp,
     enableOfdmOnly,
@@ -159,6 +161,10 @@ export function MoreSettingsForm (props: {
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+
+  const agileMultibandTooltipContent = $t({ defaultMessage:
+      `Agile Multiband prioritizes roaming performance in indoor environments,
+       supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -220,6 +226,10 @@ export function MoreSettingsForm (props: {
 
   }
 
+  const UserConnectionComponent = () => {
+    return (<UserConnectionForm />)
+  }
+
   return (
     <UI.CollapsePanel
       defaultActiveKey={['1', '2', '3', '4', '5']}
@@ -237,9 +247,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={
-                <Switch disabled={!useIsTierAllowed(Features.CLOUDPATH_BETA) || enableVxLan}/>
-              }
+              children={<Switch disabled={!useIsSplitOn(Features.POLICIES) || enableVxLan}/>}
             />
           </UI.FieldLabel>
 
@@ -281,7 +289,7 @@ export function MoreSettingsForm (props: {
               <UI.Description>
                 {
                   $t({
-                    defaultMessage: `Not able to modify when the network 
+                    defaultMessage: `Not able to modify when the network
                     enables network segmentation service`
                   })
                 }
@@ -428,6 +436,24 @@ export function MoreSettingsForm (props: {
               </Select>
             } />
         </div>
+
+        {AmbAndDtimFlag &&
+          <UI.FieldLabel width='250px'>
+            <div style={{ display: 'grid', gridTemplateColumns: '170px 80px auto' }}>
+              {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+              <Tooltip.Question
+                title={agileMultibandTooltipContent}
+                placement='right'
+              />
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </div>
+          </UI.FieldLabel>
+        }
 
         <UI.FieldLabel width='250px'>
           {$t({ defaultMessage: 'Enable 802.11k neighbor reports' })}
@@ -625,7 +651,7 @@ export function MoreSettingsForm (props: {
 
         }
         <UI.FieldLabel width='250px'>
-          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE):' }) }
+          { $t({ defaultMessage: 'Optimized Connectivity Experience (OCE)' }) }
           <Form.Item
             name={['wlan','advancedCustomization','enableOptimizedConnectivityExperience']}
             style={{ marginBottom: '10px' }}
@@ -634,6 +660,46 @@ export function MoreSettingsForm (props: {
             children={<Switch />}
           />
         </UI.FieldLabel>
+        {gtkRekeyFlag &&
+          <>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </UI.FieldLabel>
+            <UI.FieldLabel width='250px'>
+              {$t({ defaultMessage: 'GTK Rekey' })}
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'enableGtkRekey']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={true}
+                children={<Switch/>}/>
+            </UI.FieldLabel></>
+        }
+
+        {AmbAndDtimFlag &&
+          <Form.Item
+            name={['wlan','advancedCustomization','dtimInterval']}
+            label={$t({ defaultMessage: 'DTIM (Delivery Traffic Indication Message) Interval' })}
+            initialValue={1}
+            rules={[{
+              type: 'number', max: 255, min: 1,
+              message: $t({
+                defaultMessage:
+                  'DTIM (Delivery Traffic Indication Message) Interval must be between 1 and 255'
+              })
+            }]}
+            style={{ marginBottom: '15px', width: '300px' }}
+            // eslint-disable-next-line max-len
+            tooltip={$t({ defaultMessage: 'Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.' })}
+            children={<InputNumber style={{ width: '150px' }} />}
+          />
+        }
 
         {enableOce &&
           <>
@@ -716,6 +782,9 @@ export function MoreSettingsForm (props: {
         </>
         }
 
+        <MulticastForm/>
+
+
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>
         <RadiusOptionsForm context='network'
@@ -724,7 +793,7 @@ export function MoreSettingsForm (props: {
       </Panel>
       }
       {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&<Panel header='User Connection' key='5'>
-        <UserConnectionForm/>
+        <UserConnectionComponent/>
       </Panel>}
     </UI.CollapsePanel>
   )

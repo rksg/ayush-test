@@ -50,6 +50,7 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const policies: CardDataProps[] = useCardData()
 
@@ -57,6 +58,9 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) }
+        ]: undefined}
         extra={filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
@@ -97,6 +101,7 @@ function useCardData (): CardDataProps[] {
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   return [
     {
@@ -173,10 +178,10 @@ function useCardData (): CardDataProps[] {
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
       totalCount: useGetTunnelProfileViewDataListQuery({
         params, payload: { ...defaultPayload }
-      }, { skip: !isEdgeEnabled }).data?.totalCount,
+      }, { skip: !isEdgeEnabled || !isEdgeReady }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeEnabled
+      disabled: !isEdgeEnabled || !isEdgeReady
     },
     {
       type: PolicyType.CONNECTION_METERING,

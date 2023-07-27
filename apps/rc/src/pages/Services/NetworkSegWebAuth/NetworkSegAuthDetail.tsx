@@ -1,20 +1,20 @@
 import React from 'react'
 
-import { Col, Row, Typography } from 'antd'
-import { useIntl }              from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Button, Card, PageHeader, Subtitle, Table, TableProps } from '@acx-ui/components'
+import { Button, Card, PageHeader, SummaryCard, Table, TableProps } from '@acx-ui/components'
 import {
   useGetWebAuthTemplateQuery,
   useGetWebAuthTemplateSwitchesQuery
 } from '@acx-ui/rc/services'
 import {
+  ServiceOperation,
   ServiceType,
   WebAuthTemplate,
   getServiceDetailsLink,
-  ServiceOperation,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                     from '@acx-ui/user'
@@ -22,36 +22,49 @@ import { filterByAccess }                     from '@acx-ui/user'
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
   const { $t } = useIntl()
-  return <Row gutter={[24, 16]}>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Service Name' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.name} />
-    </Col>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Header' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomTop} />
-    </Col>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Title' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomTitle} />
-    </Col>
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Password Label' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthPasswordLabel} />
-    </Col>
-    {/* <Col span={6}> // TODO: Waiting for TAG feature support
-      <Subtitle level={5}>{$t({ defaultMessage: 'Tags' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.tag} />
-    </Col> */}
-    <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Button' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomLoginButton} />
-    </Col>
-    <Col span={12}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Footer' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomBottom} />
-    </Col>
-  </Row>
+
+  const networkSegAuthInfo = [
+    {
+      title: $t({ defaultMessage: 'Service Name' }),
+      content: data?.name
+    },
+    {
+      title: $t({ defaultMessage: 'Header' }),
+      content: data?.webAuthCustomTop
+    },
+    {
+      title: $t({ defaultMessage: 'Title' }),
+      content: data?.webAuthCustomTitle
+    },
+    {
+      title: $t({ defaultMessage: 'Password Label' }),
+      content: data?.webAuthPasswordLabel
+    },
+    {
+      title: $t({ defaultMessage: 'Tags' }),
+      content: data?.tag,
+      visible: false
+    },
+    {
+      title: $t({ defaultMessage: 'Button' }),
+      content: data?.webAuthCustomLoginButton
+    },
+    {
+      title: $t({ defaultMessage: 'Footer' }),
+      content: data?.webAuthCustomBottom
+    }
+  ]
+
+  return <SummaryCard data={networkSegAuthInfo} colPerRow={4} />
+}
+
+type WebAuthSwitchType = {
+  switchId: string,
+  serialNumber: string,
+  switchModel: string,
+  switchName: string,
+  venueId: string,
+  venueName: string
 }
 
 export default function NetworkSegAuthDetail () {
@@ -62,14 +75,20 @@ export default function NetworkSegAuthDetail () {
   const { data } = useGetWebAuthTemplateQuery({ params })
   const { data: switches } = useGetWebAuthTemplateSwitchesQuery({ params })
 
-  const columns: TableProps<{}>['columns'] = React.useMemo(() => {
+  const columns: TableProps<WebAuthSwitchType>['columns'] = React.useMemo(() => {
     return [{
       key: 'switchName',
       title: $t({ defaultMessage: 'Access Switches' }),
       dataIndex: 'switchName',
       sorter: true,
       width: 360,
-      fixed: 'left'
+      fixed: 'left',
+      render: (data, row) => (
+        <TenantLink
+          to={`/devices/switch/${row.switchId}/${row.serialNumber}/details/overview`}>
+          {data}
+        </TenantLink>
+      )
     }, {
       key: 'switchModel',
       title: $t({ defaultMessage: 'Model' }),
@@ -79,7 +98,10 @@ export default function NetworkSegAuthDetail () {
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
-      sorter: true
+      sorter: true,
+      render: (data, row) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      )
     }]
   }, [$t])
 
@@ -107,20 +129,20 @@ export default function NetworkSegAuthDetail () {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId as string
             })}>
-            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            <Button key='configure'
+              disabled={isDefaultWebAuth(params.serviceId as string)}
+              type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}
       />
-      <Card type='solid-bg'>
-        <NetworkSegAuthSummary data={data} />
-      </Card>
+      <NetworkSegAuthSummary data={data} />
       <br /><br />
 
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
         { count: switches?.switchVenueInfos?.length || 0 })}>
         <Table
           columns={columns}
-          dataSource={switches?.switchVenueInfos}
+          dataSource={switches?.switchVenueInfos as unknown as WebAuthSwitchType[]}
           type='form'
           rowKey='switchId' />
       </Card>

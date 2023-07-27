@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { List, Radio } from 'antd'
-import { useIntl }     from 'react-intl'
-import { useParams }   from 'react-router-dom'
+import { List }      from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Table, TableProps, Loader, Tooltip }                              from '@acx-ui/components'
+import { Table, TableProps, Loader, Tooltip, Tabs }                        from '@acx-ui/components'
 import { LineChartOutline, ListSolid, MeshSolid }                          from '@acx-ui/icons'
 import { ApTable }                                                         from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery } from '@acx-ui/rc/services'
@@ -26,7 +26,7 @@ import {
   SignalUpIcon,
   WiredIcon,
   SpanStyle,
-  IconRadioGroup
+  IconThirdTab
 } from './styledComponents'
 
 function venueNameColTpl (
@@ -188,9 +188,9 @@ function transformData (data: APMesh[]) {
 }
 
 export function VenueWifi () {
+  const { $t } = useIntl()
   const params = useParams()
 
-  const [ showIdx, setShowIdx ] = useState(0)
   const [ enabledMesh, setEnabledMesh ] = useState(false)
 
   const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
@@ -216,35 +216,35 @@ export function VenueWifi () {
   }, [venueWifiSetting])
 
   return (
-    <>
-      <IconRadioGroup value={showIdx}
-        buttonStyle='solid'
-        size='small'
-        onChange={e => setShowIdx(e.target.value)}>
-        <Radio.Button value={0}><LineChartOutline /></Radio.Button>
-        <Radio.Button value={1}><ListSolid /></Radio.Button>
-        {
-          enabledMesh &&
-          <Radio.Button value={2}><MeshSolid /></Radio.Button>
-        }
-      </IconRadioGroup>
-      { showIdx === 0 &&
-        <div style={{ paddingTop: 20 }}>
-          <EmbeddedReport
-            reportName={ReportType.ACCESS_POINT}
-            rlsClause={`"zoneName" in ('${params?.venueId}')`}
-          />
-        </div>
-      }
-      {showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }}
-        searchable={true}
-        enableActions={true}
-        filterables={{
-          deviceGroupId: apgroupFilterOptions
-        }}
-      />}
-      {showIdx === 2 && <VenueMeshApsTable /> }
-    </>
+    <IconThirdTab>
+      <Tabs.TabPane key='overview'
+        tab={<Tooltip title={$t({ defaultMessage: 'Report View' })}>
+          <LineChartOutline />
+        </Tooltip>}>
+        <EmbeddedReport
+          reportName={ReportType.ACCESS_POINT}
+          rlsClause={`"zoneName" in ('${params?.venueId}')`}
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane key='list'
+        tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
+          <ListSolid />
+        </Tooltip>}>
+        <ApTable rowSelection={{ type: 'checkbox' }}
+          searchable={true}
+          enableActions={true}
+          filterables={{
+            deviceGroupId: apgroupFilterOptions
+          }}
+        />
+      </Tabs.TabPane>
+      { enabledMesh && <Tabs.TabPane key='mesh'
+        tab={<Tooltip title={$t({ defaultMessage: 'Mesh List' })}>
+          <MeshSolid />
+        </Tooltip>}>
+        <VenueMeshApsTable />
+      </Tabs.TabPane>}
+    </IconThirdTab>
   )
 }
 

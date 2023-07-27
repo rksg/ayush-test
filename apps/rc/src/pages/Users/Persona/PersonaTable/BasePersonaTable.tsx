@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }      from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
@@ -14,21 +15,29 @@ import {
   useImportPersonasMutation,
   useDeletePersonasMutation,
   useLazyGetPropertyUnitByIdQuery,
-  useGetPersonaGroupByIdQuery
+  useGetPersonaGroupByIdQuery,
+  useLazyGetDpskPassphraseDevicesQuery
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                       from '@acx-ui/user'
+import {
+  FILTER,
+  Persona,
+  PersonaErrorResponse,
+  PersonaGroup,
+  SEARCH,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import { PersonasContext }                                        from '..'
 import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
 import { PersonaDrawer }                                          from '../PersonaDrawer'
 import { PersonaBlockedIcon }                                     from '../styledComponents'
 
-
-
 function useColumns (
   props: PersonaTableColProps,
   unitPool: Map<string, string>,
-  venueId: string
+  venueId: string,
+  dpskDeviceCount: Map<string, number>
 ) {
   const { $t } = useIntl()
 
@@ -76,13 +85,20 @@ function useColumns (
       sorter: true,
       ...props.description
     },
-    {
-      key: 'deviceCount',
-      dataIndex: 'deviceCount',
-      title: $t({ defaultMessage: 'Devices' }),
-      align: 'center',
-      ...props.deviceCount
-    },
+    ...(props.deviceCount?.disable)
+      ? []
+      : [{
+        key: 'deviceCount',
+        dataIndex: 'deviceCount',
+        title: $t({ defaultMessage: 'Devices' }),
+        align: 'center',
+        render: (_, row) => {
+          const dpskGuid = row.dpskGuid
+          const count = dpskDeviceCount.get(dpskGuid ?? '') ?? 0
+          return (row?.deviceCount ?? 0) + count
+        },
+        ...props.deviceCount
+      } as TableColumn<Persona>],
     ...(props.identityId?.disable)
       ? []
       : [{
@@ -164,10 +180,12 @@ export interface PersonaTableProps {
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { personaGroupId, colProps } = props
+  const { tenantId } = useParams()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [venueId, setVenueId] = useState('')
   const [unitPool, setUnitPool] = useState(new Map())
-  const columns = useColumns(colProps, unitPool, venueId)
+  const [dpskDeviceCount, setDpskDeviceCount] = useState(new Map<string, number>())
+  const columns = useColumns(colProps, unitPool, venueId, dpskDeviceCount)
   const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
@@ -182,14 +200,17 @@ export function BasePersonaTable (props: PersonaTableProps) {
     { skip: !personaGroupId }
   )
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
+  const { setPersonasCount } = useContext(PersonasContext)
 
-  const personaListQuery = useTableQuery({
+  const personaListQuery = useTableQuery<Persona>({
     useQuery: useSearchPersonaListQuery,
     defaultPayload: {
       keyword: '',
       groupId: personaGroupId
     }
   })
+
+  const [getDpskDevices] = useLazyGetDpskPassphraseDevicesQuery()
 
   useEffect(() => {
     if (!propertyEnabled || personaListQuery.isLoading || personaGroupQuery.isLoading) return
@@ -214,15 +235,49 @@ export function BasePersonaTable (props: PersonaTableProps) {
     setUnitPool(pool)
   }, [personaListQuery.data, personaGroupQuery.data])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const toastDetailErrorMessage = (error: any) => {
-  //   const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
-  //   showToast({
-  //     type: 'error',
-  //     content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
-  //     link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
-  //   })
-  // }
+  useEffect(() => {
+    if (!personaGroupId) return
+    if (personaGroupQuery.isLoading || personaListQuery.isLoading) return
+    if (!personaGroupQuery.data || !personaListQuery.data) return
+
+    const serviceId = personaGroupQuery.data?.dpskPoolId
+    if (!serviceId) return
+
+    personaListQuery.data.data.forEach(persona => {
+      const passphraseId = persona.dpskGuid
+      if (!passphraseId) return
+
+      getDpskDevices({ params: { tenantId, passphraseId, serviceId } })
+        .then(result => {
+          if (result.data) {
+            const count = result.data.filter(d => d.online).length
+            setDpskDeviceCount(prev => new Map(prev.set(passphraseId, count)))
+          }
+        })
+    })
+  }, [personaListQuery.isLoading, personaGroupQuery.isLoading])
+
+  const toastDetailErrorMessage = (error: PersonaErrorResponse) => {
+    const hasSubMessages = error.data?.subErrors
+    showToast({
+      type: 'error',
+      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+      link: hasSubMessages && { onClick: () => {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Technical Details' }),
+          content: $t({
+            defaultMessage: 'The following information was reported for the error you encountered'
+          }),
+          customContent: {
+            action: 'SHOW_ERRORS',
+            // @ts-ignore
+            errorDetails: error.data?.subErrors
+          }
+        })
+      } }
+    })
+  }
 
   const importPersonas = async (formData: FormData, values: object) => {
     const { groupId } = values as { groupId: string }
@@ -233,7 +288,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
       }).unwrap()
       setUploadCsvDrawerVisible(false)
     } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+      toastDetailErrorMessage(error as PersonaErrorResponse)
     }
   }
 
@@ -298,21 +353,21 @@ export function BasePersonaTable (props: PersonaTableProps) {
             }),
           onOk: () => {
             const ids = selectedItems.map(({ id }) => id)
-            const names = selectedItems.map(({ name }) => name).join(', ')
+            // const names = selectedItems.map(({ name }) => name).join(', ')
 
             deletePersonas({ payload: ids })
               .unwrap()
               .then(() => {
-                const fewItems = ids.length <= 5
-                showToast({
-                  type: 'success',
-                  content: $t({
-                    // eslint-disable-next-line max-len
-                    defaultMessage: '{fewItems, select, ' +
-                      'true {Persona {names} was deleted} ' +
-                      'other {{count} personas was deleted}}'
-                  }, { fewItems, names, count: ids.length })
-                })
+                // const fewItems = ids.length <= 5
+                // showToast({
+                //   type: 'success',
+                //   content: $t({
+                //     // eslint-disable-next-line max-len
+                //     defaultMessage: '{fewItems, select, ' +
+                //       'true {Persona {names} was deleted} ' +
+                //       'other {{count} personas was deleted}}'
+                //   }, { fewItems, names, count: ids.length })
+                // })
                 clearSelection()
               })
               .catch((e) => {
@@ -342,6 +397,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     personaListQuery.setPayload(payload)
   }
 
+  setPersonasCount?.(personaListQuery.data?.totalCount || 0)
   return (
     <Loader
       states={[
@@ -359,7 +415,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
+        rowSelection={hasAccess() && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,

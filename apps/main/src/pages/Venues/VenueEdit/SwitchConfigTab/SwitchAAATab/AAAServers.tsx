@@ -21,7 +21,9 @@ const PanelHeader = {
   [AAAServerTypeEnum.LOCAL_USER]: defineMessage({ defaultMessage: 'Local Users ({count})' })
 }
 
-export function AAAServers () {
+export function AAAServers (props: {
+  cliApplied?: boolean
+}) {
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
 
@@ -104,15 +106,29 @@ export function AAAServers () {
           ghost={true}
         >
           <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, aaaServerCount.radiusTotalCount)} key='1' >
-            <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />
+            <AAAServerTable
+              type={AAAServerTypeEnum.RADIUS}
+              tableQuery={radiusTableQuery}
+              aaaSetting={aaaSetting}
+              cliApplied={props?.cliApplied}
+            />
           </Panel>
 
           <Panel header={getPanelHeader(AAAServerTypeEnum.TACACS, aaaServerCount.tacasTotalCount)} key='2' >
-            <AAAServerTable type={AAAServerTypeEnum.TACACS} tableQuery={tacasTableQuery} aaaSetting={aaaSetting} />
+            <AAAServerTable
+              type={AAAServerTypeEnum.TACACS}
+              tableQuery={tacasTableQuery}
+              aaaSetting={aaaSetting}
+              cliApplied={props?.cliApplied}
+            />
           </Panel>
 
           <Panel header={getPanelHeader(AAAServerTypeEnum.LOCAL_USER, aaaServerCount.localUserTotalCount)} key='3' >
-            <AAAServerTable type={AAAServerTypeEnum.LOCAL_USER} tableQuery={localUserTableQuery} />
+            <AAAServerTable
+              type={AAAServerTypeEnum.LOCAL_USER}
+              tableQuery={localUserTableQuery}
+              cliApplied={props?.cliApplied}
+            />
           </Panel>
         </Collapse>
       </UI.AAAServers>

@@ -15,7 +15,7 @@ import {
 import {
   useTableQuery, ApplicationPolicy, AclOptionType, Network
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddModeProps }                         from '../AccessControlForm/AccessControlForm'
 import ApplicationDrawer                        from '../AccessControlForm/ApplicationDrawer'
@@ -27,7 +27,8 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1
 }
@@ -131,20 +132,20 @@ const ApplicationPolicyComponent = () => {
       <ApplicationDrawer
         onlyAddMode={addModeStatus}
       />
+      <Table<ApplicationPolicy>
+        settingsId='policies-access-control-application-policy-table'
+        columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+        enableApiFilter={true}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        rowKey='id'
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
+      />
     </Form>
-    <Table<ApplicationPolicy>
-      settingsId='policies-access-control-application-policy-table'
-      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
-      enableApiFilter={true}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      onFilterChange={tableQuery.handleFilterChange}
-      rowKey='id'
-      actions={filterByAccess(actions)}
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={{ type: 'checkbox' }}
-    />
   </Loader>
 }
 
@@ -188,13 +189,12 @@ function useColumns (
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

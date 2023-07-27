@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { PageNotFound }                      from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
@@ -25,11 +26,11 @@ import { VenueEdit }    from './pages/Venues/VenueEdit'
 import { VenuesForm }   from './pages/Venues/VenuesForm'
 import { VenuesTable }  from './pages/Venues/VenuesTable'
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
-const AnalyticsRoutes = React.lazy(() => import('@analytics/Routes'))
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 /* eslint-enable @nrwl/nx/enforce-module-boundaries */
+const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
   useStreamActivityMessagesQuery({})
@@ -38,6 +39,7 @@ function AllRoutes () {
       <Route path=':tenantId/t' element={<MFACheck />}>
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
+          <Route path='*' element={<PageNotFound />} />
           <Route path='dashboard' element={<Dashboardv2 />} />
           <Route path='dashboard-v1' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
@@ -93,6 +95,7 @@ function VenuesRoutes () {
   return rootRoutes(
     <Route path='/:tenantId/t/venues'>
       <Route index element={<VenuesTable />} />
+      <Route path='*' element={<PageNotFound />} />
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       <Route
@@ -116,6 +119,7 @@ function AdministrationRoutes () {
         index
         element={<TenantNavigate replace to='/administration/accountSettings' />}
       />
+      <Route path='*' element={<PageNotFound />} />
       <Route path=':activeTab' element={<Administration />} />
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />

@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import ProLayout                             from '@ant-design/pro-layout'
 import { Menu }                              from 'antd'
 import { ItemType as AntItemType }           from 'antd/lib/menu/hooks/useItems'
 import { get, has, snakeCase }               from 'lodash'
+import { debounce }                          from 'lodash'
 import {
   MenuItemType as RcMenuItemType,
   SubMenuType as RcSubMenuType,
@@ -14,7 +15,10 @@ import { useIntl } from 'react-intl'
 import { get as getEnv }                                           from '@acx-ui/config'
 import { TenantType, useLocation, TenantNavLink, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import modifyVars from '../../theme/modify-vars'
+
+import { Content } from './Responsive/content'
+import * as UI     from './styledComponents'
 
 export enum IsActiveCheck {
   STARTS_WITH_URI = 'STARTS_WITH_URI',
@@ -159,19 +163,46 @@ export function Layout ({
   const { $t } = useIntl()
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
+  const screenXL = parseInt(modifyVars['@screen-xl'], 10)
+  const [display, setDisplay] = useState(window.innerWidth >= screenXL)
+  const [subOptimalDisplay, setSubOptimalDisplay] = useState(
+    () => localStorage.getItem('acx-ui-view-suboptimal-display') === 'true' ?? false)
 
-  return <UI.Wrapper>
+  const onSubOptimalDisplay = useCallback((state: boolean) => {
+    setSubOptimalDisplay(state)
+    localStorage.setItem('acx-ui-view-suboptimal-display', state.toString())
+  }, [])
+
+  const updateScreenWidth = debounce(() => {
+    if(window.innerWidth >= screenXL){
+      setDisplay(true)
+      setSubOptimalDisplay(false)
+    }else{
+      setDisplay(false)
+    }
+  }, 500)
+
+  useEffect(() => {
+    window.addEventListener('resize', updateScreenWidth)
+
+    return () => {
+      window.removeEventListener('resize', updateScreenWidth)
+    }
+  }, [window.innerWidth])
+
+  return <UI.Wrapper showScreen={display || subOptimalDisplay} >
     <ProLayout
       breakpoint='xl'
       disableMobile={true}
       fixedHeader={true}
-      fixSiderbar={true}
+      fixSiderbar={display || subOptimalDisplay}
       location={location}
       menuContentRender={() => <SiderMenu menuConfig={menuConfig}/>}
       menuHeaderRender={() => logo}
       headerContentRender={() => leftHeaderContent &&
         <UI.LeftHeaderContentWrapper children={leftHeaderContent} />}
-      rightContentRender={() => <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
+      rightContentRender={() => (display || subOptimalDisplay) &&
+        <UI.RightHeaderContentWrapper children={rightHeaderContent} />}
       onCollapse={setCollapsed}
       collapsedButtonRender={(collapsed: boolean) => <>
         {collapsed ? <UI.ArrowCollapsed /> : <UI.Arrow />}
@@ -182,7 +213,10 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      <UI.Content>{content}</UI.Content>
+      {(display || subOptimalDisplay) ? <UI.Content>{content}</UI.Content> :
+        <UI.ResponsiveContent>
+          <Content setShowScreen={onSubOptimalDisplay} />
+        </UI.ResponsiveContent>}
     </ProLayout>
   </UI.Wrapper>
 }

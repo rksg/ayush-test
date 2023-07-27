@@ -44,8 +44,9 @@ export interface NetworkSegmentationGroupFormData extends NetworkSegmentationGro
   segments: number
   devices: number
   tunnelProfileName: string
-  networkNames: string[],
+  networkNames: string[]
   originalAccessSwitchInfos: AccessSwitch[]
+  dhcpRelay: boolean
 }
 
 export const NetworkSegmentationForm = (props: NetworkSegmentationFormProps) => {

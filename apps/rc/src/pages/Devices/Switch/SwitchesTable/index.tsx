@@ -1,38 +1,44 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { Menu, MenuProps }     from 'antd'
-import { useIntl }             from 'react-intl'
+import { Menu, MenuProps }        from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Dropdown, PageHeader }           from '@acx-ui/components'
-import { ImportFileDrawer, CsvSize, SwitchTable } from '@acx-ui/rc/components'
+import {
+  Button,
+  Dropdown
+} from '@acx-ui/components'
+import { SwitchTable, SwitchTabContext, defaultSwitchPayload, SwitchTableRefType } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
-  useImportSwitchesMutation,
+  useSwitchListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
+import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
 
-
-export default function SwitchesTable () {
+export default function useSwitchesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [ importVisible, setImportVisible] = useState(false)
+  const [ switchCount, setSwitchCount ] = useState(0)
+  const switchTableRef = useRef<SwitchTableRefType>(null)
 
-  const [ importCsv, importResult ] = useImportSwitchesMutation()
-
-  const importTemplateLink = 'assets/templates/switches_import_template.csv'
-
-  useEffect(()=>{
-    if (importResult.isSuccess) {
-      setImportVisible(false)
+  const tableQuery = usePollingTableQuery({
+    useQuery: useSwitchListQuery,
+    defaultPayload: {
+      ...defaultSwitchPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchPayload.searchTargetFields
     }
-  },[importResult])
+  })
+
+  useEffect(() => {
+    setSwitchCount(tableQuery.data?.totalCount!)
+  }, [tableQuery.data])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'import-from-file') {
-      setImportVisible(true)
+      switchTableRef.current?.openImportDrawer()
     }
   }
 
@@ -78,44 +84,31 @@ export default function SwitchesTable () {
     })
   })
 
-  return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Switch' })}
-        extra={filterByAccess([
-          <Dropdown overlay={addMenu}>{() =>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-          }</Dropdown>
-        ])}
-      />
-      <ImportFileDrawer type='Switch'
-        title={$t({ defaultMessage: 'Import from file' })}
-        maxSize={CsvSize['5MB']}
-        maxEntries={50}
-        acceptType={['csv']}
-        templateLink={importTemplateLink}
-        visible={importVisible}
-        isLoading={importResult.isLoading}
-        importError={importResult.error as FetchBaseQueryError}
-        importRequest={async (formData)=>{
-          await importCsv({ params: { tenantId }, payload: formData }
-          ).unwrap().then(() => {
-            setImportVisible(false)
-          }).catch((error) => {
-            console.log(error) // eslint-disable-line no-console
-          })
-        }}
-        onClose={()=>setImportVisible(false)}
-      />
-      <SwitchTable
+  const title = defineMessage({
+    defaultMessage: 'Switch List {count, select, null {} other {({count})}}',
+    description: 'Translation strings - Switch List'
+  })
+
+  const extra = [
+    <Dropdown overlay={addMenu}>{() =>
+      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+    }</Dropdown>
+  ]
+
+  const component =
+    <SwitchTabContext.Provider value={{ setSwitchCount }}>
+      <SwitchTable ref={switchTableRef}
         searchable={true}
         filterableKeys={{
           venueId: venueFilterOptions,
           model: getSwitchModelList
         }}
       />
-    </>
-  )
+    </SwitchTabContext.Provider>
+
+  return {
+    title: $t(title, { count: switchCount || 0 }),
+    headerExtra: extra,
+    component
+  }
 }
-
-

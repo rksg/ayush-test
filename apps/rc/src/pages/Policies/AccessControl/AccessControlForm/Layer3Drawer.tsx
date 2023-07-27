@@ -35,7 +35,7 @@ import {
   networkWifiIpRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping }      from '../../contentsMap'
 import { PROFILE_MAX_COUNT_LAYER3_POLICY } from '../constants'
@@ -607,12 +607,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }] as { label: string, onClick: () => void }[]
 
   const EmptyElement = (props: { access: AccessStatus }) => {
-    drawerForm.setFieldValue('layer3DefaultAccess', props.access)
+    useEffect(() => {
+      drawerForm.setFieldValue('layer3DefaultAccess', props.access)
+    }, [props])
     return <></>
   }
 
   const DefaultEmptyElement = (props: { access: AccessStatus }) => {
-    contentForm.setFieldValue('layer3DefaultAccess', props.access)
+    useEffect(() => {
+      contentForm.setFieldValue('layer3DefaultAccess', props.access)
+    }, [props])
     return <></>
   }
 
@@ -749,7 +753,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           {$t({ defaultMessage: 'Applies if no rule is matched' })}
         </span>
       </div>}
-      children={<ContentSwitcher tabDetails={defaultTabDetails} size='large' />}
+      children={<ContentSwitcher
+        defaultValue={layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)
+          ? layer3PolicyInfo.defaultAccess
+          : AccessStatus.ALLOW}
+        tabDetails={defaultTabDetails}
+        size='large' />}
     />
     <DrawerFormItem
       name='layer3Rule'
@@ -765,7 +774,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         rowKey='priority'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasAccess() && { type: 'radio' }}
         components={{
           body: {
             row: DraggableRow

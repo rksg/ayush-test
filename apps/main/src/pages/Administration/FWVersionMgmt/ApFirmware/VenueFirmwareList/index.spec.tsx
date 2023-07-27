@@ -23,14 +23,18 @@ import {
   venue,
   preference,
   availableVersions,
-  successResponse
+  successResponse,
+  availableABFList
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
 
 
 describe('Firmware Venues Table', () => {
-  let params: { tenantId: string }
+  const params: { tenantId: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
+
   beforeEach(async () => {
     mockServer.use(
       rest.get(
@@ -39,24 +43,24 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
-        (req, res, ctx) => res(ctx.json([...availableVersions]))
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (searchParams.get('status') !== 'release') return res(ctx.json([]))
+
+          if (searchParams.get('abf') !== null) return res(ctx.json([ ...availableABFList ]))
+
+          return res(ctx.json([...availableVersions]))
+        }
       ),
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
         (req, res, ctx) => res(ctx.json({ ...preference }))
-      ),
-      rest.post(
-        FirmwareUrlsInfo.updateNow.oldUrl!,
-        (req, res, ctx) => res(ctx.json({ ...successResponse }))
       ),
       rest.patch(
         FirmwareUrlsInfo.updateNow.url,
         (req, res, ctx) => res(ctx.json({ ...successResponse }))
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
   })
 
   it('should render table', async () => {
@@ -89,9 +93,11 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
+    const confirmDialog = await screen.findByRole('dialog')
     await screen.findByText('Active Device')
     const updateVenueButton = await screen.findByText('Run Update')
     fireEvent.click(updateVenueButton)
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it.skip('should update multiple selected row', async () => {
@@ -113,9 +119,11 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
+    const confirmDialog = await screen.findByRole('dialog')
     await screen.findByText('Active Device')
     const updateVenueButton = await screen.findByText('Run Update')
     fireEvent.click(updateVenueButton)
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it('should update selected row with advanced dialog', async () => {
@@ -123,13 +131,6 @@ describe('Firmware Venues Table', () => {
 
     const updateNowFn = jest.fn()
     mockServer.use(
-      rest.post(
-        FirmwareUrlsInfo.updateNow.oldUrl!,
-        (req, res, ctx) => {
-          updateNowFn(req.body)
-          return res(ctx.json({ ...successResponse }))
-        }
-      ),
       rest.patch(
         FirmwareUrlsInfo.updateNow.url,
         (req, res, ctx) => {
@@ -149,21 +150,19 @@ describe('Firmware Venues Table', () => {
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
+    const row2 = await screen.findByRole('row', { name: /Ben-Venue-US/i })
+    await userEvent.click(within(row2).getByRole('checkbox'))
+
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
-
-    await userEvent.click(await screen.findByRole('checkbox', { name: /Active Device/i }))
-
-    // should not display the EOL firmware which is already upgraded to the latest
-    expect(screen.queryByRole('checkbox', { name: /Legacy Device \(eol-ap-2022-12\)/i })).toBeNull()
-
-    // eslint-disable-next-line max-len
-    await userEvent.click(await screen.findByRole('checkbox', { name: /Legacy Device \(eol-ap-2021-05\)/i }))
-
+    await userEvent.click(await screen.findByRole('checkbox', { name: /Legacy Device/i }))
+    const confirmDialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', { name: /Run Update/ }))
 
     await waitFor(() => {
       expect(updateNowFn).toHaveBeenCalled()
     })
+
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
 })

@@ -62,11 +62,11 @@ import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 const WarningTriangle = styled(WarningTriangleSolid)
   .attrs((props: { expired: boolean }) => props)`
 path:nth-child(1) {
-  fill: ${props => props.expired ? 'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+  fill: ${props => props.expired ? 'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 path:nth-child(3) {
   stroke: ${props => props.expired ?
-    'var(--acx-accents-orange-60);':'var(--acx-accents-orange-30);'}
+    'var(--acx-semantics-red-50);':'var(--acx-accents-orange-30);'}
 }
 `
 
@@ -94,7 +94,7 @@ function ConnectionMeteringLink (props:{
     }
   }
   return (
-    <div style={{ fontSize: '16px' }}>
+    <div>
       <div style={{ float: 'left', marginLeft: '5%' }}>
         <TenantLink to={
           getPolicyDetailsLink({
@@ -105,8 +105,8 @@ function ConnectionMeteringLink (props:{
         </TenantLink>
       </div>
       {showWarning &&
-        <div style={{ float: 'left', marginLeft: '10%' }} title={tooltip}>
-          <WarningTriangle expired={expired}/>
+        <div style={{ float: 'left' }} title={tooltip}>
+          <WarningTriangle expired={expired} style={{ height: '16px' }}/>
         </div>
       }
     </div>
@@ -417,7 +417,9 @@ export function VenuePropertyTab () {
     {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status'
+      dataIndex: 'status',
+      render: (_, row) => row.status === PropertyUnitStatus.ENABLED
+        ? $t({ defaultMessage: 'Activate' }) : $t({ defaultMessage: 'Suspended' })
     },
     {
       key: 'vlan',
@@ -464,7 +466,7 @@ export function VenuePropertyTab () {
     {
       show: isConnectionMeteringEnabled,
       key: 'connectionMetering',
-      title: $t({ defaultMessage: 'Connection Metering' }),
+      title: $t({ defaultMessage: 'Data Usage Metering' }),
       dataIndex: 'connectionMetering',
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
@@ -547,7 +549,7 @@ export function VenuePropertyTab () {
         type='PropertyUnit'
         acceptType={['xlsx']}
         maxSize={CsvSize['5MB']}
-        maxEntries={30}
+        maxEntries={512}
         templateLink='assets/templates/units_import_template.xlsx'
         importRequest={importUnits}
         formDataName={'unitImports'}

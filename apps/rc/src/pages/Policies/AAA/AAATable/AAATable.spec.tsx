@@ -2,8 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
+  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
@@ -72,7 +74,12 @@ describe('AAATable', () => {
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json({ ...mockTableResult }))
-      )
+      ),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [],
+          totalCount: 0
+        })))
     )
   })
 
@@ -88,6 +95,36 @@ describe('AAATable', () => {
     const targetName = mockTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add RADIUS Server/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <AAATable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <AAATable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
   })
 
   it('should delete selected row', async () => {

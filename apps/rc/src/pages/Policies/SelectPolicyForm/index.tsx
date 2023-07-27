@@ -29,6 +29,7 @@ export default function SelectPolicyForm () {
   const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     payload: {
@@ -36,6 +37,7 @@ export default function SelectPolicyForm () {
     }
   }).data?.totalCount || 0
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -66,7 +68,7 @@ export default function SelectPolicyForm () {
       disabled: (ApSnmpPolicyTotalCount >= 64)
     })
   }
-  if (isEdgeEnabled) {
+  if (isEdgeEnabled && isEdgeReady) {
     sets.push({
       type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
     })
@@ -85,9 +87,17 @@ export default function SelectPolicyForm () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Add Policy or Profile' })}
-        breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
+        ] : [
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
         ]}
       />
       <StepsFormLegacy

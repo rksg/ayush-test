@@ -57,7 +57,8 @@ import {
   SwitchViewModel,
   redirectPreviousPage,
   LocationExtended,
-  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN
+  SWITCH_SERIAL_PATTERN_SUPPORT_RODAN,
+  VenueMessages
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -95,6 +96,7 @@ export function StackForm () {
   const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
@@ -450,10 +452,9 @@ export function StackForm () {
       width: 60,
       show: editMode,
       render: (data, row) => {
-        return activeRow !== row.key &&
-          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}>
-            <DragHandle />
-          </div>
+        return (
+          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}><DragHandle /></div>
+        )
       }
     },
     {
@@ -517,7 +518,7 @@ export function StackForm () {
       show: !editMode,
       render: function (data, row) {
         return (
-          <Form.Item name={'active'} initialValue={activeRow}>
+          <Form.Item name={'active'}>
             <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
               <Radio data-testid={`active${row.key}`} key={row.key} value={row.key} />
             </Radio.Group>
@@ -639,7 +640,11 @@ export function StackForm () {
             name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber
           }) :
           $t({ defaultMessage: 'Add Switch Stack' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Wired' }) },
+          { text: $t({ defaultMessage: 'Switches' }) },
+          { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
+        ] : [
           {
             text: $t({ defaultMessage: 'Switches' }),
             link: '/devices/switch'
@@ -683,8 +688,7 @@ export function StackForm () {
                 </Tabs>
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
                   {readOnly &&
-                    // eslint-disable-next-line max-len
-                    <Alert type='info' message={$t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue' })} />}
+                    <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <Form.Item
                     name='venueId'
                     label={$t({ defaultMessage: 'Venue' })}
@@ -695,27 +699,26 @@ export function StackForm () {
                       }
                     ]}
                     initialValue={null}
-                    children={
-                      <Select
-                        options={venueOption}
-                        onChange={async (value) => await handleVenueChange(value)}
-                        disabled={readOnly || editMode || isStackSwitches}
-                      />
-                    }
-                  />
+                  >
+                    <Select
+                      options={venueOption}
+                      onChange={async (value) => await handleVenueChange(value)}
+                      disabled={readOnly || editMode || isStackSwitches}
+                    />
+                  </Form.Item>
                   <Form.Item
                     name='name'
                     label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
                     rules={[{ max: 255 }]}
-                    children={<Input disabled={readOnly} />}
-                  />
+                  >
+                    <Input disabled={readOnly} />
+                  </Form.Item>
                   {!isStackSwitches && <Form.Item
                     name='description'
                     label={$t({ defaultMessage: 'Description' })}
                     rules={[{ max: 64 }]}
                     initialValue={''}
-                    children={<Input.TextArea rows={4} maxLength={180} disabled={readOnly} />}
-                  />}
+                  ><Input.TextArea rows={4} maxLength={180} disabled={readOnly} /></Form.Item>}
                   {!editMode && !isStackSwitches && <Form.Item
                     name='initialVlanId'
                     label={
@@ -732,19 +735,18 @@ export function StackForm () {
                       </>
                     }
                     initialValue={null}
-                    children={
-                      <Select
-                        disabled={readOnly || apGroupOption?.length === 0}
-                        options={[
-                          {
-                            label: $t({ defaultMessage: 'Select VLAN...' }),
-                            value: null
-                          },
-                          ...apGroupOption
-                        ]}
-                      />
-                    }
-                  />
+                  >
+                    <Select
+                      disabled={readOnly || apGroupOption?.length === 0}
+                      options={[
+                        {
+                          label: $t({ defaultMessage: 'Select VLAN...' }),
+                          value: null
+                        },
+                        ...apGroupOption
+                      ]}
+                    />
+                  </Form.Item>
                   }
                   { isIcx7650 &&
                   <Form.Item>
@@ -755,8 +757,9 @@ export function StackForm () {
                       noStyle
                       name='rearModuleOption'
                       valuePropName='checked'
-                      children={<AntSwitch disabled={editMode} />}
-                    />
+                    >
+                      <AntSwitch disabled={editMode} />
+                    </Form.Item>
                   </Form.Item>
                   }
                   <StepFormTitle>
@@ -811,15 +814,16 @@ export function StackForm () {
                 </div>
                 {editMode &&
                   <>
-                    <Form.Item name='id' hidden={true} />
-                    <Form.Item name='firmwareVersion' hidden={true} />
-                    <Form.Item name='isPrimaryDeleted' hidden={true} />
-                    <Form.Item name='sendedHostname' hidden={true} />
-                    <Form.Item name='softDeleted' hidden={true} />
-                    <Form.Item name='trustPorts' hidden={true} />
+                    <Form.Item name='id' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
                 }
-                <Form.Item name='enableStack' initialValue={true} hidden={true} />
+                <Form.Item name='enableStack' initialValue={true} hidden={true}>
+                  <Input /></Form.Item>
                 {editMode &&
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                     <SwitchStackSetting

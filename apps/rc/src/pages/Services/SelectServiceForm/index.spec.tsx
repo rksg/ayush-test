@@ -64,6 +64,32 @@ describe('Select Service Form', () => {
     })
   })
 
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <SelectServiceForm />, {
+        route: { params, path }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <SelectServiceForm />, {
+        route: { params, path }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
   it('should navigate to the service list when cancel the form', async () => {
     const { result } = renderHook(() => useTenantLink(getServiceListRoutePath(true)))
 

@@ -1,9 +1,8 @@
 
-import { Typography }                                from 'antd'
-import { useIntl, MessageDescriptor, defineMessage } from 'react-intl'
+import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { AAAPolicyType }          from '@acx-ui/rc/utils'
+import { SummaryCard }   from '@acx-ui/components'
+import { AAAPolicyType } from '@acx-ui/rc/utils'
 const typeDescription: Record<string, MessageDescriptor> = {
   AUTHENTICATION: defineMessage({ defaultMessage: 'Authentication' }),
   ACCOUNTING: defineMessage({ defaultMessage: 'Accounting' })
@@ -11,41 +10,29 @@ const typeDescription: Record<string, MessageDescriptor> = {
 export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
   const { $t } = useIntl()
   const { aaaProfile } = props
-  return (
-    <Card>
-      <GridRow>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Profile Type' })}
-          </Card.Title>
-          <Typography.Text>{$t(typeDescription[aaaProfile.type+''])}</Typography.Text>
-        </GridCol>
-        <GridCol col={{ span: 6 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Primary IP Address' })}
-          </Card.Title>
-          <Typography.Text>{aaaProfile.primary?.ip}</Typography.Text>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Primary Port' })}
-          </Card.Title>
-          <Typography.Text>{aaaProfile.primary?.port}</Typography.Text>
-        </GridCol>
-        {aaaProfile.secondary && <>
-          <GridCol col={{ span: 6 }}>
-            <Card.Title>
-              {$t({ defaultMessage: 'Secondary IP Address' })}
-            </Card.Title>
-            <Typography.Text>{aaaProfile.secondary?.ip}</Typography.Text>
-          </GridCol>
-          <GridCol col={{ span: 4 }}>
-            <Card.Title>
-              {$t({ defaultMessage: 'Secondary Port' })}
-            </Card.Title>
-            <Typography.Text>{aaaProfile.secondary?.port}</Typography.Text>
-          </GridCol></>}
-      </GridRow>
-    </Card>
-  )
+  const aaaInfo = [
+    {
+      title: $t({ defaultMessage: 'Profile Type' }),
+      content: $t(typeDescription[aaaProfile.type+''])
+    },
+    {
+      title: $t({ defaultMessage: 'Primary IP Address' }),
+      content: aaaProfile.primary?.ip
+    },
+    {
+      title: $t({ defaultMessage: 'Primary Port' }),
+      content: aaaProfile.primary?.port
+    },
+    {
+      title: $t({ defaultMessage: 'Secondary IP Address' }),
+      content: aaaProfile.secondary?.ip,
+      visible: Boolean(aaaProfile.secondary)
+    },
+    {
+      title: $t({ defaultMessage: 'Secondary Port' }),
+      content: aaaProfile.secondary?.port,
+      visible: Boolean(aaaProfile.secondary)
+    }
+  ]
+  return <SummaryCard data={aaaInfo} />
 }

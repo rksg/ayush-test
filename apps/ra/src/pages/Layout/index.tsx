@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { UserButton } from '@acx-ui/analytics/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -7,7 +8,6 @@ import {
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   // HelpButton,
-  UserButton,
   HeaderContext,
   Logo
 } from '@acx-ui/main/components'

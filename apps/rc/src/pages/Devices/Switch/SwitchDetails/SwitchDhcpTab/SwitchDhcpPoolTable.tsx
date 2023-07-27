@@ -13,10 +13,11 @@ import {
 import {
   useTableQuery,
   SwitchDhcp,
-  isOperationalSwitch
+  isOperationalSwitch,
+  VenueMessages
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 
@@ -133,17 +134,18 @@ export function SwitchDhcpPoolTable () {
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Pool' }),
           disabled: !isOperational || !!switchDetail?.cliApplied,
+          tooltip: !!switchDetail?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
           onClick: () => {
             setSelected(undefined)
             setDrawerVisible(true)
           }
         }])}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={{
-          type: 'checkbox',
-          selectedRowKeys: selected ? [selected]:[]
-        }} />
+        rowActions={!!switchDetail?.cliApplied ? undefined : filterByAccess(rowActions)}
+        rowSelection={!!switchDetail?.cliApplied || !hasAccess()
+          ? undefined
+          : { type: 'checkbox' }}
+      />
       <AddPoolDrawer
         visible={drawerVisible}
         isLoading={isCreating || isUpdating}

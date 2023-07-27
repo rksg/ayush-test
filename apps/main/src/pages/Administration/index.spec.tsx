@@ -1,18 +1,25 @@
 /* eslint-disable max-len */
+import { rest } from 'msw'
+
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo }         from '@acx-ui/rc/utils'
 import { Provider  }                      from '@acx-ui/store'
 import {
   render,
   screen,
-  fireEvent
+  fireEvent,
+  mockServer
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
-import { fakeUserProfile } from './AccountSettings/__tests__/fixtures'
+import { fakeUserProfile }      from './AccountSettings/__tests__/fixtures'
+import { fakeDelegationList }   from './Administrators/__tests__/fixtures'
+import { fakeNotificationList } from './Notifications/__tests__/fixtures'
 
 import Administration from '.'
 
 const mockedUsedNavigate = jest.fn()
+const mockedAdminsReqFn = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -81,7 +88,34 @@ describe('Administration page', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
   beforeEach(() => {
+    mockedAdminsReqFn.mockClear()
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getAdministrators.url,
+        (req, res, ctx) => {
+          mockedAdminsReqFn()
+          return res(ctx.json([
+            {
+              id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+              email: 'efg.cheng@email.com',
+              role: 'PRIME_ADMIN',
+              delegateToAllECs: true,
+              detailLevel: 'debug'
+            }
+          ]))
+        }
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
+        (req, res, ctx) => res(ctx.json(fakeDelegationList))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getNotificationRecipients.url,
+        (req, res, ctx) => res(ctx.json(fakeNotificationList))
+      )
+    )
   })
 
   it('should render correctly', async () => {
@@ -96,7 +130,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Account Settings' })
+    const tab = screen.getByRole('tab', { name: 'Settings' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -128,7 +162,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    fireEvent.click(screen.getByText('Notifications'))
+    fireEvent.click(await screen.findByText('Notifications (3)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/administration/notifications`,
       hash: '',
@@ -150,7 +184,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Notifications' })
+    const tab = await screen.findByRole('tab', { name: 'Notifications (3)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -168,11 +202,13 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Administrators' })
+    const tab = await screen.findByRole('tab', { name: 'Administrators (2)' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
   it('should not have administrators tab', async () => {
+    params.activeTab = 'notifications'
+
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -184,8 +220,12 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.queryByRole('tab', { name: 'Administrators' })
+    const notificationTab = await screen.findByRole('tab', { name: 'Notifications (3)' })
+    expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
+
+    const tab = screen.queryByRole('tab', { name: /Administrators/ })
     expect(tab).not.toBeInTheDocument()
+    expect(mockedAdminsReqFn).not.toBeCalled()
   })
 
   it('should render subscriptions tab correctly', async () => {
@@ -259,5 +299,26 @@ describe('Administration page', () => {
 
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render administrator title with count', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    params.activeTab = 'administrators'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const adminTab = await screen.findByRole('tab', { name: 'Administrators (2)' })
+    expect(adminTab.getAttribute('aria-selected')).toBeTruthy()
+    const notificationTab = screen.getByRole('tab', { name: 'Notifications (3)' })
+    expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
   })
 })

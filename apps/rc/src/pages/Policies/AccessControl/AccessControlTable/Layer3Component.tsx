@@ -18,7 +18,7 @@ import {
   Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddModeProps }                    from '../AccessControlForm/AccessControlForm'
 import Layer3Drawer                        from '../AccessControlForm/Layer3Drawer'
@@ -31,7 +31,8 @@ const defaultPayload = {
     'name',
     'description',
     'rules',
-    'networkIds'
+    'networkIds',
+    'networkCount'
   ],
   page: 1
 }
@@ -148,7 +149,7 @@ const Layer3Component = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
       />
     </Form>
   </Loader>
@@ -194,13 +195,12 @@ function useColumns (
       sortDirections: ['descend', 'ascend', 'descend']
     },
     {
-      key: 'networkIds',
+      key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: 'networkCount',
       align: 'center',
       filterable: networkFilterOptions,
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend'],
       render: (data, row) => row.networkIds?.length
     }
   ]

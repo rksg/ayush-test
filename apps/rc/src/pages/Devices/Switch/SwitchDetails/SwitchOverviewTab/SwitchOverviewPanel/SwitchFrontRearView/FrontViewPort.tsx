@@ -1,11 +1,18 @@
+import { useContext } from 'react'
+
 import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }          from '@acx-ui/components'
-import { SwitchPortStatus } from '@acx-ui/rc/utils'
+import { Tooltip }                from '@acx-ui/components'
+import { getInactiveTooltip }     from '@acx-ui/rc/components'
+import { useLazyGetLagListQuery } from '@acx-ui/rc/services'
+import { Lag, SwitchPortStatus }  from '@acx-ui/rc/utils'
+import { useParams }              from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
+
+import { SwitchPanelContext } from '.'
 
 export function FrontViewPort (props:{
   portData: SwitchPortStatus
@@ -13,11 +20,23 @@ export function FrontViewPort (props:{
   portIcon: string,
   labelText: string,
   labelPosition: 'top' | 'bottom',
-  tooltipEnable: boolean
+  tooltipEnable: boolean,
+  disabledClick?:boolean
 }) {
   const { $t } = useIntl()
-  const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable } = props
-
+  const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
+    disabledClick } = props
+  const {
+    editPortsFromPanelEnabled,
+    setEditPortDrawerVisible,
+    setSelectedPorts,
+    setEditLagModalVisible,
+    setEditLag,
+    setBreakoutPortDrawerVisible,
+    setEditBreakoutPortDrawerVisible
+  } = useContext(SwitchPanelContext)
+  const params = useParams()
+  const [ getLagList ] = useLazyGetLagListQuery()
   const getTooltip = (port: SwitchPortStatus) => {
     const speedNoData = 'link down or no traffic'
     const isUnTaggedVlanValid = port.unTaggedVlan !== '' && port.unTaggedVlan !== undefined
@@ -92,12 +111,61 @@ export function FrontViewPort (props:{
     </div>
   }
 
+  const showEditIcon = () => {
+    if(!editPortsFromPanelEnabled) {
+      return false
+    }
+    if(portIcon ==='LagMember'){
+      return true
+    }
+    return !getInactiveTooltip(portData)
+  }
+
+  const onEditLag = async () => {
+    const { data: lagList } = await getLagList({ params })
+    const lagData = lagList?.find(item => item.lagId?.toString() === portData.lagId) as Lag
+    setEditLagModalVisible(true)
+    setEditLag([lagData])
+  }
+
+  const onPortClick = () => {
+    if(!showEditIcon() || disabledClick) {
+      return
+    }
+    setEditLagModalVisible(false)
+    setEditPortDrawerVisible(false)
+    setBreakoutPortDrawerVisible(false)
+    setEditBreakoutPortDrawerVisible(false)
+    if(portIcon ==='LagMember'){
+      onEditLag()
+    }else{
+      setSelectedPorts([portData])
+      setEditPortDrawerVisible(true)
+    }
+  }
+
   const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
-    <UI.Port portColor={portColor}>
-      { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
-      { portIcon ==='Stack' && <UI.StackingPortIcon/> }
-      { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
+    <UI.Port portColor={portColor} onClick={onPortClick} editable={showEditIcon()}>
+      {
+        portIcon
+          ? (
+            <UI.WithIconPortContainer data-testid='RegularPort'>
+              { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
+              { portIcon ==='Stack' && <UI.StackingPortIcon/> }
+              { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
+              { portIcon ==='LagMember' && <UI.LagMemberIcon /> }
+              { portIcon ==='Breakout' && <UI.BreakoutPortIcon /> }
+              { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
+            </UI.WithIconPortContainer>
+          )
+          : (
+            <UI.RegularPortContainer>
+              { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
+            </UI.RegularPortContainer>
+          )
+      }
+
     </UI.Port>
     { labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel> }
   </UI.PortWrapper>

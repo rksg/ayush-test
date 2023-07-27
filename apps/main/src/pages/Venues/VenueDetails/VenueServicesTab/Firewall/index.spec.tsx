@@ -22,6 +22,7 @@ jest.mock('@acx-ui/rc/components', () => ({
 
 const mockedGetFirewallFn = jest.fn()
 const mockedEdgeStatus = {
+  name: 'mock-SmartEdge',
   serialNumber: '0000000001',
   venueId: '00001',
   firewallId: 'mock-serviceId'
@@ -71,6 +72,11 @@ describe('Venue Firewall Service', () => {
     // eslint-disable-next-line testing-library/no-node-access
     const aclWrapper = aclInfo?.closest('div.ant-space')! as HTMLDivElement
     expect(within(aclWrapper).queryByText('ON (IN: 1 rule, OUT: 5 rules)')).toBeValid()
+
+    const edgeInfo = screen.queryByText('SmartEdge')
+    // eslint-disable-next-line testing-library/no-node-access
+    const edgeWrapper = edgeInfo?.closest('div.ant-space')! as HTMLDivElement
+    expect(within(edgeWrapper).queryByText('mock-SmartEdge')).toBeValid()
 
     // display grouped table
     expect(screen.queryByTestId('rc-EdgeFirewallGroupedStatsTables')).toBeVisible()

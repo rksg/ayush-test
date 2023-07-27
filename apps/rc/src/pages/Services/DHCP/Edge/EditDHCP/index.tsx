@@ -1,21 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
+import { Form }                   from 'antd'
+import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   Loader,
   PageHeader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
-  EdgeDhcpSettingForm
+  EdgeDhcpSettingForm, EdgeDhcpSettingFormData
 } from '@acx-ui/rc/components'
-import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
-import { EdgeDhcpSetting }                                              from '@acx-ui/rc/utils'
-import { useTenantLink }                                                from '@acx-ui/react-router-dom'
-
+import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation }                               from '@acx-ui/rc/services'
+import { LeaseTimeType, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                              from '@acx-ui/react-router-dom'
 
 
 const EditDhcp = () => {
@@ -24,28 +25,52 @@ const EditDhcp = () => {
   const params = useParams()
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')
-  const formRef = useRef<StepsFormLegacyInstance<EdgeDhcpSetting>>()
+  const [form] = Form.useForm()
   const {
     data: edgeDhcpData,
     isLoading: isEdgeDhcpDataLoading
   } = useGetEdgeDhcpServiceQuery({ params: { id: params.serviceId } })
   const [updateEdgeDhcp, { isLoading: isFormSubmitting }] = useUpdateEdgeDhcpServiceMutation()
+  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const tablePath = getServiceRoutePath(
+    { type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })
 
   useEffect(() => {
     if(edgeDhcpData) {
-      formRef.current?.resetFields()
-      formRef.current?.setFieldsValue(edgeDhcpData)
-      formRef.current?.setFieldValue(
+      form.resetFields()
+      form.setFieldsValue(edgeDhcpData)
+      form.setFieldValue(
         'enableSecondaryDNSServer',
-        !!formRef.current?.getFieldValue('secondaryDnsIp')
+        !!form.getFieldValue('secondaryDnsIp')
+      )
+      form.setFieldValue(
+        'leaseTimeType',
+        edgeDhcpData.leaseTime === -1 ? LeaseTimeType.INFINITE : LeaseTimeType.LIMITED
       )
     }
   }, [edgeDhcpData])
 
-  const handleEditEdgeDhcp = async (data: EdgeDhcpSetting) => {
+  const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
-      const payload = { ...edgeDhcpData, ...data }
+      const payload = _.merge(_.cloneDeep(edgeDhcpData), _.cloneDeep(data))
       const pathVar = { id: params.serviceId }
+      if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
+        payload.leaseTime = -1 // -1 means infinite
+      }
+      delete payload.enableSecondaryDNSServer
+      delete payload.leaseTimeType
+
+      // should not create service with id
+      payload.dhcpPools.forEach(item => {
+        if (item.id.startsWith('_NEW_')) item.id = ''
+      })
+      payload.dhcpOptions?.forEach(item => {
+        if (item.id.startsWith('_NEW_')) item.id = ''
+      })
+      payload.hosts?.forEach(item => {
+        if (item.id.startsWith('_NEW_')) item.id = ''
+      })
+
       await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {
@@ -57,21 +82,25 @@ const EditDhcp = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Edit DHCP for SmartEdge Service' })}
-        breadcrumb={[
+        breadcrumb={isNavbarEnhanced ? [
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'DHCP for SmartEdge' }), link: tablePath }
+        ] : [
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
       <Loader states={[{ isLoading: isEdgeDhcpDataLoading, isFetching: isFormSubmitting }]}>
-        <StepsFormLegacy
-          formRef={formRef}
+        <StepsForm
+          form={form}
           onFinish={handleEditEdgeDhcp}
           onCancel={() => navigate(linkToServices)}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         >
-          <StepsFormLegacy.StepForm>
+          <StepsForm.StepForm>
             <EdgeDhcpSettingForm />
-          </StepsFormLegacy.StepForm>
-        </StepsFormLegacy>
+          </StepsForm.StepForm>
+        </StepsForm>
       </Loader>
     </>
   )

@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed }                       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, screen }             from '@acx-ui/test-utils'
+import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { AaaUrls, CommonUrlsInfo, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
+import { mockServer, render, screen }                      from '@acx-ui/test-utils'
 
 import {
   cloudpathResponse,
@@ -33,8 +33,10 @@ describe('DpskSettingsForm', () => {
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
-      rest.get(DpskUrls.getDpskList.url,
-        (_, res, ctx) => res(ctx.json(dpskListResponse)))
+      rest.get(DpskUrls.getDpskList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(dpskListResponse))),
+      rest.get(AaaUrls.getAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }])))
     )
   })
 
@@ -120,7 +122,7 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should render proxy service', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <NetworkFormContext.Provider value={{

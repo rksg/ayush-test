@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
-import { identity }      from 'lodash'
-import moment            from 'moment-timezone'
-import { defineMessage } from 'react-intl'
+import { identity, flow } from 'lodash'
+import moment             from 'moment-timezone'
+import { defineMessage }  from 'react-intl'
 
+import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
+
+const isMLISA = get('IS_MLISA_SA')
 
 const pillSuffix = {
   success: defineMessage({ defaultMessage: 'success' }),
@@ -37,6 +40,11 @@ export const kpiConfig = {
       pillSuffix: pillSuffix.success,
       thresholdFormatter: null,
       tooltip: defineMessage({ defaultMessage: 'A connection is deemed successful when a Wifi client is able to complete the 802.11 authentication, association, L2 authentication and receives an IP address from the DHCP. If any of these stages fail, it is considered as a failed connection. For L3 authentication, such as WISPr and captive portal authentication, since the Wifi client will receive an IP address before the L3 authentication, the client connection will be deemed successful before the L3 authentication completes.{br}{br}The time-series graph on the left displays the percentage of successful connections across time, and the bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      apiMetric: 'connectionSuccess',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   timeToConnect: {
@@ -63,6 +71,11 @@ export const kpiConfig = {
       pillSuffix: pillSuffix.meetGoal,
       tooltip: defineMessage({ defaultMessage: 'The time to connect (TTC) measures the total time taken for a Wifi client to successfully go through all the required stages in order to establish a IP connection, namely 802.11 authentication, association, L2 authentication, and receiving an IP address from the DHCP. For L3 authentication, such as WISPr and captive portal authentication, since the Wifi client will receive an IP address before the L3 authentication, the time to connect does not include the time taken for L3 authentication.{br}{br}The time-series graph on the left displays the percentage of successful connections across time that meet the configured TTC SLA. Bar chart on the right displays the distribution of TTC. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' }),
       thresholdFormatter: divideBy1000
+    },
+    configChange: {
+      apiMetric: 'timeToConnect',
+      format: formatter('durationFormat'),
+      deltaSign: '-'
     }
   },
   association: {
@@ -78,6 +91,12 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of association attempts that have completed successfully. An association attempt is deemed successful when the Wifi client receives an Association ID from the AP. It is normal for a single Wifi client to have more than one association attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: 'Association Success' }),
+      apiMetric: 'assocSuccess',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   userAuthentication: {
@@ -93,6 +112,12 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of 802.11 authentication attempts that has completed successfully. 802.11 authentication is the first step in establishing a Wi-Fi connection, and it requires a Wi-Fi client to establish its identity as a valid 802.11 device with an AP. No data encryption or security is available at this stage, and it is not to be confused with WPA or 802.1X authentication.{br}{br}The bar chart on the right captures the daily percentage over the past 7 days. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the histogram will stay constant based on the selected date range at the top of the page.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: '802.11 Authentication Success' }),
+      apiMetric: 'authSuccess',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   eap: {
@@ -108,6 +133,12 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of EAP attempts (consisting the 4-way handshake between client and AP) that have completed successfully. An EAP attempt is deemed successful when all the necessary handshakes are completed. Do note that a single Wifi client could have multiple EAP attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: 'EAP Success' }),
+      apiMetric: 'eapSuccess',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   dhcp: {
@@ -124,6 +155,12 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Wifi client has received an IP address from the DHCP server. Do note that a single Wifi client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: 'DHCP Success' }),
+      apiMetric: 'dhcpSuccess',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   radius: {
@@ -139,6 +176,12 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of RADIUS authentication attempts that have completed successfully. A RADIUS authentication attempt is deemed successful when all the necessary handshakes in the RADIUS protocol are completed, and the client is either allowed or denied access. Do note that a single Wifi client could have multiple authentication attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: 'RADIUS Success' }),
+      apiMetric: 'radiusSuccess',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   roamingSuccess: {
@@ -154,6 +197,11 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
       tooltip: defineMessage({ defaultMessage: 'This metric measures the percentage of roaming attempts that have completed successfully. A roaming attempt is deemed successful when the Wifi client has its session transferred from one AP to the next. It is possible for a single Wifi client to have multiple roaming attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      apiMetric: 'roamingSuccess',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   rss: {
@@ -182,6 +230,11 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.meetGoal,
       tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of client sessions with average RSS that has met the configured SLA. The bar chart on the right captures the distribution of the RSS. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      apiMetric: 'clientRss',
+      format: formatter('decibelMilliWattsFormat'),
+      deltaSign: '-'
     }
   },
   clientThroughput: {
@@ -209,6 +262,11 @@ export const kpiConfig = {
       pillSuffix: pillSuffix.meetGoal,
       tooltip: defineMessage({ defaultMessage: 'Client throughput measures the down link throughput estimate of the client, taking into consideration RF channel conditions, interference, channel contention and client capabilities.{br}{br}The time-series graph on the left displays the percentage of Wifi sessions across time that have a client throughput that meet the configured SLA. The bar chart on the right displays the distribution of the client throughput. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' }),
       thresholdFormatter: divideBy1000
+    },
+    configChange: {
+      apiMetric: 'clientThroughPut',
+      format: formatter('networkSpeedFormat'),
+      deltaSign: '+'
     }
   },
   apCapacity: {
@@ -237,10 +295,15 @@ export const kpiConfig = {
       thresholdFormatter: null,
       pillSuffix: pillSuffix.meetGoal,
       tooltip: defineMessage({ defaultMessage: 'AP capacity measures the downlink saturated throughput estimate of the AP radios, taking into consideration the RF channel conditions, interference, channel contention and client capabilities.{br}{br}The time-series graph on the left displays the percentage of AP capacity samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP capacity across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      apiMetric: 'apCapacity',
+      format: flow([multipleBy1000, formatter('networkSpeedFormat')]),
+      deltaSign: '+'
     }
   },
   apServiceUptime: {
-    text: defineMessage({ defaultMessage: 'AP-RUCKUS One Connection Uptime' }),
+    text: defineMessage({ defaultMessage: 'AP-{smartZone} Connection Uptime' }),
     timeseries: {
       apiMetric: 'apUptimeCountAndApCount',
       minGranularity: 'PT3M'
@@ -263,21 +326,28 @@ export const kpiConfig = {
       ],
       thresholdFormatter: formatter('percentFormat'),
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: defineMessage({ defaultMessage: 'AP-RUCKUS One connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-RUCKUS One connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'AP-{smartZone} connection uptime measures the percentage of time the AP radios are fully available for client service.\n\nThe time-series graph on the left displays the percentage of AP-{smartZone} connection uptime samples across time that meets the configured SLA. The bar chart on the right displays the distribution of AP service uptime across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
       //thresholdFormat: x => formatter('percentFormat')(x)
+    },
+    configChange: {
+      apiMetric: 'apUpTime',
+      format: formatter('percentFormat'),
+      deltaSign: '+'
     }
   },
   apToSZLatency: {
-    text: defineMessage({ defaultMessage: 'AP-to-RUCKUS One Latency' }),
+    text: defineMessage({ defaultMessage: 'AP-to-{smartZone} Latency' }),
     timeseries: {
       apiMetric: 'apSzLatencyCountAndAPCount',
       minGranularity: 'PT3M'
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 200,
+      initialThreshold: isMLISA ? 40 : 200,
       apiMetric: 'apSzLatency',
-      splits: [50, 100, 150, 200, 250, 300, 350, 400],
+      splits: isMLISA
+        ? [5, 10, 20, 40, 60, 100, 200, 500]
+        : [50, 100, 150, 200, 250, 300, 350, 400],
       xUnit: defineMessage({ defaultMessage: 'ms' }),
       yUnit: 'APs',
       shortXFormat: (x : number) => x,
@@ -291,7 +361,50 @@ export const kpiConfig = {
       ],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.meetGoal,
-      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-RUCKUS One control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of APs that have AP-to-{smartZone} control plane latency which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of APs. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      apiMetric: 'apSzLatency',
+      format: formatter('durationFormat'),
+      deltaSign: '-'
+    }
+  },
+  clusterLatency: {
+    text: defineMessage({ defaultMessage: 'Cluster Latency' }),
+    timeseries: {
+      apiMetric: 'szLatencyCountAndSzCount',
+      minGranularity: 'PT3M'
+    },
+    barChart: createBarChartConfig('szLatencyCountAndSzCount'),
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 10,
+      apiMetric: 'szLatency',
+      splits: [2, 5, 10, 25, 50, 100, 200, 500],
+      xUnit: defineMessage({ defaultMessage: 'ms' }),
+      yUnit: 'internode links',
+      shortXFormat: (x: number) => x,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({
+        defaultMessage: '{successCount} of {totalCount} internode links'
+      }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'below' }),
+        defineMessage({ defaultMessage: '{threshold} ms' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: null,
+      tooltip: defineMessage({
+        defaultMessage:
+          'The time-series graph on the left displays the percentage of samples that have intra-SZ cluster latency (which is the latency between each node within a SZ cluster) which meets the configured SLA. The bar chart on the right captures the distribution of the latency across the number of clusters. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.'
+      })
+    },
+    configChange: {
+      apiMetric: 'szLatency',
+      format: formatter('durationFormat'),
+      deltaSign: '-'
     }
   },
   switchPoeUtilization: {
@@ -335,47 +448,55 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Online APs measures the percentage of APs which are online and connected to RUCKUS One.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Online APs measures the percentage of APs which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online AP percentage across time. The bar chart on the right captures the daily Online AP percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    },
+    configChange: {
+      text: defineMessage({ defaultMessage: 'Online APs Count' }),
+      apiMetric: 'onlineAPCount',
+      format: formatter('countFormat'),
+      deltaSign: '+'
     }
   }
 }
-
-export const kpisForTab = {
-  overview: {
-    kpis: [
-      'connectionSuccess',
-      'timeToConnect',
-      'clientThroughput',
-      'apCapacity',
-      'apServiceUptime',
-      'onlineAPs'
-    ]
-  },
-  connection: {
-    kpis: [
-      'connectionSuccess',
-      'timeToConnect',
-      'userAuthentication',
-      'association',
-      'eap',
-      'radius',
-      'dhcp',
-      'roamingSuccess'
-    ]
-  },
-  performance: {
-    kpis: [
-      'clientThroughput',
-      'apCapacity',
-      'rss'
-    ]
-  },
-  infrastructure: {
-    kpis: [
-      'apServiceUptime',
-      'apToSZLatency',
-      'switchPoeUtilization',
-      'onlineAPs'
-    ]
+export const kpisForTab = (isMLISA? : string) => {
+  return {
+    overview: {
+      kpis: [
+        'connectionSuccess',
+        'timeToConnect',
+        'clientThroughput',
+        'apCapacity',
+        'apServiceUptime',
+        'onlineAPs'
+      ]
+    },
+    connection: {
+      kpis: [
+        'connectionSuccess',
+        'timeToConnect',
+        'userAuthentication',
+        'association',
+        'eap',
+        'radius',
+        'dhcp',
+        'roamingSuccess'
+      ]
+    },
+    performance: {
+      kpis: [
+        'clientThroughput',
+        'apCapacity',
+        'rss'
+      ]
+    },
+    infrastructure: {
+      kpis: [
+        'apServiceUptime',
+        'apToSZLatency',
+        ...(isMLISA ? ['clusterLatency'] : []),
+        'switchPoeUtilization',
+        'onlineAPs'
+      ]
+    }
   }
 }

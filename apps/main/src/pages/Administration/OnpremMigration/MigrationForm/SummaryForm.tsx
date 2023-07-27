@@ -12,13 +12,19 @@ import {
   Table,
   TableProps,
   Subtitle,
-  Loader
+  Loader,
+  cssStr,
+  StackedBarChart
 } from '@acx-ui/components'
+import {
+  SpaceWrapper
+} from '@acx-ui/rc/components'
 import {
   useLazyGetZdConfigurationQuery
 } from '@acx-ui/rc/services'
 import {
-  MigrationResultType
+  MigrationResultType,
+  ZdConfigurationType
 } from '@acx-ui/rc/utils'
 
 type SummaryFormProps = {
@@ -32,24 +38,61 @@ const SummaryForm = (props: SummaryFormProps) => {
 
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
-  // eslint-disable-next-line max-len
-  const [ getZdConfiguration, { data: migrateResult }] = useLazyGetZdConfigurationQuery()
+  const [ taskState, setTaskState ] = useState('')
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getZdConfiguration({ params: { ...params, id: taskId } })
-      // console.log('This will run every second!')
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
+  let usedBarColors = [
+    cssStr('--acx-accents-blue-50'),
+    cssStr('--acx-neutrals-30')
+  ]
 
-  useEffect(()=>{
+  let defaultSeries = [
+    { name: 'used',
+      value: 0 },
+    { name: 'available',
+      value: 100 }
+  ]
+
+  const [ series, setSeries ] = useState(defaultSeries)
+  const [ progress, setProgress ] = useState(0)
+
+  const [getZdConfiguration] = useLazyGetZdConfigurationQuery()
+  const [migrateResult, setMigrateResult] = useState<ZdConfigurationType>()
+  const getSummaryResult = async () => {
+    // eslint-disable-next-line max-len
+    const migrateResult = await (getZdConfiguration({ params: { ...params, id: taskId } }).unwrap())
+    setMigrateResult(migrateResult)
     // eslint-disable-next-line max-len
     if (migrateResult && migrateResult.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0) {
       // eslint-disable-next-line max-len
       setValidateZdApsResult(migrateResult.data[0].migrationTaskList[0].apImportResultList ? migrateResult.data[0].migrationTaskList[0].apImportResultList : [])
+      const taskState = migrateResult.data[0].migrationTaskList[0].state ?? ''
+      if (taskState !== 'Completed' && taskState !== 'Failed') {
+        const total = migrateResult.data[0].migrationTaskList[0].apImportResultList?.length
+        // eslint-disable-next-line max-len
+        const used = migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(apCompleted).length
+        let series = [
+          { name: 'used',
+            value: (used / total)*100 },
+          { name: 'available',
+            value: ((total-used) / total)*100 }
+        ]
+        setSeries(series)
+        setProgress(Math.floor((used/total) * 100))
+      }
+      setTaskState(taskState)
     }
-  },[migrateResult])
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getSummaryResult()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const apCompleted = (item: MigrationResultType) => {
+    return item.state === 'Completed' || item.state === 'Invalid'
+  }
 
   const callbackfn = (item: MigrationResultType) => {
     return item.state === 'Completed'
@@ -125,6 +168,26 @@ const SummaryForm = (props: SummaryFormProps) => {
             {// eslint-disable-next-line max-len
               $t({ defaultMessage: 'Completed' })}: {(migrateResult?.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0 && migrateResult.data[0].migrationTaskList[0].apImportResultList?.filter(callbackfn).length) ?? '--'}
           </Subtitle>
+        </Col>
+        <Col span={7}>
+          {taskState !== 'Completed' && taskState !== 'Failed' &&
+            <SpaceWrapper full size='small' justifycontent='flex-start'>
+              <Subtitle level={5}>{$t({ defaultMessage: 'Progress' })}:</Subtitle>
+              <StackedBarChart
+                style={{ height: 16, width: 135 }}
+                showLabels={false}
+                showTotal={false}
+                showTooltip={false}
+                barWidth={12}
+                data={[{
+                  category: 'AP Migrations ',
+                  series
+                }]}
+                barColors={usedBarColors}
+              />
+              <Subtitle level={5}>{progress}%</Subtitle>
+            </SpaceWrapper>
+          }
         </Col>
       </Row>
       <Table

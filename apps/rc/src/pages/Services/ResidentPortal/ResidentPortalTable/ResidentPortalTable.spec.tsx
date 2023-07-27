@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   getServiceDetailsLink,
   getServiceRoutePath,
@@ -69,6 +70,36 @@ describe('ResidentPortalTable', () => {
     expect(await screen.findByRole('button', { name: /Add Resident Portal/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
       .toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(screen.queryByText('Network Control')).toBeNull()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
+  })
+
+  it('should render breadcrumb correctly when feature flag is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'My Services'
+    })).toBeVisible()
   })
 
   it('should delete selected row', async () => {

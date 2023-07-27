@@ -1,15 +1,14 @@
-import { AnalyticsTabs }   from '@acx-ui/analytics/components'
-import { AnalyticsFilter } from '@acx-ui/analytics/utils'
-import { useApContext }    from '@acx-ui/rc/utils'
+import { AnalyticsTabs } from '@acx-ui/analytics/components'
+import { useApContext }  from '@acx-ui/rc/utils'
+
+import { useApFilter } from '../apFilter'
 
 export function ApAnalyticsTab () {
-  const { serialNumber, apMac } = useApContext()
-  const filter = {
-    path: [{ type: 'AP', name: apMac }]
-  } as AnalyticsFilter
+  const apContext = useApContext()
+  const filter = useApFilter(apContext)
   return <AnalyticsTabs
     incidentFilter={filter}
     healthFilter={filter}
-    healthPath={`devices/wifi/${serialNumber}/details/analytics/health`}
+    healthPath={`devices/wifi/${apContext.serialNumber}/details/analytics/health`}
   />
 }

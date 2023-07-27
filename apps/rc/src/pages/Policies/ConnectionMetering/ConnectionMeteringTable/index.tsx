@@ -10,11 +10,13 @@ import {
   showToast,
   Loader
 } from '@acx-ui/components'
+import { SimpleListTooltip }            from '@acx-ui/rc/components'
 import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
   useVenuesListQuery,
-  doProfileDelete
+  doProfileDelete,
+  useGetQueriablePropertyConfigsQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
@@ -25,7 +27,9 @@ import {
   ConnectionMetering,
   getPolicyDetailsLink,
   FILTER,
-  SEARCH
+  SEARCH,
+  PropertyConfigs,
+  PropertyConfigQuery
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -41,8 +45,7 @@ import {
 import { ConnectionMeteringLink } from '../LinkHelper'
 import { RateLimitingTableCell }  from '../RateLimitingHelper'
 
-
-function useColumns (venueMap: Map<string, string>) {
+function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, PropertyConfigs>) {
   const { $t } = useIntl()
 
   const columns: TableProps<ConnectionMetering>['columns'] = [
@@ -75,14 +78,29 @@ function useColumns (venueMap: Map<string, string>) {
       title: $t({ defaultMessage: 'Units' }),
       dataIndex: 'unitCount',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      render: (_, row) => {
+        const tooltipItems = row.personas?.filter(v=>v.identityId && v.primary).map(v=>v.name)
+        return <SimpleListTooltip items={tooltipItems ?? []} displayText={row.unitCount ?? 0} />
+      }
     },
     {
       key: 'venueCount',
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venueCount',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      render: (_, row) => {
+        const groupIds = new Set(row.personas?.map(v=>v.groupId))
+        const venues: string[] = []
+        groupIds.forEach(id => {
+          const venueName = propertyMap.get(id)?.venueName
+          if (venueName) {
+            venues.push(venueName)
+          }
+        })
+        return <SimpleListTooltip items={venues ?? []} displayText={row.venueCount ?? 0} />
+      }
     },
     {
       key: 'venue',
@@ -105,6 +123,7 @@ export default function ConnectionMeteringTable () {
   const tenantBasePath = useTenantLink('')
   const navigate = useNavigate()
   const [venueMap, setVenueMap] = useState(new Map())
+  const [propertyMap, setPropertyMap] = useState(new Map<string, PropertyConfigs>())
 
   const { tenantId } = useParams()
   const venueListPayload = {
@@ -116,7 +135,12 @@ export default function ConnectionMeteringTable () {
   }
 
   const venues = useVenuesListQuery({ params: { tenantId }, payload: { ...venueListPayload } })
-
+  const propertyConfigs = useGetQueriablePropertyConfigsQuery({ payload: {
+    sortOrder: 'ASC',
+    sortField: 'venueName',
+    page: 1,
+    pageSize: 2147483647
+  } as PropertyConfigQuery })
   const [deleteConnectionMetering,
     { isLoading: isDeleteConnectionMetering }
   ] = useDeleteConnectionMeteringMutation()
@@ -132,6 +156,14 @@ export default function ConnectionMeteringTable () {
     venues.data?.data.forEach(venue=> map.set(venue?.id.replaceAll('-', ''), venue?.name))
     setVenueMap(map)
   }, [venues])
+
+  useEffect(()=> {
+    if (propertyConfigs.isLoading) return
+    const map = new Map()
+    propertyConfigs.data?.data.filter(config => config.personaGroupId)
+      .forEach(config => map.set(config.personaGroupId, config))
+    setPropertyMap(map)
+  }, [propertyConfigs])
 
   const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
     {
@@ -164,7 +196,7 @@ export default function ConnectionMeteringTable () {
               .then(() => {
                 showToast({
                   type: 'success',
-                  content: $t({ defaultMessage: 'Connection Metering {name} was deleted' },
+                  content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
                     { name })
                 })
                 clearSelection()
@@ -200,7 +232,7 @@ export default function ConnectionMeteringTable () {
             { text: $t({ defaultMessage: 'Policies & Profiles' }),
               link: getPolicyListRoutePath(true) }
           ]}
-        title={$t({ defaultMessage: 'Connection Metering' })}
+        title={$t({ defaultMessage: 'Data Usage Metering' })}
         extra={filterByAccess([
           <TenantLink
             to={getPolicyRoutePath({
@@ -209,14 +241,14 @@ export default function ConnectionMeteringTable () {
             })}
           >
             <Button type='primary'>
-              { $t({ defaultMessage: 'Add Connection metering profile' }) }
+              { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
             </Button>
           </TenantLink>
         ])}
       />
       <Table
         enableApiFilter
-        columns={useColumns(venueMap)}
+        columns={useColumns(venueMap, propertyMap)}
         rowActions={rowActions}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}

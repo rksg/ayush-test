@@ -7,7 +7,7 @@ import { Loader, Table, TableProps, showActionModal, showToast }                
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }                 from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                          from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                     from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                                                                                                          from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '../..'
 
@@ -72,8 +72,8 @@ export function SwitchConfigBackupTable () {
     useQuery: useGetSwitchConfigBackupListQuery,
     defaultPayload: {},
     sorter: {
-      sortField: 'name',
-      sortOrder: 'ASC'
+      sortField: 'createdDate',
+      sortOrder: 'DESC'
     },
     option: { pollingInterval: 60_000 }
   })
@@ -110,12 +110,12 @@ export function SwitchConfigBackupTable () {
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
     disable: true,
-    defaultSortOrder: 'ascend',
     sorter: true
   }, {
     key: 'createdDate',
     title: $t({ defaultMessage: 'Date' }),
     dataIndex: 'createdDate',
+    defaultSortOrder: 'descend',
     sorter: true
   }, {
     key: 'backupType',
@@ -125,8 +125,9 @@ export function SwitchConfigBackupTable () {
   }, {
     key: 'backupStatus',
     title: $t({ defaultMessage: 'Status' }),
-    dataIndex: 'backupStatus',
-    sorter: true
+    dataIndex: 'status',
+    sorter: true,
+    render: (data, row) => row.backupStatus
   }
   ]
 
@@ -248,7 +249,7 @@ export function SwitchConfigBackupTable () {
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(rightActions)}
         onChange={tableQuery.handleTableChange}
-        rowSelection={{
+        rowSelection={hasAccess() ? {
           type: 'checkbox',
           onChange: (selectedRowKeys, selectedData) => {
             const selectedRows = selectedRowKeys.length
@@ -285,7 +286,7 @@ export function SwitchConfigBackupTable () {
             }
             setEnabledRowButton(enabledButton)
           }
-        }}
+        } : undefined}
       />
     </Loader>
     <BackupModal
