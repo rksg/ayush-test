@@ -41,9 +41,10 @@ export function MulticastForm () {
 
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
-  let multicastRateLimitingSwitch = false
+
 
   useEffect(() => {
+    let multicastRateLimitingSwitch = false
     if(form.getFieldValue(enableMulticastUpLimitFieldName) || form.getFieldValue(enableMulticastDownLimitFieldName)) {
       multicastRateLimitingSwitch = true
     }
@@ -119,7 +120,6 @@ export function MulticastForm () {
               name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
-              initialValue={multicastRateLimitingSwitch}
             >
               <Switch onChange={handleMulticastRateLimitingOnChange} />
             </Form.Item>
