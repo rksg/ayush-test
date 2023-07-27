@@ -11,8 +11,8 @@ export interface EdgeDhcpSetting {
     leaseTime?: number;
     leaseTimeUnit?: LeaseTimeUnit;
     dhcpPools: EdgeDhcpPool[];
-    hosts: EdgeDhcpHost[];
-    dhcpOptions: EdgeDhcpOption[];
+    hosts?: EdgeDhcpHost[];
+    dhcpOptions?: EdgeDhcpOption[];
     edgeIds: string[];
 }
 
