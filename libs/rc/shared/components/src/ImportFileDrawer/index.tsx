@@ -41,7 +41,8 @@ interface ImportFileDrawerProps extends DrawerProps {
   readAsText?: boolean,
   formDataName?: string,
   acceptType: string[]
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI' | 'PropertyUnit' | 'EdgeDHCP'
+  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK'
+  | 'Persona' | 'CLI' | 'PropertyUnit' | 'EdgeDHCP' | 'EdgeSubInterface'
   extraDescription?: string[]
 }
 

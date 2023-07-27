@@ -207,5 +207,10 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/:serialNumber/passwordDetails',
     oldUrl: '/edges/:serialNumber/passwordDetails',
     newApi: true
+  },
+  importSubInterfacesCSV: {
+    method: 'post',
+    url: '/edges/:serialNumber/ports/:mac/subInterfaces',
+    newApi: true
   }
 }
