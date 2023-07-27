@@ -30,6 +30,7 @@ export interface ChannelDistributionHeatMapProps {
   buffer: BufferType;
   minGranularity: string
 }
+export type heatmapType = 'apDistribution' | 'rogueDistribution' | 'dfsEvents'
 export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer: BufferType) {
   const { startTime, endTime } = incident
   return {
@@ -71,7 +72,9 @@ export const dfsEventsByChannelQuery = (code: string) => `
         eventCount
         }
     }`
-export const HeatMapChannelFragment = (type: string, code: string) => {
+export const HeatMapChannelFragment = (
+  type: heatmapType, code: string
+) => {
   switch (type) {
     case 'apDistribution':
       return apDistribution(code)
@@ -80,12 +83,11 @@ export const HeatMapChannelFragment = (type: string, code: string) => {
     case 'dfsEvents':
       return dfsEventsByChannelQuery(code)
   }
-  return ''
 }
 
-export const Api = dataApi.injectEndpoints({
+export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    HeatmapDistributionByChannel: build.query<
+    heatmapDistributionByChannel: build.query<
     HeatmapResponse,
     ChannelDistributionHeatMapProps
     >({
@@ -100,7 +102,8 @@ export const Api = dataApi.injectEndpoints({
             ) {
               network(start: $start, end: $end) {
                 hierarchyNode(path: $path) {
-                    ${HeatMapChannelFragment(payload.heatMapConfig.key, payload.incident.code)}
+                    ${HeatMapChannelFragment(
+                      payload.heatMapConfig.key as heatmapType, payload.incident.code)}
                 }
               }
             }
@@ -122,4 +125,4 @@ export const Api = dataApi.injectEndpoints({
   })
 })
 
-export const { useHeatmapDistributionByChannelQuery } = Api
+export const { useHeatmapDistributionByChannelQuery } = api

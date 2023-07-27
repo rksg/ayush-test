@@ -15,11 +15,12 @@ export function Heatmap (props: {
   data: object;
   xAxisCategories: string[];
   yAxisCategories: string[];
-  tooltipFormatter: TooltipFormatterCallback<CallbackDataParams>
+  tooltipFormatter: TooltipFormatterCallback<CallbackDataParams>;
   colors: string[];
   min: number;
   max: number;
   title: string;
+  key?:string
 }) {
   const eChartsRef = useRef<ReactECharts>(null)
 
@@ -68,6 +69,7 @@ export function Heatmap (props: {
         name: props.title,
         type: 'heatmap',
         data: props.data,
+        key: props.key,
         label: {
           show: false
         },

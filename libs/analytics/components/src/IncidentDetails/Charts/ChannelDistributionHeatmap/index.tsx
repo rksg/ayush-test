@@ -1,15 +1,14 @@
-import { useCallback } from 'react'
-
 import {
   CallbackDataParams
 } from 'echarts/types/dist/shared'
 import { flatten, uniq,max } from 'lodash'
 import moment                from 'moment-timezone'
 import { renderToString }    from 'react-dom/server'
-import { useIntl }           from 'react-intl'
+import { defineMessage }     from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
 import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData } from '@acx-ui/components'
+import { getIntl }                                               from '@acx-ui/utils'
 
 import { useHeatmapDistributionByChannelQuery, ChannelDistributionHeatMapProps } from './services'
 
@@ -44,32 +43,36 @@ const heatmapColorPalette = [
   cssStr('--acx-semantics-yellow-50'),
   cssStr('--acx-semantics-red-50')
 ]
+
+const tooltipConfig = {
+  apDistribution: defineMessage({ defaultMessage: 'Ap Count' }),
+  rogueDistribution: defineMessage({ defaultMessage: 'Rogue AP Count' }),
+  dfsEvents: defineMessage({ defaultMessage: 'DFS Events' })
+}
+export const tooltipFormatter = (params: CallbackDataParams): string => {
+  const { $t } = getIntl()
+  const xValue = Array.isArray(params.data) ? params.data?.[0] : '-'
+  const yValue = Array.isArray(params.data) ? params.data?.[1] : '-'
+  const count = Array.isArray(params.data) ? params.data?.[2] : '-'
+  return renderToString(
+    <TooltipWrapper>
+      <div>
+        {`${$t({ defaultMessage: 'Time' })}: ${xValue}`} <br />
+        {`${$t({ defaultMessage: 'Channel' })}: ${yValue}`} <br />
+        {`${$t(tooltipConfig[params?.seriesName as keyof typeof tooltipConfig])}: ${count}`}
+      </div>
+    </TooltipWrapper>
+  )
+}
 export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProps> = (props) => {
-  const { $t } = useIntl()
 
   const queryResults = useHeatmapDistributionByChannelQuery(props)
   const { heatMapConfig } = props
-  const { key, value: title, channel, count, countText } = heatMapConfig
+  const { key, value: title, channel, count } = heatMapConfig
 
   const heatmapData = queryResults?.data?.[key as ChannelType]
 
-  const tooltipFormatter = useCallback(
-    (params: CallbackDataParams): string => {
-      const xValue = Array.isArray(params.data) ? params.data?.[0] : '-'
-      const yValue = Array.isArray(params.data) ? params.data?.[1] : '-'
-      const count = Array.isArray(params.data) ? params.data?.[2] : '-'
-      return renderToString(
-        <TooltipWrapper>
-          <div>
-            {`${$t({ defaultMessage: 'Time' })}: ${xValue}` as string} <br />
-            {`${$t({ defaultMessage: 'Channel' })}: ${yValue}` as string} <br />
-            {(`${countText} : ` + count) as string}
-          </div>
-        </TooltipWrapper>
-      )
-    },
-    [countText, $t]
-  )
+
   const xAxisCategories = (heatmapData?.time as string[])?.map((datum: string) =>
     moment(datum).format('DD MMM HH:mm')
   )
@@ -94,35 +97,34 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
     })
   )
   return (
-    <Card title={title} type='no-border'>
-      <div
-        style={{
-          width: 'auto',
-          height: yAxisCategories.length * 20 > 400 ? yAxisCategories.length * 20 : 400
-        }}>
-        <Loader states={[queryResults]}>
+    <div
+      style={{
+        width: 'auto',
+        height: yAxisCategories.length * 20 > 400 ? yAxisCategories.length * 20 : 400
+      }}>
+      <Loader states={[queryResults]}>
+        <Card title={title} type='no-border'>
           <AutoSizer>
             {({ height, width }) => (
               backfilledHeatmapData.length > 0
                 ? <Heatmap
                   style={{ width, height }}
                   tooltipFormatter={tooltipFormatter}
-                  xAxisCategories={xAxisCategories ?? []}
-                  yAxisCategories={yAxisCategories ?? []}
+                  xAxisCategories={xAxisCategories}
+                  yAxisCategories={yAxisCategories}
                   data={backfilledHeatmapData}
                   colors={heatmapColorPalette}
                   min={0}
                   max={max(backfilledHeatmapData?.map((row) => row?.[2])) as number}
-                  title={title}
+                  title={key}
                 />
                 : <NoData />
 
             )}
           </AutoSizer>
-        </Loader>
-
-      </div>
-    </Card>
+        </Card>
+      </Loader>
+    </div>
 
   )
 }

@@ -3392,7 +3392,46 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        AP DISTRIBUTION BY CHANNEL
+        <div
+          style="width: auto; height: 400px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+            >
+              <span
+                aria-label="loader"
+                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -3402,7 +3441,46 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        ROGUE DISTRIBUTION BY CHANNEL
+        <div
+          style="width: auto; height: 400px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+            >
+              <span
+                aria-label="loader"
+                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -3412,7 +3490,46 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        DFS EVENTS BY CHANNEL
+        <div
+          style="width: auto; height: 400px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+            >
+              <span
+                aria-label="loader"
+                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -3955,7 +4072,46 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        AP DISTRIBUTION BY CHANNEL
+        <div
+          style="width: auto; height: 400px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+            >
+              <span
+                aria-label="loader"
+                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -3965,7 +4121,46 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
-        ROGUE DISTRIBUTION BY CHANNEL
+        <div
+          style="width: auto; height: 400px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
+          >
+            <div
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
+            >
+              <span
+                aria-label="loader"
+                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
+                role="img"
+              >
+                <div
+                  aria-busy="true"
+                  aria-live="polite"
+                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                >
+                  <span
+                    class="ant-spin-dot ant-spin-dot-spin"
+                  >
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                    <i
+                      class="ant-spin-dot-item"
+                    />
+                  </span>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div
