@@ -222,12 +222,24 @@ export function PropertyManagementTab () {
     return payload
   }
 
+  const navigateToVenueOverview = () => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
+    })
+  }
+
   const onFormFinish = async (_: string, info: FormFinishInfo) => {
     const {
       unitConfig,
       residentPortalType,
       ...formValues
     } = info.values
+
+    setEditContextData({
+      ...editContextData,
+      isDirty: false
+    })
 
     try {
       if (isPropertyEnable) {
@@ -255,10 +267,7 @@ export function PropertyManagementTab () {
         }).unwrap()
       }
 
-      setEditContextData({
-        ...editContextData,
-        isDirty: false
-      })
+      navigateToVenueOverview()
     } catch (e) {
       console.log(e) // eslint-disable-line no-console
     }
@@ -332,10 +341,7 @@ export function PropertyManagementTab () {
         formRef={formRef}
         onFormFinish={onFormFinish}
         onFormChange={handleFormChange}
-        onCancel={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-        })}
+        onCancel={navigateToVenueOverview}
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsFormLegacy.StepForm
