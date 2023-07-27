@@ -24,6 +24,7 @@ export type RecommendationDetails = {
   id: string;
   code: keyof typeof codes;
   status: keyof typeof states;
+  isMuted: boolean;
   appliedTime: string;
   originalValue: string | Array<{ channelMode: string, channelWidth: string, radio: string }>;
   currentValue: string;
@@ -108,7 +109,7 @@ export const api = recommendationApi.injectEndpoints({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
-              id code status appliedTime
+              id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
               sliceType sliceValue
               path { type name }

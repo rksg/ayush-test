@@ -5,6 +5,7 @@ import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { Kpis }                          from './kpis'
+import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
 import { useRecommendationDetailsQuery } from './services'
 import { Values }                        from './values'
@@ -33,6 +34,12 @@ export const RecommendationDetails = () => {
         { text: $t({ defaultMessage: 'AI Analytics' }) },
         { text: $t(linkMap[activeTab]), link }
       ]}
+      extra={[<MuteRecommendation {...{
+        id: details.id,
+        isMuted: details.isMuted,
+        link,
+        type: $t(linkMap[activeTab])
+      }} />]}
     />}
     <GridRow>
       <GridCol col={{ span: 3 }}>
