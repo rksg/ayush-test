@@ -247,7 +247,7 @@ describe('ApDetails', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      `/${params.tenantId}/t/devices/wifi/${list?.data?.[0].serialNumber}/edit/details`
+      `/${params.tenantId}/t/devices/wifi/${list?.data?.[0].serialNumber}/edit/general`
     )
   })
 
