@@ -1,6 +1,7 @@
-import { ReportType }     from '@acx-ui/reports/components'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
+
+import { ReportType } from '../mapping/reportsMapping'
 
 
 import { Report } from './index'
@@ -8,8 +9,8 @@ import { Report } from './index'
 jest.mock('./ReportHeader', () => ({
   ReportHeader: () => <div data-testid='reportHeader' />
 }))
-jest.mock('@acx-ui/reports/components', () => ({
-  ...jest.requireActual('@acx-ui/reports/components'),
+jest.mock('./EmbeddedReport', () => ({
+  //...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: () => <div data-testid='reportPage' />
 }))
 
