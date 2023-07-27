@@ -116,16 +116,49 @@ describe('ChannelDistributionHeatMap', () => {
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).toBeNull()
     expect(await screen.findByText('No data to display')).toBeVisible()
   })
-  describe('tooltipFormatter', () => {
-    it('should return correct Html string', async () => {
-      const params = {
-        data: ['test', 'test2', 100]
-      } as unknown as CallbackDataParams
-      expect(tooltipFormatter(params)).toContain('test2')
+  it('should handle dynamic height', async () => {
+    let time: object [] = []
+    let heatmap: object[] = []
+    const startDate = new Date()
+    Array.from({ length: 25 }).forEach((_, index) => {
+      const newDate = new Date(startDate)
+      newDate.setDate(startDate.getDate() + index)
+      time.push(newDate)
+      heatmap.push([{
+        timestamp: newDate,
+        channel: index*5,
+        apCount: 3
+      }])
     })
-    it('should return "-" Html string for missing data', async () => {
-      const params = {} as unknown as CallbackDataParams
-      expect(tooltipFormatter(params)).toContain('-')
-    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', { data: { network: {
+      hierarchyNode: {
+        apDistribution: { time: time, heatmap: heatmap } } } } })
+    const { asFragment } = render(
+      <Provider>
+        <ChannelDistributionHeatMap
+          heatMapConfig={config}
+          incident={fakeIncident1}
+          buffer={buffer}
+          minGranularity='PT3M'
+        />
+      </Provider>
+    )
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await screen.findByText('AP DISTRIBUTION BY CHANNEL')
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(asFragment().querySelector('canvas')).toBeDefined()
+  })
+})
+
+describe('tooltipFormatter', () => {
+  it('should return correct Html string', async () => {
+    const params = {
+      data: ['test', 'test2', 100]
+    } as unknown as CallbackDataParams
+    expect(tooltipFormatter(params)).toContain('test2')
+  })
+  it('should return "-" Html string for missing data', async () => {
+    const params = {} as unknown as CallbackDataParams
+    expect(tooltipFormatter(params)).toContain('-')
   })
 })
