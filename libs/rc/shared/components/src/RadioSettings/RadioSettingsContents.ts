@@ -1,11 +1,6 @@
 import { isEmpty }       from 'lodash'
 import { defineMessage } from 'react-intl'
 
-export interface AvailableLteBandOptions {
-	value: string,
-	label: string
-}
-
 export interface SelectItemOption {
 	value: string,
 	label: string

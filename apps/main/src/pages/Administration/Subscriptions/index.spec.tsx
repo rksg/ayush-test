@@ -81,7 +81,7 @@ describe('Subscriptions', () => {
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /Wi-Fi .* Expired/i })).toBeVisible()
     expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
-    // expect(await screen.findByText('Essentials')).toBeVisible()
+    expect(await screen.findByText('Essentials')).toBeVisible()
 
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subsciptions' })
