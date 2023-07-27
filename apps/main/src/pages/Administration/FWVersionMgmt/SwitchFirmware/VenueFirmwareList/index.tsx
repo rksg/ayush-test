@@ -11,7 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -20,7 +20,8 @@ import {
   useGetSwitchCurrentVersionsQuery,
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
-  useGetSwitchFirmwarePredownloadQuery
+  useGetSwitchFirmwarePredownloadQuery,
+  useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -30,13 +31,15 @@ import {
   TableQuery,
   useTableQuery,
   sortProp,
-  defaultSort
+  defaultSort,
+  FirmwareCategory
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 
 import {
   getNextScheduleTpl,
+  getReleaseFirmware,
   getSwitchNextScheduleTplTooltip,
   isSwitchNextScheduleTooltipDisabled,
   parseSwitchVersion,
@@ -158,6 +161,30 @@ export const VenueFirmwareTable = (
 
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
+
+
+  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
+
+  const isLatestVersion = function (currentVersion: FirmwareVersion) {
+    if(_.isEmpty(currentVersion?.id)) return false
+    const latestVersions = getReleaseFirmware(latestReleaseVersions)
+    const latestFirmware = latestVersions.filter(v => v.id.startsWith('090'))[0]
+    const latestRodanFirmware = latestVersions.filter(v => v.id.startsWith('100'))[0]
+    return (currentVersion.id === latestFirmware?.id ||
+      currentVersion.id === latestRodanFirmware?.id)
+  }
+
+
+  const filterVersions = function (availableVersions: FirmwareVersion[]) {
+
+    return availableVersions?.map((version) => {
+      if (version?.category === FirmwareCategory.RECOMMENDED && !isLatestVersion(version)) {
+        return { id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR }
+      } return version
+    })
+  }
+
+
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
   })
@@ -350,7 +377,7 @@ export const VenueFirmwareTable = (
       <UpdateNowDialog
         visible={updateModelVisible}
         data={venues}
-        availableVersions={upgradeVersions}
+        availableVersions={filterVersions(upgradeVersions)}
         nonIcx8200Count={nonIcx8200Count}
         icx8200Count={icx8200Count}
         onCancel={handleUpdateModalCancel}
@@ -359,7 +386,7 @@ export const VenueFirmwareTable = (
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}
         data={venues}
-        availableVersions={changeUpgradeVersions}
+        availableVersions={filterVersions(changeUpgradeVersions)}
         nonIcx8200Count={nonIcx8200Count}
         icx8200Count={icx8200Count}
         currentScheduleVersion={currentScheduleVersion}
