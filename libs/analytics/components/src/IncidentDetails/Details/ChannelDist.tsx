@@ -16,7 +16,6 @@ import * as UI      from './styledComponents'
 
 export const ChannelDist = (incident: Incident) => {
   const { $t } = useIntl()
-
   const attributeList = [
     Attributes.ApImpactCount,
     Attributes.IncidentCategory,
@@ -84,14 +83,9 @@ export const ChannelDist = (incident: Incident) => {
       <GridRow>
         <GridCol col={{ span: 4 }}>
           <UI.FixedAutoSizer>
-            {({ width }) => (
-              <div style={{ width }}>
-                <IncidentAttributes
-                  incident={incident}
-                  visibleFields={attributeList}
-                />
-              </div>
-            )}
+            {({ width }) => (<div style={{ width }}>
+              <IncidentAttributes incident={incident} visibleFields={attributeList} />
+            </div>)}
           </UI.FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 20 }}>
