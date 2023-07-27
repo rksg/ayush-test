@@ -277,7 +277,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   assignMultiMspEcDelegatedAdmins: {
-    method: 'post',
+    method: 'PATCH',
     url: '/mspCustomers/mspAdmins/associations',
     newApi: true
   }

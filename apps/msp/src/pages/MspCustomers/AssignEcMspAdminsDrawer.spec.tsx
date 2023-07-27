@@ -47,7 +47,7 @@ describe('AssignEcMspAdminsDrawer', () => {
     })
     jest.spyOn(services, 'useAssignMultiMspEcDelegatedAdminsMutation')
     mockServer.use(
-      rest.post(
+      rest.patch(
         MspUrlsInfo.assignMultiMspEcDelegatedAdmins.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
