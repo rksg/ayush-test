@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, isDelegationMode }                                  from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, isDelegationMode }                from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
 
