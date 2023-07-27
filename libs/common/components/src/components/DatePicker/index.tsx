@@ -1,5 +1,4 @@
-import { useMemo, useEffect, useState, useRef, useCallback, Component, MutableRefObject, ReactNode } from 'react'
-
+import { useMemo, useEffect, useState, useRef, useCallback, Component, MutableRefObject, ReactNode, RefObject } from 'react'
 
 import {
   DatePicker as AntDatePicker,
@@ -85,7 +84,7 @@ export const RangePicker = ({
 
   useEffect(
     () => setRange(selectedRange),
-    [selectedRange.startDate, selectedRange.endDate]
+    [selectedRange.startDate, selectedRange.endDate] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   useEffect(() => {
@@ -177,6 +176,22 @@ interface DateTimePickerProps {
   }
 }
 
+let currentDateTimePicker: {
+  ref: RefObject<boolean>,
+  onClose: CallableFunction
+}
+
+export function useClosePreviousDateTimePicker (onClose: CallableFunction, visible: boolean) {
+  const wasVisible = useRef<boolean>(false)
+  useEffect(() => {
+    if (visible && !wasVisible.current && currentDateTimePicker?.ref !== wasVisible) {
+      currentDateTimePicker?.onClose?.()
+      currentDateTimePicker = { ref: wasVisible, onClose }
+    }
+    wasVisible.current = visible
+  }, [onClose, wasVisible, visible])
+}
+
 export const DateTimePicker = ({
   applyFooterMsg,
   disabled,
@@ -190,10 +205,7 @@ export const DateTimePicker = ({
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
-  const onApplyHandler = () => {
-    onApply(date)
-    setOpen(false)
-  }
+  useClosePreviousDateTimePicker(() => setOpen(false), Boolean(open))
   return <Tooltip placement='right' title={title}>
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker
@@ -219,7 +231,10 @@ export const DateTimePicker = ({
             value={date}
             setValue={setDate}
             applyFooterMsg={applyFooterMsg}
-            onApply={onApplyHandler}
+            onApply={() => {
+              onApply(date)
+              setOpen(false)
+            }}
             onCancel={() => setOpen(false)}
             disabledHours={disabledHours}
             disabledMinutes={disabledMinutes}
