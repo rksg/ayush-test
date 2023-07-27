@@ -58,7 +58,8 @@ export interface UpdateNowRequest {
 export enum FirmwareCategory {
   RECOMMENDED = 'RECOMMENDED',
   CRITICAL = 'CRITICAL',
-  BETA = 'BETA'
+  BETA = 'BETA',
+  REGULAR = 'REGULAR'
 }
 
 export enum UpdateAdvice {
@@ -209,6 +210,9 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
     }, {
       type: $t({ defaultMessage: 'Beta' }),
       value: FirmwareCategory.BETA
+    }, {
+      type: $t({ defaultMessage: 'Release' }),
+      value: FirmwareCategory.REGULAR
     }
   ]
 

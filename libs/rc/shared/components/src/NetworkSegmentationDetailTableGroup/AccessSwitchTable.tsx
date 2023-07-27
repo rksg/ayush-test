@@ -30,7 +30,7 @@ const EditTdButton = styled(Button).attrs({ type: 'link' })`
 export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { editHandler = ()=>{} } = props
+  const { editHandler } = props
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
@@ -38,6 +38,10 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   })
 
   const columns: TableProps<AccessSwitchTableDataType>['columns'] = React.useMemo(() => {
+    const EditBtn = (row: AccessSwitchTableDataType) => editHandler ?
+      <EditTdButton onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton> :
+      <span>-</span>
+
     return [{
       key: 'name',
       title: $t({ defaultMessage: 'Access Switch' }),
@@ -62,9 +66,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: ['uplinkInfo', 'uplinkId'],
       sorter: true,
       render: (data, row) => {
-        return row.uplinkInfo ? `${row.uplinkInfo.uplinkType} ${data}` :
-          <EditTdButton
-            onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton>
+        return row.uplinkInfo?.uplinkId ? `${row.uplinkInfo.uplinkType} ${data}` : EditBtn(row)
       }
     }, {
       key: 'vlanId',
@@ -72,9 +74,7 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
       dataIndex: 'vlanId',
       sorter: true,
       render: (data, row) => {
-        return row.vlanId ? data :
-          <EditTdButton
-            onClick={()=>{editHandler(row)}}> - <ConfigurationSolid /></EditTdButton>
+        return row.vlanId ? data : EditBtn(row)
       }
     }, {
       key: 'templateId',
