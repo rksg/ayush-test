@@ -227,7 +227,7 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
         return category.subType
       }
       default: {
-        return category.type + (category.subType? ' - ' + category.subType : '')
+        return category.type + (category.subType ? ' - ' + category.subType : '')
       }
     }
   }
