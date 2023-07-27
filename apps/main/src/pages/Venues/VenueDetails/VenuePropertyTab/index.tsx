@@ -116,6 +116,10 @@ function ConnectionMeteringLink (props:{
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
+  const PropertyUnitStatusOptions = [
+    { key: PropertyUnitStatus.ENABLED, value: $t({ defaultMessage: 'Active' }) },
+    { key: PropertyUnitStatus.DISABLED, value: $t({ defaultMessage: 'Suspended' }) }
+  ]
   const { venueId, tenantId } = useParams()
   const enabled = (status: string) => status === PropertyUnitStatus.ENABLED
   const [personaMap, setPersonaMap] = useState(new Map<string, Persona>())
@@ -331,8 +335,8 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Suspend' }),
       visible: (selectedRows => {
-        const activateCount = selectedRows.filter(row => enabled(row.status)).length
-        return activateCount > 0 && activateCount === selectedRows.length
+        const activeCount = selectedRows.filter(row => enabled(row.status)).length
+        return activeCount > 0 && activeCount === selectedRows.length
       }),
       onClick: (items, clearSelection) => {
         showActionModal({
@@ -418,8 +422,10 @@ export function VenuePropertyTab () {
       key: 'status',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
+      filterMultiple: false,
+      filterable: PropertyUnitStatusOptions,
       render: (_, row) => row.status === PropertyUnitStatus.ENABLED
-        ? $t({ defaultMessage: 'Activate' }) : $t({ defaultMessage: 'Suspended' })
+        ? $t({ defaultMessage: 'Active' }) : $t({ defaultMessage: 'Suspended' })
     },
     {
       key: 'vlan',
@@ -499,13 +505,17 @@ export function VenuePropertyTab () {
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = queryUnitList.payload
-    const currentSearchString = payload.filters?.name ?? ''
 
-    if (currentSearchString === customSearch.searchString) return
+    const customPayload = {
+      filters: {
+        name: customSearch.searchString !== '' ? customSearch.searchString : undefined,
+        status: Array.isArray(customFilters?.status) ? customFilters?.status[0] : undefined
+      }
+    }
 
     queryUnitList.setPayload({
       ...payload,
-      filters: { name: customSearch.searchString !== '' ? customSearch.searchString : undefined }
+      ...customPayload
     })
   }
 
