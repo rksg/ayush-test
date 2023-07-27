@@ -32,7 +32,7 @@ const DelimiterRadioGroup = (props: { fieldName: string[], onChanged?: (()=> voi
   }
 
   return <Form.Item
-    label={$t({ defaultMessage: 'Delimiter' })}
+    label={$t({ defaultMessage: 'MAC Delimiter' })}
     name={props.fieldName}
     initialValue={options[0].value}
     children={
@@ -109,8 +109,8 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
         style={{ width: '150px' }}
         initialValue={NasIdTypeEnum.BSSID}
       >
-        <Select onChange={handleChanged}>{NasIdTypeOptions.map(o => {
-          const { value, label } = o
+        <Select onChange={handleChanged}>{NasIdTypeOptions.map(option => {
+          const { value, label } = option
           return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
         })}
         </Select>
@@ -133,72 +133,74 @@ export const RadiusOptionsForm = (props: RadiusOptionsFormProps) => {
           placeholder={$t({ defaultMessage: 'Maximun is 64 characters' })}/>}
       />
       }
-      <Form.Item required label={$t({ defaultMessage: 'NAS Request Timeout' })}>
-        <Space>
-          <Form.Item
-            name={nasRequestTimeoutSecFieldName}
-            initialValue={3}
-            rules={[{
-              required: true,
-              message: $t({
-                defaultMessage: 'Please enter a number between 2 and 20'
-              })
-            }]}
-            children={<InputNumber
-              min={2}
-              max={20}
-              style={{ width: '150px' }}
-              onChange={handleChanged} />}
-          />
-          <div style={{ height: '32px' }}>
-            {$t({ defaultMessage: 'Seconds' })}
-          </div>
-        </Space>
-      </Form.Item>
-      <Form.Item required label={$t({ defaultMessage: 'NAS Max Number of Retries' })}>
-        <Space>
-          <Form.Item
-            name={nasMaxRetryFieldName}
-            initialValue={2}
-            rules={[{
-              required: true,
-              message: $t({
-                defaultMessage: 'Please enter a number between 2 and 10'
-              })
-            }]}
-            children={<InputNumber
-              min={2}
-              max={10}
-              style={{ width: '150px' }}
-              onChange={handleChanged}/>}
-          />
-          <div style={{ height: '32px' }}>
-            {$t({ defaultMessage: 'Retries' })}
-          </div>
-        </Space>
-      </Form.Item>
-      <Form.Item required label={$t({ defaultMessage: 'NAS Reconnect Primary' })}>
-        <Space>
-          <Form.Item
-            name={nasReconnectPrimaryMinFieldName}
-            rules={[{
-              required: true,
-              message: $t({
-                defaultMessage: 'Please enter a number between 1 and 300'
-              })
-            }]}
-            initialValue={5}
-            children={<InputNumber
-              min={1}
-              max={300}
-              style={{ width: '150px' }}
-              onChange={handleChanged}/>}
-          />
-          <div style={{ height: '32px' }}>
-            {$t({ defaultMessage: 'Minutes' })}
-          </div>
-        </Space>
-      </Form.Item>
+      <Space size={30}>
+        <Form.Item required label={$t({ defaultMessage: 'NAS Request Timeout' })}>
+          <Space align='center'>
+            <Form.Item noStyle
+              name={nasRequestTimeoutSecFieldName}
+              initialValue={3}
+              rules={[{
+                required: true,
+                message: $t({
+                  defaultMessage: 'Please enter a number between 2 and 20'
+                })
+              }]}
+              children={<InputNumber
+                min={2}
+                max={20}
+                style={{ width: '75px' }}
+                onChange={handleChanged} />}
+            />
+            <div>
+              {$t({ defaultMessage: 'Seconds' })}
+            </div>
+          </Space>
+        </Form.Item>
+        <Form.Item required label={$t({ defaultMessage: 'NAS Max Retries' })}>
+          <Space align='center'>
+            <Form.Item noStyle
+              name={nasMaxRetryFieldName}
+              initialValue={2}
+              rules={[{
+                required: true,
+                message: $t({
+                  defaultMessage: 'Please enter a number between 2 and 10'
+                })
+              }]}
+              children={<InputNumber
+                min={2}
+                max={10}
+                style={{ width: '75px' }}
+                onChange={handleChanged}/>}
+            />
+            <div>
+              {$t({ defaultMessage: 'Retries' })}
+            </div>
+          </Space>
+        </Form.Item>
+        <Form.Item required label={$t({ defaultMessage: 'NAS Reconnect Primary' })}>
+          <Space align='center'>
+            <Form.Item noStyle
+              name={nasReconnectPrimaryMinFieldName}
+              rules={[{
+                required: true,
+                message: $t({
+                  defaultMessage: 'Please enter a number between 1 and 300'
+                })
+              }]}
+              initialValue={5}
+              children={<InputNumber
+                min={1}
+                max={300}
+                style={{ width: '75px' }}
+                onChange={handleChanged}/>}
+            />
+            <div>
+              {$t({ defaultMessage: 'Minutes' })}
+            </div>
+          </Space>
+        </Form.Item>
+      </Space>
       <Form.Item
         name={calledStationIdTypeFieldName}
         label={$t({ defaultMessage: 'Called Station ID' })}
