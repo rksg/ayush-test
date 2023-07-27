@@ -149,12 +149,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   pingEdge: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/edges/:serialNumber/hostDetails',
     newApi: true
   },
   traceRouteEdge: {
-    method: 'patch',
+    method: 'PATCH',
     url: '/edges/:serialNumber/hostDetails',
     newApi: true
   },
