@@ -59,6 +59,7 @@ function useColumns (
           personaGroupId={row.groupId}
         />
       ,
+      ellipsis: true,
       sorter: true,
       ...props.name
     },
@@ -83,6 +84,7 @@ function useColumns (
       dataIndex: 'description',
       title: $t({ defaultMessage: 'Description' }),
       sorter: true,
+      ellipsis: true,
       ...props.description
     },
     ...(props.deviceCount?.disable)
@@ -105,6 +107,7 @@ function useColumns (
         key: 'identityId',
         dataIndex: 'identityId',
         title: $t({ defaultMessage: 'Unit' }),
+        ellipsis: true,
         sorter: true,
         render: (_, row) =>
           <PropertyUnitLink
@@ -119,6 +122,7 @@ function useColumns (
       key: 'groupId',
       dataIndex: 'group',
       title: $t({ defaultMessage: 'Persona Group' }),
+      ellipsis: true,
       sorter: true,
       render: (_, row) => {
         const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name

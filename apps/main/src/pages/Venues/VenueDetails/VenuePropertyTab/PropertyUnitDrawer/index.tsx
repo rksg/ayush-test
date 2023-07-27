@@ -699,6 +699,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               children={<Input />}
               rules={[
                 { required: true },
+                { max: 235 },
                 { validator: (_, value) => nameValidator(value) }
               ]}
             />
@@ -761,7 +762,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               name={['resident', 'name']}
               label={$t({ defaultMessage: 'Resident Name' })}
               rules={[
-                { required: true }
+                { required: true },
+                { max: 255 }
               ]}
               children={<Input />}
             />
