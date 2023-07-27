@@ -101,20 +101,20 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
           height: yAxisCategories.length * 20 > 400 ? yAxisCategories.length * 20 : 400
         }}>
         <Loader states={[queryResults]}>
-
           <AutoSizer>
             {({ height, width }) => (
-              backfilledHeatmapData.length > 0 ? <Heatmap
-                style={{ width, height }}
-                tooltipFormatter={tooltipFormatter}
-                xAxisCategories={xAxisCategories ?? []}
-                yAxisCategories={yAxisCategories ?? []}
-                data={backfilledHeatmapData}
-                colors={heatmapColorPalette}
-                min={0}
-                max={max(backfilledHeatmapData?.map((row) => row?.[2])) as number}
-                title={title}
-              />
+              backfilledHeatmapData.length > 0
+                ? <Heatmap
+                  style={{ width, height }}
+                  tooltipFormatter={tooltipFormatter}
+                  xAxisCategories={xAxisCategories ?? []}
+                  yAxisCategories={yAxisCategories ?? []}
+                  data={backfilledHeatmapData}
+                  colors={heatmapColorPalette}
+                  min={0}
+                  max={max(backfilledHeatmapData?.map((row) => row?.[2])) as number}
+                  title={title}
+                />
                 : <NoData />
 
             )}

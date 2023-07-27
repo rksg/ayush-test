@@ -5,12 +5,10 @@ import {
   TooltipFormatterCallback,
   CallbackDataParams
 } from 'echarts/types/dist/shared'
-import { cssStr } from '@acx-ui/components'
 
 import {
   tooltipOptions,axisLabelOptions, dateAxisFormatter,gridOptions,xAxisOptions,yAxisOptions
 }                 from '../Chart/helper'
-
 
 export function Heatmap (props: {
   style: React.CSSProperties;
