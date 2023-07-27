@@ -19,6 +19,7 @@ import { useApEolFirmware } from '../VenueFirmwareList/useApEolFirmware'
 
 
 export const VersionBanner = () => {
+  const { $t } = useIntl()
   const params = useParams()
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const versions = getReleaseFirmware(latestReleaseVersions)
@@ -28,12 +29,25 @@ export const VersionBanner = () => {
   if (!firmware) return null
 
   return (
-    <Space size={20} split={<Divider type='vertical' style={{ height: '40px' }} />}>
-      <FirmwareBanner key='active' firmware={firmware} />
-      {latestEolVersionByABFs.map((abfVersion: ABFVersion) => {
-        return <FirmwareBanner key={abfVersion.abf} firmware={abfVersion} />
-      })}
-    </Space>
+    <UI.BannerVersion>
+      <UI.LatestVersion>
+        {$t({ defaultMessage: 'Latest Version' })}
+      </UI.LatestVersion>
+      <Space split={<Divider type='vertical' style={{ height: '40px' }} />}>
+        <FirmwareBanner
+          key='active'
+          label={$t({ defaultMessage: 'For Active Device:' })}
+          firmware={firmware}
+        />
+        {latestEolVersionByABFs.map((abfVersion: ABFVersion) => {
+          return <FirmwareBanner
+            key={abfVersion.abf}
+            label={$t({ defaultMessage: 'For Legacy Device:' })}
+            firmware={abfVersion}
+          />
+        })}
+      </Space>
+    </UI.BannerVersion>
   )
 }
 
@@ -47,6 +61,7 @@ function getReleaseFirmware (firmwareVersions: FirmwareVersion[] = []): Firmware
 }
 
 interface FirmwareBannerProps {
+  label: string
   firmware: {
     name: string
     category: FirmwareCategory
@@ -58,23 +73,22 @@ interface FirmwareBannerProps {
 const FirmwareBanner = (props: FirmwareBannerProps) => {
   const { $t } = useIntl()
   const transform = firmwareTypeTrans($t)
-  const { firmware } = props
+  const { label, firmware } = props
   const onboardDate = firmware.onboardDate ?? firmware.createdDate
 
   return (
     <div>
-      <UI.BannerVersion>
-        <span>{$t({ defaultMessage: 'Latest Version:' })} </span>
-        <UI.BannerVersionName>{ firmware.name }</UI.BannerVersionName>
-      </UI.BannerVersion>
-      <UI.BannerVersion>
-        <span>{transform(firmware.category, 'type')} </span>
-        <span>({transform(firmware.category, 'subType')})</span>
-        <span> - </span>
-        <UI.BannerVersionName>
-          {onboardDate && formatter(DateFormatEnum.DateFormat)(onboardDate)}
-        </UI.BannerVersionName>
-      </UI.BannerVersion>
+      <div>
+        <span>{ label } </span>
+        <UI.BannerVersionName>{firmware.name}</UI.BannerVersionName>
+      </div>
+      <UI.TypeSpace split={<Divider type='vertical' />}>
+        <div>
+          <span>{transform(firmware.category, 'type')} </span>
+          <span>({transform(firmware.category, 'subType')})</span>
+        </div>
+        {onboardDate && formatter(DateFormatEnum.DateFormat)(onboardDate)}
+      </UI.TypeSpace>
     </div>
   )
 }
