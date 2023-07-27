@@ -204,7 +204,12 @@ export const mockedFirewallDataList = {
           aclRuleNum: 2
         }
       ],
-      edgeIds: ['0000000001']
+      edgeIds: ['0000000001', '0000000002', '0000000003'],
+      serviceVersions: {
+        '0000000001': '1.0.0.100',
+        '0000000002': '1.0.0.100',
+        '0000000003': '1.0.0.210'
+      }
     },
     {
       id: '2',
@@ -227,7 +232,8 @@ export const mockedFirewallDataList = {
           aclRuleNum: 2
         }
       ],
-      edgeIds: []
+      edgeIds: [],
+      serviceVersions: {}
     }
   ]
 }
