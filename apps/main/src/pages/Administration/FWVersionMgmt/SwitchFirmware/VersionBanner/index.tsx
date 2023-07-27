@@ -13,10 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { getReleaseFirmware, parseSwitchVersion } from '../../FirmwareUtils'
-import * as CommonUI                              from '../../styledComponents'
-
-import * as UI from './styledComponents'
-
+import * as UI                                    from '../../styledComponents'
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
@@ -33,34 +30,34 @@ export const VersionBanner = () => {
     return (<UI.FwContainer>
       <div>
         <span>{$t({ defaultMessage: 'For ICX Models ({models}):' }, { models })} </span>
-        <CommonUI.BannerVersionName>
+        <UI.BannerVersionName>
           {parseSwitchVersion(firmware?.name)}
-        </CommonUI.BannerVersionName>
+        </UI.BannerVersionName>
       </div>
       <div>
-        <CommonUI.TypeSpace split={<Divider type='vertical' />}>
+        <UI.TypeSpace split={<Divider type='vertical' />}>
           <div>
             <span>{transform(firmware?.category, 'type')} </span>
             <span>({transform(firmware?.category, 'subType')})</span>
           </div>
           {formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}
-        </CommonUI.TypeSpace>
+        </UI.TypeSpace>
       </div>
     </UI.FwContainer>)
   }
 
   if (!firmware && !rodanFirmware) return null
   return (
-    <CommonUI.BannerVersion>
-      <CommonUI.LatestVersion>
+    <UI.BannerVersion>
+      <UI.LatestVersion>
         {$t({ defaultMessage: 'Latest Version' })}
-      </CommonUI.LatestVersion>
+      </UI.LatestVersion>
       <Space split={<Divider type='vertical' style={{ height: '40px' }} />}>
         {enableSwitchRodanFirmware && rodanFirmware &&
           getFirmwareInformation(rodanFirmware, '8200')}
         {firmware && getFirmwareInformation(firmware, '7150-7850')}
       </Space>
-    </CommonUI.BannerVersion>
+    </UI.BannerVersion>
   )
 }
 

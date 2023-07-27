@@ -77,7 +77,7 @@ const FirmwareBanner = (props: FirmwareBannerProps) => {
   const onboardDate = firmware.onboardDate ?? firmware.createdDate
 
   return (
-    <div>
+    <UI.FwContainer>
       <div>
         <span>{ label } </span>
         <UI.BannerVersionName>{firmware.name}</UI.BannerVersionName>
@@ -89,6 +89,6 @@ const FirmwareBanner = (props: FirmwareBannerProps) => {
         </div>
         {onboardDate && formatter(DateFormatEnum.DateFormat)(onboardDate)}
       </UI.TypeSpace>
-    </div>
+    </UI.FwContainer>
   )
 }
