@@ -150,7 +150,7 @@ describe('AdvancedTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const advanceSettingContext = {
       updateAccessPointLED: jest.fn(),
-      updateRadiusOptions: jest.fn()
+      updateCssColoring: jest.fn()
     }
 
     render(<Provider>

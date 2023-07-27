@@ -3,12 +3,14 @@ import { useContext } from 'react'
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
 import { useIntl }                                        from 'react-intl'
 
-import { Tooltip }                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { BasicServiceSetPriorityEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
+import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import NetworkFormContext from '../../NetworkFormContext'
-import * as UI            from '../styledComponents'
+import NetworkFormContext                     from '../../NetworkFormContext'
+import { hasAccountingRadius, hasAuthRadius } from '../../utils'
+import * as UI                                from '../styledComponents'
 
 
 const multicastFilterTooltipContent = (
@@ -47,6 +49,10 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
+  const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
+
+  const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
+  const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
 
   const [
     enableFastRoaming,
@@ -448,6 +454,14 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
             </Radio.Group>
           }
         />
+      </>}
+
+      {showRadiusOptions &&
+      <>
+        <UI.Subtitle>{$t({ defaultMessage: 'RADIUS Options' })}</UI.Subtitle>
+        <RadiusOptionsForm context='network'
+          isWispr={data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr}
+          showSingleSessionIdAccounting={showSingleSessionIdAccounting} />
       </>}
     </>
   )

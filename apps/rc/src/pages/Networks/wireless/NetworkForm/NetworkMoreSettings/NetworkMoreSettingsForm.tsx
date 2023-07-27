@@ -824,7 +824,7 @@ export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
       <NetworkingTab wlanData={wlanData} />
     </div>
     <div style={{ display: currentTab === 'advanced' ? 'block' : 'none' }}>
-      <AdvancedTab wlanData={wlanData} />
+      <AdvancedTab />
     </div>
   </>)
 }

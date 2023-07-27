@@ -16,6 +16,7 @@ import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
 import { DirectedMulticast }   from './DirectedMulticast'
 import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
+import { RadiusOptions }       from './RadiusOptions'
 
 
 export interface NetworkingSettingContext {
@@ -25,6 +26,7 @@ export interface NetworkingSettingContext {
   updateDirectedMulticast?: (() => void),
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
+  updateRadiusOptions?: (() => void)
 }
 
 export function NetworkingTab () {
@@ -33,6 +35,7 @@ export function NetworkingTab () {
   const basePath = useTenantLink('/venues/')
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
+  const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const {
     previousPath,
@@ -87,7 +90,16 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm />
     </>
-  }]
+  },
+  ...(supportRadiusOptions? [{
+    title: $t({ defaultMessage: 'RADIUS Options' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='radius-options'>
+        { $t({ defaultMessage: 'RADIUS Options' }) }
+      </StepsFormLegacy.SectionTitle>
+      <RadiusOptions />
+    </> }] : []
+  )]
 
   const handleUpdateAllSettings = async () => {
     try {
@@ -95,6 +107,7 @@ export function NetworkingTab () {
       await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.()
       await editNetworkingContextData?.updateDirectedMulticast?.()
+      await editNetworkingContextData?.updateRadiusOptions?.()
 
       setEditContextData({
         ...editContextData,
@@ -109,6 +122,7 @@ export function NetworkingTab () {
         delete newData.updateCellular
         delete newData.updateMesh
         delete newData.updateDirectedMulticast
+        delete newData.updateRadiusOptions
 
         setEditNetworkingContextData(newData)
       }
