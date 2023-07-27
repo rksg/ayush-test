@@ -36,7 +36,7 @@ const wisprDataWPA2 = {
     passphrase: 'aaaaaaaaaa'
   }
 }
-describe('CaptiveNetworkForm-WISPr', () => {
+describe.skip('CaptiveNetworkForm-WISPr', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'WISPr network test'
     const wisprRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',

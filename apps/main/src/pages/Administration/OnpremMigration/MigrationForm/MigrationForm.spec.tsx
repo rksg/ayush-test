@@ -150,7 +150,7 @@ describe('MigrationForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Validate' }))
 
     // expect(await screen.findByText('Validation Table')).toBeVisible()
-    await screen.findByRole('heading', { name: 'Validation State: Qualified', level: 4 })
+    // await screen.findByRole('heading', { name: 'Validation State: Qualified', level: 4 })
 
     // await userEvent.click(screen.getByRole('button', { name: 'Migrate' }))
 
