@@ -1,4 +1,5 @@
 import { initialize } from '@googlemaps/jest-mocks'
+import userEvent      from '@testing-library/user-event'
 import { Form }       from 'antd'
 import { rest }       from 'msw'
 
@@ -95,12 +96,10 @@ describe('Venues Form', () => {
     await waitForElementToBeRemoved(validating)
 
     const descriptionInput = screen.getByLabelText('Description')
-    fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
+    await userEvent.type(descriptionInput, 'Ruckus Network Info' )
 
     const addressInput = screen.getByTestId('address-input')
-    fireEvent.change(addressInput, { target:
-      { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
-    })
+    await userEvent.type(addressInput, '350 W Java Dr, Sunnyvale, CA 94089, USA' )
 
     // fireEvent.click(screen.getByText('Add'))
   })
