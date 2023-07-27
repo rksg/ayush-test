@@ -22,7 +22,7 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   }
   const { servicesCount = 0 } = useGetEdgeServiceListQuery({
     payload: {
-      fields: ['id'],
+      fields: ['serviceId'],
       filters: { edgeId: [serialNumber] }
     }
   }, {
