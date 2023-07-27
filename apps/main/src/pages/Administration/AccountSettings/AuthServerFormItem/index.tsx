@@ -10,9 +10,9 @@ import {
   useGetAdminListQuery,
   useDeleteTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
-import {  TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink, useParams }            from '@acx-ui/react-router-dom'
-import { loadImageWithJWT }                                 from '@acx-ui/utils'
+import {  SamlFileType, TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink, useParams }                          from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }                                               from '@acx-ui/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem/'
 
@@ -139,13 +139,14 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
             <div style={{ marginTop: '-10px' }}><Button type='link'
               key='viewxml'
               onClick={async () => {
-                const url = await loadImageWithJWT(authenticationData?.samlFileURL as string)
+                const url = authenticationData?.samlFileType === SamlFileType.direct_url
+                  ? authenticationData?.samlFileURL
+                  : await loadImageWithJWT(authenticationData?.samlFileURL as string)
                 await fetch(url)
                   .then((response) => response.text())
                   .then((text) => {
                     setXmlData(text)
                   })
-                // setXmlData(sampleXml)
                 setModalVisible(true)
               }}>
               {$t({ defaultMessage: 'View XML code' })}
