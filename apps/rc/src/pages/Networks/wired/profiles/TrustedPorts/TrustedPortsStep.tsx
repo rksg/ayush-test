@@ -72,7 +72,7 @@ export function TrustedPortsStep (props: {
   }, [vlanSettingValues, editRecord])
 
   return (
-    <>
+    <div style={{ minHeight: '380px' }}>
       <Row gutter={20}>
         <Col>
         </Col>
@@ -138,6 +138,6 @@ export function TrustedPortsStep (props: {
         hidden={true}
         children={<Input />} />
       {editRecord && <Form.Item name={'switchFamilyModels'} hidden={true} children={<Input />}/>}
-    </>
+    </div>
   )
 }

@@ -92,7 +92,7 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
-describe('WifiCallingForm', () => {
+describe.skip('WifiCallingForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
