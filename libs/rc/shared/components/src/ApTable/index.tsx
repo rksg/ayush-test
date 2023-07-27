@@ -134,6 +134,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       'deviceStatus', 'fwVersion']
   })
   const tableQuery = props.tableQuery || apListTableQuery
+  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
 
   useEffect(() => {
     setApsCount?.(tableQuery.data?.totalCount || 0)
@@ -337,7 +338,15 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       }
     }]
 
-    return columns
+    const columnsWithSecureBoot = [...columns, {
+      key: 'secureBoot',
+      title: $t({ defaultMessage: 'Secure Boot' }),
+      dataIndex: 'secureBootEnabled',
+      show: false,
+      sorter: false
+    }]
+
+    return secureBootFlag ? columnsWithSecureBoot : columns
   }, [$t, tableQuery.data?.extra])
 
   const isActionVisible = (
