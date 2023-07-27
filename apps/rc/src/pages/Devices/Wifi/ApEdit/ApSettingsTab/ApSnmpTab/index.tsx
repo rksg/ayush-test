@@ -202,7 +202,10 @@ export function ApSnmp () {
       <StepsFormLegacy.StepForm
         layout='horizontal'
         initialValues={stateOfApSnmpSettings}>
-        <Row style={{ backgroundColor: '#F2F2F2', marginBottom: '10px' }} align='middle'>
+        <Row
+          style={{ backgroundColor: '#F2F2F2', marginBottom: '10px', padding: '6px 0' }}
+          align='middle'
+        >
           <Col span={8}>
             <p style={{ paddingLeft: '10px', marginBottom: '0px' }}>
               {$t({ defaultMessage: 'Custom  settings' })}

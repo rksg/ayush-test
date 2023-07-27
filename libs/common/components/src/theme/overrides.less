@@ -55,6 +55,90 @@
     }
   }
 
+  // styles default and primary buttons are overridden here instead of in common-components
+  // button because there are buttons rendered by antd that we can't control e.g. ActionModal
+  .ant-btn {
+    text-shadow: unset;
+    box-shadow: unset;
+
+    &:not(.ant-btn-icon-only):not(.ant-btn-link) {
+      padding: 4px 12px;
+      &:not(.ant-btn-sm):not(.ant-btn-lg) {
+        min-height: 32px;
+        height: fit-content;
+      }
+    }
+
+    &.ant-btn-default {
+      background-color: transparent;
+      border-color: var(--acx-primary-black);
+      &:hover, &:focus, &:active {
+        border-color: var(--acx-primary-black);
+        color: var(--acx-primary-black);
+      }
+    }
+
+    &.ant-btn-primary {
+      background-color: var(--acx-accents-orange-50);
+      border-color: var(--acx-accents-orange-50);
+      &:hover, &:focus {
+        background-color: var(--acx-accents-orange-60);
+        border-color: var(--acx-accents-orange-60);
+      }
+      &:active {
+        background-color: var(--acx-accents-orange-50);
+        border-color: var(--acx-accents-orange-60);
+      }
+    }
+
+    &.ant-btn-icon-only:not(.ant-btn-sm):not(.ant-btn-lg) {
+      width: 32px;
+      height: 32px;
+    }
+
+    &.ant-btn-link:not(.ant-btn-icon-only) {
+      background: transparent;
+      padding: 0;
+      height: var(--acx-body-3-line-height);
+
+      &:hover, &:focus, &:active {
+        color: var(--acx-accents-blue-60);
+      }
+
+      &.ant-btn-sm {
+        height: var(--acx-body-4-line-height);
+      }
+
+      &.ant-btn-lg {
+        height: var(--acx-body-2-line-height);
+      }
+    }
+
+    &.ant-btn-background-ghost {
+      border: 0;
+    }
+
+    &[disabled] {
+      &.ant-btn-default {
+        color: var(--acx-neutrals-40);
+        background-color: transparent;
+        border-color: var(--acx-neutrals-40);
+      }
+
+      &.ant-btn-primary {
+        color: var(--acx-neutrals-10);
+        background-color: var(--acx-neutrals-40);
+        border-color: var(--acx-neutrals-40);
+      }
+
+      &.ant-btn-link:not(.ant-btn-icon-only) {
+        &, &:hover, &:focus {
+          color: var(--acx-neutrals-40);
+        }
+      }
+    }
+  }
+
   .ant-collapse {
     &.ant-collapse-icon-position-end
     > .ant-collapse-item {
@@ -723,10 +807,16 @@
       .ant-btn:not(.ant-btn-link) {
         min-width: 85px;
         max-width: 200px;
-        height: auto;
-        padding: 6px 16px;
         white-space: break-spaces;
         margin-bottom: auto;
+        &.ant-btn-primary:not([disabled]):focus {
+          background-color: var(--acx-accents-orange-50);
+          border-color: var(--acx-accents-orange-50);
+        }
+        &.ant-btn-primary:not([disabled]):hover {
+          background-color: var(--acx-accents-orange-60);
+          border-color: var(--acx-accents-orange-60);
+        }
       }
       .ant-btn + .ant-btn {
         margin-left: 12px;

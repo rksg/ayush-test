@@ -7,7 +7,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
   >
     <div>
       <button
-        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
         type="button"
       >
         <span>
@@ -967,7 +967,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     Access Control
                   </h4>
                   <button
-                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
                     type="button"
                   >
                     <span>
@@ -975,7 +975,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                    class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
                     type="button"
                   >
                     <span>
