@@ -82,13 +82,11 @@ export function EdgeTraceRouteForm () {
     }]}>
       <Form.Item
         name='traceRoute'>
-
         <TextArea
           style={{ resize: 'none', height: '300px' }}
           autoSize={false}
           readOnly={true}
         />
-
       </Form.Item>
     </Loader>
   </Form>
