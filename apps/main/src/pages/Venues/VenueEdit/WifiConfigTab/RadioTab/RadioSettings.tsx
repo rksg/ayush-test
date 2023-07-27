@@ -80,7 +80,7 @@ const RadioLable = styled.div`
 export function RadioSettings () {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
-  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const {
     editContextData,
@@ -161,7 +161,7 @@ export function RadioSettings () {
     })
   }
 
-  const supportedApModelTooltip = Wifi7_320Mhz_FeatureFlag ?
+  const supportedApModelTooltip = wifi7_320Mhz_FeatureFlag ?
     // eslint-disable-next-line max-len
     $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' }) :
     // eslint-disable-next-line max-len
@@ -184,7 +184,7 @@ export function RadioSettings () {
       setBandwidth24GOptions(getSupportBandwidth(channelBandwidth24GOptions, supportCh24g))
       setBandwidth5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g))
       // eslint-disable-next-line max-len
-      const wifi7_320Bandwidth = Wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+      const wifi7_320Bandwidth = wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
       setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidth, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
@@ -596,7 +596,7 @@ export function RadioSettings () {
                   {$t({ defaultMessage: '6 GHz' })}
                   <Tooltip
                     placement='topRight'
-                    title={'6 GHz only supports R770 and R560.'}
+                    title={$t({ defaultMessage: '6 GHz only supports R770 and R560.' })}
                   >
                     <QuestionMarkCircleOutlined
                       style={{ height: '16px' }} />
