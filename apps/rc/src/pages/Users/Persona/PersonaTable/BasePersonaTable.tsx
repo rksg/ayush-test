@@ -4,10 +4,10 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                                   from '@acx-ui/icons'
-import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Table, TableColumn, TableProps }  from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                    from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer, PersonaGroupSelect, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
@@ -433,7 +433,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         title={$t({ defaultMessage: 'Import from file' })}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        type='Persona'
+        type={ImportFileDrawerType.Persona}
         acceptType={['csv']}
         maxSize={CsvSize['5MB']}
         maxEntries={512}

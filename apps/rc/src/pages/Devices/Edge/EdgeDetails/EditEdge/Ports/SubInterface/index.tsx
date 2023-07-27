@@ -5,7 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps }   from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }                                                                   from '@acx-ui/rc/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                             from '@acx-ui/rc/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation } from '@acx-ui/rc/services'
 import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                         from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                                   from '@acx-ui/user'
@@ -191,7 +191,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
               rowKey='id'
             />
             <ImportFileDrawer
-              type='EdgeSubInterface'
+              type={ImportFileDrawerType.EdgeSubInterface}
               title={$t({ defaultMessage: 'Import from file' })}
               maxSize={CsvSize['5MB']}
               acceptType={['csv']}
