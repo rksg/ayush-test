@@ -699,6 +699,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               children={<Input />}
               rules={[
                 { required: true },
+                // UnitName(235) -> PersonaName(255)
+                // ex. Rule = GUEST_{UnitName}-{timestamp} or UNIT_{UnitName}-{timestamp}
                 { max: 235 },
                 { validator: (_, value) => nameValidator(value) }
               ]}
