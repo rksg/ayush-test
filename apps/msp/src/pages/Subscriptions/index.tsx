@@ -197,9 +197,9 @@ export function Subscriptions () {
         let wifiUsed = 0
         let wifiAssigned = 0
         wifiData.forEach(summary => {
-          wifiQuantity += summary.quantity + summary.remainingDevices
           wifiUsed += summary.quantity
           wifiAssigned += summary.myAssignments ?? 0
+          wifiQuantity += summary.quantity + summary.remainingDevices + wifiAssigned
           setTotalWifiCount(wifiQuantity)
           setUsedWifiCount(wifiUsed)
           setAssignedWifiCount(wifiAssigned)
@@ -209,9 +209,9 @@ export function Subscriptions () {
         let switchUsed = 0
         let switchAssigned = 0
         switchData.forEach(summary => {
-          switchQuantity += summary.quantity + summary.remainingDevices
           switchUsed += summary.quantity
           switchAssigned += summary.myAssignments ?? 0
+          switchQuantity += summary.quantity + summary.remainingDevices + switchAssigned
           setTotalSwitchCount(switchQuantity)
           setUsedSwitchCount(switchUsed)
           setAssignedSwitchCount(switchAssigned)

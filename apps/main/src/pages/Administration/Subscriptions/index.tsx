@@ -135,7 +135,7 @@ const SubscriptionTable = () => {
       sorter: { compare: sortProp('assignedLicense', defaultSort) },
       render: function (_, row) {
         return row.assignedLicense
-          ? $t({ defaultMessage: 'Purchased' }) : $t({ defaultMessage: 'Assigned' })
+          ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Purchased' })
       }
     },
     // ] : []),
