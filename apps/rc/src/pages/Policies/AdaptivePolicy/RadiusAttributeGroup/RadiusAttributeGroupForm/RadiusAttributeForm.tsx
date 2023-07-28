@@ -214,7 +214,8 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
             <Form.Item name='attributeValue'
               rules={[
                 { required: true },
-                { validator: (_, value) => attributeValueValidator(value) }]}
+                { validator: (_, value) => attributeValueValidator(value) },
+                { max: 255 }]}
               children={<Input/>}/>
           </FieldSpace>
         </Form.Item>
