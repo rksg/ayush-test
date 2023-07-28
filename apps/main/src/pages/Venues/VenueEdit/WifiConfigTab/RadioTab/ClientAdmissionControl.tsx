@@ -13,7 +13,7 @@ import { VenueClientAdmissionControl }                                          
 import { VenueEditContext } from '../..'
 import { FieldLabel }       from '../styledComponents'
 
-export const ClientAdmissionControlSliderBlock = styled.div`
+const ClientAdmissionControlSliderBlock = styled.div`
   margin-top:-25px;
   margin-right: 50px;
   height:auto;
@@ -132,67 +132,65 @@ export function ClientAdmissionControl () {
 
       {enable24G &&
       <ClientAdmissionControlSliderBlock>
-        <>
-          <Form.Item
-            label={$t({ defaultMessage: 'Min client count:' })}
-            name={minClientCount24GFieldName}
-            data-testid='client-admission-control-min-client-count-24g'
-            children={
-              <Slider
-                disabled={!enable24G}
-                tooltipVisible={false}
-                style={{ width: '245px' }}
-                min={0}
-                max={100}
-                marks={{
-                  0: { label: '0' },
-                  100: { label: '100' }
-                }}
-                onChange={onFormDataChanged}
-              />
-            }
-          />
-          <br/>
-          <Form.Item
-            label={$t({ defaultMessage: 'Max client load: (%)' })}
-            name={maxRadioLoad24GFieldName}
-            data-testid='client-admission-control-max-client-load-24g'
-            children={
-              <Slider
-                disabled={!enable24G}
-                tooltipVisible={false}
-                style={{ width: '245px' }}
-                min={50}
-                max={100}
-                marks={{
-                  50: { label: '50%' },
-                  100: { label: '100%' }
-                }}
-                onChange={onFormDataChanged}
-              />
-            }
-          />
-          <br/>
-          <Form.Item
-            label={$t({ defaultMessage: 'Min client throughput: (Mbps)' })}
-            name={minClientThroughput24GFieldName}
-            data-testid='client-admission-control-min-client-throughput-24g'
-            children={
-              <Slider
-                disabled={!enable24G}
-                tooltipVisible={false}
-                style={{ width: '245px' }}
-                min={0}
-                max={100}
-                marks={{
-                  0: { label: '0 Mbps' },
-                  100: { label: '100 Mbps' }
-                }}
-                onChange={onFormDataChanged}
-              />
-            }
-          />
-        </>
+        <Form.Item
+          label={$t({ defaultMessage: 'Min client count:' })}
+          name={minClientCount24GFieldName}
+          data-testid='client-admission-control-min-client-count-24g'
+          children={
+            <Slider
+              disabled={!enable24G}
+              tooltipVisible={false}
+              style={{ width: '245px' }}
+              min={0}
+              max={100}
+              marks={{
+                0: { label: '0' },
+                100: { label: '100' }
+              }}
+              onChange={onFormDataChanged}
+            />
+          }
+        />
+        <br/>
+        <Form.Item
+          label={$t({ defaultMessage: 'Max client load: (%)' })}
+          name={maxRadioLoad24GFieldName}
+          data-testid='client-admission-control-max-client-load-24g'
+          children={
+            <Slider
+              disabled={!enable24G}
+              tooltipVisible={false}
+              style={{ width: '245px' }}
+              min={50}
+              max={100}
+              marks={{
+                50: { label: '50%' },
+                100: { label: '100%' }
+              }}
+              onChange={onFormDataChanged}
+            />
+          }
+        />
+        <br/>
+        <Form.Item
+          label={$t({ defaultMessage: 'Min client throughput: (Mbps)' })}
+          name={minClientThroughput24GFieldName}
+          data-testid='client-admission-control-min-client-throughput-24g'
+          children={
+            <Slider
+              disabled={!enable24G}
+              tooltipVisible={false}
+              style={{ width: '245px' }}
+              min={0}
+              max={100}
+              marks={{
+                0: { label: '0 Mbps' },
+                100: { label: '100 Mbps' }
+              }}
+              onChange={onFormDataChanged}
+            />
+          }
+        />
       </ClientAdmissionControlSliderBlock>
       }
     </div>
@@ -217,67 +215,65 @@ export function ClientAdmissionControl () {
 
       {enable50G &&
         <ClientAdmissionControlSliderBlock>
-          <>
-            <Form.Item
-              label={$t({ defaultMessage: 'Min client count:' })}
-              name={minClientCount50GFieldName}
-              data-testid='client-admission-control-min-client-count-50g'
-              children={
-                <Slider
-                  disabled={!enable50G}
-                  tooltipVisible={false}
-                  style={{ width: '245px' }}
-                  min={0}
-                  max={100}
-                  marks={{
-                    0: { label: '0' },
-                    100: { label: '100' }
-                  }}
-                  onChange={onFormDataChanged}
-                />
-              }
-            />
-            <br/>
-            <Form.Item
-              label={$t({ defaultMessage: 'Max client load: (%)' })}
-              name={maxRadioLoad50GFieldName}
-              data-testid='client-admission-control-max-client-load-50g'
-              children={
-                <Slider
-                  disabled={!enable50G}
-                  tooltipVisible={false}
-                  style={{ width: '245px' }}
-                  min={50}
-                  max={100}
-                  marks={{
-                    50: { label: '50%' },
-                    100: { label: '100%' }
-                  }}
-                  onChange={onFormDataChanged}
-                />
-              }
-            />
-            <br/>
-            <Form.Item
-              label={$t({ defaultMessage: 'Min client throughput: (Mbps)' })}
-              name={minClientThroughput50GFieldName}
-              data-testid='client-admission-control-min-client-throughput-50g'
-              children={
-                <Slider
-                  disabled={!enable50G}
-                  tooltipVisible={false}
-                  style={{ width: '245px' }}
-                  min={0}
-                  max={100}
-                  marks={{
-                    0: { label: '0 Mbps' },
-                    100: { label: '100 Mbps' }
-                  }}
-                  onChange={onFormDataChanged}
-                />
-              }
-            />
-          </>
+          <Form.Item
+            label={$t({ defaultMessage: 'Min client count:' })}
+            name={minClientCount50GFieldName}
+            data-testid='client-admission-control-min-client-count-50g'
+            children={
+              <Slider
+                disabled={!enable50G}
+                tooltipVisible={false}
+                style={{ width: '245px' }}
+                min={0}
+                max={100}
+                marks={{
+                  0: { label: '0' },
+                  100: { label: '100' }
+                }}
+                onChange={onFormDataChanged}
+              />
+            }
+          />
+          <br/>
+          <Form.Item
+            label={$t({ defaultMessage: 'Max client load: (%)' })}
+            name={maxRadioLoad50GFieldName}
+            data-testid='client-admission-control-max-client-load-50g'
+            children={
+              <Slider
+                disabled={!enable50G}
+                tooltipVisible={false}
+                style={{ width: '245px' }}
+                min={50}
+                max={100}
+                marks={{
+                  50: { label: '50%' },
+                  100: { label: '100%' }
+                }}
+                onChange={onFormDataChanged}
+              />
+            }
+          />
+          <br/>
+          <Form.Item
+            label={$t({ defaultMessage: 'Min client throughput: (Mbps)' })}
+            name={minClientThroughput50GFieldName}
+            data-testid='client-admission-control-min-client-throughput-50g'
+            children={
+              <Slider
+                disabled={!enable50G}
+                tooltipVisible={false}
+                style={{ width: '245px' }}
+                min={0}
+                max={100}
+                marks={{
+                  0: { label: '0 Mbps' },
+                  100: { label: '100 Mbps' }
+                }}
+                onChange={onFormDataChanged}
+              />
+            }
+          />
         </ClientAdmissionControlSliderBlock>
       }
     </div>
