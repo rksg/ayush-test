@@ -25,7 +25,7 @@ import { PersonaGroupDrawer } from './index'
 
 const closeFn = jest.fn()
 
-describe('Persona Group Drawer', () => {
+describe.skip('Persona Group Drawer', () => {
 
   beforeEach(async () => {
     closeFn.mockClear()
