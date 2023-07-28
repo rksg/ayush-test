@@ -29,11 +29,12 @@ export function RadioTab () {
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
 
+  const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
   const loadBalancingTitle = $t({ defaultMessage: 'Load Balancing' })
   const anchorItems = [{
-    title: wifiSettingTitle,
+    title: wifiSettingLink,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='radio-settings'>

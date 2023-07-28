@@ -39,7 +39,8 @@ const params = {
   tenantId: 'tenant-id'
 }
 
-describe('LanPortPoeSettings', () => {
+// waiting for backend support AP PoE Mode
+xdescribe('LanPortPoeSettings', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
