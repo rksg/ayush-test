@@ -178,17 +178,17 @@ export function WISPrForm () {
         const regions = _.find(externalProviders,{ name: pName })?.regions
         setRegionOption(regions)
       }
-      if(data.wlan?.wlanSecurity!== WlanSecurityEnum.None){
-        if (data.wlan?.wlanSecurity === WlanSecurityEnum.OWE) {
-          form.setFieldValue('networkSecurity', 'OWE')
-        } else {
-          form.setFieldValue('networkSecurity', 'PSK')
-          setEnablePreShared(true)
-          form.setFieldValue('pskProtocol', data.wlan?.wlanSecurity)
-        }
-        form.setFieldValue(['wlan', 'wlanSecurity'], data.wlan?.wlanSecurity)
-      } else {
+      const { wlanSecurity } = data.wlan || {}
+      if (wlanSecurity === WlanSecurityEnum.None) {
         form.setFieldValue('networkSecurity', 'NONE')
+      } else if (wlanSecurity === WlanSecurityEnum.OWE) {
+        form.setFieldValue('networkSecurity', 'OWE')
+        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
+      } else {
+        form.setFieldValue('networkSecurity', 'PSK')
+        setEnablePreShared(true)
+        form.setFieldValue('pskProtocol', wlanSecurity)
+        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
       }
       if(!pName?.trim() || pName==='Custom Provider'){
         form.setFieldValue(['guestPortal','wisprPage','externalProviderName'], 'Custom Provider')
