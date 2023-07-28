@@ -52,7 +52,7 @@ export function Modal ({
       <Button {...cancelButtonProps as ButtonProps} key='cancel' onClick={onCancel}>
         {cancelText || $t({ defaultMessage: 'Cancel' })}
       </Button>,
-      <Button {...okButtonProps as ButtonProps} key='ok' onClick={onOk} type='secondary'>
+      <Button {...okButtonProps as ButtonProps} key='ok' onClick={onOk} type='primary'>
         {okText || $t({ defaultMessage: 'OK' })}
       </Button>
     ]
