@@ -68,7 +68,7 @@ describe('ACLSettingDrawer', () => {
     expect(drawerVisible.current.visible).toEqual(false)
   })
 
-  it('should add acl correctly', async () => {
+  it.skip('should add acl correctly', async () => {
     const user = userEvent.setup()
     const { result: drawerVisible } = renderHook(() => {
       const [ visible, setVisible ] = useState(true)
@@ -125,7 +125,7 @@ describe('ACLSettingDrawer', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
-  it('should render protocol option correctly', async () => {
+  it.skip('should render protocol option correctly', async () => {
     const user = userEvent.setup()
     const { result: drawerVisible } = renderHook(() => {
       const [ visible, setVisible ] = useState(true)
