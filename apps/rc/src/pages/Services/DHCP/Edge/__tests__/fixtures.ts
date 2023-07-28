@@ -21,6 +21,14 @@ export const mockEdgeDhcpData = {
       activated: true
     }
   ],
+  dhcpOptions: [
+    {
+      id: '1',
+      optionId: 'opt1',
+      optionName: 'Option 1',
+      optionValue: '123'
+    }
+  ],
   hosts: [
     {
       id: '1',

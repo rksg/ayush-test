@@ -60,23 +60,28 @@ export function ApPacketCaptureForm () {
   }
 
   useEffect(() => {
-    const data = packetCaptureState.data
+    const { data } = packetCaptureState
     if (data) {
+      const { status } = data
+
       setIsPrepare(false)
-      setIsCapturing(data.status === ApPacketCaptureStateEnum.CAPTURING)
-      if (data.status === ApPacketCaptureStateEnum.CAPTURING) {
+      setIsCapturing(status === ApPacketCaptureStateEnum.CAPTURING)
+      if (status === ApPacketCaptureStateEnum.CAPTURING) {
         setSessionId(data.sessionId || '')
       }
 
-      if (data.status === ApPacketCaptureStateEnum.STOPPING) {
+      if (status === ApPacketCaptureStateEnum.STOPPING) {
         setIsPrepare(true)
         packetCaptureStateRefetch()
       }
 
-      if(data.status === ApPacketCaptureStateEnum.READY && hasRequest) {
+      if(status === ApPacketCaptureStateEnum.READY
+        && hasRequest
+        && sessionId === data.sessionId) {
         try {
-          if (data.fileUrl && data.fileName) {
-            saveAs(data.fileUrl, data.fileName.split('?')[0])
+          const { fileUrl, fileName } = data
+          if (fileUrl && fileName) {
+            saveAs(fileUrl, fileName.split('?')[0])
           }
         }
         catch {

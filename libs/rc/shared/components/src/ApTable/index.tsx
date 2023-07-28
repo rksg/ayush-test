@@ -358,7 +358,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
-      navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/details`, { replace: false })
+      navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
