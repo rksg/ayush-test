@@ -6,7 +6,8 @@ import { Provider }                          from '@acx-ui/store'
 import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
 import { DnsProxyModal }   from './DnsProxyModal'
-import { DnsProxyContext } from './ServicesForm'
+import { DnsProxyContext } from './NetworkControlTab'
+
 
 let dnsProxyList = []
 const setDnsProxyList = jest.fn()

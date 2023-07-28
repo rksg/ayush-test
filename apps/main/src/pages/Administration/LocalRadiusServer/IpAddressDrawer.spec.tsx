@@ -1,6 +1,6 @@
-import { fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                                from '@testing-library/user-event'
-import { rest }                                 from 'msw'
+import { fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                                         from '@testing-library/user-event'
+import { rest }                                          from 'msw'
 
 import { RadiusClientConfigUrlsInfo }      from '@acx-ui/rc/utils'
 import { Provider }                        from '@acx-ui/store'
@@ -47,11 +47,12 @@ describe('IpAddressDrawer', () => {
   })
 
   it('should edit ip address successfully', async () => {
+    const onCloseFn = jest.fn()
     render(
       <Provider>
         <IpAddressDrawer
           visible={true}
-          setVisible={jest.fn()}
+          setVisible={onCloseFn}
           editMode={true}
           clientConfig={{ ipAddress: ['192.168.1.1', '192.168.1.2'] }}
           editIpAddress={'192.168.1.1'}
@@ -78,6 +79,7 @@ describe('IpAddressDrawer', () => {
     await act(async () => {
       fireEvent.click(saveButton)
     })
+    await waitFor(() => expect(onCloseFn).toBeCalled())
   })
 
   it('Add conflict ip address and show error toast correctly', async () => {
@@ -122,10 +124,14 @@ describe('IpAddressDrawer', () => {
   })
 
   it('Add show unknown error toast correctly', async () => {
+    const mockedFn = jest.fn()
     mockServer.use(
       rest.patch(
         RadiusClientConfigUrlsInfo.updateRadiusClient.url,
-        (req, res, ctx) => res(ctx.status(500), ctx.json({}))
+        (req, res, ctx) => {
+          mockedFn()
+          return res(ctx.status(500), ctx.json({}))
+        }
       )
     )
 
@@ -142,6 +148,7 @@ describe('IpAddressDrawer', () => {
     await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.3')
     await userEvent.click(await screen.findByText('Apply'))
 
+    await waitFor(() => expect(mockedFn).toBeCalled())
     // TODO
     // await screen.findByText('Server Error')
   })

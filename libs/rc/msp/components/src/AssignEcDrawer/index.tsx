@@ -233,7 +233,6 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   return (
     <Drawer
       title={$t({ defaultMessage: 'Manage Customers Assigned' })}
-      onBackClick={onClose}
       visible={visible}
       onClose={onClose}
       children={content}
