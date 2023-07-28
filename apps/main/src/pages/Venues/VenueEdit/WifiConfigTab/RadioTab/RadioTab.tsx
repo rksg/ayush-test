@@ -59,6 +59,25 @@ export function RadioTab () {
       </>
     )
   }] : []),
+  ...(supoortClientAdmissionControl? [{
+    title: clientAdmissionControlTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='client-admission-control'>
+          { clientAdmissionControlTitle }
+          <Tooltip
+            title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+              'based on the connectivity thresholds set per radio.' })}
+            placement='right'>
+            <QuestionMarkCircleOutlined
+              style={{ height: '18px', marginBottom: -3 }}
+            />
+          </Tooltip>
+        </StepsFormLegacy.SectionTitle>
+        <ClientAdmissionControl />
+      </>
+    )
+  }]: []),
   {
     title: externalTitle,
     content: (
@@ -70,28 +89,6 @@ export function RadioTab () {
       </>
     )
   }]
-
-  if (supoortClientAdmissionControl) {
-    anchorItems.push({
-      title: clientAdmissionControlTitle,
-      content: (
-        <>
-          <StepsFormLegacy.SectionTitle id='client-admission-control'>
-            { clientAdmissionControlTitle }
-            <Tooltip
-              title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
-                'based on the connectivity thresholds set per radio.' })}
-              placement='right'>
-              <QuestionMarkCircleOutlined
-                style={{ height: '18px', marginBottom: -3 }}
-              />
-            </Tooltip>
-          </StepsFormLegacy.SectionTitle>
-          <ClientAdmissionControl />
-        </>
-      )
-    })
-  }
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
