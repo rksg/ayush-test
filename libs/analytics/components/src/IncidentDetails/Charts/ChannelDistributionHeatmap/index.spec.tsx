@@ -22,9 +22,6 @@ jest.mock('@acx-ui/utils', () => {
     getIntl: () => intl
   }
 })
-jest.mock('react-intl', () => ({
-  defineMessage: jest.fn((message) => message.defaultMessage)
-}))
 
 const buffer = {
   front: { value: 0, unit: 'hours' as unitOfTime.Base },
