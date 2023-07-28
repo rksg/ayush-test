@@ -68,6 +68,8 @@ module.exports = {
   '@link-color': 'var(--acx-accents-blue-50)',
   '@link-hover-color': 'var(--acx-accents-blue-60)',
   '@link-active-color': 'var(--acx-accents-blue-60)',
+  '@link-hover-decoration': 'underline',
+  '@link-focus-decoration': 'underline',
 
   '@menu-dark-bg': '#333333', //var(--acx-primary-black)'
   '@menu-dark-color': 'var(--acx-primary-white)',

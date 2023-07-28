@@ -359,7 +359,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-ivTmOn sc-iIPllB cORnh kbFTYz"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-ivTmOn sc-iIPllB cORnh hIFNhG"
             type="button"
           >
             <svg
@@ -612,7 +612,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           style="margin-right: 24px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-ivTmOn sc-iIPllB cORnh kbFTYz"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-ivTmOn sc-iIPllB cORnh hIFNhG"
             type="button"
           >
             <svg

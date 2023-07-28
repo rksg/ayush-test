@@ -89,6 +89,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
           display: flex;
           flex-flow: column;
           transition: unset;
+          a { text-decoration: none !important; }
         }
         .ant-menu-title-content { transition: all 0.2s !important; }
         .ant-menu-submenu {

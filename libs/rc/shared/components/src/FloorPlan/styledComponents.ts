@@ -28,7 +28,7 @@ export const EpmtyFloorplanContainer = styled('div')`
 export const RogueApButton = styled(Button)`
  &:hover, &:visited {
   svg path {
-    stroke: var(--acx-accents-orange-50) !important
+    stroke: var(--acx-accents-blue-60) !important
   }
 }
 svg path {

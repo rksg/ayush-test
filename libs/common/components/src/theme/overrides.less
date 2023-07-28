@@ -101,8 +101,13 @@
       padding: 0;
       height: var(--acx-body-3-line-height);
 
-      &:hover, &:focus, &:active {
+      &:focus {
+        color: var(--acx-accents-blue-50);
+        span { text-decoration: underline; }
+      }
+      &:hover, &:active {
         color: var(--acx-accents-blue-60);
+        span { text-decoration: underline; }
       }
 
       &.ant-btn-sm {
