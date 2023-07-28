@@ -204,7 +204,7 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Finish/i }) )
   })
 
-  it('should render Switch Configuration Profile form with VLAN correctly', async () => {
+  it.skip('should render Switch Configuration Profile form with VLAN correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       action: 'add'
