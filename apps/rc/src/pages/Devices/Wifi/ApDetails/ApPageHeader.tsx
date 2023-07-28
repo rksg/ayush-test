@@ -1,5 +1,4 @@
 import {
-  Dropdown,
   Menu,
   MenuProps,
   Space
@@ -7,11 +6,10 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand }                     from '@acx-ui/icons'
-import { APStatus }                        from '@acx-ui/rc/components'
-import { useApActions }                    from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { APStatus }                                                      from '@acx-ui/rc/components'
+import { useApActions }                                                  from '@acx-ui/rc/components'
+import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
@@ -105,14 +103,14 @@ function ApPageHeader () {
             selectionType={range}
           />
           : <></>,
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu}>{()=>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
-              <ArrowExpand />
+              <CaretDownSolidIcon />
             </Space>
           </Button>
-        </Dropdown>,
+        }</Dropdown>,
         <Button
           type='primary'
           onClick={() => {

@@ -392,7 +392,7 @@ function PersonaDetailsPageHeader (props: {
   }
 
   const extra = filterByAccess([
-    <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
+    <Button type='primary' onClick={showRevokedModal} disabled={!allowed}>
       {$t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}

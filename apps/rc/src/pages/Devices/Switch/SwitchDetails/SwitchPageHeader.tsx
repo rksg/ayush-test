@@ -1,17 +1,16 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import _                                    from 'lodash'
-import moment                               from 'moment-timezone'
-import { useIntl }                          from 'react-intl'
+import { Menu, MenuProps, Space } from 'antd'
+import _                          from 'lodash'
+import moment                     from 'moment-timezone'
+import { useIntl }                from 'react-intl'
 
-import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
-import { DateFormatEnum, formatter }                        from '@acx-ui/formatter'
-import { ArrowExpand }                                      from '@acx-ui/icons'
-import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
-import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
-import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
+import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
+import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }                         from '@acx-ui/rc/services'
+import { SwitchRow, SwitchStatusEnum, SwitchViewModel }                           from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -205,14 +204,14 @@ function SwitchPageHeader () {
             showTimePicker
             selectionType={range}
           />,
-          <Dropdown overlay={menu}>
+          <Dropdown overlay={menu}>{() =>
             <Button>
               <Space>
                 {$t({ defaultMessage: 'More Actions' })}
-                <ArrowExpand />
+                <CaretDownSolidIcon />
               </Space>
             </Button>
-          </Dropdown>,
+          }</Dropdown>,
           <Button
             type='primary'
             onClick={() =>

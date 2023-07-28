@@ -1,11 +1,10 @@
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import moment                               from 'moment-timezone'
-import { useIntl }                          from 'react-intl'
+import { Menu, MenuProps, Space } from 'antd'
+import moment                     from 'moment-timezone'
+import { useIntl }                from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                       from '@acx-ui/components'
-import { ArrowExpand }                                           from '@acx-ui/icons'
-import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
-import { ClientStatusEnum, ClientUrlsInfo }                      from '@acx-ui/rc/utils'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { useDisconnectClientMutation, useGetClientDetailsQuery }         from '@acx-ui/rc/services'
+import { ClientStatusEnum, ClientUrlsInfo }                              from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -114,14 +113,14 @@ function ClientDetailPageHeader () {
       ]}
       extra={filterByAccess([
         <DatePicker key='date-filter' />,
-        <Dropdown overlay={menu}>
-          <Button type='secondary'>
+        <Dropdown overlay={menu}>{()=>
+          <Button type='primary'>
             <Space>
               {$t({ defaultMessage: 'Actions' })}
-              <ArrowExpand />
+              <CaretDownSolidIcon />
             </Space>
           </Button>
-        </Dropdown>
+        }</Dropdown>
       ])}
       footer={<ClientDetailTabs />}
     />

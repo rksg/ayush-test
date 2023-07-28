@@ -19,9 +19,6 @@ export const PoeUsageIcon = styled(PoeUsage)`
 export const Container = styled.div`
   width: 100%;
   height: 100%;
-  .ant-btn-link {
-    background: transparent;
-  }
 `
 
 export const ChartTopTitle = styled.span`
