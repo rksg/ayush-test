@@ -125,7 +125,7 @@ describe('Firmware Venues Table', () => {
 
     const notCheckedOptions = await screen.findAllByRole('radio', { hidden: false, checked: false })
     expect(notCheckedOptions).toHaveLength(3)
-    expect(screen.getByRole('button', { name: /Run Update/i })).not.toBeDisabled()
+    expect(screen.getByRole('button', { name: /Run Update/i })).toBeDisabled()
   })
 
   it('should selected default options in dialog when feature flag is on', async () => {
