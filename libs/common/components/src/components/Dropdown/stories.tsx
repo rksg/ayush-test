@@ -1,13 +1,15 @@
 import React from 'react'
 
-import { storiesOf } from '@storybook/react'
-import { Menu }      from 'antd'
-import styled        from 'styled-components/macro'
+import { storiesOf }   from '@storybook/react'
+import { Menu, Space } from 'antd'
+import styled          from 'styled-components/macro'
 
-import { WorldSolid, ArrowExpand, QuestionMarkCircleSolid, ConfigurationOutlined } from '@acx-ui/icons'
+import { WorldSolid, QuestionMarkCircleSolid, ConfigurationOutlined, CaretDownSolid } from '@acx-ui/icons'
 
 import { Button }   from '../Button'
 import { LayoutUI } from '../Layout/styledComponents'
+
+import { CaretDownSolidIcon } from './styledComponents'
 
 import { Dropdown } from '.'
 
@@ -47,7 +49,7 @@ storiesOf('Dropdown', module)
       <LayoutUI.DropdownText>
         <Icon children={<WorldSolid />} />
         {selectedKeys}
-        <Icon children={<ArrowExpand />} />
+        <LayoutUI.Icon children={<CaretDownSolid />}/>
       </LayoutUI.DropdownText>
     }</Dropdown>
   })
@@ -66,6 +68,16 @@ storiesOf('Dropdown', module)
       <p>
         <Dropdown overlay={helpMenu}>{() =>
           <Button>Open Dropdown</Button>
+        }</Dropdown>
+      </p>
+      <p>
+        <Dropdown overlay={helpMenu}>{() =>
+          <Button>
+            <Space>
+              More Actions
+              <CaretDownSolidIcon />
+            </Space>
+          </Button>
         }</Dropdown>
       </p>
     </>
