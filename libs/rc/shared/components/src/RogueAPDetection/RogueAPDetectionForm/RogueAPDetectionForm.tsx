@@ -13,6 +13,7 @@ import {
   RogueAPRule,
   RogueVenue,
   getPolicyRoutePath,
+  getPolicyListRoutePath,
   PolicyType,
   PolicyOperation, CommonResult
 } from '@acx-ui/rc/utils'
@@ -91,7 +92,10 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
           : $t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'Policies & Profiles' }) },
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          },
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
       />}
