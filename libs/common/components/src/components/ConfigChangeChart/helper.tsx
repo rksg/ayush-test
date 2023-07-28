@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { debounce }                        from 'lodash'
@@ -31,7 +31,8 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
   onDotClick?: (params: ConfigChange) => void,
   onBrushPositionsChange?: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
-  setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
+  setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 }
 
 type ChartRowMappingType = { key: string, label: string, color: string }
@@ -286,11 +287,12 @@ export function useDataZoom (
   chartBoundary: number[],
   setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>,
   zoomBoundary?: { start: number, end: number },
-  setZoomBoundary?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
+  setZoomBoundary?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 ) {
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
-
   const onDatazoomCallback = useCallback((e: unknown) => {
+    setInitialZoom?.({ start: chartBoundary[0], end: chartBoundary[1] })
     const event = e as unknown as OnDatazoomEvent
     if (event.batch[0].startValue === chartBoundary[0] &&
       event.batch[0].endValue === chartBoundary[1]) {
@@ -327,7 +329,6 @@ export function useDataZoom (
 
   useEffect(() => {
     if (!eChartsRef?.current || !zoomBoundary) return
-    if ((zoomBoundary.start === chartBoundary[0] && zoomBoundary.end === chartBoundary[1])) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({
       type: 'dataZoom',

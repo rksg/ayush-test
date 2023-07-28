@@ -38,6 +38,7 @@ export function ConfigChangeChart ({
   onBrushPositionsChange,
   chartZoom,
   setChartZoom,
+  setInitialZoom,
   ...props
 }: ConfigChangeChartProps) {
 
@@ -68,7 +69,7 @@ export function ConfigChangeChart ({
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =
-    useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom)
+    useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom, setInitialZoom)
 
   const option: EChartsOption = {
     animation: false,

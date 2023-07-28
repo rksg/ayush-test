@@ -15,9 +15,13 @@ function BasicChart (props: {
   onBrushPositionsChange: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
+  setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 }){
   const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
-  const { selected, onClick } = props
+  const {
+    selected, onClick, chartZoom, setChartZoom,
+    setInitialZoom, onBrushPositionsChange
+  } = props
   const queryResults = useConfigChangeQuery({
     ...getFilterPayload({ filter }),
     start: startDate,
@@ -37,9 +41,10 @@ function BasicChart (props: {
             ]}
             onDotClick={onClick}
             selectedData={selected?.id}
-            onBrushPositionsChange={props.onBrushPositionsChange}
-            chartZoom={props.chartZoom}
-            setChartZoom={props.setChartZoom}
+            onBrushPositionsChange={onBrushPositionsChange}
+            chartZoom={chartZoom}
+            setChartZoom={setChartZoom}
+            setInitialZoom={setInitialZoom}
           />}
       </AutoSizer>
     </Card>
