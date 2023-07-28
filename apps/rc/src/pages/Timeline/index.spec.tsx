@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }                   from '@acx-ui/rc/utils'
 import { Provider }                         from '@acx-ui/store'
 import { mockRestApiQuery, render, screen } from '@acx-ui/test-utils'
@@ -34,19 +33,7 @@ describe('Timeline', () => {
     screen.getByText('Timeline')
   })
 
-  it('should not render breadcrumb when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <Timeline />
-      </Provider>,
-      { route: { params } }
-    )
-    expect(screen.queryByText('Administration')).toBeNull()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <Timeline />

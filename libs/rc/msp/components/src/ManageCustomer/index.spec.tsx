@@ -141,21 +141,6 @@ describe('ManageCustomer', () => {
     expect(screen.getByPlaceholderText('Set address here')).toBeDisabled()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    render(
-      <Provider>
-        <ManageCustomer />
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
-      })
-
-    expect(screen.queryByText('My Customers')).toBeNull()
-    expect(screen.queryByText('MSP Customers')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Customers'
-    })).toBeVisible()
-  })
-
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>

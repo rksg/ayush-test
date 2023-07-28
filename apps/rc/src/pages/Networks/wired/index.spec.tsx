@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { switchApi }                  from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
@@ -57,22 +56,7 @@ describe('Wired', () => {
     expect(await screen.findByText('On-Demand CLI Configuration')).toBeVisible()
   })
 
-  it('should render breadcrumb and title correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = {
-      tenantId: 'tenant-id',
-      activeTab: 'profiles'
-    }
-    render(<Provider><Wired /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
-    })
-
-    expect(await screen.findByText('Wired Networks')).toBeVisible()
-    expect(screen.queryByText('Wired')).toBeNull()
-  })
-
-  it('should render breadcrumb and title correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb and title correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       activeTab: 'profiles'

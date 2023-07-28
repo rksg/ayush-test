@@ -4,7 +4,6 @@ import { Modal }    from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { switchApi, venueApi }                                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo }                         from '@acx-ui/rc/utils'
 import { Provider, store }                                        from '@acx-ui/store'
@@ -91,28 +90,7 @@ describe('Wired', () => {
     expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const params = {
-      tenantId: 'tenant-id',
-      action: 'add'
-    }
-    render(
-      <Provider>
-        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
-          <ConfigurationProfileForm />
-        </ConfigurationProfileFormContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
-      })
-
-    expect(screen.getByRole('link', {
-      name: /wired networks/i
-    })).toBeTruthy()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       action: 'add'

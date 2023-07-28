@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, PortalUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import {
@@ -203,35 +202,7 @@ describe.skip('Portal Detail Page', () => {
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        PortalUrlsInfo.getPortalProfileDetail.url,
-        (_, res, ctx) => res(ctx.json(detailResult))
-      ),
-      rest.get(PortalUrlsInfo.getPortalLang.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
-            acceptTermsMsg: 'I accept the' }))
-        })
-    )
-    render(<Provider><PortalServiceDetail /></Provider>, {
-      route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Portal Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,

@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }                 from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { useIsTierAllowed }   from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -141,9 +141,7 @@ describe('Venues Table', () => {
     expect(within(row).getByRole('cell', { name: '3' })).toBeTruthy()
   })
 
-  it('should render correct title when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
+  it('should render correct title', async () => {
     render(
       <Provider>
         <VenuesTable />
@@ -154,22 +152,6 @@ describe('Venues Table', () => {
     await screen.findByText('Venues (0)')
     expect(screen.getByRole('heading', {
       name: /venues \(0\)/i
-    })).toBeTruthy()
-  })
-
-  it('should render correct title when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(
-      <Provider>
-        <VenuesTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/venues' }
-      })
-
-    await screen.findByText('Venues')
-    expect(screen.getByRole('heading', {
-      name: /venues/i
     })).toBeTruthy()
   })
 })

@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, PortalUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
@@ -95,44 +94,7 @@ describe('PortalForm', () => {
     await new Promise((r)=>{setTimeout(r, 300)})
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockServer.use(
-      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-        res(ctx.json({ COMMON: '{}' }))
-      ),
-      rest.post(
-        PortalUrlsInfo.savePortal.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
-      ),
-      rest.get(PortalUrlsInfo.getPortalLang.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
-        }),
-      rest.post(CommonUrlsInfo.getUploadURL.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ signedUrl: '/api/test', fileId: 'test' }))
-        }),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url
-        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
-      (_, res, ctx) => {
-        return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }],
-          paging: { page: 1, pageSize: 10, totalCount: 1 } }))
-      })
-    )
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
-    render(<Provider><PortalForm /></Provider>, {
-      route: { params }
-    })
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Portal Services'
-    })).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))

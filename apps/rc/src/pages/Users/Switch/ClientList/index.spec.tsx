@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import {
@@ -52,8 +51,7 @@ describe('ClientList', () => {
     expect(await screen.findByText('Switch')).toBeVisible()
   })
 
-  it('should render breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render breadcrumb correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }

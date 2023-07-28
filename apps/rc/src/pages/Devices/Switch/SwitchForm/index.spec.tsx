@@ -3,7 +3,6 @@ import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { venueApi }                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -56,18 +55,7 @@ describe('Add switch form', () => {
     expect(await screen.findByText(/add switch/i)).toBeVisible()
   })
 
-  it('should render switch breadcrumb correctly when feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<Provider><SwitchForm /></Provider>, {
-      route: { params, path: '/:tenantId/t/devices/switch/:action' }
-    })
-    expect(screen.getByRole('link', {
-      name: /switches/i
-    })).toBeTruthy()
-  })
-
-  it('should render switch breadcrumb correctly when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render switch breadcrumb correctly', async () => {
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
