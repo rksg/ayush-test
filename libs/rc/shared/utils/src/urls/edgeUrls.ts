@@ -148,6 +148,16 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/edges/:serialNumber/configReset',
     newApi: true
   },
+  pingEdge: {
+    method: 'PATCH',
+    url: '/edges/:serialNumber/hostDetails',
+    newApi: true
+  },
+  traceRouteEdge: {
+    method: 'PATCH',
+    url: '/edges/:serialNumber/hostDetails',
+    newApi: true
+  },
   downloadEdgesCSV: {
     method: 'post',
     url: '/edgeProfiles/inventories/query/csvFiles',
