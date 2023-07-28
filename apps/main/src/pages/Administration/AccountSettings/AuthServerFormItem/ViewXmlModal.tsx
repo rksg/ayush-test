@@ -39,7 +39,7 @@ export const ViewXmlModal = (props: ViewXmlModalProps) =>{
       visible={visible}
       footer={
         <Button onClick={() => handleOk()}
-          type={'secondary'}
+          type={'primary'}
         >
           {$t({ defaultMessage: 'Ok' })}
         </Button>}

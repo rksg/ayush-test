@@ -230,7 +230,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         disabled={!formData}
         loading={isLoading}
         onClick={() => okHandler()}
-        type={'secondary'}
+        type={'primary'}
       >
         {$t({ defaultMessage: 'Apply' })}
       </Button>
