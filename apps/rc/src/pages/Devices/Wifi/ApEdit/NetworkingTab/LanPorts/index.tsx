@@ -1,7 +1,7 @@
 import { useContext, useRef, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { isArray, omit }                        from 'lodash'
+import { isArray }                              from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext' //'antd/lib/form/context'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
@@ -17,9 +17,9 @@ import {
   useLazyGetVenueQuery,
   useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
-  useUpdateApCustomizationMutation,
-  useResetApCustomizationMutation,
-  useGetApCustomizationQuery
+  useGetApLanPortsQuery,
+  useUpdateApLanPortsMutation,
+  useResetApLanPortsMutation
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -50,7 +50,7 @@ export function LanPorts () {
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apLanPorts, isLoading: isApLanPortsLoading }
-    = useGetApCustomizationQuery({ params: { tenantId, serialNumber } })
+    = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
@@ -58,9 +58,9 @@ export function LanPorts () {
 
 
   const [updateApCustomization, {
-    isLoading: isApLanPortsUpdating }] = useUpdateApCustomizationMutation()
+    isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
   const [resetApCustomization, {
-    isLoading: isApLanPortsResetting }] = useResetApCustomizationMutation()
+    isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
 
 
   const [venue, setVenue] = useState({} as VenueExtended)
@@ -148,20 +148,17 @@ export function LanPorts () {
       if (values?.useVenueSettings) {
         await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
       } else {
-        const { lan, poeOut, poeMode } = values
-        const wifiApSetting: WifiApSetting = {
+        //const { lan, poeOut, poeMode } = values
+        const { lan, poeOut } = values
+        const payload: WifiApSetting = {
           ...initData,
           lanPorts: lan,
-          ...(poeMode && { poeMode: poeMode }),
+          //...(poeMode && { poeMode: poeMode }),
           ...(poeOut && isArray(poeOut) && { poeOut: poeOut.some(item => item === true) }),
           useVenueSettings: false
         }
 
-        // Need to remove the LedOn to avoid impact AP LED settings
-        const payload = omit(wifiApSetting, 'ledOn')
-
         //console.log('values: ', values)
-        //console.log('wifiApSetting: ', wifiApSetting)
         //console.log('payload: ', payload)
 
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
