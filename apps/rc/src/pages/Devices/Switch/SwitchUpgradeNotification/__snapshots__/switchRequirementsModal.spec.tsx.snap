@@ -49,6 +49,11 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
         </button>
       </div>
     </div>
+    <div
+      data-testid="mocked-SwitchRequirementsModal"
+    >
+      Upgrading the switch
+    </div>
   </div>
 </DocumentFragment>
 `;
