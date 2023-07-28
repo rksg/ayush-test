@@ -13,8 +13,8 @@ export { DidYouKnowWidget as DidYouKnow }
 
 type DidYouKnowWidgetProps = {
   filters: AnalyticsFilter
-  maxFactPerSlide: number
-  maxSlideChar: number
+  maxFactPerSlide?: number
+  maxSlideChar?: number
 }
 
 function DidYouKnowWidget ({
