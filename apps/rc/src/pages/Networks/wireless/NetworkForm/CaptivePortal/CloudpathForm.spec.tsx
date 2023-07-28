@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsFormLegacy }                       from '@acx-ui/components'
-import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                          from '@acx-ui/user'
