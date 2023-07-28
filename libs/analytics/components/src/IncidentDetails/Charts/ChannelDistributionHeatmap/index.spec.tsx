@@ -12,6 +12,20 @@ import { api } from './services'
 import { ChannelDistributionHeatMap, tooltipFormatter } from '.'
 
 
+jest.mock('@acx-ui/utils', () => {
+  const reactIntl = jest.requireActual('react-intl')
+  const intl = reactIntl.createIntl({
+    locale: 'en'
+  })
+  return {
+    ...jest.requireActual('@acx-ui/utils'),
+    getIntl: () => intl
+  }
+})
+jest.mock('react-intl', () => ({
+  defineMessage: jest.fn((message) => message.defaultMessage)
+}))
+
 const buffer = {
   front: { value: 0, unit: 'hours' as unitOfTime.Base },
   back: { value: 0, unit: 'hours' as unitOfTime.Base }
@@ -162,3 +176,4 @@ describe('tooltipFormatter', () => {
     expect(tooltipFormatter(params)).toContain('-')
   })
 })
+

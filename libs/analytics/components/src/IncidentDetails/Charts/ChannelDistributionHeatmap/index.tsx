@@ -4,7 +4,6 @@ import {
 import { flatten, uniq,max } from 'lodash'
 import moment                from 'moment-timezone'
 import { renderToString }    from 'react-dom/server'
-import { defineMessage }     from 'react-intl'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
 import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData } from '@acx-ui/components'
@@ -44,13 +43,14 @@ const heatmapColorPalette = [
   cssStr('--acx-semantics-red-50')
 ]
 
-const tooltipConfig = {
-  apDistribution: defineMessage({ defaultMessage: 'Ap Count' }),
-  rogueDistribution: defineMessage({ defaultMessage: 'Rogue AP Count' }),
-  dfsEvents: defineMessage({ defaultMessage: 'DFS Events' })
-}
-export const tooltipFormatter = (params: CallbackDataParams): string => {
+
+export const tooltipFormatter = (params: CallbackDataParams) => {
   const { $t } = getIntl()
+  const tooltipConfig = {
+    apDistribution: $t({ defaultMessage: 'Ap Count' }),
+    rogueDistribution: $t({ defaultMessage: 'Rogue AP Count' }),
+    dfsEvents: $t({ defaultMessage: 'DFS Events' })
+  }
   const xValue = Array.isArray(params.data) ? params.data?.[0] : '-'
   const yValue = Array.isArray(params.data) ? params.data?.[1] : '-'
   const count = Array.isArray(params.data) ? params.data?.[2] : '-'
@@ -59,7 +59,7 @@ export const tooltipFormatter = (params: CallbackDataParams): string => {
       <div>
         {`${$t({ defaultMessage: 'Time' })}: ${xValue}`} <br />
         {`${$t({ defaultMessage: 'Channel' })}: ${yValue}`} <br />
-        {`${$t(tooltipConfig[params?.seriesName as keyof typeof tooltipConfig])}: ${count}`}
+        {`${(tooltipConfig[params?.seriesName as keyof typeof tooltipConfig])}: ${count}`}
       </div>
     </TooltipWrapper>
   )
