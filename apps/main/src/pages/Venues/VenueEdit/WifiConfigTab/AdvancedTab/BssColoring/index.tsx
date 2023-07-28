@@ -38,7 +38,7 @@ export function BssColoring () {
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'settings',
-      tabTitle: $t({ defaultMessage: 'Advanced Settings' }),
+      tabTitle: $t({ defaultMessage: 'Advanced' }),
       isDirty: true
     })
 

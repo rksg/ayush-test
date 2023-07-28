@@ -470,13 +470,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueBssColoring: {
     method: 'get',
     url: '/venues/:venueId/bssColoringSettings',
-    oldUrl: '/api/venues/:venueId/bssColoringSettings',
     newApi: true
   },
   updateVenueBssColoring: {
     method: 'put',
     url: '/venues/:venueId/bssColoringSettings',
-    oldUrl: '/api/venues/:venueId/bssColoringSettings',
     newApi: true
   },
   getApNetworkSettings: {
