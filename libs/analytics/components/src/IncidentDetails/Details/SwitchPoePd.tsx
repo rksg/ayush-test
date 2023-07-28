@@ -6,7 +6,6 @@ import {
   shortDescription
 } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol } from '@acx-ui/components'
-import { useIsSplitOn, Features }                     from '@acx-ui/feature-toggle'
 
 import { PoePdTable }                     from '../Charts/PoePdTable'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
@@ -33,10 +32,8 @@ export const SwitchPoePd = (incident: Incident) => {
         title={$t({ defaultMessage: 'Incident Details' })}
         titleExtra={<SeverityPill severity={calculateSeverity(incident.severity)!} />}
         breadcrumb={[
-          ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-            { text: $t({ defaultMessage: 'AI Assurance' }) },
-            { text: $t({ defaultMessage: 'AI Analytics' }) }
-          ]:[]),
+          { text: $t({ defaultMessage: 'AI Assurance' }) },
+          { text: $t({ defaultMessage: 'AI Analytics' }) },
           { text: $t({ defaultMessage: 'Incidents' }), link: '/analytics/incidents' }
         ]}
         subTitle={shortDescription(incident)}

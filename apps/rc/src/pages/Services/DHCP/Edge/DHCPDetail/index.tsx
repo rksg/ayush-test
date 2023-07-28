@@ -17,7 +17,6 @@ const EdgeDHCPDetail = () => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const getDhcpStatsPayload = {
@@ -150,17 +149,9 @@ const EdgeDHCPDetail = () => {
     <>
       <PageHeader
         title={dhcpStats && dhcpStats.data[0]?.serviceName}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
-            link: getServiceRoutePath({
-              type: ServiceType.EDGE_DHCP,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
             link: getServiceRoutePath({

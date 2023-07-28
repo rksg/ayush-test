@@ -54,15 +54,6 @@ describe('VideoCallQoeListPage', () => {
     expect(await screen.findByRole('button', { name: /create test call/i })).toBeDisabled()
   })
 
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<VideoCallQoe/>, { wrapper: Provider, route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
-    expect(await screen.findByText('Video Call QoE')).toBeVisible()
-    expect(await screen.findByText('Test Call Name')).toBeVisible()
-    expect(await screen.findByRole('button', { name: /create test call/i })).toBeEnabled()
-  })
-
   it('should update tab count by context', async () => {
     const Component = () => {
       const { title, component } = useVideoCallQoe()

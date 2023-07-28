@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                  from '@acx-ui/rc/components'
 import { useDeletePortalMutation, useGetEnhancedPortalProfileListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import { useGetPortalLangMutation }                                                           from '@acx-ui/rc/services'
@@ -39,7 +38,6 @@ export default function PortalTable () {
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
   const [portalId, setPortalId]=useState('')
   const [newDemo, setNewDemo]=useState({} as Demo)
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedPortalProfileListQuery,
     defaultPayload: {
@@ -182,16 +180,13 @@ export default function PortalTable () {
           // eslint-disable-next-line max-len
           intl.$t({ defaultMessage: 'Guest Portal ({count})' }, { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Network Control' }) },
           {
             text: intl.$t({ defaultMessage: 'My Services' }),
             link: getServiceListRoutePath(true)
           }
-        ] : [{
-          text: intl.$t({ defaultMessage: 'My Services' }),
-          link: getServiceListRoutePath(true)
-        }]}
+        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}>

@@ -2,7 +2,6 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeDhcpServicesMutation,
   useGetDhcpStatsQuery,
@@ -28,7 +27,6 @@ const EdgeDhcpTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const getDhcpStatsPayload = {
     fields: [
@@ -239,14 +237,10 @@ const EdgeDhcpTable = () => {
           $t({ defaultMessage: 'DHCP for SmartEdge ({count})' },
             { count: tableQuery.data?.totalCount })
         }
-        breadcrumb={
-          isNavbarEnhanced ? [
-            { text: $t({ defaultMessage: 'Network Control' }) },
-            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-          ] : [
-            { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
-          ]
-        }
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
+        ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}>

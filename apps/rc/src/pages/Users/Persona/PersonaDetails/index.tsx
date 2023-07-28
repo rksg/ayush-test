@@ -347,7 +347,6 @@ function PersonaDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, revoked: { allowed, status: revokedStatus, onRevoke }, onClick } = props
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const getRevokedTitle = () => {
     return $t({
@@ -420,7 +419,7 @@ function PersonaDetailsPageHeader (props: {
           </Tag>
         </>}
       extra={extra}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
         },
@@ -429,11 +428,6 @@ function PersonaDetailsPageHeader (props: {
         },
         {
           text: $t({ defaultMessage: 'Personas' }),
-          link: 'users/persona-management/persona'
-        }
-      ] : [
-        {
-          text: $t({ defaultMessage: 'Persona' }),
           link: 'users/persona-management/persona'
         }
       ]}

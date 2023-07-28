@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard }               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '@acx-ui/rc/components'
 import {
   useLazyGetVenueQuery,
@@ -26,7 +26,6 @@ function PersonaGroupDetailsPageHeader (props: {
 }) {
   const { $t } = useIntl()
   const { title, onClick } = props
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const extra = filterByAccess([
     <Button type={'primary'} onClick={onClick}>
@@ -38,7 +37,7 @@ function PersonaGroupDetailsPageHeader (props: {
     <PageHeader
       title={title}
       extra={extra}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
         },
@@ -47,11 +46,6 @@ function PersonaGroupDetailsPageHeader (props: {
         },
         {
           text: $t({ defaultMessage: 'Persona Groups' }),
-          link: 'users/persona-management'
-        }
-      ] : [
-        {
-          text: $t({ defaultMessage: 'Persona Group' }),
           link: 'users/persona-management'
         }
       ]}

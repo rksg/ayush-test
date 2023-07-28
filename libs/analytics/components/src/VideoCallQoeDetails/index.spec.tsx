@@ -153,13 +153,4 @@ describe('VideoCallQoe Details Page', () => {
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
     expect(fragment).toMatchSnapshot()
   })
-  it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', { data: callQoeTestDetailsFixtures1 })
-    render(<VideoCallQoeDetails />, {
-      wrapper: Provider, route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(screen.queryByText('AI Assurance')).toBeNull()
-    expect(screen.queryByText('Network Assurance')).toBeNull()
-  })
 })

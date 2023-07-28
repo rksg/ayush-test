@@ -7,7 +7,6 @@ import moment                               from 'moment-timezone'
 import { useIntl }                          from 'react-intl'
 
 import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                        from '@acx-ui/formatter'
 import { ArrowExpand }                                      from '@acx-ui/icons'
 import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
@@ -62,7 +61,6 @@ function SwitchPageHeader () {
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
@@ -194,11 +192,11 @@ function SwitchPageHeader () {
         title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
         titleExtra={
           <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Wired' }) },
           { text: $t({ defaultMessage: 'Switches' }) },
           { text: $t({ defaultMessage: 'Switch List' }), link: '/devices/switch' }
-        ] : [{ text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }]}
+        ]}
         extra={filterByAccess([
           !checkTimeFilterDisabled() && <RangePicker
             key='range-picker'

@@ -11,7 +11,6 @@ import { Loader, PageHeader, Table, TableProps, Tooltip,
   cssStr,  Card, GridCol, GridRow,
   MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
   Drawer, SearchBar }                from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   EditOutlinedIcon,
@@ -30,7 +29,6 @@ import * as UI                                               from './styledCompo
 export function VideoCallQoeDetails (){
   const intl= useIntl()
   const { $t } = intl
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const { testId } = useParams()
   const [isDrawerOpen,setIsDrawerOpen] = useState(false)
   const [participantId,setParticipantId] = useState<number|null>(null)
@@ -329,10 +327,8 @@ export function VideoCallQoeDetails (){
             <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>
           ]}
           breadcrumb={[
-            ...(isNavbarEnhanced ? [
-              { text: $t({ defaultMessage: 'AI Assurance' }) },
-              { text: $t({ defaultMessage: 'Network Assurance' }) }
-            ]:[]),
+            { text: $t({ defaultMessage: 'AI Assurance' }) },
+            { text: $t({ defaultMessage: 'Network Assurance' }) },
             {
               text: $t({ defaultMessage: 'Video Call QoE' }),
               link: '/analytics/videoCallQoe'

@@ -26,7 +26,6 @@ export default function ResidentPortalDetail () {
   const params = useParams()
   const { $t } = useIntl()
   const { data: residentPortalData, isLoading } = useGetResidentPortalQuery({ params })
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const [logoImage, setLogoImageString] = useState<string>('')
   const [maxLogoSize, setMaxLogoSize] = useState<number>(100)
@@ -156,17 +155,9 @@ export default function ResidentPortalDetail () {
     <>
       <PageHeader
         title={residentPortalData?.name}
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'Resident Portals' }),
-            link: getServiceRoutePath({
-              type: ServiceType.RESIDENT_PORTAL,
-              oper: ServiceOperation.LIST
-            })
-          }
-        ] : [
           {
             text: $t({ defaultMessage: 'Resident Portals' }),
             link: getServiceRoutePath({

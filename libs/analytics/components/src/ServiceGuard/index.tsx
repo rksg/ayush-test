@@ -2,9 +2,8 @@ import { createContext, useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { PageHeader, Button }     from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { TenantLink }             from '@acx-ui/react-router-dom'
+import { Button }     from '@acx-ui/components'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { ServiceGuardTable }            from './ServiceGuardTable'
 import { useAllServiceGuardSpecsQuery } from './services'
@@ -22,7 +21,6 @@ export const ServiceGuard = () => {
 
 export function useServiceGuard () {
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const queryResults = useAllServiceGuardSpecsQuery()
   const [count, setCount] = useState(queryResults.data?.length || 0)
   useEffect(()=> setCount(queryResults.data?.length || 0),[queryResults])
@@ -38,15 +36,9 @@ export function useServiceGuard () {
     </TenantLink>
   ]
 
-  const component = <>
-    {!isNavbarEnhanced && <PageHeader
-      title={$t(title, { count: null })}
-      extra={extra}
-    />}
-    <CountContext.Provider value={{ count, setCount }}>
-      <ServiceGuardTable />
-    </CountContext.Provider>
-  </>
+  const component = <CountContext.Provider value={{ count, setCount }}>
+    <ServiceGuardTable />
+  </CountContext.Provider>
 
   return {
     title: $t(title, { count }),

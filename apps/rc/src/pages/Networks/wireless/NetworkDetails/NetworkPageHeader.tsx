@@ -2,7 +2,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                     from '@acx-ui/user'
 import { useDateFilter }                                      from '@acx-ui/utils'
@@ -25,16 +24,15 @@ function NetworkPageHeader ({
   const basePath = useTenantLink('/networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   return (
     <PageHeader
       title={network.data?.name || ''}
-      breadcrumb={isNavbarEnhanced ? [
+      breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }), link: '' },
         { text: $t({ defaultMessage: 'Wi-Fi Networks' }), link: '' },
         { text: $t({ defaultMessage: 'Network List' }), link: '/networks' }
-      ] : [{ text: $t({ defaultMessage: 'Networks' }), link: '/networks' }]}
+      ]}
       extra={filterByAccess([
         ...(setSelectedVenues && selectedVenues)
           ? [

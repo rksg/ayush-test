@@ -4,7 +4,6 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, showToast } from '@acx-ui/components'
-import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import { useNavigateToPath }                from '@acx-ui/react-router-dom'
 
 import * as contents          from '../contents'
@@ -44,10 +43,8 @@ export function ServiceGuardForm () {
   const { $t } = useIntl()
   const navigateToList = useNavigateToPath('/analytics/serviceValidation')
   const breadcrumb = [
-    ...(useIsSplitOn(Features.NAVBAR_ENHANCEMENT) ? [
-      { text: $t({ defaultMessage: 'AI Assurance' }) },
-      { text: $t({ defaultMessage: 'Network Assurance' }) }
-    ]:[]),
+    { text: $t({ defaultMessage: 'AI Assurance' }) },
+    { text: $t({ defaultMessage: 'Network Assurance' }) },
     {
       text: $t({ defaultMessage: 'Service Validation' }),
       link: '/analytics/serviceValidation'

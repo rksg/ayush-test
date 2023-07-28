@@ -41,7 +41,6 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
   const tablePath = getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
-  const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
   const { editMode = false } = props
 
@@ -77,14 +76,12 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
           ? $t({ defaultMessage: 'Edit Client Isolation Profile' })
           : $t({ defaultMessage: 'Add Client Isolation Profile' })
         }
-        breadcrumb={isNavbarEnhanced ? [
+        breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
-          { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
-        ] : [
           { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
         ]}
       />
