@@ -59,6 +59,7 @@ export enum Features {
   WIFI_EDA_WIFI7_320MHZ = 'wifi-eda-wifi7-320mhz-toggle',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
+  WIFI_FR_6029_FG1_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
