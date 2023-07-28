@@ -1,11 +1,12 @@
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen, cleanup, mockServer }        from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { rest } from 'msw'
+
+import { useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
+import { Provider }                            from '@acx-ui/store'
+import { render, screen, cleanup, mockServer } from '@acx-ui/test-utils'
+import { RolesEnum }                           from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
-import { rest } from 'msw'
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
