@@ -694,7 +694,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     deleteMspAssignment: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params)    
+        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params)
         return {
           ...req,
           body: payload
