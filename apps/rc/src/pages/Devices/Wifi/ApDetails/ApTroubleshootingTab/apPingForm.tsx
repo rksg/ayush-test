@@ -68,7 +68,7 @@ export function ApPingForm () {
         />
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
           <Button
-            type='secondary'
+            type='primary'
             htmlType='submit'
             disabled={!isValid || isPingingAp}
             onClick={handlePingAp}>

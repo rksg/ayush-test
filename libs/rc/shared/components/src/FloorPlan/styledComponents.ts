@@ -13,13 +13,6 @@ export const ArrowOutIcon = styled(ArrowsOut)``
 
 export const Button = styled(acxButton)`
   border: none;
-  box-shadow: none;
-  background: var(--acx-primary-white);
-  padding: 0;
-  &.ant-btn-icon-only {
-    width: 16px;
-    height: 16px;
-  }
 `
 export const FloorPlanContainer = styled('div')`
   overflow: overlay;
@@ -35,7 +28,7 @@ export const EpmtyFloorplanContainer = styled('div')`
 export const RogueApButton = styled(Button)`
  &:hover, &:visited {
   svg path {
-    stroke: var(--acx-accents-orange-50) !important
+    stroke: var(--acx-accents-blue-60) !important
   }
 }
 svg path {
