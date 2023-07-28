@@ -8,7 +8,7 @@ import { CommonUrlsInfo, VenueRadioCustomization, WifiUrlsInfo } from '@acx-ui/r
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, screen, render, within, waitFor }           from '@acx-ui/test-utils'
 
-import { VenueEditContext } from '../..'
+import { VenueEditContext }         from '../..'
 import {
   venueData,
   venueSetting,
@@ -18,7 +18,8 @@ import {
   externalAntennaApModels,
   venueExternalAntennaCap,
   defaultRadioCustomizationData,
-  mockLoadBalabcing
+  mockLoadBalabcing,
+  mockVenueClientAdmissionControl
 } from '../../../__tests__/fixtures'
 
 import { RadioTab } from './RadioTab'
@@ -73,6 +74,12 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json(mockLoadBalabcing))),
       rest.put(
         WifiUrlsInfo.updateVenueLoadBalancing.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        WifiUrlsInfo.getVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
+      rest.put(
+        WifiUrlsInfo.updateVenueClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -327,6 +334,34 @@ describe('RadioTab', () => {
 
     const loadBalancingEnable = await screen.findByTestId('load-balancing-enabled')
     await userEvent.click(loadBalancingEnable)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+  })
+
+  it('should render Client Admission Control correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        editContextData: {},
+        setEditContextData: jest.fn(),
+        editRadioContextData: {
+          isLoadBalancingDataChanged: true
+        },
+        setEditRadioContextData: jest.fn()
+      }}>
+        <RadioTab />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+
+    // this would only be visible when loader removed
+    await waitFor(() => screen.findByText('Use Load Balancing'))
+
+    const enable24G =
+      await screen.findByTestId('client-admission-control-enable-24g')
+    const enable50G =
+      await screen.findByTestId('client-admission-control-enable-50g')
+    await userEvent.click(enable24G)
+    await userEvent.click(enable50G)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })

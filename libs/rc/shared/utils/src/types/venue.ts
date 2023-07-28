@@ -688,6 +688,17 @@ export interface VenueLoadBalancing {
   steeringMode: SteeringModeEnum
 }
 
+export interface VenueClientAdmissionControl {
+	enable24G: boolean,
+	enable50G: boolean,
+	minClientCount24G?: number,
+	minClientCount50G?: number,
+	maxRadioLoad24G?: number,
+	maxRadioLoad50G?: number,
+	minClientThroughput24G?: number,
+	minClientThroughput50G?: number
+  }
+
 export interface Node {
     type?: DeviceTypes;
     name: string;

@@ -1544,6 +1544,17 @@ export const mockLoadBalabcing = {
   stickyClientNbrApPercentageThreshold: 20
 }
 
+export const mockVenueClientAdmissionControl = {
+  enable24G: true,
+  enable50G: false,
+  minClientCount24G: 10,
+  minClientCount50G: 20,
+  maxRadioLoad24G: 75,
+  maxRadioLoad50G: 75,
+  minClientThroughput24G: 0,
+  minClientThroughput50G: 0
+}
+
 export const radiusList = {
   data: [
     {

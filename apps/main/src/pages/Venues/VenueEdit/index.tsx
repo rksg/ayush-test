@@ -54,6 +54,9 @@ export interface RadioContext {
 
   isLoadBalancingDataChanged?: boolean,
   updateLoadBalancing?: (() => void)
+
+  isClientAdmissionControlDataChanged?: boolean,
+  updateClientAdmissionControl?: (() => void)
 }
 
 export const VenueEditContext = createContext({} as {
