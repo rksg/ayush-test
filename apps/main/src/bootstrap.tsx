@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Root }          from 'react-dom/client'
-import { IntlShape }     from 'react-intl'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
-import { showActionModal } from '@acx-ui/components'
 import {
   ConfigProvider,
   Loader,
@@ -14,11 +12,11 @@ import { get }                    from '@acx-ui/config'
 import { useGetPreferencesQuery } from '@acx-ui/rc/services'
 import { BrowserRouter }          from '@acx-ui/react-router-dom'
 import { Provider }               from '@acx-ui/store'
-import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   UserProfileProvider,
   useUserProfileContext,
-  UserUrlsInfo
+  UserUrlsInfo,
+  useGetUserProfileQuery
 } from '@acx-ui/user'
 import {
   getTenantId,
@@ -27,10 +25,10 @@ import {
   LangKey,
   DEFAULT_SYS_LANG
 } from '@acx-ui/utils'
-import { getIntl, setUpIntl, IntlSetUpError } from '@acx-ui/utils'
 
 import AllRoutes           from './AllRoutes'
 import { errorMiddleware } from './errorMiddleware'
+
 import '@acx-ui/theme'
 
 // Needed for Browser language detection
@@ -39,16 +37,14 @@ const supportedLocales: Record<string, LangKey> = {
   'en': 'en-US',
   'es': 'es-ES',
   'es-ES': 'es-ES',
-  'ja': 'ja-JP',
+  'de-DE': 'de-DE',
+  'de': 'de-DE',
   'ja-JP': 'ja-JP',
-  'fr': 'fr-FR',
+  'ja': 'ja-JP',
   'fr-FR': 'fr-FR',
-  'ko': 'ko-KR',
   'ko-KR': 'ko-KR',
-  'pt': 'pt-BR',
   'pt-BR': 'pt-BR'
 }
-
 declare global {
   /* eslint-disable no-var */
   var pendo: {
@@ -59,20 +55,7 @@ declare global {
 export function loadMessages (locales: readonly string[]): LangKey {
   const locale = locales.find(locale =>
     supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  let browLang = supportedLocales[locale as keyof typeof supportedLocales]
-  const bLang = localStorage.getItem('browserLang')
-  const isBrowserDialog = localStorage.getItem('isBrowserDialog')
-  let browserLang = bLang?? browLang
-    console.log(`bLang: ${bLang} ${browserLang}`)
-
-  if (Boolean(!isBrowserDialog) && browserLang !== DEFAULT_SYS_LANG) {
-    const isConfirm = BrowserDialog(browserLang as LangKey)
-    console.log(`isConfirm ${isConfirm}`)
-    browserLang = isConfirm ? browserLang : DEFAULT_SYS_LANG
-    localStorage.setItem('browserLang', browserLang)
-    localStorage.setItem('isBrowserDialog', 'true')
-  }
-  return browserLang as LangKey
+  return supportedLocales[locale as keyof typeof supportedLocales]
 }
 
 export function renderPendoAnalyticsTag () {
@@ -133,71 +116,14 @@ export async function pendoInitalization (): Promise<void> {
   }
 }
 
-const isNonProdEnv = ( window.location.hostname === 'ruckus.cloud' ||
-  window.location.hostname === 'eu.ruckus.cloud' ||
-  window.location.hostname === 'asia.ruckus.cloud' ||
-  window.location.hostname === 'stage.ruckus.cloud' )
-
-function BrowserDialog ( broswerLang: LangKey) {
-  const [isOpen, setIsOpen] = useState(true)
-  const [isActionConfirmed, setIsActionConfirmed] = useState(false)
-  const bLang = broswerLang.slice(0, 2)
-  const browserLangDisplay = new Intl.DisplayNames(['en'], { type: 'language' })
-  let intl: IntlShape
-  try {
-    intl = getIntl()
-  } catch (error) {
-    if (!(error instanceof IntlSetUpError)) throw error
-    setUpIntl({ locale: DEFAULT_SYS_LANG })
-    intl = getIntl()
-  }
-  const { $t } = intl
-  const bLangDisplay = browserLangDisplay.of(bLang)
-  if (isOpen && !isNonProdEnv) {
-    showActionModal({
-      type: 'confirm',
-      customContent: {
-        action: 'CUSTOM_BUTTONS',
-        buttons: [{
-          text: $t({ defaultMessage: 'Cancel' }),
-          type: 'default',
-          key: 'cancel',
-          closeAfterAction: true,
-          handler () {
-            setIsActionConfirmed(false)
-            setIsOpen(false)
-          }
-        }, {
-          text: $t({ defaultMessage: 'Change to {bLangDisplay}' }, { bLangDisplay }),
-          type: 'primary',
-          key: 'ok',
-          closeAfterAction: true,
-          handler () {
-            setIsActionConfirmed(true)
-            setIsOpen(false)
-          }
-        }]
-      },
-      title: $t({ defaultMessage: 'Change System Language?' }),
-      content: $t({ defaultMessage: 'We noticed that your browser is set to {bLangDisplay}'
-            + ' Would you like to change the system\'s language to {bLangDisplay}?' },
-      { bLangDisplay })
-    })
-  }
-
-  return isActionConfirmed
-}
-
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  let browserLang = loadMessages(navigator.languages) as LangKey// browser detection
   const result = useGetUserProfileQuery({})
   const { data: userProfile } = result
   const request = useGetPreferencesQuery({ tenantId: getTenantId() })
   const userPreflang = String(userProfile?.preferredLanguage) as LangKey
   const defaultLang = String(request.data?.global?.defaultLanguage) as LangKey
 
-  const lang = browserLang !== DEFAULT_SYS_LANG ? browserLang :
-    userPreflang? userPreflang : defaultLang
+  const lang = userPreflang? userPreflang : defaultLang
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
@@ -214,8 +140,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
-        !Boolean(locale.messages) ||
-        !Boolean(userProfile.allowedOperations.length)
+      !Boolean(locale.messages) ||
+      !Boolean(userProfile.allowedOperations.length)
     }]}
     children={props.children}
   />

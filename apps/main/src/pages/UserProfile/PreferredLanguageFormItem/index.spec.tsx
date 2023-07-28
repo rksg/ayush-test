@@ -1,9 +1,11 @@
+import { rest } from 'msw'
 import userEvent   from '@testing-library/user-event'
 import { useIntl } from 'react-intl'
 
 import { Provider  }             from '@acx-ui/store'
-import { render, screen }        from '@acx-ui/test-utils'
+import { mockServer, render, screen }        from '@acx-ui/test-utils'
 import { useUserProfileContext } from '@acx-ui/user'
+import { useIsSplitOn }          from '@acx-ui/feature-toggle'
 
 import { PreferredLanguageFormItem } from './'
 
@@ -52,13 +54,14 @@ describe('PreferredLanguageFormItem', () => {
     preferredLanguage: 'en-US'
   }
   beforeEach(() => {
-    mockUseIntl.mockReturnValue({
-      $t: jest.fn()
-    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockUseIntl.mockReturnValue({ $t: jest.fn()})
 
     mockUseUserProfileContext.mockReturnValue({
       data: mockUserProfile
     })
+
   })
 
   it.skip('should render successfully', async () => {

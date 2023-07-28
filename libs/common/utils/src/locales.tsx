@@ -199,11 +199,6 @@ function LocaleProvider (props: LocaleProviderProps) {
   const [messages, setMessages] = useState<Messages>()
 
   useEffect(() => {
-    if(props.lang)
-      setLang(props.lang)
-  }, [props.lang])
-
-  useEffect(() => {
     loadLocale(lang).then((message) => {
       setUpIntl({
         locale: lang,
