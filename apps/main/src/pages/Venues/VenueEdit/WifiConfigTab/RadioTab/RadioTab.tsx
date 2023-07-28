@@ -43,6 +43,17 @@ export function RadioTab () {
       </>
     )
   },
+  ...(supportLoadBalancing? [{
+    title: loadBalancingTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='load-balancing'>
+          { loadBalancingTitle }
+        </StepsFormLegacy.SectionTitle>
+        <LoadBalancing />
+      </>
+    )
+  }] : []),
   {
     title: externalTitle,
     content: (
@@ -54,20 +65,6 @@ export function RadioTab () {
       </>
     )
   }]
-
-  if (supportLoadBalancing) {
-    anchorItems.push({
-      title: loadBalancingTitle,
-      content: (
-        <>
-          <StepsFormLegacy.SectionTitle id='load-balancing'>
-            { loadBalancingTitle }
-          </StepsFormLegacy.SectionTitle>
-          <LoadBalancing />
-        </>
-      )
-    })
-  }
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
