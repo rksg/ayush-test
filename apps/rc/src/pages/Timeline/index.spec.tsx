@@ -23,17 +23,7 @@ describe('Timeline', () => {
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
   })
 
-  it('should render', () => {
-    render(
-      <Provider>
-        <Timeline />
-      </Provider>,
-      { route: { params } }
-    )
-    screen.getByText('Timeline')
-  })
-
-  it('should render breadcrumb correctly', async () => {
+  it('should render', async () => {
     render(
       <Provider>
         <Timeline />
@@ -41,6 +31,7 @@ describe('Timeline', () => {
       { route: { params } }
     )
     expect(await screen.findByText('Administration')).toBeVisible()
+    screen.getByText('Timeline')
   })
 
   it('should change tab', async () => {

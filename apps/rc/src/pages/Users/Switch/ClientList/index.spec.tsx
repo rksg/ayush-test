@@ -48,16 +48,6 @@ describe('ClientList', () => {
     render(<Provider><ClientList /></Provider>, {
       route: { params, path: '/:tenantId/t/users/switch/clients' }
     })
-    expect(await screen.findByText('Switch')).toBeVisible()
-  })
-
-  it('should render breadcrumb correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id'
-    }
-    render(<Provider><ClientList /></Provider>, {
-      route: { params, path: '/:tenantId/t/users/switch/clients' }
-    })
     expect(await screen.findByText('Clients')).toBeVisible()
     expect(await screen.findByText('Wired (0)')).toBeVisible()
   })

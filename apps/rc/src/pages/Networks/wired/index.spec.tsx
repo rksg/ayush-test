@@ -41,7 +41,7 @@ describe('Wired', () => {
       route: { params, path: '/:tenantId/networks/wired/:activeTab' }
     })
 
-    expect(await screen.findByText('Configuration Profiles')).toBeVisible()
+    expect(await screen.findByText('Configuration Profiles (0)')).toBeVisible()
   })
 
   it('should render onDemandCli correctly', async () => {
@@ -53,7 +53,7 @@ describe('Wired', () => {
       route: { params, path: '/:tenantId/networks/wired/:activeTab' }
     })
 
-    expect(await screen.findByText('On-Demand CLI Configuration')).toBeVisible()
+    expect(await screen.findByText('On-Demand CLI Configuration (0)')).toBeVisible()
   })
 
   it('should render breadcrumb and title correctly', async () => {
@@ -65,9 +65,7 @@ describe('Wired', () => {
       route: { params, path: '/:tenantId/networks/wired/:activeTab' }
     })
 
-    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
-    expect(await screen.findByText('Configuration Profiles (0)')).toBeVisible()
-    expect(await screen.findByText('On-Demand CLI Configuration (0)')).toBeVisible()
     expect(await screen.findByText('Wired')).toBeVisible()
+    expect(await screen.findByText('Wired Network Profiles')).toBeVisible()
   })
 })
