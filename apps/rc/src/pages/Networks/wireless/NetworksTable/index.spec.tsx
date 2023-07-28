@@ -207,7 +207,7 @@ describe('Networks Table', () => {
   it('should render extra header correctly', async () => {
     const Component = () => {
       const { headerExtra } = useNetworksTable()
-      return <span>{headerExtra}</span>
+      return headerExtra[0]
     }
     render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Add Wi-Fi Network')).toBeVisible()
