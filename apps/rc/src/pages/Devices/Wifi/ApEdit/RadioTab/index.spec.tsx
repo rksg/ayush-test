@@ -40,7 +40,7 @@ describe('AP Radio Tab', () => {
       }
     )
 
-    expect(await screen.findByRole('link', { name: 'Wi-Fi Radio Settings' })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'Wi-Fi Radio' })).toBeVisible()
     expect(await screen.findByTestId('radioSettings')).toBeVisible()
   })
 
