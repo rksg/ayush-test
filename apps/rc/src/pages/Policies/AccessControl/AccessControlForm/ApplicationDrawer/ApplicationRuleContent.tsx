@@ -349,7 +349,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       children={
         <ContentSwitcher
           tabDetails={tabDetails}
-          defaultValue={drawerForm.getFieldValue('ruleType')}
           size='small'
         />
       }
@@ -394,7 +393,8 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       label={$t({ defaultMessage: 'Application Name' })}
       initialValue={''}
       rules={[
-        { required: true }
+        { required: true },
+        { max: 255 }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter the application name' })}
@@ -452,7 +452,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         { required: true }
       ]}
       children={<Select
-        defaultValue={PROTOCOL_TYPE[0]}
         onChange={(value) => drawerForm.setFieldValue('protocol', value)}
         options={PROTOCOL_TYPE.map(protocol =>
           ({ label: protocol, value: protocol }))} />}

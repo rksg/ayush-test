@@ -90,30 +90,16 @@ describe('ClientOverviewTab', () => {
     )
   })
 
-  describe('OverviewWidget', () => {
+  describe('ClientOverviewTab', () => {
     it('should render client info correctly', async () => {
       render(<Provider><ClientOverviewTab /></Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
       })
+      expect(await screen.findByText('Current Status')).toBeVisible()
+      expect(await screen.findByText('Connected')).toBeVisible()
     })
 
-    it.skip('should handle error occurred', async () => {
-      mockServer.use(
-        rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-          (_, res, ctx) => res(ctx.status(404), ctx.json({}))
-        ),
-        rest.get(WifiUrlsInfo.getNetwork.url,
-          (_, res, ctx) => res(ctx.status(404), ctx.json({}))
-        )
-      )
-      render(<Provider><ClientOverviewTab /></Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
-      })
-      // TODO
-      // expect(await screen.findByText('Server Error')).toBeVisible()
-    })
-
-    it.skip('should render historical client info correctly', async () => {
+    it('should render historical client info correctly', async () => {
       jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
       render(<Provider><ClientOverviewTab /></Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview' }
@@ -137,7 +123,9 @@ describe('ClientOverviewTab', () => {
       expect(await screen.findByText('Current Status')).toBeVisible()
       expect(await screen.findByText('Disconnected')).toBeVisible()
     })
+  })
 
+  describe('OverviewWidget', () => {
     it('should render ClientOverviewWidget on undefined fields for ClientStatistic', async () => {
       const emptyStats = {
         applications: undefined,

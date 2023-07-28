@@ -12,7 +12,7 @@ import {
   getInitBrushPositions,
   adjuestDrawPosition,
   adjustAfterBoundaryChanged,
-  getDrawPosition,
+  getDrawDragPosition,
   draw,
   useDataZoom,
   useDotClick,
@@ -107,11 +107,11 @@ describe('adjustAfterBoundaryChanged', () => {
   })
 })
 
-describe('getDrawPosition',() => {
+describe('getDrawDragPosition',() => {
   it('should return correct position', () => {
     const boundary = { min: 0, max: 100 }
     const actualArea = [[10,20],[80,90]]
-    expect(getDrawPosition(50, 10, boundary, actualArea, 0))
+    expect(getDrawDragPosition(50, 10, boundary, actualArea, 0))
       .toEqual({ actual: [[50,60],[80,90]], show: [[50,60],[80,90]] })
   })
 })
@@ -432,13 +432,14 @@ describe('useLegendSelectChanged', () => {
 })
 
 describe('useBoundaryChange', () => {
-  it('should return correct boundary and brushPositions', () => {
+  it('should return correct boundary and brushPositions', async () => {
+    const onBrushChange = jest.fn()
     const useTestHook = () => {
       const eChartsRef = useRef<ReactECharts>(null)
       const [ chartBoundary, setChartBoundary ] = useState<[number, number]>([1, 1000])
       return {
         setChartBoundary,
-        render: useBoundaryChange(eChartsRef, {}, chartBoundary, 50)
+        render: useBoundaryChange(eChartsRef, {}, chartBoundary, 50, onBrushChange)
       }
     }
     const { result } = renderHook(() => useTestHook())
@@ -451,6 +452,15 @@ describe('useBoundaryChange', () => {
     expect(result.current.render.boundary).toEqual({ min: 25, max: 50 })
     expect(result.current.render.brushPositions)
       .toEqual({ actual: [[25, 75], [0, 50]], show: [[25, 0], [75, 50]] })
+    act(()=>{
+      result.current.setChartBoundary([0, 1000])
+      result.current.setChartBoundary([100, 1000])
+      result.current.setChartBoundary([200, 1000])
+      result.current.setChartBoundary([300, 1000])
+    })
+    await new Promise((resolve) => setTimeout(resolve, 3000)) // for debounce
+    expect(onBrushChange).toBeCalledTimes(1)
+    expect(onBrushChange).toBeCalledWith([[300, 350], [950, 1000]])
   })
 })
 

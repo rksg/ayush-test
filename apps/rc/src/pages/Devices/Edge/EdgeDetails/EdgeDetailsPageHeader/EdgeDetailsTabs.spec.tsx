@@ -61,24 +61,25 @@ describe('Edge Details Tabs', () => {
     )
   })
 
-  // it('should not have troubleshooting tab if not OPERATIONAL', async () => {
-  //   render(
-  //     <Provider>
-  //       <EdgeDetailsTabs
-  //         currentEdge={currentEdge}
-  //       />
-  //     </Provider>, {
-  //       route: { params }
-  //     })
+  it('should not have troubleshooting tab if not OPERATIONAL', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}
+        />
+      </Provider>, {
+        route: { params }
+      })
 
-  //   expect(screen.queryByText('Troubleshooting')).toBeFalsy()
-  // })
+    expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  })
 
 
   it('should redirect to timeline tab', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs/>
+        <EdgeDetailsTabs
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL}/>
       </Provider>
       , {
         route: { params }
@@ -95,7 +96,8 @@ describe('Edge Details Tabs', () => {
   it('should render services count correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsTabs />
+        <EdgeDetailsTabs
+          isOperational={currentEdge.deviceStatus=== EdgeStatusEnum.OPERATIONAL} />
       </Provider>
       , {
         route: { params }

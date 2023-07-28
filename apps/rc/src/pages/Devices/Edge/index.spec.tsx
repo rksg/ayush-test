@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }         from '@acx-ui/store'
+import { useIsTierAllowed }             from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -31,6 +31,10 @@ describe('EdgeList', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
