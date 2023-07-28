@@ -1,62 +1,22 @@
-import React, { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 import {
-  Checkbox,
-  Collapse,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Switch,
-  Space
-} from 'antd'
-import { get }     from 'lodash'
-import { useIntl } from 'react-intl'
+  Form } from 'antd'
+import { get }                    from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { Button, Tooltip }                                                                                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
-import { RadiusOptionsForm }                                                                                     from '@acx-ui/rc/components'
-import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum, GuestNetworkTypeEnum, BasicServiceSetPriorityEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                                    from '@acx-ui/utils'
+import { Button, Tabs }    from '@acx-ui/components'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
 
-import NetworkFormContext                                            from '../NetworkFormContext'
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile } from '../utils'
-import VLANPoolInstance                                              from '../VLANPoolInstance'
+import NetworkFormContext from '../NetworkFormContext'
 
-import { AccessControlForm }  from './AccessControlForm'
-import { LoadControlForm }    from './LoadControlForm'
-import { ServicesForm }       from './ServicesForm'
-import * as UI                from './styledComponents'
-import { UserConnectionForm } from './UserConnectionForm'
+import { AdvancedTab }       from './AdvancedTab'
+import { NetworkControlTab } from './NetworkControlTab'
+import { NetworkingTab }     from './NetworkingTab'
+import { RadioTab }          from './RadioTab'
+import * as UI               from './styledComponents'
+import { VlanTab }           from './VlanTab'
 
-
-
-const { Panel } = Collapse
-
-const { useWatch } = Form
-const { Option } = Select
-
-enum BssMinRateEnum {
-  VALUE_NONE = 'default',
-  VALUE_1 = '1',
-  VALUE_2 = '2',
-  VALUE_5_5 = '5.5',
-  VALUE_12 = '12',
-  VALUE_24 = '24'
-}
-
-enum MgmtTxRateEnum {
-  VALUE_1 = '1',
-  VALUE_2 = '2',
-  VALUE_5_5 = '5.5',
-  VALUE_6 = '6',
-  VALUE_9 = '9',
-  VALUE_11 = '11',
-  VALUE_12 = '12',
-  VALUE_18 = '18',
-  VALUE_24 = '24'
-}
 
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
@@ -105,7 +65,8 @@ export function NetworkMoreSettingsForm (props: {
   const [enableMoreSettings, setEnabled] = useState(cloneMode)
 
   if (data && editMode) {
-    return <MoreSettingsForm wlanData={wlanData} />
+    //return <MoreSettingsForm wlanData={wlanData} />
+    return <MoreSettingsTabs wlanData={wlanData} />
   } else {
     return <div>
       <Button
@@ -119,20 +80,27 @@ export function NetworkMoreSettingsForm (props: {
           $t({ defaultMessage: 'Show more settings' })}
       </Button>
       {enableMoreSettings &&
-        <MoreSettingsForm wlanData={wlanData} />}
+        //<MoreSettingsForm wlanData={wlanData} />}
+        <MoreSettingsTabs wlanData={wlanData} />}
     </div>
   }
 }
 
-
+// This will be removed when this feature DoD.
+/*
 export function MoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
   const { editMode, data } = useContext(NetworkFormContext)
+
   const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
   const AmbAndDtimFlag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
+  const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
+  const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
+
   const [
     enableDhcp,
     enableOfdmOnly,
@@ -160,24 +128,10 @@ export function MoreSettingsForm (props: {
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
   const enableWPA3_80211R = useIsSplitOn(Features.WPA3_80211R)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
-  const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
-  const multicastFilterTooltipContent = (
-    <div>
-      <p>Drop all multicast or broadcast traffic from associated wireless clients,
-        except for the following which is always allowed:</p>
-      <ul style={{ paddingLeft: '40px' }}>
-        <li>ARP request</li>
-        <li>DHCPv4 request</li>
-        <li>DHCPv6 request</li>
-        <li>IPv6 NS</li>
-        <li>IPv6 NA</li>
-        <li>IPv6 RS</li>
-        <li>IGMP</li>
-        <li>MLD</li>
-        <li>All unicast packets</li>
-      </ul>
-    </div>
-  )
+
+  const agileMultibandTooltipContent = $t({ defaultMessage:
+      `Agile Multiband prioritizes roaming performance in indoor environments,
+       supporting protocols 802.11k, 802.11v, 802.11u, and 802.11r.` })
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -236,7 +190,6 @@ export function MoreSettingsForm (props: {
         })
       }
     }
-
   }
 
   const UserConnectionComponent = () => {
@@ -452,13 +405,19 @@ export function MoreSettingsForm (props: {
 
         {AmbAndDtimFlag &&
           <UI.FieldLabel width='250px'>
-            {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
-            <Form.Item
-              name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
-              style={{ marginBottom: '10px' }}
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch/>}/>
+            <div style={{ display: 'grid', gridTemplateColumns: '170px 80px auto' }}>
+              {$t({ defaultMessage: 'Enable Agile Multiband (AMB)' })}
+              <Tooltip.Question
+                title={agileMultibandTooltipContent}
+                placement='right'
+              />
+              <Form.Item
+                name={['wlan', 'advancedCustomization', 'agileMultibandEnabled']}
+                style={{ marginBottom: '10px' }}
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch/>}/>
+            </div>
           </UI.FieldLabel>
         }
 
@@ -702,6 +661,8 @@ export function MoreSettingsForm (props: {
               })
             }]}
             style={{ marginBottom: '15px', width: '300px' }}
+            // eslint-disable-next-line max-len
+            tooltip={$t({ defaultMessage: 'Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.' })}
             children={<InputNumber style={{ width: '150px' }} />}
           />
         }
@@ -787,27 +748,8 @@ export function MoreSettingsForm (props: {
         </>
         }
 
-        {multicastFilterFlag &&
-          <UI.FieldLabel width='250px'>
-            <div style={{ display: 'grid', gridTemplateColumns: '85px 100px auto' }}>
-              {$t({ defaultMessage: 'Multicast Filter' })}
-              <Tooltip.Question
-              // eslint-disable-next-line max-len
-                title={multicastFilterTooltipContent}
-                placement='right'
-              />
-              <Form.Item
-                name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
-                style={{ marginBottom: '10px' }}
-                valuePropName='checked'
-                initialValue={false}
-                children={<Switch
-                  data-testid='multicast-filter-enabled'
-                />}
-              />
-            </div>
-          </UI.FieldLabel>
-        }
+        <MulticastForm/>
+
 
       </Panel>
       {showRadiusOptions && <Panel header={$t({ defaultMessage: 'RADIUS Options' })} key='4'>
@@ -821,5 +763,69 @@ export function MoreSettingsForm (props: {
       </Panel>}
     </UI.CollapsePanel>
   )
+}
+*/
+
+const MoreSettingsTabsInfo = [
+  {
+    key: 'vlan',
+    display: defineMessage({ defaultMessage: 'VLAN' }),
+    style: { width: '10px' }
+  }, {
+    key: 'networkControl',
+    display: defineMessage({ defaultMessage: 'Network Control' }),
+    style: { width: '71px' }
+  }, {
+    key: 'radio',
+    display: defineMessage({ defaultMessage: 'Radio' }),
+    style: { width: '11px' }
+  }, {
+    key: 'networking',
+    display: defineMessage({ defaultMessage: 'Networking' }),
+    style: { width: '38px' }
+  }, {
+    key: 'advanced',
+    display: defineMessage({ defaultMessage: 'Advanced' }),
+    style: { width: '37px' }
+  }
+]
+
+export function MoreSettingsTabs (props: { wlanData: NetworkSaveData | null }) {
+  const { $t } = useIntl()
+  const { editMode } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
+
+  const [currentTab, setCurrentTab] = useState('vlan')
+
+  const onTabChange = (tab: string) => {
+    setCurrentTab(tab)
+  }
+
+  return (<>
+    <Tabs type='third'
+      activeKey={currentTab}
+      onChange={onTabChange}
+    > {MoreSettingsTabsInfo.map(({ key, display, style }) => ( <Tabs.TabPane key={key}
+        tab={<UI.TabLable style={style}>{$t(display)}</UI.TabLable>}
+      />))}
+    </Tabs>
+
+    <div style={{ display: currentTab === 'vlan' ? 'block' : 'none' }}>
+      <VlanTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'networkControl' ? 'block' : 'none' }}>
+      <NetworkControlTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'radio' ? 'block' : 'none' }}>
+      <RadioTab />
+    </div>
+    <div style={{ display: currentTab === 'networking' ? 'block' : 'none' }}>
+      <NetworkingTab wlanData={wlanData} />
+    </div>
+    <div style={{ display: currentTab === 'advanced' ? 'block' : 'none' }}>
+      <AdvancedTab />
+    </div>
+  </>)
 }
 

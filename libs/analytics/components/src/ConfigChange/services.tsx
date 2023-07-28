@@ -1,11 +1,18 @@
-import { gql } from 'graphql-request'
+import { gql }  from 'graphql-request'
+import { omit } from 'lodash'
 
 import type { ConfigChange }     from '@acx-ui/components'
 import { dataApi }               from '@acx-ui/store'
 import { PathNode, NodesFilter } from '@acx-ui/utils'
 
-interface ConfigChangeResponse { configChanges: ConfigChange[] }
-interface Response<T> { network: { hierarchyNode: T } }
+interface KpiChangesParams {
+  kpis: string[],
+  path: PathNode[],
+  beforeStart: string,
+  beforeEnd: string,
+  afterStart: string,
+  afterEnd: string
+}
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
@@ -36,10 +43,53 @@ export const api = dataApi.injectEndpoints({
           }
         `
       }),
-      transformResponse: (response: Response<ConfigChangeResponse> ) =>
+      transformResponse: (
+        response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
         response.network.hierarchyNode.configChanges.map((value, id)=>({ ...value, id }))
+    }),
+    configChangeKPIChanges: build.query<
+      { before: Record<string, number>, after: Record<string, number> },
+      KpiChangesParams
+    >({
+      query: (variables) => ({
+        variables: omit(variables, ['kpis']),
+        document: gql`
+          query ConfigChangeKPIChanges(
+            $path: [HierarchyNodeInput],
+            $beforeStart: DateTime, $beforeEnd: DateTime,
+            $afterStart: DateTime, $afterEnd: DateTime,
+            $filter: FilterInput
+          ) {
+              network(filter: $filter) {
+                before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
+                  ${variables.kpis.join('\n')}
+                }
+                after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
+                  ${variables.kpis.join('\n')}
+                }
+              }
+          }
+        `
+      }),
+      transformResponse: (response: { network: {
+        before: Record<string, number>, after: Record<string, number>
+      } } ) => response.network
     })
   })
 })
 
-export const { useConfigChangeQuery } = api
+const {
+  useConfigChangeQuery,
+  useConfigChangeKPIChangesQuery
+} = api
+
+function useKPIChangesQuery (params: KpiChangesParams) {
+  return useConfigChangeKPIChangesQuery(params,
+    { skip: Object.keys(params).some(key=>!params[key as keyof KpiChangesParams]) }
+  )
+}
+
+export {
+  useConfigChangeQuery,
+  useKPIChangesQuery
+}

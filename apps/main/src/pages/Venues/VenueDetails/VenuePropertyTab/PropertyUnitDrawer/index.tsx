@@ -8,7 +8,7 @@ import moment                                                                   
 import { useIntl }                                                                         from 'react-intl'
 import styled                                                                              from 'styled-components'
 
-import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, DatePicker, Subtitle, Tooltip } from '@acx-ui/components'
+import { Drawer, Loader, StepsForm, Button,  Modal, ModalType, Subtitle, Tooltip, DatePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { ConnectionMeteringForm, ConnectionMeteringFormMode, PhoneInput }                      from '@acx-ui/rc/components'
 import {
@@ -43,7 +43,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 import { noDataDisplay, validationMessages } from '@acx-ui/utils'
-
 const Info = styled(Typography.Text)`
   overflow-wrap: anywhere;
   font-size: 12px;
@@ -150,6 +149,7 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
   const [profileMap, setProfileMap] = useState(new Map(data.map((p) => [p.id, p])))
   const profileId = useWatch('meteringProfileId', form)
 
+
   return (
     <>
       <StepsForm.Title style={{ fontSize: '14px' }}>
@@ -209,7 +209,6 @@ function ConnectionMeteringSettingForm (props:{ data: ConnectionMetering[] })
                 initialValue={form.getFieldValue('expirationDate')}
               >
                 <DatePicker
-                  format={'YYYY/MM/DD'}
                   style={{ width: '100%' }}
                   disabledDate={(date)=> date.diff(moment.now()) < 0}
                 />
@@ -378,6 +377,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
     { params: { pageSize: '2147483647', page: '0' } }, { skip: !isConnectionMeteringEnabled }
   )
+
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [enableGuestUnit, setEnableGuestUnit]

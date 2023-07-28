@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
+
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 import { RolesEnum }      from '@acx-ui/types'
@@ -22,9 +24,14 @@ const userProfile = {
   detailLevel: 'su'
 } as UserProfileInterface
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/msp/components', () => ({
+  ...jest.requireActual('@acx-ui/msp/components'),
+  MultiFactor: () => <div data-testid='MultiFactor' />
 }))
 
 describe('UserProfile', () => {
@@ -51,5 +58,9 @@ describe('UserProfile', () => {
 
     expect(screen.getByText('YYYY/MM/DD')).toBeVisible()
     expect(screen.getByText('Super User')).toBeVisible()
+
+    userEvent.click(screen.getByRole('tab', { name: 'Security' }))
+    expect(await screen.findByTestId('MultiFactor')).toBeVisible()
   })
+
 })

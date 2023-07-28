@@ -93,9 +93,11 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
+    const confirmDialog = await screen.findByRole('dialog')
     await screen.findByText('Active Device')
     const updateVenueButton = await screen.findByText('Run Update')
     fireEvent.click(updateVenueButton)
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it.skip('should update multiple selected row', async () => {
@@ -117,9 +119,11 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
+    const confirmDialog = await screen.findByRole('dialog')
     await screen.findByText('Active Device')
     const updateVenueButton = await screen.findByText('Run Update')
     fireEvent.click(updateVenueButton)
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it('should update selected row with advanced dialog', async () => {
@@ -151,11 +155,14 @@ describe('Firmware Venues Table', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     await userEvent.click(await screen.findByRole('checkbox', { name: /Legacy Device/i }))
+    const confirmDialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', { name: /Run Update/ }))
 
     await waitFor(() => {
       expect(updateNowFn).toHaveBeenCalled()
     })
+
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
 })

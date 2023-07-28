@@ -9,9 +9,9 @@ import {
   RadioChangeEvent,
   Row,
   Switch } from 'antd'
-import { includes, isEmpty } from 'lodash'
-import { useIntl }           from 'react-intl'
-import styled                from 'styled-components/macro'
+import { includes, isEmpty, dropRight } from 'lodash'
+import { useIntl }                      from 'react-intl'
+import styled                           from 'styled-components/macro'
 
 import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
@@ -20,7 +20,8 @@ import { ApRadioTypeEnum,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
   SelectItemOption,
-  SingleRadioSettings }                               from '@acx-ui/rc/components'
+  SingleRadioSettings,
+  findIsolatedGroupByChannel }                               from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetDefaultRadioCustomizationQuery,
@@ -46,7 +47,7 @@ const RadioLegends = styled.div`
   .legends {
     position: absolute;
     display: grid;
-    grid-template-columns: 190px 314px 90px;
+    grid-template-columns: 190px 90px 314px ;
     grid-column-gap: 8px;
     height: 16px;
 
@@ -77,6 +78,8 @@ const RadioLable = styled.div`
 
 export function RadioSettings () {
   const { $t } = useIntl()
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const {
     editContextData,
@@ -137,8 +140,6 @@ export function RadioSettings () {
 
   const [ apList ] = useLazyApListQuery()
 
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
-
   const getSupportBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
     const bandwidthList = Object.keys(availableChannels)
     return bandwidthOptions.filter((option: SelectItemOption) => {
@@ -159,6 +160,12 @@ export function RadioSettings () {
     })
   }
 
+  const supportedApModelTooltip = Wifi7_320Mhz_FeatureFlag ?
+    // eslint-disable-next-line max-len
+    $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' }) :
+    // eslint-disable-next-line max-len
+    $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })
+
   useEffect(() => {
     if (supportChannelsData) {
       const supportCh24g = supportChannelsData['2.4GChannels'] || {}
@@ -175,7 +182,9 @@ export function RadioSettings () {
 
       setBandwidth24GOptions(getSupportBandwidth(channelBandwidth24GOptions, supportCh24g))
       setBandwidth5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g))
-      setBandwidth6GOptions(getSupportBandwidth(channelBandwidth6GOptions, supportCh6g))
+      // eslint-disable-next-line max-len
+      const wifi7_320Bandwidth = Wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+      setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidth, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
     }
@@ -330,13 +339,26 @@ export function RadioSettings () {
 
   const validateRadioChannels = ( data: VenueRadioCustomization ) => {
     const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
-
     const validateChannels = (channels: unknown[] | undefined, title: string) => {
       if (Array.isArray(channels) && channels.length <2) {
         showActionModal({
           type: 'error',
           title: title,
           content: $t({ defaultMessage: 'Please select at least two channels' })
+        })
+        return false
+      }
+      return true
+    }
+    const validate320MHzIsolatedGroup = (channels: unknown[] | undefined, title: string) => {
+      const typeSafeChannels = channels as string[]
+      const isolatedGroup = findIsolatedGroupByChannel(typeSafeChannels)
+      if (isolatedGroup.length > 0) {
+        showActionModal({
+          type: 'error',
+          title: title,
+          // eslint-disable-next-line max-len
+          content: $t({ defaultMessage: 'Please select two adjacent 160Mhz channels to combine one 320 MHz channel' })
         })
         return false
       }
@@ -358,6 +380,7 @@ export function RadioSettings () {
     const channel6 = radioParams6G?.allowedChannels
     const title6 = $t({ defaultMessage: '6 GHz - Channel selection' })
     if (!validateChannels(channel6, title6)) return false
+    if (!validate320MHzIsolatedGroup(channel6, title6)) return false
 
     const { radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G || {}
     const indoorLowerChannel5 = radioParamsLower5G?.allowedIndoorChannels
@@ -514,8 +537,7 @@ export function RadioSettings () {
                   style={{ marginLeft: '20px' }}
                 />
                 <Tooltip.Question
-                // eslint-disable-next-line max-len
-                  title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
+                  title={supportedApModelTooltip}
                   placement='bottom'
                 />
               </>
@@ -546,11 +568,9 @@ export function RadioSettings () {
               { isDual5gMode &&
                 <div className='legends'>
                   <div></div>
+                  <div></div>
                   <div className='legend'>
                     <div className='legend-display'>R760</div>
-                  </div>
-                  <div className='legend'>
-                    <div className='legend-display'>R560</div>
                   </div>
                 </div>
               }
@@ -566,6 +586,11 @@ export function RadioSettings () {
             <Tabs.TabPane key='Normal5GHz'
               tab={<RadioLable style={{ width: '36px' }}>
                 {$t({ defaultMessage: '5 GHz' })}</RadioLable>}/>
+            { isTriBandRadio &&
+              <Tabs.TabPane key='Normal6GHz'
+                tab={<RadioLable style={{ width: '36px' }}>
+                  {$t({ defaultMessage: '6 GHz' })}</RadioLable>}/>
+            }
             { isTriBandRadio && isDual5gMode && <>
               <Tabs.TabPane key='Lower5GHz'
                 tab={<RadioLable style={{ width: '100px' }}>
@@ -575,11 +600,6 @@ export function RadioSettings () {
                   {$t({ defaultMessage: 'Upper 5 GHz' })}</RadioLable>}/>
             </>
             }
-            { isTriBandRadio &&
-              <Tabs.TabPane key='Normal6GHz'
-                tab={<RadioLable style={{ width: '36px' }}>
-                  {$t({ defaultMessage: '6 GHz' })}</RadioLable>}/>
-            }
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
             <SingleRadioSettings
@@ -587,7 +607,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio24G}
               supportChannels={support24GChannels}
               bandwidthOptions={bandwidth24GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
@@ -596,7 +616,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio5G}
               supportChannels={support5GChannels}
               bandwidthOptions={bandwidth5GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           { isTriBandRadio &&<div style={{ display: isTriBandRadio &&
@@ -606,7 +626,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio6G}
               supportChannels={support6GChannels}
               bandwidthOptions={bandwidth6GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           }
@@ -645,7 +665,7 @@ export function RadioSettings () {
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   supportChannels={support5GLowerChannels}
                   bandwidthOptions={bandwidthLower5GOptions}
-                  editContext={VenueEditContext}
+                  handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
               <div style={{
@@ -681,7 +701,7 @@ export function RadioSettings () {
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   supportChannels={support5GUpperChannels}
                   bandwidthOptions={bandwidthUpper5GOptions}
-                  editContext={VenueEditContext}
+                  handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
             </>

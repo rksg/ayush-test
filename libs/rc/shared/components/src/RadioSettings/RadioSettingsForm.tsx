@@ -1,9 +1,14 @@
 /* eslint-disable max-len */
+import { useEffect } from 'react'
+
 import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
 import { useIntl }                                            from 'react-intl'
 
+import { cssStr }                 from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationOutlined }    from '@acx-ui/icons'
+
 
 import {
   ApRadioTypeEnum,
@@ -64,12 +69,21 @@ export function RadioSettingsForm (props:{
   const [
     enableMulticastRateLimiting,
     enableUploadLimit,
-    enableDownloadLimit
+    enableDownloadLimit,
+    channelBandwidth
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
-    useWatch<boolean>(enableDownloadLimitFieldName)
+    useWatch<boolean>(enableDownloadLimitFieldName),
+    useWatch<string>(['radioParams6G', 'channelBandwidth'])
   ]
+
+  useEffect(() => {
+    form.setFieldValue(enableMulticastRateLimitingFieldName,
+      form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
+
+  }, [] )
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
@@ -148,6 +162,19 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
+      {channelBandwidth === '320MHz' ?
+        <div style={{ color: cssStr('--acx-neutrals-50'), fontSize: '12px', marginBottom: '14px' }}>
+          <InformationOutlined style={{
+            height: '14px',
+            marginBottom: '-2px',
+            marginRight: '2px'
+          }}/>
+          {$t(
+            // eslint-disable-next-line max-len
+            { defaultMessage: '320 MHz applies only to R770. The other AP models will enable 160 MHz.' }
+          )}
+        </div>
+        : '' }
       <Form.Item
         label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
         name={txPowerFieldName}>
@@ -263,7 +290,7 @@ export function RadioSettingsForm (props:{
                   <Checkbox data-testid='enableDownloadLimit'
                     disabled={disabled || isUseVenueSettings}
                     onChange={function (e: CheckboxChangeEvent) {
-                      const value = e.target.checked ? 20 : 0
+                      const value = e.target.checked ? getDLMax(form.getFieldValue(bssMinRate6gFieldName)) : 0
                       form.setFieldValue(
                         downloadLimitFieldName, value)
                     }}
