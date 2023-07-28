@@ -52,7 +52,7 @@ const EditDhcp = () => {
 
   const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
-      const payload = _.merge(_.cloneDeep(edgeDhcpData), _.cloneDeep(data))
+      const payload = { ...edgeDhcpData, ...(_.cloneDeep(data)) }
       const pathVar = { id: params.serviceId }
       if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
         payload.leaseTime = -1 // -1 means infinite
