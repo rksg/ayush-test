@@ -11,13 +11,21 @@ import {
 
 export { DidYouKnowWidget as DidYouKnow }
 
+type DidYouKnowWidgetProps = {
+  filters: AnalyticsFilter
+  maxFactPerSlide: number
+  maxSlideChar: number
+}
+
 function DidYouKnowWidget ({
-  filters
-}: { filters : AnalyticsFilter }) {
+  filters,
+  maxFactPerSlide,
+  maxSlideChar
+}: DidYouKnowWidgetProps) {
   const intl = useIntl()
   const queryResults = useFactsQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: getFactsData(data!, intl),
+      data: getFactsData(data!, { maxFactPerSlide, maxSlideChar }),
       ...rest
     })
   })
