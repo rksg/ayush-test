@@ -1,10 +1,11 @@
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { Provider }                       from '@acx-ui/store'
-import { render, screen, cleanup }        from '@acx-ui/test-utils'
+import { render, screen, cleanup, mockServer }        from '@acx-ui/test-utils'
 import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
+import { rest } from 'msw'
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
@@ -44,6 +45,7 @@ jest.mock('./routes/AnalyticsRoutes', () => () => {
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
+
 jest.mock('@rc/Routes', () => () => {
   return (
     <>
@@ -73,6 +75,12 @@ describe('AllRoutes', () => {
   beforeEach(() => {
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
+    //FIXME: Workaround ACX-37479
+    mockServer.use(
+      rest.get('mspCustomers/', (req, res, ctx) => {
+        return res(ctx.json({}))
+      })
+    )
   })
 
   afterEach(cleanup)
