@@ -1,45 +1,46 @@
-import { Provider }                from '@acx-ui/store'
-import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
-jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
-  AIAnalytics: () => <div data-testid='aiAnalytics'/>,
-  IncidentDetails: () => <div data-testid='incidentDetails'/>,
-  RecommendationDetails: () => <div data-testid='recommendationDetails'></div>,
-  NetworkAssurance: () => <div data-testid='NetworkAssurance'/>
-}))
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object
+    .keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(sets)
+})
+
+jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
 
 describe('AllRoutes', () => {
   beforeEach(() => {
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
   })
-  afterEach(() => cleanup())
+
   it('should render incidents correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/incidents' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
+    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
   })
 
   it('should render incident details correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/incidents/id' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('incidentDetails')).toBeVisible()
+    expect(await screen.findByTestId('IncidentDetails')).toBeVisible()
   })
 
   it('should render config change correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/configChange' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
+    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
   })
   it('should render recommendation details correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/analytics/next/recommendations/crrm/test-recommendation-id' },
       wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('recommendationDetails')).toBeVisible()
+    expect(await screen.findByTestId('RecommendationDetails')).toBeVisible()
   })
   it('should render health page correctly', async () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/health' }, wrapper: Provider })
@@ -50,12 +51,17 @@ describe('AllRoutes', () => {
     render(<AllRoutes />, {
       route: { path: '/analytics/next/recommendations/crrm' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
+    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
   })
   it('should render recommendations aiOps correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/analytics/next/recommendations/aiOps' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('aiAnalytics')).toBeVisible()
+    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
+  })
+  it('should render Dashboard', async () => {
+    const path = '/analytics/next/dashboard'
+    render(<AllRoutes />, { route: { path } })
+    expect(await screen.findByTestId('Dashboard')).toBeVisible()
   })
 })
