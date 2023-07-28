@@ -158,9 +158,7 @@ describe('VLANPoolForm', () => {
     await userEvent.type(await screen.findByLabelText('VLANs'), '6')
     await userEvent.click(await screen.findByText('Finish'))
 
-    await waitFor(async () => {
-      expect(editVlanPool).toBeCalledTimes(1)
-    })
+    await waitFor(async () => expect(editVlanPool).toBeCalledTimes(1))
   })
 
 
