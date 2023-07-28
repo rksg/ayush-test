@@ -39,12 +39,13 @@ export function RadioTab () {
 
   const supportExternalAntenna = false
 
+  const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const clientAdmissionCtlTitle = $t({ defaultMessage: 'Client Admission Control' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
 
   const anchorItems = [{
-    title: wifiRadioTitle,
+    title: wifiRadioLink,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='radio-settings'>

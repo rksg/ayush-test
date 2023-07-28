@@ -121,13 +121,14 @@ export function VlanSetting () {
       (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
       vlanTable
 
-    const sfm = data.switchFamilyModels?.map(item => {
+    const sfm = data.switchFamilyModels?.map((item, index) => {
       return {
         ...item,
         untaggedPorts: Array.isArray(item.untaggedPorts) ?
           item.untaggedPorts?.join(',') : item.untaggedPorts,
         taggedPorts: Array.isArray(item.taggedPorts) ?
-          item.taggedPorts?.join(',') : item.taggedPorts
+          item.taggedPorts?.join(',') : item.taggedPorts,
+        key: index
       }
     })
 
@@ -198,10 +199,9 @@ export function VlanSetting () {
         <Col span={20}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
-            rowKey='vlanId'
             columns={vlansColumns}
             rowActions={filterByAccess(rowActions)}
-            dataSource={vlanTable}
+            dataSource={vlanTable.map((item, index) => ({ ...item, key: index }))}
             rowSelection={hasAccess() && {
               type: 'radio',
               selectedRowKeys: selectedRows,

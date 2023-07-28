@@ -8,12 +8,16 @@ import { Card, ConfigChangeChart, Loader }      from '@acx-ui/components'
 
 import { useConfigChangeQuery } from './services'
 
-function BasicChart (props: { onBrushPositionsChange: (params: number[][]) => void }){
-  const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
+function BasicChart (props: {
+  timeRanges: moment.Moment[],
+  onBrushPositionsChange: (params: number[][]) => void
+}){
+  const [startDate, endDate] = props.timeRanges
+  const { filters: { filter } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
     ...getFilterPayload({ filter }),
-    start: startDate,
-    end: endDate
+    start: startDate.toISOString(),
+    end: endDate.toISOString()
   })
 
   return <Loader states={[queryResults]}>
@@ -23,10 +27,7 @@ function BasicChart (props: { onBrushPositionsChange: (params: number[][]) => vo
           <ConfigChangeChart
             style={{ width }}
             data={queryResults.data ?? []}
-            chartBoundary={[
-              moment(startDate).valueOf(),
-              moment(endDate).valueOf()
-            ]}
+            chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
             onBrushPositionsChange={props.onBrushPositionsChange}
             // TODO: need to handle sync betweem chart and table
             // onDotClick={(params) => console.log(params)}

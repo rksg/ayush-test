@@ -184,7 +184,9 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
         </UI.FieldLabel>
       </UI.FieldLabel>
 
-      <ClientIsolationForm labelWidth={labelWidth} />
+      <div style={{ maxWidth: '600px' }}>
+        <ClientIsolationForm labelWidth={labelWidth} />
+      </div>
       <>
         <UI.FieldLabel width={labelWidth}>
           {$t({ defaultMessage: 'Anti-spoofing' })}
@@ -252,7 +254,7 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
         }
       </>
 
-      {showSingleSessionIdAccounting &&
+      {showSingleSessionIdAccounting && // For the older GUI, this is moved to RADIUS options form
         <UI.FormItemNoLabel
           name={['wlan', 'advancedCustomization', 'radiusOptions', 'singleSessionIdAccounting']}
           valuePropName='checked'
