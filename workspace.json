@@ -1,7 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "analytics": "apps/analytics",
     "analytics-components": "libs/analytics/components",
     "analytics-services": "libs/analytics/services",
     "analytics-utils": "libs/analytics/utils",

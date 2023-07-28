@@ -67,7 +67,15 @@ describe('ApPhoto', () => {
         (_, res, ctx) => res(ctx.body(apSampleImage))
       ),
       rest.get(
-        'blob:http://localhost/6f5a9d30-b9f8-496f-b9a7-1d5e763c4c3c',
+        'blob:http://localhost/*',
+        (_, res, ctx) => res(ctx.body(apSampleImage))
+      ),
+      rest.post(
+        'http://localhost/*',
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        'http://localhost/*',
         (_, res, ctx) => res(ctx.body(apSampleImage))
       )
     )

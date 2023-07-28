@@ -20,19 +20,46 @@ import {
 import {
   switchVenue,
   preference,
-  switchRelease
+  switchRelease,
+  switchCurrentVersions,
+  switchLatest
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
-
 
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getSwitchFirmwarePredownload.url,
+        (req, res, ctx) => res(ctx.json({
+          preDownload: false
+        }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchUpgradePreferences.url,
+        (req, res, ctx) => res(ctx.json({
+          days: [
+            'Sunday',
+            'Saturday'
+          ],
+          times: [
+            '00:00-02:00',
+            '02:00-04:00',
+            '04:00-06:00'
+          ],
+          autoSchedule: true,
+          betaProgram: false
+        }))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchAvailableFirmwareList.url,
@@ -41,6 +68,10 @@ describe('Firmware Venues Table', () => {
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
         (req, res, ctx) => res(ctx.json(preference))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
       )
     )
     params = {

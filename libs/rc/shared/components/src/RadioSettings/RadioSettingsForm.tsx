@@ -3,7 +3,10 @@ import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
 import { useIntl }                                            from 'react-intl'
 
+import { cssStr }                 from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationOutlined }    from '@acx-ui/icons'
+
 
 import {
   ApRadioTypeEnum,
@@ -48,6 +51,11 @@ export function RadioSettingsForm (props:{
   const txPowerFieldName = [...radioDataKey, 'txPower']
   const bssMinRate6gFieldName = [...radioDataKey, 'bssMinRate6G']
   const mgmtTxRate6gFieldName = [...radioDataKey, 'mgmtTxRate6G']
+  const enableMulticastRateLimitingFieldName = [...radioDataKey, 'enableMulticastRateLimiting']
+  const enableUploadLimitFieldName = [...radioDataKey, 'enableMulticastUplinkRateLimiting']
+  const enableDownloadLimitFieldName = [...radioDataKey, 'enableMulticastDownlinkRateLimiting']
+  const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
+  const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -57,13 +65,15 @@ export function RadioSettingsForm (props:{
   const [channelMethod] = [useWatch<string>(methodFieldName)]
   const form = Form.useFormInstance()
   const [
-    enableDownloadLimit,
+    enableMulticastRateLimiting,
     enableUploadLimit,
-    enableMulticastRateLimiting
+    enableDownloadLimit,
+    channelBandwidth
   ] = [
-    useWatch<boolean>('enableDownloadLimit'),
-    useWatch<boolean>('enableUploadLimit'),
-    useWatch<boolean>('enableMulticastRateLimiting')
+    useWatch<boolean>(enableMulticastRateLimitingFieldName),
+    useWatch<boolean>(enableUploadLimitFieldName),
+    useWatch<boolean>(enableDownloadLimitFieldName),
+    useWatch<string>(['radioParams6G', 'channelBandwidth'])
   ]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -76,7 +86,7 @@ export function RadioSettingsForm (props:{
   }
 
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
-  const multicastRateLimitFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
+  const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
 
   return (
     <>
@@ -143,6 +153,19 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('bandwidth')}
         />
       </Form.Item>
+      {channelBandwidth === '320MHz' ?
+        <div style={{ color: cssStr('--acx-neutrals-50'), fontSize: '12px', marginBottom: '14px' }}>
+          <InformationOutlined style={{
+            height: '14px',
+            marginBottom: '-2px',
+            marginRight: '2px'
+          }}/>
+          {$t(
+            // eslint-disable-next-line max-len
+            { defaultMessage: '320 MHz applies only to R770. The other AP models will enable 160 MHz.' }
+          )}
+        </div>
+        : '' }
       <Form.Item
         label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
         name={txPowerFieldName}>
@@ -187,10 +210,10 @@ export function RadioSettingsForm (props:{
           <FieldLabel width='175px'>
             {$t({ defaultMessage: 'Multicast Rate Limiting' })}
             <Form.Item
-              name='enableMulticastRateLimiting'
+              name={enableMulticastRateLimitingFieldName}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
-              initialValue={false}
+              initialValue={form.getFieldValue(enableUploadLimitFieldName)||form.getFieldValue(enableDownloadLimitFieldName)}
             >
               {!isUseVenueSettings ? (
                 <Switch
@@ -198,20 +221,21 @@ export function RadioSettingsForm (props:{
                   onChange={function (checked: boolean) {
                     if (!checked) {
                       form.setFieldValue(
-                        ['radioSettings', 'downloadLimit'], 0)
+                        downloadLimitFieldName, 0)
                       form.setFieldValue(
-                        ['radioSettings', 'uploadLimit'], 0)
+                        uploadLimitFieldName, 0)
                     }
                   }} />
               ) : <span>ON</span>}
             </Form.Item>
           </FieldLabel>
+
           {enableMulticastRateLimiting && <>
             <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
               <FormItemNoLabel
-                name='enableUploadLimit'
+                name={enableUploadLimitFieldName}
                 valuePropName='checked'
-                initialValue={false}
+                initialValue={enableUploadLimit || enableDownloadLimit}
                 style={{ lineHeight: '50px' }}
               >
                 {
@@ -219,7 +243,7 @@ export function RadioSettingsForm (props:{
                     onChange={function (e: CheckboxChangeEvent) {
                       const value = e.target.checked ? 20 : 0
                       form.setFieldValue(
-                        ['radioSettings', 'uploadLimit'], value)
+                        uploadLimitFieldName, value)
                     }}
                     children={$t({ defaultMessage: 'Upload Limit' })}
                     disabled={disabled || isUseVenueSettings}/>}
@@ -227,7 +251,7 @@ export function RadioSettingsForm (props:{
               {
                 enableUploadLimit ?
                   <FormItemNoLabel
-                    name={['radioSettings', 'uploadLimit']}
+                    name={uploadLimitFieldName}
                     children={
                       <Slider
                         disabled={disabled || isUseVenueSettings}
@@ -249,7 +273,7 @@ export function RadioSettingsForm (props:{
 
             <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
               <FormItemNoLabel
-                name='enableDownloadLimit'
+                name={enableDownloadLimitFieldName}
                 valuePropName='checked'
                 initialValue={false}
                 style={{ lineHeight: '50px' }}
@@ -259,14 +283,14 @@ export function RadioSettingsForm (props:{
                     onChange={function (e: CheckboxChangeEvent) {
                       const value = e.target.checked ? 20 : 0
                       form.setFieldValue(
-                        ['radioSettings', 'downloadLimit'], value)
+                        downloadLimitFieldName, value)
                     }}
                     children={$t({ defaultMessage: 'Download Limit' })} />}
               />
               {
                 enableDownloadLimit ?
                   <FormItemNoLabel
-                    name={['radioSettings', 'downloadLimit']}
+                    name={downloadLimitFieldName}
                     children={
                       <Slider
                         disabled={disabled || isUseVenueSettings}

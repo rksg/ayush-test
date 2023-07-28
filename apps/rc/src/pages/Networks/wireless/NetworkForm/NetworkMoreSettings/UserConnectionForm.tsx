@@ -149,7 +149,7 @@ export function UserConnectionForm () {
         }
       }
     }
-  }, [])
+  }, [data])
   const changeSettings=()=>{
     form.setFieldValue(['guestPortal','lockoutPeriodEnabled'],useDefaultSetting)
     setUseDefaultSetting(!useDefaultSetting)
@@ -208,7 +208,7 @@ export function UserConnectionForm () {
             <InputNumber data-testid='userSessionTimeout'
               min={userSessionTimeoutUnit==='minutes'?2:1}
               max={sessionMapping[userSessionTimeoutUnit]}
-              style={{ width: '100%' }}
+              style={{ width: '100px' }}
               onChange={(value)=>{
                 if(userSessionTimeoutUnit === 'days'){
                   setMaxGracePeriod(value*24*60)
@@ -275,7 +275,7 @@ export function UserConnectionForm () {
                 }}
                 min={userSessionTimeoutUnit==='minutes'?2:1}
                 max={sessionMapping[userSessionTimeoutUnit]}
-                style={{ width: '100%' }} />
+                style={{ width: '100px' }} />
             </Form.Item>
             <Form.Item noStyle name='userSessionTimeoutUnit' initialValue={'hours'}>
               <Select data-testid='userSessionTimeoutUnit'
@@ -326,7 +326,7 @@ export function UserConnectionForm () {
               <InputNumber data-testid='lockoutPeriod'
                 min={1}
                 max={lockoutMapping[lockoutPeriodUnit]}
-                style={{ width: '100%' }} />
+                style={{ width: '100px' }} />
             </Form.Item>
             <Form.Item noStyle name='lockoutPeriodUnit' initialValue={'hours'}>
               <Select data-testid='lockoutPeriodUnit'>
@@ -372,7 +372,7 @@ export function UserConnectionForm () {
                 min={1}
                 max={durationMapping[macCredentialsDurationUnit]}
                 disabled={!checkDuration}
-                style={{ width: '100%' }} />
+                style={{ width: '100px' }} />
             </Form.Item>
             <Form.Item noStyle name='macCredentialsDurationUnit' initialValue={'hours'}>
               <Select data-testid='macCredentialsDurationUnit' disabled={!checkDuration}>
@@ -415,7 +415,7 @@ export function UserConnectionForm () {
               <InputNumber data-testid='userSessionGracePeriod'
                 min={1}
                 max={maxGracePeriod}
-                style={{ width: '100%' }} />
+                style={{ width: '100px' }} />
             </Form.Item>
             <Form.Item
               style={{ height: 32, marginBottom: 0, paddingTop: 6 }}

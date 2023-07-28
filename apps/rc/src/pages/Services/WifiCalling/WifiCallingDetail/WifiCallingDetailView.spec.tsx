@@ -3,11 +3,11 @@ import React from 'react'
 import { act }  from '@testing-library/react'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { serviceApi }                                    from '@acx-ui/rc/services'
-import { WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
-import { mockServer, render, screen }                    from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { serviceApi }                                                    from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
+import { mockServer, render, screen }                                    from '@acx-ui/test-utils'
 
 import WifiCallingDetailView, { WifiCallingDetailContext } from './WifiCallingDetailView'
 
@@ -39,16 +39,21 @@ describe('WifiCallingDetailView', () => {
     act(() => {
       store.dispatch(serviceApi.util.resetApiState())
     })
+    mockServer.use(
+      rest.get(WifiCallingUrls.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(wifiCallingDetail))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+        res(ctx.json({
+          fields: ['name', 'id'],
+          totalCount: 0,
+          page: 1,
+          data: []
+        }))
+      )
+    )
   })
 
   it('should render wifiCallingDetailContent successfully', async () => {
-    mockServer.use(rest.get(
-      WifiCallingUrls.getWifiCalling.url,
-      (_, res, ctx) => res(
-        ctx.json(wifiCallingDetail)
-      )
-    ))
-
     render(
       <WifiCallingDetailContext.Provider value={initState}>
         <Provider>
@@ -61,7 +66,6 @@ describe('WifiCallingDetailView', () => {
         }
       }
     )
-
     await screen.findByText(/for test/i)
   })
 

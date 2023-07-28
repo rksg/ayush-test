@@ -346,6 +346,11 @@ export interface ApLanPort {
   useVenueSettings: boolean
 }
 
+export interface ApLedSettings {
+  ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
 export interface ApRadio {
   enable24G: boolean,
   enable50G?: boolean,
@@ -407,7 +412,7 @@ export class ModelLanPort extends VenueLanPort {
 export interface WifiApSetting {
   useVenueSettings: boolean;
   externalAntenna?: ExternalAntenna;
-  poeOut?: boolean;
+  poeOut?: boolean | boolean[];
   poeMode?: string;
   lanPorts?: LanPort[];
   lan?: LanPort[];

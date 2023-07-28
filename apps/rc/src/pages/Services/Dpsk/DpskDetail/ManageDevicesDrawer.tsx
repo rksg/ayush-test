@@ -73,7 +73,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   const getNetworkId = (networkName: string) => {
     if (tableQuery.data && tableQuery.data.data) {
       const networkIdx = tableQuery.data.data.findIndex(network => network.name === networkName)
-      return tableQuery.data.data[networkIdx].id
+      return networkIdx !== -1 ? tableQuery.data.data[networkIdx].id : ''
     }
     return ''
   }
@@ -276,7 +276,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
                 if (devicesData?.map(deviceData => deviceData.mac)
                   .filter(mac => mac === value).length) {
                   return Promise.reject($t({
-                    defaultMessage: 'MAC address {macAddress} is already exists'
+                    defaultMessage: 'MAC address {macAddress} already exists'
                   }, { macAddress: value }))
                 }
                 return MacRegistrationFilterRegExp(value)

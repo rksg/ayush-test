@@ -6,7 +6,8 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Loader
+  Loader,
+  TableColumn
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
@@ -28,7 +29,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
-import { filterByAccess, hasRoles }                                from '@acx-ui/user'
+import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
 
 import { displayDefaultAccess } from '../utils'
 
@@ -129,7 +130,7 @@ export default function DpskTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
+          rowSelection={hasAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -236,26 +237,26 @@ function useColumns () {
         return <SimpleListTooltip items={tooltipItems} displayText={row.networkIds.length} />
       }
     },
-    {
-      key: 'deviceCountLimit',
-      title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
-      dataIndex: 'deviceCountLimit',
-      show: isCloudpathEnabled,
-      sorter: true,
-      render: function (data, row) {
-        return displayDeviceCountLimit(row.deviceCountLimit)
-      }
-    },
-    {
-      key: 'policyDefaultAccess',
-      title: intl.$t({ defaultMessage: 'Default Access' }),
-      dataIndex: 'policyDefaultAccess',
-      show: isCloudpathEnabled,
-      sorter: true,
-      render: function (data, row) {
-        return displayDefaultAccess(row.policyDefaultAccess)
-      }
-    }
+    ...(isCloudpathEnabled
+      ? [{
+        key: 'deviceCountLimit',
+        title: intl.$t({ defaultMessage: 'Devices allowed per passphrase' }),
+        dataIndex: 'deviceCountLimit',
+        sorter: true,
+        render: function (_, row) {
+          return displayDeviceCountLimit(row.deviceCountLimit)
+        }
+      } as TableColumn<DpskSaveData>,
+      {
+        key: 'policyDefaultAccess',
+        title: intl.$t({ defaultMessage: 'Default Access' }),
+        dataIndex: 'policyDefaultAccess',
+        sorter: true,
+        render: function (_, row) {
+          return displayDefaultAccess(row.policyDefaultAccess)
+        }
+      } as TableColumn<DpskSaveData>]
+      : [])
   ]
 
   return columns

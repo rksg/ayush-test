@@ -1,10 +1,11 @@
 import { initialize } from '@googlemaps/jest-mocks'
+import userEvent      from '@testing-library/user-event'
 import { Form }       from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
-import { Provider }                      from '@acx-ui/store'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, getUrlForTest, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -62,6 +63,14 @@ describe('Venues Form', () => {
       rest.get(
         'https://maps.googleapis.com/maps/api/timezone/*',
         (req, res, ctx) => res(ctx.json(timezoneResult))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({
+          global: {
+            mapRegion: 'US'
+          }
+        }))
       )
     )
 
@@ -87,12 +96,10 @@ describe('Venues Form', () => {
     await waitForElementToBeRemoved(validating)
 
     const descriptionInput = screen.getByLabelText('Description')
-    fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
+    await userEvent.type(descriptionInput, 'Ruckus Network Info' )
 
     const addressInput = screen.getByTestId('address-input')
-    fireEvent.change(addressInput, { target:
-      { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
-    })
+    await userEvent.type(addressInput, '350 W Java Dr, Sunnyvale, CA 94089, USA' )
 
     // fireEvent.click(screen.getByText('Add'))
   })

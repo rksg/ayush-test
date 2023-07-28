@@ -30,6 +30,7 @@ import NetworkFormContext        from '../NetworkFormContext'
 import { hasVxLanTunnelProfile } from '../utils'
 
 import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }        from './DhcpOption82Form'
 import { DnsProxyModal }           from './DnsProxyModal'
 import * as UI                     from './styledComponents'
 import { WifiCallingSettingModal } from './WifiCallingSettingModal'
@@ -41,8 +42,12 @@ export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
 export const WifiCallingSettingContext = createContext({} as WifiCallingSettingContextType)
 
+/**
+ * @deprecated
+ */
 export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
+  const dhcpOption82Flag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
   const [
     enableDnsProxy,
     enableAntiSpoofing,
@@ -275,17 +280,6 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
 
       }
 
-      <UI.FieldLabel width='125px'>
-        {$t({ defaultMessage: 'Force DHCP' })}
-        <Form.Item
-          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch disabled={enableAntiSpoofing} />}
-        />
-      </UI.FieldLabel>
-
       <UI.FieldLabel width='250px'>
         {$t({ defaultMessage: 'Enable logging client data to external syslog' })}
         <Form.Item
@@ -296,6 +290,22 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
           children={<Switch />}
         />
       </UI.FieldLabel>
+
+      <UI.Subtitle>
+        {$t({ defaultMessage: 'DHCP' })}
+      </UI.Subtitle>
+      <UI.FieldLabel width='207px'>
+        {$t({ defaultMessage: 'Force DHCP' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch disabled={enableAntiSpoofing} />}
+        />
+      </UI.FieldLabel>
+
+      {dhcpOption82Flag && <DhcpOption82Form/>}
 
       { showTunnelProfile &&
       <Form.Item

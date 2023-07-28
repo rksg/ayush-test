@@ -186,10 +186,10 @@ export const mockNsgStatsList = {
           id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
           edgeId: '0000000001',
           edgeName: 'Smart Edge 1',
-          segments: 10,
-          devices: 10,
+          segments: 1,
+          devices: 1,
           dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
-          dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
+          dhcpPoolId: '1',
           vniRange: ''
         }
       ]
@@ -548,4 +548,34 @@ export const mockAvailablePropertyConfigs = {
   size: 20,
   number: 0,
   empty: false
+}
+
+export const mockedNetworkOptions = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'networkId1',
+      name: 'network1'
+    },
+    {
+      id: 'networkId2',
+      name: 'network2'
+    }
+  ]
+}
+
+export const mockedSwitchOptions = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      switchMac: 'c0:c5:20:78:df:32',
+      name: 'network1'
+    },
+    {
+      switchMac: 'c0:c5:20:78:df:31',
+      name: 'network2'
+    }
+  ]
 }

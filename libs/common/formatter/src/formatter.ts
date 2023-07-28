@@ -210,26 +210,37 @@ const json2keymap = (
       item[field]
     ), new Map())
 
-type CrrmTextType =
-  string | Array<{ radio: string, channelMode: string, channelWidth: string }>
+type CrrmTextType = { txPowerAPCount: number }
+  | Array<{ radio: string, channelMode: string, channelWidth: string, autoCellSizing: boolean }>
 
 const crrmText = (value: CrrmTextType) => {
   const { $t } = getIntl()
   const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(channelSelection)
   const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
   const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
-  if (typeof value === 'string') {
-    return $t({
-      defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection' })
+  if (Array.isArray(value)) {
+    return value.map(config => {
+      const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
+      const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
+      const radio = formats.radioFormat(config.radio)
+      const autoCellSizing = config.autoCellSizing ? 'Auto Cell Sizing on' : 'static AP Power'
+      return $t({
+        defaultMessage: '{channelMode} and {channelWidth} for {radio} with {autoCellSizing}' },
+      { channelMode, channelWidth, radio, autoCellSizing } )
+    }).join(', ')
+  } else {
+    const { txPowerAPCount } = value
+    // eslint-disable-next-line max-len
+    return $t({ defaultMessage: 'AI-Driven Cloud RRM for channel planning and channel bandwidth selection with {txPowerAPCountText}' }, {
+      txPowerAPCountText: txPowerAPCount
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: `static AP transmit power and lower AP transmit power in {txPowerAPCount} {txPowerAPCount, plural,
+            one {AP}
+            other {APs}
+          }` }, { txPowerAPCount })
+        : $t({ defaultMessage: 'no change in AP transmit power' })
+    })
   }
-  return value.map(config => {
-    const channelMode = String(enumTextMap.get(`${enumMode}-${config.channelMode}`))
-    const channelWidth = handleAutoWidth(enumTextMap.get(`${enumWidth}-${config.channelWidth}`))
-    const radio = formats.radioFormat(config.radio)
-    return $t({
-      defaultMessage: '{channelMode} and {channelWidth} for {radio}' },
-    { channelMode, channelWidth, radio } )
-  }).join(', ')
 }
 
 export const formats = {
@@ -280,9 +291,8 @@ export const intlFormats = {
   scaleFormatRound
 } as const
 
-export function formatter (
-  name: keyof typeof formats | DateFormatEnum | keyof typeof intlFormats
-) {
+export type FormatterType = keyof typeof formats | DateFormatEnum | keyof typeof intlFormats
+export function formatter (name: FormatterType) {
   return function formatter (value: unknown, tz?: string): string {
     const intl = getIntl()
     if (value === null || value === noDataDisplay) {
@@ -317,4 +327,3 @@ function isDateTimeFormat (name: string): name is keyof typeof dateTimeFormats {
 function isFormat (name: string): name is keyof typeof formats {
   return name in formats
 }
-
