@@ -400,7 +400,7 @@ describe('RogueAPDetectionForm', () => {
 
     await screen.findByRole('heading', { name: 'Summary', level: 3 })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
   })
 
   it('should render RogueAPDetectionForm successfully with mac oui rule', async () => {

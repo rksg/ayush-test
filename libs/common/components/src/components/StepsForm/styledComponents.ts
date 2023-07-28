@@ -27,7 +27,7 @@ const stepCompletedStyle = css`
     &::after {
       top: 1px;
       left: 1px;
-      background-color: var(--acx-steps-form-steps-step-color);
+      background-color: transparent;
     }
   }
 `
@@ -174,7 +174,7 @@ export const ActionsButtons = styled(Space).attrs((props: ActionsButtonsProps) =
 }))<ActionsButtonsProps>`
   ${props => props.$editMode && props.$multipleSteps && `
     // col span=4/24, gutter=20px
-    margin-left: calc((100% + 20px) * 4 / 24);
+    margin-left: 0;
   `}
 `
 

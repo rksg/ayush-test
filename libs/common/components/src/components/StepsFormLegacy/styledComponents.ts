@@ -15,7 +15,7 @@ const stepCompletedStyle = css`
     &::after {
       top: 1px;
       left: 1px;
-      background-color: var(--acx-steps-form-steps-step-color);
+      background-color: transparent;
     }
   }
 `

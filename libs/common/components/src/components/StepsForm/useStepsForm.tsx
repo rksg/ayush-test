@@ -152,7 +152,7 @@ export function useStepsForm <T> ({
   const labels = {
     next: $t({ defaultMessage: 'Next' }),
     apply: $t({ defaultMessage: 'Apply' }),
-    submit: $t({ defaultMessage: 'Finish' }),
+    submit: $t({ defaultMessage: 'Add' }),
     pre: $t({ defaultMessage: 'Back' }),
     cancel: $t({ defaultMessage: 'Cancel' }),
     ...buttonLabel

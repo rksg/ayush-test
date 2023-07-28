@@ -55,7 +55,7 @@ describe('VLAN Pool Instance Page', () => {
       'textbox', { name: 'Policy Name' }),'create test')
     await userEvent.type(await screen.findByRole('textbox', { name: 'VLANs' }),
       '8')
-    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByText('Add'))
     await userEvent.click((await screen.findAllByRole('combobox'))[0])
     await userEvent.click((await screen.findAllByTitle('test1'))[0])
   })
