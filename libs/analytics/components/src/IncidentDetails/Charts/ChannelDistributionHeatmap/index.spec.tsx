@@ -35,10 +35,18 @@ const config = {
   count: 'apCount',
   countText: 'Ap Count'
 }
+const config2 = {
+  key: 'dfsEvents',
+  value: 'DFS EVENTS BY CHANNEL',
+  channel: 'channel',
+  count: 'eventCount',
+  countText: 'DFS Events'
+}
+
 const response = {
   network: {
     hierarchyNode: {
-      apDistribution: {
+      dfsEvents: {
         time: ['2023-07-18T00:00:00.000Z', '2023-07-18T00:03:00.000Z'],
         heatmap: [
           [
@@ -96,7 +104,7 @@ describe('ChannelDistributionHeatMap', () => {
     const { asFragment } = render(
       <Provider>
         <ChannelDistributionHeatMap
-          heatMapConfig={config}
+          heatMapConfig={config2}
           incident={fakeIncident1}
           buffer={buffer}
           minGranularity='PT3M'
@@ -104,7 +112,7 @@ describe('ChannelDistributionHeatMap', () => {
       </Provider>
     )
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await screen.findByText('AP DISTRIBUTION BY CHANNEL')
+    await screen.findByText('DFS EVENTS BY CHANNEL')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('canvas')).toBeDefined()
   })
@@ -115,7 +123,7 @@ describe('ChannelDistributionHeatMap', () => {
     const { asFragment } = render(
       <Provider>
         <ChannelDistributionHeatMap
-          heatMapConfig={config}
+          heatMapConfig={{ ...config,key: 'rogueDistribution' }}
           incident={fakeIncident1}
           buffer={buffer}
           minGranularity='PT3M'
