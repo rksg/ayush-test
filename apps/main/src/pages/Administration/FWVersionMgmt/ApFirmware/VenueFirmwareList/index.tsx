@@ -15,7 +15,7 @@ import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
-  useGetAvailableFirmwareListQuery,
+  useGetAvailableABFListQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
@@ -36,7 +36,8 @@ import {
   sortProp,
   defaultSort,
   dateSort,
-  EolApFirmware
+  EolApFirmware,
+  ABFVersion
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { RequestPayload }            from '@acx-ui/types'
@@ -184,7 +185,14 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const params = useParams()
   // eslint-disable-next-line max-len
-  const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params }, { refetchOnMountOrArgChange: false })
+  const { availableVersions } = useGetAvailableABFListQuery({ params }, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        availableVersions: data?.filter((abfVersion: ABFVersion) => abfVersion.abf === 'active')
+      }
+    }
+  })
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateVenueSchedulesMutation()
   const [updateNow] = useUpdateNowMutation()
