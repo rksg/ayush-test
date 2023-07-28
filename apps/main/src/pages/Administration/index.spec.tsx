@@ -19,6 +19,7 @@ import { fakeNotificationList } from './Notifications/__tests__/fixtures'
 import Administration from '.'
 
 const mockedUsedNavigate = jest.fn()
+const mockedAdminsReqFn = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -87,20 +88,24 @@ describe('Administration page', () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
   beforeEach(() => {
+    mockedAdminsReqFn.mockClear()
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
 
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdministrators.url,
-        (req, res, ctx) => res(ctx.json([
-          {
-            id: '0587cbeb13404f3b9943d21f9e1d1e9e',
-            email: 'efg.cheng@email.com',
-            role: 'PRIME_ADMIN',
-            delegateToAllECs: true,
-            detailLevel: 'debug'
-          }
-        ]))
+        (req, res, ctx) => {
+          mockedAdminsReqFn()
+          return res(ctx.json([
+            {
+              id: '0587cbeb13404f3b9943d21f9e1d1e9e',
+              email: 'efg.cheng@email.com',
+              role: 'PRIME_ADMIN',
+              delegateToAllECs: true,
+              detailLevel: 'debug'
+            }
+          ]))
+        }
       ),
       rest.get(
         AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
@@ -202,6 +207,8 @@ describe('Administration page', () => {
   })
 
   it('should not have administrators tab', async () => {
+    params.activeTab = 'notifications'
+
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -213,8 +220,12 @@ describe('Administration page', () => {
         route: { params }
       })
 
+    const notificationTab = await screen.findByRole('tab', { name: 'Notifications (3)' })
+    expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
+
     const tab = screen.queryByRole('tab', { name: /Administrators/ })
     expect(tab).not.toBeInTheDocument()
+    expect(mockedAdminsReqFn).not.toBeCalled()
   })
 
   it('should render subscriptions tab correctly', async () => {

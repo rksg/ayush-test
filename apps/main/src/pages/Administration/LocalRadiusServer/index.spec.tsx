@@ -83,8 +83,8 @@ describe('RadiusServerTab', () => {
     expect(generateButton).toBeTruthy()
     await userEvent.click(generateButton)
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
     await userEvent.click(saveButton)
+    await screen.findByText('Shared Secret was changed')
   })
 
   it('should change secret and cancel correctly', async () => {
