@@ -11,19 +11,19 @@ describe('Tooltip', () => {
   })
 
   it('renders Tooltip.Question', async () => {
-    render(<Tooltip.Question title='question tooltip' />)
+    render(<Tooltip.Question title='question tooltip' iconStyle={{ width: '16px' }}/>)
     const icon = await screen.findByTestId('QuestionMarkCircleOutlined')
     expect(icon).toBeVisible()
   })
 
   it('renders Tooltip.Info', async () => {
-    render(<Tooltip.Info title='info tooltip' />)
+    render(<Tooltip.Info title='info tooltip' iconStyle={{ width: '24px' }}/>)
     const icon = await screen.findByTestId('InformationOutlined')
     expect(icon).toBeVisible()
   })
 
   it('renders Tooltip.InfoFilled', async () => {
-    render(<Tooltip.InfoFilled title='info filled tooltip' />)
+    render(<Tooltip.Info title='info filled tooltip' isFilled iconStyle={{ width: '16px' }}/>)
     const icon = await screen.findByTestId('InformationSolid')
     expect(icon).toBeVisible()
   })

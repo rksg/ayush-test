@@ -5,7 +5,7 @@ import { CommonUrlsInfo, RogueApUrls }           from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueEditContext } from '../index'
+import { EditContext, VenueEditContext } from '../index'
 
 import { WifiConfigTab } from './index'
 
@@ -74,7 +74,7 @@ describe('WifiConfigTab', () => {
     render(
       <Provider>
         <VenueEditContext.Provider value={{
-          editContextData: {},
+          editContextData: {} as EditContext,
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()
         }}>
@@ -85,7 +85,7 @@ describe('WifiConfigTab', () => {
     await screen.findByRole('tab', { name: 'Networking' })
     await screen.findByRole('tab', { name: 'Security' })
     await screen.findByRole('tab', { name: 'Network Controls' })
-    await screen.findByRole('tab', { name: 'Advanced Settings' })
+    await screen.findByRole('tab', { name: 'Advanced' })
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Security' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

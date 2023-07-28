@@ -412,7 +412,7 @@ export class ModelLanPort extends VenueLanPort {
 export interface WifiApSetting {
   useVenueSettings: boolean;
   externalAntenna?: ExternalAntenna;
-  poeOut?: boolean;
+  poeOut?: boolean | boolean[];
   poeMode?: string;
   lanPorts?: LanPort[];
   lan?: LanPort[];
