@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }     from '@acx-ui/components'
-import { useGetApQuery }          from '@acx-ui/rc/services'
+import { Button, PageHeader } from '@acx-ui/components'
+import { useGetApQuery }      from '@acx-ui/rc/services'
 import {
   useNavigate,
   useTenantLink,

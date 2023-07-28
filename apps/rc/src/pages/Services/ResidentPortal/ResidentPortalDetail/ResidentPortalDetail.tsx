@@ -5,7 +5,6 @@ import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, SummaryCard }    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { loadResidentPortalFavIcon, loadResidentPortalLogo, isValidColorHex } from '@acx-ui/rc/components'
 import { useGetResidentPortalQuery }                                          from '@acx-ui/rc/services'
 import {

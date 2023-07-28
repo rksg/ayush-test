@@ -9,7 +9,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useAddClientIsolationMutation,
   useGetClientIsolationQuery,

@@ -1,7 +1,6 @@
 import { useIntl, defineMessage } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
 
 export function ReportList () {

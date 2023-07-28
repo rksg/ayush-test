@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { defaultNetworkPayload, SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
   doProfileDelete,

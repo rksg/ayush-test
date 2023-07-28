@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { Provider, store, videoCallQoeURL }                            from '@acx-ui/store'
-import { screen, render, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Provider, store, videoCallQoeURL } from '@acx-ui/store'
+import { screen, render, mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { getAllCallQoeTests, getAllCallQoeTestsWithNotStarted } from './__tests__/fixtures'
 import { api }                                                  from './services'
 
-import { useVideoCallQoe, VideoCallQoe } from '.'
+import { useVideoCallQoe } from '.'
 
 describe('VideoCallQoeListPage', () => {
   const params = { tenantId: 'tenant-id' }

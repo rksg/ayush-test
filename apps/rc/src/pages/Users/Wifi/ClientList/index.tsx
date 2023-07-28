@@ -4,7 +4,6 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, RangePicker, Tabs }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { ClientDualTable, ClientTabContext, defaultClientPayload } from '@acx-ui/rc/components'
 import { useGetClientListQuery, useGetGuestsListQuery }            from '@acx-ui/rc/services'
 import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'

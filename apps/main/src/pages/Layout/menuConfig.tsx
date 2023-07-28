@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps, IsActiveCheck }               from '@acx-ui/components'
+import { LayoutProps }                              from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
@@ -113,7 +113,7 @@ export function useMenuConfig () {
             },
             {
               uri: '/users/wifi/reports/clients',
-              label: $t({ defaultMessage: 'Wireless Clients Report' }),
+              label: $t({ defaultMessage: 'Wireless Clients Report' })
             }
           ]
         },
