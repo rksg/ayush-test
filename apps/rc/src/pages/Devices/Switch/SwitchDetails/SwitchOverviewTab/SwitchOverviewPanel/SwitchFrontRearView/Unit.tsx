@@ -175,6 +175,7 @@ export function Unit (props:{
       .forEach(item => {
         const port = { ...item }
         port.portnumber = port.portIdentifier.split('/')[2]
+        port.usedInUplink = port.cloudPort
         const slot = Number(port.portIdentifier.split('/')[1])
 
         if(tmpSlots[slot]){
@@ -197,14 +198,6 @@ export function Unit (props:{
     tmpPortView.slots.forEach((slot:SwitchSlot) => {
       if (slot.portStatus !== undefined) {
         slot.slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1])
-        const { cloudPort } = switchDetail
-        if (cloudPort) {
-          slot.portStatus.forEach(port => {
-            if (port.portIdentifier === cloudPort) {
-              port.usedInUplink = true
-            }
-          })
-        }
       }
     })
     setPortView(tmpPortView as SwitchFrontView)
