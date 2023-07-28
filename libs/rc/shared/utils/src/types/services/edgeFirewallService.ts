@@ -62,6 +62,7 @@ export interface EdgeFirewallViewData {
         aclRuleNum: number
     }[]
   edgeIds?: string[]
+  serviceVersions?: Record<string, string>;
 }
 
 export interface EdgeFirewallDDoSStatsViewData {

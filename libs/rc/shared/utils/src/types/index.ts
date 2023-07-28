@@ -484,4 +484,5 @@ export interface SwitchClient {
   dhcpClientOsVendorName?: string
   dhcpClientDeviceTypeName?: string
   dhcpClientModelName?: string
+  dhcpClientHostName?: string
 }

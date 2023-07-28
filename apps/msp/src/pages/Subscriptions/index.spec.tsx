@@ -40,7 +40,7 @@ const entitlement =
       deviceSubType: 'MSP_WIFI',
       deviceType: 'MSP_WIFI',
       effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
-      expirationDate: 'Tue Dec 01 23:59:59 UTC 2022',
+      expirationDate: 'Tue Jul 18 23:59:59 UTC 2023',
       id: '373419143-1',
       isTrial: false,
       lastNotificationDate: null,
@@ -141,6 +141,8 @@ describe('Subscriptions', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.getAllByText('Active')).toHaveLength(2)
+    expect(screen.getAllByText('Expired')).toHaveLength(2)
     const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
     fireEvent.click(generateUsageButton)
     const licenseManagementButton =

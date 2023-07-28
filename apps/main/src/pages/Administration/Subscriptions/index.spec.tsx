@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                             from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, isDelegationMode }                from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
 
@@ -19,6 +19,10 @@ jest.mock('@acx-ui/components', () => ({
 }))
 jest.mock('./ConvertNonVARMSPButton', () => ({
   ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
+}))
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
 describe('Subscriptions', () => {
@@ -77,6 +81,8 @@ describe('Subscriptions', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(isDelegationMode).mockReturnValue(true)
+
     render(
       <Provider>
         <Subscriptions />

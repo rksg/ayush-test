@@ -54,7 +54,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 bUhsmM"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
                     title="Expand"
                     type="button"
                   >

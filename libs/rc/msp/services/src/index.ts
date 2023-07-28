@@ -97,7 +97,8 @@ export const mspApi = baseMspApi.injectEndpoints({
             'Deactivate MspEc',
             'Reactivate MspEc',
             'Update MSP Admin list',
-            'assign MspEc List To delegate'
+            'assign MspEc List To delegate',
+            'MspAdminAssociation'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
@@ -661,6 +662,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    assignMultiMspEcDelegatedAdmins: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMultiMspEcDelegatedAdmins, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     addMspAssignment: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.addMspAssignment, params)
@@ -683,7 +694,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     deleteMspAssignment: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params)
+        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params)    
         return {
           ...req,
           body: payload
@@ -743,6 +754,7 @@ export const {
   useGetGenerateLicenseUsageRptQuery,
   useGetParentLogoUrlQuery,
   useLazyGetUserProfilePverQuery,
+  useAssignMultiMspEcDelegatedAdminsMutation,
   useAddMspAssignmentMutation,
   useUpdateMspAssignmentMutation,
   useDeleteMspAssignmentMutation

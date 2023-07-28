@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Row, Form, Checkbox } from 'antd'
 import _                            from 'lodash'
@@ -33,16 +33,10 @@ export function RadioSettingsChannels320Mhz (props: {
     formName: string[],
     channelList: RadioChannel[],
     disabled?: boolean,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    editContext: React.Context<any>,
+    handleChanged?: () => void
 }) {
 
-  let { disabled = false, channelList } = props
-
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(props.editContext)
+  let { disabled = false, channelList, handleChanged } = props
 
   const form = Form.useFormInstance()
 
@@ -98,11 +92,11 @@ export function RadioSettingsChannels320Mhz (props: {
 
     setComplexGroupChannelState(unsavedStates)
     form.setFieldValue(props.formName, unsavedStates.getEnabledChannels())
+
     // notify data is changed
-    setEditContextData({
-      ...editContextData,
-      isDirty: true
-    })
+    if(handleChanged) {
+      handleChanged()
+    }
 
   }
 
@@ -150,11 +144,11 @@ export function RadioSettingsChannels320Mhz (props: {
 
     setComplexGroupChannelState(unsavedStates)
     form.setFieldValue(props.formName, unsavedStates.getEnabledChannels())
+
     // notify data is changed
-    setEditContextData({
-      ...editContextData,
-      isDirty: true
-    })
+    if (handleChanged) {
+      handleChanged()
+    }
   }
 
   function TooltipFor320Mhz (props: {
@@ -188,7 +182,7 @@ export function RadioSettingsChannels320Mhz (props: {
     _.forIn(complexGroupChannelState.ChannelGroup_320MHz, function (value, key){
       if(value.group === assignedGroup)
         node.push(
-          <Col span={6}>
+          <Col span={6} key={key}>
             <BarButton6G
               disabled={disabled}
               data-testid={`320-button-${key}`}
@@ -207,7 +201,7 @@ export function RadioSettingsChannels320Mhz (props: {
     let node: React.ReactNode[] = []
     _.forIn(complexGroupChannelState.ChannelGroup_160MHz, function (value, key){
       node.push(
-        <Col span={3}>
+        <Col span={3} key={key}>
           <Checkbox
             disabled={disabled}
             className={value.isolated ? 'isolated' : ''}
