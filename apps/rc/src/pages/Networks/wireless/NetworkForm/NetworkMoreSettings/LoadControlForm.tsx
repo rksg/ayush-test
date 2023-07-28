@@ -24,12 +24,13 @@ enum MaxRateEnum {
 
 const { useWatch } = Form
 
-export function LoadControlForm () {
+export function LoadControlForm (props: { labelWidth?: string }) {
   const maxRate = useWatch<MaxRateEnum>('maxRate')
   const { $t } = useIntl()
 
 
   const { data } = useContext(NetworkFormContext)
+  const { labelWidth='250px' } = props
   const form = Form.useFormInstance()
 
   useEffect(() => {
@@ -90,7 +91,7 @@ export function LoadControlForm () {
         />
       </Form.Item>
 
-      <UI.FieldLabel width='250px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Enable load balancing between all radios' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
@@ -101,7 +102,7 @@ export function LoadControlForm () {
         />
       </UI.FieldLabel>
 
-      <UI.FieldLabel width='250px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Enable load balancing between APs' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
@@ -111,7 +112,6 @@ export function LoadControlForm () {
           children={<Switch />}
         />
       </UI.FieldLabel>
-
     </>
   )
 }

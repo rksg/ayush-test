@@ -1533,6 +1533,24 @@ export const mockRadiusOptions = {
   }
 }
 
+export const mockCellularSettings = {
+  model: 'M510',
+  primarySim: {
+    enabled: true,
+    apn: 'defaultapn',
+    roaming: true,
+    networkSelection: 'AUTO'
+  },
+  secondarySim: {
+    enabled: true,
+    apn: 'defaultapn',
+    roaming: true,
+    networkSelection: 'AUTO'
+  },
+  wanConnection: 'ETH_WITH_CELLULAR_FAILOVER',
+  primaryWanRecoveryTimer: 60
+}
+
 export const mockLoadBalabcing = {
   enabled: true,
   loadBalancingMethod: 'BASED_ON_CLIENT_COUNT',

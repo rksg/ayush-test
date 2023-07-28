@@ -48,6 +48,17 @@ export function RadioTab () {
       </>
     )
   },
+  ...(supportLoadBalancing? [{
+    title: loadBalancingTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='load-balancing'>
+          { loadBalancingTitle }
+        </StepsFormLegacy.SectionTitle>
+        <LoadBalancing />
+      </>
+    )
+  }] : []),
   {
     title: externalTitle,
     content: (
@@ -60,20 +71,6 @@ export function RadioTab () {
     )
   }]
 
-  if (supportLoadBalancing) {
-    anchorItems.push({
-      title: loadBalancingTitle,
-      content: (
-        <>
-          <StepsFormLegacy.SectionTitle id='load-balancing'>
-            { loadBalancingTitle }
-          </StepsFormLegacy.SectionTitle>
-          <LoadBalancing />
-        </>
-      )
-    })
-  }
-
   if (supoortClientAdmissionControl) {
     anchorItems.push({
       title: clientAdmissionControlTitle,
@@ -82,8 +79,8 @@ export function RadioTab () {
           <StepsFormLegacy.SectionTitle id='client-admission-control'>
             { clientAdmissionControlTitle }
             <Tooltip
-              title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections' +
-                ' based on the connectivity thresholds set per radio.' })}
+              title={$t({ defaultMessage: 'APs adaptively allow or deny new client connections '+
+                'based on the connectivity thresholds set per radio.' })}
               placement='right'>
               <QuestionMarkCircleOutlined
                 style={{ height: '18px', marginBottom: -3 }}

@@ -371,7 +371,8 @@ export interface Vlan {
 	vlanName?: string,
   untaggedPorts?: string,
   taggedPorts?: string,
-  title?: string
+  title?: string,
+  key?: number
 }
 
 export interface ConfigurationProfile {
