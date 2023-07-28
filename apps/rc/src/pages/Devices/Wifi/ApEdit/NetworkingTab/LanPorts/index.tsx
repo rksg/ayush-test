@@ -1,7 +1,7 @@
 import { useContext, useRef, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { isArray }                              from 'lodash'
+import { isArray, omit }                        from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext' //'antd/lib/form/context'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
@@ -149,7 +149,7 @@ export function LanPorts () {
         await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
       } else {
         const { lan, poeOut, poeMode } = values
-        const payload: WifiApSetting = {
+        const wifiApSetting: WifiApSetting = {
           ...initData,
           lanPorts: lan,
           ...(poeMode && { poeMode: poeMode }),
@@ -157,8 +157,13 @@ export function LanPorts () {
           useVenueSettings: false
         }
 
+        // Need to remove the LedOn to avoid impact AP LED settings
+        const payload = omit(wifiApSetting, 'ledOn')
+
         //console.log('values: ', values)
+        //console.log('wifiApSetting: ', wifiApSetting)
         //console.log('payload: ', payload)
+
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
       }
     } catch (error) {
