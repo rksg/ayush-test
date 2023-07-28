@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
@@ -34,7 +35,6 @@ Object.assign(navigator, {
 describe('TroubleshootingPingForm', () => {
 
   beforeEach(() => {
-
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.ping.url,
@@ -98,11 +98,14 @@ describe('TroubleshootingPingForm', () => {
       <SwitchPingForm />
     </Provider>, { route: { params } })
 
-    const ipAddressField = screen.getByRole('textbox', {
+    const ipAddressField = await screen.findByRole('textbox', {
       name: /target host or ip address/i
     })
-    fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
-    ipAddressField.focus()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
+      ipAddressField.focus()
+    })
     await userEvent.click(await screen.findByRole('button', { name: /run/i }))
   })
 
@@ -117,11 +120,15 @@ describe('TroubleshootingPingForm', () => {
       <SwitchPingForm />
     </Provider>, { route: { params } })
 
-    const ipAddressField = screen.getByRole('textbox', {
+    const ipAddressField = await screen.findByRole('textbox', {
       name: /target host or ip address/i
     })
-    fireEvent.change(ipAddressField, { target: { value: '1.1' } })
-    ipAddressField.focus()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(ipAddressField, { target: { value: '1.1' } })
+      ipAddressField.focus()
+    })
+    await userEvent.click(await screen.findByRole('button', { name: /run/i }))
   })
 
   it('should clear correctly', async () => {
@@ -151,11 +158,14 @@ describe('TroubleshootingPingForm', () => {
       <SwitchPingForm />
     </Provider>, { route: { params } })
 
-    const ipAddressField = screen.getByRole('textbox', {
+    const ipAddressField = await screen.findByRole('textbox', {
       name: /target host or ip address/i
     })
-    fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
-    ipAddressField.focus()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
+      ipAddressField.focus()
+    })
     await userEvent.click(await screen.findByRole('button', { name: /run/i }))
     // TODO
     // expect(await screen.findByText('Server Error')).toBeVisible()
