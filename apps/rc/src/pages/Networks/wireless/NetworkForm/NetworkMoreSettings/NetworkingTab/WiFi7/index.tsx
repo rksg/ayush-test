@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Checkbox, Form, Space, Switch } from 'antd'
 import { CheckboxChangeEvent }           from 'antd/lib/checkbox'
 import { CheckboxChangeEventTarget }     from 'antd/lib/checkbox/Checkbox'
-import { useWatch }                      from 'antd/lib/form/Form'
 import { useIntl }                       from 'react-intl'
 
 import { Tooltip }                from '@acx-ui/components'
@@ -93,11 +92,19 @@ const WiFi7 = () => {
   const network: NetworkSaveData | null | undefined = useGetNetwork().data
 
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const defaultValueOfEnableWiFi = true
+  const defaultValueOfEnableMlo = false
 
-  const [enableWiFi, enableMlo] = [
-    useWatch<boolean>(['wlan', 'advancedCustomization', 'enableWifi7']) || true,
-    useWatch<boolean>(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']) || false
-  ]
+  const [enableWiFi, setEnableWiFi] = useState(defaultValueOfEnableWiFi)
+  const [enableMlo, setEnableMlo] = useState(defaultValueOfEnableMlo)
+
+  useEffect(() => {
+    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi6'], enableWiFi)
+    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi7'], enableWiFi)
+    form.setFieldValue(
+      ['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'],
+      enableWiFi ? enableMlo : false)
+  }, [enableWiFi, enableMlo])
 
   const [options, setOptions] =
           useState<Option[]>([{
@@ -125,15 +132,13 @@ const WiFi7 = () => {
             disabled: true
           }])
 
-  const onEnableWiFiChange = (enableWiFi: boolean) => {
-    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi6'], enableWiFi)
-    form.setFieldValue(['wlan', 'advancedCustomization', 'enableWifi7'], enableWiFi)
-    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'],
-      enableWiFi ? enableMlo : false)
+  const onEnableWiFiChange = (check: boolean) => {
+    setEnableWiFi(check)
+    setEnableMlo(check ? enableMlo : false)
   }
 
-  const onEnableMloChange = (enableMlo: boolean) => {
-    form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], enableMlo)
+  const onEnableMloChange = (check: boolean) => {
+    setEnableMlo(check)
   }
 
   const onOptionChange = (event: CheckboxChangeEvent) => {
@@ -213,9 +218,9 @@ const WiFi7 = () => {
                     style={{ marginBottom: '15px', width: '300px' }}
                     children={
                       <Switch
+                        onChange={onEnableMloChange}
                         defaultChecked={enableMlo}
                         disabled={!enableWiFi}
-                        onChange={onEnableMloChange}
                       />
                     }
                   />
