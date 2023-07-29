@@ -20,7 +20,7 @@ export function TrustedPortsModal (props: {
 }) {
   const { $t } = useIntl()
   const { open, editRecord, onSave, onCancel } = props
-  const form = Form.useFormInstance()
+  const [form] = Form.useForm()
   const [noModelMsg, setNoModelMsg] = useState(false)
   const [vlanSettingValues, setVlanSettingValues] =
     useState<VlanTrustPortInterface>({ family: '', model: '', trustedPorts: [] })

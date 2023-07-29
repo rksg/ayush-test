@@ -26,7 +26,7 @@ export interface ACLSettingDrawerProps {
 export function DefaultVlanDrawer (props: ACLSettingDrawerProps) {
   const { $t } = useIntl()
   const { defaultVlan, setDefaultVlan, visible, setVisible, vlansList } = props
-  const form = Form.useFormInstance<Vlan>()
+  const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
     setVisible(false)

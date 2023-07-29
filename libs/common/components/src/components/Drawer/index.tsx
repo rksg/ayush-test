@@ -122,7 +122,7 @@ const FormFooter = (props: FormFooterProps) => {
             setLoading(true)
             onSave(checked).finally(() => setLoading(false))
           }}
-          type={'secondary'}
+          type='primary'
         >
           {buttonLabel.save}
         </Button>}
