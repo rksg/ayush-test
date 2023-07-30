@@ -24,7 +24,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { DnsProxyContext } from './ServicesForm'
+import { DnsProxyContext } from './NetworkControlTab'
+
 
 interface DnsProxyListData {
   cloneList: DnsProxyRule[] | [],

@@ -106,7 +106,7 @@ export function EditLldpModal (props: {
     footer={[
       <Space style={{ display: 'flex', justifyContent: 'space-between' }} key='button-wrapper'>
         <Button key='back' onClick={onCancel}>{$t({ defaultMessage: 'Cancel' })}</Button>
-        <Button key='submit' type='secondary' disabled={disableButton} onClick={onSave}>
+        <Button key='submit' type='primary' disabled={disableButton} onClick={onSave}>
           {$t({ defaultMessage: 'Save' })}
         </Button>
       </Space>

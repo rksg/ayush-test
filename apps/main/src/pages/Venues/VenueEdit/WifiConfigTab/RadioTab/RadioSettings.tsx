@@ -619,7 +619,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio24G}
               supportChannels={support24GChannels}
               bandwidthOptions={bandwidth24GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
@@ -628,7 +628,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio5G}
               supportChannels={support5GChannels}
               bandwidthOptions={bandwidth5GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           { isTriBandRadio &&<div style={{ display: isTriBandRadio &&
@@ -638,7 +638,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio6G}
               supportChannels={support6GChannels}
               bandwidthOptions={bandwidth6GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           }
@@ -677,7 +677,7 @@ export function RadioSettings () {
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   supportChannels={support5GLowerChannels}
                   bandwidthOptions={bandwidthLower5GOptions}
-                  editContext={VenueEditContext}
+                  handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
               <div style={{
@@ -713,7 +713,7 @@ export function RadioSettings () {
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   supportChannels={support5GUpperChannels}
                   bandwidthOptions={bandwidthUpper5GOptions}
-                  editContext={VenueEditContext}
+                  handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
             </>
