@@ -1,5 +1,4 @@
 import {
-  Dropdown,
   Menu,
   MenuProps,
   Space
@@ -7,9 +6,8 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand }                     from '@acx-ui/icons'
-import { EdgeStatusLight, useEdgeActions } from '@acx-ui/rc/components'
+import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery
 } from '@acx-ui/rc/services'
@@ -112,14 +110,14 @@ export const EdgeDetailsPageHeader = () => {
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={menu}>{()=>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
-              <ArrowExpand />
+              <CaretDownSolidIcon />
             </Space>
           </Button>
-        </Dropdown>,
+        }</Dropdown>,
         <Button
           type='primary'
           onClick={() =>
