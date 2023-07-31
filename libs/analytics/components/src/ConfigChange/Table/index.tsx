@@ -18,11 +18,17 @@ import { Badge }                                from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
 export function Table (props: {
+  timeRanges: moment.Moment[],
   onRowClick?: (params: unknown) => void,
 }) {
   const { $t } = useIntl()
-  const { filters: { filter, startDate: start, endDate: end } } = useAnalyticsFilter()
-  const queryResults = useConfigChangeQuery({ ...getFilterPayload({ filter }), start, end })
+  const [startDate, endDate] = props.timeRanges
+  const { filters: { filter } } = useAnalyticsFilter()
+  const queryResults = useConfigChangeQuery({
+    ...getFilterPayload({ filter }),
+    start: startDate.toISOString(),
+    end: endDate.toISOString()
+  })
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
