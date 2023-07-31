@@ -22,7 +22,8 @@ import {
 } from '@acx-ui/icons'
 import {
   CsvSize,
-  ImportFileDrawer
+  ImportFileDrawer,
+  ImportFileDrawerType
 }      from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
@@ -556,7 +557,7 @@ export function VenuePropertyTab () {
         title={$t({ defaultMessage: 'Import Units From File' })}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        type='PropertyUnit'
+        type={ImportFileDrawerType.PropertyUnit}
         acceptType={['xlsx']}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
