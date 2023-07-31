@@ -231,7 +231,7 @@ export const DateTimePickerFooter = ({
         <Divider />
       </>
       : <Divider />}
-    <Button type='secondary' size='small' onClick={() => onApply(value)} >Apply</Button>
+    <Button type='primary' size='small' onClick={() => onApply(value)} >Apply</Button>
     <Button type='default' size='small' onClick={() => onCancel()}>Cancel</Button>
   </UI.FooterWrapper>
 }
