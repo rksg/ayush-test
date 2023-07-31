@@ -12,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                  from '@acx-ui/feature-toggle'
-import { CsvSize, ImportFileDrawer, PassphraseViewer } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                        from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
@@ -295,7 +295,7 @@ export default function DpskPassphraseManagement () {
       passphraseInfo={managePassphraseInfo}
       setPassphraseInfo={setManagePassphraseInfo}
     />}
-    {uploadCsvDrawerVisible && <ImportFileDrawer type='DPSK'
+    {uploadCsvDrawerVisible && <ImportFileDrawer type={ImportFileDrawerType.DPSK}
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['20MB']}
       maxEntries={5000}

@@ -7,7 +7,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
   >
     <div>
       <button
-        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
         type="button"
       >
         <span>
@@ -551,40 +551,44 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
           </div>
         </div>
         <div
-          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
-          width="250px"
+          style="max-width: 600px;"
         >
-          Client Isolation
           <div
-            class="ant-form-item"
-            style="margin-bottom: 10px;"
+            class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+            width="250px"
           >
+            Client Isolation
             <div
-              class="ant-row ant-form-item-row"
+              class="ant-form-item"
+              style="margin-bottom: 10px;"
             >
               <div
-                class="ant-col ant-form-item-control"
+                class="ant-row ant-form-item-row"
               >
                 <div
-                  class="ant-form-item-control-input"
+                  class="ant-col ant-form-item-control"
                 >
                   <div
-                    class="ant-form-item-control-input-content"
+                    class="ant-form-item-control-input"
                   >
-                    <button
-                      aria-checked="false"
-                      class="ant-switch"
-                      id="wlan_advancedCustomization_clientIsolation"
-                      role="switch"
-                      type="button"
+                    <div
+                      class="ant-form-item-control-input-content"
                     >
-                      <div
-                        class="ant-switch-handle"
-                      />
-                      <span
-                        class="ant-switch-inner"
-                      />
-                    </button>
+                      <button
+                        aria-checked="false"
+                        class="ant-switch"
+                        id="wlan_advancedCustomization_clientIsolation"
+                        role="switch"
+                        type="button"
+                      >
+                        <div
+                          class="ant-switch-handle"
+                        />
+                        <span
+                          class="ant-switch-inner"
+                        />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -731,7 +735,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               Access Control
             </h4>
             <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
               type="button"
             >
               <span>
@@ -739,7 +743,7 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
               </span>
             </button>
             <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
               type="button"
             >
               <span>
