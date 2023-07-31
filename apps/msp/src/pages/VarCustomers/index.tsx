@@ -222,6 +222,7 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Account Email' }),
       dataIndex: 'tenantEmail',
       key: 'tenantEmail',
+      searchable: true,
       sorter: true
     },
     {
