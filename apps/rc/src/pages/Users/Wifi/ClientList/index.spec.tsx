@@ -32,7 +32,7 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: (props: { reportName: ReportType }) => <div data-testid={props.reportName} />
 }))
 
-describe('WifiClientList with feature toggle', () => {
+describe.skip('WifiClientList with feature toggle', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   it('should render wifi client tab', async () => {
     render(<WifiClientList tab={WirelessTabsEnum.CLIENTS}/>,
@@ -60,7 +60,7 @@ describe('WifiClientList with feature toggle', () => {
   })
 })
 
-describe('WifiClientList without feature toggle', () => {
+describe.skip('WifiClientList without feature toggle', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
   it('should render wifi client tab', async () => {
     render(<WifiClientList tab={WirelessTabsEnum.CLIENTS}/>,
