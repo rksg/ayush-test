@@ -185,7 +185,7 @@ export function SwitchTraceRouteForm () {
             {$t({ defaultMessage: 'Clear' })}
           </Button>
           <Button
-            type='secondary'
+            type='primary'
             htmlType='submit'
             disabled={!isValid || isLoading}
             onClick={onSubmit}>

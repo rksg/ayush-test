@@ -19,6 +19,7 @@ export function LanPortSettings (props: {
   setSelectedPortCaps: (data: LanPort) => void,
   selectedModel: VenueLanPorts | WifiApSetting,
   selectedModelCaps: ApModel | CapabilitiesApModel,
+  onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
   readOnly?: boolean,
   useVenueSettings?: boolean
@@ -30,6 +31,7 @@ export function LanPortSettings (props: {
     selectedModel,
     setSelectedPortCaps,
     selectedModelCaps,
+    onGUIChanged,
     isDhcpEnabled,
     readOnly,
     useVenueSettings
@@ -53,6 +55,12 @@ export function LanPortSettings (props: {
     )
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[index] as LanPort)
     form?.setFieldValue('lan', lanPorts)
+
+    onChangedByCustom('portType')
+  }
+
+  const onChangedByCustom = (fieldName: string) => {
+    onGUIChanged?.(fieldName)
   }
 
   return (<>
@@ -62,6 +70,7 @@ export function LanPortSettings (props: {
       valuePropName='checked'
       children={<Switch
         disabled={readOnly}
+        onChange={() => onChangedByCustom('poeOut')}
       />}
     />}
     {isDhcpEnabled && !useVenueSettings && <FormattedMessage
@@ -91,6 +100,7 @@ export function LanPortSettings (props: {
           || !selectedPortCaps?.supportDisable
           || lan?.vni > 0
         }
+        onChange={() => onChangedByCustom('enabled')}
       />}
     />
     <Form.Item
@@ -150,6 +160,7 @@ export function LanPortSettings (props: {
               } : lan
             )
             form?.setFieldValue('lan', lanPorts)
+            onChangedByCustom('untagId')
           }
         }}
       />}
@@ -174,6 +185,7 @@ export function LanPortSettings (props: {
           || lan?.type !== ApLanPortTypeEnum.GENERAL
           || lan?.vni > 0
         }
+        onChange={() => onChangedByCustom('vlanMembers')}
       />}
     />
     <Form.Item

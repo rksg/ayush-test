@@ -433,11 +433,10 @@ export interface SwitchPortViewModel extends GridDataRow {
   SwitchPortStackingPortField: boolean;
   mediaType?: string;
   portnumber?: string
+  usedInUplink?: boolean
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
-  portnumber?: string
-  usedInUplink?: boolean
   neighborMacAddress?: string
   portTagged?: PortTaggedEnum
 }

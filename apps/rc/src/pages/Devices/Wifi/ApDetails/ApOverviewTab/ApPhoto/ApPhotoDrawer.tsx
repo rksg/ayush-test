@@ -201,7 +201,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
     <Button
       key='saveBtn'
       onClick={onSave}
-      type={'secondary'}>
+      type='primary'>
       {$t({ defaultMessage: 'Apply' })}
     </Button>,
     <Button

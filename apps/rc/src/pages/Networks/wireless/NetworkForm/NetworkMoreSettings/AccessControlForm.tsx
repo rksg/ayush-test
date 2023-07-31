@@ -76,7 +76,7 @@ export function AccessControlForm () {
     <div style={{ marginBottom: '30px' }}>
       <span style={{
         display: 'grid',
-        gridTemplateColumns: '220px 130px auto',
+        gridTemplateColumns: '165px 140px 300px',
         alignItems: 'baseline',
         margin: '20px 0'
       }}>
@@ -224,6 +224,8 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
 
+  const labelWidth = '175px'
+
   const [state, updateState] = useState({
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
@@ -341,7 +343,7 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   }, [enableAccessControlProfile, accessControlProfileId])
 
   return (<>
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Access Control' })}
       <Form.Item
         name='accessControlProfileEnable'
@@ -375,32 +377,32 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
 
     </Form.Item>}
 
-    <UI.FieldLabel width='175px' style={{ fontWeight: 700 }}>
+    <UI.FieldLabel width={labelWidth} style={{ fontWeight: 700 }}>
       <span>{$t({ defaultMessage: 'Access Policy' })}</span>
       <span>{$t({ defaultMessage: 'Policy Details' })}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 2' })}
       <span>{selectedLayer2}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 3' })}
       <span>{selectedLayer3}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Device & OS' })}
       <span>{selectedDevicePolicy}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Applications' })}
       <span>{selectedApplicationPolicy}</span>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Rate Limit' })}
       <span>{(!state.selectedAccessControlProfile ||
         state.selectedAccessControlProfile.rateLimiting?.enabled === false) && '--'}</span>
@@ -446,6 +448,8 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
+  const labelWidth = '175px'
+
   useEffect(() => {
     // eslint-disable-next-line max-len
     if (enableLayer2 || enableLayer3 || enableDeviceOs || enableApplications || enableClientRateLimit) {
@@ -467,7 +471,7 @@ function AccessControlConfigForm () {
   ])
 
   return (<>
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 2' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -484,7 +488,7 @@ function AccessControlConfigForm () {
       </div>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Layer 3' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -501,7 +505,7 @@ function AccessControlConfigForm () {
       </div>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Device & OS' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -524,7 +528,7 @@ function AccessControlConfigForm () {
     </UI.FieldLabel>
 
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Applications' })}
       <div style={{ display: 'grid', gridTemplateColumns: '50px 190px auto' }}>
         <Form.Item
@@ -541,7 +545,7 @@ function AccessControlConfigForm () {
       </div>
     </UI.FieldLabel>
 
-    <UI.FieldLabel width='175px'>
+    <UI.FieldLabel width={labelWidth}>
       {$t({ defaultMessage: 'Client Rate Limit' })}
       <Form.Item
         name='enableClientRateLimit'

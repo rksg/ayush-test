@@ -15,6 +15,7 @@ import styled                           from 'styled-components/macro'
 
 import { Loader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance, Tabs, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -47,7 +48,7 @@ const RadioLegends = styled.div`
   .legends {
     position: absolute;
     display: grid;
-    grid-template-columns: 190px 90px 314px ;
+    grid-template-columns: 190px 114px 314px ;
     grid-column-gap: 8px;
     height: 16px;
 
@@ -79,7 +80,7 @@ const RadioLable = styled.div`
 export function RadioSettings () {
   const { $t } = useIntl()
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
-  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const {
     editContextData,
@@ -160,7 +161,7 @@ export function RadioSettings () {
     })
   }
 
-  const supportedApModelTooltip = Wifi7_320Mhz_FeatureFlag ?
+  const supportedApModelTooltip = wifi7_320Mhz_FeatureFlag ?
     // eslint-disable-next-line max-len
     $t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R770, R760 and R560' }) :
     // eslint-disable-next-line max-len
@@ -183,7 +184,7 @@ export function RadioSettings () {
       setBandwidth24GOptions(getSupportBandwidth(channelBandwidth24GOptions, supportCh24g))
       setBandwidth5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g))
       // eslint-disable-next-line max-len
-      const wifi7_320Bandwidth = Wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+      const wifi7_320Bandwidth = wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
       setBandwidth6GOptions(getSupportBandwidth(wifi7_320Bandwidth, supportCh6g))
       setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
       setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
@@ -588,8 +589,19 @@ export function RadioSettings () {
                 {$t({ defaultMessage: '5 GHz' })}</RadioLable>}/>
             { isTriBandRadio &&
               <Tabs.TabPane key='Normal6GHz'
-                tab={<RadioLable style={{ width: '36px' }}>
-                  {$t({ defaultMessage: '6 GHz' })}</RadioLable>}/>
+                style={
+                  { width: '50px' }
+                }
+                tab={<RadioLable style={{ width: '60px' }}>
+                  {$t({ defaultMessage: '6 GHz' })}
+                  <Tooltip
+                    placement='topRight'
+                    title={$t({ defaultMessage: '6 GHz only supports R770 and R560.' })}
+                  >
+                    <QuestionMarkCircleOutlined
+                      style={{ height: '16px' }} />
+                  </Tooltip>
+                </RadioLable>}/>
             }
             { isTriBandRadio && isDual5gMode && <>
               <Tabs.TabPane key='Lower5GHz'
@@ -607,7 +619,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio24G}
               supportChannels={support24GChannels}
               bandwidthOptions={bandwidth24GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
@@ -616,7 +628,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio5G}
               supportChannels={support5GChannels}
               bandwidthOptions={bandwidth5GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           { isTriBandRadio &&<div style={{ display: isTriBandRadio &&
@@ -626,7 +638,7 @@ export function RadioSettings () {
               radioType={ApRadioTypeEnum.Radio6G}
               supportChannels={support6GChannels}
               bandwidthOptions={bandwidth6GOptions}
-              editContext={VenueEditContext}
+              handleChanged={handleChange}
               onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           }
@@ -665,7 +677,7 @@ export function RadioSettings () {
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   supportChannels={support5GLowerChannels}
                   bandwidthOptions={bandwidthLower5GOptions}
-                  editContext={VenueEditContext}
+                  handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
               <div style={{
@@ -701,7 +713,7 @@ export function RadioSettings () {
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   supportChannels={support5GUpperChannels}
                   bandwidthOptions={bandwidthUpper5GOptions}
-                  editContext={VenueEditContext}
+                  handleChanged={handleChange}
                   onResetDefaultValue={handleResetDefaultSettings} />
               </div>
             </>
