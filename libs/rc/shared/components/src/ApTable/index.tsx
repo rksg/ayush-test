@@ -41,9 +41,9 @@ import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react
 import { RequestPayload }                                    from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
 
-import { seriesMappingAP }           from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
-import { useApActions }              from '../useApActions'
+import { seriesMappingAP }                                 from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
+import { useApActions }                                    from '../useApActions'
 
 import {
   getGroupableConfig, groupedFields
@@ -498,7 +498,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         // eslint-disable-next-line max-len
         iconButton={exportDevice ? { icon: <DownloadOutlined />, disabled, onClick: exportCsv } : undefined}
       />
-      <ImportFileDrawer type='AP'
+      <ImportFileDrawer
+        type={ImportFileDrawerType.AP}
         title={$t({ defaultMessage: 'Import APs from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}

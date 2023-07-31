@@ -13,7 +13,7 @@ import {
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
-import { CsvSize, CodeMirrorWidget, ImportFileDrawer } from '@acx-ui/rc/components'
+import { CsvSize, CodeMirrorWidget, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   useGetCliConfigExamplesQuery,
   useGetCliTemplatesQuery
@@ -432,7 +432,7 @@ export function CliStepConfiguration () {
     />
 
     <ImportFileDrawer
-      type='CLI'
+      type={ImportFileDrawerType.CLI}
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['2MB']}
       acceptType={['csv', 'txt']}
