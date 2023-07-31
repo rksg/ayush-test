@@ -15,12 +15,19 @@ export const ClientSearchBar = styled(SearchBar)`
 `
 
 export const ClientLink = styled(Link)`
-  .ant-anchor-link-title{
-    background: none;
-    border: 0;
-    border-radius: 0;
+  &.ant-anchor-link {
     padding: 0;
-    margin-bottom: 0;
+    .ant-anchor-link-title{
+      color: var(--acx-accents-blue-50);
+      &:hover {
+        color: var(--acx-accents-blue-60);
+      }
+    }
+  }
+  &.ant-anchor-link-active {
+    .ant-anchor-link-title{
+      color: var(--acx-accents-blue-50);
+    }
   }
 `
 

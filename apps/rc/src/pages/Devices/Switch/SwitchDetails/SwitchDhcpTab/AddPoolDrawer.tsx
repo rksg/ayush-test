@@ -13,8 +13,8 @@ import {
   SwitchDhcp,
   SwitchDhcpOption
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { DhcpOptionModal } from './DhcpOptionModal'
 
@@ -121,7 +121,7 @@ export function AddPoolDrawer (props: {
       <Button
         loading={props.isLoading}
         onClick={() => form.submit()}
-        type='secondary'
+        type='primary'
       >
         {$t({ defaultMessage: 'Save' })}
       </Button>
@@ -229,7 +229,7 @@ export function AddPoolDrawer (props: {
         <Table
           rowKey='seq'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{
+          rowSelection={hasAccess() && {
             type: 'radio',
             selectedRowKeys: selected ? [selected.seq]:[],
             onChange: (keys: React.Key[]) => {

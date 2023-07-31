@@ -125,7 +125,8 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
     <Form.Item
       name='id'
       initialValue={''}
-      hidden={true}
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      children={<></>}
     />
   </Form>
 

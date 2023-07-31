@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Form }                   from 'antd'
+import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -51,13 +52,25 @@ const EditDhcp = () => {
 
   const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
-      const payload = { ...edgeDhcpData, ...data }
+      const payload = { ...edgeDhcpData, ...(_.cloneDeep(data)) }
       const pathVar = { id: params.serviceId }
       if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
         payload.leaseTime = -1 // -1 means infinite
       }
       delete payload.enableSecondaryDNSServer
       delete payload.leaseTimeType
+
+      // should not create service with id
+      payload.dhcpPools.forEach(item => {
+        if (item.id.startsWith('_NEW_')) item.id = ''
+      })
+      payload.dhcpOptions?.forEach(item => {
+        if (item.id.startsWith('_NEW_')) item.id = ''
+      })
+      payload.hosts?.forEach(item => {
+        if (item.id.startsWith('_NEW_')) item.id = ''
+      })
+
       await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {

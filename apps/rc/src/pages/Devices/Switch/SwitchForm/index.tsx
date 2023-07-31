@@ -582,15 +582,15 @@ export function SwitchForm () {
               </div>
               {editMode &&
                   <>
-                    <Form.Item name='id' hidden={true} />
-                    <Form.Item name='firmwareVersion' hidden={true} />
-                    <Form.Item name='isPrimaryDeleted' hidden={true} />
-                    <Form.Item name='sendedHostname' hidden={true} />
-                    <Form.Item name='softDeleted' hidden={true} />
-                    <Form.Item name='trustPorts' hidden={true} />
+                    <Form.Item name='id' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='firmwareVersion' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='isPrimaryDeleted' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='sendedHostname' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='softDeleted' hidden={true}><Input /></Form.Item>
+                    <Form.Item name='trustPorts' hidden={true}><Input /></Form.Item>
                   </>
               }
-              <Form.Item name='enableStack' initialValue={false} hidden={true} />
+              <Form.Item name='enableStack' initialValue={false} hidden={true}><Input /></Form.Item>
               {editMode &&
                 <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                   <SwitchStackSetting
