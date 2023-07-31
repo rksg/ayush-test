@@ -268,10 +268,10 @@ export const VenueFirmwareTable = (
     disabled: (selectedRows) => {
       return !hasAvailableSwitchFirmware(selectedRows)
     },
-    tooltip: (selectedRows) => {
-      return hasAvailableSwitchFirmware(selectedRows) ?
-        '' : $t({ defaultMessage: 'No available versions' })
-    },
+    // tooltip: (selectedRows) => {
+    //   return hasAvailableSwitchFirmware(selectedRows) ?
+    //     '' : $t({ defaultMessage: 'No available versions' })
+    // },
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -313,10 +313,10 @@ export const VenueFirmwareTable = (
     disabled: (selectedRows) => {
       return !hasAvailableSwitchFirmware(selectedRows)
     },
-    tooltip: (selectedRows) => {
-      return hasAvailableSwitchFirmware(selectedRows) ?
-        '' : $t({ defaultMessage: 'No available versions' })
-    },
+    // tooltip: (selectedRows) => {
+    //   return hasAvailableSwitchFirmware(selectedRows) ?
+    //     '' : $t({ defaultMessage: 'No available versions' })
+    // },
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
