@@ -238,7 +238,6 @@ export const VenueFirmwareTable = (
   const columns = useColumns(searchable, filterables)
 
   const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
-    setVenues(selectedRows)
     let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
     selectedRows.forEach((row: FirmwareSwitchVenue) => {
       const version = row.switchFirmwareVersion?.id
