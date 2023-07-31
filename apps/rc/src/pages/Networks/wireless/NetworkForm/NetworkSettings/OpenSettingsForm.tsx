@@ -6,11 +6,12 @@ import {
   Row, Space,
   Switch
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Tooltip }                 from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages }                      from '@acx-ui/rc/utils'
+import { WifiNetworkMessages, WlanSecurityEnum }    from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
@@ -81,10 +82,15 @@ function SettingsForm () {
     })
   }
   useEffect(()=>{
+    if(data?.wlan?.wlanSecurity){
+      form.setFieldValue('enableOwe',
+        data.wlan.wlanSecurity === WlanSecurityEnum.OWE ? true : false)
+    }
     form.setFieldsValue(data)
   },[data])
 
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
+  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   return (
@@ -93,6 +99,25 @@ function SettingsForm () {
 
       <div>
         <Form.Item>
+          {enableOweEncryption && <Form.Item>
+            <Form.Item noStyle
+              name='enableOwe'
+              initialValue={false}
+              valuePropName='checked'
+              children={<Switch
+                onChange={function (checked: boolean) {
+                  let mutableData = _.cloneDeep(data) ?? {}
+                  _.set(mutableData, 'wlan.wlanSecurity',
+                    checked ? WlanSecurityEnum.OWE : WlanSecurityEnum.Open)
+                  setData && setData(mutableData)
+                }} />}
+            />
+            <span>{$t({ defaultMessage: 'Enable OWE encryption' })}</span>
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
+              placement='bottom'
+            />
+          </Form.Item>}
           <Form.Item>
             <Form.Item noStyle
               name={['wlan', 'macAddressAuthentication']}
