@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { DatePicker, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                      from 'antd/lib/form/Form'
 import dayjs                                                            from 'dayjs'
+import _                                                                from 'lodash'
 import { useIntl }                                                      from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -22,7 +23,6 @@ import * as UI from './styledComponents'
 
 import type { DatePickerProps  } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
-import _ from 'lodash'
 
 export interface ChangeScheduleDialogProps {
   visible: boolean,
