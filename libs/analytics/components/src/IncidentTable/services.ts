@@ -212,7 +212,10 @@ export const api = dataApi.injectEndpoints({
         }
       }),
       transformResponse: (response: MutationResponse) => response,
-      invalidatesTags: [{ type: 'Monitoring', id: 'INCIDENTS_LIST' }]
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'INCIDENTS_LIST' },
+        { type: 'Monitoring', id: 'INCIDENT_DETAILS' }
+      ]
     })
   })
 })

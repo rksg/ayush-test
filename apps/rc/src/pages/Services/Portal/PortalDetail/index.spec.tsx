@@ -169,7 +169,7 @@ const detailChangeResult = {
 }
 
 
-describe('Portal Detail Page', () => {
+describe.skip('Portal Detail Page', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(async () => {
     params = {

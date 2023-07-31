@@ -118,7 +118,7 @@ function ApPageHeader () {
           onClick={() => {
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit/details`
+              pathname: `${basePath.pathname}/edit/general`
             }, {
               state: {
                 from: location

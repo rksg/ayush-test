@@ -12,8 +12,8 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -108,11 +108,11 @@ export function VlanSetting () {
       }
     })
 
-    return <>{portTooltips.map(item => <div>
+    return <>{portTooltips.map((item, index) => (<div key={index}>
       <div>{item.model}</div>
       <div><UI.TagsOutlineIcon /><UI.PortSpan>{item.untaggedPorts || '--'}</UI.PortSpan></div>
       <div><UI.TagsSolidIcon /><UI.PortSpan>{item.taggedPorts || '--'}</UI.PortSpan></div>
-    </div>)
+    </div>))
     }</>
   }
 
@@ -121,13 +121,14 @@ export function VlanSetting () {
       (item: { vlanId: number }) => item.vlanId.toString() !== drawerFormRule?.vlanId.toString()) :
       vlanTable
 
-    const sfm = data.switchFamilyModels?.map(item => {
+    const sfm = data.switchFamilyModels?.map((item, index) => {
       return {
         ...item,
         untaggedPorts: Array.isArray(item.untaggedPorts) ?
           item.untaggedPorts?.join(',') : item.untaggedPorts,
         taggedPorts: Array.isArray(item.taggedPorts) ?
-          item.taggedPorts?.join(',') : item.taggedPorts
+          item.taggedPorts?.join(',') : item.taggedPorts,
+        key: index
       }
     })
 
@@ -198,11 +199,10 @@ export function VlanSetting () {
         <Col span={20}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
-            rowKey='vlanId'
             columns={vlansColumns}
             rowActions={filterByAccess(rowActions)}
-            dataSource={vlanTable}
-            rowSelection={{
+            dataSource={vlanTable.map((item, index) => ({ ...item, key: index }))}
+            rowSelection={hasAccess() && {
               type: 'radio',
               selectedRowKeys: selectedRows,
               onChange: (keys: React.Key[]) => {

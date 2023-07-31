@@ -41,7 +41,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   readAsText?: boolean,
   formDataName?: string,
   acceptType: string[]
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI' | 'PropertyUnit'
+  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI' | 'PropertyUnit' | 'EdgeDHCP'
   extraDescription?: string[]
 }
 
@@ -177,7 +177,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
         disabled={!formData}
         loading={isLoading}
         onClick={() => okHandler()}
-        type={'secondary'}
+        type='primary'
       >
         {$t({ defaultMessage: 'Import' })}
       </Button>

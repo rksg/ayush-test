@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Tooltip }                            from '@acx-ui/components'
 import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
-import { FrontViewBreakoutPortDrawer } from './FrontViewBreakoutPortDrawer'
-import * as UI                         from './styledComponents'
+import * as UI from './styledComponents'
+
+import { SwitchPanelContext } from '.'
 
 export function FrontViewBreakoutPort (props:{
   ports: SwitchPortStatus[],
@@ -18,7 +19,14 @@ export function FrontViewBreakoutPort (props:{
 }) {
   const { $t } = useIntl()
   const { ports, portData, labelText, labelPosition, tooltipEnable, deviceStatus } = props
-  const [drawerVisible, setDrawerVisible] = useState(false)
+  const {
+    setEditLagModalVisible,
+    setEditPortDrawerVisible,
+    setBreakoutPortDrawerVisible,
+    setEditBreakoutPortDrawerVisible,
+    setSelectedPorts,
+    setBreakoutPorts
+  } = useContext(SwitchPanelContext)
   const portNumber = portData.portIdentifier.split(':')[0]
   const breakOutPorts = ports.filter(p => p.portIdentifier.includes(portNumber))
 
@@ -63,23 +71,29 @@ export function FrontViewBreakoutPort (props:{
     return 'gray'
   }
 
-
+  const onPortClick = () => {
+    setSelectedPorts([])
+    setBreakoutPorts(breakOutPorts)
+    setEditLagModalVisible(false)
+    setEditPortDrawerVisible(false)
+    setBreakoutPortDrawerVisible(false)
+    setEditBreakoutPortDrawerVisible(false)
+    setBreakoutPortDrawerVisible(true)
+  }
 
   const portElement = <UI.PortWrapper>
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <div>
 
-      <UI.Port portColor={getPortColorEnum()}>
-        <UI.BreadkoutPortContainer
+      <UI.Port portColor={getPortColorEnum()} editable={true}>
+        <UI.WithIconPortContainer
           data-testid='BreakoutPort'
-          onClick={() => {
-            setDrawerVisible(true)
-          }}>
-          B  {/* Phase 2 will change text to icon */}
+          onClick={onPortClick}>
+          <UI.BreakoutPortIcon />
           <UI.BreakOutPortFlag
             portColor={getPortColorEnum()}
           ></UI.BreakOutPortFlag>
-        </UI.BreadkoutPortContainer>
+        </UI.WithIconPortContainer>
       </UI.Port>
 
     </div>
@@ -87,18 +101,12 @@ export function FrontViewBreakoutPort (props:{
   </UI.PortWrapper>
 
   return tooltipEnable
-    ? <>
-      <FrontViewBreakoutPortDrawer
-        portNumber={portNumber}
-        setDrawerVisible={setDrawerVisible}
-        drawerVisible={drawerVisible}
-        breakoutPorts={breakOutPorts}
-      />
-      <Tooltip
-        placement={'top'}
-        overlayStyle={{ maxWidth: '300px' }}
-        title={getTooltip()}>
-        {portElement}
-      </Tooltip></>
+    ?
+    <Tooltip
+      placement={'top'}
+      overlayStyle={{ maxWidth: '300px' }}
+      title={getTooltip()}>
+      {portElement}
+    </Tooltip>
     : portElement
 }

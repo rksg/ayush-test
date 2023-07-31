@@ -118,7 +118,7 @@ export function useStepsForm <T> ({
     ..._.omit(config, 'defaultFormValues'),
     ...props,
     // omit name for preventing prefix of id
-    ..._.omit(currentStep.props, ['children', 'name']),
+    ..._.omit(currentStep.props, ['children', 'name', 'title']),
     // Unable to take from props.initialValues
     // due to it is done via useEffect, which result in delayed
     initialValues: config.defaultFormValues,
@@ -171,20 +171,20 @@ export function useStepsForm <T> ({
     // TODO:
     // - handle disable when validation not passed
     apply: <Button
-      type='secondary'
+      type='primary'
       loading={loading}
       onClick={() => submit()}
       children={labels.apply}
     />,
     submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
-        type='secondary'
+        type='primary'
         loading={loading}
         onClick={() => newConfig.gotoStep(formConfig.current + 1)}
         children={labels.next}
       />
       : <Button
-        type='secondary'
+        type='primary'
         loading={loading}
         onClick={() => submit()}
         children={labels.submit}

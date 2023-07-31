@@ -22,6 +22,7 @@ import {
   WifiUrlsInfo,
   WifiApSetting,
   ApLanPort,
+  ApLedSettings,
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
@@ -216,6 +217,7 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
+            'UpdateAp',
             'UpdateApCustomization',
             'ResetApCustomization'
           ]
@@ -237,6 +239,7 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
+            'UpdateAp',
             'UpdateApCustomization',
             'ResetApCustomization'
           ]
@@ -254,7 +257,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }, { type: 'Ap', id: 'Details' }]
     }),
     deleteAp: build.mutation<AP, RequestPayload>({
       query: ({ params, payload }) => {
@@ -531,14 +534,44 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
-    getApCustomization: build.query<WifiApSetting, RequestPayload>({
+    getApLed: build.query<ApLedSettings, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApApCustomization, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApLed, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Ap', id: 'Led' }]
+    }),
+    updateApLed: build.mutation<ApLedSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApLed, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Led' }]
+    }),
+    resetApLed: build.mutation<ApLedSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApLed, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Led' }]
+    }),
+    getApCustomization: build.query<WifiApSetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApCustomization, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
     updateApCustomization: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params, payload }) => {
@@ -764,6 +797,9 @@ export const {
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
+  useGetApLedQuery,
+  useUpdateApLedMutation,
+  useResetApLedMutation,
   useGetApCapabilitiesQuery,
   useLazyGetApCapabilitiesQuery,
   useGetApCustomizationQuery,

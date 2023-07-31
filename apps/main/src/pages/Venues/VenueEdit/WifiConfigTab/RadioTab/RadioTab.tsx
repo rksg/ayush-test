@@ -29,11 +29,12 @@ export function RadioTab () {
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
 
+  const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
   const loadBalancingTitle = $t({ defaultMessage: 'Load Balancing' })
   const anchorItems = [{
-    title: wifiSettingTitle,
+    title: wifiSettingLink,
     content: (
       <>
         <StepsFormLegacy.SectionTitle id='radio-settings'>
@@ -43,6 +44,17 @@ export function RadioTab () {
       </>
     )
   },
+  ...(supportLoadBalancing? [{
+    title: loadBalancingTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='load-balancing'>
+          { loadBalancingTitle }
+        </StepsFormLegacy.SectionTitle>
+        <LoadBalancing />
+      </>
+    )
+  }] : []),
   {
     title: externalTitle,
     content: (
@@ -54,20 +66,6 @@ export function RadioTab () {
       </>
     )
   }]
-
-  if (supportLoadBalancing) {
-    anchorItems.push({
-      title: loadBalancingTitle,
-      content: (
-        <>
-          <StepsFormLegacy.SectionTitle id='load-balancing'>
-            { loadBalancingTitle }
-          </StepsFormLegacy.SectionTitle>
-          <LoadBalancing />
-        </>
-      )
-    })
-  }
 
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {

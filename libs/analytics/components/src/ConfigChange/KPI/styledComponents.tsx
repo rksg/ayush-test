@@ -1,4 +1,4 @@
-import { Statistic as antStatistic } from 'antd'
+import { Statistic as AntStatistic } from 'antd'
 import styled                        from 'styled-components/macro'
 
 import { TrendPill as Pill } from '@acx-ui/components'
@@ -21,7 +21,7 @@ export const TransparentTrend = styled.div`
   text-align: center;
 `
 
-export const Statistic = styled(antStatistic)<{ $selected: boolean }>`
+export const Statistic = styled(AntStatistic)`
   background-color: var(--acx-neutrals-10);
   padding: 4px 10px;
   margin-bottom: 3px;

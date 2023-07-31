@@ -6,13 +6,12 @@ import { SpaceWrapper }        from '@acx-ui/rc/components'
 
 import { DDoSRateFormItem }    from './DDoSRateFormItem'
 import { StatefulACLFormItem } from './StatefulACLFormItem'
-import { Wrapper }             from './styledComponents'
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
 
   return (
-    <Wrapper>
+    <>
       <Row>
         <Col span={8}>
           <StepsForm.Title>
@@ -27,7 +26,6 @@ export const SettingsForm = () => {
               { min: 2, max: 32 }
             ]}
             validateFirst
-            hasFeedback
             children={<Input />}
           />
           {/*
@@ -49,6 +47,6 @@ export const SettingsForm = () => {
           <StatefulACLFormItem />
         </SpaceWrapper>
       </Row>
-    </Wrapper>
+    </>
   )
 }

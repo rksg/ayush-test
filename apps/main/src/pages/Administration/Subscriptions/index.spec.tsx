@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { useIsSplitOn, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo, isDelegationMode }                from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
 
@@ -19,11 +19,16 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('./ConvertNonVARMSPButton', () => ({
   ConvertNonVARMSPButton: () => (<div data-testid='convertNonVARMSPButton' />)
 }))
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
+}))
 
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
@@ -67,6 +72,8 @@ describe('Subscriptions', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(isDelegationMode).mockReturnValue(true)
+
     render(
       <Provider>
         <Subscriptions />
@@ -176,6 +183,22 @@ describe('Subscriptions', () => {
       })
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
-    await screen.findByRole('row', { name: /Edge/i })
+    await screen.findByRole('row', { name: /SmartEdge/i })
+  })
+  it('should filter edge data when PLM FF is not denabled', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByRole('columnheader', { name: 'Device Count' })
+    await screen.findByRole('row', { name: /Wi-Fi/i })
+    expect(screen.queryByRole('row', { name: /SmartEdge/i })).toBeNull()
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
+    expect(screen.queryAllByText('SmartEdge').length).toBe(0)
   })
 })

@@ -9,7 +9,9 @@ import { breakoutPorts } from '../__tests__/fixtures'
 import { FrontViewBreakoutPort }       from './FrontViewBreakoutPort'
 import { FrontViewBreakoutPortDrawer } from './FrontViewBreakoutPortDrawer'
 import { FrontViewSlot }               from './FrontViewSlot'
+import { panelContext }                from './index.spec'
 
+import { SwitchPanelContext } from '.'
 
 describe('FrontViewBreakoutPort', () => {
   const params = {
@@ -45,15 +47,17 @@ describe('FrontViewBreakoutPort', () => {
   it('should render operational breakout port correctly', async () => {
 
     render(<Provider>
-      <FrontViewBreakoutPort
-        key={'1/2/1'}
-        ports={breakoutPorts}
-        deviceStatus={SwitchStatusEnum.OPERATIONAL}
-        labelText={'1'}
-        labelPosition='top'
-        tooltipEnable={true}
-        portData={breakoutPorts[0]}
-      />
+      <SwitchPanelContext.Provider value={panelContext}>
+        <FrontViewBreakoutPort
+          key={'1/2/1'}
+          ports={breakoutPorts}
+          deviceStatus={SwitchStatusEnum.OPERATIONAL}
+          labelText={'1'}
+          labelPosition='top'
+          tooltipEnable={true}
+          portData={breakoutPorts[0]}
+        />
+      </SwitchPanelContext.Provider>
     </Provider>, {
       route: {
         params,
@@ -135,7 +139,7 @@ describe('FrontViewBreakoutPort', () => {
     render(<Provider>
       <FrontViewBreakoutPort
         key={'1/2/1'}
-        ports={breakoutPorts_up}
+        ports={[breakoutPorts_up[0]]}
         deviceStatus={SwitchStatusEnum.OPERATIONAL}
         labelText={'1'}
         labelPosition='bottom'
@@ -154,17 +158,24 @@ describe('FrontViewBreakoutPort', () => {
   it('should render breakout port drawer correctly', async () => {
     const mockDrawerVisible = jest.fn()
     render(<Provider>
-      <FrontViewBreakoutPortDrawer
-        portNumber={'1/2/1'}
-        setDrawerVisible={mockDrawerVisible}
-        drawerVisible={true}
-        breakoutPorts={breakoutPorts.filter(p=>p.portIdentifier.includes(':'))}
-      />
+      <SwitchPanelContext.Provider value={panelContext}>
+        <FrontViewBreakoutPortDrawer
+          portNumber={'1/2/1'}
+          setDrawerVisible={mockDrawerVisible}
+          drawerVisible={true}
+          breakoutPorts={breakoutPorts.filter(p=>p.portIdentifier.includes(':'))}
+        />
+      </SwitchPanelContext.Provider>
     </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/panel'
       }
     })
+    expect(await screen.findByRole('table')).toBeVisible()
+    const row1 = await screen.findByRole('cell', { name: '1/2/1:1' })
+    await userEvent.click(row1)
+    const editButton = await screen.findByText('Edit')
+    expect(editButton).toBeVisible()
   })
 })

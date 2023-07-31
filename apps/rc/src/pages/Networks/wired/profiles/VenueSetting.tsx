@@ -17,8 +17,8 @@ import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
@@ -175,7 +175,7 @@ export function VenueSetting () {
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
-            rowSelection={{
+            rowSelection={hasAccess() && {
               type: 'checkbox',
               ...rowSelection
             }}

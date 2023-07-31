@@ -50,7 +50,6 @@ const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) 
   return <div onClick={() => setKpiFilter?.(kpiKey)}>
     <Statistic
       className={kpiFilter.includes(kpiKey) ? 'statistic-selected' : undefined}
-      $selected={kpiFilter.includes(kpiKey)}
       title={$t(label, productNames)}
       value={$t(
         { defaultMessage: 'Before: {before} | After: {after}' },

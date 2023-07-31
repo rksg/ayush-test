@@ -7,6 +7,11 @@ import { Subtitle } from '../Subtitle'
 
 export const Dropdown = styled(AntDropdown)`
   cursor: pointer;
+
+  &&&.ant-btn:not(.ant-btn-icon-only):not(.ant-btn-link):has(svg) {
+    padding-left: 11px;
+    padding-right: 7px;
+  }
 `
 
 export const OverlayContainer = styled.div`

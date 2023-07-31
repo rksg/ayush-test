@@ -119,12 +119,12 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
         />
         <Divider type='vertical' style={{ margin: '0 4px' }}/>
         <Dropdown overlay={menuItems}>{() =>
-          <Button data-testid='trigger' size='middle' style={{ width: '108px' }}>
+          <Button data-testid='trigger' size='middle'>
             <Space>
               <Typography.Paragraph
                 ellipsis={{ rows: 1, expandable: false }}
                 style={{
-                  width: '72px',
+                  width: '64px',
                   margin: '0'
                 }}> { selectedDeviceType !== 'All'
                   ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)

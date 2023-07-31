@@ -128,7 +128,7 @@ export const EdgeDetailsPageHeader = () => {
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
       ])}
-      footer={<EdgeDetailsTabs />}
+      footer={<EdgeDetailsTabs isOperational={currentEdgeOperational} />}
     />
   )
 }

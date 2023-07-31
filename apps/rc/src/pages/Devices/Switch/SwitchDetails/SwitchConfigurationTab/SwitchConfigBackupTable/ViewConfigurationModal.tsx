@@ -50,7 +50,7 @@ export function ViewConfigurationModal (props:{
     visible={visible}
     onCancel={handleCancel}
     width={650}
-    footer={<Button key='back' type='secondary' onClick={handleCancel}>
+    footer={<Button key='back' type='primary' onClick={handleCancel}>
       {$t({ defaultMessage: 'Close' })}
     </Button>
     }
