@@ -173,16 +173,18 @@ function Table <RecordType extends Record<string, any>> ({
   }, [dataSource, onDisplayRowChange, searchValue, filterValues])
 
   useEffect(() => {
-    const tmp: React.SetStateAction<RecordType[]> = []
-    selectedRows.forEach(row => {
-      const tmpRow = dataSource?.find(item => getRowKey(item) == getRowKey(row))
-      if(tmpRow) {
-        tmp.push(tmpRow)
-      }else {
-        tmp.push(row)
-      }
-    })
-    setSelectedRows(tmp)
+    if (dataSource) {
+      const tmp: React.SetStateAction<RecordType[]> = []
+      selectedRows.forEach(row => {
+        const tmpRow = dataSource?.find(item => getRowKey(item) == getRowKey(row))
+        if(tmpRow) {
+          tmp.push(tmpRow)
+        }else {
+          tmp.push(row)
+        }
+      })
+      setSelectedRows(tmp)
+    }
   }, [dataSource])
 
   const baseColumns = useMemo(() => {
