@@ -263,7 +263,7 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     { label: defineMessage({ defaultMessage: '1 (802.3af 4.0 W)' }), value: 'ONE' },
     { label: defineMessage({ defaultMessage: '2 (802.3af 7.0 W)' }), value: 'TWO' },
     { label: defineMessage({ defaultMessage: '3 (802.3af 15.4 W)' }), value: 'THREE' },
-    { label: defineMessage({ defaultMessage: '4 (802.3af 30 W)' }), value: 'FOUR' },
+    { label: defineMessage({ defaultMessage: '4 (802.3at 30 W)' }), value: 'FOUR' },
     { label: defineMessage({ defaultMessage: '5 (802.3bt 45 W)' }), value: 'FIVE' },
     { label: defineMessage({ defaultMessage: '6 (802.3bt 60 W)' }), value: 'SIX' },
     { label: defineMessage({ defaultMessage: '7 (802.3bt 75 W)' }), value: 'SEVEN' },

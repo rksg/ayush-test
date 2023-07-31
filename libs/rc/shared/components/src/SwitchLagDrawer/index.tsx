@@ -142,7 +142,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       </Button>
       <Button
         key='okBtn'
-        type='secondary'
+        type='primary'
         onClick={onClose}>
         {$t({ defaultMessage: 'OK' })}
       </Button>

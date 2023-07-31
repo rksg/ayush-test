@@ -119,6 +119,9 @@ describe('Edge Detail Page Header', () => {
     await waitFor(() => {
       expect(mockedUsedNavigate).toHaveBeenCalledWith(`/${params.tenantId}/t/devices/edge`)
     })
+    await waitFor(() => {
+      expect(deleteDialog).not.toBeVisible()
+    })
   })
 
   it('should reboot edge correctly', async () => {
@@ -141,6 +144,9 @@ describe('Edge Detail Page Header', () => {
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(1)
     })
+    await waitFor(() => {
+      expect(rebootDialog).not.toBeVisible()
+    })
   })
 
   it('should factory rest edge correctly', async () => {
@@ -162,6 +168,9 @@ describe('Edge Detail Page Header', () => {
     await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
     await waitFor(() => {
       expect(mockedResetApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(resetDialog).not.toBeVisible()
     })
   })
 

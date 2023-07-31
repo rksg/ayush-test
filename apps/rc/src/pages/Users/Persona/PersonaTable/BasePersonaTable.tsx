@@ -4,10 +4,18 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Table, TableColumn, TableProps }  from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                          from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                                    from '@acx-ui/icons'
-import { CsvSize, ImportFileDrawer, PersonaGroupSelect, ImportFileDrawerType } from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                   from '@acx-ui/icons'
+import {
+  CsvSize,
+  ImportFileDrawer,
+  PersonaGroupSelect,
+  PersonaDetailsLink,
+  PersonaGroupLink,
+  PropertyUnitLink,
+  ImportFileDrawerType
+} from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
@@ -28,10 +36,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { PersonasContext }                                        from '..'
-import { PersonaDetailsLink, PersonaGroupLink, PropertyUnitLink } from '../LinkHelper'
-import { PersonaDrawer }                                          from '../PersonaDrawer'
-import { PersonaBlockedIcon }                                     from '../styledComponents'
+import { PersonasContext }    from '..'
+import { PersonaDrawer }      from '../PersonaDrawer'
+import { PersonaBlockedIcon } from '../styledComponents'
 
 function useColumns (
   props: PersonaTableColProps,
@@ -157,7 +164,7 @@ function useColumns (
     {
       key: 'vni',
       dataIndex: 'vni',
-      title: $t({ defaultMessage: 'VNI' }),
+      title: $t({ defaultMessage: 'Segment No.' }),
       sorter: true,
       ...props.vni
     }
