@@ -44,7 +44,8 @@ function ApEditTabs () {
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
       'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
       'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
+      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
+      'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
     filters: { serialNumber: [params.serialNumber] }
   }
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })

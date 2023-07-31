@@ -33,7 +33,8 @@ export interface AP {
     cellularInfo?: CelluarInfo,
     APSystem?: APSystem,
     lanPortStatus?: Array<LanPortStatusProperties>,
-    vxlanStatus?: VxlanStatus
+    vxlanStatus?: VxlanStatus,
+    afcInfo?: AFCInfo
   },
   clients?: number,
   deviceGroupId: string,
@@ -65,7 +66,8 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number
+  downLinkCount?: number,
+  apRadioDeploy?: string
 }
 
 export interface ApViewModel extends AP {
@@ -465,7 +467,6 @@ export enum UplinkModeEnum {
   MANUAL = 'MANUAL',
   SMART = 'SMART'
 }
-
 export type APMeshSettings = {
   venueMeshEnabled?: boolean, //read-only (get method only)
   meshMode: MeshModeEnum,
@@ -484,4 +485,22 @@ export type MeshUplinkAp = {
   deviceStatus: string,
   healthStatus: string,
   neighbors: MeshApNeighbor[]
+}
+
+export type AFCInfo = {
+  powerMode: AFCPowerMode,
+  afcStatus: AFCStatus
+}
+
+export enum AFCPowerMode {
+  LOW_POWER,
+  STANDARD_POWER
+}
+
+export enum AFCStatus {
+  AFC_NOT_REQUIRED,
+  WAIT_FOR_LOCATION,
+  WAIT_FOR_RESPONSE,
+  REJECTED,
+  PASSED
 }
