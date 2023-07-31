@@ -1,5 +1,12 @@
-import { RecommendationDetails, NetworkAssurance, NetworkAssuranceTabEnum } from '@acx-ui/analytics/components'
-import { Route, rootRoutes, Navigate, MLISA_BASE_PATH }                     from '@acx-ui/react-router-dom'
+import {
+  RecommendationDetails,
+  NetworkAssurance,
+  NetworkAssuranceTabEnum,
+  VideoCallQoe,
+  VideoCallQoeForm,
+  VideoCallQoeDetails
+}                                                       from '@acx-ui/analytics/components'
+import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
@@ -22,7 +29,11 @@ function AllRoutes () {
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
-      <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
+      <Route path='videoCallQoe/*' >
+        <Route index element={<VideoCallQoe/>} />
+        <Route path=':testId' element={<VideoCallQoeDetails/>} />
+        <Route path='add' element={<VideoCallQoeForm />} />
+      </Route>
       <Route path='occupancy' element={<div>Occupancy</div>} />
       <Route path='dataStudio' element={<div>Data Studio</div>} />
       <Route path='reports' element={<div>Reports</div>} />
