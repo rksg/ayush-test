@@ -7,8 +7,8 @@ import { showActionModal }                                                      
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                    from '@acx-ui/utils'
 
-import { useTableControl }           from '..'
-import { CsvSize, ImportFileDrawer } from '../../ImportFileDrawer'
+import { useTableControl }                                 from '..'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
 
 import { PoolDrawer } from './PoolDrawer'
 import { PoolTable }  from './PoolTable'
@@ -115,42 +115,39 @@ export default function DhcpPoolTable ({
         data={currentEditData}
         allPool={value}
       />
-      { // prevent `Warning: Instance created by `useForm` is not connected to any Form element. Forget to pass `form` prop?`
-        importModalvisible &&
-        <ImportFileDrawer
-          type='EdgeDHCP'
-          title={$t({ defaultMessage: 'Import from file' })}
-          maxSize={CsvSize['5MB']}
-          maxEntries={MAX_IMPORT_ENTRIES}
-          acceptType={['csv']}
-          templateLink={importTemplateLink}
-          visible={importModalvisible}
-          readAsText={true}
-          importRequest={(formData, values, content) => {
-            const dataArray = content!.split('\n').filter(row => {
-              const trimmed = row.trim()
-              return trimmed
+      <ImportFileDrawer
+        type={ImportFileDrawerType.EdgeDHCP}
+        title={$t({ defaultMessage: 'Import from file' })}
+        maxSize={CsvSize['5MB']}
+        maxEntries={MAX_IMPORT_ENTRIES}
+        acceptType={['csv']}
+        templateLink={importTemplateLink}
+        visible={importModalvisible}
+        readAsText={true}
+        importRequest={(formData, values, content) => {
+          const dataArray = content!.split('\n').filter(row => {
+            const trimmed = row.trim()
+            return trimmed
                   && !trimmed.startsWith('#')
                   && trimmed !== 'Pool Name Subnet Mask Pool Start IP Pool End IP Gateway'
+          })
+
+          if (dataArray.length > MAX_IMPORT_ENTRIES) {
+            showActionModal({
+              type: 'error',
+              title: $t({ defaultMessage: 'Invalid Validation' }),
+              content: $t({ defaultMessage: 'Exceed maximum entries.' })
             })
+            return
+          }
 
-            if (dataArray.length > MAX_IMPORT_ENTRIES) {
-              showActionModal({
-                type: 'error',
-                title: $t({ defaultMessage: 'Invalid Validation' }),
-                content: $t({ defaultMessage: 'Exceed maximum entries.' })
-              })
-              return
-            }
-
-            appendDHCPPools(
-              dataArray,
-              () => setImportModalvisible(false)
-            )
-          }}
-          onClose={() => setImportModalvisible(false)}
-        />
-      }
+          appendDHCPPools(
+            dataArray,
+            () => setImportModalvisible(false)
+          )
+        }}
+        onClose={() => setImportModalvisible(false)}
+      />
     </>
   )
 }

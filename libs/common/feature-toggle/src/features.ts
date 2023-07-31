@@ -70,6 +70,7 @@ export enum Features {
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
+  WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   IDM_DECOUPLING='ptenant-admin-authentication-enabled'
 }
 

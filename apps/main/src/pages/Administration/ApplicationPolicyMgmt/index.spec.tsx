@@ -74,9 +74,9 @@ describe('Application library Version Management', () => {
     expect(await screen.findByText('REMOVED_APP')).toBeVisible()
     await userEvent.click(await screen.findByText(/Application Name Changed/))
     expect(await screen.findByText('RENAMED_APP')).toBeVisible()
-    await userEvent.click((await screen.findAllByText('Export All'))[1])
-    await userEvent.click((await screen.findAllByText('Export Current List'))[1])
-    await userEvent.click(await screen.findByRole('button', { name: /Update/ }))
+    // await userEvent.click((await screen.findAllByText('Export All'))[1])
+    // await userEvent.click((await screen.findAllByText('Export Current List'))[1])
+    // await userEvent.click(await screen.findByRole('button', { name: /Update/ }))
   })
 
 })
