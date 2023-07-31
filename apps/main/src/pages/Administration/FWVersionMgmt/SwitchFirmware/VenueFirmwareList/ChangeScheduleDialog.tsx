@@ -22,6 +22,7 @@ import * as UI from './styledComponents'
 
 import type { DatePickerProps  } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
+import _ from 'lodash'
 
 export interface ChangeScheduleDialogProps {
   visible: boolean,
@@ -63,13 +64,10 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       } else {
         setChecked(false)
       }
-      if (data.length > 1) {
-        setDisableSave(false)
-      } else {
-        setDisableSave(!selectionChanged && !selectionAboveTenChanged)
-      }
+      const hasSelectedDateAndTime = !_.isEmpty(selectedDate) && !_.isEmpty(selectedTime)
+      setDisableSave((!selectionChanged && !selectionAboveTenChanged) || !hasSelectedDateAndTime)
     }
-  }, [data, selectionChanged, selectionAboveTenChanged])
+  }, [data, selectionChanged, selectionAboveTenChanged, selectedDate, selectedTime])
 
   useEffect(() => {
     if (enableSwitchTwoVersionUpgrade) {
