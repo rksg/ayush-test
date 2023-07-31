@@ -176,7 +176,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
     <Button
       disabled={selectedRows.length === 0}
       onClick={() => handleSave()}
-      type={'secondary'}
+      type='primary'
     >
       {$t({ defaultMessage: 'Assign' })}
     </Button>

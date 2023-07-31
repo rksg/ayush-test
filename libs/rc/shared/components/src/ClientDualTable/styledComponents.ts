@@ -20,13 +20,13 @@ export const ClientLink = styled(Link)`
     .ant-anchor-link-title{
       color: var(--acx-accents-blue-50);
       &:hover {
-        color: var(--acx-accents-orange-50);
+        color: var(--acx-accents-blue-60);
       }
     }
   }
   &.ant-anchor-link-active {
     .ant-anchor-link-title{
-      color: var(--acx-accents-orange-50);
+      color: var(--acx-accents-blue-50);
     }
   }
 `
