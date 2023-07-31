@@ -4,11 +4,13 @@ import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
+import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { getIntl }                   from '@acx-ui/utils'
 
-import { cssNumber, cssStr } from '../../theme/helper'
-import { TooltipWrapper }    from '../Chart/styledComponents'
+import { cssNumber, cssStr }   from '../../theme/helper'
+import { qualitativeColorSet } from '../Chart/helper'
+import { TooltipWrapper }      from '../Chart/styledComponents'
 
 import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 
@@ -38,28 +40,22 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
 type ChartRowMappingType = { key: string, label: string, color: string }
 export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
   const { $t } = getIntl()
-  return [
-    {
-      key: 'ap',
-      label: $t({ defaultMessage: 'AP' }),
-      color: cssStr('--acx-viz-qualitative-4')
-    },
-    {
-      key: 'apGroup',
-      label: $t({ defaultMessage: 'AP Group' }),
-      color: cssStr('--acx-viz-qualitative-3')
-    },
-    {
-      key: 'wlan',
-      label: $t({ defaultMessage: 'WLAN' }),
-      color: cssStr('--acx-viz-qualitative-2')
-    },
-    {
-      key: 'zone',
-      label: $t({ defaultMessage: 'Venue' }),
-      color: cssStr('--acx-viz-qualitative-1')
-    }
+  const colors = qualitativeColorSet()
+  const rcMap = [
+    { key: 'zone', label: $t({ defaultMessage: 'Venue' }) },
+    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
+    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
   ]
+  const raMap = [
+    { key: 'zone', label: $t({ defaultMessage: 'Zone' }) },
+    { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }) },
+    { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
+    { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
+  ]
+  return (get('IS_MLISA_SA') ? raMap : rcMap)
+    .slice(0).map((rec, index) => ({ ...rec, color: colors[index] })).reverse()
 }
 
 const rowHeight = 16, rowGap = 4

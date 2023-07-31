@@ -2,6 +2,7 @@ import { useContext } from 'react'
 
 import moment from 'moment-timezone'
 
+import { useApCountForNodeQuery }  from '@acx-ui/analytics/services'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { act, renderHook }         from '@acx-ui/test-utils'
 import { TimeStampRange }          from '@acx-ui/types'
@@ -13,18 +14,38 @@ import {
   formatTimeWindow
 } from './HealthPageContext'
 
+const mockUseApCountForNodeQuery = useApCountForNodeQuery as jest.Mock
+jest.mock('@acx-ui/analytics/services', () => ({
+  useApCountForNodeQuery: jest.fn()
+}))
 const original = Date.now
 describe('HealthPageContextProvider', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00+00:00').getTime())
     resetRanges()
+    mockUseApCountForNodeQuery.mockImplementation(() => ({
+      data: { network: { node: { apCount: 10 } } },
+      isLoading: false
+    }))
   })
-
+  afterEach(() => {
+    mockUseApCountForNodeQuery.mockClear()
+  })
   afterAll(() => Date.now = original)
   const expectedTimeWindow: TimeStampRange = [
     '2021-12-31T00:00:00+00:00',
     '2022-01-01T00:00:59+00:00'
   ]
+  it('should return null if ap count query is still loading', async () => {
+    mockUseApCountForNodeQuery.mockImplementation(() => ({
+      data: undefined,
+      isLoading: true
+    }))
+    const { result } = renderHook(() => useContext(HealthPageContext), {
+      wrapper: ({ children }) => <Router><HealthPageContextProvider children={children} /></Router>
+    })
+    expect(result.current).toBe(null)
+  })
   it('load analytics filter context with timeWindow set to start/end of filter', async () => {
     const { result } = renderHook(() => useContext(HealthPageContext), {
       wrapper: ({ children }) => <Router><HealthPageContextProvider children={children} /></Router>

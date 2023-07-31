@@ -24,12 +24,13 @@ enum MaxRateEnum {
 
 const { useWatch } = Form
 
-export function LoadControlForm () {
+export function LoadControlForm (props: { labelWidth?: string }) {
   const maxRate = useWatch<MaxRateEnum>('maxRate')
   const { $t } = useIntl()
 
 
   const { data } = useContext(NetworkFormContext)
+  const { labelWidth='250px' } = props
   const form = Form.useFormInstance()
 
   useEffect(() => {
@@ -61,8 +62,8 @@ export function LoadControlForm () {
             if (value === MaxRateEnum.PER_AP) {
               form.setFieldValue('totalUplinkLimited', true)
               form.setFieldValue('totalDownlinkLimited', true)
-              form.setFieldValue(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 200)
-              form.setFieldValue(['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 200)
+              form.setFieldValue(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 500)
+              form.setFieldValue(['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 500)
             }
           }}>
           <Option value={MaxRateEnum.UNLIMITED}>
@@ -90,7 +91,7 @@ export function LoadControlForm () {
         />
       </Form.Item>
 
-      <UI.FieldLabel width='250px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Enable load balancing between all radios' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'enableBandBalancing']}
@@ -101,7 +102,7 @@ export function LoadControlForm () {
         />
       </UI.FieldLabel>
 
-      <UI.FieldLabel width='250px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Enable load balancing between APs' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'clientLoadBalancingEnable']}
@@ -111,7 +112,6 @@ export function LoadControlForm () {
           children={<Switch />}
         />
       </UI.FieldLabel>
-
     </>
   )
 }
@@ -141,7 +141,7 @@ function PerApForm () {
               onChange={function (e: CheckboxChangeEvent) {
                 if (e.target.checked) {
                   form.setFieldValue(
-                    ['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 200)
+                    ['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 500)
                 } else {
                   form.setFieldValue(
                     ['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 0)
@@ -157,12 +157,12 @@ function PerApForm () {
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={200}
+                defaultValue={500}
                 min={1}
-                max={200}
+                max={500}
                 marks={{
                   1: { label: '1 Mbps' },
-                  200: { label: '200 Mbps' }
+                  500: { label: '500 Mbps' }
                 }}
               />
             </UI.FormItemNoLabel> :
@@ -185,7 +185,7 @@ function PerApForm () {
               onChange={function (e: CheckboxChangeEvent) {
                 if (e.target.checked) {
                   form.setFieldValue(
-                    ['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 200)
+                    ['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 500)
                 } else {
                   form.setFieldValue(
                     ['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 0)
@@ -202,10 +202,10 @@ function PerApForm () {
                 style={{ width: '245px' }}
                 defaultValue={20}
                 min={1}
-                max={200}
+                max={500}
                 marks={{
                   1: { label: '1 Mbps' },
-                  200: { label: '200 Mbps' }
+                  500: { label: '500 Mbps' }
                 }}
               />
             </UI.FormItemNoLabel> :

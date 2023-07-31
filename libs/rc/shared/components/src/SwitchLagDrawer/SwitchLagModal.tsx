@@ -1,4 +1,3 @@
-
 import { SetStateAction, useEffect, useState } from 'react'
 
 import {
@@ -15,8 +14,8 @@ import Transfer, { TransferItem } from 'antd/lib/transfer'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, Modal, showActionModal, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
+import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                       from '@acx-ui/icons'
 import {
   useAddLagMutation,
   useGetDefaultVlanQuery,
@@ -48,6 +47,7 @@ interface SwitchLagProps {
   isEditMode: boolean
   editData: Lag[]
   setVisible: (visible: boolean) => void
+  type?: string
 }
 
 export const SwitchLagModal = (props: SwitchLagProps) => {
@@ -88,6 +88,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [portsTypeItem, setPortsTypeItem] = useState([] as DefaultOptionType[])
   const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
+  const [loading, setLoading] = useState<boolean>(false)
   // const [isStackMode, setIsStackMode] = useState(false) //TODO
   // const [stackMemberItem, setStackMemberItem] = useState([] as DefaultOptionType[])
 
@@ -210,7 +211,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
         delete payload.portsType
+        setLoading(true)
         await updateLag({ params: { tenantId, switchId, lagId: editData[0].id }, payload }).unwrap()
+        setLoading(false)
         onClose()
       } catch (err) {
         console.log(err) // eslint-disable-line no-console
@@ -342,15 +345,30 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const footer = [
-    <Space key='edit-port-footer'>
+    <Space key='edit-lag-modal-footer'>
       <Button key='cancelBtn' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
       <Button
         key='okBtn'
-        type='secondary'
+        type='primary'
         onClick={() => form.submit()}>
-        {$t({ defaultMessage: 'Add' })}
+        {isEditMode ? $t({ defaultMessage: 'Apply' }): $t({ defaultMessage: 'Add' })}
+      </Button>
+    </Space>
+  ]
+
+  const footerForDrawer = [
+    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-lag-drawer-footer'>
+      <Button key='cancel' onClick={onClose} disabled={loading}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+      <Button
+        loading={loading}
+        key='apply'
+        type='primary'
+        onClick={() => form.submit()}>
+        {$t({ defaultMessage: 'Apply' })}
       </Button>
     </Space>
   ]
@@ -363,181 +381,194 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setSelectModalVisible(true)
   }
 
+  const lagForm = <Form
+    form={form}
+    layout='vertical'
+    onFinish={onSubmit}
+  >
+    <Row gutter={20}>
+      <Col span={10}>
+        <Form.Item
+          name='name'
+          label={$t({ defaultMessage: 'LAG Name' })}
+          rules={[
+            { required: true },
+            { min: 1 },
+            { max: 64 }
+          ]}
+          validateFirst
+          children={<Input />}
+        />
+        <Form.Item
+          name='type'
+          initialValue={LAG_TYPE.STATIC}
+          label={$t({ defaultMessage: 'Type' })}
+          rules={[{
+            required: true
+          }]}
+          children={
+            <Radio.Group>
+              <Space direction='vertical'>
+                <Radio
+                  value={LAG_TYPE.STATIC}
+                  disabled={isEditMode}>
+                  {$t({ defaultMessage: 'Static' })}
+                </Radio>
+                <Radio
+                  value={LAG_TYPE.DYNAMIC}
+                  disabled={isEditMode}>
+                  {$t({ defaultMessage: 'Dynamic' })}
+                </Radio>
+              </Space>
+            </Radio.Group>
+          }
+        />
+        <StepsFormLegacy.Title
+          style={{ padding: '10px 0px' }}>
+          {$t({ defaultMessage: 'Select Ports' })}
+        </StepsFormLegacy.Title>
+        <Form.Item
+          name='portsType'
+          label={<>
+            {$t({ defaultMessage: 'Ports Type' })}
+            <Tooltip
+              placement='bottom'
+              title={
+                $t({ defaultMessage: 'Select ports of the same type' })
+              }
+            >
+              <QuestionMarkCircleOutlined />
+            </Tooltip>
+          </>}
+          initialValue={null}
+          rules={[{
+            required: true,
+            message: $t({ defaultMessage: 'Please select ports type' })
+          }]}
+          children={<Select
+            options={[
+              { label: $t({ defaultMessage: 'Select ports type...' }), value: null },
+              ...portsTypeItem
+            ]}
+            onChange={onPortTypeChange}
+          />}
+        />
+        {/* {isStackMode &&  //TODO: Need to check antd transfer component
+        <Form.Item
+          name='stackMember'
+          label={<>
+            {$t({ defaultMessage: 'Stack Member' })}
+          </>}
+          initialValue={null}
+          children={<Select
+            onChange={onStackUnitChange}
+            options={[
+              { label: $t({ defaultMessage: 'All Stack Member' }), value: null },
+              ...stackMemberItem
+            ]}
+          />}
+        />} */}
+      </Col>
+    </Row>
+    <Row>
+      <Col>
+        <Form.Item
+          name='ports'
+          data-testid='targetKeysFormItem'
+          valuePropName='targetKeys'
+          rules={[{
+            required: true,
+            // eslint-disable-next-line max-len
+            message: $t({ defaultMessage: 'All member ports should have the same configured port speed' })
+          }, {
+            validator: () => validatePorts()
+          }]}>
+          <Transfer
+            operationStyle={{ margin: '0 20px' }}
+            listStyle={{ width: 190, height: 316 }}
+            showSearch
+            showSelectAll={false}
+            dataSource={[...finalAvailablePorts]}
+            render={item => item.name}
+            operations={['Add', 'Remove']}
+          />
+        </Form.Item>
+      </Col>
+    </Row>
+
+    <Form.Item
+      name='untaggedVlan'
+      label={$t({ defaultMessage: 'Untagged VLAN' })}
+      children={
+        <Tooltip
+          placement='bottom'
+          title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '150px 50px'
+          }}>
+            <div>{untaggedVlan
+              ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, {
+                vlan: untaggedVlan
+              }) : '--'}</div>
+
+            <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+              {$t({ defaultMessage: 'Edit' })}
+            </Button>
+          </div>
+        </Tooltip>}
+    />
+    <Form.Item
+      name='taggedVlans'
+      label={$t({ defaultMessage: 'Tagged VLANs' })}
+      rules={[
+        { validator: () => validateVlan() }
+      ]}
+      children={
+        <Tooltip
+          placement='bottom'
+          title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '150px 50px'
+          }}>
+            <div>{((taggedVlans?.length > 0) && !_.isEmpty(taggedVlans?.toString()))
+              ? $t({ defaultMessage: 'VLAN-ID: {vlan}' },
+                {
+                  vlan: sortOptions(
+                    taggedVlans?.toString().split(','), 'number').join(', ')
+                }) : '--'}</div>
+            <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+              {$t({ defaultMessage: 'Edit' })}
+            </Button>
+          </div>
+        </Tooltip>}
+    />
+  </Form>
+
   return (
     <>
-      <Modal
-        title={getTitle()}
-        visible={visible}
-        onCancel={onClose}
-        width={644}
-        footer={footer}
-        destroyOnClose={true}
-        children={
-          <Form
-            form={form}
-            layout='vertical'
-            onFinish={onSubmit}
-          >
-            <Row gutter={20}>
-              <Col span={10}>
-                <Form.Item
-                  name='name'
-                  label={$t({ defaultMessage: 'LAG Name' })}
-                  rules={[
-                    { required: true },
-                    { min: 1 },
-                    { max: 64 }
-                  ]}
-                  validateFirst
-                  children={<Input />}
-                />
-                <Form.Item
-                  name='type'
-                  initialValue={LAG_TYPE.STATIC}
-                  label={$t({ defaultMessage: 'Type' })}
-                  rules={[{
-                    required: true
-                  }]}
-                  children={
-                    <Radio.Group>
-                      <Space direction='vertical'>
-                        <Radio
-                          value={LAG_TYPE.STATIC}
-                          disabled={isEditMode}>
-                          {$t({ defaultMessage: 'Static' })}
-                        </Radio>
-                        <Radio
-                          value={LAG_TYPE.DYNAMIC}
-                          disabled={isEditMode}>
-                          {$t({ defaultMessage: 'Dynamic' })}
-                        </Radio>
-                      </Space>
-                    </Radio.Group>
-                  }
-                />
-                <StepsFormLegacy.Title
-                  style={{ padding: '10px 0px' }}>
-                  {$t({ defaultMessage: 'Select Ports' })}
-                </StepsFormLegacy.Title>
-                <Form.Item
-                  name='portsType'
-                  label={<>
-                    {$t({ defaultMessage: 'Ports Type' })}
-                    <Tooltip
-                      placement='bottom'
-                      title={
-                        $t({ defaultMessage: 'Select ports of the same type' })
-                      }
-                    >
-                      <QuestionMarkCircleOutlined />
-                    </Tooltip>
-                  </>}
-                  initialValue={null}
-                  rules={[{
-                    required: true,
-                    message: $t({ defaultMessage: 'Please select ports type' })
-                  }]}
-                  children={<Select
-                    options={[
-                      { label: $t({ defaultMessage: 'Select ports type...' }), value: null },
-                      ...portsTypeItem
-                    ]}
-                    onChange={onPortTypeChange}
-                  />}
-                />
-                {/* {isStackMode &&  //TODO: Need to check antd transfer component
-                  <Form.Item
-                    name='stackMember'
-                    label={<>
-                      {$t({ defaultMessage: 'Stack Member' })}
-                    </>}
-                    initialValue={null}
-                    children={<Select
-                      onChange={onStackUnitChange}
-                      options={[
-                        { label: $t({ defaultMessage: 'All Stack Member' }), value: null },
-                        ...stackMemberItem
-                      ]}
-                    />}
-                  />} */}
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Item
-                  name='ports'
-                  valuePropName='targetKeys'
-                  rules={[{
-                    required: true,
-                    // eslint-disable-next-line max-len
-                    message: $t({ defaultMessage: 'All member ports should have the same configured port speed' })
-                  }, {
-                    validator: () => validatePorts()
-                  }]}>
-                  <Transfer
-                    operationStyle={{ margin: '0 20px' }}
-                    listStyle={{ width: 190, height: 316 }}
-                    showSearch
-                    showSelectAll={false}
-                    dataSource={[...finalAvailablePorts]}
-                    render={item => item.name}
-                    operations={['Add', 'Remove']}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
+      {
+        props.type === 'drawer'
+          ? <Drawer
+            title={getTitle()}
+            visible={visible}
+            onClose={onClose}
+            width={644}
+            footer={footerForDrawer}
+            children={lagForm}
+          />
+          : <Modal
+            title={getTitle()}
+            visible={visible}
+            onCancel={onClose}
+            width={644}
+            footer={footer}
+            destroyOnClose={true}
+            children={lagForm}
+          />
+      }
 
-            <Form.Item
-              name='untaggedVlan'
-              label={$t({ defaultMessage: 'Untagged VLAN' })}
-              children={
-                <Tooltip
-                  placement='bottom'
-                  title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '150px 50px'
-                  }}>
-                    <div>{untaggedVlan
-                      ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, {
-                        vlan: untaggedVlan
-                      }) : '--'}</div>
-
-                    <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
-                      {$t({ defaultMessage: 'Edit' })}
-                    </Button>
-                  </div>
-                </Tooltip>}
-            />
-            <Form.Item
-              name='taggedVlans'
-              label={$t({ defaultMessage: 'Tagged VLANs' })}
-              rules={[
-                { validator: () => validateVlan() }
-              ]}
-              children={
-                <Tooltip
-                  placement='bottom'
-                  title={cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '150px 50px'
-                  }}>
-                    <div>{((taggedVlans?.length > 0) && !_.isEmpty(taggedVlans?.toString()))
-                      ? $t({ defaultMessage: 'VLAN-ID: {vlan}' },
-                        {
-                          vlan: sortOptions(
-                            taggedVlans?.toString().split(','), 'number').join(', ')
-                        }) : '--'}</div>
-                    <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
-                      {$t({ defaultMessage: 'Edit' })}
-                    </Button>
-                  </div>
-                </Tooltip>}
-            />
-          </Form>
-        }
-      />
       <SelectVlanModal
         form={form}
         selectModalvisible={selectModalVisible}

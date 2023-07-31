@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 
-import { useSearchPersonaListQuery }                               from '@acx-ui/rc/services'
-import { Persona, PersonaUrls, useTableQuery }                     from '@acx-ui/rc/utils'
-import { Provider }                                                from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
-import { RequestPayload }                                          from '@acx-ui/types'
+import { useSearchPersonaListQuery }                                                               from '@acx-ui/rc/services'
+import { getServiceRoutePath, Persona, PersonaUrls, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                                                from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor, within }                                 from '@acx-ui/test-utils'
+import { RequestPayload }                                                                          from '@acx-ui/types'
 
 
 import { mockedNsgData, mockedPersonaList, replacePagination } from './__tests__/fixtures'
@@ -13,6 +13,10 @@ import { AssignedSegmentsTable }                               from './AssignedS
 
 describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
   let params: { tenantId: string, serviceId: string }
+  const detailPath = '/:tenantId/t/' + getServiceRoutePath({
+    type: ServiceType.NETWORK_SEGMENTATION,
+    oper: ServiceOperation.DETAIL
+  })
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -43,8 +47,9 @@ describe('NetworkSegmentationDetailTableGroup - AssignedSegmentsTable', () => {
           switchInfo={mockedNsgData.distributionSwitchInfos}
           tableQuery={result.current}
         />
-      </Provider>
-    )
+      </Provider>, {
+        route: { params, path: detailPath }
+      })
 
     const rows = await screen.findAllByRole('row', { name: /mock-persona/i })
     expect(rows.length).toBe(2)

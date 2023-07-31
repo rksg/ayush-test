@@ -30,7 +30,6 @@ const QosContent = (props: QosContentProps) => {
         wrapperCol={{ span: 24 }}
         initialValue={RateTypeEnum.IEEE802_1P}
         children={<Select
-          defaultValue={RateTypeEnum.IEEE802_1P}
           onChange={(value) => drawerForm.setFieldValue(['uplinkMarking', 'value'], value)}
           options={Object.keys(RateTypeEnum).map((key) => {
             return (
@@ -46,7 +45,6 @@ const QosContent = (props: QosContentProps) => {
         wrapperCol={{ span: 24 }}
         initialValue={RateStrategyEnum.BACKGROUND}
         children={<Select
-          defaultValue={RateStrategyEnum.BACKGROUND}
           onChange={(value) => drawerForm.setFieldValue(['uplinkMarking', 'strategy'], value)}
           options={Object.keys(RateStrategyEnum).map((key) => {
             return (
@@ -65,7 +63,6 @@ const QosContent = (props: QosContentProps) => {
         wrapperCol={{ span: 24 }}
         initialValue={RateStrategyEnum.VOICE}
         children={<Select
-          defaultValue={RateStrategyEnum.VOICE}
           onChange={(value) => drawerForm.setFieldValue(['downlinkPriority', 'value'], value)}
           options={Object.keys(RateStrategyEnum).map((key) => {
             return (

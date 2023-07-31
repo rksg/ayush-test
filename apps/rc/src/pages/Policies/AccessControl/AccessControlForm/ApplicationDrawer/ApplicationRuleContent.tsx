@@ -327,7 +327,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       rules={[
         { required: true },
         { min: 2 },
-        { max: 64 },
+        { max: 32 },
         { validator: (_, value) => {
           if (!editMode && applicationsRuleList.findIndex(rule => rule.ruleName === value) !== -1) {
             return Promise.reject($t({ defaultMessage: 'This rule name has been existed.' }))
@@ -336,7 +336,7 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         } }
       ]}
       children={<Input
-        placeholder={$t({ defaultMessage: 'Enter a short description, up to 64 characters' })}
+        placeholder={$t({ defaultMessage: 'Enter a short description, up to 32 characters' })}
       />}
     />
     <DrawerFormItem
@@ -349,7 +349,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       children={
         <ContentSwitcher
           tabDetails={tabDetails}
-          defaultValue={drawerForm.getFieldValue('ruleType')}
           size='small'
         />
       }
@@ -394,7 +393,8 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       label={$t({ defaultMessage: 'Application Name' })}
       initialValue={''}
       rules={[
-        { required: true }
+        { required: true },
+        { max: 255 }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter the application name' })}
@@ -452,7 +452,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
         { required: true }
       ]}
       children={<Select
-        defaultValue={PROTOCOL_TYPE[0]}
         onChange={(value) => drawerForm.setFieldValue('protocol', value)}
         options={PROTOCOL_TYPE.map(protocol =>
           ({ label: protocol, value: protocol }))} />}

@@ -1,12 +1,13 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                               from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, getSelectServiceRoutePath, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
+import { useIsSplitOn }                                                                                                  from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, DHCPUrls, DpskUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import MyServices from '.'
@@ -69,23 +70,68 @@ const mockWifiCallingTableResult = {
   ]
 }
 
+
+const mockedTableResult = {
+  totalCount: 0,
+  page: 0,
+  data: []
+}
+
+const dpskListResponse = {
+  content: [],
+  totalElements: 0,
+  totalPages: 0,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
+  sort: []
+}
+
+const mockedPortalList = {
+  content: [],
+  paging: { page: 1, pageSize: 10, totalCount: 0 }
+}
+
 describe('MyServices', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
   }
 
   const path = '/:tenantId/t'
-
-  mockServer.use(
-    rest.post(
-      CommonUrlsInfo.getServicesList.url,
-      (req, res, ctx) => res(ctx.json({ ...mockedServiceList }))
-    ),
-    rest.post(
-      WifiCallingUrls.getEnhancedWifiCallingList.url,
-      (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
+  const getEnhancedMdnsProxyRequestSpy = jest.fn()
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getServicesList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedServiceList }))
+      ),
+      rest.post(
+        WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
+      ),
+      rest.post(
+        MdnsProxyUrls.getEnhancedMdnsProxyList.url,
+        (req, res, ctx) => {
+          getEnhancedMdnsProxyRequestSpy()
+          return res(ctx.json(mockedTableResult))
+        }
+      ),
+      rest.post(
+        DHCPUrls.getDHCPProfilesViewModel.url,
+        (req, res, ctx) => res(ctx.json(mockedTableResult))
+      ),
+      rest.get(DpskUrls.getDpskList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(dpskListResponse))),
+      rest.post(
+        PortalUrlsInfo.getEnhancedPortalProfileList.url,
+        (req, res, ctx) => res(ctx.json(mockedPortalList))
+      )
     )
-  )
+  })
+  afterEach(() => {
+    getEnhancedMdnsProxyRequestSpy.mockClear()
+  })
 
   it('should render My Services', async () => {
     render(
@@ -97,6 +143,8 @@ describe('MyServices', () => {
     )
 
     const createPageLink = `/${params.tenantId}/t/` + getSelectServiceRoutePath()
+
+    await waitFor(() => expect(getEnhancedMdnsProxyRequestSpy).toHaveBeenCalledTimes(1))
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('link', { name: 'Add Service' })).toHaveAttribute('href', createPageLink)
   })

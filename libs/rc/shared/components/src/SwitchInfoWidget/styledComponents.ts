@@ -2,6 +2,7 @@ import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
 import { DonutChart } from '@acx-ui/components'
+import { PoeUsage }   from '@acx-ui/icons'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 export const Wrapper = styled(Space)`
@@ -10,12 +11,14 @@ export const Wrapper = styled(Space)`
   height: 100%;
 `
 
+export const PoeUsageIcon = styled(PoeUsage)`
+  height: 30px;
+  width: 30px;
+`
+
 export const Container = styled.div`
   width: 100%;
   height: 100%;
-  .ant-btn-link {
-    background: transparent;
-  }
 `
 
 export const ChartTopTitle = styled.span`

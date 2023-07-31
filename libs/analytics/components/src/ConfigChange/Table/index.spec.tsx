@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { DateRange, defaultRanges }                                                       from '@acx-ui/utils'
 import '@testing-library/jest-dom'
 
 import { configChanges } from '../__tests__/fixtures'
@@ -16,10 +17,13 @@ describe('Table', () => {
   const handleClick = jest.fn()
   const setPagination = jest.fn()
 
+  const timeRanges = defaultRanges()[DateRange.last7Days]
+
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<Table
+      timeRanges={timeRanges!}
       selected={null}
       onRowClick={handleClick}
       pagination={{ current: 1, pageSize: 10 }}
@@ -33,6 +37,7 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<Table
+      timeRanges={timeRanges!}
       selected={null}
       onRowClick={handleClick}
       pagination={{ current: 1, pageSize: 10 }}
@@ -52,6 +57,7 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<Table
+      timeRanges={timeRanges!}
       selected={null}
       onRowClick={handleClick}
       pagination={{ current: 1, pageSize: 10 }}
@@ -77,6 +83,7 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<Table
+      timeRanges={timeRanges!}
       selected={null}
       onRowClick={handleClick}
       pagination={{ current: 1, pageSize: 10 }}
@@ -108,6 +115,7 @@ describe('Table', () => {
         configChanges: configChanges.slice(0, 7).concat(new Array(10).fill(configChanges[7]))
       } } } })
     render(<Table
+      timeRanges={timeRanges!}
       selected={null}
       onRowClick={handleClick}
       pagination={{ current: 1, pageSize: 1 }}
@@ -132,6 +140,7 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<Table
+      timeRanges={timeRanges!}
       selected={selected}
       onRowClick={handleClick}
       pagination={{ current: 1, pageSize: 10 }}

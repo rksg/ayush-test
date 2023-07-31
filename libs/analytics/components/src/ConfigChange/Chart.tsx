@@ -12,20 +12,22 @@ import { useConfigChangeQuery } from './services'
 function BasicChart (props: {
   selected: ConfigChange | null,
   onClick: (params: ConfigChange) => void,
+  timeRanges: moment.Moment[],
   onBrushPositionsChange: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
 }){
-  const { filters: { filter, startDate, endDate } } = useAnalyticsFilter()
+  const [startDate, endDate] = props.timeRanges
+  const { filters: { filter } } = useAnalyticsFilter()
   const {
     selected, onClick, chartZoom, setChartZoom,
     setInitialZoom, onBrushPositionsChange
   } = props
   const queryResults = useConfigChangeQuery({
     ...getFilterPayload({ filter }),
-    start: startDate,
-    end: endDate
+    start: startDate.toISOString(),
+    end: endDate.toISOString()
   })
 
   return <Loader states={[queryResults]}>
@@ -35,10 +37,7 @@ function BasicChart (props: {
           <ConfigChangeChart
             style={{ width }}
             data={queryResults.data ?? []}
-            chartBoundary={[
-              moment(startDate).valueOf(),
-              moment(endDate).valueOf()
-            ]}
+            chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
             onDotClick={onClick}
             selectedData={selected?.id}
             onBrushPositionsChange={onBrushPositionsChange}

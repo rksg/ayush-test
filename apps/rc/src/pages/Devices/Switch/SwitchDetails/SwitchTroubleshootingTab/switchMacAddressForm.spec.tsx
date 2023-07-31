@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
@@ -170,8 +171,12 @@ describe('SwitchMacAddressForm', () => {
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
     const view = screen.getByTestId('inputMacAddress')
-    fireEvent.change( within(view).getByRole('textbox'), { target: { value: 'aa:aa:aa:aa:aa:aa' } })
-    within(view).getByRole('textbox').focus()
+    const textbox = await within(view).findByRole('textbox')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(textbox, { target: { value: 'aa:aa:aa:aa:aa:aa' } })
+      textbox.focus()
+    })
     await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
   })
 
@@ -187,8 +192,12 @@ describe('SwitchMacAddressForm', () => {
 
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
     const view = screen.getByTestId('inputMacAddress')
-    fireEvent.change( within(view).getByRole('textbox'), { target: { value: 'aa:aa:aa' } })
-    within(view).getByRole('textbox').focus()
+    const textbox = await within(view).findByRole('textbox')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(textbox, { target: { value: 'aa:aa:aa' } })
+      textbox.focus()
+    })
     await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
   })
 

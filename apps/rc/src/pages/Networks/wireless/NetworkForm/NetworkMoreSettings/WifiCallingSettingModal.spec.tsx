@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { act, within } from '@testing-library/react'
 import { Form }        from 'antd'
 import { rest }        from 'msw'
@@ -9,7 +7,8 @@ import { QosPriorityEnum, WifiCallingSetting, WifiCallingUrls } from '@acx-ui/rc
 import { Provider, store }                                      from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen }                from '@acx-ui/test-utils'
 
-import { WifiCallingSettingContext } from './ServicesForm'
+
+import { WifiCallingSettingContext } from './NetworkControlTab'
 import { WifiCallingSettingModal }   from './WifiCallingSettingModal'
 
 const wifiCallingSettingTable = [

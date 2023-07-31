@@ -39,7 +39,7 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const enableSwitchTwoVersionUpgrade = useIsSplitOn(Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
-  const [disableSave, setDisableSave] = useState(enableSwitchTwoVersionUpgrade)
+  const [disableSave, setDisableSave] = useState(true)
   const [selectionChanged, setSelectionChanged] = useState(false)
   const [selectionAboveTenChanged, setSelectionAboveTenChanged] = useState(false)
 
@@ -50,7 +50,9 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
 
   useEffect(() => {
     if (enableSwitchTwoVersionUpgrade) {
-      setDisableSave( !selectionChanged && !selectionAboveTenChanged)
+      setDisableSave(!selectionChanged && !selectionAboveTenChanged)
+    } else {
+      setDisableSave(!selectionChanged)
     }
   }, [enableSwitchTwoVersionUpgrade, selectionChanged, selectionAboveTenChanged])
 

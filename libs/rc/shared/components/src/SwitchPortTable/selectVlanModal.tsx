@@ -210,7 +210,7 @@ export function SelectVlanModal (props: {
               title={disableButton ? $t({ defaultMessage: 'Select Untagged VLAN' }) : null}
             >
               <Space style={{ marginLeft: '8px' }}>
-                <Button key='submit' type='secondary' disabled={disableButton} onClick={onOk}>
+                <Button key='submit' type='primary' disabled={disableButton} onClick={onOk}>
                   {$t({ defaultMessage: 'OK' })}
                 </Button>
               </Space>
@@ -278,7 +278,7 @@ export function SelectVlanModal (props: {
       </Tabs>
     </Modal>
 
-    <VlanSettingDrawer
+    { vlanDrawerVisible && <VlanSettingDrawer
       editMode={false}
       visible={vlanDrawerVisible}
       setVisible={setVlanDrawerVisible}
@@ -307,7 +307,7 @@ export function SelectVlanModal (props: {
         }
       }}
       vlansList={props.venueVlans}
-    />
+    />}
 
   </>
 }

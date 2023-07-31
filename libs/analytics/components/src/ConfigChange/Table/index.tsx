@@ -18,6 +18,7 @@ import { Badge }                                from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
 export function Table (props: {
+  timeRanges: moment.Moment[],
   selected: ConfigChange | null,
   onRowClick: (params: ConfigChange) => void,
   pagination: { current: number, pageSize: number },
@@ -25,8 +26,13 @@ export function Table (props: {
   dotSelect: number | null
 }) {
   const { $t } = useIntl()
-  const { filters: { filter, startDate: start, endDate: end } } = useAnalyticsFilter()
-  const queryResults = useConfigChangeQuery({ ...getFilterPayload({ filter }), start, end })
+  const [startDate, endDate] = props.timeRanges
+  const { filters: { filter } } = useAnalyticsFilter()
+  const queryResults = useConfigChangeQuery({
+    ...getFilterPayload({ filter }),
+    start: startDate.toISOString(),
+    end: endDate.toISOString()
+  })
   const { selected, onRowClick, pagination, setPagination, dotSelect } = props
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [

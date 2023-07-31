@@ -1,5 +1,6 @@
 import { Provider, dataApiURL }             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { DateRange, defaultRanges }         from '@acx-ui/utils'
 
 import { configChanges } from './__tests__/fixtures'
 import { Chart }         from './Chart'
@@ -9,12 +10,15 @@ jest.mock('@acx-ui/components', () => ({
   ConfigChangeChart: () => <div data-testid='ConfigChangeChart' />
 }))
 
+const timeRanges = defaultRanges()[DateRange.last7Days]
+
 describe('Chart', () => {
   const handleClick = jest.fn()
   it('should render page correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<Chart
+      timeRanges={timeRanges!}
       selected={null}
       onClick={handleClick}
       onBrushPositionsChange={jest.fn()}
@@ -25,6 +29,7 @@ describe('Chart', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<Chart
+      timeRanges={timeRanges!}
       selected={null}
       onClick={handleClick}
       onBrushPositionsChange={jest.fn()}
@@ -44,6 +49,7 @@ describe('Chart', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     render(<Chart
+      timeRanges={timeRanges!}
       selected={selected}
       onClick={handleClick}
       onBrushPositionsChange={jest.fn()}

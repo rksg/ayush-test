@@ -1,21 +1,23 @@
 import { useState } from 'react'
 
-import { GridRow, GridCol }                      from '@acx-ui/components'
 import type { ConfigChange as ConfigChangeType } from '@acx-ui/components'
+import { Menu, MenuProps, Space } from 'antd'
+import { ItemType }               from 'antd/lib/menu/hooks/useItems'
+import { useIntl }                from 'react-intl'
+
+import { GridRow, GridCol, Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
+import { get }                                                    from '@acx-ui/config'
+import { DateRange, dateRangeMap, defaultRanges }                 from '@acx-ui/utils'
+
+import { NetworkFilter } from '../NetworkFilter'
 
 import { Chart } from './Chart'
 import { KPIs }  from './KPI'
 import { Table } from './Table'
 
-export function ConfigChange () {
-  const [selected, setSelected] = useState<ConfigChangeType | null>({
-    timestamp: '1685427082100',
-    type: 'ap',
-    name: '94:B3:4F:3D:21:80',
-    key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
-    oldValues: [],
-    newValues: ['480']
-  })
+export function useConfigChange () {
+  const { $t } = useIntl()
+  const [selected, setSelected] = useState<ConfigChangeType | null>(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([])
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
@@ -25,6 +27,10 @@ export function ConfigChange () {
     current: 1,
     pageSize: 10
   })
+  const [dateRange, setDateRange] = useState(DateRange.last7Days)
+
+  const timeRanges = defaultRanges()[dateRange]
+  const handleMenuClick: MenuProps['onClick'] = (e) => setDateRange(e.key as DateRange)
 
   const onDotClick = (params: ConfigChangeType) => {
     setSelected(params)
@@ -39,9 +45,32 @@ export function ConfigChange () {
     setChartZoom(initialZoom)
   }
 
-  return <GridRow>
-    <GridCol col={{ span: 24 }} style={{ height: '170px' }}>
+  const headerExtra = [
+    <NetworkFilter
+      key='network-filter'
+      shouldQuerySwitch={true}
+      withIncidents={false}
+    />,
+    <Dropdown
+      key='date-dropdown'
+      overlay={<Menu
+        onClick={handleMenuClick}
+        items={[DateRange.last7Days, DateRange.last30Days
+        ].map((key)=>({ key, label: $t(dateRangeMap[key]) })) as ItemType[]}
+      />}>{() =>
+        <Button>
+          <Space>
+            {dateRange}
+            <CaretDownSolidIcon />
+          </Space>
+        </Button>
+      }</Dropdown>
+  ]
+
+  const component = <GridRow>
+    <GridCol col={{ span: 24 }} style={{ minHeight: get('IS_MLISA_SA') ? '200px' : '170px' }}>
       <Chart
+        timeRanges={timeRanges!}
         selected={selected}
         onClick={onDotClick}
         onBrushPositionsChange={setKpiTimeRanges}
@@ -53,6 +82,7 @@ export function ConfigChange () {
     <GridCol col={{ span: 8 }}><KPIs kpiTimeRanges={kpiTimeRanges}/></GridCol>
     <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}>
       <Table
+        timeRanges={timeRanges!}
         selected={selected}
         onRowClick={onRowClick}
         pagination={pagination}
@@ -61,4 +91,6 @@ export function ConfigChange () {
       />
     </GridCol>
   </GridRow>
+
+  return { headerExtra, component }
 }

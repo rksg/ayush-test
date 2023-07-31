@@ -1,7 +1,10 @@
 import '@testing-library/jest-dom'
 
-import { rest } from 'msw'
+import { Form }     from 'antd'
+import { debounce } from 'lodash'
+import { rest }     from 'msw'
 
+import * as config                                       from '@acx-ui/config'
 import { NetworkVenue, SchedulerTypeEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import {
   fireEvent,
@@ -24,17 +27,27 @@ import {
 import { NetworkVenueScheduleDialog } from './index'
 
 describe('NetworkVenueTabScheduleDialog', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
+    const env = {
+      GOOGLE_MAPS_KEY: 'FAKE_GOOGLE_MAPS_KEY'
+    }
+
+    const requestSpy = jest.fn()
     mockServer.use(
       rest.put(
         WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'f229e6d6-f728-4b56-81ce-507877a4f4da' }))
       ),
       rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/*',
-        (req, res, ctx) => res(ctx.json(timezoneResult))
-      )
+        'https://maps.googleapis.com/maps/api/timezone/json',
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.status(200), ctx.json(timezoneResult))
+        }
+      ),
+      rest.get('/env.json', (_, r, c) => r(c.json(env)))
     )
+    await config.initialize()
   })
 
   it('should render network venue tab schedule dialog successfully', async () => {
@@ -46,9 +59,13 @@ describe('NetworkVenueTabScheduleDialog', () => {
     }
 
     render(
-      <NetworkVenueScheduleDialog
-        {...props}
-        visible={true} />
+      <Form.Provider
+        onFormFinish={jest.fn()}
+      >
+        <NetworkVenueScheduleDialog
+          {...props}
+          visible={true} />
+      </Form.Provider>
     )
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
     const alwaysOn = within(dialog).getByRole('radio', { name: '24/7' })
@@ -57,16 +74,11 @@ describe('NetworkVenueTabScheduleDialog', () => {
     fireEvent.click(customSchedule)
     expect(within(dialog).getAllByRole('checkbox')[0]).toBeVisible()
     fireEvent.click(within(dialog).getAllByRole('checkbox')[0])
-    fireEvent.click(within(dialog).getAllByRole('checkbox')[0])
     expect(await within(dialog).findByTestId('mon_0')).toBeVisible()
+
     const mondayTimeSlot = await within(dialog).findByTestId('mon_0')
     fireEvent.click(mondayTimeSlot)
     fireEvent.click(mondayTimeSlot)
-    const mondayLastTimeSlot = await within(dialog).findByTestId('mon_95')
-
-    fireEvent.mouseDown(mondayTimeSlot)
-    fireEvent.mouseMove(mondayLastTimeSlot)
-    fireEvent.mouseUp(mondayLastTimeSlot)
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
     // eslint-disable-next-line testing-library/no-node-access
@@ -85,9 +97,13 @@ describe('NetworkVenueTabScheduleDialog', () => {
     }
 
     const { rerender } = render(
-      <NetworkVenueScheduleDialog
-        {...props}
-        visible={true} />
+      <Form.Provider
+        onFormFinish={jest.fn()}
+      >
+        <NetworkVenueScheduleDialog
+          {...props}
+          visible={true} />
+      </Form.Provider>
     )
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
@@ -109,9 +125,13 @@ describe('NetworkVenueTabScheduleDialog', () => {
     }
 
     const { rerender } = render(
-      <NetworkVenueScheduleDialog
-        {...props}
-        visible={true} />
+      <Form.Provider
+        onFormFinish={jest.fn()}
+      >
+        <NetworkVenueScheduleDialog
+          {...props}
+          visible={true} />
+      </Form.Provider>
     )
 
     const dialog = await waitFor(async () => screen.findByRole('dialog'))
@@ -123,5 +143,65 @@ describe('NetworkVenueTabScheduleDialog', () => {
     // update the props "visible"
     rerender(<NetworkVenueScheduleDialog {...props} visible={false}/>)
     expect(dialog).not.toBeVisible()
+  })
+  it('should render schedule dialog with drag and select timeslots successfully', async () => {
+    const props = {
+      formName: 'networkVenueScheduleForm',
+      venue: venueResponse,
+      network: networkResponse,
+      networkVenue: networkVenueResponse as NetworkVenue
+    }
+
+    render(
+      <Form.Provider
+        onFormFinish={jest.fn()}
+      >
+        <NetworkVenueScheduleDialog
+          {...props}
+          visible={true} />
+      </Form.Provider>
+    )
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
+    fireEvent.click(customSchedule)
+    fireEvent.click(within(dialog).getAllByRole('checkbox')[0])
+    const mondayTimeSlot = await within(dialog).findByTestId('mon_0')
+    const mondayLastTimeSlot = await within(dialog).findByTestId('mon_95')
+
+    fireEvent.mouseDown(mondayLastTimeSlot)
+    fireEvent.mouseMove(mondayTimeSlot)
+    debounce(() => {
+      fireEvent.mouseUp(mondayTimeSlot)
+    }, 100)
+  })
+  it('should drag and select partial timeslots successfully', async () => {
+    const props = {
+      formName: 'networkVenueScheduleForm',
+      venue: venueResponse,
+      network: networkResponse,
+      networkVenue: networkVenueResponse as NetworkVenue
+    }
+
+    render(
+      <Form.Provider
+        onFormFinish={jest.fn()}
+      >
+        <NetworkVenueScheduleDialog
+          {...props}
+          visible={true} />
+      </Form.Provider>
+    )
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const customSchedule = await within(dialog).findByRole('radio', { name: 'Custom Schedule' })
+    fireEvent.click(customSchedule)
+    fireEvent.click(within(dialog).getAllByRole('checkbox')[1])
+    const tuesdayTimeSlot1 = await within(dialog).findByTestId('tue_0')
+    const tuesdayTimeSlot2= await within(dialog).findByTestId('tue_50')
+
+    fireEvent.mouseDown(tuesdayTimeSlot1)
+    fireEvent.mouseMove(tuesdayTimeSlot2)
+    debounce(() => {
+      fireEvent.mouseUp(tuesdayTimeSlot2)
+    }, 100)
   })
 })

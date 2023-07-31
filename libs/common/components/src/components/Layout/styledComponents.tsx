@@ -13,6 +13,7 @@ import modifyVars from '../../theme/modify-vars'
 import bgImageUrl from './background.svg'
 
 export const Wrapper = styled.div<{ showScreen: boolean }>`
+  --acx-header-caret-width: 8px;
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
@@ -88,6 +89,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
           display: flex;
           flex-flow: column;
           transition: unset;
+          a { text-decoration: none !important; }
         }
         .ant-menu-title-content { transition: all 0.2s !important; }
         .ant-menu-submenu {
@@ -409,24 +411,20 @@ export const CollapseText = styled.div`
 `
 
 const Button = styled(AntButton).attrs({ type: 'primary' })`
-  background-color: var(--acx-neutrals-70);
-  border: none;
-  &:hover, &:focus {
-    border-color: var(--acx-accents-orange-55);
-    background-color: var(--acx-accents-orange-55);
-  }
-  > svg {
-    width: 16px;
-    height: 100%;
+  &&& {
+    background-color: var(--acx-neutrals-70);
+    border: none;
+    &:hover, &:focus {
+      border-color: var(--acx-accents-orange-55);
+      background-color: var(--acx-accents-orange-55);
+    }
+    > svg {
+      width: 16px;
+      height: 100%;
+    }
   }
 `
 export const LayoutUI = {
-  iconOutlinedOverride: css`
-    path { stroke: none !important; }
-  `,
-  iconSolidOverride: css`
-    stroke: none !important;
-  `,
   Icon: styled.span`
     > svg {
       width: 16px;
@@ -437,6 +435,17 @@ export const LayoutUI = {
       }
     }
   `,
+  DropdownCaretIcon: styled.span`{
+    svg {
+      width: var(--acx-header-caret-width);
+      height: 100%;
+      vertical-align: baseline;
+      path {
+        stroke: var(--acx-primary-white);
+        fill: var(--acx-primary-white);
+      }
+    }
+  }`,
   DropdownText: styled.span.attrs(props => ({ children: <Space>{props.children}</Space> }))`
     font-size: var(--acx-body-3-font-size);
     line-height: 1;

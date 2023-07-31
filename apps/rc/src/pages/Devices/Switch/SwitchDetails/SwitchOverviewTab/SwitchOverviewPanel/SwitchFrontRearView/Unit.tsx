@@ -5,15 +5,18 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Descriptions, Drawer, showActionModal, Tooltip }                                                                                                                                                  from '@acx-ui/components'
-import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery }                                                                                     from '@acx-ui/rc/services'
+import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchPortlistQuery, useLazySwitchRearViewQuery }                                                                                      from '@acx-ui/rc/services'
 import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '../../..'
 
-import { FrontViewSlot } from './FrontViewSlot'
-import { RearView }      from './RearView'
-import * as UI           from './styledComponents'
+import { FrontViewSlot }    from './FrontViewSlot'
+import { FrontViewTooltip } from './FrontViewTooltip'
+import { RearView }         from './RearView'
+import * as UI              from './styledComponents'
+
+import { SwitchPanelContext } from '.'
 interface unitType {
   switchUnit: number
   model: string
@@ -80,6 +83,9 @@ export function Unit (props:{
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
+  const {
+    editPortsFromPanelEnabled
+  } = useContext(SwitchPanelContext)
   const [ deleteStackMember ] = useDeleteStackMemberMutation()
   const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
@@ -113,8 +119,8 @@ export function Unit (props:{
     powerSlots: 0
   })
 
-  const [ switchFrontView ] = useLazySwitchFrontViewQuery()
   const [ switchRearView ] = useLazySwitchRearViewQuery()
+  const [ switchPortlist ] = useLazySwitchPortlistQuery()
   const { tenantId, switchId } = useParams()
 
 
@@ -138,21 +144,60 @@ export function Unit (props:{
   }
 
   const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
-    const { data: portStatus } = await switchFrontView({ params: { tenantId, switchId: switchMac || serialNumber, unitId } })
     const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })
+    const { data: portsData } = await switchPortlist({
+      params: { tenantId },
+      payload: {
+        filters: { switchId: [serialNumber] },
+        sortField: 'portIdentifierFormatted',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10000,
+        fields: ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
+          'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
+          'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
+          'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
+          'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
+          'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
+          'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
+          'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage',
+          'neighborMacAddress'
+        ]
+      }
+    })
+    const portStatusData = {
+      slots: [] as SwitchSlot[]
+    }
+    const tmpSlots: { [key:string]:SwitchSlot } = {}
+
+    portsData?.data
+      .filter(port => port.portIdentifier.split('/')[0] === unitId)
+      .forEach(item => {
+        const port = { ...item }
+        port.portnumber = port.portIdentifier.split('/')[2]
+        port.usedInUplink = port.cloudPort
+        const slot = Number(port.portIdentifier.split('/')[1])
+
+        if(tmpSlots[slot]){
+          tmpSlots[slot].portStatus.push(port)
+          tmpSlots[slot].portCount++
+        }else {
+          tmpSlots[slot] = {
+            portStatus: [port],
+            portCount: 1
+          }
+        }
+      })
+    Object.keys(tmpSlots).forEach(key => {
+      portStatusData.slots.push(tmpSlots[key])
+    })
+
     // handle front view data
-    const tmpPortView = JSON.parse(JSON.stringify(portStatus))
+    const tmpPortView = JSON.parse(JSON.stringify(portStatusData))
+    tmpPortView.unitNumber = unitId
     tmpPortView.slots.forEach((slot:SwitchSlot) => {
       if (slot.portStatus !== undefined) {
         slot.slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1])
-        const { cloudPort } = switchDetail
-        if (cloudPort) {
-          slot.portStatus.forEach(port => {
-            if (port.portIdentifier === cloudPort) {
-              port.usedInUplink = true
-            }
-          })
-        }
       }
     })
     setPortView(tmpPortView as SwitchFrontView)
@@ -378,6 +423,13 @@ export function Unit (props:{
         }
       </div>
     </UI.TitleBar>
+    {
+      (editPortsFromPanelEnabled && !isRearView && props.index === 0) && (
+        <UI.FrontViewTooltipContainer>
+          <FrontViewTooltip />
+        </UI.FrontViewTooltipContainer>
+      )
+    }
     <UI.UnitWrapper>
       { !isRearView
         ? <>
@@ -396,8 +448,8 @@ export function Unit (props:{
         : <>
           {
             rearView && rearView.slots.map((slot, index) => (
-              <UI.RearSlotWrapper>
-                <RearView key={index}
+              <UI.RearSlotWrapper key={index}>
+                <RearView
                   slot={slot}
                   switchModelInfo={switchSlots as SwitchModelInfo}
                 />
@@ -406,11 +458,11 @@ export function Unit (props:{
           }
         </>
       }
-      {visible && <UnitDrawer
+      <UnitDrawer
         switchUnit={unit}
         visible={visible}
         onClose={()=>setVisible(false)}
-      /> }
+      />
     </UI.UnitWrapper>
   </div>
 }

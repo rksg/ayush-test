@@ -42,6 +42,9 @@ export const DnsProxyContext = createContext({} as DnsProxyContextType)
 
 export const WifiCallingSettingContext = createContext({} as WifiCallingSettingContextType)
 
+/**
+ * @deprecated
+ */
 export function ServicesForm (props: { showSingleSessionIdAccounting: boolean }) {
   const { $t } = useIntl()
   const dhcpOption82Flag = useIsSplitOn(Features.WIFI_FR_6029_FG4_TOGGLE)
@@ -291,7 +294,7 @@ export function ServicesForm (props: { showSingleSessionIdAccounting: boolean })
       <UI.Subtitle>
         {$t({ defaultMessage: 'DHCP' })}
       </UI.Subtitle>
-      <UI.FieldLabel width='182px'>
+      <UI.FieldLabel width='207px'>
         {$t({ defaultMessage: 'Force DHCP' })}
         <Form.Item
           name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}

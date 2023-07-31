@@ -429,33 +429,18 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
   mediaType?: string;
+  portnumber?: string
+  usedInUplink?: boolean
 }
 
-export interface SwitchPortStatus {
-  portnumber: number
-  name: string
-  portIdentifier: string
-  poeEnabled: boolean
-  status: string
-  portStatus: string
-  portSpeed: string
-  portTagged: PortTaggedEnum
-  taggedVlan: string
-  untaggedVlan: string
-  usedInFormingStack: boolean
-  usedInUplink: boolean
-  poeUsed: number
-  neighborName: string
-  poeType: string
-  unTaggedVlan: string
-  vlanIds: string
-  poeTotal: number
-  neighborMacAddress: string
+export interface SwitchPortStatus extends SwitchPortViewModel {
+  neighborMacAddress?: string
+  portTagged?: PortTaggedEnum
 }
 
 export interface SwitchSlot {
   portStatus: SwitchPortStatus[]
-  portCount?: number
+  portCount: number
   slotNumber?: number
   isDataPort?: boolean
   fanStatus?: {

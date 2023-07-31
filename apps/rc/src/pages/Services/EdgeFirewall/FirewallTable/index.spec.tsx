@@ -55,11 +55,12 @@ describe('Firewall Table', () => {
     )
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     expect(row.length).toBe(2)
-    await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 1 No' })
-    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 No' })
+    // eslint-disable-next-line max-len
+    await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 3 No 1.0.0.100, 1.0.0.210' })
+    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 No --' })
     const ddosInfo = await screen.findByTestId('ddos-info-1')
     await user.hover(ddosInfo)
-    await screen.findByText('ALL: 220')
+    await screen.findByText('All: 220')
     await screen.findByText('ICMP: 200')
 
     const edgeNumStr = await screen.findByTestId('edge-names-1')
@@ -102,10 +103,10 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
-    expect(screen.queryByText('Network Control')).toBeNull()
-    expect(screen.getByRole('link', {
+    expect(await screen.findByRole('link', {
       name: 'My Services'
     })).toBeVisible()
+    expect(screen.queryByText('Network Control')).toBeNull()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
