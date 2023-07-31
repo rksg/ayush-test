@@ -12,7 +12,7 @@ export const ArrowChevronRightIcons = styled(ArrowChevronRight)`
 export const Wrapper = styled.div`
   &:hover {
     path {
-      stroke: var(--acx-accents-orange-50);
+      stroke: var(--acx-accents-blue-60);
     }
   }
 `

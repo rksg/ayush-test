@@ -139,7 +139,7 @@ describe('FrontViewBreakoutPort', () => {
     render(<Provider>
       <FrontViewBreakoutPort
         key={'1/2/1'}
-        ports={breakoutPorts_up}
+        ports={[breakoutPorts_up[0]]}
         deviceStatus={SwitchStatusEnum.OPERATIONAL}
         labelText={'1'}
         labelPosition='bottom'

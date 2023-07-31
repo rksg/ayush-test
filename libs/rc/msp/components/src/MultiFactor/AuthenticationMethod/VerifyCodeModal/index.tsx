@@ -128,7 +128,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
             type='link'
             disabled={isResending}
             onClick={handleResend}
-            style={{ color: 'var(--acx-accents-blue-50)' }}
+            style={{ color: 'var(--acx-accents-blue-50)', paddingLeft: '12px' }}
           >
             {$t({ defaultMessage: 'Resend' })}
           </Button>
