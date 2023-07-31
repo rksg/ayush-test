@@ -112,7 +112,7 @@ describe('Subscriptions', () => {
         (req, res, ctx) => res(ctx.json(summary))
       ),
       rest.get(
-        MspUrlsInfo.getMspEntitlementSummary.url,
+        MspUrlsInfo.getMspEntitlementSummary.url.split('?').at(0) as Path,
         (req, res, ctx) => res(ctx.json(entitlementSummary))
       ),
       rest.get(

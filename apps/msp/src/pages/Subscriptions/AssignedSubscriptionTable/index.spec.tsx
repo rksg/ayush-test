@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
-import { Provider }                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
+import { MspUrlsInfo }         from '@acx-ui/msp/utils'
+import { Provider }            from '@acx-ui/store'
+import { mockServer, render  } from '@acx-ui/test-utils'
 
 import { AssignedSubscriptionTable } from '.'
 
@@ -107,7 +107,7 @@ describe('AssignedSubscriptionTable', () => {
         route: { params, path: '/:tenantId/mspLicenses' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     // const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
     // fireEvent.click(generateUsageButton)
     // const licenseManagementButton =

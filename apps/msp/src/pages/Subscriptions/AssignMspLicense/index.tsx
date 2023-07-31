@@ -15,21 +15,18 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                   from '@acx-ui/formatter'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useAddMspAssignmentMutation,
   useUpdateMspAssignmentMutation
-  // useDeleteMspAssignmentMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
   DateSelectionEnum,
   MspAssignmentHistory,
-  // MspAssignmentHistory,
-  MspAssignmentSummary,
-  MspEc
+  MspAssignmentSummary
 } from '@acx-ui/msp/utils'
 import {
   EntitlementDeviceType, EntitlementUtil
@@ -41,6 +38,14 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import * as UI from '../styledComponent'
+
+interface SubscriptionAssignmentForm {
+  startDate: string
+  serviceExpirationDate: string
+  wifiLicenses?: number
+  switchLicenses?: number
+  devices?: number
+}
 
 interface MspAssignment {
   ownAssignments: boolean
@@ -54,7 +59,6 @@ interface Assignment {
   deviceType: EntitlementDeviceType
 }
 
-
 export function AssignMspLicense () {
   const intl = useIntl()
 
@@ -66,11 +70,9 @@ export function AssignMspLicense () {
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
-  // const [assignedWifiLicense, setWifiLicense] = useState(0)
-  // const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
-  const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
+  // const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
 
   const { Option } = Select
   const isEditMode = action === 'edit'
@@ -79,40 +81,40 @@ export function AssignMspLicense () {
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const [addMspSubscription] = useAddMspAssignmentMutation()
   const [updateMspSubscription] = useUpdateMspAssignmentMutation()
-  // const [deleteMspSubscription] = useDeleteMspAssignmentMutation()
 
   const getAssignmentId = (deviceType: string) => {
     const license =
-    assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
+      assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
     return license.length > 0 ? license[0].id : 0
   }
 
   useEffect(() => {
     if (licenseSummary) {
-      checkAvailableLicense(licenseSummary)
-
       if (licenseAssignment) {
         const assigned = licenseAssignment.filter(
           en => en.mspEcTenantId === tenantId && en.status === 'VALID')
         setAssignedLicense(assigned)
-        const wifi = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_WIFI)
+        const wifi =
+          assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_WIFI)
         const wLic = wifi.length > 0 ? wifi[0].quantity : 0
-        const sw = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_SWITCH)
+        const sw =
+          assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_SWITCH)
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
         checkAvailableLicense(licenseSummary, wLic, sLic)
         form.setFieldsValue({
-          service_expiration_date: wifi.length > 0 ? moment(wifi[0].dateExpires) : '',
+          serviceExpirationDate:
+            wifi.length > 0 ? moment(wifi[0].dateExpires) : moment().add(30,'days'),
           wifiLicenses: wLic,
           switchLicenses: sLic
         })
+      } else {
+        checkAvailableLicense(licenseSummary)
       }
     }
 
     if (!isEditMode) { // Add mode
       setSubscriptionStartDate(moment())
-      setSubscriptionEndDate(moment().add(30,'days'))
+      // setSubscriptionEndDate(moment().add(30,'days'))
     }
   }, [licenseSummary, licenseAssignment])
 
@@ -126,11 +128,12 @@ export function AssignMspLicense () {
     return Promise.resolve()
   }
 
-  const handleAssignLicense = async (values: MspEc) => {
+  const handleAssignLicense = async (values: SubscriptionAssignmentForm) => {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDate = EntitlementUtil.getServiceStartDate(
+        formatter(DateFormatEnum.DateFormat)(ecFormData.serviceExpirationDate))
 
       const addAssignment = []
       const updateAssignment = []
@@ -198,28 +201,27 @@ export function AssignMspLicense () {
       : setAvailableSwitchLicense(remainingSwitch)
   }
 
-  function expirationDateOnChange (props: unknown, expirationDate: string) {
-    setSubscriptionEndDate(moment(expirationDate))
-  }
-
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
-      // setSubscriptionEndDate('')
       setCustomeDate(true)
     } else {
+      let expirationDate = moment().add(30,'days')
       if (value === DateSelectionEnum.THIRTY_DAYS) {
-        setSubscriptionEndDate(moment().add(30,'days'))
+        expirationDate = moment().add(30,'days')
       } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        setSubscriptionEndDate(moment().add(60,'days'))
+        expirationDate = moment().add(60,'days')
       } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        setSubscriptionEndDate(moment().add(90,'days'))
+        expirationDate = moment().add(90,'days')
       } else if (value === DateSelectionEnum.ONE_YEAR) {
-        setSubscriptionEndDate(moment().add(1,'years'))
+        expirationDate = moment().add(1,'years')
       } else if (value === DateSelectionEnum.THREE_YEARS) {
-        setSubscriptionEndDate(moment().add(3,'years'))
+        expirationDate = moment().add(3,'years')
       } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        setSubscriptionEndDate(moment().add(5,'years'))
+        expirationDate = moment().add(5,'years')
       }
+      form.setFieldsValue({
+        serviceExpirationDate: expirationDate
+      })
       setCustomeDate(false)
     }
   }
@@ -283,14 +285,13 @@ export function AssignMspLicense () {
           }
         />
         <Form.Item
-          name='service_expiration_date'
+          name='serviceExpirationDate'
           label=''
           children={
             <DatePicker
               format={formatter(DateFormatEnum.DateFormat)}
               disabled={!customDate}
-              defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
-              onChange={expirationDateOnChange}
+              // defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
               }}
@@ -312,7 +313,7 @@ export function AssignMspLicense () {
         ]}
       />
       <StepsForm
-        // form={form}
+        form={form}
         onFinish={handleAssignLicense}
         onCancel={() => navigate(linkToSubscriptions)}
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Save' }) }}
