@@ -3,7 +3,7 @@
 exports[`Floor Plan Modal handles click on add floorplan 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
     data-testid="AddEditLinks"
     type="button"
   >
@@ -26,7 +26,7 @@ exports[`Floor Plan Modal handles click on add floorplan 1`] = `
 exports[`Floor Plan Modal should render correctly 1`] = `
 <DocumentFragment>
   <button
-    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
     data-testid="AddEditLinks"
     type="button"
   >
