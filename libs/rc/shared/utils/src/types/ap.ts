@@ -1,4 +1,4 @@
-import { APMeshRole }                                   from '../constants'
+import { APMeshRole, ApDeviceStatusEnum }               from '../constants'
 import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
 import { ApDeep }                                       from '../models/ApDeep'
 import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
@@ -484,4 +484,24 @@ export type MeshUplinkAp = {
   deviceStatus: string,
   healthStatus: string,
   neighbors: MeshApNeighbor[]
+}
+
+export interface ApRfNeighbor {
+  deviceName: string,
+  apMac: string,
+  status: ApDeviceStatusEnum,
+  model: string,
+  venueName: string,
+  ip: string,
+  channel24G: string | null,
+  channel5G: string | null,
+  channel6G: string | null,
+  snr24G: string | null,
+  snr5G: string | null,
+  snr6G: string | null
+}
+
+export interface ApRfNeighborsResponse {
+  detectedTime: string,
+  neighbors: ApRfNeighbor[]
 }

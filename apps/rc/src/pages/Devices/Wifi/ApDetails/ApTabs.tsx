@@ -49,6 +49,10 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         tab={$t({ defaultMessage: 'Timeline' })}
         key='timeline'
       />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Neighbors' })}
+        key='neighbors'
+      />
     </Tabs>
   )
 }
