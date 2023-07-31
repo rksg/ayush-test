@@ -150,7 +150,7 @@ export function FrontViewPort (props:{
       {
         portIcon
           ? (
-            <UI.WithIconPortContainer data-testid='RegularPort'>
+            <UI.WithIconPortContainer data-testid='RegularPortWithIcon'>
               { portIcon ==='UpLink' && <UI.UplinkPortIcon/> }
               { portIcon ==='Stack' && <UI.StackingPortIcon/> }
               { portIcon ==='PoeUsed' && <UI.PoeUsageIcon /> }
@@ -160,12 +160,11 @@ export function FrontViewPort (props:{
             </UI.WithIconPortContainer>
           )
           : (
-            <UI.RegularPortContainer>
+            <UI.RegularPortContainer data-testid='RegularPort'>
               { showEditIcon() && <UI.BreakOutPortFlag portColor={portColor} />}
             </UI.RegularPortContainer>
           )
       }
-
     </UI.Port>
     { labelPosition === 'bottom' && <UI.PortLabel>{labelText}</UI.PortLabel> }
   </UI.PortWrapper>
