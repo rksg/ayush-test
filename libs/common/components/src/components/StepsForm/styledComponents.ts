@@ -22,12 +22,16 @@ export const Wrapper = styled.section`
   padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
 `
 
-const stepCompletedStyle = css`
+const stepCompletedStyle = css<{ $editMode?: boolean }>`
   .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot {
     &::after {
       top: 1px;
       left: 1px;
-      background-color: transparent;
+      ${props => !props.$editMode ? css`
+        background-color: var(--acx-steps-form-steps-step-color);
+      ` : css`
+        background-color: transparent;
+      `}
     }
   }
 `
@@ -173,7 +177,6 @@ export const ActionsButtons = styled(Space).attrs((props: ActionsButtonsProps) =
   align: props.$editMode ? 'start' : 'center'
 }))<ActionsButtonsProps>`
   ${props => props.$editMode && props.$multipleSteps && `
-    // col span=4/24, gutter=20px
     margin-left: 0;
   `}
 `
