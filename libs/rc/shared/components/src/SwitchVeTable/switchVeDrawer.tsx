@@ -245,7 +245,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
       <Button
         loading={loading}
         key='saveBtn'
-        type='secondary'
+        type='primary'
         onClick={() => form.submit()}
       >
         {isEditMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })}

@@ -121,7 +121,7 @@ export function AddPoolDrawer (props: {
       <Button
         loading={props.isLoading}
         onClick={() => form.submit()}
-        type='secondary'
+        type='primary'
       >
         {$t({ defaultMessage: 'Save' })}
       </Button>
