@@ -32,13 +32,13 @@ describe('Table', () => {
   it('should render table with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-      render(<Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-      />, { wrapper: Provider, route: {} })
+    render(<Table
+      selected={null}
+      onRowClick={handleClick}
+      pagination={{ current: 1, pageSize: 10 }}
+      setPagination={setPagination}
+      dotSelect={null}
+    />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -51,13 +51,13 @@ describe('Table', () => {
   it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-      render(<Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-      />, { wrapper: Provider, route: {} })
+    render(<Table
+      selected={null}
+      onRowClick={handleClick}
+      pagination={{ current: 1, pageSize: 10 }}
+      setPagination={setPagination}
+      dotSelect={null}
+    />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -73,16 +73,16 @@ describe('Table', () => {
     expect(await screen.findByText('Enabled')).toBeVisible()
   })
 
-  it('should log rows when clicked', async () => {
+  it('should handle click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-      render(<Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-      />, { wrapper: Provider, route: {} })
+    render(<Table
+      selected={null}
+      onRowClick={handleClick}
+      pagination={{ current: 1, pageSize: 10 }}
+      setPagination={setPagination}
+      dotSelect={null}
+    />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const radio = await screen.findAllByRole('radio')
@@ -102,6 +102,23 @@ describe('Table', () => {
     })
   })
 
+  it('should handle pagination correctly', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: {
+        configChanges: configChanges.slice(0, 7).concat(new Array(10).fill(configChanges[7]))
+      } } } })
+    render(<Table
+      selected={null}
+      onRowClick={handleClick}
+      pagination={{ current: 1, pageSize: 1 }}
+      setPagination={setPagination}
+      dotSelect={null}
+    />, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+    await userEvent.click(await screen.findByText(2))
+    expect(setPagination).toHaveBeenCalledTimes(1)
+  })
+
   it('should select row when selected value is passed in', async () => {
     const selected = {
       id: 0,
@@ -114,13 +131,13 @@ describe('Table', () => {
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-      render(<Table
-        selected={selected}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-      />, { wrapper: Provider, route: {} })
+    render(<Table
+      selected={selected}
+      onRowClick={handleClick}
+      pagination={{ current: 1, pageSize: 10 }}
+      setPagination={setPagination}
+      dotSelect={null}
+    />, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
   })
 })

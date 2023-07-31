@@ -14,13 +14,21 @@ describe('Chart', () => {
   it('should render page correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Chart selected={null} onClick={handleClick} onBrushPositionsChange={jest.fn()}/>, { wrapper: Provider, route: {} })
+    render(<Chart
+      selected={null}
+      onClick={handleClick}
+      onBrushPositionsChange={jest.fn()}
+    />, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
   it('should show empty chart', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Chart selected={null} onClick={handleClick} onBrushPositionsChange={jest.fn()}/>, { wrapper: Provider, route: {} })
+    render(<Chart
+      selected={null}
+      onClick={handleClick}
+      onBrushPositionsChange={jest.fn()}
+    />, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
   it('should render page correctly with selected data', async () => {
@@ -35,7 +43,11 @@ describe('Chart', () => {
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Chart selected={selected} onClick={handleClick} onBrushPositionsChange={jest.fn()}/>, { wrapper: Provider, route: {} })
+    render(<Chart
+      selected={selected}
+      onClick={handleClick}
+      onBrushPositionsChange={jest.fn()}
+    />, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
 })

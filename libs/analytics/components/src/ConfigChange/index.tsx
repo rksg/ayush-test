@@ -8,7 +8,14 @@ import { KPIs }  from './KPI'
 import { Table } from './Table'
 
 export function ConfigChange () {
-  const [selected, setSelected] = useState<ConfigChangeType | null>(null)
+  const [selected, setSelected] = useState<ConfigChangeType | null>({
+    timestamp: '1685427082100',
+    type: 'ap',
+    name: '94:B3:4F:3D:21:80',
+    key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
+    oldValues: [],
+    newValues: ['480']
+  })
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([])
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
