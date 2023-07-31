@@ -179,7 +179,12 @@ export function WISPrForm () {
         setRegionOption(regions)
       }
       const { wlanSecurity } = data.wlan || {}
-      if (wlanSecurity === WlanSecurityEnum.None) {
+      if (!enableOweEncryption) {
+        const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
+                          wlanSecurity !== WlanSecurityEnum.OWE
+        form.setFieldValue('enablePreShared', enablePsk)
+        setEnablePreShared(enablePsk)
+      } else if (wlanSecurity === WlanSecurityEnum.None) {
         form.setFieldValue('networkSecurity', 'NONE')
       } else if (wlanSecurity === WlanSecurityEnum.OWE) {
         form.setFieldValue('networkSecurity', 'OWE')
