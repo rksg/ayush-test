@@ -252,7 +252,10 @@ function ABFSelector (props: ABFSelectorProps) {
           <UI.ApModelsContainer>
             <span>{ $t({ defaultMessage: 'AP Models:' }) }&nbsp;</span>
             <span className={apModels ? '' : 'empty'}>
-              { apModels ? apModels : 'No Access Point in selected venue(s)' }
+              { apModels
+                ? apModels
+                : $t({ defaultMessage: 'No Access Point in selected venue(s)' })
+              }
             </span>
           </UI.ApModelsContainer>
         </Space>
