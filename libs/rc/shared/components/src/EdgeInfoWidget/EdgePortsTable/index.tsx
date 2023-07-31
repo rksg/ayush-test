@@ -22,6 +22,7 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
       dataIndex: 'name',
+      width: 200,
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
