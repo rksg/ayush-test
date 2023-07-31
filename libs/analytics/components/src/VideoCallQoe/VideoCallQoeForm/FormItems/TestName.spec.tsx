@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import {
   videoCallQoeApi as api,
   store,
-  videoCallQoeURL
+  r1VideoCallQoeURL
 } from '@acx-ui/store'
 import { mockGraphqlQuery, screen } from '@acx-ui/test-utils'
 
@@ -25,7 +25,7 @@ describe('TestName', () => {
   })
 
   it('invalidate field when name exists', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', {
+    mockGraphqlQuery(r1VideoCallQoeURL,'CallQoeTests', {
       data: getAllCallQoeTests
     })
 
