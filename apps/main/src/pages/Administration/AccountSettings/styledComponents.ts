@@ -51,7 +51,7 @@ export const styles = css`
     margin: 4px 0px 20px;
     background: var(--acx-neutrals-30);
   }
-    
+
   ${checkboxStyles}
   ${greyTextStyles}
   ${darkGreyTextStyles}
