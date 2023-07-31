@@ -26,10 +26,24 @@ import {
 
 import { VenueNetworksTab } from './index'
 
-jest.mock(
-  'rc/Widgets',
-  () => ({ name }: { name: string }) => <div data-testid={`dialog-${name}`} title={name} />,
-  { virtual: true })
+type MockDialogProps = React.PropsWithChildren<{
+  visible: boolean
+  onOk?: () => void
+  onCancel?: () => void
+}>
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  NetworkApGroupDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
+    visible && <div data-testid={'NetworkApGroupDialog'}>
+      <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
+      <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
+    </div>,
+  NetworkVenueScheduleDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
+    visible && <div data-testid={'NetworkVenueScheduleDialog'}>
+      <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
+      <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
+    </div>
+}))
 
 const params = {
   tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
@@ -155,7 +169,7 @@ describe('VenueNetworksTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 
-  it('click VLAN, APs, Radios', async () => {
+  it('click VLAN, APs, Radios, Scheduling', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
     })
@@ -165,9 +179,14 @@ describe('VenueNetworksTab', () => {
     fireEvent.click(within(row).getByText('VLAN-1 (Default)'))
     fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
     fireEvent.click(within(row).getByText('All APs'))
+    fireEvent.click(within(row).getByText('24/7'))
 
-    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const dialog = await screen.findByTestId('NetworkApGroupDialog')
+    const dialog2 = await screen.findByTestId('NetworkVenueScheduleDialog')
 
     expect(dialog).toBeVisible()
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+    await waitFor(() => expect(dialog2).not.toBeVisible())
   })
 })
