@@ -1,3 +1,5 @@
+import styled from 'styled-components'
+
 import { GridCol, GridRow } from '@acx-ui/components'
 import {
   EdgePortsByTrafficWidget,
@@ -6,9 +8,11 @@ import {
   EdgeUpTimeWidget
 } from '@acx-ui/rc/components'
 
-export const MonitorTab = () => {
+import { wrapperStyle } from './styledComponents'
+
+export const MonitorTab = styled(({ className }: { className?: string }) => {
   return (
-    <GridRow>
+    <GridRow className={className}>
       <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
         <EdgeUpTimeWidget />
       </GridCol>
@@ -23,4 +27,4 @@ export const MonitorTab = () => {
       </GridCol>
     </GridRow>
   )
-}
+})`${wrapperStyle}`
