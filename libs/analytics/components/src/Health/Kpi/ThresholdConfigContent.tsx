@@ -89,7 +89,7 @@ function ThresholdConfig ({
           ? <DisabledButton
             style={{ width: 70 }}
             size='small'
-            type='secondary'
+            type='primary'
             title={disabledMsg}
             tooltipPlacement='left'
           >
@@ -98,7 +98,7 @@ function ThresholdConfig ({
           : <Button
             style={{ width: 70 }}
             size='small'
-            type='secondary'
+            type='primary'
             onClick={applyCallback}
           >
             {$t(thresholdDescText.applyBtn)}

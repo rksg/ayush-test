@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
 import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
@@ -44,7 +45,13 @@ describe('SwitchTraceRouteForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_traceRoute_result))),
       rest.get(
         SwitchUrlsInfo.getTroubleshootingClean.url,
-        (req, res, ctx) => res(ctx.json({})))
+        (req, res, ctx) => res(ctx.json({}))),
+      rest.delete(
+        '/switches/:switchId/debugRequests/trace-route',
+        (req, res, ctx) => res(ctx.json({
+          requestId: '231adbd9-0934-452f-ae59-f8eb20a821c1'
+        }))
+      )
     )
   })
 
@@ -114,15 +121,21 @@ describe('SwitchTraceRouteForm', () => {
       <SwitchTraceRouteForm />
     </Provider>, { route: { params } })
 
-    const ipAddressField = screen.getByRole('textbox', {
+    const ipAddressField = await screen.findByRole('textbox', {
       name: /target host or ip address/i
     })
-    fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
-    const maximumField = screen.getByRole('textbox', {
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
+    })
+    const maximumField = await screen.findByRole('textbox', {
       name: /maximum ttl \(hops\)/i
     })
-    fireEvent.change(maximumField, { target: { value: '255' } })
-    maximumField.focus()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(maximumField, { target: { value: '255' } })
+      maximumField.focus()
+    })
     await userEvent.click(await screen.findByRole('button', { name: /run/i }))
   })
 
@@ -137,16 +150,22 @@ describe('SwitchTraceRouteForm', () => {
       <SwitchTraceRouteForm />
     </Provider>, { route: { params } })
 
-    const ipAddressField = screen.getByRole('textbox', {
+    const ipAddressField = await screen.findByRole('textbox', {
       name: /target host or ip address/i
     })
-    fireEvent.change(ipAddressField, { target: { value: '1.1' } })
-    ipAddressField.focus()
-    const maximumField = screen.getByRole('textbox', {
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(ipAddressField, { target: { value: '1.1' } })
+      ipAddressField.focus()
+    })
+    const maximumField = await screen.findByRole('textbox', {
       name: /maximum ttl \(hops\)/i
     })
-    fireEvent.change(maximumField, { target: { value: '255' } })
-    maximumField.focus()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(maximumField, { target: { value: '255' } })
+      maximumField.focus()
+    })
     await userEvent.click(await screen.findByRole('button', { name: /run/i }))
   })
 
@@ -175,15 +194,21 @@ describe('SwitchTraceRouteForm', () => {
       <SwitchTraceRouteForm />
     </Provider>, { route: { params } })
 
-    const ipAddressField = screen.getByRole('textbox', {
+    const ipAddressField = await screen.findByRole('textbox', {
       name: /target host or ip address/i
     })
-    fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
-    const maximumField = screen.getByRole('textbox', {
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
+    })
+    const maximumField = await screen.findByRole('textbox', {
       name: /maximum ttl \(hops\)/i
     })
-    fireEvent.change(maximumField, { target: { value: '255' } })
-    maximumField.focus()
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(maximumField, { target: { value: '255' } })
+      maximumField.focus()
+    })
     await userEvent.click(await screen.findByRole('button', { name: /run/i }))
     // TODO
     // expect(await screen.findByText('Server Error')).toBeVisible()

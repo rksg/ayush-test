@@ -176,7 +176,7 @@ export function Cascader (props: CascaderProps) {
       <Button size='small' onClick={onCancel}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
-      <Button size='small' type='secondary' onClick={onApplyProps}>
+      <Button size='small' type='primary' onClick={onApplyProps}>
         {$t({ defaultMessage: 'Apply' })}
       </Button>
     </UI.ButtonDiv>
