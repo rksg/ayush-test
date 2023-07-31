@@ -136,7 +136,7 @@ export const DatePickerFooter = ({
             {$t({ defaultMessage: 'Cancel' })}
           </Button>
           <Button
-            type={'secondary'}
+            type='primary'
             size={'small'}
             onClick={() => onButtonClick('apply')}
             disabled={

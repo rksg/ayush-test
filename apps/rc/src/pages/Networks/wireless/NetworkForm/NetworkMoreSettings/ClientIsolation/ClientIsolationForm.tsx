@@ -20,10 +20,13 @@ enum IsolatePacketsTypeEnum {
   UNICAST_MULTICAST = 'UNICAST_MULTICAST',
 }
 
-export default function ClientIsolationForm () {
+export default function ClientIsolationForm (props: { labelWidth?: string }) {
   const isPoliciesEnabled = useIsSplitOn(Features.POLICIES)
   const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+
+  const { labelWidth='250px' } = props
+
   // eslint-disable-next-line max-len
   const clientIsolationEnabled = useWatch<boolean>(['wlan','advancedCustomization','clientIsolation'])
   // eslint-disable-next-line max-len
@@ -33,8 +36,8 @@ export default function ClientIsolationForm () {
   const enableVxLan = hasVxLanTunnelProfile(data)
 
   return (<>
-    <UI.FieldLabel width='125px'>
-      {$t({ defaultMessage: 'Client Isolation:' })}
+    <UI.FieldLabel width={labelWidth}>
+      {$t({ defaultMessage: 'Client Isolation' })}
 
       <Form.Item
         name={['wlan','advancedCustomization','clientIsolation']}
@@ -48,7 +51,7 @@ export default function ClientIsolationForm () {
     {clientIsolationEnabled &&
     <>
       <Form.Item
-        label={$t({ defaultMessage: 'Isolate Packets:' })}
+        label={$t({ defaultMessage: 'Isolate Packets' })}
         name={['wlan','advancedCustomization','clientIsolationOptions', 'packetsType']}
         initialValue={IsolatePacketsTypeEnum.UNICAST}
       >
@@ -65,7 +68,7 @@ export default function ClientIsolationForm () {
           </Option>
         </Select>
       </Form.Item>
-      <UI.FieldLabel width='230px'>
+      <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Automatic support for VRRP/HSRP:' })}
         <Form.Item
           name={['wlan','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
@@ -74,7 +77,7 @@ export default function ClientIsolationForm () {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      {isPoliciesEnabled ? <UI.FieldLabel width='230px'>
+      {isPoliciesEnabled ? <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
         <Form.Item
           name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}

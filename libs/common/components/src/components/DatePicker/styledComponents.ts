@@ -136,7 +136,7 @@ export const Wrapper = styled.div`
 
 export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
   --acx-date-picker-ranges-width: 125px;
-  --acx-date-picker-left-padding: 22px;
+  --acx-date-picker-left-padding: 25px;
 
   > .ant-picker {
     &:not(.ant-picker-focused) {
@@ -161,8 +161,8 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
     }
     > .ant-picker-suffix {
       position: absolute;
-      left: 3px;
-      width: 18px;
+      left: 8px;
+      width: 16px;
     }
     .ant-picker-active-bar {
       background: var(--acx-accents-blue-50);

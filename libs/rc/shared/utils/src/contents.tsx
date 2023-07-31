@@ -123,6 +123,12 @@ export const WifiTroubleshootingMessages = {
   })
 }
 
+export const EdgeTroubleshootingMessages = {
+  Target_Host_IP_TOOLTIP: defineMessage({
+    defaultMessage: 'The target host or IP address must be a valid IP address or domain name'
+  })
+}
+
 export const VenueMessages = {
   MODEL_OVERLAPPING_TOOLTIP: defineMessage({
     defaultMessage: 'You selected CLI profiles with overlapping switch models. Please correct your selection'
