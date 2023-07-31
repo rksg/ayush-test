@@ -38,11 +38,11 @@ describe('AP Lan port settings', () => {
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
-      rest.get(WifiUrlsInfo.getApCustomization.url,
+      rest.get(WifiUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
-      rest.put(WifiUrlsInfo.updateApCustomization.url,
+      rest.put(WifiUrlsInfo.updateApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.delete(WifiUrlsInfo.resetApCustomization.url,
+      rest.delete(WifiUrlsInfo.resetApLanPorts.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -82,8 +82,10 @@ describe('AP Lan port settings', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Customize' }))
 
+    /* Waiting for backend support AP PoE mode settings
     const poeCombobox = await screen.findByRole('combobox', { name: 'PoE Operating Mode' })
     await userEvent.click(poeCombobox)
+
 
     // T750SE have 5 PoE modes:[ 'Auto', '802.3at', '802.3bt-Class_5', '802.3bt-Class_6', '802.3bt-Class_7']
     expect(await screen.findByTitle('802.3at')).toBeInTheDocument()
@@ -93,7 +95,7 @@ describe('AP Lan port settings', () => {
     await userEvent.click(await screen.findByTitle('802.3bt/Class 5'))
     const option802_3bt_5 = await screen.findByRole('option', { name: '802.3bt/Class 5' })
     expect(option802_3bt_5.getAttribute('aria-selected')).toBe('true')
-
+    */
     await userEvent.click(await screen.findByRole('switch', { name: 'Enable port' }))
 
 

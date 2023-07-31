@@ -23,8 +23,11 @@ export function LanPortPoeSettings (props: {
     onGUIChanged?.(fieldName)
   }
 
+  // waiting for backend support AP PoE Mode
+  const isPoeModeImplemented = false
+
   return (<>
-    { selectedModelCaps?.canSupportPoeMode &&
+    { (isPoeModeImplemented && selectedModelCaps?.canSupportPoeMode) &&
     <Form.Item
       name='poeMode'
       label={$t({ defaultMessage: 'PoE Operating Mode' })}
