@@ -106,6 +106,7 @@ export async function pendoInitalization (): Promise<void> {
         email: user.email
       },
       account: {
+        productName: 'RuckusOne',
         id: user.tenantId,
         name: user.companyName
       }
