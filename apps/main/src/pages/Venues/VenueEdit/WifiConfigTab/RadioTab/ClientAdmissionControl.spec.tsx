@@ -149,7 +149,7 @@ describe('Venue Client Admission Control', () => {
   })
 
   it(`should turned off and grayed out switch buttons when 
-  load balancing is enabled`, async () => {
+  band balancing is enabled`, async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(

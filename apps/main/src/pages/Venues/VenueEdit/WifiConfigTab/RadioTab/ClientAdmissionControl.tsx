@@ -57,10 +57,10 @@ export function ClientAdmissionControl () {
   useEffect(() => {
     const clientAdmissionControlData = getClientAdmissionControl?.data
     if (clientAdmissionControlData) {
-      if (!isGrayedOut) {
-        form.setFieldValue(enable24GFieldName, clientAdmissionControlData.enable24G)
-        form.setFieldValue(enable50GFieldName, clientAdmissionControlData.enable50G)
-      }
+      form.setFieldValue(enable24GFieldName,
+        (!isGrayedOut)? clientAdmissionControlData.enable24G: false)
+      form.setFieldValue(enable50GFieldName,
+        (!isGrayedOut)? clientAdmissionControlData.enable50G: false)
       form.setFieldValue(minClientCount24GFieldName, clientAdmissionControlData.minClientCount24G)
       form.setFieldValue(minClientCount50GFieldName, clientAdmissionControlData.minClientCount50G)
       form.setFieldValue(maxRadioLoad24GFieldName, clientAdmissionControlData.maxRadioLoad24G)
