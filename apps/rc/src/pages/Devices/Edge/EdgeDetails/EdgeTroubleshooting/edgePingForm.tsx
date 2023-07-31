@@ -70,7 +70,7 @@ export function EdgePingForm () {
         />
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
           <Button
-            type='secondary'
+            type='primary'
             htmlType='submit'
             disabled={!isValid || isPingingEdge}
             onClick={handlePingEdge}>

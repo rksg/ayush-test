@@ -1,8 +1,8 @@
-import { act, renderHook, waitFor }                 from '@testing-library/react'
-import userEvent                                    from '@testing-library/user-event'
-import { rest }                                     from 'msw'
-import { IntlProvider }                             from 'react-intl'
-import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
+import { act, renderHook, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                                               from '@testing-library/user-event'
+import { rest }                                                from 'msw'
+import { IntlProvider }                                        from 'react-intl'
+import { MemoryRouter, Route, Routes, useNavigate }            from 'react-router-dom'
 
 import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
@@ -119,13 +119,11 @@ describe('EditEdge ports - sub-interface', () => {
       })
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
-    await act(async () => {
-      await user.click(await screen.findByRole('button', { name: 'Delete' }))
-    })
+    await user.click(await screen.findByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2"?')
-    await act(async () => {
-      await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
-    })
+    const confirmDialog = await screen.findByRole('dialog')
+    await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it('should have edit dialog show up', async () => {
@@ -147,9 +145,7 @@ describe('EditEdge ports - sub-interface', () => {
     await screen.findAllByRole('columnheader')
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
-    await act(async () => {
-      await user.click(await screen.findByRole('button', { name: 'Edit' }))
-    })
+    await user.click(await screen.findByRole('button', { name: 'Edit' }))
     const dialog = await screen.findByTestId('subDialog')
     expect(within(dialog).queryByText('visible')).toBeValid()
     expect(within(dialog).queryByText('2')).toBeValid()
@@ -195,6 +191,42 @@ describe('EditEdge ports - sub-interface', () => {
     await waitFor(async () => {
       expect(within(await screen.findByTestId('subDialog')).queryByText('invisible')).toBeValid()
     })
+  })
+
+  it('should be able to import by CSV', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.importSubInterfacesCSV.url,
+        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgeEditContext.Provider
+          value={defaultContextData}
+        >
+          <SubInterface data={mockEdgePortConfig.ports} />
+        </EdgeEditContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    await userEvent.click(await screen.findByRole('button', { name: /Import from file/i }))
+
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'sub-interfaces_import_template.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
   })
 })
 

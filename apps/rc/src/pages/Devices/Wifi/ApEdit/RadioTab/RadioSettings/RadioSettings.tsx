@@ -46,7 +46,7 @@ export function RadioSettings () {
     setEditRadioContextData
   } = useContext(ApEditContext)
 
-  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   const { apData, apCapabilities } = useContext(ApDataContext)
 
@@ -106,13 +106,17 @@ export function RadioSettings () {
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
 
   const getSupportBandwidth = (bandwidthOptions: SelectItemOption[],
-    availableChannels: any, isSupport160Mhz = false) => {
+    availableChannels: any, isSupport160Mhz = false, isSupport320Mhz = false) => {
     const bandwidthList = Object.keys(availableChannels)
     return bandwidthOptions.filter((option: SelectItemOption) => {
       const bandwidth = (option.value === 'AUTO') ? 'auto' : option.value
 
       if (bandwidth === '160MHz') {
         return isSupport160Mhz && includes(bandwidthList, bandwidth)
+      }
+
+      if (bandwidth === '320MHz') {
+        return isSupport320Mhz && includes(bandwidthList, bandwidth)
       }
 
       return includes(bandwidthList, bandwidth)
@@ -142,6 +146,8 @@ export function RadioSettings () {
         setApModelType(apType)
         const is5GHas160Mhz = (has160MHzChannelBandwidth && maxChannelization5G >= 160)
         const is6GHas160Mhz = (has160MHzChannelBandwidth && maxChannelization6G >= 160)
+        const is6GHas320Mhz = maxChannelization6G >= 320
+
 
         setIsSupportTriBandRadioAp(supportTriRadio)
         setIsSupportDual5GAp(supportTriRadio && supportDual5gMode)
@@ -178,9 +184,9 @@ export function RadioSettings () {
 
         // 6G
         const supportCh6g = availableChannels['6GChannels'] || {}
-        const wifi7_320Bandwidth = Wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
+        const wifi7_320Bandwidth = wifi7_320Mhz_FeatureFlag ? channelBandwidth6GOptions : dropRight(channelBandwidth6GOptions)
 
-        const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidth, supportCh6g, is6GHas160Mhz)
+        const bandwidth6g = getSupportBandwidth(wifi7_320Bandwidth, supportCh6g, is6GHas160Mhz, is6GHas320Mhz)
         setSupport6GChannels(supportCh6g)
         setBandwidth6GOptions(bandwidth6g)
 
