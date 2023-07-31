@@ -50,7 +50,7 @@ export function SwitchClientDetails () {
       const ip = getClientIpAddr(data)
       setClientDetails({
         clientIpAddr: ip !== '--' ? ip : '',
-        transformedPort: `${data?.switchPort} `,
+        transformedPort: ` ${data?.switchPort} `,
         ...data,
         clientName: data?.dhcpClientHostName || data?.clientName,
         clientType: data?.dhcpClientDeviceTypeName || data?.clientType
