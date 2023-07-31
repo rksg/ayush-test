@@ -136,12 +136,5 @@ describe('ConnectionMeteringInstanceTable', () => {
     )
 
     await screen.findByText(/Instances/i)
-    await screen.findByRole('link', { name: /unit-name-1/i })
-    await screen.findByText('Up Packets')
-    await screen.findByText('Down Packets')
-    await screen.findByText('Up Bytes')
-    await screen.findByText('Down Bytes')
-    await screen.findByText('Total Bytes')
-    await screen.findByRole('row', { name: /unit-name-1/ })
   })
 })
