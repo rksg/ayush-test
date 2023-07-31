@@ -9,12 +9,6 @@ import { api } from './services'
 
 import { ResourceUtilization } from '.'
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 const sample = {
   time: [
     '2022-04-07T09:15:00.000Z',

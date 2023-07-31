@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -11,7 +12,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
   render,
   screen,
@@ -28,6 +28,7 @@ import {
 } from './__tests__/NetworkVenueTestData'
 
 import { NetworkApGroupDialog } from './index'
+
 
 const venueName = 'My-Venue'
 
@@ -47,21 +48,22 @@ describe('NetworkApGroupDialog', () => {
 
   it('should render correctly', async () => {
     const props = {
-      name: 'xxx',
       formName: 'networkApGroupForm',
       venueName: venueName,
       tenantId: params.tenantId,
       networkVenue: networkVenue_allAps,
       wlan: network.wlan
     }
+    const onOk = jest.fn()
 
     const { rerender } = render(
       <Provider><NetworkApGroupDialog
         {...props}
         visible={true}
+        onOk={onOk}
       /></Provider>, { route: { params } })
 
-    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const dialog = await screen.findByRole('dialog')
 
 
     // Show venue's name in the sub-title
@@ -76,6 +78,9 @@ describe('NetworkApGroupDialog', () => {
     // fireEvent.click(within(dialog).getByLabelText('Select APs by tag', { exact: false }))
     // expect(within(dialog).getByLabelText('Tags')).toBeVisible()
 
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(onOk).toBeCalled())
+
     // update the props "visible"
     rerender(<Provider><NetworkApGroupDialog {...props} visible={false}/></Provider>)
     expect(dialog).not.toBeVisible()
@@ -83,7 +88,6 @@ describe('NetworkApGroupDialog', () => {
 
   it('should select specific AP groups', async () => {
     render(<Provider><NetworkApGroupDialog
-      name='xxx'
       visible={true}
       formName={'networkApGroupForm'}
       venueName={venueName}
@@ -92,7 +96,7 @@ describe('NetworkApGroupDialog', () => {
       wlan={network.wlan}
     /></Provider>, { route: { params } })
 
-    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const dialog = await screen.findByRole('dialog')
 
     expect(within(dialog).getByLabelText('Select specific AP groups', { exact: false, selector: 'input' })).toBeChecked()
 
@@ -106,26 +110,24 @@ describe('NetworkApGroupDialog', () => {
     let wlanWPA3 = { ...network.wlan, wlanSecurity: WlanSecurityEnum.WPA3 }
 
     render(<Provider><NetworkApGroupDialog
-      name='xxx'
       visible={true}
       formName={'networkApGroupForm'}
       venueName={venueName}
       tenantId={params.tenantId}
-      networkVenue={{ ...networkVenue_allAps, allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz] }}
+      networkVenue={{ ...networkVenue_allAps,
+        allApGroupsRadioTypes: [RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz, RadioTypeEnum._6_GHz] }}
       wlan={wlanWPA3}
     /></Provider>, { route: { params } })
 
-    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const dialog = await screen.findByRole('dialog')
 
     expect(dialog).toHaveTextContent('6 GHz')
 
     // Switch to 'AP groups' radio
-    fireEvent.click(within(dialog).getByLabelText('Select specific AP groups', { exact: false }))
+    await userEvent.click(within(dialog).getByLabelText('Select specific AP groups', { exact: false }))
 
-    const checkbox = await screen.findByText('APs not assigned to any group')
-    expect(checkbox).not.toBeChecked()
-
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    const checkbox = await within(dialog).findByLabelText('APs not assigned to any group', { exact: false, selector: 'input' })
+    expect(checkbox).toBeVisible()
   })
 })
 
