@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { videoCallQoeURL, Provider } from '@acx-ui/store'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { r1VideoCallQoeURL, Provider } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   mockGraphqlMutation,
@@ -20,7 +20,7 @@ describe('VideoCallQoe Table', () => {
 
   it('should render table', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests',
       { data: fixtures.getAllCallQoeTests })
     const { asFragment } = render(
       <Provider>
@@ -37,7 +37,7 @@ describe('VideoCallQoe Table', () => {
 
   it('should render no data when no data is returned', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests',
       { data: fixtures.getAllCallQoeTests.noData })
     const { asFragment } = render(
       <Provider>
@@ -52,7 +52,7 @@ describe('VideoCallQoe Table', () => {
 
   it('should open the drawer for the not started test call', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests',
       { data: fixtures.getAllCallQoeTestsWithNotStarted })
     render(
       <Provider>
@@ -73,9 +73,9 @@ describe('VideoCallQoe Table', () => {
 
   it('should delete test call', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockGraphqlMutation(videoCallQoeURL, 'DeleteVideoCallQoeTest',
+    mockGraphqlMutation(r1VideoCallQoeURL, 'DeleteVideoCallQoeTest',
       { data: fixtures.deleteTestResponse })
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests',
       { data: fixtures.getAllCallQoeTests })
     render(
       <Provider>
@@ -94,9 +94,9 @@ describe('VideoCallQoe Table', () => {
 
   it('should not delete test call', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockGraphqlMutation(videoCallQoeURL, 'DeleteVideoCallQoeTest',
+    mockGraphqlMutation(r1VideoCallQoeURL, 'DeleteVideoCallQoeTest',
       { data: fixtures.deleteTestFailedResponse })
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests',
       { data: fixtures.getAllCallQoeTests })
     render(
       <Provider>
