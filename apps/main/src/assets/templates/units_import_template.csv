@@ -6,6 +6,5 @@
 #Resident Name - Mandatory
 #Email - Email address of the resident. Optional
 #Phone Number - Phone number of the resident. Format +<country code><phone number>. Optional
-#Please remove the help content starting with # before upload.
 Unit Name,Dpsk Secret,Unit Vlan,Guest Dpsk Secret,Guest Vlan,Resident Name,Email,Phone Number
 unitname,secret@1234,1,guest@1234,2,resident,resident@mail.com,+91*********9
