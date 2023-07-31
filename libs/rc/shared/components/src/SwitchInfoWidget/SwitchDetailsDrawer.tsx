@@ -85,7 +85,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
         { enableSwitchAdminPassword && <Form.Item
           label={$t({ defaultMessage: 'Admin Password' })}
           children={
-            !switchDetail?.configReady
+            !(switchDetail?.configReady && switchDetail?.syncedSwitchConfig)
               ? '--'
               : (switchDetail.syncedAdminPassword ? <PasswordInput
                 style={{ paddingLeft: 0 }}

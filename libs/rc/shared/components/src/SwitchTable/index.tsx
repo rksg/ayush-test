@@ -183,9 +183,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const [stackTooltip, setStackTooltip] = useState('')
 
   const getPasswordTooltip = (row: SwitchRow) => {
-    if (!row.configReady) {
+    if (!(row?.configReady && row?.syncedSwitchConfig)) {
       return $t(PasswordTooltip.SYNCING)
-    } else if (!row.syncedAdminPassword) {
+    } else if (!row?.syncedAdminPassword) {
       return $t(PasswordTooltip.CUSTOM)
     }
     return $t(PasswordTooltip.SYNCED)
@@ -265,11 +265,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       title: $t({ defaultMessage: 'Admin Password' }),
       dataIndex: 'syncedAdminPassword',
       disabled: true,
+      show: false,
       render: (data:boolean, row:SwitchRow) => {
         return <Tooltip title={getPasswordTooltip(row)}>{
-          !row?.configReady
+          !(row?.configReady && row?.syncedSwitchConfig)
             ? '--'
-            : (row.syncedAdminPassword ? <PasswordInput
+            : (row?.syncedAdminPassword ? <PasswordInput
               style={{ paddingLeft: 0 }}
               readOnly
               bordered={false}
@@ -397,7 +398,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   ...(enableSwitchAdminPassword ? [{
     label: $t({ defaultMessage: 'Match Admin Password to Venue' }),
     disabled: (rows: SwitchRow[]) => {
-      return rows.filter((row:SwitchRow) => !row.syncedAdminPassword && row.configReady).length === 0
+      return rows.filter((row:SwitchRow) => {
+        const isConfigSynced = row?.configReady && row?.syncedSwitchConfig
+        return !row?.syncedAdminPassword && isConfigSynced
+      }).length === 0
     },
     onClick: handleClickMatchPassword
   }] : []),
