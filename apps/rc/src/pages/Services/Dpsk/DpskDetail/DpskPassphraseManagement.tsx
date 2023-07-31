@@ -284,24 +284,24 @@ export default function DpskPassphraseManagement () {
   ]
 
   return (<>
-    <DpskPassphraseDrawer
-      visible={addPassphrasesDrawerVisible}
+    {addPassphrasesDrawerVisible && <DpskPassphraseDrawer
+      visible={true}
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
-    />
+    />}
     { Object.keys(managePassphraseInfo).length > 0 && <ManageDevicesDrawer
       visible={manageDevicesVisible}
       setVisible={setManageDevicesVisible}
       passphraseInfo={managePassphraseInfo}
       setPassphraseInfo={setManagePassphraseInfo}
-    /> }
-    <ImportFileDrawer type='DPSK'
+    />}
+    {uploadCsvDrawerVisible && <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['20MB']}
       maxEntries={5000}
       acceptType={['csv']}
       templateLink='assets/templates/DPSK_import_template_expiration.csv'
-      visible={uploadCsvDrawerVisible}
+      visible={true}
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {
         const formValues = values as UploadPassphrasesFormFields
@@ -328,7 +328,7 @@ export default function DpskPassphraseManagement () {
         label={$t({ defaultMessage: 'User name prefix' })}
         children={<Input />}
       />
-    </ImportFileDrawer>
+    </ImportFileDrawer>}
     <Modal
       title={$t({ defaultMessage: 'Add DPSK Network' })}
       type={ModalType.ModalStepsForm}
