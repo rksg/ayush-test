@@ -63,10 +63,9 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      // defaultSortOrder: 'ascend',
+      defaultSortOrder: 'ascend',
       render: function (data, row) {
         return row.name
       }
