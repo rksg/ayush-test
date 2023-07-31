@@ -1,10 +1,9 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-
-import { Form, Slider, Switch } from 'antd'
-import { useIntl }              from 'react-intl'
-import { useParams }            from 'react-router-dom'
-import styled                   from 'styled-components/macro'
+import { Form, Slider, Switch, Tooltip } from 'antd'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
+import styled                            from 'styled-components/macro'
 
 import { Loader }                                                                               from '@acx-ui/components'
 import { useGetVenueClientAdmissionControlQuery, useUpdateVenueClientAdmissionControlMutation } from '@acx-ui/rc/services'
@@ -28,6 +27,7 @@ export function ClientAdmissionControl () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
+  const [isGrayedOut, setGrayedOut] = useState(false)
 
   const enable24GFieldName = 'enableClientAdmissionControl24G'
   const enable50GFieldName = 'enableClientAdmissionControl50G'
@@ -57,8 +57,10 @@ export function ClientAdmissionControl () {
   useEffect(() => {
     const clientAdmissionControlData = getClientAdmissionControl?.data
     if (clientAdmissionControlData) {
-      form.setFieldValue(enable24GFieldName, clientAdmissionControlData.enable24G)
-      form.setFieldValue(enable50GFieldName, clientAdmissionControlData.enable50G)
+      if (!isGrayedOut) {
+        form.setFieldValue(enable24GFieldName, clientAdmissionControlData.enable24G)
+        form.setFieldValue(enable50GFieldName, clientAdmissionControlData.enable50G)
+      }
       form.setFieldValue(minClientCount24GFieldName, clientAdmissionControlData.minClientCount24G)
       form.setFieldValue(minClientCount50GFieldName, clientAdmissionControlData.minClientCount50G)
       form.setFieldValue(maxRadioLoad24GFieldName, clientAdmissionControlData.maxRadioLoad24G)
@@ -68,7 +70,23 @@ export function ClientAdmissionControl () {
       form.setFieldValue(minClientThroughput50GFieldName,
         clientAdmissionControlData.minClientThroughput50G)
     }
-  }, [form, getClientAdmissionControl?.data])
+  }, [isGrayedOut, form, getClientAdmissionControl?.data])
+
+  useEffect(() => {
+    const isSwitchTurnedOffAndGrayedOut = editRadioContextData?.isBandBalancingEnabled ||
+    editRadioContextData?.isLoadBalancingEnabled
+    if (isSwitchTurnedOffAndGrayedOut) {
+      form.setFieldValue(enable24GFieldName, false)
+      form.setFieldValue(enable50GFieldName, false)
+      setGrayedOut(true)
+    } else {
+      setGrayedOut(false)
+    }
+  }, [
+    form,
+    editRadioContextData?.isBandBalancingEnabled,
+    editRadioContextData?.isLoadBalancingEnabled
+  ])
 
   const handleUpdateClientAdmissionControl = async () => {
     try {
@@ -118,18 +136,23 @@ export function ClientAdmissionControl () {
         <div style={{ background: 'var(--acx-primary-white)' }}>
           {$t({ defaultMessage: 'Enable 2.4 GHz' })}
         </div>
-        <Form.Item
-          name={enable24GFieldName}
-          style={{ marginBottom: '10px', width: '45px', background: 'var(--acx-primary-white)' }}
-          valuePropName='checked'
-          initialValue={enable24G}>
-          <Switch
-            // disabled={!enable24G}
-            data-testid='client-admission-control-enable-24g'
-            onChange={onFormDataChanged} />
-        </Form.Item>
+        <Tooltip
+          title={(isGrayedOut)?
+            $t({ defaultMessage: `To enable the client admission control, please make sure 
+              the band balancing or load balancing in the venue is disabled.` }): null}
+          placement='right'>
+          <Form.Item
+            name={enable24GFieldName}
+            style={{ marginBottom: '10px', width: '45px', background: 'var(--acx-primary-white)' }}
+            valuePropName='checked'
+            initialValue={enable24G}>
+            <Switch
+              disabled={isGrayedOut}
+              data-testid='client-admission-control-enable-24g'
+              onChange={onFormDataChanged} />
+          </Form.Item>
+        </Tooltip>
       </FieldLabel>
-
       {enable24G &&
       <ClientAdmissionControlSliderBlock>
         <Form.Item
@@ -138,7 +161,6 @@ export function ClientAdmissionControl () {
           data-testid='client-admission-control-min-client-count-24g'
           children={
             <Slider
-              disabled={!enable24G}
               tooltipVisible={false}
               style={{ width: '245px' }}
               min={0}
@@ -158,7 +180,6 @@ export function ClientAdmissionControl () {
           data-testid='client-admission-control-max-client-load-24g'
           children={
             <Slider
-              disabled={!enable24G}
               tooltipVisible={false}
               style={{ width: '245px' }}
               min={50}
@@ -178,7 +199,6 @@ export function ClientAdmissionControl () {
           data-testid='client-admission-control-min-client-throughput-24g'
           children={
             <Slider
-              disabled={!enable24G}
               tooltipVisible={false}
               style={{ width: '245px' }}
               min={0}
@@ -201,16 +221,22 @@ export function ClientAdmissionControl () {
         <div style={{ background: 'var(--acx-primary-white)' }}>
           {$t({ defaultMessage: 'Enable 5 GHz' })}
         </div>
-        <Form.Item
-          name={enable50GFieldName}
-          style={{ marginBottom: '10px', background: 'var(--acx-primary-white)', width: '45px' }}
-          valuePropName='checked'
-          initialValue={enable24G}>
-          <Switch
-            // disabled={!enable24G}
-            data-testid='client-admission-control-enable-50g'
-            onChange={onFormDataChanged} />
-        </Form.Item>
+        <Tooltip
+          title={(isGrayedOut)?
+            $t({ defaultMessage: `To enable the client admission control, please make sure 
+              the band balancing or load balancing in the venue is disabled.` }): null}
+          placement='right'>
+          <Form.Item
+            name={enable50GFieldName}
+            style={{ marginBottom: '10px', background: 'var(--acx-primary-white)', width: '45px' }}
+            valuePropName='checked'
+            initialValue={enable24G}>
+            <Switch
+              disabled={isGrayedOut}
+              data-testid='client-admission-control-enable-50g'
+              onChange={onFormDataChanged} />
+          </Form.Item>
+        </Tooltip>
       </FieldLabel>
 
       {enable50G &&
@@ -221,7 +247,6 @@ export function ClientAdmissionControl () {
             data-testid='client-admission-control-min-client-count-50g'
             children={
               <Slider
-                disabled={!enable50G}
                 tooltipVisible={false}
                 style={{ width: '245px' }}
                 min={0}
@@ -241,7 +266,6 @@ export function ClientAdmissionControl () {
             data-testid='client-admission-control-max-client-load-50g'
             children={
               <Slider
-                disabled={!enable50G}
                 tooltipVisible={false}
                 style={{ width: '245px' }}
                 min={50}
@@ -261,7 +285,6 @@ export function ClientAdmissionControl () {
             data-testid='client-admission-control-min-client-throughput-50g'
             children={
               <Slider
-                disabled={!enable50G}
                 tooltipVisible={false}
                 style={{ width: '245px' }}
                 min={0}

@@ -344,9 +344,6 @@ describe('RadioTab', () => {
       <VenueEditContext.Provider value={{
         editContextData: {},
         setEditContextData: jest.fn(),
-        editRadioContextData: {
-          isLoadBalancingDataChanged: true
-        },
         setEditRadioContextData: jest.fn()
       }}>
         <RadioTab />
