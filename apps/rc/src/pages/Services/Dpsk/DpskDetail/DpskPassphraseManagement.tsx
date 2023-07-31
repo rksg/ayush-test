@@ -202,11 +202,14 @@ export default function DpskPassphraseManagement () {
     )
   }
 
+  const canEdit = (selectedRows: NewDpskPassphrase[]): boolean => {
+    return isCloudpathEnabled && selectedRows.length === 1 && !selectedRows[0].identityId
+  }
+
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit Passphrase' }),
-      // eslint-disable-next-line max-len
-      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      visible: canEdit,
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
         setAddPassphrasesDrawerVisible(true)
@@ -280,13 +283,6 @@ export default function DpskPassphraseManagement () {
     }]: []
   ]
 
-  const networkForm = <NetworkForm modalMode={true}
-    modalCallBack={()=>{
-      setNetworkModalVisible(false)
-    }}
-    createType={NetworkTypeEnum.DPSK}
-  />
-
   return (<>
     <DpskPassphraseDrawer
       visible={addPassphrasesDrawerVisible}
@@ -338,7 +334,14 @@ export default function DpskPassphraseManagement () {
       type={ModalType.ModalStepsForm}
       visible={networkModalVisible}
       mask={true}
-      children={networkForm}
+      children={
+        <NetworkForm modalMode={true}
+          modalCallBack={()=>{
+            setNetworkModalVisible(false)
+          }}
+          createType={NetworkTypeEnum.DPSK}
+        />
+      }
       destroyOnClose={true}
     />
     <Loader states={[tableQuery]}>
