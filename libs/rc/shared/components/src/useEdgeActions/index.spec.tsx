@@ -76,6 +76,9 @@ describe('useEdgeActions', () => {
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)
     })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should reset successfully', async () => {
@@ -91,6 +94,9 @@ describe('useEdgeActions', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reset' }))
     await waitFor(() => {
       expect(mockedResetApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 
@@ -112,6 +118,9 @@ describe('useEdgeActions', () => {
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 
@@ -135,7 +144,9 @@ describe('useEdgeActions', () => {
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)
     })
-
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should send OTP successfully', async () => {
@@ -155,6 +166,9 @@ describe('useEdgeActions', () => {
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
 })

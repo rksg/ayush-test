@@ -8,9 +8,9 @@ import {
   WifiUrlsInfo,
   VLANPoolPolicyType
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
-import { UserUrlsInfo }               from '@acx-ui/user'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                        from '@acx-ui/user'
 
 import VLANPoolForm from './VLANPoolForm'
 
@@ -29,7 +29,7 @@ const vlanList=[{
   id: 'policy-id',
   name: 'test2',
   vlanMembers: ['2','3']
-}] as VLANPoolPolicyType
+}] as VLANPoolPolicyType[]
 
 const mockNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -158,7 +158,7 @@ describe('VLANPoolForm', () => {
     await userEvent.type(await screen.findByLabelText('VLANs'), '6')
     await userEvent.click(await screen.findByText('Finish'))
 
-    expect(editVlanPool).toBeCalledTimes(1)
+    await waitFor(async () => expect(editVlanPool).toBeCalledTimes(1))
   })
 
 
