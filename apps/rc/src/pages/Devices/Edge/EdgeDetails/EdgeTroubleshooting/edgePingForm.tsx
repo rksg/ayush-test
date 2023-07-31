@@ -21,7 +21,7 @@ export function EdgePingForm () {
     try {
       const payload = {
         targetHost: pingForm.getFieldValue('name'),
-        action: 'ping'
+        action: 'PING'
       }
       const pingEdgeResult = await pingEdge(
         { params: { tenantId, serialNumber }, payload }).unwrap()

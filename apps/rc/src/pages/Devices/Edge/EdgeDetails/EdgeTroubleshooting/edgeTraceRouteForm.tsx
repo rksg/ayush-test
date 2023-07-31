@@ -20,7 +20,7 @@ export function EdgeTraceRouteForm () {
     try {
       const payload = {
         targetHost: form.getFieldValue('name'),
-        action: 'traceRoute'
+        action: 'TRACE_ROUTE'
       }
       const traceRouteEdgeResult =
         await traceRouteEdge({ params: { tenantId, serialNumber }, payload }).unwrap()
