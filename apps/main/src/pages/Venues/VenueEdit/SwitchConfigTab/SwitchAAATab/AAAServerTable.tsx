@@ -130,8 +130,11 @@ function useColumns (type: AAAServerTypeEnum) {
     },
     ...( enableSwitchAdminPassword ? [{
       title: $t({ defaultMessage: 'Use In' }),
-      key: 'useIn', //TODO
-      dataIndex: 'useIn'
+      key: 'useIn',
+      dataIndex: 'useIn',
+      render: function (data: React.ReactNode) {
+        return data || '--'  //TODO
+      }
     }] : []),
     {
       title: $t({ defaultMessage: 'Privilege' }),
