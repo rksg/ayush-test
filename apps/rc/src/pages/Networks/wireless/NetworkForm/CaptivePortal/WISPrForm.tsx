@@ -73,9 +73,9 @@ export function WISPrForm () {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch('pskProtocol')
-  const enablePreShared = useWatch('enablePreShared')
   const externalProviderRegion = useWatch(['guestPortal','wisprPage','externalProviderRegion'])
   const providerData = useExternalProvidersQuery({ params })
+  const [enablePreShared, setEnablePreShared]=useState(false)
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
   const [regionOption, setRegionOption]=useState<Regions[]>()
   const [isOtherProvider, setIsOtherProvider]=useState(false)
@@ -183,6 +183,7 @@ export function WISPrForm () {
         const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
                           wlanSecurity !== WlanSecurityEnum.OWE
         form.setFieldValue('enablePreShared', enablePsk)
+        setEnablePreShared(enablePsk)
         form.setFieldValue('pskProtocol', wlanSecurity)
         form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
       } else if (wlanSecurity === WlanSecurityEnum.None) {
@@ -193,6 +194,7 @@ export function WISPrForm () {
       } else {
         form.setFieldValue('networkSecurity', 'PSK')
         form.setFieldValue('enablePreShared', true)
+        setEnablePreShared(true)
         form.setFieldValue('pskProtocol', wlanSecurity)
         form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
       }
@@ -278,9 +280,12 @@ export function WISPrForm () {
   const onProtocolChange = (value: WlanSecurityEnum) => {
     const protocol = {} as { [key: string]: string | undefined | null }
     if (data?.wlan?.passphrase) {
-      protocol.passphrase = [WlanSecurityEnum.WEP, WlanSecurityEnum.WPA3].includes(value)
-        ? null
-        : data?.wlan?.passphrase
+      protocol.passphrase =
+      [WlanSecurityEnum.WPAPersonal,
+        WlanSecurityEnum.WPA2Personal,
+        WlanSecurityEnum.WPA23Mixed].includes(value)
+        ? data?.wlan?.passphrase
+        : null
     }
     if (data?.wlan?.saePassphrase) {
       protocol.saePassphrase = [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(value)
@@ -288,9 +293,9 @@ export function WISPrForm () {
         : null
     }
     if (data?.wlan?.wepHexKey) {
-      protocol.wepHexKey = value !== WlanSecurityEnum.WEP
-        ? null
-        : data?.wlan?.wepHexKey
+      protocol.wepHexKey = value === WlanSecurityEnum.WEP
+        ? data?.wlan?.wepHexKey
+        : null
     }
 
     setData && setData({
@@ -436,25 +441,25 @@ export function WISPrForm () {
               defaultValue={'NONE'}
               options={networkSecurityOptions}
               onChange={(selected: string) => {
-                let mutableData = _.cloneDeep(data) ?? {}
+                let security = data?.wlan?.wlanSecurity
                 switch(WisprSecurityEnum[selected as keyof typeof WisprSecurityEnum]) {
                   case WisprSecurityEnum.PSK:
-                    form.setFieldValue('enablePreShared', true)
-                    _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.WPA2Personal)
+                    setEnablePreShared(true)
+                    security = WlanSecurityEnum.WPA2Personal
                     break
                   case WisprSecurityEnum.OWE:
-                    form.setFieldValue('enablePreShared', false)
-                    _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.OWE)
+                    setEnablePreShared(false)
+                    security = WlanSecurityEnum.OWE
                     break
                   case WisprSecurityEnum.NONE:
                     // disable secure network
-                    form.setFieldValue('enablePreShared', false)
-                    _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.None)
+                    setEnablePreShared(false)
+                    security = WlanSecurityEnum.None
                     break
                   default:
                     return
                 }
-                setData && setData(mutableData)
+                onProtocolChange(security)
               }}
             />}
         />}
