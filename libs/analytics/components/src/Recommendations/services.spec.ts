@@ -9,8 +9,8 @@ import {
   NetworkPath
 } from '@acx-ui/utils'
 
-import { apiResult }                          from './__tests__/fixtures'
-import { api, useMuteRecommendationMutation } from './services'
+import { apiResult }                                                                                              from './__tests__/fixtures'
+import { api, useCancelRecommendationMutation, useMuteRecommendationMutation, useScheduleRecommendationMutation } from './services'
 
 describe('Recommendation services', () => {
   const props = {
@@ -44,7 +44,8 @@ describe('Recommendation services', () => {
       status: 'Applied',
       statusTooltip: 'Recommendation has been successfully applied on 06/16/2023 06:05.',
       summary: 'More optimal channel plan and channel bandwidth selection on 5 GHz radio',
-      type: 'Venue'
+      type: 'Venue',
+      statusEnum: 'applied'
     }, {
       id: '2',
       code: 'c-txpower-same',
@@ -75,7 +76,8 @@ describe('Recommendation services', () => {
       status: 'Revert Failed',
       statusTooltip: 'Error(s) were encountered on 06/16/2023 06:06 when the reversion was applied. Errors: AP (MAC) on 5 GHz: unknown error',
       summary: 'Tx power setting for 2.4 GHz and 5 GHz radio',
-      type: 'Venue'
+      type: 'Venue',
+      statusEnum: 'revertfailed'
     },
     {
       category: 'Wi-Fi Client Experience',
@@ -111,7 +113,8 @@ describe('Recommendation services', () => {
       statusTooltip: 'Schedule a day and time to apply this recommendation.',
       summary: 'Enable band balancing',
       type: 'Venue',
-      updatedAt: '2023-07-06T06:05:21.004Z'
+      updatedAt: '2023-07-06T06:05:21.004Z',
+      statusEnum: 'new'
     }
   ]
 
@@ -153,4 +156,35 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
+  it('should mutate apply correctly', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+
+    const { result } = renderHook(
+      () => useScheduleRecommendationMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({ id: 'test', scheduledAt: '7-15-2023' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
+  it('should mutate cancel correctly', async () => {
+    const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'MutateRecommendation', { data: resp })
+
+    const { result } = renderHook(
+      () => useCancelRecommendationMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({ id: 'test' })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
 })
