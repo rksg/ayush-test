@@ -114,7 +114,6 @@ export { ReactComponent as EnvelopClosedOutlined } from './icons/EnvelopClosedOu
 export { ReactComponent as EnvelopClosedSolid } from './icons/EnvelopClosedSolid.svg'
 export { ReactComponent as EnvelopOpenOutlined } from './icons/EnvelopOpenOutlined.svg'
 export { ReactComponent as EnvelopOpenSolid } from './icons/EnvelopOpenSolid.svg'
-export { ReactComponent as ExclamationCircleFilled  } from './icons/ExclamationCircleFilled.svg'
 export { ReactComponent as ExpandAllCircleOutlined } from './icons/ExpandAllCircleOutlined.svg'
 export { ReactComponent as ExpandAllCircleSolid } from './icons/ExpandAllCircleSolid.svg'
 export { ReactComponent as ExpandSquareDown } from './icons/ExpandSquareDown.svg'

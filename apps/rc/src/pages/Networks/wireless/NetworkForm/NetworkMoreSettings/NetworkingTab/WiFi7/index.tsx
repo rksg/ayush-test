@@ -7,6 +7,7 @@ import { useIntl }                       from 'react-intl'
 
 import { Tooltip }                from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
 import { NetworkSaveData }        from '@acx-ui/rc/utils'
 
 import { useGetNetwork } from '../../../../NetworkDetails/services'
@@ -86,7 +87,7 @@ const getOptionsOfEnableAll = (options: Option[], isDisabledOptionOf6GHz: boolea
 }
 
 
-const WiFi7 = () => {
+function WiFi7 () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const network: NetworkSaveData | null | undefined = useGetNetwork().data
@@ -186,14 +187,14 @@ const WiFi7 = () => {
         {!enableWiFi && (
           <div
             data-testid='Description'
-            style={{ marginBottom: '10px', width: '300px', display: 'flex' }}
+            style={{ marginBottom: '10px', width: '220px', fontSize: '11px' }}
           >
-            <UI.ExclamationCircleFilledIcon />
-            <UI.Description>
+            <Space align={'start'}>
+              <InformationSolid />
               {/* eslint-disable-next-line max-len */}
-              {`Clients connecting to this WLAN will not be able to use Wi-Fi 6/7 features,
-                    such as 6GHz operation, 320MHz bandwidth and MLO.`}
-            </UI.Description>
+              {$t({ defaultMessage: `Clients connecting to this WLAN will not be able to use Wi-Fi 6/7 features,
+                    such as 6GHz operation, 320MHz bandwidth and MLO.` })}
+            </Space>
           </div>
         )}
       </div>
@@ -243,7 +244,7 @@ const WiFi7 = () => {
                           children={options.map((option) => {
                             if (is6GHz(option) && isDisabledOptionOf6GHz(network)) {
                               return (
-                                <UI.CheckboxTooltip
+                                <Tooltip
                                   title={$t({ defaultMessage:
                                   // eslint-disable-next-line max-len
                                               '6GHz only works when this network is using WPA3 or OWE encryption' })
@@ -266,7 +267,7 @@ const WiFi7 = () => {
                                   >
                                     {option.label}
                                   </Checkbox>
-                                </UI.CheckboxTooltip>
+                                </Tooltip>
                               )
                             }
                             else {

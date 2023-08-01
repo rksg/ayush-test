@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
 import { useIntl }                                        from 'react-intl'
@@ -457,6 +457,8 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       </>}
 
+      { wifi6AndWifi7Flag && <WiFi7 /> }
+
       {showRadiusOptions &&
       <>
         <UI.Subtitle>{$t({ defaultMessage: 'RADIUS Options' })}</UI.Subtitle>
@@ -464,7 +466,6 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           isWispr={data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr}
           showSingleSessionIdAccounting={showSingleSessionIdAccounting} />
       </>}
-      { wifi6AndWifi7Flag && <WiFi7 /> }
     </>
   )
 }

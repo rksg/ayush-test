@@ -1,9 +1,9 @@
 
-import { Form, Collapse, Tooltip } from 'antd'
-import styled                      from 'styled-components/macro'
+import { Form, Collapse } from 'antd'
+import styled             from 'styled-components/macro'
 
-import { Subtitle }                                  from '@acx-ui/components'
-import { ExclamationCircleFilled, InformationSolid } from '@acx-ui/icons'
+import { Subtitle }         from '@acx-ui/components'
+import { InformationSolid } from '@acx-ui/icons'
 
 export const FieldLabel = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
@@ -78,11 +78,4 @@ display: block;
 export const Description = styled.span`
   color: var(--acx-neutrals-50);
   font-size: var(--acx-body-4-font-size);
-`
-export const CheckboxTooltip = styled(Tooltip)`
-`
-
-export const ExclamationCircleFilledIcon = styled(ExclamationCircleFilled)`
-  display: block;
-  width: var(--acx-body-4-font-size);
 `
