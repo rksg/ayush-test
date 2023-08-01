@@ -229,14 +229,14 @@ describe('Property Unit Page', () => {
 
     const dialog = await screen.findByRole('dialog')
 
-    const xlsxFile = new File(
+    const csvFile = new File(
       [''],
-      'unit_import_template.xlsx',
-      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
+      'unit_import_template.csv',
+      { type: 'text/csv' }
     )
 
     // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.upload(document.querySelector('input[type=file]')!, xlsxFile)
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
     await userEvent.click(await within(dialog).findByRole('button', { name: /Import/ }))
 

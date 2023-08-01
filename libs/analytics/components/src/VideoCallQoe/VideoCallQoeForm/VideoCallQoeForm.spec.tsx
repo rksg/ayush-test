@@ -5,7 +5,7 @@ import {
   Provider,
   videoCallQoeApi as api,
   store,
-  videoCallQoeURL
+  r1VideoCallQoeURL
 } from '@acx-ui/store'
 import {
   mockGraphqlMutation,
@@ -31,7 +31,7 @@ describe('VideoCallQoeForm', () => {
   beforeEach(() => {
     mockedNavigate.mockReset()
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
+    mockGraphqlQuery(r1VideoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
   })
 
   it('should render breadcrumb', async () => {
@@ -70,7 +70,7 @@ describe('VideoCallQoeForm', () => {
     }), 'Test 1')
 
     // Navigate to Step 2
-    mockGraphqlMutation(videoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
+    mockGraphqlMutation(r1VideoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
     await click(await screen.findByText(/add/i))
     expect(await screen.findByRole('heading', { name: /test call details/i })).toBeVisible()
 

@@ -1,3 +1,4 @@
+
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
@@ -5,7 +6,7 @@ import { useGetAvailableABFListQuery }              from '@acx-ui/rc/services'
 import { ABFVersion, EolApFirmware, FirmwareVenue } from '@acx-ui/rc/utils'
 import { getIntl }                                  from '@acx-ui/utils'
 
-import { compareVersions, getVersionLabel } from '../../FirmwareUtils'
+import { compareVersions, getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
 type MaxEolABFVersionEntity = {
   maxVersion: string,
@@ -17,8 +18,19 @@ type MaxEolABFVersionMap = {
 }
 
 export function useApEolFirmware () {
-  // eslint-disable-next-line max-len
-  const { data: releasedABFList } = useGetAvailableABFListQuery({}, { refetchOnMountOrArgChange: false })
+  const { releasedABFList, latestEolVersionByABFs } = useGetAvailableABFListQuery({}, {
+    refetchOnMountOrArgChange: false,
+    selectFromResult: ({ data }) => {
+      return {
+        releasedABFList: data,
+        latestEolVersionByABFs: data
+          ? _.uniqBy(data, 'abf')
+            .filter(abfVersion => abfVersion.abf !== 'active')
+            .sort((abfVersionA, abfVersionB) => -compareVersions(abfVersionA.id, abfVersionB.id))
+          : []
+      }
+    }
+  })
   const intl = getIntl()
 
   const compactEolApFirmwares = (selectedRows: FirmwareVenue[]): EolApFirmware[] => {
@@ -74,7 +86,10 @@ export function useApEolFirmware () {
         return !maxEolABFVersion || canABFVersionDisplay(maxEolABFVersion, abfVersion.id)
       })
       .forEach((abfVersion: ABFVersion) => {
-        const option = { label: getVersionLabel(intl, abfVersion, false), value: abfVersion.id }
+        const option = {
+          label: getVersionLabel(intl, abfVersion, isBetaFirmware(abfVersion.category)),
+          value: abfVersion.id
+        }
 
         if (result.hasOwnProperty(abfVersion.abf)) {
           result[abfVersion.abf].push(option)
@@ -142,6 +157,7 @@ export function useApEolFirmware () {
     getAvailableEolApFirmwares,
     getEolABFOtherVersionsOptions,
     canUpdateEolApFirmware,
-    getDefaultEolVersionLabel
+    getDefaultEolVersionLabel,
+    latestEolVersionByABFs
   }
 }

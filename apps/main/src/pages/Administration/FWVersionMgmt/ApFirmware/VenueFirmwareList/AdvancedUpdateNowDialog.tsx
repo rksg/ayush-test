@@ -14,7 +14,7 @@ import {
   UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
-import { getVersionLabel } from '../../FirmwareUtils'
+import { getVersionLabel, isBetaFirmware } from '../../FirmwareUtils'
 
 import * as UI                                              from './styledComponents'
 import { firmwareNote1, firmwareNote2, VersionsSelectMode } from './UpdateNowDialog'
@@ -60,7 +60,7 @@ export function AdvancedUpdateNowDialog (props: AdvancedUpdateNowDialogProps) {
 
   const otherActiveVersionOptions = otherActiveVersions.map((version) => {
     return {
-      label: getVersionLabel(intl, version, false),
+      label: getVersionLabel(intl, version, isBetaFirmware(version.category)),
       value: version.name
     }
   })
@@ -250,7 +250,13 @@ function ABFSelector (props: ABFSelectorProps) {
             : null
           }
           <UI.ApModelsContainer>
-            {$t({ defaultMessage: 'AP Models: {apModels}' }, { apModels })}
+            <span>{ $t({ defaultMessage: 'AP Models:' }) }&nbsp;</span>
+            <span className={apModels ? '' : 'empty'}>
+              { apModels
+                ? apModels
+                : $t({ defaultMessage: 'No Access Point in selected venue(s)' })
+              }
+            </span>
           </UI.ApModelsContainer>
         </Space>
       </Radio.Group>
