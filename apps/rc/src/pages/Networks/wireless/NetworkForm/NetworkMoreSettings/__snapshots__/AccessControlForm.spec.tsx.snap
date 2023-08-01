@@ -9,15 +9,15 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
       style="margin-bottom: 30px;"
     >
       <span
-        style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
+        style="display: grid; grid-template-columns: 165px 140px 300px; align-items: baseline; margin: 20px 0px;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-6 fPbHyn fGlyWi"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
         >
           Access Control
         </h4>
         <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
           type="button"
         >
           <span>
@@ -25,7 +25,7 @@ exports[`AccessControlForm should render Access Control form successfully 1`] = 
           </span>
         </button>
         <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 edRCi"
           type="button"
         >
           <span>

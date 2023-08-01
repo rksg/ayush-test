@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
@@ -57,7 +57,7 @@ export function SingleRadioSettings (props:{
   radioType: ApRadioTypeEnum,
   bandwidthOptions: SelectItemOption[],
   supportChannels: any,
-  editContext: React.Context<any>,
+  handleChanged?: () => void,
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
@@ -77,13 +77,8 @@ export function SingleRadioSettings (props:{
     radioType,
     supportChannels,
     bandwidthOptions,
-    editContext,
+    handleChanged,
     supportDfsChannels } = props
-
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(editContext)
 
   const isSupportRadio = bandwidthOptions?.length > 0
   const radioDataKey = (context === 'venue') ?
@@ -122,7 +117,7 @@ export function SingleRadioSettings (props:{
   let hasIndoorForOutdoor = false
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
-  const Wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
+  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
 
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
@@ -315,11 +310,7 @@ export function SingleRadioSettings (props:{
     setOutdoorChannelErrMsg(outdoorErrMsg)
 
     // have error messages
-    const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
-    setEditContextData({
-      ...editContextData,
-      hasError: hasErrors
-    })
+    //const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
   }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels, channelMethod])
 
   const resetToDefaule = () => {
@@ -345,7 +336,7 @@ export function SingleRadioSettings (props:{
   }
 
   const selectRadioChannelSelectionType = () => {
-    if(channelBandwidth === '320MHz' && Wifi7_320Mhz_FeatureFlag) {
+    if(channelBandwidth === '320MHz' && wifi7_320Mhz_FeatureFlag) {
       if (channelMethod === 'MANUAL' && context === 'ap') {
         return (
           <Row gutter={20}>
@@ -355,7 +346,7 @@ export function SingleRadioSettings (props:{
                 channelBandwidth320MhzGroupFieldName={channelBandwidth320MhzGroupFieldName}
                 channelList={channelList}
                 disabled={inherit5G || disable || isUseVenueSettings}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>
@@ -369,7 +360,7 @@ export function SingleRadioSettings (props:{
               formName={allowedChannelsFieldName}
               channelList={channelList}
               disabled={inherit5G || disable || isUseVenueSettings}
-              editContext={editContext}
+              handleChanged={handleChanged}
             />
           </Col>
         </Row>
@@ -385,7 +376,7 @@ export function SingleRadioSettings (props:{
               displayBarSettings={displayRadioBarSettings}
               channelBars={channelBars}
               disabled={inherit5G || disable || isUseVenueSettings}
-              editContext={editContext}
+              handleChanged={handleChanged}
             />
           </Col>
         </Row>
@@ -494,7 +485,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>
@@ -523,7 +514,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={outdoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>
@@ -552,7 +543,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={editContext}
+                handleChanged={handleChanged}
               />
             </Col>
           </Row>
