@@ -160,6 +160,7 @@ const ImportManuallyForm = (props: { form: FormInstance }) => {
                   <Col span={2}>
                     <Button
                       ghost
+                      hidden={fields.length === 1}
                       aria-label={`delete-${key}`}
                       key='delete'
                       icon={<DeleteOutlinedIcon />}
