@@ -130,7 +130,7 @@ describe('EditEdge ports', () => {
 
     for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
       await user.click(await screen.findByRole('radio', { name: 'Port ' + (i + 1) }))
-      const expectedIp = mockEdgePortStatus[i]?.ip ?? 'N/A'
+      const expectedIp = mockEdgePortStatus[i]?.ip || 'N/A'
       await screen.findByText(
         'IP Address: ' + expectedIp + ' | ' +
           'MAC Address: ' + mockEdgePortConfig.ports[i].mac)

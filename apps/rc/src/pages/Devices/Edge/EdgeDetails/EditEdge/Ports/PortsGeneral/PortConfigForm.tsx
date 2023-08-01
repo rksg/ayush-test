@@ -202,7 +202,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
         {
           $t(
             { defaultMessage: 'IP Address: {ip}   |   MAC Address: {mac}' },
-            { ip: statusIp ?? 'N/A', mac: mac }
+            { ip: statusIp || 'N/A', mac: mac }
           )
         }
       </UI.IpAndMac>
