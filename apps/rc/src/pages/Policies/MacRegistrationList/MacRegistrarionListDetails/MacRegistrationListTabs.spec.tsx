@@ -73,7 +73,7 @@ describe('MacRegistrationListTab', () =>{
 
   it('should handle tab changes', async () => {
     render(<Provider><MacRegistrationListTabs /></Provider>, { route: { params } })
-    fireEvent.click(await screen.findByText('MAC Registrations'))
+    fireEvent.click(await screen.findByText('MAC Registrations (' + list.totalElements + ')'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
       pathname: `/${params.tenantId}/t/policies/macRegistrationList/${params.policyId}/detail/macRegistrations`,
