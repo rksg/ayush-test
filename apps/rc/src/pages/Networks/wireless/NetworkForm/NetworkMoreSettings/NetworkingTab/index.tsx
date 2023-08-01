@@ -10,6 +10,7 @@ import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, Net
 
 import NetworkFormContext                     from '../../NetworkFormContext'
 import { hasAccountingRadius, hasAuthRadius } from '../../utils'
+import { MulticastForm }                      from '../MulticastForm'
 import * as UI                                from '../styledComponents'
 
 import WiFi7 from './WiFi7'
@@ -387,10 +388,6 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
         />
       }
 
-      {(gtkRekeyFlag || multicastFilterFlag) &&
-        <UI.Subtitle>{$t({ defaultMessage: 'Multicast' })}</UI.Subtitle>
-      }
-
       {gtkRekeyFlag &&
       <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'GTK Rekey' })}
@@ -402,6 +399,8 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           children={<Switch/>}/>
       </UI.FieldLabel>
       }
+
+      <MulticastForm/>
 
       {multicastFilterFlag &&
       <UI.FieldLabel width={labelWidth}>
