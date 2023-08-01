@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Row, Form } from 'antd'
 import { Radio }          from 'antd'
@@ -42,23 +42,16 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   channelBandwidth320MhzGroupFieldName: string[]
   channelList: RadioChannel[],
   disabled?: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  editContext: React.Context<any>,
+  handleChanged?: () => void,
   channelMethod?: string
 }) {
-
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(props.editContext)
-
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const [checkedGroup, setCheckGroup] = useState('320MHz-1')
   const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
 
-  let { disabled = false } = props
+  let { disabled = false, handleChanged } = props
 
   const handleClickGroupChannels = (event: RadioChangeEvent) => {
     setCheckGroup(event.target.value)
@@ -74,10 +67,9 @@ export function RadioSettingsChannelsManual320Mhz (props: {
       setCheckedChannel([])
     }
     // notify data is changed
-    setEditContextData({
-      ...editContextData,
-      isDirty: true
-    })
+    if(handleChanged) {
+      handleChanged()
+    }
   }
 
 
@@ -88,10 +80,9 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     setCheckedChannel(diff)
     form.setFieldValue(props.formName, diff)
     // notify data is changed
-    setEditContextData({
-      ...editContextData,
-      isDirty: true
-    })
+    if(handleChanged) {
+      handleChanged()
+    }
   }
 
   useEffect(()=> {

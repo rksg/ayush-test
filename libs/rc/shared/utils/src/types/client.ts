@@ -31,7 +31,6 @@ export interface ClientList {
   packetsToClient: string
   packetsFromClient: string
   packetsDropFrom: string
-  noiseFloor: string
   venueName: string
   apName: string
   networkId: string
@@ -104,7 +103,6 @@ export interface GuestClient {
     framesDropped?: number
     receiveSignalStrength_dBm?: number
     snr_dB?: number
-    noiseFloor_dBm: number
     lastSeenDateTime?: string
     clientIP?: string
     ssid?: string

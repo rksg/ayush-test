@@ -1,13 +1,16 @@
 import { createApi }               from '@reduxjs/toolkit/query/react'
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
 
+import { get }           from '@acx-ui/config'
 import { getJwtHeaders } from '@acx-ui/utils'
 
-// eslint-disable-next-line max-len
-export const videoCallQoeURL = `${window.location.origin}/api/a4rc/api/rsa-mlisa-call-manager/graphql`
+export const r1VideoCallQoeURL =
+  `${window.location.origin}/api/a4rc/api/rsa-mlisa-call-manager/graphql`
+export const raVideoCallQoeURL =
+  `${window.location.origin}/analytics/api/rsa-mlisa-call-manager/graphql`
 
 const baseQuery = graphqlRequestBaseQuery({
-  url: videoCallQoeURL,
+  url: get('IS_MLISA_SA') ? raVideoCallQoeURL : r1VideoCallQoeURL,
   prepareHeaders: (headers) => {
     Object.entries(getJwtHeaders())
       .forEach(([header, value]) => headers.set(header, value))
