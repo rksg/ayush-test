@@ -1,7 +1,8 @@
-import { useLayoutEffect } from 'react'
+import { useCallback, useLayoutEffect } from 'react'
 
 import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
 import TextArea                                                from 'antd/lib/input/TextArea'
+import _                                                       from 'lodash'
 import { useIntl }                                             from 'react-intl'
 
 import { StepsFormLegacy }                                                                                        from '@acx-ui/components'
@@ -16,6 +17,7 @@ export interface EdgePortWithStatus extends EdgePort {
 }
 
 interface ConfigFormProps {
+  name: number
   index: number
 }
 
@@ -42,14 +44,17 @@ const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
 
-  const { index } = props
+  const { index, name } = props
 
   const { $t } = useIntl()
   const form = useFormInstance<PortConfigFormType>()
-  const mac = useWatch([`port_${index}`, 'mac'])
-  const portType = useWatch([`port_${index}`, 'portType'])
-  const ipMode = useWatch([`port_${index}`, 'ipMode'])
-  const statusIp = useWatch([`port_${index}`, 'statusIp'])
+  const getFieldFullPath = useCallback((fieldName: string) =>
+    [`port_${index}`, name, fieldName], [index, name])
+
+  // const statusIp = useWatch([`port_${index}`, name, 'statusIp'], form)
+  // const mac = useWatch([`port_${index}`, name, 'mac'], form)
+  const statusIp = useWatch(getFieldFullPath('statusIp'), form)
+  const mac = useWatch(getFieldFullPath('mac'), form)
 
   useLayoutEffect(() => {
     form.validateFields()
@@ -72,26 +77,26 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
   const getCurrentSubnetInfo = () => {
     return {
-      ip: form.getFieldValue([`port_${index}`, 'ip']),
-      subnetMask: form.getFieldValue([`port_${index}`, 'subnet'])
+      ip: form.getFieldValue(getFieldFullPath('ip')),
+      subnetMask: form.getFieldValue(getFieldFullPath('subnet'))
     }
   }
 
   const getSubnetInfoWithoutCurrent = () => {
-    return Object.entries<EdgePortWithStatus>(form.getFieldsValue(true))
+    return Object.entries<EdgePortWithStatus[]>(form.getFieldsValue(true))
       .filter(item => item[0] !== `port_${index}`
-        && item[1].enabled
-        && !!item[1].ip
-        && !!item[1].subnet)
-      .map(item => ({ ip: item[1].ip, subnetMask: item[1].subnet }))
+        && item[1][name].enabled
+        && !!item[1][name].ip
+        && !!item[1][name].subnet)
+      .map(item => ({ ip: item[1][name].ip, subnetMask: item[1][name].subnet }))
   }
 
-  const getFieldsByPortType = (portType: EdgePortTypeEnum) => {
+  const getFieldsByPortType = (portType: EdgePortTypeEnum, ipMode: EdgeIpModeEnum) => {
     if(portType === EdgePortTypeEnum.LAN) {
       return (
         <>
           <Form.Item
-            name='ip'
+            name={[name,'ip']}
             label={$t({ defaultMessage: 'IP Address' })}
             validateFirst
             rules={[
@@ -105,7 +110,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             children={<Input />}
           />
           <Form.Item
-            name='subnet'
+            name={[name,'subnet']}
             label={$t({ defaultMessage: 'Subnet Mask' })}
             validateFirst
             rules={[
@@ -120,7 +125,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
       return (
         <>
           <Form.Item
-            name='ipMode'
+            name={[name,'ipMode']}
             label={$t({ defaultMessage: 'IP Assignment' })}
             validateFirst
             rules={[{
@@ -142,7 +147,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           {ipMode === EdgeIpModeEnum.STATIC &&
             <>
               <Form.Item
-                name='ip'
+                name={[name,'ip']}
                 label={$t({ defaultMessage: 'IP Address' })}
                 validateFirst
                 rules={[
@@ -156,7 +161,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 children={<Input />}
               />
               <Form.Item
-                name='subnet'
+                name={[name,'subnet']}
                 label={$t({ defaultMessage: 'Subnet Mask' })}
                 validateFirst
                 rules={[
@@ -166,7 +171,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 children={<Input />}
               />
               <Form.Item
-                name='gateway'
+                name={[name,'gateway']}
                 label={$t({ defaultMessage: 'Gateway' })}
                 validateFirst
                 rules={[
@@ -180,7 +185,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <StepsFormLegacy.FieldLabel width='120px'>
             {$t({ defaultMessage: 'Use NAT Service' })}
             <Form.Item
-              name='natEnabled'
+              name={[name,'natEnabled']}
               valuePropName='checked'
               children={<Switch />}
             />
@@ -195,7 +200,6 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     <>
       <UI.IpAndMac>
         {
-
           $t(
             { defaultMessage: 'IP Address: {ip}   |   MAC Address: {mac}' },
             { ip: statusIp ?? 'N/A', mac: mac }
@@ -205,7 +209,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
       <Row gutter={20}>
         <Col span={5}>
           <Form.Item
-            name='name'
+            name={[name, 'name']}
             label={$t({ defaultMessage: 'Description' })}
             rules={[
               { max: 255 }
@@ -213,29 +217,41 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             children={<TextArea />}
           />
           <Form.Item
-            name='portType'
+            name={[name, 'portType']}
             label={$t({ defaultMessage: 'Port Type' })}
-            initialValue={EdgePortTypeEnum.UNCONFIGURED}
             children={
               <Select
                 options={portTypeOptions}
               />
             }
           />
-          {(portType === EdgePortTypeEnum.LAN || portType === EdgePortTypeEnum.WAN) &&
+          <Form.Item
+            noStyle
+            shouldUpdate={(prev, cur) => {
+              return _.get(prev, getFieldFullPath('portType'))
+                !== _.get(cur, getFieldFullPath('portType'))
+                || _.get(prev, getFieldFullPath('ipMode'))
+                !== _.get(cur, getFieldFullPath('ipMode'))
+            }}
+          >
+            {({ getFieldValue }) => {
+              const _portType = getFieldValue(getFieldFullPath('portType'))
+              const _ipMode = getFieldValue(getFieldFullPath('ipMode'))
+              return (_portType === EdgePortTypeEnum.LAN || _portType === EdgePortTypeEnum.WAN) ? (
                 <>
                   <StepsFormLegacy.FieldLabel width='120px'>
                     {$t({ defaultMessage: 'Port Enabled' })}
                     <Form.Item
-                      name='enabled'
+                      name={[name, 'enabled']}
                       valuePropName='checked'
                       children={<Switch />}
                     />
                   </StepsFormLegacy.FieldLabel>
                   <StepsFormLegacy.Title children={$t({ defaultMessage: 'IP Settings' })} />
-                  {getFieldsByPortType(portType)}
-                </>
-          }
+                  {getFieldsByPortType(_portType, _ipMode)}
+                </>): null
+            }}
+          </Form.Item>
         </Col>
       </Row>
     </>
