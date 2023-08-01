@@ -73,9 +73,9 @@ export function WISPrForm () {
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch('pskProtocol')
+  const enablePreShared = useWatch('enablePreShared')
   const externalProviderRegion = useWatch(['guestPortal','wisprPage','externalProviderRegion'])
   const providerData = useExternalProvidersQuery({ params })
-  const [enablePreShared, setEnablePreShared ] = useState(false)
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
   const [regionOption, setRegionOption]=useState<Regions[]>()
   const [isOtherProvider, setIsOtherProvider]=useState(false)
@@ -183,7 +183,8 @@ export function WISPrForm () {
         const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
                           wlanSecurity !== WlanSecurityEnum.OWE
         form.setFieldValue('enablePreShared', enablePsk)
-        setEnablePreShared(enablePsk)
+        form.setFieldValue('pskProtocol', wlanSecurity)
+        form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
       } else if (wlanSecurity === WlanSecurityEnum.None) {
         form.setFieldValue('networkSecurity', 'NONE')
       } else if (wlanSecurity === WlanSecurityEnum.OWE) {
@@ -191,7 +192,7 @@ export function WISPrForm () {
         form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
       } else {
         form.setFieldValue('networkSecurity', 'PSK')
-        setEnablePreShared(true)
+        form.setFieldValue('enablePreShared', true)
         form.setFieldValue('pskProtocol', wlanSecurity)
         form.setFieldValue(['wlan', 'wlanSecurity'], wlanSecurity)
       }
@@ -274,8 +275,34 @@ export function WISPrForm () {
     <Select.Option key={key}>{ PskWlanSecurityEnum[key as keyof typeof PskWlanSecurityEnum] }
     </Select.Option>
   ))
-  const onEnabledPskChange = (e: CheckboxChangeEvent) => {
-    setEnablePreShared(e.target.checked)
+  const onProtocolChange = (value: WlanSecurityEnum) => {
+    const protocol = {} as { [key: string]: string | undefined | null }
+    if (data?.wlan?.passphrase) {
+      protocol.passphrase = [WlanSecurityEnum.WEP, WlanSecurityEnum.WPA3].includes(value)
+        ? null
+        : data?.wlan?.passphrase
+    }
+    if (data?.wlan?.saePassphrase) {
+      protocol.saePassphrase = [WlanSecurityEnum.WPA23Mixed, WlanSecurityEnum.WPA3].includes(value)
+        ? data?.wlan?.saePassphrase
+        : null
+    }
+    if (data?.wlan?.wepHexKey) {
+      protocol.wepHexKey = value !== WlanSecurityEnum.WEP
+        ? null
+        : data?.wlan?.wepHexKey
+    }
+
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          wlanSecurity: value,
+          ...protocol
+        }
+      }
+    })
   }
   const region = regionOption?.length === 1? regionOption?.[0]:
     _.find(regionOption,{ name: externalProviderRegion })
@@ -389,7 +416,7 @@ export function WISPrForm () {
             valuePropName='checked'
             initialValue={false}
             children={
-              <Checkbox onChange={onEnabledPskChange}>
+              <Checkbox>
                 {$t({ defaultMessage: 'Enable Pre-Shared Key (PSK)' })}
               </Checkbox>
             }
@@ -408,20 +435,20 @@ export function WISPrForm () {
               placeholder={$t({ defaultMessage: 'Select...' })}
               defaultValue={'NONE'}
               options={networkSecurityOptions}
-              onChange={(selected) => {
+              onChange={(selected: string) => {
                 let mutableData = _.cloneDeep(data) ?? {}
                 switch(WisprSecurityEnum[selected as keyof typeof WisprSecurityEnum]) {
                   case WisprSecurityEnum.PSK:
-                    setEnablePreShared(true)
+                    form.setFieldValue('enablePreShared', true)
                     _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.WPA2Personal)
                     break
                   case WisprSecurityEnum.OWE:
-                    setEnablePreShared(false)
+                    form.setFieldValue('enablePreShared', false)
                     _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.OWE)
                     break
                   case WisprSecurityEnum.NONE:
                     // disable secure network
-                    setEnablePreShared(false)
+                    form.setFieldValue('enablePreShared', false)
                     _.set(mutableData, 'wlan.wlanSecurity', WlanSecurityEnum.None)
                     break
                   default:
@@ -491,12 +518,7 @@ export function WISPrForm () {
           initialValue={WlanSecurityEnum.WPA2Personal}
           extra={securityDescription()}
         >
-          <Select
-            onChange={(selected) => {
-              let mutableData = _.cloneDeep(data) ?? {}
-              _.set(mutableData, 'wlan.wlanSecurity', selected)
-              setData && setData(mutableData)
-            }}>
+          <Select onChange={onProtocolChange}>
             {securityOptions}
           </Select>
         </Form.Item>}
