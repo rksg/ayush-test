@@ -52,6 +52,13 @@ export const isProdEnv = () => {
   return window.location.hostname.includes('ruckus.cloud')
 }
 
+export const ignoreErrorModal = {
+  'Build-In-Error-Modal': 'ignore'
+}
+export const showApiError = {
+  'Build-In-Error-Modal': 'showApiError'
+}
+
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,

@@ -35,8 +35,7 @@ let isModalShown = false
 const ignoreEndpointList = [
   'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
   'addEdge', 'clientInfo', 'getClientDetails', 'getPropertyConfigs', 'getDhcpByEdgeId',
-  'convertNonVARToMSP', 'createNetworkSegmentationGroup', 'updateNetworkSegmentationGroup',
-  'uploadZdConfig', 'importPersonas'
+  'convertNonVARToMSP', 'uploadZdConfig', 'importPersonas'
 ]
 
 export const errorMessage = {
@@ -107,6 +106,8 @@ export const getErrorContent = (action: ErrorAction) => {
   const status = action.meta.baseQueryMeta?.response?.status
    ?? action.payload?.originalStatus
    ?? action.payload?.status
+  const request = action.meta.baseQueryMeta?.request
+  const showApiError = request && request.headers.get('Build-In-Error-Modal') === 'showApiError'
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
@@ -159,13 +160,15 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.SERVER_ERROR
       break
   }
+  let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
+  if (errors && 'errors' in errors && showApiError) {
+    const errorsMessageList = (errors as CatchErrorResponse['data']).errors.map(err=>err.message)
+    content = <>{errorsMessageList.map(msg=><p>{msg}</p>)}</>
+  }
 
   return {
     title: $t(errorMsg?.title),
-    content: <FormattedMessage
-      {...errorMsg?.content}
-      values={{ br: () => <br /> }}
-    />,
+    content,
     type,
     errors,
     callback,
@@ -202,9 +205,13 @@ export const showErrorModal = (details: {
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
   const endpoint = action?.meta?.arg?.endpointName || ''
+
+  const request = action?.meta?.baseQueryMeta?.request
+  const ignoreErrorModal = request && request.headers.get('Build-In-Error-Modal') === 'ignore'
+
   if (isRejectedWithValue(action)) {
     const { needLogout, ...details } = getErrorContent(action)
-    if (!ignoreEndpointList.includes(endpoint)) {
+    if (!ignoreEndpointList.includes(endpoint) && !ignoreErrorModal) {
       showErrorModal(details)
     }
     if (needLogout && !isDevModeOn) {
