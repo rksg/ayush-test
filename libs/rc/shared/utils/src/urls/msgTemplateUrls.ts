@@ -3,10 +3,10 @@ import { ApiInfo } from '@acx-ui/utils'
 export const msgTemplateBaseUrl = '/templateScopes'
 
 export const MsgTemplateUrls: { [key: string]: ApiInfo } = {
-  getTemplateScopeById: {
+  getTemplateScopeByIdWithRegistration: {
     newApi: true,
     method: 'get',
-    url: msgTemplateBaseUrl + '/:templateScopeId'
+    url: msgTemplateBaseUrl + '/:templateScopeId?includes=registrations/:registrationId'
   },
   getAllTemplatesByTemplateScopeId: {
     newApi: true,

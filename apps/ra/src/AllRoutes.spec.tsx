@@ -8,7 +8,10 @@ jest.mock('@acx-ui/analytics/components', () => ({
   AIAnalytics: () => <div data-testid='aiAnalytics'/>,
   IncidentDetails: () => <div data-testid='incidentDetails'/>,
   RecommendationDetails: () => <div data-testid='recommendationDetails'></div>,
-  NetworkAssurance: () => <div data-testid='NetworkAssurance'/>
+  NetworkAssurance: () => <div data-testid='NetworkAssurance'/>,
+  VideoCallQoe: () => <div data-testid='VideoCallQoe'/>,
+  VideoCallQoeDetails: () => <div data-testid='VideoCallQoeDetails'/>,
+  VideoCallQoeForm: () => <div data-testid='VideoCallQoeForm'/>
 }))
 
 describe('AllRoutes', () => {
@@ -45,6 +48,22 @@ describe('AllRoutes', () => {
     render(<AllRoutes />, { route: { path: '/analytics/next/health' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('NetworkAssurance')).toBeVisible()
+  })
+  it('should render video call qoe correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/videoCallQoe' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoe')).toBeVisible()
+  })
+  it('should render video call qoe details correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/videoCallQoe/id' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoeDetails')).toBeVisible()
+  })
+  it('should render video call qoe form correctly', async () => {
+    render(<AllRoutes />,
+      { route: { path: '/analytics/next/videoCallQoe/add' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoeForm')).toBeVisible()
   })
   it('should render recommendations  correctly', async () => {
     render(<AllRoutes />, {
