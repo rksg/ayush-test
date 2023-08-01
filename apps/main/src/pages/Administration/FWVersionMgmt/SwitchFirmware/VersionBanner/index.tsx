@@ -13,9 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { getReleaseFirmware, parseSwitchVersion } from '../../FirmwareUtils'
-
-import * as UI from './styledComponents'
-
+import * as UI                                    from '../../styledComponents'
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
@@ -32,7 +30,9 @@ export const VersionBanner = () => {
     return (<UI.FwContainer>
       <div>
         <span>{$t({ defaultMessage: 'For ICX Models ({models}):' }, { models })} </span>
-        <UI.VersionName>{parseSwitchVersion(firmware?.name)}</UI.VersionName>
+        <UI.BannerVersionName>
+          {parseSwitchVersion(firmware?.name)}
+        </UI.BannerVersionName>
       </div>
       <div>
         <UI.TypeSpace split={<Divider type='vertical' />}>

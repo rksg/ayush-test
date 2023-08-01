@@ -124,11 +124,13 @@ export const UserUrlsInfo = {
   },
   getBetaStatus: {
     method: 'get',
-    url: '/tenants/betaStatus'
+    url: '/tenants/betaStatus',
+    newApi: true
   },
   toggleBetaStatus: {
     method: 'put',
-    url: '/tenants/betaStatus/:enable'
+    url: '/tenants/betaStatus/:enable',
+    newApi: true
   }
 }
 
