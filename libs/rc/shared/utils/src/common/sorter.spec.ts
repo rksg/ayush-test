@@ -1,4 +1,5 @@
 import {
+  arraySizeSort,
   defaultSort,
   sortProp
 } from './sorter'
@@ -92,5 +93,17 @@ describe('sortProp', () => {
     const a = { test: 'a' }
     const b = { test: 'b' }
     expect(sorter(b, a)).toEqual(1)
+  })
+})
+
+describe('arraySizeSort', () => {
+  it('should arraySizeSort 0 undefined', () => {
+    const zero = arraySizeSort(undefined, undefined)
+    expect(zero).toBe(0)
+  })
+
+  it('should arraySizeSort 1 between empty and undefined', () => {
+    const one = arraySizeSort([], undefined)
+    expect(one).toBe(1)
   })
 })
