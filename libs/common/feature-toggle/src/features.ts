@@ -69,7 +69,8 @@ export enum Features {
   MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
-  BETA_FLAG = 'acx-ui-beta-flag-toggle'
+  BETA_FLAG = 'acx-ui-beta-flag-toggle',
+  WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
