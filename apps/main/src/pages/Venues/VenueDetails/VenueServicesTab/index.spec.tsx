@@ -12,7 +12,6 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList } from './Firewall/__tests__/fixtures'
 
 import { VenueServicesTab } from './'
 
@@ -38,6 +37,9 @@ jest.mock('./Firewall', () => ({
 jest.mock('./MdnsProxyInstances', () => ({
   default: () => <div data-testid='MdnsProxyInstances' />,
   __esModule: true
+}))
+jest.mock('./NetworkSegmentation', () => ({
+  NetworkSegmentation: () => (<div data-testid='NetworkSegmentation' />)
 }))
 jest.mock('./VenueRogueAps', () => ({
   VenueRogueAps: () => (<div data-testid='VenueRogueAps' />)
@@ -81,7 +83,6 @@ describe('Venue service tab', () => {
       mockedGetEdgeListFn.mockReset()
 
       const mockNoEdgeList = {
-        ...mockEdgeList,
         totalCount: 0,
         data: []
       }
@@ -114,7 +115,7 @@ describe('Venue service tab', () => {
       mockedGetEdgeListFn.mockReset()
 
       const mockNoFWEdgeList = {
-        ...mockEdgeList,
+        totalCount: 0,
         data: [
           {
             serialNumber: '0000000001',
@@ -154,7 +155,10 @@ describe('Venue service tab', () => {
           EdgeUrlsInfo.getEdgeList.url,
           (req, res, ctx) => {
             mockedGetEdgeListFn()
-            return res(ctx.json(mockEdgeList))
+            return res(ctx.json({
+              totalCount: 0,
+              data: []
+            }))
           }
         )
       )

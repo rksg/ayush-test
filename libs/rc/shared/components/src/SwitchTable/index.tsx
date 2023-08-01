@@ -48,10 +48,10 @@ import { RequestPayload }                                    from '@acx-ui/types
 import { filterByAccess }                                    from '@acx-ui/user'
 import { getIntl }                                           from '@acx-ui/utils'
 
-import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
-import { SwitchCliSession }          from '../SwitchCliSession'
-import { useSwitchActions }          from '../useSwitchActions'
+import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
+import { SwitchCliSession }                                from '../SwitchCliSession'
+import { useSwitchActions }                                from '../useSwitchActions'
 
 import {
   getGroupableConfig
@@ -522,7 +522,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       jwtToken={cliData.token}
       switchName={cliData.switchName}
     />
-    <ImportFileDrawer type='Switch'
+    <ImportFileDrawer
+      type={ImportFileDrawerType.Switch}
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['5MB']}
       maxEntries={50}

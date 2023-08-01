@@ -61,5 +61,6 @@ describe('FirmwareUtils parser', () => {
       category: 'RECOMMENDED' as FirmwareCategory
     }
     expect(getVersionLabel(getIntl(), mockedFirmwareVersion)).toBe('test (Release - Recommended) ')
+    expect(getVersionLabel(getIntl(), mockedFirmwareVersion, false)).toBe('test ')
   })
 })
