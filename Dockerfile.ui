@@ -67,7 +67,7 @@ RUN chmod +x tools/docker/locales/generate.sh
 RUN tools/docker/locales/generate.sh
 
 ###############################################################
-FROM build as acx-ui-base-test
+FROM build-base as acx-ui-base-test
 ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
