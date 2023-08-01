@@ -99,7 +99,6 @@ const defaultPagination = {
   showTotal: false,
   showSizeChanger: true
 }
-
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
 ): [Key[], React.Dispatch<React.SetStateAction<Key[]>>,
@@ -172,6 +171,21 @@ function Table <RecordType extends Record<string, any>> ({
       : getFilteredData<RecordType>(
         dataSource, filterValues, activeFilters, searchables, searchValue)) ?? [])
   }, [dataSource, onDisplayRowChange, searchValue, filterValues])
+
+  useEffect(() => {
+    if (dataSource) {
+      const tmp: React.SetStateAction<RecordType[]> = []
+      selectedRows.forEach(row => {
+        const tmpRow = dataSource?.find(item => getRowKey(item) == getRowKey(row))
+        if(tmpRow) {
+          tmp.push(tmpRow)
+        }else {
+          tmp.push(row)
+        }
+      })
+      setSelectedRows(tmp)
+    }
+  }, [dataSource])
 
   const baseColumns = useMemo(() => {
     const settingsColumn = {

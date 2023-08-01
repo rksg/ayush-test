@@ -11,7 +11,7 @@ type RangePickerWrapperProps = {
 }
 
 /* eslint-disable max-len */
-export const Wrapper = styled.div`
+const datePickerStyle = `
   .ant-picker-input {
     .ant-picker-clear {
       span[role=img] {
@@ -128,6 +128,11 @@ export const Wrapper = styled.div`
   }
 `
 /* eslint-enable */
+
+export const Wrapper = styled.div`
+  ${datePickerStyle}
+`
+
 
 export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
   --acx-date-picker-ranges-width: 125px;
@@ -260,5 +265,84 @@ export const Buttons = styled(Space)`
   gap: var(--acx-modal-footer-small-button-space) !important;
   .ant-space-item {
     line-height: normal;
+  }
+`
+
+export const ApplyMsgWrapper = styled.div`
+  padding: 0 12px;
+`
+
+export const HiddenDateInput = styled.div`
+  cursor: pointer;
+  caret-color: transparent;
+
+  ${datePickerStyle}
+
+  .datepicker input {
+    height: 0px;
+    width: 0px;
+    padding: 0px;
+    width: 0px;
+    position: absolute;
+  }
+
+  .datepicker {
+    border: 0px;
+    padding: 0px;
+    
+    .ant-picker-input {
+      height: 24px;
+      width: 24px;
+    }
+
+    .ant-picker-panel {
+      .ant-picker-footer {
+        display: block;
+        border-top: 0px;
+      }
+      .ant-picker-footer-extra {
+        padding: 0px;
+      }
+    }
+  }
+`
+
+export const FooterWrapper = styled.div`
+  line-height: 20px;
+  font-size: 9.5px;
+  margin-top: 5px;
+
+  button {
+    float: right;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-right: 8px;
+  }
+
+  .ant-divider.ant-divider-horizontal {
+    margin: 2px 0px;
+  }
+
+  ${TimePickerRow} {
+    height: auto;
+    padding-bottom: 10px;
+
+    .ant-picker-footer {
+      .ant-picker-ranges {
+        display: none;
+      }
+    }
+  }
+
+  ${TimePickerWrapper} {
+    input {
+      display: block;
+      height: auto;
+      width: 30px;
+    }
+    .ant-picker-input {
+      justify-content: flex-end;
+      height: 15px;
+    }
   }
 `
