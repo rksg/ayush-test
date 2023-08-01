@@ -4,7 +4,7 @@ import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   APExtended,
   APExtendedGrouped,
-  ApExtraParams, defaultSort, sortProp,
+  ApExtraParams, arraySizeSort, defaultSort, sortProp,
   TableQuery
 } from '@acx-ui/rc/utils'
 
@@ -53,7 +53,7 @@ export const ApsTable = (props: ApTableProps) => {
       title: $t({ defaultMessage: 'Available Ports' }),
       key: 'ports',
       dataIndex: 'apStatusData.lanPortStatus',
-      sorter: { compare: sortProp('apStatusData.lanPortStatus', defaultSort) },
+      sorter: { compare: sortProp('apStatusData.lanPortStatus', arraySizeSort) },
       render: (node, row) => {
         return row?.apStatusData?.lanPortStatus?.length
       }
