@@ -1,6 +1,7 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
+import { act }        from 'react-dom/test-utils'
 
 import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, CommonUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
@@ -92,21 +93,30 @@ describe('Venues Form', () => {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
 
-    const venueInput = screen.getByLabelText('Venue Name')
-    fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
-    fireEvent.blur(venueInput)
+    const venueInput = await screen.findByLabelText('Venue Name')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
+      fireEvent.blur(venueInput)
+    })
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
     const descriptionInput = screen.getByLabelText('Description')
-    fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
-
-    const addressInput = screen.getByTestId('address-input')
-    fireEvent.change(addressInput, { target:
-      { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
     })
 
-    fireEvent.click(screen.getByText('Add'))
+    const addressInput = screen.getByTestId('address-input')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(addressInput, { target:
+        { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
+      })
+    })
+
+    await userEvent.click(await screen.findByText('Add'))
   })
   it('should call address parser', async () => {
     const { address } = await addressParser(autocompleteResult)
@@ -131,7 +141,7 @@ describe('Venues Form', () => {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
 
-    const addressInput = screen.getByTestId('address-input')
+    const addressInput = await screen.findByTestId('address-input')
     expect(addressInput).toBeEnabled()
   })
   it('google map is not enabled', async () => {
@@ -154,7 +164,7 @@ describe('Venues Form', () => {
         route: { params, path: '/:tenantId/t/venues/add' }
       })
 
-    await userEvent.click(screen.getByText('Cancel'))
+    await userEvent.click(await screen.findByText('Cancel'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/venues`,
       hash: '',
@@ -177,12 +187,16 @@ describe('Venues Form', () => {
         route: { params }
       })
 
-    const venueInput = screen.getByLabelText('Venue Name')
-    fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
-    fireEvent.blur(venueInput)
+    const venueInput = await screen.findByLabelText('Venue Name')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => {
+      fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
+      fireEvent.blur(venueInput)
+    })
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
-    fireEvent.click(screen.getByText('Save'))
+    const saveButton = screen.getByText('Save')
+    await userEvent.click(saveButton)
   })
 })
