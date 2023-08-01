@@ -4,15 +4,15 @@ import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
 import { ActionModalType, ErrorDetailsProps, showActionModal } from '@acx-ui/components'
+import { CatchErrorResponse }                                  from '@acx-ui/rc/utils'
 import { getIntl, setUpIntl, IntlSetUpError }                  from '@acx-ui/utils'
 
 export type ErrorAction = {
   type: string,
   meta: {
     baseQueryMeta: {
-      response: {
-        status: number
-      }
+      response: Response,
+      request: Request
     },
     arg?: {
       endpointName: string
@@ -44,6 +44,18 @@ export const errorMessage = {
     title: defineMessage({ defaultMessage: 'Server Error' }),
     content: defineMessage({
       defaultMessage: 'An internal error has occurred. Please contact support.'
+    })
+  },
+  BAD_REQUEST: {
+    title: defineMessage({ defaultMessage: 'Bad Request' }),
+    content: defineMessage({
+      defaultMessage: 'Your request resulted in an error. Please contact Support.'
+    })
+  },
+  VALIDATION_ERROR: {
+    title: defineMessage({ defaultMessage: 'Validation Error' }),
+    content: defineMessage({
+      defaultMessage: 'An internal error has occurred. Please contact Support.'
     })
   },
   SESSION_EXPIRED: {
@@ -107,13 +119,16 @@ export const getErrorContent = (action: ErrorAction) => {
       if (errors?.error === 'API-KEY not present') {
         needLogout = true
       }
-      errorMsg = errorMessage.SERVER_ERROR
+      errorMsg = errorMessage.BAD_REQUEST
       break
     case 401:
     case 403:
       errorMsg = errorMessage.SESSION_EXPIRED
       type = 'info'
       needLogout = true
+      break
+    case 404:
+      errorMsg = errorMessage.VALIDATION_ERROR
       break
     case 408: // request timeout
       errorMsg = errorMessage.OPERATION_FAILED
