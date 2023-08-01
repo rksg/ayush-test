@@ -61,7 +61,7 @@ describe('Table', () => {
     expect(await screen.findByText('Default')).toBeVisible()
     expect(await screen.findByText('Enabled')).toBeVisible()
 
-    expect(await screen.findByText('Enter KPI filter')).toBeVisible()
+    expect(await screen.findByText('Add KPI filter')).toBeVisible()
   })
 
   it('should log rows when clicked', async () => {
@@ -101,12 +101,12 @@ describe('Table', () => {
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
-    await userEvent.click(await screen.findByText('Enter KPI filter'))
+    await userEvent.click(await screen.findByText('Add KPI filter'))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(await screen.findByText('Auto Channel Selection: Mode (2.4 GHz)')).toBeVisible()
     expect(await screen.findByText('BSS Min. Rate')).toBeVisible()
 
-    await userEvent.click(await screen.findByText('Enter KPI filter'))
+    await userEvent.click(await screen.findByText('Add KPI filter'))
     await userEvent.click(
       await screen.findByRole('menuitemcheckbox', { name: 'Client Throughput' }))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))

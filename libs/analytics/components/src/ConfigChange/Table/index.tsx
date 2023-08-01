@@ -134,7 +134,7 @@ export function Table (props: {
       <Cascader
         multiple
         defaultValue={kpiFilter.map(kpi=>[kpi])}
-        placeholder={$t({ defaultMessage: 'Enter KPI filter' })}
+        placeholder={$t({ defaultMessage: 'Add KPI filter' })}
         options={options}
         onApply={selectedOptions =>
           applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])}
