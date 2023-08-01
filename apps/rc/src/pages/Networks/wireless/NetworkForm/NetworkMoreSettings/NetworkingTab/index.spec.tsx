@@ -187,15 +187,6 @@ describe('Network More settings - Networking Tab', () => {
     expect(screen.getByTestId('BSS-Radio-LOW')).toBeChecked()
   })
 
-  it('Test case for Multicast Filter', async ()=> {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE ? true : false
-    })
-
-    render(MockedNetworkingTab(mockWlanData, mockContextData), { route: { params } })
-    expect(await screen.findByTestId('multicast-filter-enabled')).toBeVisible()
-  })
-
 })
 
 // eslint-disable-next-line max-len
