@@ -1,4 +1,3 @@
-
 import { Form, Collapse } from 'antd'
 import styled             from 'styled-components/macro'
 
@@ -76,6 +75,6 @@ display: block;
 `
 
 export const Description = styled.span`
-  color: var(--acx-neutrals-50);
-  font-size: var(--acx-body-4-font-size);
+color: var(--acx-neutrals-50);
+font-size: var(--acx-body-4-font-size);
 `
