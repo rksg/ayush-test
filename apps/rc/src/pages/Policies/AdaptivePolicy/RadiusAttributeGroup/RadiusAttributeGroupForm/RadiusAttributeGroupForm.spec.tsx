@@ -55,7 +55,7 @@ describe('RadiusAttributeGroupForm', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(
@@ -71,7 +71,7 @@ describe('RadiusAttributeGroupForm', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(attributeGroupReturnByQuery))
       )
     )
@@ -209,7 +209,7 @@ describe('RadiusAttributeGroupForm', () => {
     await screen.findByRole('heading', { level: 1, name: 'Configure ' + attributeGroup.name })
 
     const row = await screen.findByRole('row', { name: /Annex-CLI-Filter/ })
-    fireEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/i }))
     await screen.findByText('Attribute Type')

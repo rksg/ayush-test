@@ -93,9 +93,11 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
+    const confirmDialog = await screen.findByRole('dialog')
     await screen.findByText('Active Device')
     const updateVenueButton = await screen.findByText('Run Update')
     fireEvent.click(updateVenueButton)
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it.skip('should update multiple selected row', async () => {
@@ -117,9 +119,11 @@ describe('Firmware Venues Table', () => {
     const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
+    const confirmDialog = await screen.findByRole('dialog')
     await screen.findByText('Active Device')
     const updateVenueButton = await screen.findByText('Run Update')
     fireEvent.click(updateVenueButton)
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
   it('should update selected row with advanced dialog', async () => {
@@ -151,11 +155,47 @@ describe('Firmware Venues Table', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
     await userEvent.click(await screen.findByRole('checkbox', { name: /Legacy Device/i }))
+    const confirmDialog = await screen.findByRole('dialog')
     await userEvent.click(await screen.findByRole('button', { name: /Run Update/ }))
 
     await waitFor(() => {
       expect(updateNowFn).toHaveBeenCalled()
     })
+
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
+  it('should render Legacy AP Firmware column', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      })
+
+    const rowWithLegacyAp = await screen.findByRole('row', { name: /Ben-Venue-US/ })
+    expect(within(rowWithLegacyAp).getByRole('cell', { name: '6.1.0.10.413' })).toBeVisible()
+
+    const rowWithoutLegacyAp = await screen.findByRole('row', { name: /Legacy-Venue/ })
+    expect(within(rowWithoutLegacyAp).queryByRole('cell', { name: '6.2.0.103.513' })).toBeNull()
+  })
+
+  it('should show a message in the Update Now dialog when AP Models is empty', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <VenueFirmwareList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      })
+
+    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
+
+    const dialog = await screen.findByRole('dialog', { name: 'Update Now' })
+    expect(await within(dialog).findByText('No Access Point in selected venue(s)')).toBeVisible()
+  })
 })

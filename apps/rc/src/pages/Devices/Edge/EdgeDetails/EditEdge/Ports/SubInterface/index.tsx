@@ -4,10 +4,11 @@ import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
-import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                       from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                 from '@acx-ui/user'
+import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps }   from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                             from '@acx-ui/rc/components'
+import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation } from '@acx-ui/rc/services'
+import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                         from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                   from '@acx-ui/user'
 
 import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
 import * as UI                from '../styledComponents'
@@ -25,19 +26,25 @@ interface SubInterfaceTableProps {
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const SubInterfaceTable = (props: SubInterfaceTableProps) => {
+const importTemplateLink = 'assets/templates/sub-interfaces_import_template.csv'
 
+const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { mac } = props
+
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [importModalvisible, setImportModalvisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeSubInterface>()
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
+
   const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetSubInterfacesQuery,
     defaultPayload: {},
-    apiParams: { mac: props.mac }
+    apiParams: { mac }
   })
   const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
+  const [uploadCSV, uploadCSVResult] = useImportSubInterfacesCSVMutation()
 
   useEffect(() => {
     setDrawerVisible(false)
@@ -111,7 +118,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
             deleteSubInterfaces({
               params: {
                 ...params,
-                mac: props.mac,
+                mac,
                 subInterfaceId: selectedRows[0].id }
             }).then(clearSelection)
           }
@@ -121,12 +128,31 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   ]
 
   const actionButtons = [
-    { label: $t({ defaultMessage: 'Add Sub-interface' }), onClick: () => openDrawer() }
+    {
+      label: $t({ defaultMessage: 'Add Sub-interface' }),
+      onClick: () => openDrawer()
+    },
+    {
+      label: $t({ defaultMessage: 'Import from file' }),
+      onClick: () => setImportModalvisible(true)
+    }
   ]
 
   const openDrawer = (data?: EdgeSubInterface) => {
     setCurrentEditData(data)
     setDrawerVisible(true)
+  }
+
+  const importSubInterfaces = async (formData: FormData) => {
+    try {
+      await uploadCSV({
+        params: { ...params , mac },
+        payload: formData
+      }).unwrap()
+      setImportModalvisible(false)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   return (
@@ -140,7 +166,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         }
       </UI.IpAndMac>
       <Row>
-        <Col span={9}>
+        <Col span={12}>
           <SubInterfaceDrawer
             mac={props.mac}
             visible={drawerVisible}
@@ -163,6 +189,17 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
                 }
               }}
               rowKey='id'
+            />
+            <ImportFileDrawer
+              type={ImportFileDrawerType.EdgeSubInterface}
+              title={$t({ defaultMessage: 'Import from file' })}
+              maxSize={CsvSize['5MB']}
+              acceptType={['csv']}
+              templateLink={importTemplateLink}
+              visible={importModalvisible}
+              isLoading={uploadCSVResult.isLoading}
+              importRequest={importSubInterfaces}
+              onClose={() => setImportModalvisible(false)}
             />
           </Loader>
         </Col>

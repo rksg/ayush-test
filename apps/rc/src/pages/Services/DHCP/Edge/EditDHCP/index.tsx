@@ -52,7 +52,7 @@ const EditDhcp = () => {
 
   const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
     try {
-      const payload = _.merge(_.cloneDeep(edgeDhcpData), _.cloneDeep(data))
+      const payload = { ...edgeDhcpData, ...(_.cloneDeep(data)) }
       const pathVar = { id: params.serviceId }
       if(payload.leaseTimeType === LeaseTimeType.INFINITE) {
         payload.leaseTime = -1 // -1 means infinite
@@ -64,10 +64,10 @@ const EditDhcp = () => {
       payload.dhcpPools.forEach(item => {
         if (item.id.startsWith('_NEW_')) item.id = ''
       })
-      payload.dhcpOptions.forEach(item => {
+      payload.dhcpOptions?.forEach(item => {
         if (item.id.startsWith('_NEW_')) item.id = ''
       })
-      payload.hosts.forEach(item => {
+      payload.hosts?.forEach(item => {
         if (item.id.startsWith('_NEW_')) item.id = ''
       })
 

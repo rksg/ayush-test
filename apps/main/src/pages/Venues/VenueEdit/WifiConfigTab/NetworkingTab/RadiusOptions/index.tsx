@@ -89,7 +89,6 @@ export function RadiusOptions () {
     isLoading: getVenueRadiusOptions.isLoading,
     isFetching: isUpdatingVenueRadiusOptions
   }]}>
-
     <StepsForm.FieldLabel width={'280px'}>
       {$t({ defaultMessage: 'Override the settings in active networks' })}
       <Form.Item

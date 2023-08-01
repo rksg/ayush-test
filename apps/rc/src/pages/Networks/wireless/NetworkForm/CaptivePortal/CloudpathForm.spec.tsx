@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsFormLegacy }                       from '@acx-ui/components'
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                          from '@acx-ui/user'
@@ -44,6 +44,8 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(AaaUrls.getAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(wisprRes))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,

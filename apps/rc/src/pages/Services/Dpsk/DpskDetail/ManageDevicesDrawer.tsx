@@ -233,7 +233,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
     <Button key='cancel' onClick={onCancel}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>,
-    <Button key='ok' onClick={onOk} type='secondary'>
+    <Button key='ok' onClick={onOk} type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>
   ]
@@ -276,7 +276,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
                 if (devicesData?.map(deviceData => deviceData.mac)
                   .filter(mac => mac === value).length) {
                   return Promise.reject($t({
-                    defaultMessage: 'MAC address {macAddress} is already exists'
+                    defaultMessage: 'MAC address {macAddress} already exists'
                   }, { macAddress: value }))
                 }
                 return MacRegistrationFilterRegExp(value)

@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi }                                                                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                        from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                       from '@acx-ui/test-utils'
+import { venueApi }                                                                                                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                        from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                                       from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
 
@@ -298,6 +298,39 @@ Object.defineProperty(global.SVGElement.prototype, 'height', {
   }
 })
 
+const editStackDetail = {
+  suspendingDeployTime: '',
+  stackMemberOrder: 'FEK4124R28X',
+  isStack: true,
+  rearModule: 'none',
+  deviceStatus: 'OPERATIONAL',
+  syncedSwitchConfig: true,
+  sendedHostname: true,
+  switchMac: '',
+  venueId: '5c05180d54d84e609a4d653a3a8332d1',
+  model: 'ICX7150-C12P',
+  id: 'FEK4124R28X',
+  floorplanId: '117c43124ed24069b127c50a49a0db36',
+  deviceType: 'DVCNWTYPE_SWITCH',
+  serialNumber: 'FEK4124R28X',
+  xPercent: 69.75138092041016,
+  yPercent: 12.195121765136719,
+  portsStatus: {},
+  stackMember: false,
+  cliApplied: false,
+  stackMembers: [
+    { model: 'ICX7150-C12P', id: 'FEK4124R28X' },
+    { model: 'ICX7150-C12P', id: 'FEK4224R17X' }
+  ],
+  poeUsage: {},
+  venueName: 'My-Venue',
+  isIpFullContentParsed: false,
+  ipFullContentParsed: true,
+  formStacking: true,
+  name: '',
+  tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+  activeSerial: 'FEK4124R28X'
+}
 
 describe('Topology', () => {
   beforeEach(() => store.dispatch(venueApi.util.resetApiState()))
@@ -310,10 +343,12 @@ describe('Topology', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getTopology.url,
-        (req, res, ctx) => {
-          return res(ctx.json(graphData))
-        }
-      )
+        (req, res, ctx) => {return res(ctx.json(graphData))}),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 })))
     )
 
     const { asFragment } = await render(<Provider>
@@ -419,10 +454,7 @@ describe('Topology', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getTopology.url,
-        (req, res, ctx) => {
-          return res(ctx.json(scaleData))
-        }
-      )
+        (req, res, ctx) => { return res(ctx.json(scaleData)) })
     )
     const { asFragment } = await render(<Provider>
       <TopologyGraph showTopologyOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW} /></Provider>,{

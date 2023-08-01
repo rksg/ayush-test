@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { DeviceConnectionStatus }                                           from '../../constants'
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SWITCH_TYPE } from '../../types'
+import { DeviceConnectionStatus }                                                         from '../../constants'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SwitchClient, SWITCH_TYPE } from '../../types'
 
 import {
   isOperationalSwitch,
@@ -13,6 +13,7 @@ import {
   getSwitchStatusString,
   getPoeUsage,
   getStackMemberStatus,
+  getClientIpAddr,
   transformSwitchUnitStatus,
   isRouter,
   isEmpty,
@@ -264,6 +265,24 @@ describe('switch.utils', () => {
       expect(getStackMemberStatus(STACK_MEMBERSHIP.MEMBER)).toBe('Member')
       expect(getStackMemberStatus('', true)).toBe('Member')
       expect(getStackMemberStatus('')).toBeFalsy()
+    })
+  })
+
+  describe('Test getClientIpAddr function', () => {
+    const data = {
+      clientIpv4Addr: '0.0.0.0',
+      clientIpv6Addr: '0:0:0:0:0:0:0:0'
+    } as SwitchClient
+    it('should render correctly', async () => {
+      expect(getClientIpAddr(data)).toBe('--')
+      expect(getClientIpAddr({
+        ...data,
+        clientIpv4Addr: '192.168.1.1'
+      })).toBe('192.168.1.1')
+      expect(getClientIpAddr({
+        ...data,
+        clientIpv6Addr: '1:0:0:0:0:0:0:0'
+      })).toBe('1:0:0:0:0:0:0:0')
     })
   })
 

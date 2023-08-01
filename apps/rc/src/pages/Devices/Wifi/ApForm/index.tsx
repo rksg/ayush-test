@@ -342,7 +342,7 @@ export function ApForm () {
 
       setEditContextData && setEditContextData({
         ...editContextData,
-        tabTitle: $t({ defaultMessage: 'AP Details' }),
+        tabTitle: $t({ defaultMessage: 'General' }),
         isDirty: checkFormIsDirty(form, originalData, deviceGps as DeviceGps),
         hasError: checkFormIsInvalid(form),
         updateChanges: () => handleUpdateAp(form?.getFieldsValue() as ApDeep)

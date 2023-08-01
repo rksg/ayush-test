@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 
-import { ClockCircleFilled }      from '@ant-design/icons'
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
+import { ClockSolid }                                                                       from '@acx-ui/icons'
 import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
 import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
@@ -178,7 +178,7 @@ export default function ActivityButton () {
       overflowCount={9}
       offset={[-3, 0]}
       children={<LayoutUI.ButtonSolid
-        icon={<ClockCircleFilled />}
+        icon={<ClockSolid />}
         onClick={()=> setActivityModalOpen(!activityModal)}
       />}
     />

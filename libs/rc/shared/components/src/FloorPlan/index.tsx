@@ -390,23 +390,13 @@ export function FloorPlan () {
               action={
                 <Space direction='horizontal'>
                   { hasAccess() && <TenantLink to='devices/wifi/add'>
-                    <Button size='small'
-                      type='primary'
-                      style={{
-                        backgroundColor: 'var(--acx-accents-orange-50)',
-                        borderColor: 'var(--acx-accents-orange-50)'
-                      }}>
+                    <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add AP' })}
                     </Button>
                   </TenantLink>
                   }
                   { hasAccess() && <TenantLink to='devices/switch/add'>
-                    <Button size='small'
-                      type='primary'
-                      style={{
-                        backgroundColor: 'var(--acx-accents-orange-50)',
-                        borderColor: 'var(--acx-accents-orange-50)'
-                      }}>
+                    <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </Button>
                   </TenantLink>}
