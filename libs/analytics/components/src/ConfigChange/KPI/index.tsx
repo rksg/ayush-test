@@ -24,7 +24,7 @@ import { noDataDisplay }                                from '@acx-ui/utils'
 import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { useKPIChangesQuery }                    from '../services'
 
-import { Statistic, TransparentTrend, TrendPill, DrapDownWrapper } from './styledComponents'
+import { Statistic, TransparentTrend, TrendPill, DropDownWrapper } from './styledComponents'
 
 type ConfigChangeKPIConfig = {
   text?: MessageDescriptor
@@ -104,7 +104,7 @@ export const KPIs = () => {
   const handleMenuClick: MenuProps['onClick'] = e => setDropDownKey(e.key)
 
   return <>
-    <DrapDownWrapper>
+    <DropDownWrapper>
       <Dropdown
         key='date-dropdown'
         overlay={<Menu
@@ -120,7 +120,7 @@ export const KPIs = () => {
           </Button>
         }
       </Dropdown>
-    </DrapDownWrapper>
+    </DropDownWrapper>
     <Loader states={[queryResults]}>
       {queryResults?.data
         ? Object.keys(kpis).map(key => <KPI

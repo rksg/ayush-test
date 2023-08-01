@@ -55,4 +55,4 @@ export const Statistic = styled(AntStatistic)`
 }
 `
 
-export const DrapDownWrapper = styled.div` padding-bottom: 15px; `
+export const DropDownWrapper = styled.div` padding-bottom: 15px; `
