@@ -21,7 +21,8 @@ import {
   venue,
   preference,
   availableVersions,
-  successResponse
+  successResponse,
+  availableABFList
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -37,7 +38,14 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
-        (req, res, ctx) => res(ctx.json(availableVersions))
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (searchParams.get('status') !== 'release') return res(ctx.json([]))
+
+          if (searchParams.get('abf') !== null) return res(ctx.json([ ...availableABFList ]))
+
+          return res(ctx.json([...availableVersions]))
+        }
       ),
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
@@ -63,7 +71,7 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    const row = await screen.findByRole('row', { name: /Latest-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Revert Now/i })
