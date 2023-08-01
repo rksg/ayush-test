@@ -45,7 +45,7 @@
       "@acx-ui/utils": ["libs/common/utils/src/index.ts"],
       "@rc/Routes": ["apps/rc/src/Routes.tsx"],
       "@msp/Routes": ["apps/msp/src/Routes.tsx"],
-      "@reports/Routes": ["apps/reports/src/Routes.tsx"]
+      "@reports/Routes": ["libs/reports/routes/src/Routes.tsx"]
     }
   },
   "exclude": ["node_modules", "tmp"]

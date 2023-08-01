@@ -1,11 +1,8 @@
-import { PageNotFound }      from '@acx-ui/components'
-import { rootRoutes, Route } from '@acx-ui/react-router-dom'
-import { ReportType }        from '@acx-ui/reports/components'
-import { Provider }          from '@acx-ui/store'
-
-import { DataStudio } from './pages/DataStudio'
-import { Report }     from './pages/Report'
-import { ReportList } from './pages/ReportList'
+import { PageNotFound }                               from '@acx-ui/components'
+import { get }                                        from '@acx-ui/config'
+import { rootRoutes, Route, MLISA_BASE_PATH }         from '@acx-ui/react-router-dom'
+import { ReportType, Report, ReportList, DataStudio } from '@acx-ui/reports/components'
+import { Provider }                                   from '@acx-ui/store'
 
 const reports = {
   overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
@@ -20,8 +17,9 @@ const reports = {
 }
 
 export default function ReportsRoutes () {
+  const basePath = get('IS_MLISA_SA') ? MLISA_BASE_PATH : ':tenantId/t'
   const routes = rootRoutes(
-    <Route path=':tenantId/t'>
+    <Route path={basePath}>
       <Route path='*' element={<PageNotFound />} />
       <Route path='reports' element={<ReportList />}/>
       <Route path='reports/overview' element={reports.overview}/>
