@@ -358,7 +358,9 @@ export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
   if (!modelInfo) {
     return ''
   }
-
+  if (modelInfo.portModuleSlots && !modelInfo.portModuleSlots[slotNumber - 1]) {
+    return ''
+  }
   return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
 }
 

@@ -6,9 +6,8 @@ export const StyledWrapper = styled.div`
   }
 
   .changeBtn.ant-btn-link {
-    height: auto;
-    padding: 0;
-    padding-left: var(--acx-modal-footer-small-button-space)
+    height: auto !important;
+    padding-left: var(--acx-modal-footer-small-button-space) !important;
   }
 `
 

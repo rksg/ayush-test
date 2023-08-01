@@ -3,10 +3,11 @@ import { rest } from 'msw'
 import { AdministrationUrlsInfo }     from '@acx-ui/rc/utils'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 import { renderHook }                 from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
 
+import { Features }         from './features'
 import { useIsSplitOn }     from './useIsSplitOn'
 import { useIsTierAllowed } from './useIsTierAllowed'
-
 
 let split = require('@splitsoftware/splitio-react')
 
@@ -28,6 +29,14 @@ jest.mock('@acx-ui/analytics/utils', () => (
     ...jest.requireActual('@acx-ui/analytics/utils'),
     useUserProfileContext: jest.fn()
   }))
+
+// Mock the useTreatments hook to return the expected values
+jest.mock('@splitsoftware/splitio-react', () => (
+  {
+    ...jest.requireActual('@splitsoftware/splitio-react'),
+    useTreatments: jest.fn()
+  }))
+
 
 const userProfile = {
   adminId: '246b49448c7e490895e925d5a200da4d',
@@ -104,6 +113,34 @@ describe('SplitProvider', () => {
 
 describe('useIsTierAllowed', () => {
   beforeEach( async () => {
+    jest.doMock('@splitsoftware/splitio-react', () => ({
+      useTreatments: jest.fn(() => ({
+        [Features.PLM_FF]: {
+          treatment: 'control',
+          config: JSON.stringify({
+            'feature-REC-Default': ['FEATURE_1', 'FEATURE_2'],
+            'feature-MSP-Default': ['FEATURE_3', 'FEATURE_4'],
+            'betaList': ['BETA_FEATURE_1', 'BETA_FEATURE_2']
+          })
+        }
+      }))
+    }))
+
+    jest.doMock('@acx-ui/rc/services', () => ({
+      useGetAccountTierQuery: jest.fn(() => ({
+        data: {
+          acx_account_tier: 'Gold'
+        }
+      }))
+    }))
+
+    jest.doMock('@acx-ui/user', () => ({
+      useGetBetaStatusQuery: jest.fn(() => ({
+        data: {
+          enabled: true
+        }
+      }))
+    }))
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
@@ -112,6 +149,16 @@ describe('useIsTierAllowed', () => {
         (req, res, ctx) => {
           return res(ctx.json({ data: {
             acx_account_tier: 'Gold'
+          } }))
+        }
+      )
+    )
+
+    mockServer.use(
+      rest.get(UserUrlsInfo.getBetaStatus.url as string,
+        (req, res, ctx) => {
+          return res(ctx.json({ data: {
+            enabled: true
           } }))
         }
       )

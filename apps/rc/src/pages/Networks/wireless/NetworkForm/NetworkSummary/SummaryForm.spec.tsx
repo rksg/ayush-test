@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, NetworkTypeEnum, RadioEnum, WifiUrlsInfo }         from '@acx-ui/rc/utils'
-import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render }                                               from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                     from '@acx-ui/user'
+import { CommonUrlsInfo, DpskUrls, NetworkTypeEnum, RadioEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum }   from '@acx-ui/rc/utils'
+import { Provider }                                                           from '@acx-ui/store'
+import { mockServer, render }                                                 from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                       from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -42,6 +42,25 @@ const mockSummary = {
   }
 }
 
+const dpskListResponse = {
+  content: [
+    {
+      id: '123456789',
+      name: 'DPSK Service 1',
+      passphraseLength: 18,
+      passphraseFormat: 'MOST_SECURED',
+      expirationType: null
+    }
+  ],
+  totalElements: 1,
+  totalPages: 1,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
+  sort: []
+}
+
 describe('SummaryForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
@@ -65,7 +84,9 @@ describe('SummaryForm', () => {
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
+      rest.get(DpskUrls.getDpskList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(dpskListResponse)))
     )
   })
   it('should render cloudpath enabled successfully', async () => {

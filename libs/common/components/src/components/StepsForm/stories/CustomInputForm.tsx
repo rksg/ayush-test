@@ -112,7 +112,7 @@ function DataTableWithModalInput (props: {
       title='Add Item'
       width={200}
       footer={[
-        <Button key='submit' type='secondary' onClick={() => form.submit()}>Save</Button>,
+        <Button key='submit' type='primary' onClick={() => form.submit()}>Save</Button>,
         <Button key='cancel' type='link' onClick={handleClose}>Cancel</Button>
       ]}
     >

@@ -1,11 +1,10 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Dropdown, Loader, Table, TableProps } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
-import { ArrowExpand }                                 from '@acx-ui/icons'
-import { TenantLink, useParams }                       from '@acx-ui/react-router-dom'
-import { noDataDisplay }                               from '@acx-ui/utils'
+import { Button, Dropdown, CaretDownSolidIcon, Loader, Table, TableProps } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
+import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                                   from '@acx-ui/utils'
 
 import { useServiceGuardRelatedTests } from '../../services'
 
@@ -67,7 +66,7 @@ export const TestRunButton = () => {
               queryResults.data.find((test)=>test.id === parseInt(params.testId!, 10))?.createdAt)
             : noDataDisplay
           }
-          <ArrowExpand />
+          <CaretDownSolidIcon />
         </Space>
       </Button>
     }</Dropdown>
