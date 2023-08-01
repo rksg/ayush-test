@@ -34,10 +34,12 @@ jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe('PersonaDevicesTable', () => {
   const deleteDeviceFn = jest.fn()
+  const clientMetaFn = jest.fn()
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {
     deleteDeviceFn.mockClear()
+    clientMetaFn.mockClear()
     mockServer.use(
       rest.post(
         PersonaUrls.addPersonaDevices.url,
@@ -77,7 +79,10 @@ describe('PersonaDevicesTable', () => {
       ),
       rest.post(
         ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
+        (req, res, ctx) => {
+          clientMetaFn()
+          return res(ctx.json({ data: [] }))
+        }
       )
     )
     params = {
@@ -178,7 +183,8 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockedDpskPassphraseDevices[0].mac.replaceAll(':', '-')
 
-    await screen.findByRole('heading', { name: /devices/i })
+    await waitFor(() => expect(clientMetaFn).toHaveBeenCalled())
+    await screen.findByRole('heading', { name: /devices \(4\)/i })
     await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await screen.findByRole('cell', { name: 'dpsk-hostname' })  // to make sure that clients/metas api done
   })
