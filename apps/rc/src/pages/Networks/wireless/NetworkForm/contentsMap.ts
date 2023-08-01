@@ -85,6 +85,10 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
   [WlanSecurityEnum.None]: defineMessage({
     defaultMessage: 'None',
     description: 'WLAN security type - None'
+  }),
+  [WlanSecurityEnum.OWE]: defineMessage({
+    defaultMessage: 'OWE',
+    description: 'WLAN security type - OWE'
   })
 }
 

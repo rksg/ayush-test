@@ -1,16 +1,21 @@
 /* eslint-disable testing-library/no-node-access */
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { Provider, dataApiSearchURL, store, videoCallQoeURL } from '@acx-ui/store'
+import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Provider, dataApiSearchURL, store, r1VideoCallQoeURL } from '@acx-ui/store'
 import {
   mockGraphqlMutation,
   mockGraphqlQuery, render, screen, waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { callQoeTestDetailsFixtures1, callQoeTestDetailsFixtures2, callQoeTestDetailsFixtures3, callQoeTestDetailsFixtures4, searchClientsFixture } from '../VideoCallQoe/__tests__/fixtures'
-import { clientSearchApi }                                                                                                                          from '../VideoCallQoe/services'
+import {
+  callQoeTestDetailsFixtures1,
+  callQoeTestDetailsFixtures2,
+  callQoeTestDetailsFixtures3,
+  callQoeTestDetailsFixtures4,
+  searchClientsFixture } from '../VideoCallQoe/__tests__/fixtures'
+import { clientSearchApi } from '../VideoCallQoe/services'
 
 import { VideoCallQoeDetails } from '.'
 
@@ -26,7 +31,7 @@ describe('VideoCallQoe Details Page', () => {
     })
   })
   it('render the page properly', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
 
     const { asFragment } = render(
@@ -42,7 +47,7 @@ describe('VideoCallQoe Details Page', () => {
     expect(fragment).toMatchSnapshot()
   })
   it('render the page properly having bad/average quality', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures2 })
 
     const { asFragment } = render(
@@ -58,7 +63,7 @@ describe('VideoCallQoe Details Page', () => {
     expect(fragment).toMatchSnapshot()
   })
   it('render the page properly without client MAC', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures3 })
 
     const { asFragment } = render(
@@ -74,9 +79,9 @@ describe('VideoCallQoe Details Page', () => {
     expect(fragment).toMatchSnapshot()
   })
   it('should open drawer for client mac serach while click on edit icon', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
-    mockGraphqlMutation(videoCallQoeURL, 'UpdateCallQoeParticipant',
+    mockGraphqlMutation(r1VideoCallQoeURL, 'UpdateCallQoeParticipant',
       { data: { updateCallQoeParticipant: 1 } })
 
     render(
@@ -95,7 +100,7 @@ describe('VideoCallQoe Details Page', () => {
     await waitForElementToBeRemoved(() => screen.queryByText('Select'))
   })
   it('should close client mac search drawer while click on cancel button', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
     render(
       <Provider>
@@ -118,9 +123,9 @@ describe('VideoCallQoe Details Page', () => {
     })
   })
   it('should search the client', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
-    mockGraphqlMutation(videoCallQoeURL, 'UpdateCallQoeParticipant',
+    mockGraphqlMutation(r1VideoCallQoeURL, 'UpdateCallQoeParticipant',
       { data: { updateCallQoeParticipant: 1 } })
 
     render(
@@ -139,7 +144,7 @@ describe('VideoCallQoe Details Page', () => {
     expect(await screen.findByText('A8:64:F1:1A:D0:33')).toBeVisible()
   })
   it('render the page properly when call stats are null', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails',
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures4 })
     const { asFragment } = render(
       <Provider>
@@ -155,7 +160,7 @@ describe('VideoCallQoe Details Page', () => {
   })
   it('should handle when feature flag NAVBAR_ENHANCEMENT is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', { data: callQoeTestDetailsFixtures1 })
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails', { data: callQoeTestDetailsFixtures1 })
     render(<VideoCallQoeDetails />, {
       wrapper: Provider, route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
