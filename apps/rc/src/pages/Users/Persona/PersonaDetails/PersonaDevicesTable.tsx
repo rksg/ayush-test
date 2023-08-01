@@ -152,7 +152,7 @@ export function PersonaDevicesTable (props: {
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
-        lastSeenAt: moment.utc(device.lastConnected).toISOString(),
+        lastSeenAt: moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
         hasDpskRegistered: true
       }))
   }
