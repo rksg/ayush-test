@@ -122,7 +122,7 @@ describe('Switch List Table', () => {
   it('should render extra header correctly', async () => {
     const Component = () => {
       const { headerExtra } = useSwitchesTable()
-      return <span>{headerExtra}</span>
+      return <span>{headerExtra.map((item, index) => ({ ...item, key: index }))}</span>
     }
     render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Add')).toBeVisible()

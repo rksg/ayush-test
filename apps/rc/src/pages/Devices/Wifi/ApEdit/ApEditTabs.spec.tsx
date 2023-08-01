@@ -13,7 +13,8 @@ import {
 
 import {
   apDetailsList,
-  deviceAps
+  deviceAps,
+  venueCaps
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from '.'
@@ -28,6 +29,10 @@ jest.mock('../ApForm', () => ({
   ApForm: () => <div data-testid='ApForm' />
 }))
 
+jest.mock('./RadioTab/RadioSettings/RadioSettings', () => ({
+  RadioSettings: () => <div data-testid='RadioSettings' />
+}))
+
 describe('ApEditTabs', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -37,7 +42,9 @@ describe('ApEditTabs', () => {
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(deviceAps)))
+        (_, res, ctx) => res(ctx.json(deviceAps))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps)))
     )
   })
 
@@ -46,7 +53,7 @@ describe('ApEditTabs', () => {
     venueId: 'venue-id',
     serialNumber: 'serial-number',
     action: 'edit',
-    activeTab: 'details'
+    activeTab: 'general'
   }
 
   it('should render correctly', async () => {
@@ -59,12 +66,12 @@ describe('ApEditTabs', () => {
 
     await screen.findByRole('heading', { name: 'test ap', level: 1 })
 
-    expect(await screen.findAllByRole('tab')).toHaveLength(2)
+    expect(await screen.findAllByRole('tab')).toHaveLength(5)
     expect(await screen.findByTestId('ApForm')).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Radio' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/devices/wifi/${params.serialNumber}/edit/settings/general`,
+      pathname: `/${params.tenantId}/t/devices/wifi/${params.serialNumber}/edit/radio`,
       hash: '',
       search: ''
     })

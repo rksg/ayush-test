@@ -1,7 +1,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable max-len */
 
-import { ReactNode, CSSProperties } from 'react'
+import { ReactNode, CSSProperties, useEffect } from 'react'
 
 import {
   Checkbox,
@@ -41,6 +41,15 @@ export function MulticastForm () {
 
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
+
+
+  useEffect(() => {
+    let multicastRateLimitingSwitch = false
+    if(form.getFieldValue(enableMulticastUpLimitFieldName) || form.getFieldValue(enableMulticastDownLimitFieldName)) {
+      multicastRateLimitingSwitch = true
+    }
+    form.setFieldValue(enableMulticastRateLimitingFieldName, multicastRateLimitingSwitch )
+  }, [])
 
   const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
   const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
@@ -111,7 +120,6 @@ export function MulticastForm () {
               name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
-              initialValue={enableMulticastUpLimit || enableMulticastDownLimit}
             >
               <Switch onChange={handleMulticastRateLimitingOnChange} />
             </Form.Item>
@@ -130,16 +138,11 @@ export function MulticastForm () {
                   name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']}
                   valuePropName='checked'
                   initialValue={false}
-                  style={{ lineHeight: '50px' }}>
-                  <Checkbox data-testid='enableMulticastUpLimit'
-                    children={<>
-                      {$t({ defaultMessage: 'Upload Limit' })}
-                      <Tooltip.Question
-                        title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
-                        placement='bottom' />
-                    </>} />
-
-                </UI.FormItemNoLabel>
+                  style={{ lineHeight: '50px' }}
+                  children={
+                    <Checkbox data-testid='enableMulticastUpLimit'
+                      children={$t({ defaultMessage: 'Upload Limit' })} />}
+                />
                 {
                   enableMulticastUpLimit ?
                     <UI.FormItemNoLabel
@@ -170,7 +173,13 @@ export function MulticastForm () {
                   style={{ lineHeight: '50px' }}
                   children={
                     <Checkbox data-testid='enableMulticastDownLimit'
-                      children={$t({ defaultMessage: 'Download Limit' })} />}
+                      children={<>
+                        {$t({ defaultMessage: 'Download Limit' })}
+                        <Tooltip.Question
+                          title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
+                          placement='bottom' />
+                      </>}
+                    />}
                 />
                 {
                   enableMulticastDownLimit ?

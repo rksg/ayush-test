@@ -69,7 +69,7 @@ describe('ApEdit', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
-      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getApGroupList.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
@@ -77,6 +77,8 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
+      rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
+        (_, res, ctx) => res(ctx.json(apDetailsList))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
         (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
       rest.post(CommonUrlsInfo.getApsList.url,
@@ -102,13 +104,13 @@ describe('ApEdit', () => {
     }
   })
 
-  describe('Ap Details', () => {
+  describe('Ap Edit - General', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
       serialNumber: 'serial-number',
       action: 'edit',
-      activeTab: 'details'
+      activeTab: 'general'
     }
 
     it('should render correctly', async () => {
@@ -124,7 +126,7 @@ describe('ApEdit', () => {
         expect(await screen.findByLabelText(/AP Name/)).toHaveValue('test ap')
       })
 
-      expect(await screen.findAllByRole('tab')).toHaveLength(2)
+      expect(await screen.findAllByRole('tab')).toHaveLength(5)
       await screen.findByText(/37.411275, -122.019191 \(As venue\)/)
     })
 
@@ -172,7 +174,7 @@ describe('ApEdit', () => {
         await screen.findByLabelText('Description'), { target: { value: 'description' } }
       )
       await userEvent.click(await screen.findByText('Back to device details'))
-      await showUnsavedChangesModal('AP Details', buttonAction.CANCEL)
+      await showUnsavedChangesModal('General', buttonAction.CANCEL)
     })
 
     it('should open invalid changes modal', async () => {
@@ -193,9 +195,9 @@ describe('ApEdit', () => {
       expect(await screen.findAllByRole('img', { name: 'check-circle' })).toHaveLength(1)
 
       await userEvent.click(await screen.findByText('Back to device details'))
-      await showInvalidChangesModal('AP Details', buttonAction.CANCEL)
+      await showInvalidChangesModal('General', buttonAction.CANCEL)
       // await userEvent.click(await screen.findByText('Back to device details'))
-      // await showInvalidChangesModal('AP Details', buttonAction.DISCARD_CHANGES)
+      // await showInvalidChangesModal('General', buttonAction.DISCARD_CHANGES)
     })
 
     // TODO: should test in apForm
@@ -304,10 +306,9 @@ describe('ApEdit', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       await screen.findByText('Error occurred while updating AP')
     })
-
   })
 
-  describe.skip('Ap Settings - Lan Ports', () => {
+  xdescribe('Ap Edit - Lan Ports', () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',

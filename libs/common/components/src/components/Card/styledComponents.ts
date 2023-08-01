@@ -31,10 +31,8 @@ export const HistoricalOutlinedIcon = styled(HistoricalOutlined)`
 
 export const Button = styled(AntButton)`
   border: none;
-  box-shadow: none;
-  background: var(--acx-primary-white);
   padding: 0;
-  &.ant-btn-icon-only {
+  &&&&.ant-btn-icon-only {
     width: 16px;
     height: 16px;
   }
