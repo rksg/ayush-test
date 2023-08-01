@@ -59,8 +59,7 @@ const list = {
             phyLink: 'Up 1000Mbps full',
             port: '1'
           }
-        ],
-        APSystem: [{ secureBootEnabled: false }]
+        ]
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
