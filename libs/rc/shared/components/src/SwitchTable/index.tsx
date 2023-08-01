@@ -100,7 +100,7 @@ export const defaultSwitchPayload = {
     'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
     'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
     'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime', 'firmware',
-    'syncedAdminPassword'
+    'syncedAdminPassword', 'adminPassword'
   ]
 }
 
@@ -144,7 +144,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'serialNumber', 'isStack', 'formStacking', 'deviceStatus', 'switchName', 'name',
-      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword' ]
+      'model', 'venueId', 'configReady', 'syncedSwitchConfig', 'syncedAdminPassword', 'adminPassword' ]
   })
   const tableQuery = props.tableQuery || inlineTableQuery
 
@@ -270,11 +270,13 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         return <Tooltip title={getPasswordTooltip(row)}>{
           !(row?.configReady && row?.syncedSwitchConfig)
             ? '--'
-            : (row?.syncedAdminPassword ? <PasswordInput
-              style={{ paddingLeft: 0 }}
-              readOnly
-              bordered={false}
-              value={'1testtttttggfdgfdgfdgvcvcvxcvdfsdfsd9'} /> //TODO
+            : (row?.syncedAdminPassword
+              ? <PasswordInput
+                style={{ paddingLeft: 0 }}
+                readOnly
+                bordered={false}
+                value={row?.adminPassword}
+              />
               : $t({ defaultMessage: 'Custom' })
             )
         }</Tooltip>

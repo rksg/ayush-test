@@ -87,11 +87,13 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
           children={
             !(switchDetail?.configReady && switchDetail?.syncedSwitchConfig)
               ? '--'
-              : (switchDetail.syncedAdminPassword ? <PasswordInput
-                style={{ paddingLeft: 0 }}
-                readOnly
-                bordered={false}
-                value={'1testtttttggfdgfdgfdgvcvcvxcvdfsdfsd9'} /> //TODO
+              : (switchDetail.syncedAdminPassword
+                ? <PasswordInput
+                  style={{ paddingLeft: 0 }}
+                  readOnly
+                  bordered={false}
+                  value={switchDetail.adminPassword}
+                />
                 : $t({ defaultMessage: 'Custom' })
               )
           }

@@ -121,6 +121,7 @@ function useColumns (type: AAAServerTypeEnum) {
       render: function (data, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
+            style={{ paddingLeft: 0 }}
             readOnly
             bordered={false}
             value={row.password}
