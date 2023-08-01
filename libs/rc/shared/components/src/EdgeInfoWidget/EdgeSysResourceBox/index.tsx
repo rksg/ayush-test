@@ -56,7 +56,7 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
               formatter={statisticFormatter}
             />
             :
-            <Tooltip
+            <Tooltip placement='bottom'
               title={
                 $t({ defaultMessage: '{freeValue} free' },
                   { freeValue: formatter('bytesFormat')(totalVal - value) })
