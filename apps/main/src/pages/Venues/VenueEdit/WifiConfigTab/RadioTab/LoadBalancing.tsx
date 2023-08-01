@@ -190,10 +190,9 @@ export function LoadBalancing () {
               title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be 
                 allowed to enable client admission control.` })}
               placement='right'>
-              <QuestionMarkCircleOutlined style={{
-                height: '14px',
-                marginBottom: -3,
-                visibility: (clientAdmissionControlFlag)? 'visible':'hidden' }} />
+              {clientAdmissionControlFlag &&
+                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
+              }
             </Tooltip>
           </Space>
           <Form.Item
@@ -346,10 +345,9 @@ export function LoadBalancing () {
               title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be 
                 allowed to enable client admission control.` })}
               placement='right'>
-              <QuestionMarkCircleOutlined style={{
-                height: '14px',
-                marginBottom: -3,
-                visibility: (clientAdmissionControlFlag)? 'visible':'hidden' }} />
+              {clientAdmissionControlFlag &&
+                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
+              }
             </Tooltip>
           </Space>
           <Form.Item
