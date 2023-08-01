@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Row, Form, Checkbox } from 'antd'
 import _                            from 'lodash'
@@ -33,16 +33,10 @@ export function RadioSettingsChannels320Mhz (props: {
     formName: string[],
     channelList: RadioChannel[],
     disabled?: boolean,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    editContext: React.Context<any>,
+    handleChanged?: () => void
 }) {
 
-  let { disabled = false, channelList } = props
-
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(props.editContext)
+  let { disabled = false, channelList, handleChanged } = props
 
   const form = Form.useFormInstance()
 
@@ -98,11 +92,11 @@ export function RadioSettingsChannels320Mhz (props: {
 
     setComplexGroupChannelState(unsavedStates)
     form.setFieldValue(props.formName, unsavedStates.getEnabledChannels())
+
     // notify data is changed
-    setEditContextData({
-      ...editContextData,
-      isDirty: true
-    })
+    if(handleChanged) {
+      handleChanged()
+    }
 
   }
 
@@ -150,11 +144,11 @@ export function RadioSettingsChannels320Mhz (props: {
 
     setComplexGroupChannelState(unsavedStates)
     form.setFieldValue(props.formName, unsavedStates.getEnabledChannels())
+
     // notify data is changed
-    setEditContextData({
-      ...editContextData,
-      isDirty: true
-    })
+    if (handleChanged) {
+      handleChanged()
+    }
   }
 
   function TooltipFor320Mhz (props: {
@@ -234,18 +228,14 @@ export function RadioSettingsChannels320Mhz (props: {
     >
       <div style={{ marginTop: '10px' }}>
         <Row style={
-          { marginBottom: '10px',
-            height: '50px',
-            paddingTop: '10px' }}>
+          { height: '30px' }}>
           <Col span={2}>
             <p>320 MHz-1</p>
           </Col>
           {render320MHzGroup(ChannelGroup320MhzEnum.Group1)}
         </Row>
         <Row style={
-          { marginBottom: '10px',
-            height: '50px',
-            paddingTop: '10px' }}>
+          { height: '50px' }}>
           <Col span={2}>
             <p>320 MHz-2</p>
           </Col>
@@ -253,9 +243,7 @@ export function RadioSettingsChannels320Mhz (props: {
           {render320MHzGroup(ChannelGroup320MhzEnum.Group2)}
         </Row>
         <Row style={
-          { marginBottom: '10px',
-            height: '50px',
-            paddingTop: '10px' }}>
+          { height: '50px' }}>
           <Col span={2}></Col>
           {render160MHzGroup()}
         </Row>

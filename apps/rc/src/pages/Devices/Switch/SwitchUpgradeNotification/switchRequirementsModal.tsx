@@ -28,7 +28,7 @@ export function SwitchRequirementsModal (props: {
         <Button
           style={{ width: '83px' }}
           key='okBtn'
-          type='secondary'
+          type='primary'
           onClick={onClose}
         >
           {$t({ defaultMessage: 'OK' })}

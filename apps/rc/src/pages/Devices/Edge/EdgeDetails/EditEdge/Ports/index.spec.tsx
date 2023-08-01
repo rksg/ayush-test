@@ -30,6 +30,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./SubInterface', () => ({
+  ...jest.requireActual('./SubInterface'),
+  default: () => <div data-testid='rc-edge-subInterface'></div>
+}))
+
 const defaultContextData = {
   activeSubTab: {
     key: 'ports-general',

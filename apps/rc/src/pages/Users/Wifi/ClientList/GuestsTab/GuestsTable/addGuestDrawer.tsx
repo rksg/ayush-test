@@ -405,7 +405,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
             { validator: (_, value) => durationValidator(value) }
           ]}
           initialValue={7}
-          children={<InputNumber style={{ width: '100%' }}/>}
+          children={<InputNumber style={{ width: '100%' }} data-testid='expirationDuration'/>}
           style={{ paddingRight: '5px' }}
         />
       </Col>
@@ -525,7 +525,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       data-testid='saveBtn'
       key='saveBtn'
       onClick={() => form.submit()}
-      type={'secondary'}>
+      type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>,
     <Button

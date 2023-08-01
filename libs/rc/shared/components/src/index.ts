@@ -42,8 +42,9 @@ export {
   GlobalSearchHistoricalClientsTable,
   defaultHistoricalClientPayload
 } from './HistoricalClientsTable'
-export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
+export { ImportFileDrawer, CsvSize, ImportFileDrawerType } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
+export { LanPortPoeSettings } from './LanPortPoeSettings'
 export { LanPortSettings } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'

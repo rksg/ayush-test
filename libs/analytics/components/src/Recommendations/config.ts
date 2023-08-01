@@ -87,11 +87,11 @@ export const states = {
   },
   beforeapplyinterrupted: {
     text: defineMessage({ defaultMessage: 'Interrupted (Recommendation not applied)' }),
-    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in the SmartZone on {updatedAt} that may interfere with this recommendation. As such, the recommendation scheduled for {scheduledAt} has been canceled. Manually check whether this recommendation is still valid.' })
+    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in {smartZone} on {updatedAt} that may interfere with this recommendation. As such, the recommendation scheduled for {scheduledAt} has been canceled. Manually check whether this recommendation is still valid.' })
   },
   afterapplyinterrupted: {
     text: defineMessage({ defaultMessage: 'Interrupted (Recommendation applied)' }),
-    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in the SmartZone on {updatedAt} that may interfere with this recommendation. As such, the results from the monitoring of this configuration change may not be relevant anymore. Manually check whether this recommendation is still valid.' })
+    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in {smartZone} on {updatedAt} that may interfere with this recommendation. As such, the results from the monitoring of this configuration change may not be relevant anymore. Manually check whether this recommendation is still valid.' })
   },
   applywarning: {
     text: defineMessage({ defaultMessage: 'REVERT' }),
