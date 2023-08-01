@@ -244,3 +244,8 @@ export interface EdgePasswordDetail {
   loginPassword: string
   enablePassword: string
 }
+
+export enum EdgeTroubleshootingType {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE'
+}
