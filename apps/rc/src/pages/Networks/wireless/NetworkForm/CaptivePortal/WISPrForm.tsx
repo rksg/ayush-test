@@ -8,10 +8,9 @@ import {
   Input,
   InputRef
 } from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import _                       from 'lodash'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
