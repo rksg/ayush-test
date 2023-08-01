@@ -73,7 +73,8 @@ export const EdgeOverview = () => {
       'mac',
       'duplex',
       'sort_idx',
-      'interface_name'
+      'interface_name',
+      'ip_mode'
     ],
     filters: { serialNumber: [serialNumber] },
     sortField: 'sortIdx',
