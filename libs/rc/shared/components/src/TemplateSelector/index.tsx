@@ -4,8 +4,9 @@ import { Form, FormItemProps } from 'antd'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Loader }                              from '@acx-ui/components'
-import { useGetTemplateSelectionContentQuery } from '@acx-ui/rc/services'
+import { Loader }                            from '@acx-ui/components'
+import { useGetAllTemplatesByTemplateScopeIdQuery,
+  useGetTemplateScopeWithRegistrationQuery } from '@acx-ui/rc/services'
 
 import { templateNames, templateScopeLabels } from './msgTemplateLocalizedMessages'
 import { TemplateSelect }                     from './TemplateSelect'
@@ -27,8 +28,12 @@ export function TemplateSelector (props: TemplateSelectorProps) {
     placeholder = $t({ defaultMessage: 'Select Template...' })
   } = props
 
-  const templateDataRequest = useGetTemplateSelectionContentQuery(
+  const templateScopeData = useGetTemplateScopeWithRegistrationQuery(
     { params: { templateScopeId: scopeId, registrationId: registrationId } })
+
+
+  const templateDataRequest = useGetAllTemplatesByTemplateScopeIdQuery(
+    { params: { templateScopeId: scopeId } })
 
   const form = Form.useFormInstance()
 
@@ -39,23 +44,29 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   // Generate form data from data request
   const { templateOptions, scopeLabel, initialOption } = useMemo(() => {
-    if (!templateDataRequest.isSuccess) {
+    if(!templateScopeData.data || !templateDataRequest.data) {
       return { templateOptions: [],
         scopeLabel: $t({ defaultMessage: 'Loading Templates...' }),
         initialOption: undefined }
     }
 
-    const templateOptions = templateDataRequest.data?.templates.map((t) =>
+    const templateOptions = templateDataRequest.data?.content.map((t) =>
       ({ value: t.id,
         label: (t.userProvidedName?
           t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
 
-    const scopeLabel = templateDataRequest.data?.templateScopeNameKey ?
-      $t(_.get(templateScopeLabels, templateDataRequest.data.templateScopeNameKey))
+    const scopeLabel = templateScopeData.data?.nameLocalizationKey ?
+      $t(_.get(templateScopeLabels, templateScopeData.data.nameLocalizationKey))
       : $t({ defaultMessage: 'Loading Templates...' })
 
-    const initialOption = templateDataRequest.data?.defaultTemplateId ?
-      templateOptions.find(t => t.value === templateDataRequest.data?.defaultTemplateId)
+
+    let selectedTemplateId = templateScopeData.data?.defaultTemplateId
+    if(templateScopeData.data?.registrations?.length) {
+      selectedTemplateId = templateScopeData.data.registrations[0].templateId
+    }
+
+    const initialOption = selectedTemplateId ?
+      templateOptions.find(t => t.value === selectedTemplateId)
       : undefined
 
     return {
@@ -63,7 +74,7 @@ export function TemplateSelector (props: TemplateSelectorProps) {
       scopeLabel,
       initialOption
     }
-  }, [templateDataRequest.data])
+  }, [templateScopeData.data, templateDataRequest.data])
 
   // Set initial selected value
   useEffect(() => {
@@ -76,14 +87,15 @@ export function TemplateSelector (props: TemplateSelectorProps) {
 
   // RENDER //////////////////////////////////////////////////////
   return (
-    <Loader style={{ height: 'auto', minHeight: 45 }} states={[templateDataRequest]}>
+    <Loader style={{ height: 'auto', minHeight: 45 }}
+      states={[templateDataRequest, templateScopeData]}>
       <Form.Item {...formItemProps}
         label={scopeLabel}>
         <TemplateSelect
           placeholder={placeholder}
           options={templateOptions}
-          templateType={templateDataRequest.data?.templateScopeType}
-          templates={templateDataRequest.data?.templates}
+          templateType={templateScopeData.data?.messageType}
+          templates={templateDataRequest.data?.content}
         />
       </Form.Item>
     </Loader>

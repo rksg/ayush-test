@@ -1,8 +1,10 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
-import userEvent          from '@testing-library/user-event'
-import moment             from 'moment-timezone'
-import { IntlProvider }   from 'react-intl'
+import { useRef } from 'react'
+
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent                   from '@testing-library/user-event'
+import moment, { Moment }          from 'moment-timezone'
+import { IntlProvider }            from 'react-intl'
 
 import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import {
@@ -12,7 +14,7 @@ import {
   AccountTier
 } from '@acx-ui/utils'
 
-import { DatePicker, RangePicker } from '.'
+import { DatePicker, DateTimePicker, RangePicker } from '.'
 
 const mockGetJwtTokenPayload = getJwtTokenPayload as jest.Mock
 const mockUseDateFilter = useDateFilter as jest.Mock
@@ -417,5 +419,150 @@ describe('RangePicker', () => {
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
     expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
+  })
+})
+
+describe('DateTimePicker', () => {
+  it('should render default picker correctly', async () => {
+    const mockedInitialDate = moment('07-15-2023', 'MM-DD-YYYY')
+    const mockApply = jest.fn()
+    const title = 'testTitle'
+    render(<IntlProvider locale='en'>
+      <DateTimePicker
+        initialDate={{ current: mockedInitialDate }}
+        onApply={mockApply}
+        title={title}
+      />
+    </IntlProvider>)
+    const calendarIcon = await screen.findByTestId('ClockOutlined')
+    expect(calendarIcon).toBeVisible()
+    const user = userEvent.setup()
+    expect(screen.queryByRole('button', { name: 'Jul' })).toBeNull()
+    await user.click(calendarIcon)
+    expect(await screen.findByRole('button', { name: 'Jul' })).toBeInTheDocument()
+  })
+  it('should render picker with apply msg', async () => {
+    const mockedInitialDate = moment('07-15-2023', 'MM-DD-YYYY')
+    const mockApply = jest.fn()
+    const applyMsg = 'this is a test message'
+    const title = 'testTitle'
+    render(<IntlProvider locale='en'>
+      <DateTimePicker
+        initialDate={{ current: mockedInitialDate }}
+        onApply={mockApply}
+        title={title}
+        applyFooterMsg={applyMsg}
+      />
+    </IntlProvider>)
+    const calendarIcon = await screen.findByTestId('ClockOutlined')
+    expect(calendarIcon).toBeVisible()
+    const user = userEvent.setup()
+    expect(screen.queryByText('this is a test message')).toBeNull()
+    await user.click(calendarIcon)
+    expect(await screen.findByText('this is a test message')).toBeInTheDocument()
+  })
+  it('should handle title hover correctly', async () => {
+    const mockedInitialDate = moment('07-15-2023', 'MM-DD-YYYY')
+    const mockApply = jest.fn()
+    const title = 'testTitle'
+    render(<IntlProvider locale='en'>
+      <DateTimePicker
+        initialDate={{ current: mockedInitialDate }}
+        onApply={mockApply}
+        title={title}
+      />
+    </IntlProvider>)
+    const calendarIcon = await screen.findByTestId('ClockOutlined')
+    expect(calendarIcon).toBeVisible()
+    const user = userEvent.setup()
+    expect(screen.queryByTitle(title)).toBeNull()
+    await user.hover(calendarIcon)
+    expect(await screen.findByRole('tooltip', { name: title })).toBeInTheDocument()
+  })
+  it('should handle apply with calendar select correctly', async () => {
+    const mockedInitialDate = moment('07-15-2023', 'MM-DD-YYYY')
+    const mockApply = jest.fn()
+    const title = 'testTitle'
+    const MockIcon = () => <div data-testid='testIcon'>test icon</div>
+    const TestComp = ({ date }: { date: Moment }) => {
+      const timeRef = useRef(date)
+      return <IntlProvider locale='en'>
+        <DateTimePicker
+          title={title}
+          initialDate={timeRef}
+          onApply={mockApply}
+          icon={<MockIcon />}
+        />
+      </IntlProvider>
+
+    }
+    render(<TestComp date={mockedInitialDate} />)
+    const user = userEvent.setup()
+    await user.click(await screen.findByTestId('testIcon'))
+    expect(await screen.findByPlaceholderText('Select date')).toHaveFocus()
+    await user.click(await screen.findByText('16'))
+    await user.click(await screen.findByRole('time-picker-hours'))
+    await user.click(await screen.findByText('00'))
+    await user.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(mockApply).toBeCalledTimes(1)
+    expect(mockApply).toBeCalledWith(mockedInitialDate.clone().add(1, 'days'))
+  })
+  it('should handle cancel correctly', async () => {
+    const mockedInitialDate = moment('07-15-2023', 'MM-DD-YYYY')
+    const mockApply = jest.fn()
+    render(<IntlProvider locale='en'>
+      <DateTimePicker
+        initialDate={{ current: mockedInitialDate }}
+        onApply={mockApply}
+      />
+      <div data-testid='other'>test div</div>
+    </IntlProvider>)
+    const user = userEvent.setup()
+    const calendarIcon = await screen.findByTestId('ClockOutlined')
+    expect(calendarIcon).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Jul' })).toBeNull()
+    await user.click(calendarIcon)
+    expect(await screen.findByPlaceholderText('Select date')).toHaveFocus()
+    const cancelBtn = await screen.findByRole('button', { name: 'Cancel' })
+    await user.click(cancelBtn)
+    await user.click(screen.getByTestId('other'))
+    expect(await screen.findByPlaceholderText('Select date')).not.toHaveFocus()
+  })
+  it('should handle same date apply correctly', async () => {
+    const mockedInitialDate = moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm')
+    const mockApply = jest.fn()
+    const mockDisableHours = jest.fn()
+    const mockDisableMinutes = jest.fn()
+    const TestComp = ({ date }: { date: Moment }) => {
+      const timeRef = useRef(date)
+      return <IntlProvider locale='en'>
+        <DateTimePicker
+          initialDate={timeRef}
+          onApply={mockApply}
+          disabledDateTime={{
+            disabledHours: mockDisableHours,
+            disabledMinutes: mockDisableMinutes
+          }}
+        />
+      </IntlProvider>
+
+    }
+    render(<TestComp date={mockedInitialDate} />)
+    const user = userEvent.setup()
+    await waitFor(async () => {
+      await user.click(await screen.findByTestId('ClockOutlined'))
+      await user.click(await screen.findByRole('time-picker-minutes'))
+      await user.click(await screen.findByText('45'))
+      await user.click(await screen.findByRole('time-picker-hours'))
+      const text23 = await screen.findAllByText('23')
+      await user.click(text23[text23.length - 1])
+      await user.click(await screen.findByRole('button', { name: 'Apply' }))
+      expect(mockApply).toHaveBeenCalledTimes(1)
+    })
+    expect(mockApply).toHaveBeenNthCalledWith(
+      1,
+      mockedInitialDate.clone().add(15, 'minutes').add(9, 'hours'))
+    expect(mockDisableHours).toBeCalled()
+    expect(mockDisableMinutes).toBeCalled()
   })
 })

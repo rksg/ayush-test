@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { store, Provider, videoCallQoeURL, dataApiSearchURL }              from '@acx-ui/store'
+import { store, Provider, r1VideoCallQoeURL, dataApiSearchURL }            from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { createTestResponse, deleteTestResponse, callQoeTestDetailsFixtures1, searchClientsFixture } from './__tests__/fixtures'
@@ -43,7 +43,7 @@ describe('videoCallQoeApi', () => {
 
   describe('getAllCallQoeTest end point', () => {
     it('api should return populated data', async () => {
-      mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests', {
+      mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests', {
         data: expectedResponse
       })
       const { status, data, error } = await store.dispatch(
@@ -54,7 +54,7 @@ describe('videoCallQoeApi', () => {
       expect(data).toMatchObject(expectedResponse)
     })
     it('api should return empty data', async () => {
-      mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests', {
+      mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests', {
         data: {}
       })
       const { status, data, error } = await store.dispatch(
@@ -65,7 +65,7 @@ describe('videoCallQoeApi', () => {
       expect(data).toStrictEqual({})
     })
     it('api should return error', async () => {
-      mockGraphqlQuery(videoCallQoeURL, 'CallQoeTests', {
+      mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests', {
         error: new Error('something went wrong!')
       })
       const { status, data, error } = await store.dispatch(
@@ -78,7 +78,7 @@ describe('videoCallQoeApi', () => {
   })
 
   it('createCallQoeTest api should create a test', async () => {
-    mockGraphqlMutation(videoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
+    mockGraphqlMutation(r1VideoCallQoeURL, 'CreateVideoCallQoeTest', { data: createTestResponse })
     const { result } = renderHook(() => useCreateCallQoeTestMutation(),
       { wrapper: Provider })
     act(() => {
@@ -90,7 +90,7 @@ describe('videoCallQoeApi', () => {
   })
 
   it('deleteCallQoeTest api should delete a test', async () => {
-    mockGraphqlMutation(videoCallQoeURL, 'DeleteVideoCallQoeTest', { data: deleteTestResponse })
+    mockGraphqlMutation(r1VideoCallQoeURL, 'DeleteVideoCallQoeTest', { data: deleteTestResponse })
     const { result } = renderHook(() => useDeleteCallQoeTestMutation(),
       { wrapper: Provider })
     act(() => {
@@ -101,7 +101,7 @@ describe('videoCallQoeApi', () => {
   })
 
   it('updateCallQoeParticipant api should update the participant mac address', async () => {
-    mockGraphqlMutation(videoCallQoeURL, 'UpdateCallQoeParticipant',
+    mockGraphqlMutation(r1VideoCallQoeURL, 'UpdateCallQoeParticipant',
       { data: { updateCallQoeParticipant: 1 } })
     const { result } = renderHook(() => useUpdateCallQoeParticipantMutation(),
       { wrapper: Provider })
@@ -128,7 +128,7 @@ describe('videoCallQoeTestDetails', () => {
   }
 
   it('api should return populated data', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', {
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails', {
       data: callQoeTestDetailsFixtures1
     })
     const { status, data, error } = await store.dispatch(
@@ -139,7 +139,7 @@ describe('videoCallQoeTestDetails', () => {
     expect(data).toMatchObject(callQoeTestDetailsFixtures1)
   })
   it('api should return empty data', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', {
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails', {
       data: {}
     })
     const { status, data, error } = await store.dispatch(
@@ -150,7 +150,7 @@ describe('videoCallQoeTestDetails', () => {
     expect(data).toStrictEqual({})
   })
   it('api should return error', async () => {
-    mockGraphqlQuery(videoCallQoeURL, 'CallQoeTestDetails', {
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
