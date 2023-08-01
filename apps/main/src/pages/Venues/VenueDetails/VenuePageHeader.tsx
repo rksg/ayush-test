@@ -46,7 +46,7 @@ function VenuePageHeader () {
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
       extra={filterByAccess([
-        enableTimeFilter() ? <DatePicker key='date-filter' /> : <></>,
+        enableTimeFilter() ? <DatePicker key='SHOW_WITHOUT_RBAC_CHECK' /> : <></>,
         <Button
           type='primary'
           onClick={() =>

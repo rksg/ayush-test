@@ -38,11 +38,11 @@ export const useHeaderExtra = (props: useHeaderExtraProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   return [
     <Filter
-      key='network-filter'
+      key='SHOW_WITHOUT_RBAC_CHECK'
       {...props}
     />,
     <RangePicker
-      key='range-picker'
+      key='SHOW_WITHOUT_RBAC_CHECK'
       selectedRange={{
         startDate: moment(startDate),
         endDate: moment(endDate)

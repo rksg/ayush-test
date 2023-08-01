@@ -20,7 +20,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
 
   const component = [
     <RangePicker
-      key='range-picker'
+      key='SHOW_WITHOUT_RBAC_CHECK'
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
@@ -29,7 +29,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   ]
   showFilter && component.unshift(
     <NetworkFilter
-      key='reports-network-filter'
+      key='SHOW_WITHOUT_RBAC_CHECK'
       shouldQuerySwitch={shouldQuerySwitch}
       showRadioBand={showRadioBand}
       multiple={true}

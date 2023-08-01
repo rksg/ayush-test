@@ -199,7 +199,7 @@ export function SwitchClientDetails () {
           { text: $t({ defaultMessage: 'Wired Clients List' }), link: '/users/switch' }
         ] : [{ text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }]}
         extra={filterByAccess([
-          <Button key='DownloadSwitchUsers' type='link' onClick={exportClientToCSV}>
+          <Button key='SHOW_WITHOUT_RBAC_CHECK' type='link' onClick={exportClientToCSV}>
             {$t({ defaultMessage: 'Download Information' })}</Button>
         ])}
       />

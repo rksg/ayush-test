@@ -24,12 +24,12 @@ export function useConfigChange () {
 
   const headerExtra = [
     <NetworkFilter
-      key='network-filter'
+      key='SHOW_WITHOUT_RBAC_CHECK'
       shouldQuerySwitch={true}
       withIncidents={false}
     />,
     <Dropdown
-      key='date-dropdown'
+      key='SHOW_WITHOUT_RBAC_CHECK'
       overlay={<Menu
         onClick={handleMenuClick}
         items={[DateRange.last7Days, DateRange.last30Days

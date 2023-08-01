@@ -47,7 +47,7 @@ function NetworkPageHeader ({
           : [],
         enableTimeFilter()
           ? <RangePicker
-            key='date-filter'
+            key='SHOW_WITHOUT_RBAC_CHECK'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker

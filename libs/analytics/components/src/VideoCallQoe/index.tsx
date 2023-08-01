@@ -44,7 +44,7 @@ export function useVideoCallQoe () {
       :
       <Tooltip
         placement='left'
-        key='disableCallButton'
+        key='SHOW_WITHOUT_RBAC_CHECK'
         trigger='hover'
         title={$t({ defaultMessage: 'There is already a test call which is not started.' })}
       >

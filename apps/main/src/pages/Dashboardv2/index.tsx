@@ -146,9 +146,9 @@ function DashboardPageHeader () {
         <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
           <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
         }</Dropdown>,
-        <VenueFilter key='hierarchy-filter'/>,
+        <VenueFilter key='SHOW_WITHOUT_RBAC_CHECK'/>,
         <RangePicker
-          key='range-picker'
+          key='SHOW_WITHOUT_RBAC_CHECK'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker

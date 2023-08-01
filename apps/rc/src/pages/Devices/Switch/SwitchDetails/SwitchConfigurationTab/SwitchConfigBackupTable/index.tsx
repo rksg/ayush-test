@@ -188,14 +188,14 @@ export function SwitchConfigBackupTable () {
   }
 
   const rowActions: TableProps<ConfigurationBackup>['rowActions'] = [{
-    key: 'ViewConfig',
+    key: 'SHOW_WITHOUT_RBAC_CHECK',
     label: $t({ defaultMessage: 'View' }),
     disabled: () => !enabledRowButton.find(item => item === 'View'),
     onClick: (rows, clearSelection) => {
       showViewModal(rows, clearSelection)
     }
   }, {
-    key: 'CompareConfig',
+    key: 'SHOW_WITHOUT_RBAC_CHECK',
     label: $t({ defaultMessage: 'Compare' }),
     disabled: () => !enabledRowButton.find(item => item === 'Compare'),
     onClick: (rows) => {

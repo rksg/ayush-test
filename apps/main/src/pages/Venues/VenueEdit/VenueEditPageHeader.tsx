@@ -27,7 +27,7 @@ function VenueEditPageHeader () {
       ]}
       extra={filterByAccess([
         <Button
-          key='back'
+          key='SHOW_WITHOUT_RBAC_CHECK'
           type='primary'
           onClick={() =>
             navigate({

@@ -27,15 +27,11 @@ let operationMap: Record<string, string> = {}
 export function hasAccess (id?: string) {
   const { allowedOperations } = getUserProfile()
 
+  if(id === 'SHOW_WITHOUT_RBAC_CHECK') return true
   // temp measure to permit all undefined id for admins
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
 
   const action = operationMap[id]
-
-  // allowed undefined operation
-  // this is so helpers could skip `key` used in places like PageHeader’s extra prop
-  if (!action) return true
-
   return allowedOperations.includes(action)
 }
 

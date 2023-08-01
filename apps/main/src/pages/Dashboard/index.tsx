@@ -81,9 +81,9 @@ function DashboardPageHeader () {
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
       extra={filterByAccess([
-        <VenueFilter key='hierarchy-filter'/>,
+        <VenueFilter key='SHOW_WITHOUT_RBAC_CHECK'/>,
         <RangePicker
-          key='range-picker'
+          key='SHOW_WITHOUT_RBAC_CHECK'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker

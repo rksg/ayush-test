@@ -55,7 +55,7 @@ export const GroupedStatsTables =
         <UI.ActionsContainer>
           {filterByAccess([
             <RangePicker
-              key='date-filter'
+              key='SHOW_WITHOUT_RBAC_CHECK'
               selectedRange={filterPeriod}
               selectionType={range}
               onDateApply={setDateFilter as CallableFunction}
@@ -96,7 +96,7 @@ export const GroupedStatsTables =
           </Select>
           {filterByAccess([
             <RangePicker
-              key='date-filter'
+              key='SHOW_WITHOUT_RBAC_CHECK'
               selectedRange={filterPeriod}
               selectionType={range}
               onDateApply={setDateFilter as CallableFunction}

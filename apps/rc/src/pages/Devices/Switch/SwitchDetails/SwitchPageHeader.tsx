@@ -200,7 +200,7 @@ function SwitchPageHeader () {
         ] : [{ text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }]}
         extra={filterByAccess([
           !checkTimeFilterDisabled() && <RangePicker
-            key='range-picker'
+            key='SHOW_WITHOUT_RBAC_CHECK'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
