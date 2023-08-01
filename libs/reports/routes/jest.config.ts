@@ -1,12 +1,11 @@
 module.exports = {
-  displayName: 'reports',
-  preset: '../../jest.preset.ts',
+  displayName: 'reports-routes',
+  preset: '../../../jest.preset.ts',
   transform: {
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/reports',
+  coverageDirectory: '../../../coverage/libs/reports/routes',
   coverageThreshold: {
     global: {
       statements: 100,
