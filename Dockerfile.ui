@@ -66,12 +66,8 @@ COPY tools/docker/locales ./tools/docker/locales
 RUN chmod +x tools/docker/locales/generate.sh
 RUN tools/docker/locales/generate.sh
 
-FROM build-base as build
-COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
-
 ###############################################################
-FROM build-base as acx-ui-base-test
+FROM build as acx-ui-base-test
 ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
@@ -126,6 +122,12 @@ COPY --from=acx-ui-group4-test /app/coverage /app/coverage
 COPY --from=acx-ui-group5-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
+
+###############################################################
+FROM build-base as build
+COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
+RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
+
 
 ###############################################################
 FROM nginx:1.21.6-alpine

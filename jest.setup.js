@@ -106,7 +106,16 @@ afterEach(() => {
   Loader['instance']?.reset()
   mockInstances.clearAll()
 })
-afterAll(() => mockServer.close())
+
+afterAll(() => {
+  mockServer.close()
+  const head = document.getElementsByTagName('head')[0];
+  const styles = head.getElementsByTagName('style');
+
+  for (let i = 0; i < styles.length; i++) {
+    head.removeChild(styles[i]);
+  }
+})
 
 cleanupRegisteredPaths()
 
