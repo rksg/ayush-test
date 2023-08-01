@@ -917,8 +917,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      invalidatesTags: [{ type: 'Venue', id: 'BSS_COLORING' }]
+      }
     }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
