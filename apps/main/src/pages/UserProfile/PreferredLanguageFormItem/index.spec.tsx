@@ -1,7 +1,6 @@
 import userEvent   from '@testing-library/user-event'
 import { useIntl } from 'react-intl'
 
-import { useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { Provider  }             from '@acx-ui/store'
 import { render, screen }        from '@acx-ui/test-utils'
 import { useUserProfileContext } from '@acx-ui/user'
@@ -28,9 +27,8 @@ jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({ children, showSearch, allowClear, optionFilterProp, ...props
   }: React.PropsWithChildren<{ showSearch: boolean, allowClear:boolean, optionFilterProp: string, onChange?: (value: string) => void }>) => {
-    // const currPrefLang = 'es'
-    let val = 'en'
-    const localeLangName = new Intl.DisplayNames([val], { type: 'language' })
+    let userPreferredLang = 'en'
+    const localeLangName = new Intl.DisplayNames([userPreferredLang], { type: 'language' })
     const supportedLangs = [
       { label: `${localeLangName.of('en')}`, value: 'en-US' },
       { label: `${localeLangName.of('es')}`, value: 'es-ES' },
@@ -53,17 +51,17 @@ describe('PreferredLanguageFormItem', () => {
     preferredLanguage: 'en-US'
   }
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    mockUseIntl.mockReturnValue({ $t: jest.fn() })
+    mockUseIntl.mockReturnValue({
+      $t: jest.fn()
+    })
 
     mockUseUserProfileContext.mockReturnValue({
       data: mockUserProfile
     })
-
   })
 
-  it.skip('should render successfully', async () => {
+  it.skip('should render successfully', () => {
+    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
     render(
       <Provider>
         <PreferredLanguageFormItem />
