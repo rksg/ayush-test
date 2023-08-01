@@ -22,4 +22,15 @@ describe('IFrame', () => {
 
     expect(window.location.reload).toHaveBeenCalled()
   })
+
+  it('should clean ref on unmount', async () => {
+
+    const { unmount } =
+    await render(<IFrame title='test iframe' src='http://localhost/api/a4rc/explorer/'/>)
+    const iframe = screen.getByTitle('test iframe') as HTMLIFrameElement
+    expect(iframe).toBeInTheDocument()
+
+    unmount()
+
+  })
 })
