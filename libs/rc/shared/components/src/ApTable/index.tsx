@@ -336,17 +336,18 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           </span>
         )
       }
-    }]
+    },
+    ...(secureBootFlag? [
+      {
+        key: 'secureBoot',
+        title: $t({ defaultMessage: 'Secure Boot' }),
+        dataIndex: 'secureBootEnabled',
+        show: false,
+        sorter: false
+      }] : [] )
+    ]
 
-    const columnsWithSecureBoot = [...columns, {
-      key: 'secureBoot',
-      title: $t({ defaultMessage: 'Secure Boot' }),
-      dataIndex: 'secureBootEnabled',
-      show: false,
-      sorter: false
-    }]
-
-    return secureBootFlag ? columnsWithSecureBoot : columns
+    return columns
   }, [$t, tableQuery.data?.extra])
 
   const isActionVisible = (
