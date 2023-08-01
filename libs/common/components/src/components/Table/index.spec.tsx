@@ -314,6 +314,51 @@ describe('Table component', () => {
     expect(after.filter(el => !el.checked)).toHaveLength(2)
   })
 
+  it('updates selected rows after the table data source changes', async () => {
+    const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
+    const data = [
+      { key: '1', name: 'John Doe' },
+      { key: '2', name: 'Jane Doe' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    const rowActions: TableProps<{ key: string, name: string }>['rowActions'] = [
+      { label: 'Delete', onClick: (_selected, clear) => clear() }
+    ]
+
+    const { rerender } = render(<Table
+      columns={columns}
+      dataSource={data}
+      rowActions={rowActions}
+      rowSelection={{ type: 'checkbox' }}
+    />)
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    const before = (await body.findAllByRole('checkbox')) as HTMLInputElement[]
+    await userEvent.click(screen.getByText('John Doe'))
+    await userEvent.click(screen.getByText('Jane Doe'))
+    expect(before.filter(el => el.checked)).toHaveLength(2)
+    expect(before.filter(el => !el.checked)).toHaveLength(1)
+
+    const dataUpdated = [
+      { key: '1', name: 'R1' },
+      { key: '3', name: 'Will Smith' }
+    ]
+
+    rerender(<Table
+      columns={columns}
+      dataSource={dataUpdated}
+      rowActions={rowActions}
+      rowSelection={{ type: 'checkbox' }}
+    />)
+
+    expect(await body.findByText(/r1/i)).toBeVisible()
+  })
+
   it('row click for table without rowSelection does nothing', async () => {
     const columns = [{ title: 'Name', dataIndex: 'name', key: 'name' }]
     const data = [
