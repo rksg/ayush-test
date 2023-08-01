@@ -254,3 +254,8 @@ export interface EdgeAlarmSummary {
   }
   totalCount: number
 }
+
+export enum EdgeTroubleshootingType {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE'
+}
