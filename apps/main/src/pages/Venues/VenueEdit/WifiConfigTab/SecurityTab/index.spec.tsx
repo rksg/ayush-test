@@ -24,6 +24,29 @@ const params = {
   venueId: 'f892848466d047798430de7ac234e940'
 }
 
+const policyListContent = [
+  {
+    id: 'policyId1',
+    name: 'test',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1664790827392,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  },
+  {
+    id: 'be62604f39aa4bb8a9f9a0733ac07add',
+    name: 'test6',
+    description: '',
+    numOfRules: 1,
+    lastModifier: 'FisrtName 1649 LastName 1649',
+    lastUpdTime: 1667215711375,
+    numOfActiveVenues: 0,
+    activeVenues: []
+  }
+]
+
 describe('SecurityTab', () => {
   beforeEach(() => {
     mockServer.use(
@@ -45,6 +68,9 @@ describe('SecurityTab', () => {
       rest.put(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        RogueApUrls.getRoguePolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListContent))),
       rest.put(
         CommonUrlsInfo.updateVenueRogueAp.url,
         (_, res, ctx) => res(ctx.json({})))
@@ -80,7 +106,6 @@ describe('SecurityTab', () => {
     await userEvent.click(switchButton[0])
     await userEvent.click(switchButton[1])
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
-
     // await userEvent.click(await screen.findByRole('switch'))
 
     // await userEvent.click(await screen.findByRole('switch'))

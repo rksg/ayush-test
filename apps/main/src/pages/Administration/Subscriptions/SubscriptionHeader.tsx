@@ -17,6 +17,7 @@ import {
   EntitlementDeviceTypes,
   getEntitlementDeviceTypes
 } from '@acx-ui/rc/utils'
+import { isDelegationMode }                from '@acx-ui/rc/utils'
 import { useParams }                       from '@acx-ui/react-router-dom'
 import { getJwtTokenPayload, AccountTier } from '@acx-ui/utils'
 
@@ -63,7 +64,7 @@ export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING)
+  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier

@@ -113,9 +113,9 @@ const FWVersionMgmt = () => {
       visible: true
     },
     edgeFirmware: {
-      title: <UI.TabWithHint>{$t({ defaultMessage: 'Edge Firmware' })}
+      title: <UI.TabWithHint>{$t({ defaultMessage: 'SmartEdge Firmware' })}
         {isEdgeFirmwareAvailable && <Tooltip children={<InformationSolid />}
-          title={$t({ defaultMessage: 'There are new Edge firmware versions available' })} />}
+          title={$t({ defaultMessage: 'There are new SmartEdge firmware versions available' })} />}
       </UI.TabWithHint>,
       content: <EdgeFirmware />,
       visible: isEdgeEnabled

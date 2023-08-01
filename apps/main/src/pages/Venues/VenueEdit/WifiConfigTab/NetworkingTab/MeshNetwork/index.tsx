@@ -23,7 +23,7 @@ import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTou
 const MeshInfoIcon = () => {
   const { $t } = useIntl()
 
-  return <Tooltip.InfoFilled
+  return <Tooltip.Info isFilled
     title={
       $t({ defaultMessage: 'To prevent networking issues, you can change this property only once, when activating the mesh option. It is highly recommended not to change them unless there is an urgent operational need.' })
     }
@@ -436,7 +436,7 @@ export function MeshNetwork () {
               />
             }
           />
-          <Tooltip.InfoFilled
+          <Tooltip.Info isFilled
             title={$t({
               defaultMessage: '"Zero touch mesh" is an automated networking technology that allows for seamless setup and expansion of mesh networks without manual intervention. This option is only available when Mesh is enabled for 5 & 6 GHz networks'
             })}

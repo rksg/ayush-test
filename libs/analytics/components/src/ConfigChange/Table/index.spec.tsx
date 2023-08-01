@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { DateRange, defaultRanges }                                                       from '@acx-ui/utils'
 import '@testing-library/jest-dom'
 
 import { configChanges } from '../__tests__/fixtures'
@@ -14,17 +15,19 @@ describe('Table', () => {
     store.dispatch(api.util.resetApiState())
   })
 
+  const timeRanges = defaultRanges()[DateRange.last7Days]
+
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Table/>, { wrapper: Provider, route: {} })
+    render(<Table timeRanges={timeRanges!}/>, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
   it('should render table with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<Table/>, { wrapper: Provider, route: {} })
+    render(<Table timeRanges={timeRanges!}/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -37,7 +40,7 @@ describe('Table', () => {
   it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table/>, { wrapper: Provider, route: {} })
+    render(<Table timeRanges={timeRanges!}/>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const tbody = await findTBody()
@@ -57,7 +60,8 @@ describe('Table', () => {
     const onRowClick = jest.fn()
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<Table onRowClick={onRowClick}/>, { wrapper: Provider, route: {} })
+    render(<Table timeRanges={timeRanges!} onRowClick={onRowClick}/>,
+      { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     const radio = await screen.findAllByRole('radio')
