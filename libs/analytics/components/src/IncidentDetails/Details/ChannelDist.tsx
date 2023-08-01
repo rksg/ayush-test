@@ -41,14 +41,17 @@ export const ChannelDist = (incident: Incident) => {
       value: $t({ defaultMessage: 'AP DISTRIBUTION BY CHANNEL' }),
       channel: 'channel',
       count: 'apCount',
-      countText: $t({ defaultMessage: 'Ap Count' })
+      countText: $t({ defaultMessage: 'Ap Count' }),
+      infoIconText: null
     },
     {
       key: 'rogueDistribution',
       value: $t({ defaultMessage: 'ROGUE DISTRIBUTION BY CHANNEL' }),
       channel: 'rogueChannel',
       count: 'rogueApCount',
-      countText: $t({ defaultMessage: 'Rogue AP Count' })
+      countText: $t({ defaultMessage: 'Rogue AP Count' }),
+      // eslint-disable-next-line max-len
+      infoIconText: $t({ defaultMessage: 'Please enable Rogue AP detection in the controller in order to view this rogue distribution by channel heatmap.' })
     },
     ...(incident.code.includes('24g')
       ? []
@@ -58,7 +61,8 @@ export const ChannelDist = (incident: Incident) => {
           value: $t({ defaultMessage: 'DFS EVENTS BY CHANNEL' }),
           channel: 'channel',
           count: 'eventCount',
-          countText: $t({ defaultMessage: 'DFS Events' })
+          countText: $t({ defaultMessage: 'DFS Events' }),
+          infoIconText: null
         }
       ])
   ]
@@ -92,7 +96,7 @@ export const ChannelDist = (incident: Incident) => {
           <Insights incident={incident} />
         </GridCol>
         <GridCol col={{ offset: 4, span: 20 }}>
-          <ChannelConfig incident={incident}/>
+          <ChannelConfig incident={incident} />
         </GridCol>
         {heatMapChartsConfig.map((heatMap, index) => (
           <GridCol key={index} col={{ offset: 4, span: 20 }}>

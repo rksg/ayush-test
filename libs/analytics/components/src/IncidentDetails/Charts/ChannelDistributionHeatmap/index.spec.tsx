@@ -11,18 +11,6 @@ import { api } from './services'
 
 import { ChannelDistributionHeatMap, tooltipFormatter } from '.'
 
-
-jest.mock('@acx-ui/utils', () => {
-  const reactIntl = jest.requireActual('react-intl')
-  const intl = reactIntl.createIntl({
-    locale: 'en'
-  })
-  return {
-    ...jest.requireActual('@acx-ui/utils'),
-    getIntl: () => intl
-  }
-})
-
 const buffer = {
   front: { value: 0, unit: 'hours' as unitOfTime.Base },
   back: { value: 0, unit: 'hours' as unitOfTime.Base }
@@ -33,14 +21,16 @@ const config = {
   value: 'AP DISTRIBUTION BY CHANNEL',
   channel: 'channel',
   count: 'apCount',
-  countText: 'Ap Count'
+  countText: 'Ap Count',
+  infoIconText: null
 }
 const config2 = {
   key: 'dfsEvents',
   value: 'DFS EVENTS BY CHANNEL',
   channel: 'channel',
   count: 'eventCount',
-  countText: 'DFS Events'
+  countText: 'DFS Events',
+  infoIconText: 'some text'
 }
 
 const response = {

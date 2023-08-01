@@ -6,8 +6,8 @@ import moment                from 'moment-timezone'
 import { renderToString }    from 'react-dom/server'
 import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData } from '@acx-ui/components'
-import { getIntl }                                               from '@acx-ui/utils'
+import { Loader, Heatmap, Card, cssStr, TooltipWrapper, NoData, Tooltip } from '@acx-ui/components'
+import { getIntl, noDataDisplay }                                         from '@acx-ui/utils'
 
 import { useHeatmapDistributionByChannelQuery, ChannelDistributionHeatMapProps } from './services'
 
@@ -43,7 +43,6 @@ const heatmapColorPalette = [
   cssStr('--acx-semantics-red-50')
 ]
 
-
 export const tooltipFormatter = (params: CallbackDataParams) => {
   const { $t } = getIntl()
   const tooltipConfig = {
@@ -51,24 +50,23 @@ export const tooltipFormatter = (params: CallbackDataParams) => {
     rogueDistribution: $t({ defaultMessage: 'Rogue AP Count' }),
     dfsEvents: $t({ defaultMessage: 'DFS Events' })
   }
-  const xValue = Array.isArray(params.data) ? params.data?.[0] : '-'
-  const yValue = Array.isArray(params.data) ? params.data?.[1] : '-'
-  const count = Array.isArray(params.data) ? params.data?.[2] : '-'
+  const xValue = Array.isArray(params.data) ? params.data?.[0] : noDataDisplay
+  const yValue = Array.isArray(params.data) ? params.data?.[1] : noDataDisplay
+  const count = Array.isArray(params.data) ? params.data?.[2] : noDataDisplay
   return renderToString(
     <TooltipWrapper>
       <div>
         {`${$t({ defaultMessage: 'Time' })}: ${xValue}`} <br />
         {`${$t({ defaultMessage: 'Channel' })}: ${yValue}`} <br />
-        {`${(tooltipConfig[params?.seriesName as keyof typeof tooltipConfig])}: ${count}`}
+        {`${tooltipConfig[params?.seriesName as keyof typeof tooltipConfig]}: ${count}`}
       </div>
     </TooltipWrapper>
   )
 }
 export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProps> = (props) => {
-
   const queryResults = useHeatmapDistributionByChannelQuery(props)
   const { heatMapConfig } = props
-  const { key, value: title, channel, count } = heatMapConfig
+  const { key, value: title, channel, count, infoIconText } = heatMapConfig
 
   const heatmapData = queryResults?.data?.[key as ChannelType]
 
@@ -100,10 +98,15 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
     <div
       style={{
         width: 'auto',
-        height: yAxisCategories.length * 20 > 400 ? yAxisCategories.length * 20 : 400
+        height: backfilledHeatmapData.length > 0
+          ? yAxisCategories.length * 20 > 400
+            ? yAxisCategories.length * 20
+            : 400 : 250
       }}>
       <Loader states={[queryResults]}>
-        <Card title={title} type='no-border'>
+        <Card title={{ title: title, icon: infoIconText
+          ? <Tooltip.Info title={infoIconText}/>
+          : null }}>
           <AutoSizer>
             {({ height, width }) => (
               backfilledHeatmapData.length > 0

@@ -26,7 +26,6 @@ export function Heatmap (props: {
 
   const option = {
     tooltip: {
-      position: 'top',
       ...tooltipOptions(),
       formatter: props.tooltipFormatter
     },
@@ -38,7 +37,8 @@ export function Heatmap (props: {
       data: props.xAxisCategories,
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dateAxisFormatter()
+        formatter: dateAxisFormatter(),
+        interval: 59
       }
     },
     yAxis: {

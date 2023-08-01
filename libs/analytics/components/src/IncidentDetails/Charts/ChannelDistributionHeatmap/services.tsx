@@ -23,12 +23,13 @@ export type HeatmapConfig = {
   channel: string;
   count: string;
   countText: string;
+  infoIconText: string | null
 }
 export interface ChannelDistributionHeatMapProps {
   heatMapConfig: HeatmapConfig;
   incident: Incident;
   buffer: BufferType;
-  minGranularity: string
+  minGranularity: string;
 }
 export type heatmapType = 'apDistribution' | 'rogueDistribution' | 'dfsEvents'
 export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer: BufferType) {
