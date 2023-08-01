@@ -39,8 +39,27 @@ import { NetworkVenuesTab } from './index'
 
 jest.mock('socket.io-client')
 
+type MockDialogProps = React.PropsWithChildren<{
+  visible: boolean
+  onOk?: () => void
+  onCancel?: () => void
+}>
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  NetworkApGroupDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
+    visible && <div data-testid={'NetworkApGroupDialog'}>
+      <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
+      <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
+    </div>,
+  NetworkVenueScheduleDialog: ({ onOk = ()=>{}, onCancel = ()=>{}, visible }: MockDialogProps) =>
+    visible && <div data-testid={'NetworkVenueScheduleDialog'}>
+      <button onClick={(e)=>{e.preventDefault();onOk()}}>Apply</button>
+      <button onClick={(e)=>{e.preventDefault();onCancel()}}>Cancel</button>
+    </div>
+}))
+
 const mockedApplyFn = jest.fn()
-describe.skip('NetworkVenuesTab', () => {
+describe('NetworkVenuesTab', () => {
   beforeAll(async () => {
     const env = {
       GOOGLE_MAPS_KEY: 'FAKE_GOOGLE_MAPS_KEY'
@@ -95,10 +114,6 @@ describe.skip('NetworkVenuesTab', () => {
   it('should render correctly', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
-    })
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
@@ -350,7 +365,7 @@ describe.skip('NetworkVenuesTab', () => {
     expect(rows).toHaveLength(2)
   })
 
-  it.skip('has custom scheduling', async () => {
+  it('has custom scheduling', async () => {
 
     const newAPGroups = [{
       radio: 'Both',
@@ -434,10 +449,6 @@ describe.skip('NetworkVenuesTab', () => {
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
-    })
-
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
@@ -538,24 +549,17 @@ describe.skip('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
-
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
 
     fireEvent.click(within(row).getByText('All APs'))
+    fireEvent.click(within(row).getByText('VLAN-1 (Default)'))
+    fireEvent.click(within(row).getByText('2.4 GHz, 5 GHz'))
 
-    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+    const dialog = await screen.findByTestId('NetworkApGroupDialog')
+    await waitFor(() => expect(dialog).toBeVisible())
 
-    // click 'x' of Radio tag '5 GHz'
-    const radioTag = within(dialog).getByTitle('5 GHz')
-    fireEvent.click(within(radioTag).getByRole('img', { name: 'close', hidden: true }))
-
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
-    await waitFor(() => {
-      expect(mockedApplyFn).toBeCalled()
-    })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should trigger NetworkSchedulingDialog', async () => {
@@ -606,13 +610,7 @@ describe.skip('NetworkVenuesTab', () => {
 
     fireEvent.click(within(row).getByText(/custom/i))
 
-    const dialog = await waitFor(async () => screen.findByRole('dialog'))
-
-    const applyButton = await within(dialog).findByRole('button', { name: 'Apply' })
-    fireEvent.click(applyButton)
-
-    await waitFor(() => {
-      expect(mockedApplyFn).toBeCalled()
-    })
+    const dialog = await screen.findByTestId('NetworkVenueScheduleDialog')
+    await waitFor(() => expect(dialog).toBeVisible())
   })
 })

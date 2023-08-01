@@ -7,6 +7,7 @@ import {
   useGetDelegationsQuery,
   useGetNotificationRecipientsQuery
 } from '@acx-ui/rc/services'
+import { hasAdministratorTab }                   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }                 from '@acx-ui/user'
 
@@ -114,15 +115,8 @@ export default function Administration () {
   const { data: userProfileData } = useUserProfileContext()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
-  // support dashboard - his own account
-  let isSupport: boolean = false
-  if (userProfileData?.dogfood) {
-    // eslint-disable-next-line max-len
-    isSupport = userProfileData?.varTenantId !== undefined && userProfileData?.varTenantId === tenantId
-  }
-
-  const hasAdministratorTab = !userProfileData?.delegatedDogfood && !isSupport
-  if (hasAdministratorTab === false && activeTab === 'administrators') {
+  const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantId)
+  if (isAdministratorAccessible === false && activeTab === 'administrators') {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }
 
@@ -137,7 +131,7 @@ export default function Administration () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Administration' }) }
       ]}
-      footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
+      footer={<AdministrationTabs hasAdministratorTab={isAdministratorAccessible} />}
     />
     { ActiveTabPane && <ActiveTabPane /> }
   </>)

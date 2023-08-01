@@ -62,6 +62,10 @@ export const compareVersions = (a?: string, b?: string): number => {
   return 0
 }
 
+export const isBetaFirmware = (category: FirmwareCategory): boolean => {
+  return category.toUpperCase() === FirmwareCategory.BETA.toUpperCase()
+}
+
 export const compareSwitchVersion = (a: string, b: string): number => {
   const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_b(?<build>\d+))?$/
   const group1 = a?.match(switchVersionReg)?.groups
