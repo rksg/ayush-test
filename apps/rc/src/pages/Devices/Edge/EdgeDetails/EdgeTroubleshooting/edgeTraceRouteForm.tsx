@@ -6,9 +6,9 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, Tooltip }                       from '@acx-ui/components'
-import { useTraceRouteEdgeMutation }                     from '@acx-ui/rc/services'
-import { targetHostRegExp, EdgeTroubleshootingMessages } from '@acx-ui/rc/utils'
+import { Button, Loader, Tooltip }                                                from '@acx-ui/components'
+import { useTraceRouteEdgeMutation }                                              from '@acx-ui/rc/services'
+import { targetHostRegExp, EdgeTroubleshootingMessages, EdgeTroubleshootingType } from '@acx-ui/rc/utils'
 
 export function EdgeTraceRouteForm () {
   const { $t } = useIntl()
@@ -20,7 +20,7 @@ export function EdgeTraceRouteForm () {
     try {
       const payload = {
         targetHost: form.getFieldValue('name'),
-        action: 'traceRoute'
+        action: EdgeTroubleshootingType.TRACE_ROUTE
       }
       const traceRouteEdgeResult =
         await traceRouteEdge({ params: { tenantId, serialNumber }, payload }).unwrap()
@@ -66,7 +66,7 @@ export function EdgeTraceRouteForm () {
         />
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
           <Button
-            type='secondary'
+            type='primary'
             htmlType='submit'
             disabled={!isValid || isTraceRouteEdge}
             onClick={handleTraceRouteEdge}>

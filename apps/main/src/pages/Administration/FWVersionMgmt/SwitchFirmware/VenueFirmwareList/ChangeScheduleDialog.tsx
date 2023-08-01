@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { DatePicker, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                      from 'antd/lib/form/Form'
 import dayjs                                                            from 'dayjs'
+import _                                                                from 'lodash'
 import { useIntl }                                                      from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -63,13 +64,10 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
       } else {
         setChecked(false)
       }
-      if (data.length > 1) {
-        setDisableSave(false)
-      } else {
-        setDisableSave(!selectionChanged && !selectionAboveTenChanged)
-      }
+      const hasSelectedDateAndTime = !_.isEmpty(selectedDate) && !_.isEmpty(selectedTime)
+      setDisableSave((!selectionChanged && !selectionAboveTenChanged) || !hasSelectedDateAndTime)
     }
-  }, [data, selectionChanged, selectionAboveTenChanged])
+  }, [data, selectionChanged, selectionAboveTenChanged, selectedDate, selectedTime])
 
   useEffect(() => {
     if (enableSwitchTwoVersionUpgrade) {

@@ -103,7 +103,7 @@ describe('Property Config Tab', () => {
         (_, res, ctx) => res(ctx.json(mockPersonaGroupList.content[0]))
       ),
       rest.get(
-        MsgTemplateUrls.getTemplateScopeById.url,
+        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockedTemplateScope))
       )
     )

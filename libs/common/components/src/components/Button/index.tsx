@@ -7,9 +7,7 @@ import { Tooltip } from '../Tooltip'
 import * as UI from './styledComponents'
 
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
-  // `secondary` refers to Primary Orange in design system
-  // https://www.figma.com/file/NexKzWX3cfjNzGYzfwrVER/ACX-design-system?node-id=949%3A17349
-  type?: 'default' | 'primary' | 'secondary' | 'link'
+  type?: 'default' | 'primary' | 'link'
 }
 
 export function Button ({ type = 'default', ...props }: ButtonProps) {
@@ -17,16 +15,10 @@ export function Button ({ type = 'default', ...props }: ButtonProps) {
   const handleOnMouseUp = useCallback(() => {
     ref.current?.blur()
   }, [])
-  let customType = null
-  if (type === 'secondary') {
-    customType = 'secondary'
-    type = 'primary'
-  }
   return (
     <UI.Button
       ref={ref}
       type={type as AntButtonProps['type']}
-      $customType={customType}
       onMouseUp={handleOnMouseUp}
       {...props}
     />

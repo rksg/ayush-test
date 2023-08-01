@@ -198,7 +198,7 @@ export function SwitchConfigHistoryTable (props: {
       onCancel={handleCancel}
       destroyOnClose={true}
       width={1000}
-      footer={<Button key='back' type='secondary' onClick={handleCancel}>
+      footer={<Button key='back' type='primary' onClick={handleCancel}>
         {$t({ defaultMessage: 'Close' })}
       </Button>
       }
