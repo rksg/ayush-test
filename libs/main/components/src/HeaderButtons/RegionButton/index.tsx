@@ -9,7 +9,7 @@ import {
 }                        from '@acx-ui/components'
 import {
   WorldSolid,
-  ArrowExpand
+  CaretDownSolid
 } from '@acx-ui/icons'
 import {
   useGetMspEcProfileQuery
@@ -72,7 +72,7 @@ export default function RegionButton () {
     ? <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
       <LayoutUI.Icon children={<WorldSolid />} />
       {selectedKeys}
-      <LayoutUI.Icon children={<ArrowExpand />} />
+      <LayoutUI.DropdownCaretIcon children={<CaretDownSolid />} />
     </LayoutUI.DropdownText>}</Dropdown>
     : null
 }

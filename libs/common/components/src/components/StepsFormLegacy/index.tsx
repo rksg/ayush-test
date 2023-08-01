@@ -135,7 +135,7 @@ export function StepsFormLegacy <FormValue = any> (
         const submitButton = <Button
           {...submit.props}
           key={submitKey}
-          type='secondary'
+          type='primary'
           children={buttonLabel[submitKey]}
         />
 
