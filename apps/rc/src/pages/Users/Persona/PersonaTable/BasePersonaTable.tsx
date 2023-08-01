@@ -328,7 +328,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
+      visible: (selectedItems => selectedItems.length === 1)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
