@@ -37,12 +37,13 @@ const defaultPayload = {
 }
 
 export function PersonaDevicesTable (props: {
+  disableAddButton?: boolean
   persona?: Persona,
   dpskPoolId?: string
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { persona, dpskPoolId } = props
+  const { persona, dpskPoolId, disableAddButton = false } = props
   const [modelVisible, setModelVisible] = useState(false)
   const [macDevices, setMacDevices] = useState<PersonaDevice[]>([])
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
@@ -261,7 +262,8 @@ export function PersonaDevicesTable (props: {
   const actions: TableProps<PersonaDevice>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)}
+      onClick: () => {setModelVisible(true)},
+      disabled: disableAddButton
     }
   ]
 
@@ -274,7 +276,7 @@ export function PersonaDevicesTable (props: {
       params: { groupId: persona?.groupId, id: persona?.id },
       payload: data
     }).unwrap()
-      .then()
+      .then(() => handleModalCancel())
       .catch(error => {
         console.log(error) // eslint-disable-line no-console
       })

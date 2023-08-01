@@ -62,7 +62,6 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
           .then(values => {
             // console.log('Current dialog fields value = ', values)
             onSubmit(values.devices ?? [])
-            onModalCancel()
           }).catch(error => {
             console.log(error) // eslint-disable-line no-console
           })
@@ -71,7 +70,6 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
         const selectedDevices = selectedClients
           .map(({ clientMac, hostname }) => ({ macAddress: clientMac, hostname }))
         onSubmit(selectedDevices)
-        onModalCancel()
         break
     }
   }
