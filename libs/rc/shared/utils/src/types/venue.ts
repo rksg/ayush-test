@@ -218,6 +218,10 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export interface VenueBssColoring {
+	bssColoringEnabled: boolean
+}
+
 export interface VenueApModels {
 	models: string[]
 }

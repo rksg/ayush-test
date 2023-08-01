@@ -60,7 +60,8 @@ import {
   RequestFormData,
   VenueRadiusOptions,
   ApMeshTopologyData,
-  FloorPlanMeshAP
+  FloorPlanMeshAP,
+  VenueBssColoring
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }      from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -414,6 +415,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueLedOn: build.mutation<VenueLed[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueLedOn, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getVenueBssColoring: build.query<VenueBssColoring, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueBssColoring, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueBssColoring: build.mutation<VenueBssColoring, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueBssColoring, params)
         return {
           ...req,
           body: payload
@@ -1191,6 +1209,9 @@ export const {
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueBssColoringQuery,
+  useLazyGetVenueBssColoringQuery,
+  useUpdateVenueBssColoringMutation,
   useGetVenueLanPortsQuery,
   useLazyGetVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,

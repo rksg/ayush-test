@@ -70,7 +70,9 @@ export enum Features {
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
-  WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle'
+  WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
+  WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
+  WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
