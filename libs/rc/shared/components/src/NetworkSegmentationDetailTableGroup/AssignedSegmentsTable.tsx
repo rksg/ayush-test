@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
   defaultSort,
-  DistributionSwitch,
+  AccessSwitch,
   Persona, sortProp,
   TableQuery
 } from '@acx-ui/rc/utils'
@@ -13,7 +13,7 @@ export interface PersonaTableProps extends Omit<TableProps<Persona>, 'columns'>{
   tableQuery: TableQuery<Persona,
     { keyword: string, groupId: string },
     unknown>
-  switchInfo?: DistributionSwitch[]
+  switchInfo?: AccessSwitch[]
 }
 
 export const AssignedSegmentsTable = (props: PersonaTableProps) => {
