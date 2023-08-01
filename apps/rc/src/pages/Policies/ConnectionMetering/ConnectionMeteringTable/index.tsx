@@ -195,7 +195,6 @@ export default function ConnectionMeteringTable () {
               .unwrap()
               .then(() => {
                 showToast({
-                  key: name,
                   type: 'success',
                   content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
                     { name })
