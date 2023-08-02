@@ -13,6 +13,7 @@ import { hasAccountingRadius, hasAuthRadius } from '../../utils'
 import { MulticastForm }                      from '../MulticastForm'
 import * as UI                                from '../styledComponents'
 
+import WiFi7 from './WiFi7'
 
 const multicastFilterTooltipContent = (
   <div>
@@ -54,6 +55,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
 
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
+  const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
 
   const [
     enableFastRoaming,
@@ -189,7 +191,6 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           converting group addressed data traffic to unicast` })}
         children={<InputNumber style={{ width: '150px' }} />}
       />
-
 
       <UI.FieldLabel width={labelWidth}>
         { $t({ defaultMessage: 'Airtime Decongestion:' }) }
@@ -454,6 +455,8 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           }
         />
       </>}
+
+      { wifi6AndWifi7Flag && <WiFi7 /> }
 
       {showRadiusOptions &&
       <>

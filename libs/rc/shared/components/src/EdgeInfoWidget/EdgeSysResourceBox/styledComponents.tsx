@@ -5,12 +5,13 @@ export const WrapperStyles = css`
   height: 100%;
 
   .ant-statistic {
-    height: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
     align-items: center;
+    margin: auto;
 
     .ant-statistic-title {
       color: var(--acx-primary-black);
