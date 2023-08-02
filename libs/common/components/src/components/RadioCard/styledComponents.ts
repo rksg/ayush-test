@@ -40,8 +40,13 @@ export const Button = styled(DefaultButton)`
   position: absolute;
   right: 12px;
   bottom: 12px;
-  color: var(--acx-accents-orange-50);
-  background-color: var(--acx-primary-white);
+  &&& {
+    color: var(--acx-accents-orange-50);
+    background-color: var(--acx-primary-white);
+    &:hover, &:focus {
+      color: var(--acx-primary-white);
+    }
+  }
 `
 
 export const Radio = styled(AntRadio)`

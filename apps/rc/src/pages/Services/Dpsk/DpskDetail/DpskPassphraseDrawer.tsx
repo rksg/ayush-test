@@ -128,12 +128,13 @@ function transferFormFieldsToSaveData (
   isEdit: boolean,
   overrideMac: boolean
 ): DpskPassphrasesSaveData {
-  const { id, passphrase, expiration, ...rest } = fields
+  const { id, passphrase, expiration, revocationReason, ...rest } = fields
 
   return {
     ...rest,
     id: isEdit ? id : undefined,
     passphrase: passphrase === '' ? null : passphrase,
+    revocationReason: revocationReason === '' ? undefined : revocationReason,
     // eslint-disable-next-line max-len
     expirationDate: fields.expiration.mode === ExpirationMode.NEVER ? undefined : fields.expiration.date,
     ...(overrideMac ? { override: true } : {})

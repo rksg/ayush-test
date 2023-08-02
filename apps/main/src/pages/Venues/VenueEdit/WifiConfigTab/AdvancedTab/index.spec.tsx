@@ -2,21 +2,25 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider, store }                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { venueApi }                                                                  from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
+import { Provider, store }                                                           from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
   venueCaps,
   venueLed,
-  venueApModels
+  venueApModels,
+  venueBssColoring
 } from '../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../index'
 
 import { AdvancedTab, AdvanceSettingContext } from '.'
 
+
+const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 const editContextData = {} as EditContext
 const setEditContextData = jest.fn()
@@ -44,6 +48,10 @@ describe('AdvancedTab', () => {
       rest.get(CommonUrlsInfo.getVenueApModels.url,
         (_, res, ctx) => res(ctx.json(venueApModels))),
       rest.put(CommonUrlsInfo.updateVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiUrlsInfo.getVenueBssColoring.url,
+        (_, res, ctx) => res(ctx.json(venueBssColoring))),
+      rest.put(WifiUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -140,5 +148,31 @@ describe('AdvancedTab', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should show BssColoring if feature flag is On', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const advanceSettingContext = {
+      updateAccessPointLED: jest.fn(),
+      updateBssColoring: jest.fn()
+    }
+
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        editContextData,
+        setEditContextData,
+        editAdvancedContextData: advanceSettingContext,
+        setEditAdvancedContextData: jest.fn()
+      }}>
+        <AdvancedTab />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => screen.findByText('Enable BSS Coloring'))
+    expect(await screen.findByTestId('bss-coloring-switch')).toBeInTheDocument()
+
+    const bssToggleBtn = await screen.findByTestId('bss-coloring-switch')
+    fireEvent.click(bssToggleBtn)
+    userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })
