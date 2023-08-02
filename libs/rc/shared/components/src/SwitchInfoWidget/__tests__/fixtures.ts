@@ -25,7 +25,10 @@ export const switchDetail = {
   formStacking: false,
   name: 'FMF2249Q0JT',
   tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
-  activeSerial: 'FMF2249Q0JT'
+  activeSerial: 'FMF2249Q0JT',
+  configReady: true,
+  syncedAdminPassword: true,
+  syncedSwitchConfig: true
 }
 
 export const stackDetailData = {
