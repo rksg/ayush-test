@@ -253,6 +253,7 @@ export const formats = {
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
   networkSpeedFormat: (number: number) => numberFormat(1000, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,
+  bandwidthFormat: (value: string|number) => `${value} MHz`,
   hertzFormat: (number: number) => hertzFormat(number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,

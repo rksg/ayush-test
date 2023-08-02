@@ -1,0 +1,3769 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`deriveInterfering should match snapshot 1`] = `
+Object {
+  "categories": Array [
+    Object {
+      "name": "highlight",
+    },
+    Object {
+      "name": "normal",
+    },
+    Object {
+      "name": "txPower",
+    },
+  ],
+  "links": Array [
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:03",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:06",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:01",
+      "target": "00:00:00:00:00:02",
+    },
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:02",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:07",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:10",
+      "target": "00:00:00:00:00:11",
+    },
+  ],
+  "nodes": Array [
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:00",
+      "apName": "name0",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:00",
+      "name": "name0",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [],
+          "channelWidth": "NaN",
+          "group": undefined,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:01",
+      "apName": "name1",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        "NaN",
+      ],
+      "id": "00:00:00:00:00:01",
+      "name": "name1",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": true,
+          "txPower": "_1DB",
+        },
+        Object {
+          "channel": 100,
+          "channelList": Array [
+            100,
+            104,
+            108,
+            112,
+          ],
+          "channelWidth": 80,
+          "group": 106,
+          "highlighted": false,
+          "txPower": "_2DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:02",
+      "apName": "name2",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+        100,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:02",
+      "name": "name2",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_1DB",
+        "_2DB",
+      ],
+      "value": Array [
+        36,
+        100,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_3DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:03",
+      "apName": "name3",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        160,
+      ],
+      "id": "00:00:00:00:00:03",
+      "name": "name3",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_3DB",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_4DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": false,
+          "txPower": "_5DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:04",
+      "apName": "name4",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:04",
+      "name": "name4",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_4DB",
+        "_5DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_6DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_7DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:05",
+      "apName": "name5",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:05",
+      "name": "name5",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_6DB",
+        "_7DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": true,
+          "txPower": "_8DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_9DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:06",
+      "apName": "name6",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:06",
+      "name": "name6",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_8DB",
+        "_9DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 52,
+          "channelList": Array [
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 80,
+          "group": 58,
+          "highlighted": false,
+          "txPower": "_10DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:07",
+      "apName": "name7",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        52,
+      ],
+      "channelWidth": Array [
+        80,
+      ],
+      "id": "00:00:00:00:00:07",
+      "name": "name7",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_10DB",
+      ],
+      "value": Array [
+        52,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+          ],
+          "channelWidth": 20,
+          "group": undefined,
+          "highlighted": true,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:08",
+      "apName": "name8",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        20,
+      ],
+      "id": "00:00:00:00:00:08",
+      "name": "name8",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:09",
+      "apName": "name9",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:09",
+      "name": "name9",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+  ],
+}
+`;
+
+exports[`deriveInterfering should match snapshot when interferingLinks is available 1`] = `
+Object {
+  "categories": Array [
+    Object {
+      "name": "highlight",
+    },
+    Object {
+      "name": "normal",
+    },
+    Object {
+      "name": "txPower",
+    },
+  ],
+  "links": Array [
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:03",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:06",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:01",
+      "target": "00:00:00:00:00:02",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:02",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:07",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:10",
+      "target": "00:00:00:00:00:11",
+    },
+  ],
+  "nodes": Array [
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:00",
+      "apName": "name0",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:00",
+      "name": "name0",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [],
+          "channelWidth": "NaN",
+          "group": undefined,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:01",
+      "apName": "name1",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        "NaN",
+      ],
+      "id": "00:00:00:00:00:01",
+      "name": "name1",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": true,
+          "txPower": "_1DB",
+        },
+        Object {
+          "channel": 100,
+          "channelList": Array [
+            100,
+            104,
+            108,
+            112,
+          ],
+          "channelWidth": 80,
+          "group": 106,
+          "highlighted": false,
+          "txPower": "_2DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:02",
+      "apName": "name2",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        100,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:02",
+      "name": "name2",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_1DB",
+        "_2DB",
+      ],
+      "value": Array [
+        36,
+        100,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_3DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:03",
+      "apName": "name3",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        160,
+      ],
+      "id": "00:00:00:00:00:03",
+      "name": "name3",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_3DB",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_4DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": false,
+          "txPower": "_5DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:04",
+      "apName": "name4",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:04",
+      "name": "name4",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_4DB",
+        "_5DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_6DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_7DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:05",
+      "apName": "name5",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:05",
+      "name": "name5",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_6DB",
+        "_7DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": true,
+          "txPower": "_8DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_9DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:06",
+      "apName": "name6",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:06",
+      "name": "name6",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_8DB",
+        "_9DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 52,
+          "channelList": Array [
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 80,
+          "group": 58,
+          "highlighted": false,
+          "txPower": "_10DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:07",
+      "apName": "name7",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        52,
+      ],
+      "channelWidth": Array [
+        80,
+      ],
+      "id": "00:00:00:00:00:07",
+      "name": "name7",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_10DB",
+      ],
+      "value": Array [
+        52,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+          ],
+          "channelWidth": 20,
+          "group": undefined,
+          "highlighted": true,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:08",
+      "apName": "name8",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        20,
+      ],
+      "id": "00:00:00:00:00:08",
+      "name": "name8",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:09",
+      "apName": "name9",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:09",
+      "name": "name9",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+  ],
+}
+`;
+
+exports[`deriveInterfering should match snapshot when interferingLinks is empty 1`] = `
+Object {
+  "categories": Array [
+    Object {
+      "name": "highlight",
+    },
+    Object {
+      "name": "normal",
+    },
+    Object {
+      "name": "txPower",
+    },
+  ],
+  "links": Array [
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:03",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:06",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:01",
+      "target": "00:00:00:00:00:02",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:02",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:07",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:10",
+      "target": "00:00:00:00:00:11",
+    },
+  ],
+  "nodes": Array [
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:00",
+      "apName": "name0",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:00",
+      "name": "name0",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [],
+          "channelWidth": "NaN",
+          "group": undefined,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:01",
+      "apName": "name1",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        "NaN",
+      ],
+      "id": "00:00:00:00:00:01",
+      "name": "name1",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": true,
+          "txPower": "_1DB",
+        },
+        Object {
+          "channel": 100,
+          "channelList": Array [
+            100,
+            104,
+            108,
+            112,
+          ],
+          "channelWidth": 80,
+          "group": 106,
+          "highlighted": false,
+          "txPower": "_2DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:02",
+      "apName": "name2",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        100,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:02",
+      "name": "name2",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_1DB",
+        "_2DB",
+      ],
+      "value": Array [
+        36,
+        100,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_3DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:03",
+      "apName": "name3",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        160,
+      ],
+      "id": "00:00:00:00:00:03",
+      "name": "name3",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_3DB",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_4DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": false,
+          "txPower": "_5DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:04",
+      "apName": "name4",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:04",
+      "name": "name4",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_4DB",
+        "_5DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_6DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_7DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:05",
+      "apName": "name5",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:05",
+      "name": "name5",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_6DB",
+        "_7DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": true,
+          "txPower": "_8DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_9DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:06",
+      "apName": "name6",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:06",
+      "name": "name6",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_8DB",
+        "_9DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 52,
+          "channelList": Array [
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 80,
+          "group": 58,
+          "highlighted": false,
+          "txPower": "_10DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:07",
+      "apName": "name7",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        52,
+      ],
+      "channelWidth": Array [
+        80,
+      ],
+      "id": "00:00:00:00:00:07",
+      "name": "name7",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_10DB",
+      ],
+      "value": Array [
+        52,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+          ],
+          "channelWidth": 20,
+          "group": undefined,
+          "highlighted": true,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:08",
+      "apName": "name8",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        20,
+      ],
+      "id": "00:00:00:00:00:08",
+      "name": "name8",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:09",
+      "apName": "name9",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:09",
+      "name": "name9",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+  ],
+}
+`;
+
+exports[`deriveTxPowerHighlight should handle empty 1`] = `
+Array [
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [],
+    "nodes": Array [],
+  },
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [
+      Object {
+        "category": "highlight",
+        "source": "00:00:00:00:00:03",
+        "target": "00:00:00:00:00:08",
+      },
+      Object {
+        "category": "highlight",
+        "source": "00:00:00:00:00:06",
+        "target": "00:00:00:00:00:03",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:01",
+        "target": "00:00:00:00:00:02",
+      },
+      Object {
+        "category": "highlight",
+        "source": "00:00:00:00:00:02",
+        "target": "00:00:00:00:00:03",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:07",
+        "target": "00:00:00:00:00:08",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:10",
+        "target": "00:00:00:00:00:11",
+      },
+    ],
+    "nodes": Array [
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_MIN",
+          },
+        ],
+        "apMac": "00:00:00:00:00:00",
+        "apName": "name0",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          40,
+        ],
+        "id": "00:00:00:00:00:00",
+        "name": "name0",
+        "symbolSize": 36,
+        "txPower": Array [
+          "_MIN",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [],
+            "channelWidth": "NaN",
+            "group": undefined,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:01",
+        "apName": "name1",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          "NaN",
+        ],
+        "id": "00:00:00:00:00:01",
+        "name": "name1",
+        "symbolSize": 24,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": true,
+            "txPower": "_9DB",
+          },
+          Object {
+            "channel": 100,
+            "channelList": Array [
+              100,
+              104,
+              108,
+              112,
+            ],
+            "channelWidth": 80,
+            "group": 106,
+            "highlighted": false,
+            "txPower": "_2DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:02",
+        "apName": "name2",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+          100,
+        ],
+        "channelWidth": Array [
+          40,
+          80,
+        ],
+        "id": "00:00:00:00:00:02",
+        "name": "name2",
+        "symbolSize": 48,
+        "txPower": Array [
+          "_9DB",
+          "_2DB",
+        ],
+        "value": Array [
+          36,
+          100,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": true,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:03",
+        "apName": "name3",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          40,
+        ],
+        "channelWidth": Array [
+          160,
+        ],
+        "id": "00:00:00:00:00:03",
+        "name": "name3",
+        "symbolSize": 60,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": false,
+            "txPower": "_4DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": false,
+            "txPower": "_5DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:04",
+        "apName": "name4",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          80,
+          160,
+        ],
+        "id": "00:00:00:00:00:04",
+        "name": "name4",
+        "symbolSize": 60,
+        "txPower": Array [
+          "_4DB",
+          "_5DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_6DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": false,
+            "txPower": "_7DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:05",
+        "apName": "name5",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          40,
+          80,
+        ],
+        "id": "00:00:00:00:00:05",
+        "name": "name5",
+        "symbolSize": 48,
+        "txPower": Array [
+          "_6DB",
+          "_7DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": true,
+            "txPower": "_8DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": true,
+            "txPower": "_9DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:06",
+        "apName": "name6",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          80,
+          160,
+        ],
+        "id": "00:00:00:00:00:06",
+        "name": "name6",
+        "symbolSize": 60,
+        "txPower": Array [
+          "_8DB",
+          "_9DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 52,
+            "channelList": Array [
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 80,
+            "group": 58,
+            "highlighted": false,
+            "txPower": "_10DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:07",
+        "apName": "name7",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          52,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "00:00:00:00:00:07",
+        "name": "name7",
+        "symbolSize": 48,
+        "txPower": Array [
+          "_10DB",
+        ],
+        "value": Array [
+          52,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+            ],
+            "channelWidth": 20,
+            "group": undefined,
+            "highlighted": true,
+            "txPower": "_MIN",
+          },
+        ],
+        "apMac": "00:00:00:00:00:08",
+        "apName": "name8",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          20,
+        ],
+        "id": "00:00:00:00:00:08",
+        "name": "name8",
+        "symbolSize": 24,
+        "txPower": Array [
+          "_MIN",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:09",
+        "apName": "name9",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          40,
+        ],
+        "channelWidth": Array [
+          40,
+        ],
+        "id": "00:00:00:00:00:09",
+        "name": "name9",
+        "symbolSize": 36,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          40,
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`deriveTxPowerHighlight should return correct data 1`] = `
+Array [
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [
+      Object {
+        "category": "highlight",
+        "source": "00:00:00:00:00:03",
+        "target": "00:00:00:00:00:08",
+      },
+      Object {
+        "category": "highlight",
+        "source": "00:00:00:00:00:06",
+        "target": "00:00:00:00:00:03",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:01",
+        "target": "00:00:00:00:00:02",
+      },
+      Object {
+        "category": "highlight",
+        "source": "00:00:00:00:00:02",
+        "target": "00:00:00:00:00:03",
+      },
+      Object {
+        "category": "highlight",
+        "source": "00:00:00:00:00:07",
+        "target": "00:00:00:00:00:08",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:10",
+        "target": "00:00:00:00:00:11",
+      },
+    ],
+    "nodes": Array [
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_MIN",
+          },
+        ],
+        "apMac": "00:00:00:00:00:00",
+        "apName": "name0",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          40,
+        ],
+        "id": "00:00:00:00:00:00",
+        "name": "name0",
+        "symbolSize": 36,
+        "txPower": Array [
+          "_MIN",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [],
+            "channelWidth": "NaN",
+            "group": undefined,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:01",
+        "apName": "name1",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          "NaN",
+        ],
+        "id": "00:00:00:00:00:01",
+        "name": "name1",
+        "symbolSize": 24,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": true,
+            "txPower": "_1DB",
+          },
+          Object {
+            "channel": 100,
+            "channelList": Array [
+              100,
+              104,
+              108,
+              112,
+            ],
+            "channelWidth": 80,
+            "group": 106,
+            "highlighted": false,
+            "txPower": "_2DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:02",
+        "apName": "name2",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+          100,
+        ],
+        "channelWidth": Array [
+          40,
+          80,
+        ],
+        "id": "00:00:00:00:00:02",
+        "name": "name2",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          "_1DB",
+          "_2DB",
+        ],
+        "value": Array [
+          36,
+          100,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": true,
+            "txPower": "_3DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:03",
+        "apName": "name3",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          40,
+        ],
+        "channelWidth": Array [
+          160,
+        ],
+        "id": "00:00:00:00:00:03",
+        "name": "name3",
+        "showTooltip": true,
+        "symbolSize": 60,
+        "txPower": Array [
+          "_3DB",
+        ],
+        "value": Array [
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": false,
+            "txPower": "_4DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": false,
+            "txPower": "_5DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:04",
+        "apName": "name4",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          80,
+          160,
+        ],
+        "id": "00:00:00:00:00:04",
+        "name": "name4",
+        "symbolSize": 60,
+        "txPower": Array [
+          "_4DB",
+          "_5DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_6DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": false,
+            "txPower": "_7DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:05",
+        "apName": "name5",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          40,
+          80,
+        ],
+        "id": "00:00:00:00:00:05",
+        "name": "name5",
+        "symbolSize": 48,
+        "txPower": Array [
+          "_6DB",
+          "_7DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": true,
+            "txPower": "_8DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": true,
+            "txPower": "_9DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:06",
+        "apName": "name6",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          80,
+          160,
+        ],
+        "id": "00:00:00:00:00:06",
+        "name": "name6",
+        "showTooltip": true,
+        "symbolSize": 60,
+        "txPower": Array [
+          "_8DB",
+          "_9DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+            ],
+            "channelWidth": 20,
+            "group": undefined,
+            "highlighted": true,
+            "txPower": "_10DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:07",
+        "apName": "name7",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          20,
+        ],
+        "id": "00:00:00:00:00:07",
+        "name": "name7",
+        "showTooltip": true,
+        "symbolSize": 24,
+        "txPower": Array [
+          "_10DB",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+            ],
+            "channelWidth": 20,
+            "group": undefined,
+            "highlighted": true,
+            "txPower": "_MIN",
+          },
+        ],
+        "apMac": "00:00:00:00:00:08",
+        "apName": "name8",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          20,
+        ],
+        "id": "00:00:00:00:00:08",
+        "name": "name8",
+        "showTooltip": true,
+        "symbolSize": 24,
+        "txPower": Array [
+          "_MIN",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:09",
+        "apName": "name9",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          40,
+        ],
+        "channelWidth": Array [
+          40,
+        ],
+        "id": "00:00:00:00:00:09",
+        "name": "name9",
+        "symbolSize": 36,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          40,
+        ],
+      },
+    ],
+  },
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [
+      Object {
+        "category": "txPower",
+        "source": "00:00:00:00:00:03",
+        "target": "00:00:00:00:00:08",
+      },
+      Object {
+        "category": "txPower",
+        "source": "00:00:00:00:00:06",
+        "target": "00:00:00:00:00:03",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:01",
+        "target": "00:00:00:00:00:02",
+      },
+      Object {
+        "category": "txPower",
+        "source": "00:00:00:00:00:02",
+        "target": "00:00:00:00:00:03",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:07",
+        "target": "00:00:00:00:00:08",
+      },
+      Object {
+        "category": "normal",
+        "source": "00:00:00:00:00:10",
+        "target": "00:00:00:00:00:11",
+      },
+    ],
+    "nodes": Array [
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_MIN",
+          },
+        ],
+        "apMac": "00:00:00:00:00:00",
+        "apName": "name0",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          40,
+        ],
+        "id": "00:00:00:00:00:00",
+        "name": "name0",
+        "symbolSize": 36,
+        "txPower": Array [
+          "_MIN",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [],
+            "channelWidth": "NaN",
+            "group": undefined,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:01",
+        "apName": "name1",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          "NaN",
+        ],
+        "id": "00:00:00:00:00:01",
+        "name": "name1",
+        "symbolSize": 24,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": true,
+            "txPower": "_9DB",
+          },
+          Object {
+            "channel": 100,
+            "channelList": Array [
+              100,
+              104,
+              108,
+              112,
+            ],
+            "channelWidth": 80,
+            "group": 106,
+            "highlighted": false,
+            "txPower": "_2DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:02",
+        "apName": "name2",
+        "band": "5",
+        "category": "txPower",
+        "channel": Array [
+          36,
+          100,
+        ],
+        "channelWidth": Array [
+          40,
+          80,
+        ],
+        "id": "00:00:00:00:00:02",
+        "name": "name2",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          "_9DB",
+          "_2DB",
+        ],
+        "value": Array [
+          36,
+          100,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": true,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:03",
+        "apName": "name3",
+        "band": "5",
+        "category": "txPower",
+        "channel": Array [
+          40,
+        ],
+        "channelWidth": Array [
+          160,
+        ],
+        "id": "00:00:00:00:00:03",
+        "name": "name3",
+        "showTooltip": true,
+        "symbolSize": 60,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": false,
+            "txPower": "_4DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": false,
+            "txPower": "_5DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:04",
+        "apName": "name4",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          80,
+          160,
+        ],
+        "id": "00:00:00:00:00:04",
+        "name": "name4",
+        "symbolSize": 60,
+        "txPower": Array [
+          "_4DB",
+          "_5DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_6DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": false,
+            "txPower": "_7DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:05",
+        "apName": "name5",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          40,
+          80,
+        ],
+        "id": "00:00:00:00:00:05",
+        "name": "name5",
+        "symbolSize": 48,
+        "txPower": Array [
+          "_6DB",
+          "_7DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": true,
+            "txPower": "_8DB",
+          },
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 160,
+            "group": 50,
+            "highlighted": true,
+            "txPower": "_9DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:06",
+        "apName": "name6",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+          40,
+        ],
+        "channelWidth": Array [
+          80,
+          160,
+        ],
+        "id": "00:00:00:00:00:06",
+        "name": "name6",
+        "showTooltip": true,
+        "symbolSize": 60,
+        "txPower": Array [
+          "_8DB",
+          "_9DB",
+        ],
+        "value": Array [
+          36,
+          40,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 52,
+            "channelList": Array [
+              52,
+              56,
+              60,
+              64,
+            ],
+            "channelWidth": 80,
+            "group": 58,
+            "highlighted": false,
+            "txPower": "_10DB",
+          },
+        ],
+        "apMac": "00:00:00:00:00:07",
+        "apName": "name7",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          52,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "00:00:00:00:00:07",
+        "name": "name7",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          "_10DB",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+            ],
+            "channelWidth": 20,
+            "group": undefined,
+            "highlighted": true,
+            "txPower": "_MIN",
+          },
+        ],
+        "apMac": "00:00:00:00:00:08",
+        "apName": "name8",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          20,
+        ],
+        "id": "00:00:00:00:00:08",
+        "name": "name8",
+        "showTooltip": true,
+        "symbolSize": 24,
+        "txPower": Array [
+          "_MIN",
+        ],
+        "value": Array [
+          36,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 40,
+            "channelList": Array [
+              36,
+              40,
+            ],
+            "channelWidth": 40,
+            "group": 38,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "00:00:00:00:00:09",
+        "apName": "name9",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          40,
+        ],
+        "channelWidth": Array [
+          40,
+        ],
+        "id": "00:00:00:00:00:09",
+        "name": "name9",
+        "symbolSize": 36,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          40,
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`getCrrmCsvData returns correct state for AP missing in current 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+AP 3,00:00:00:00:00:03,5 GHz,36,,80 MHz,,Full,"
+`;
+
+exports[`getCrrmCsvData returns correct state for AP missing in previous 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full"
+`;
+
+exports[`getCrrmCsvData returns correct state for APs missing in both previous & current 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)
+AP 4,00:00:00:00:00:04,5 GHz,36,,80 MHz,,Full,
+AP 3,00:00:00:00:00:03,5 GHz,,36,,80 MHz,,Full"
+`;
+
+exports[`getCrrmCsvData returns correct state for equal nodes 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,Full,Full
+AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,-3dB(1/2)"
+`;
+
+exports[`getCrrmCsvData returns correct state for nodes with TxPower = null 1`] = `
+"AP Name,AP MAC,WiFi Radio Band,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+AP 1,00:00:00:00:00:01,5 GHz,36,36,80 MHz,40 MHz,,
+AP 2,00:00:00:00:00:02,5 GHz,36,52,80 MHz,40 MHz,Full,Full"
+`;
+
+exports[`tooltipFormatter should handle when category is txPower 1`] = `"<div><div>AP Name: ap</div><div>Channel number (radio 5 GHz): 48</div><div>Channel number (radio 6(5) GHz): 124</div><div>Bandwidth (radio 5 GHz): 20 MHz</div><div>Bandwidth (radio 6(5) GHz): 40 MHz</div><div>TxPower (radio 5 GHz): Full</div><div>TxPower (radio 6(5) GHz): Min</div></div>"`;
+
+exports[`tooltipFormatter should match snapshot 1`] = `"<div><div>AP Name: ap</div><div>Channel number (radio 5 GHz): 48</div><div>Channel number (radio 6(5) GHz): 124</div><div>Bandwidth (radio 5 GHz): 20 MHz</div><div>Bandwidth (radio 6(5) GHz): 40 MHz</div></div>"`;
+
+exports[`trimGraph should return correct trimed graph data 1`] = `
+Object {
+  "categories": Array [
+    Object {
+      "name": "highlight",
+    },
+    Object {
+      "name": "normal",
+    },
+    Object {
+      "name": "txPower",
+    },
+  ],
+  "links": Array [
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:03",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:06",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:01",
+      "target": "00:00:00:00:00:02",
+    },
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:02",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:07",
+      "target": "00:00:00:00:00:08",
+    },
+  ],
+  "nodes": Array [
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:00",
+      "apName": "name0",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:00",
+      "name": "name0",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [],
+          "channelWidth": "NaN",
+          "group": undefined,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:01",
+      "apName": "name1",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        "NaN",
+      ],
+      "id": "00:00:00:00:00:01",
+      "name": "name1",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_4DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": false,
+          "txPower": "_5DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:04",
+      "apName": "name4",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:04",
+      "name": "name4",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_4DB",
+        "_5DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_6DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_7DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:05",
+      "apName": "name5",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:05",
+      "name": "name5",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_6DB",
+        "_7DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 52,
+          "channelList": Array [
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 80,
+          "group": 58,
+          "highlighted": false,
+          "txPower": "_10DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:07",
+      "apName": "name7",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        52,
+      ],
+      "channelWidth": Array [
+        80,
+      ],
+      "id": "00:00:00:00:00:07",
+      "name": "name7",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_10DB",
+      ],
+      "value": Array [
+        52,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:09",
+      "apName": "name9",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:09",
+      "name": "name9",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": true,
+          "txPower": "_1DB",
+        },
+        Object {
+          "channel": 100,
+          "channelList": Array [
+            100,
+            104,
+            108,
+            112,
+          ],
+          "channelWidth": 80,
+          "group": 106,
+          "highlighted": false,
+          "txPower": "_2DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:02",
+      "apName": "name2",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+        100,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:02",
+      "name": "name2",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_1DB",
+        "_2DB",
+      ],
+      "value": Array [
+        36,
+        100,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_3DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:03",
+      "apName": "name3",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        160,
+      ],
+      "id": "00:00:00:00:00:03",
+      "name": "name3",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_3DB",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": true,
+          "txPower": "_8DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_9DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:06",
+      "apName": "name6",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:06",
+      "name": "name6",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_8DB",
+        "_9DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+          ],
+          "channelWidth": 20,
+          "group": undefined,
+          "highlighted": true,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:08",
+      "apName": "name8",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        20,
+      ],
+      "id": "00:00:00:00:00:08",
+      "name": "name8",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+  ],
+}
+`;
+
+exports[`trimGraph should return correct trimed graph data 2`] = `
+Object {
+  "categories": Array [
+    Object {
+      "name": "highlight",
+    },
+    Object {
+      "name": "normal",
+    },
+    Object {
+      "name": "txPower",
+    },
+  ],
+  "links": Array [
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:03",
+      "target": "00:00:00:00:00:08",
+    },
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:06",
+      "target": "00:00:00:00:00:03",
+    },
+    Object {
+      "category": "normal",
+      "source": "00:00:00:00:00:01",
+      "target": "00:00:00:00:00:02",
+    },
+    Object {
+      "category": "highlight",
+      "source": "00:00:00:00:00:02",
+      "target": "00:00:00:00:00:03",
+    },
+  ],
+  "nodes": Array [
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:00",
+      "apName": "name0",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        40,
+      ],
+      "id": "00:00:00:00:00:00",
+      "name": "name0",
+      "symbolSize": 36,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [],
+          "channelWidth": "NaN",
+          "group": undefined,
+          "highlighted": false,
+          "txPower": "_FULL",
+        },
+      ],
+      "apMac": "00:00:00:00:00:01",
+      "apName": "name1",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        "NaN",
+      ],
+      "id": "00:00:00:00:00:01",
+      "name": "name1",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_FULL",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_4DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": false,
+          "txPower": "_5DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:04",
+      "apName": "name4",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:04",
+      "name": "name4",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_4DB",
+        "_5DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": false,
+          "txPower": "_6DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": false,
+          "txPower": "_7DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:05",
+      "apName": "name5",
+      "band": "5",
+      "category": "normal",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:05",
+      "name": "name5",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_6DB",
+        "_7DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+          ],
+          "channelWidth": 40,
+          "group": 38,
+          "highlighted": true,
+          "txPower": "_1DB",
+        },
+        Object {
+          "channel": 100,
+          "channelList": Array [
+            100,
+            104,
+            108,
+            112,
+          ],
+          "channelWidth": 80,
+          "group": 106,
+          "highlighted": false,
+          "txPower": "_2DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:02",
+      "apName": "name2",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+        100,
+      ],
+      "channelWidth": Array [
+        40,
+        80,
+      ],
+      "id": "00:00:00:00:00:02",
+      "name": "name2",
+      "symbolSize": 48,
+      "txPower": Array [
+        "_1DB",
+        "_2DB",
+      ],
+      "value": Array [
+        36,
+        100,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_3DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:03",
+      "apName": "name3",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        40,
+      ],
+      "channelWidth": Array [
+        160,
+      ],
+      "id": "00:00:00:00:00:03",
+      "name": "name3",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_3DB",
+      ],
+      "value": Array [
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+          ],
+          "channelWidth": 80,
+          "group": 42,
+          "highlighted": true,
+          "txPower": "_8DB",
+        },
+        Object {
+          "channel": 40,
+          "channelList": Array [
+            36,
+            40,
+            44,
+            48,
+            52,
+            56,
+            60,
+            64,
+          ],
+          "channelWidth": 160,
+          "group": 50,
+          "highlighted": true,
+          "txPower": "_9DB",
+        },
+      ],
+      "apMac": "00:00:00:00:00:06",
+      "apName": "name6",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+        40,
+      ],
+      "channelWidth": Array [
+        80,
+        160,
+      ],
+      "id": "00:00:00:00:00:06",
+      "name": "name6",
+      "symbolSize": 60,
+      "txPower": Array [
+        "_8DB",
+        "_9DB",
+      ],
+      "value": Array [
+        36,
+        40,
+      ],
+    },
+    Object {
+      "aggregate": Array [
+        Object {
+          "channel": 36,
+          "channelList": Array [
+            36,
+          ],
+          "channelWidth": 20,
+          "group": undefined,
+          "highlighted": true,
+          "txPower": "_MIN",
+        },
+      ],
+      "apMac": "00:00:00:00:00:08",
+      "apName": "name8",
+      "band": "5",
+      "category": "highlight",
+      "channel": Array [
+        36,
+      ],
+      "channelWidth": Array [
+        20,
+      ],
+      "id": "00:00:00:00:00:08",
+      "name": "name8",
+      "symbolSize": 24,
+      "txPower": Array [
+        "_MIN",
+      ],
+      "value": Array [
+        36,
+      ],
+    },
+  ],
+}
+`;

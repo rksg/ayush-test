@@ -1,9 +1,10 @@
 import { get }                    from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { useParams }                            from '@acx-ui/react-router-dom'
+import { GridCol, GridRow, Loader, PageHeader, recommendationBandMapping } from '@acx-ui/components'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
 
+import { CloudRRMGraph }                 from './graph'
 import { Kpis }                          from './kpis'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
@@ -42,11 +43,13 @@ export const RecommendationDetails = () => {
       }} />]}
     />}
     <GridRow>
-      <GridCol col={{ span: 3 }}>
+      <GridCol col={{ span: 4 }}>
         <Overview details={details} />
       </GridCol>
-      <GridCol col={{ span: 13 }}>
+      <GridCol col={{ span: 12 }}>
         <Values details={details}/>
+        { Object.keys(recommendationBandMapping).includes(codeQuery.data?.code as string) &&
+          <CloudRRMGraph/>}
       </GridCol>
       <GridCol col={{ span: 8 }}>
         <Kpis details={details} />

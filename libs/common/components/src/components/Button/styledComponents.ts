@@ -1,7 +1,7 @@
 import { Button as AntButton } from 'antd'
 import styled, { css }         from 'styled-components/macro'
 
-export const Button = styled(AntButton)<{ $customType: string | null }>`
+export const Button = styled(AntButton)<{ $customType: string | null, href?: string }>`
   ${props => props.type === 'primary' ? css`
     background-color: var(--acx-accents-orange-50);
     border-color: var(--acx-accents-orange-50);
@@ -41,7 +41,21 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
     }
   }
 
-  &[disabled] {
+  ${props => props.href? css`
+    &.ant-btn-default{
+      padding-top: 4px !important;
+    }
+    &.ant-btn-disabled {
+      color: var(--acx-neutrals-40) !important;
+      background-color: var(--acx-primary-white) !important;
+      border-color: var(--acx-neutrals-40) !important;
+      svg { path {
+        stroke: var(--acx-neutrals-40);
+      } }
+    }
+  `: ''}
+
+  &[disabled]{
     svg { path { stroke: var(--acx-primary-white); } }
 
     &.ant-btn-default {

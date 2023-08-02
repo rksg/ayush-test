@@ -105,6 +105,12 @@ describe('formatter', () => {
     expect(formatter('ratioFormat')([1, 2])).toBe('1 / 2')
     expect(formatter('ratioFormat')([2, 2])).toBe('2 / 2')
   })
+  it('bandwidthFormat', () => {
+    expect(formatter('bandwidthFormat')(20)).toBe('20 MHz')
+    expect(formatter('bandwidthFormat')(40)).toBe('40 MHz')
+    expect(formatter('bandwidthFormat')(80)).toBe('80 MHz')
+    expect(formatter('bandwidthFormat')(160)).toBe('160 MHz')
+  })
   describe('txFormat', () => {
     it('should return same value if not in txpowerMapping', () => {
       expect(formatter('txFormat')('MIN')).toBe('MIN')

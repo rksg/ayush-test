@@ -375,7 +375,7 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                   class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bLBxxZ"
                     type="button"
                   >
                     <span>
@@ -383,7 +383,7 @@ exports[`Network Filter:Reports Specific should list only switch venues having S
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 dzYCsJ"
                     type="button"
                   >
                     <span>
@@ -776,7 +776,7 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                   class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bLBxxZ"
                     type="button"
                   >
                     <span>
@@ -784,7 +784,7 @@ exports[`Network Filter:Reports Specific should list only venues having APs 1`] 
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 dzYCsJ"
                     type="button"
                   >
                     <span>
