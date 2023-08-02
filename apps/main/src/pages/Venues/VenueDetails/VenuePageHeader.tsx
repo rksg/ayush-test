@@ -10,8 +10,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { useDateFilter }                              from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
 
@@ -46,7 +46,7 @@ function VenuePageHeader () {
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
       extra={filterByAccess([
-        enableTimeFilter() ? <DatePicker key='SHOW_WITHOUT_RBAC_CHECK' /> : <></>,
+        enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         <Button
           type='primary'
           onClick={() =>

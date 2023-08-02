@@ -6,6 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { Loader, PageHeader, SuspenseBoundary, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { TenantLink }                                    from '@acx-ui/react-router-dom'
+import { getShowWithoutRbacCheckKey }                    from '@acx-ui/user'
 
 import { useVideoCallQoeTestsQuery } from './services'
 import { VideoCallQoeTable }         from './VideoCallQoeTable'
@@ -44,7 +45,7 @@ export function useVideoCallQoe () {
       :
       <Tooltip
         placement='left'
-        key='SHOW_WITHOUT_RBAC_CHECK'
+        key={getShowWithoutRbacCheckKey('disableCallButton')}
         trigger='hover'
         title={$t({ defaultMessage: 'There is already a test call which is not started.' })}
       >

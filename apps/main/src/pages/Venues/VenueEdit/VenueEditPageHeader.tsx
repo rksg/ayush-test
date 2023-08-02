@@ -7,7 +7,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
 
 import VenueEditTabs from './VenueEditTabs'
 
@@ -27,7 +27,7 @@ function VenueEditPageHeader () {
       ]}
       extra={filterByAccess([
         <Button
-          key='SHOW_WITHOUT_RBAC_CHECK'
+          key={getShowWithoutRbacCheckKey('back')}
           type='primary'
           onClick={() =>
             navigate({

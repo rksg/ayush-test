@@ -12,7 +12,7 @@ import {
   useSearchParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                      from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey }                          from '@acx-ui/user'
 import { DateFilter, DateRange, enableNewApi, encodeParameter, useDateFilter } from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
@@ -114,7 +114,7 @@ function ClientDetailPageHeader () {
         { text: $t({ defaultMessage: 'Clients List' }), link: '/users/wifi/clients' }
       ] : [{ text: $t({ defaultMessage: 'Wi-Fi Users' }), link: '/users/wifi/clients' }]}
       extra={filterByAccess([
-        <DatePicker key='SHOW_WITHOUT_RBAC_CHECK' />,
+        <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} />,
         <Dropdown overlay={menu}>{()=>
           <Button type='primary'>
             <Space>

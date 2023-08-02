@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { Button, PageHeader, RangePicker }                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                     from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey }         from '@acx-ui/user'
 import { useDateFilter }                                      from '@acx-ui/utils'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
@@ -47,7 +47,7 @@ function NetworkPageHeader ({
           : [],
         enableTimeFilter()
           ? <RangePicker
-            key='SHOW_WITHOUT_RBAC_CHECK'
+            key={getShowWithoutRbacCheckKey('range-picker')}
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker

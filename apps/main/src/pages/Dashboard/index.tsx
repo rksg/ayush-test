@@ -34,9 +34,9 @@ import {
   MapWidget,
   VenuesDashboardWidget
 } from '@acx-ui/rc/components'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
-import { filterByAccess }                    from '@acx-ui/user'
-import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
+import { TenantLink }                                 from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { useDateFilter, useDashboardFilter }          from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -81,9 +81,9 @@ function DashboardPageHeader () {
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
       extra={filterByAccess([
-        <VenueFilter key='SHOW_WITHOUT_RBAC_CHECK'/>,
+        <VenueFilter key={getShowWithoutRbacCheckKey('hierarchy-filter')}/>,
         <RangePicker
-          key='SHOW_WITHOUT_RBAC_CHECK'
+          key={getShowWithoutRbacCheckKey('range-picker')}
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker

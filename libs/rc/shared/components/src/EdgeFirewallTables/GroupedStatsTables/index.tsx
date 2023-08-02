@@ -13,8 +13,8 @@ import {
   EdgeFirewallSetting,
   EdgeStatus,
   getACLDirectionOptions } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { useDateFilter }                              from '@acx-ui/utils'
 
 import { DDoSRulesTable as DDoSRulesConfigTable }               from '../DDoSRulesTable'
 import { StatefulACLRulesTable as StatefulACLRulesConfigTable } from '../StatefulACLRulesTable'
@@ -55,7 +55,7 @@ export const GroupedStatsTables =
         <UI.ActionsContainer>
           {filterByAccess([
             <RangePicker
-              key='SHOW_WITHOUT_RBAC_CHECK'
+              key={getShowWithoutRbacCheckKey('range-picker')}
               selectedRange={filterPeriod}
               selectionType={range}
               onDateApply={setDateFilter as CallableFunction}
@@ -96,7 +96,7 @@ export const GroupedStatsTables =
           </Select>
           {filterByAccess([
             <RangePicker
-              key='SHOW_WITHOUT_RBAC_CHECK'
+              key={getShowWithoutRbacCheckKey('range-picker')}
               selectedRange={filterPeriod}
               selectionType={range}
               onDateApply={setDateFilter as CallableFunction}

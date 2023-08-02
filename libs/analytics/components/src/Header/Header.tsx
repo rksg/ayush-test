@@ -1,6 +1,7 @@
 import moment from 'moment-timezone'
 
 import { PageHeader, PageHeaderProps, RangePicker } from '@acx-ui/components'
+import { getShowWithoutRbacCheckKey }               from '@acx-ui/user'
 import { useDateFilter }                            from '@acx-ui/utils'
 
 import { NetworkFilter } from '../NetworkFilter'
@@ -38,11 +39,11 @@ export const useHeaderExtra = (props: useHeaderExtraProps) => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   return [
     <Filter
-      key='SHOW_WITHOUT_RBAC_CHECK'
+      key={getShowWithoutRbacCheckKey('network-filter')}
       {...props}
     />,
     <RangePicker
-      key='SHOW_WITHOUT_RBAC_CHECK'
+      key={getShowWithoutRbacCheckKey('range-picker')}
       selectedRange={{
         startDate: moment(startDate),
         endDate: moment(endDate)

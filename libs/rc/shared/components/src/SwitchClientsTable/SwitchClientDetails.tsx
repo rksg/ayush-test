@@ -7,7 +7,7 @@ import { Features, useIsSplitOn }                                               
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                          from '@acx-ui/rc/services'
 import { exportCSV, getOsTypeIcon, getClientIpAddr, SwitchClient, SWITCH_CLIENT_TYPE } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                       from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                              from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey }                                  from '@acx-ui/user'
 import { getCurrentDate }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -199,7 +199,11 @@ export function SwitchClientDetails () {
           { text: $t({ defaultMessage: 'Wired Clients List' }), link: '/users/switch' }
         ] : [{ text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }]}
         extra={filterByAccess([
-          <Button key='SHOW_WITHOUT_RBAC_CHECK' type='link' onClick={exportClientToCSV}>
+          <Button
+            key={getShowWithoutRbacCheckKey('DownloadSwitchUsers')}
+            type='link'
+            onClick={exportClientToCSV}
+          >
             {$t({ defaultMessage: 'Download Information' })}</Button>
         ])}
       />

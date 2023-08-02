@@ -18,8 +18,8 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
+import { useDateFilter }                              from '@acx-ui/utils'
 
 import AddStackMember from './AddStackMember'
 import SwitchTabs     from './SwitchTabs'
@@ -200,7 +200,7 @@ function SwitchPageHeader () {
         ] : [{ text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }]}
         extra={filterByAccess([
           !checkTimeFilterDisabled() && <RangePicker
-            key='SHOW_WITHOUT_RBAC_CHECK'
+            key={getShowWithoutRbacCheckKey('range-picker')}
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
