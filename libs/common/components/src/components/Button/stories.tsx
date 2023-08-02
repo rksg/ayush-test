@@ -11,7 +11,6 @@ storiesOf('Button', module)
       <p>
         <Space>
           <Button size='small' type='primary'>Primary</Button>
-          <Button size='small' type='secondary'>Secondary</Button>
           <Button size='small'>Default</Button>
           <Button size='small' icon={<DownloadOutlined />}>With Icon</Button>
           <Button size='small' icon={<DownloadOutlined />} />
@@ -22,7 +21,6 @@ storiesOf('Button', module)
       <p>
         <Space>
           <Button size='small' disabled type='primary'>Primary</Button>
-          <Button size='small' disabled type='secondary'>Secondary</Button>
           <Button size='small' disabled>Default</Button>
           <Button size='small' disabled icon={<DownloadOutlined />}>With Icon</Button>
           <Button size='small' disabled icon={<DownloadOutlined />} />
@@ -37,7 +35,6 @@ storiesOf('Button', module)
       <p>
         <Space>
           <Button type='primary'>Primary</Button>
-          <Button type='secondary'>Secondary</Button>
           <Button>Default</Button>
           <Button icon={<DownloadOutlined />}>With Icon</Button>
           <Button icon={<DownloadOutlined />} />
@@ -48,7 +45,6 @@ storiesOf('Button', module)
       <p>
         <Space>
           <Button disabled type='primary'>Primary</Button>
-          <Button disabled type='secondary'>Secondary</Button>
           <Button disabled>Default</Button>
           <Button disabled icon={<DownloadOutlined />}>With Icon</Button>
           <Button disabled icon={<DownloadOutlined />} />
@@ -63,7 +59,6 @@ storiesOf('Button', module)
       <p>
         <Space>
           <Button size='large' type='primary'>Primary</Button>
-          <Button size='large' type='secondary'>Secondary</Button>
           <Button size='large'>Default</Button>
           <Button size='large' icon={<DownloadOutlined />}>With Icon</Button>
           <Button size='large' icon={<DownloadOutlined />} />
@@ -74,7 +69,6 @@ storiesOf('Button', module)
       <p>
         <Space>
           <Button size='large' disabled type='primary'>Primary</Button>
-          <Button size='large' disabled type='secondary'>Secondary</Button>
           <Button size='large' disabled>Default</Button>
           <Button size='large' disabled icon={<DownloadOutlined />}>With Icon</Button>
           <Button size='large' disabled icon={<DownloadOutlined />} />

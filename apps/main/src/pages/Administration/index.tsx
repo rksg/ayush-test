@@ -7,6 +7,7 @@ import {
   useGetDelegationsQuery,
   useGetNotificationRecipientsQuery
 } from '@acx-ui/rc/services'
+import { hasAdministratorTab }                   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useUserProfileContext }                 from '@acx-ui/user'
 
@@ -39,15 +40,20 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
     })
   }
   const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
+    skip: !hasAdministratorTab || !isNavbarEnhanced,
     pollingInterval: 30_000
   })
   const notificationList = useGetNotificationRecipientsQuery({
     params: { tenantId },
     payload: defaultPayload
   }, {
+    skip: !isNavbarEnhanced,
     pollingInterval: 30_000
   })
-  const thirdPartyAdminList = useGetDelegationsQuery({ params })
+  const thirdPartyAdminList = useGetDelegationsQuery(
+    { params },
+    { skip: !hasAdministratorTab || !isNavbarEnhanced }
+  )
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
@@ -101,7 +107,6 @@ const tabPanes = {
   subscriptions: Subscriptions,
   fwVersionMgmt: FWVersionMgmt,
   localRadiusServer: LocalRadiusServer
-
 }
 
 export default function Administration () {
@@ -110,15 +115,8 @@ export default function Administration () {
   const { data: userProfileData } = useUserProfileContext()
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
 
-  // support dashboard - his own account
-  let isSupport: boolean = false
-  if (userProfileData?.dogfood) {
-    // eslint-disable-next-line max-len
-    isSupport = userProfileData?.varTenantId !== undefined && userProfileData?.varTenantId === tenantId
-  }
-
-  const hasAdministratorTab = !userProfileData?.delegatedDogfood && !isSupport
-  if (hasAdministratorTab === false && activeTab === 'administrators') {
+  const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantId)
+  if (isAdministratorAccessible === false && activeTab === 'administrators') {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }
 
@@ -133,7 +131,7 @@ export default function Administration () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Administration' }) }
       ]}
-      footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
+      footer={<AdministrationTabs hasAdministratorTab={isAdministratorAccessible} />}
     />
     { ActiveTabPane && <ActiveTabPane /> }
   </>)

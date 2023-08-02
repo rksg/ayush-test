@@ -171,20 +171,20 @@ export function useStepsForm <T> ({
     // TODO:
     // - handle disable when validation not passed
     apply: <Button
-      type='secondary'
+      type='primary'
       loading={loading}
       onClick={() => submit()}
       children={labels.apply}
     />,
     submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
       ? <Button
-        type='secondary'
+        type='primary'
         loading={loading}
         onClick={() => newConfig.gotoStep(formConfig.current + 1)}
         children={labels.next}
       />
       : <Button
-        type='secondary'
+        type='primary'
         loading={loading}
         onClick={() => submit()}
         children={labels.submit}

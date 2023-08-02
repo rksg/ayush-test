@@ -6,7 +6,7 @@ exports[`DownloadRRMComparison disable download button when monitoring 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bLBxxZ"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
       disabled=""
       download="rrm-comparison-21-us-beta-samsung-2-4-ghz.csv"
       type="button"

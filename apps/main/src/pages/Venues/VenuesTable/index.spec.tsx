@@ -34,6 +34,10 @@ describe('Venues Table', () => {
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
       ),
+      rest.post(
+        CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
       rest.delete(
         CommonUrlsInfo.deleteVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))

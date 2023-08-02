@@ -41,6 +41,7 @@ export const getDeviceTypeIcon = (deviceType: string) => {
     'printer': <PrinterOutlined />,
     'iot': <IotOutlined />,
     'wds': <WdsOutlined />,
+    'bridge': <WdsOutlined />,
     'home av equipment': <HomeAvOutlined />,
     'ap': <ApOutlined />,
     'router': <RouterOutlined />,
@@ -153,16 +154,3 @@ export function getRssiStatus (intl: IntlShape, value?: number) {
   }
 }
 
-export function getNoiseFloorStatus (intl: IntlShape, value: number) {
-  const noise = Number(value)
-  if (noise <= -75) {
-    return {
-      tooltip: intl.$t({ defaultMessage: 'Low' }),
-      color: cssStr('--acx-semantics-green-50')
-    }
-  }
-  return {
-    tooltip: intl.$t({ defaultMessage: 'High' }),
-    color: cssStr('--acx-semantics-red-50')
-  }
-}

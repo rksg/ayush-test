@@ -3,8 +3,7 @@ import {
   TemplateScope,
   Pageable,
   Template,
-  Registration,
-  TemplateSelectionContent
+  Registration
 } from '@acx-ui/rc/utils'
 import { baseMsgTemplateApi } from '@acx-ui/store'
 import { RequestPayload }     from '@acx-ui/types'
@@ -13,6 +12,30 @@ import { createHttpRequest }  from '@acx-ui/utils'
 
 export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
   endpoints: build => ({
+
+    // Template Scopes /////////////////////////////////////
+    getTemplateScopeWithRegistration: build.query<TemplateScope, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MsgTemplateUrls.getTemplateScopeByIdWithRegistration, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: (result, error, arg) => {
+        let tagArray:Array<{ type:'TemplateScope' | 'TemplateRegistration', id:string }>
+          = [{ type: 'TemplateScope', id: (arg.params?.templateScopeId as string) }]
+
+        if(arg.params?.registrationId) {
+          tagArray.push({ type: 'TemplateRegistration',
+            id: (arg.params?.registrationId as string) })
+
+        }
+        return tagArray
+      }
+
+    }),
+
     // Registrations ///////////////////////////////////////
     putRegistrationById: build.mutation<Registration, RequestPayload>({
       query: ({ params, payload }) => {
@@ -23,67 +46,39 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
         }
       },
       invalidatesTags: (result, error, arg) =>
-        [{ type: 'TemplateRegistration', id: (arg.registrationId as string) }]
+        [{ type: 'TemplateRegistration', id: (arg.params?.registrationId as string) }]
     }),
-
-    // COMPOSITE REQUESTS ///////////////////////////////////
-    getTemplateSelectionContent: build.query<TemplateSelectionContent, RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-
-        // get templateScope //
-        const templateScopeRequestInfo = {
-          ...createHttpRequest(MsgTemplateUrls.getTemplateScopeById, arg.params),
-          body: arg.payload
+    getRegistrationById: build.query<Registration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MsgTemplateUrls.getRegistrationById, params)
+        return {
+          ...req,
+          body: payload
         }
-
-        const templateScopeQuery = await fetchWithBQ(templateScopeRequestInfo)
-        if(templateScopeQuery.error) {
-          return { error: templateScopeQuery.error }
-        }
-        const templateScope = templateScopeQuery.data as TemplateScope
-        let defaultTemplateId = templateScope.defaultTemplateId
-        // get templates //
-        const templatesRequestInfo = {
-          ...createHttpRequest(MsgTemplateUrls.getAllTemplatesByTemplateScopeId, arg.params),
-          body: arg.payload
-        }
-
-        const templatesQuery = await fetchWithBQ(templatesRequestInfo)
-        if(templatesQuery.error) {
-          return { error: templatesQuery.error }
-        }
-        const pageableTemplates = templatesQuery.data as Pageable<Template>
-
-        // get registration //
-        const registrationRequestInfo = {
-          ...createHttpRequest(MsgTemplateUrls.getRegistrationById, arg.params),
-          body: arg.payload
-        }
-
-        const registrationQuery = await fetchWithBQ(registrationRequestInfo)
-        if(registrationQuery.error && registrationQuery.error.status !== 404) {
-          return { error: registrationQuery.error }
-        } else if(!registrationQuery.error && (registrationQuery.data as Registration).templateId) {
-
-          defaultTemplateId = (registrationQuery.data as Registration).templateId
-        }
-
-        // Build response data
-        return { data:
-          { templateScopeType: templateScope.messageType,
-            templateScopeNameKey: templateScope.nameLocalizationKey,
-            defaultTemplateId: defaultTemplateId,
-            templates: pageableTemplates.content
-          } }
       },
       providesTags: (result, error, arg) =>
-        [{ type: 'TemplateSelection', id: (arg.templateScopeId as string) },
-          { type: 'TemplateRegistration', id: (arg.registrationId as string) }]
+        [{ type: 'TemplateRegistration', id: (arg.params?.registrationId as string) }]
+    }),
+
+    // Templates ///////////////////////////////////////////
+    getAllTemplatesByTemplateScopeId: build.query<Pageable<Template>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MsgTemplateUrls.getAllTemplatesByTemplateScopeId, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: (result, error, arg) => result && result.content ?
+        [...result.content.map(({ id }) => ({ type: 'Template' as const, id })),
+          { type: 'Template', id: 'LIST' + arg.params?.templateScopeId }] :
+        [{ type: 'Template', id: 'LIST' + arg.params?.templateScopeId }]
     })
   })
 })
 
 export const {
-  useGetTemplateSelectionContentQuery,
-  usePutRegistrationByIdMutation
+  useGetTemplateScopeWithRegistrationQuery,
+  usePutRegistrationByIdMutation,
+  useGetRegistrationByIdQuery,
+  useGetAllTemplatesByTemplateScopeIdQuery
 } = msgTemplateApi

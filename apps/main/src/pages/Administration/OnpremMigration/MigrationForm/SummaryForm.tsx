@@ -23,7 +23,8 @@ import {
   useLazyGetZdConfigurationQuery
 } from '@acx-ui/rc/services'
 import {
-  MigrationResultType
+  MigrationResultType,
+  ZdConfigurationType
 } from '@acx-ui/rc/utils'
 
 type SummaryFormProps = {
@@ -37,8 +38,6 @@ const SummaryForm = (props: SummaryFormProps) => {
 
   // eslint-disable-next-line max-len
   const [ validateZdApsResult, setValidateZdApsResult ] = useState<MigrationResultType[]>([])
-  // eslint-disable-next-line max-len
-  const [ getZdConfiguration, { data: migrateResult }] = useLazyGetZdConfigurationQuery()
   const [ taskState, setTaskState ] = useState('')
 
   let usedBarColors = [
@@ -56,15 +55,12 @@ const SummaryForm = (props: SummaryFormProps) => {
   const [ series, setSeries ] = useState(defaultSeries)
   const [ progress, setProgress ] = useState(0)
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getZdConfiguration({ params: { ...params, id: taskId } })
-      // console.log('This will run every second!')
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
-
-  useEffect(()=>{
+  const [getZdConfiguration] = useLazyGetZdConfigurationQuery()
+  const [migrateResult, setMigrateResult] = useState<ZdConfigurationType>()
+  const getSummaryResult = async () => {
+    // eslint-disable-next-line max-len
+    const migrateResult = await (getZdConfiguration({ params: { ...params, id: taskId } }).unwrap())
+    setMigrateResult(migrateResult)
     // eslint-disable-next-line max-len
     if (migrateResult && migrateResult.data && migrateResult.data.length > 0 && migrateResult.data[0].migrationTaskList && migrateResult.data[0].migrationTaskList.length > 0) {
       // eslint-disable-next-line max-len
@@ -85,7 +81,14 @@ const SummaryForm = (props: SummaryFormProps) => {
       }
       setTaskState(taskState)
     }
-  },[migrateResult])
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getSummaryResult()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   const apCompleted = (item: MigrationResultType) => {
     return item.state === 'Completed' || item.state === 'Invalid'

@@ -78,6 +78,10 @@ describe('Add administrator dialog component', () => {
           mockedAddAdminFn(req.body)
           return res(ctx.json({}))
         }
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })

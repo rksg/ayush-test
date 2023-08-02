@@ -84,7 +84,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
             disabled={!isChanged || !isValid}
             loading={isUpdatingRecoveryPassphrase}
             onClick={onSubmitChange}
-            type={'secondary'}
+            type='primary'
           >
             {$t({ defaultMessage: 'Change' })}
           </Button>
