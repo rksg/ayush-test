@@ -477,6 +477,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/venues/:venueId/loadBalancingSettings',
     newApi: true
   },
+  getVenueBssColoring: {
+    method: 'get',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
+  updateVenueBssColoring: {
+    method: 'put',
+    url: '/venues/:venueId/bssColoringSettings',
+    newApi: true
+  },
   getApNetworkSettings: {
     method: 'get',
     url: '/venues/aps/:serialNumber/networkSettings',

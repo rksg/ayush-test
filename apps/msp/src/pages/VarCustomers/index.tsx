@@ -222,6 +222,7 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Account Email' }),
       dataIndex: 'tenantEmail',
       key: 'tenantEmail',
+      searchable: true,
       sorter: true
     },
     {
@@ -291,6 +292,10 @@ export function VarCustomers () {
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
       defaultPayload: varCustomerPayload,
+      sorter: {
+        sortField: 'tenantName',
+        sortOrder: 'ASC'
+      },
       search: {
         searchTargetFields: varCustomerPayload.searchTargetFields as string[]
       }

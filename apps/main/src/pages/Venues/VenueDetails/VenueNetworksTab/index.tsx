@@ -89,15 +89,6 @@ export interface SchedulingModalState {
   }
 }
 
-const getCurrentVenue = (row: Network) => {
-  if (!row.activated.isActivated) {
-    return
-  }
-  const networkId = row.id
-  const deepNetworkVenues = row.deepNetwork?.venues || []
-  return deepNetworkVenues.find(v => v.networkId === networkId)
-}
-
 const defaultArray: NetworkExtended[] = []
 
 
@@ -180,6 +171,14 @@ export function VenueNetworksTab () {
         }
       }
     }
+  }
+
+  const getCurrentVenue = (row: Network) => {
+    if (!row.activated.isActivated) {
+      return
+    }
+    const deepNetworkVenues = row.deepNetwork?.venues || []
+    return deepNetworkVenues.find(v => v.venueId === params.venueId)
   }
 
   // TODO: Waiting for API support

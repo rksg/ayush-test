@@ -2,8 +2,9 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import {
-  DistributionSwitch,
-  Persona,
+  defaultSort,
+  AccessSwitch,
+  Persona, sortProp,
   TableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
@@ -12,7 +13,7 @@ export interface PersonaTableProps extends Omit<TableProps<Persona>, 'columns'>{
   tableQuery: TableQuery<Persona,
     { keyword: string, groupId: string },
     unknown>
-  switchInfo?: DistributionSwitch[]
+  switchInfo?: AccessSwitch[]
 }
 
 export const AssignedSegmentsTable = (props: PersonaTableProps) => {
@@ -30,12 +31,14 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'Segment No.' }),
       key: 'vni',
       dataIndex: 'vni',
+      sorter: { compare: sortProp('vni', defaultSort) },
       fixed: 'left' as const
     },
     {
       title: $t({ defaultMessage: 'Persona' }),
       key: 'name',
       dataIndex: 'name',
+      sorter: { compare: sortProp('name', defaultSort) },
       render: (data, row) => {
         return <TenantLink
           to={`users/persona-management/persona-group/${row.groupId}/persona/${row.id}`}
