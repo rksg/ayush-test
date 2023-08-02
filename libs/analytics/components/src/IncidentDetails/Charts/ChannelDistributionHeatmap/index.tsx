@@ -104,9 +104,10 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
             : 400 : 250
       }}>
       <Loader states={[queryResults]}>
-        <Card title={{ title: title, icon: infoIconText
-          ? <Tooltip.Info title={infoIconText}/>
-          : null }}>
+        <Card type='no-border'
+          title={{ title: title, icon: infoIconText
+            ? <Tooltip.Info title={infoIconText}/>
+            : null }}>
           <AutoSizer>
             {({ height, width }) => (
               backfilledHeatmapData.length > 0

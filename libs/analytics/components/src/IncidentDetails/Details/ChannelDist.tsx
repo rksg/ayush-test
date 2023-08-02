@@ -3,6 +3,7 @@ import { useIntl }    from 'react-intl'
 
 import { calculateSeverity, Incident, shortDescription } from '@acx-ui/analytics/utils'
 import { PageHeader, SeverityPill, GridRow, GridCol }    from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
 
 import { ChannelConfig }                  from '../ChannelConfig'
 import { ChannelDistributionHeatMap }     from '../Charts/ChannelDistributionHeatmap'
@@ -13,7 +14,9 @@ import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import MuteIncident from './MuteIncident'
 import * as UI      from './styledComponents'
-
+export const controllerType = get('IS_MLISA_SA')
+  ? { smartZone: 'Controller' }
+  : { smartZone: 'Ruckus One' }
 export const ChannelDist = (incident: Incident) => {
   const { $t } = useIntl()
   const attributeList = [
@@ -51,7 +54,7 @@ export const ChannelDist = (incident: Incident) => {
       count: 'rogueApCount',
       countText: $t({ defaultMessage: 'Rogue AP Count' }),
       // eslint-disable-next-line max-len
-      infoIconText: $t({ defaultMessage: 'Please enable Rogue AP detection in the controller in order to view this rogue distribution by channel heatmap.' })
+      infoIconText: $t({ defaultMessage: 'Please enable Rogue AP detection in the {smartZone} in order to view this rogue distribution by channel heatmap.' },controllerType)
     },
     ...(incident.code.includes('24g')
       ? []
