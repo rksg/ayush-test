@@ -2,22 +2,24 @@
 
 exports[`DownloadRRMComparison disable download button when monitoring 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
-  >
-    <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
-      disabled=""
-      download="rrm-comparison-21-us-beta-samsung-2-4-ghz.csv"
-      type="button"
+  <span>
+    <div
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
-      <svg
-        data-testid="DownloadOutlined"
-      />
-      <span>
-        Download RRM comparison
-      </span>
-    </button>
-  </div>
+      <button
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 bkfsAJ"
+        disabled=""
+        download="rrm-comparison-21-us-beta-samsung-2-4-ghz.csv"
+        type="button"
+      >
+        <svg
+          data-testid="DownloadOutlined"
+        />
+        <span>
+          Download RRM comparison
+        </span>
+      </button>
+    </div>
+  </span>
 </DocumentFragment>
 `;
