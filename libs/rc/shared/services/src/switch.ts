@@ -188,6 +188,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    syncSwitchesData: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.syncSwitchesData, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     retryFirmwareUpdate: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.retryFirmwareUpdate, params)
@@ -1322,6 +1331,7 @@ export const {
   useLazyGetStackMemberListQuery,
   useRebootSwitchMutation,
   useSyncDataMutation,
+  useSyncSwitchesDataMutation,
   useRetryFirmwareUpdateMutation,
   useLazyGetJwtTokenQuery,
   useGetJwtTokenQuery,
