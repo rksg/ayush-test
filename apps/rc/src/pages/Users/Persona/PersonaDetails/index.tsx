@@ -319,6 +319,7 @@ function PersonaDetails () {
 
 
         <PersonaDevicesTable
+          disableAddButton={!personaGroupData?.macRegistrationPoolId}
           persona={personaDetailsQuery.data}
           dpskPoolId={personaGroupData?.dpskPoolId}
         />
