@@ -54,10 +54,9 @@ const StatusTrailItem = ({ statusTrail }:{ statusTrail: ReturnType<typeof getSta
 
 export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const isRrm = details.code.includes('crrm')
   const statusTrail = getStatusTrail(details, $t)
-  return <div style={{ marginTop: isRrm ? 0 : 40 }}>
-    {isRrm ? <></> : <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>}
+  return <div style={{ marginTop: 40 }}>
+    <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>
     <StatusTrailWrapper>
       {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind} />)}
     </StatusTrailWrapper>

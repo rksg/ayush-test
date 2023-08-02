@@ -38,8 +38,7 @@ export interface RecommendationRow extends Recommendation {
 
 const DateLink = ({ value }: { value: RecommendationRow }) => {
   const { activeTab } = useParams()
-  const crrm = value.code.includes('crrm') ? '/crrm/' : ''
-  return <TenantLink to={`/recommendations/${activeTab}/${value.id}${crrm}`}>
+  return <TenantLink to={`/recommendations/${activeTab}/${value.id}`}>
     {formatter(DateFormatEnum.DateTimeFormat)(value.updatedAt)}
   </TenantLink>
 }
@@ -65,7 +64,7 @@ export function RecommendationTable ({ filters, showCrrm }:
   const selectedRecommendation = selectedRowData[0]
 
   const data = queryResults?.data?.filter((row) =>
-    (showMuted || !row.isMuted)
+    (showCrrm === row.code.includes('crrm')) && (showMuted || !row.isMuted)
   )
 
   const rowActions: TableProps<Recommendation>['rowActions'] = [

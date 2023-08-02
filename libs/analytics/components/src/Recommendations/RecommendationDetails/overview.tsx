@@ -12,7 +12,6 @@ import { codes, statusTrailMsgs } from '../config'
 import { Priority, PriorityIcon } from '../styledComponents'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
-import { StatusTrail }                                              from './statusTrail'
 import { RecommendationApImpacted }                                 from './styledComponents'
 
 const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
@@ -61,12 +60,16 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
   const applied = details.appliedOnce && status !== 'reverted'
-  const before = details.kpi_number_of_interfering_links?.current
+  const before = applied
+    ? details.kpi_number_of_interfering_links?.previous
+    : details.kpi_number_of_interfering_links?.current
   const after = applied
-    ? details.kpi_number_of_interfering_links?.projected
-    : details.kpi_number_of_interfering_links?.previous || 0
+    ? details.kpi_number_of_interfering_links?.current
+    : details.kpi_number_of_interfering_links?.projected || 0
   const crrmText = $t({
-    defaultMessage: '{before} interfering links can be optimised to {after}' }, { before, after })
+    defaultMessage:
+      '{before} interfering {before, plural, one {link} other {links}} can be optimised to {after}'
+  }, { before, after })
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
     <span>{$t(priority.label)}</span>
@@ -81,10 +84,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       children: sliceValue
     }]),
     ...(isRrm ? [{ label: $t({ defaultMessage: 'Summary' }), children: crrmText }] : []),
-    { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) },
-    ...(isRrm
-      ? [{ label: $t({ defaultMessage: 'Trail' }), children: <StatusTrail details={details}/> }]
-      : [])
+    { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
   ]
 
   const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)

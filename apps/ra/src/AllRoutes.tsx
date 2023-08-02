@@ -14,8 +14,8 @@ function AllRoutes () {
       <Route path='dashboard' element={<div>dashboard</div>} />
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
-        <Route path=':activeTab/:id' element={<RecommendationDetails />} />
-        <Route path=':activeTab/:id/crrm' element={<CrrmDetails />} />
+        <Route path='aiOps/:id' element={<RecommendationDetails />} />
+        <Route path='crrm/:id' element={<CrrmDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />

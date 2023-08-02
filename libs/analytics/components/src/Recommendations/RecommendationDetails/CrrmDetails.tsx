@@ -1,8 +1,10 @@
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { impactedArea, nodeTypes }              from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
+import { NodeType }                             from '@acx-ui/utils'
 
 import { CrrmValues }                    from './CrrmValues'
 import MuteRecommendation                from './MuteRecommendation'
@@ -15,7 +17,7 @@ export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const activeTab = 'crrm'
+  const activeTab = get(params, 'activeTab', 'crrm') as keyof typeof linkMap
   const link = `recommendations/${activeTab}`
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
@@ -24,7 +26,10 @@ export const CrrmDetails = () => {
   const details = detailsQuery.data!
   return <Loader states={[codeQuery, detailsQuery]}>
     {details && <PageHeader
-      title={$t(details.summary)}
+      title={`
+        ${nodeTypes(details?.sliceType as NodeType)}
+        (${impactedArea(details?.path, details?.sliceValue)})
+      `}
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
         { text: $t({ defaultMessage: 'AI Analytics' }) },
@@ -38,10 +43,10 @@ export const CrrmDetails = () => {
       }} />]}
     />}
     <GridRow>
-      <GridCol col={{ span: 5 }}>
+      <GridCol col={{ span: 3 }}>
         <Overview details={details} />
       </GridCol>
-      <GridCol col={{ span: 19 }}>
+      <GridCol col={{ span: 21 }}>
         <CrrmValues details={details}/>
       </GridCol>
     </GridRow>

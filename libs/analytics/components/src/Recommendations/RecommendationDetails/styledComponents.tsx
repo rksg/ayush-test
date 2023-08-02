@@ -1,5 +1,4 @@
-import { Typography } from 'antd'
-import styled         from 'styled-components'
+import styled from 'styled-components'
 
 import { BulbOutlined, InformationSolid } from '@acx-ui/icons'
 
@@ -98,7 +97,7 @@ export const BulbOutlinedIcon = styled(BulbOutlined)`
   margin-top: 2px;
 `
 
-export const CrrmTitle = styled(Typography.Title).attrs({ level: 2 })``
+export const CrrmTitle = styled(Subtitle).attrs({ level: 2 })``
 
 export const CrrmDiv = styled.div`
   padding-top: 20px;
@@ -108,6 +107,3 @@ export const LabelSpan = styled.span`
   font-weight: 700;
 `
 
-export const CrrmDetailsWrapper = styled.div`
-  height: 375px;
-`
