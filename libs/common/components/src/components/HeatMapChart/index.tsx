@@ -75,7 +75,7 @@ export function Heatmap (props: {
         },
         emphasis: {
           itemStyle: {
-            shadowBlur: 10
+            shadowBlur: 2
           }
         }
       }
