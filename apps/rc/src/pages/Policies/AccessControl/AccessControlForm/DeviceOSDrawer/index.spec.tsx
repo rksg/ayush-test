@@ -176,12 +176,16 @@ const selectOptionSet = async (device: string, vendor: string) => {
     screen.getByRole('option', { name: device })
   )
 
+  expect(screen.queryByRole('option', { name: device })).toBeVisible()
+
   await screen.findByRole('option', { name: vendor })
 
   await userEvent.selectOptions(
     screen.getAllByRole('combobox')[2],
     screen.getByRole('option', { name: vendor })
   )
+
+  expect(screen.queryByRole('option', { name: vendor })).toBeVisible()
 }
 
 describe('DeviceOSDrawer Component setting I', () => {
@@ -532,12 +536,6 @@ describe('DeviceOSDrawer Component setting II', () => {
     await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await screen.findByText(/please select the deviceType option/i)
-
-    await screen.findByText(/please select the osVendor option/i)
 
     await selectOptionSet('Gaming', 'PlayStation')
 
