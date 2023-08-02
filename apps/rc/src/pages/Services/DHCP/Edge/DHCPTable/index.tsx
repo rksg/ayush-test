@@ -137,7 +137,9 @@ const EdgeDhcpTable = () => {
       dataIndex: 'edgeAlarmSummary',
       sorter: true,
       render: (data, row) =>
-        <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+        (row?.edgeNum ?? 0) ?
+          <EdgeServiceStatusLight data={row.edgeAlarmSummary} /> :
+          '--'
     },
     {
       title: $t({ defaultMessage: 'Update Available' }),

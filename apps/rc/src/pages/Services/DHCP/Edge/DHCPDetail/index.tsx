@@ -25,7 +25,8 @@ const EdgeDHCPDetail = () => {
       'dhcpRelay',
       'dhcpPoolNum',
       'leaseTime',
-      'edgeAlarmSummary'
+      'edgeAlarmSummary',
+      'edgeNum'
     ],
     filters: { id: [params.serviceId] }
   }
@@ -131,7 +132,9 @@ const EdgeDHCPDetail = () => {
     {
       title: $t({ defaultMessage: 'Service Health' }),
       content: dhcpStats &&
-        <EdgeServiceStatusLight data={dhcpStats?.edgeAlarmSummary} />
+      (dhcpStats.edgeNum ?? 0) ?
+        <EdgeServiceStatusLight data={dhcpStats?.edgeAlarmSummary} /> :
+        '--'
     },
     {
       title: $t({ defaultMessage: 'DHCP Relay' }),
