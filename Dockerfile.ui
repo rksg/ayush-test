@@ -125,7 +125,6 @@ COPY --from=acx-ui-group3-test /app/coverage /app/coverage
 COPY --from=acx-ui-group4-test /app/coverage /app/coverage
 COPY --from=acx-ui-group5-test /app/coverage /app/coverage
 WORKDIR /app
-RUN touch tests-done
 
 ###############################################################
 FROM nginx:1.21.6-alpine
@@ -140,9 +139,6 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/start-nginx.sh \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
-
-# Multistage: trigger run
-COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 COPY --from=build /app/dist/apps ./
 RUN \
