@@ -1,9 +1,9 @@
 Group1=(
-"run rc:test --coverage --maxWorkers=30% --noStackTrace"
-"run rc-components:test --coverage --maxWorkers=30%  --noStackTrace"
-"run main:test --coverage --maxWorkers=30%  --noStackTrace"
-"run analytics-components:test --coverage --maxWorkers=30%  --noStackTrace"
-"run-many --target=test --all --exclude=rc,rc-components,main,analytics-components --coverage --runInBand --verbose --parallel --noStackTrace"
+"run rc:test --coverage --maxWorkers=30% --noStackTrace --bail"
+"run rc-components:test --coverage --maxWorkers=30%  --noStackTrace --bail"
+"run main:test --coverage --maxWorkers=30%  --noStackTrace --bail"
+"run analytics-components:test --coverage --maxWorkers=30%  --noStackTrace --bail"
+"run-many --target=test --all --exclude=rc,rc-components,main,analytics-components --coverage --maxWorkers=30%  --noStackTrace --bail"
 )
 Group2=(
 )
