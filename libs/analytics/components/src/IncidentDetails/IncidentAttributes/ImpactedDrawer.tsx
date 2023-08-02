@@ -50,8 +50,8 @@ export function column <RecordType> (
     return dataA[0] > dataB[0]? 1 : -1
   }
 
-  function render (value: unknown) {
-    const data = value as RecordType[keyof RecordType][]
+  function render (_: React.ReactNode, row: RecordType) {
+    const data = row[column] as RecordType[keyof RecordType][]
     return <span title={data.join(', ')}>
       {`${data[0]} ${data.length > 1 ? `(${data.length})` : ''}`}
     </span>

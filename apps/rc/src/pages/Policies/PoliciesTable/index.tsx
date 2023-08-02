@@ -18,7 +18,6 @@ import {
   getSelectPolicyRoutePath,
   Policy,
   PolicyOperation,
-  PolicyTechnology,
   PolicyType,
   RogueApConstant,
   useTableQuery

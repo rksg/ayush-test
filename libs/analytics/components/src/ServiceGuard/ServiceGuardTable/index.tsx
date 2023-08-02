@@ -22,11 +22,7 @@ import {
   useCloneServiceGuardTestMutation,
   ServiceGuardTableRow
 } from '../services'
-import {
-  ClientType,
-  ServiceGuardSpec,
-  TestType
-} from '../types'
+import { ServiceGuardSpec } from '../types'
 import {
   statsFromSummary,
   formatApsUnderTest,

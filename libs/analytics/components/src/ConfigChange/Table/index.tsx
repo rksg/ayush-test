@@ -43,7 +43,8 @@ export function Table (props: {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) => formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
+      render: (_, { timestamp }) =>
+        formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },

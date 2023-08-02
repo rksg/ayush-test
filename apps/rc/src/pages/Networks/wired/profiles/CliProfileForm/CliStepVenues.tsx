@@ -50,7 +50,7 @@ export function CliStepVenues () {
     key: 'switches',
     dataIndex: 'switches',
     sorter: true,
-    render: function (_, { switches}) {
+    render: function (_, { switches }) {
       return switches ? switches : 0
     }
   },

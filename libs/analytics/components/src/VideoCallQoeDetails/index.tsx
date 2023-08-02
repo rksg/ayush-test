@@ -22,7 +22,7 @@ import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { zoomStatsThresholds }                                                                        from '../VideoCallQoe/constants'
 import { useSeachClientsQuery, useUpdateCallQoeParticipantMutation, useVideoCallQoeTestDetailsQuery } from '../VideoCallQoe/services'
-import { DetailedResponse, Participants, WifiMetrics, Client }                                        from '../VideoCallQoe/types'
+import { DetailedResponse, Participants, Client }                                                     from '../VideoCallQoe/types'
 
 import { getConnectionQuality, getConnectionQualityTooltip } from './helper'
 import * as UI                                               from './styledComponents'

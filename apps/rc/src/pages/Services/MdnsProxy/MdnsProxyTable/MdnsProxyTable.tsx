@@ -19,8 +19,7 @@ import {
   ServiceOperation,
   getServiceListRoutePath,
   getServiceRoutePath,
-  MdnsProxyViewModel,
-  MdnsProxyForwardingRule
+  MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'

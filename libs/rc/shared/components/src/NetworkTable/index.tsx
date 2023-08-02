@@ -92,7 +92,9 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return row.aps
         }else{
           return (
-            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{row.aps}</TenantLink>
+            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
+              {row.aps}
+            </TenantLink>
           )
         }
       }
