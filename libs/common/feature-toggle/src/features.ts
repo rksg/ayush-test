@@ -42,6 +42,7 @@ export enum Features {
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
+  SWITCH_ADMIN_PASSWORD = 'switch-consumer-admin-password-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
@@ -76,7 +77,9 @@ export enum Features {
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
-  IDM_DECOUPLING='ptenant-admin-authentication-enabled'
+  IDM_DECOUPLING='ptenant-admin-authentication-enabled',
+  WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
+  WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
