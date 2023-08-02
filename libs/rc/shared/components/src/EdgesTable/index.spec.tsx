@@ -77,12 +77,22 @@ describe('Edge Table', () => {
   it('should create EdgeList successfully', async () => {
     render(
       <Provider>
-        <EdgesTable />
+        <EdgesTable pagination={{ defaultPageSize: mockEdgeList.data.length }} />
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge' }
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
-    expect(row.length).toBe(10)
+    expect(row.length).toBe(12)
+
+    const expectedStatus = ['Initializing', 'Never contacted cloud', 'Offline',
+      'Needs port config', 'Operational', 'Applying firmware', 'Applying configuration',
+      'Firmware update failed', 'Configuration update failed', 'Disconnected from cloud',
+      'Rebooting', 'Resetting and recovering']
+
+    expectedStatus.forEach((status, index) => {
+      expect(screen.getByRole('row', { name: new RegExp(`Smart Edge ${index + 1} `) }))
+        .toHaveTextContent(status)
+    })
   })
 
   it('edge detail page link should be correct', async () => {

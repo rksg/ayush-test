@@ -1,6 +1,10 @@
-import { PageHeader }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { ReportType, usePageHeaderExtra } from '@acx-ui/reports/components'
+import { PageHeader }             from '@acx-ui/components'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+
+import { ReportType }         from '../mapping/reportsMapping'
+import { usePageHeaderExtra } from '../PageHeaderExtra'
+
 
 export function ReportHeader (props: {
   name: string,
@@ -13,11 +17,12 @@ export function ReportHeader (props: {
     type
   } = props
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isMLISA = get('IS_MLISA_SA')
 
   return (
     <PageHeader
       title={name}
-      breadcrumb={isNavbarEnhanced
+      breadcrumb={isNavbarEnhanced || isMLISA
         ? [
           { text: 'Business Insights' },
           { text: 'Reports', link: '/reports' }
