@@ -230,9 +230,9 @@ export function RadioSettingsForm (props:{
                   onChange={function (checked: boolean) {
                     if (!checked) {
                       form.setFieldValue(
-                        downloadLimitFieldName, 0)
+                        enableDownloadLimitFieldName, false)
                       form.setFieldValue(
-                        uploadLimitFieldName, 0)
+                        enableUploadLimitFieldName, false)
                     }
                   }} />
               ) : <span>ON</span>}

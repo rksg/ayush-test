@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WiFi7 should not render MLO field item render when useIsSplitOn return false 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <h4
+      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-7 fPbHyn eYxJAw"
+    >
+      Wi-Fi 7
+      <svg
+        data-testid="QuestionMarkCircleOutlined"
+        style="height: 16px; width: 16px; margin-bottom: -3px;"
+      />
+    </h4>
+    <div>
+      <div
+        class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
+        width="250px"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center"
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 8px;"
+          >
+            Enable WiFi 6/ 7
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <svg
+              data-testid="QuestionMarkCircleOutlined"
+              style="height: 16px; width: 16px; margin-bottom: -3px;"
+            />
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+          style="margin-bottom: 10px; width: 300px;"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <button
+                    aria-checked="true"
+                    class="ant-switch ant-switch-checked"
+                    id="wlan_advancedCustomization_enableWifi7"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`WiFi7 should render correctly when useIsSplitOn return true 1`] = `[Function]`;
