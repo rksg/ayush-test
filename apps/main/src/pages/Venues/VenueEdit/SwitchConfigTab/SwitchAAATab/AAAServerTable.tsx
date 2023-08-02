@@ -134,7 +134,7 @@ function useColumns (type: AAAServerTypeEnum) {
       key: 'useIn',
       dataIndex: 'useIn',
       render: function (data: React.ReactNode) {
-        return data || '--'  //TODO
+        return data || '--'  //TODO: wait for API response
       }
     }] : []),
     {
