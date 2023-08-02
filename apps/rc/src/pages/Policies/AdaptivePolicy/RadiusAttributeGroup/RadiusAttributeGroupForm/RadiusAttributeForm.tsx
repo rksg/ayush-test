@@ -48,7 +48,7 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
     if(radiusAttributeVendorListQuery.data) {
       const radiusVendors = radiusAttributeVendorListQuery.data.supportedVendors ?? []
       setAttributeTreeData(Array.of(toTreeNode(commonAttributeKey, false, [])).concat(
-        radiusVendors.map(vendor => toTreeNode(vendor, false,[]))))
+        radiusVendors.slice().sort().map(vendor => toTreeNode(vendor, false,[]))))
     }
   }, [radiusAttributeVendorListQuery.data])
 
@@ -64,7 +64,9 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const onLoadData = async (treeNode: any) => {
     const defaultPayload = {
       page: 0,
-      pageSize: '10000'
+      pageSize: '10000',
+      sortField: 'name',
+      sortOrder: 'ASC'
     }
     const payload = treeNode.value === commonAttributeKey ?
       { ...defaultPayload, filters: { showOnDefault: true } } :
