@@ -4,7 +4,7 @@ import { useIntl, defineMessage } from 'react-intl'
 import { GridCol, GridRow, Loader, PageHeader, recommendationBandMapping } from '@acx-ui/components'
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 
-import { CloudRRMGraph }                 from './graph'
+import { CloudRRMGraph }                 from './Graph2'
 import { Kpis }                          from './kpis'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
