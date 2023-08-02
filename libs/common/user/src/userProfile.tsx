@@ -12,6 +12,7 @@ const userProfile: Profile = {
   profile: {} as UserProfile,
   allowedOperations: []
 }
+const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 export const getUserProfile = () => userProfile
 export const setUserProfile = (profile: Profile) => {
@@ -20,19 +21,18 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.allowedOperations = profile.allowedOperations
 }
 
-// TODO:
-// To expand the map when we start define IDs for operations
-let operationMap: Record<string, string> = {}
+export const getShowWithoutRbacCheckKey = (id:string) => {
+  return SHOW_WITHOUT_RBAC_CHECK + '_' + id
+}
 
 export function hasAccess (id?: string) {
   const { allowedOperations } = getUserProfile()
 
-  if(id === 'SHOW_WITHOUT_RBAC_CHECK') return true
-  // temp measure to permit all undefined id for admins
+  // measure to permit all undefined id for admins
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
+  if(id?.includes(SHOW_WITHOUT_RBAC_CHECK)) return true
 
-  const action = operationMap[id]
-  return allowedOperations.includes(action)
+  return allowedOperations.includes(id)
 }
 
 export function filterByAccess <Item> (items?: Item[]) {
