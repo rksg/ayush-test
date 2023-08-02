@@ -155,7 +155,7 @@ function PersonaDetails () {
       />
     },
     { label: $t({ defaultMessage: 'VLAN' }), value: personaDetailsQuery.data?.vlan },
-    { label: $t({ defaultMessage: 'DPSK Pool' }),
+    { label: $t({ defaultMessage: 'DPSK Service' }),
       value:
         <DpskPoolLink
           name={dpskPoolData?.name}
@@ -319,6 +319,7 @@ function PersonaDetails () {
 
 
         <PersonaDevicesTable
+          disableAddButton={!personaGroupData?.macRegistrationPoolId}
           persona={personaDetailsQuery.data}
           dpskPoolId={personaGroupData?.dpskPoolId}
         />
@@ -393,7 +394,7 @@ function PersonaDetailsPageHeader (props: {
   }
 
   const extra = filterByAccess([
-    <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
+    <Button type='primary' onClick={showRevokedModal} disabled={!allowed}>
       {$t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}

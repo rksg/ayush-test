@@ -202,7 +202,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
     return (
       <>
-        <Col span={8}>
+        <Tooltip title={errorTooltip}><Col span={8}>
           <Form.Item name={[name, 'apGroupId']} noStyle>
             <Input type='hidden' />
           </Form.Item>
@@ -223,14 +223,11 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
             </Form.Item>
           </>}
 
-
-          <Tooltip title={errorTooltip}>
-            <UI.FormItemRounded name={[name, 'selected']} valuePropName='checked'>
-              <Checkbox disabled={apgroup.validationError}
-                onChange={() => { form.validateFields() }}>{apGroupName}</Checkbox>
-            </UI.FormItemRounded>
-          </Tooltip>
-        </Col>
+          <UI.FormItemRounded name={[name, 'selected']} valuePropName='checked'>
+            <Checkbox disabled={apgroup.validationError}
+              onChange={() => { form.validateFields() }}>{apGroupName}</Checkbox>
+          </UI.FormItemRounded>
+        </Col></Tooltip>
         <Col span={8}>
           <UI.FormItemRounded>
             { selected &&
@@ -251,9 +248,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 }
               }
             ]}>
-            { selected && (
-              <RadioSelect />
-            )}
+            { selected ? <RadioSelect /> : <Input type='hidden' /> }
           </UI.FormItemRounded>
         </Col>
       </>
@@ -290,9 +285,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         layout='horizontal'
         size='small'
         name={formName}
-        // initialValues={formInitData}
-        // onFinish={onFinish}
-        // onFinishFailed={onFinishFailed}
+        onFinish={props.onOk}
       >
         <Form.Item name='selectionType'
           rules={[

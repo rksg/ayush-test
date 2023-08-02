@@ -1,7 +1,14 @@
 import React from 'react'
 
-import { RecommendationDetails, NetworkAssurance, NetworkAssuranceTabEnum } from '@acx-ui/analytics/components'
-import { Route, rootRoutes, Navigate, MLISA_BASE_PATH }                     from '@acx-ui/react-router-dom'
+import {
+  RecommendationDetails,
+  NetworkAssurance,
+  NetworkAssuranceTabEnum,
+  VideoCallQoe,
+  VideoCallQoeForm,
+  VideoCallQoeDetails
+}                                                       from '@acx-ui/analytics/components'
+import { Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
 
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
@@ -10,6 +17,7 @@ import Layout          from './pages/Layout'
 import Recommendations from './pages/Recommendations'
 
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
+const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 function AllRoutes () {
   return rootRoutes(<Route element={<Layout />}>
@@ -29,11 +37,15 @@ function AllRoutes () {
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
       <Route path='configChange' element={<ConfigChange />} />
+      <Route path='reports/*' element={<ReportsRoutes />} />
+      <Route path='dataStudio/*' element={<ReportsRoutes />} />
       <Route path='serviceValidation' element={<div>Service Validation</div>} />
-      <Route path='videoCallQoe' element={<div>video Call Qoe</div>} />
+      <Route path='videoCallQoe/*' >
+        <Route index element={<VideoCallQoe/>} />
+        <Route path=':testId' element={<VideoCallQoeDetails/>} />
+        <Route path='add' element={<VideoCallQoeForm />} />
+      </Route>
       <Route path='occupancy' element={<div>Occupancy</div>} />
-      <Route path='dataStudio' element={<div>Data Studio</div>} />
-      <Route path='reports' element={<div>Reports</div>} />
       <Route path='admin/*' element={<div>Admin</div>} />
       <Route path='health'>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />

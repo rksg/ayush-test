@@ -9,8 +9,10 @@ jest.mock('@acx-ui/analytics/components', () => {
     .map(key => [key, () => <div data-testid={key} />])
   return Object.fromEntries(sets)
 })
-
 jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
+jest.mock('@reports/Routes', () => () => {
+  return <div data-testid='reports' />
+}, { virtual: true })
 
 describe('AllRoutes', () => {
   beforeEach(() => {
@@ -47,6 +49,22 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('NetworkAssurance')).toBeVisible()
   })
+  it('should render video call qoe correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/videoCallQoe' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoe')).toBeVisible()
+  })
+  it('should render video call qoe details correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/videoCallQoe/id' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoeDetails')).toBeVisible()
+  })
+  it('should render video call qoe form correctly', async () => {
+    render(<AllRoutes />,
+      { route: { path: '/analytics/next/videoCallQoe/add' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoeForm')).toBeVisible()
+  })
   it('should render recommendations  correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/analytics/next/recommendations/crrm' }, wrapper: Provider })
@@ -63,5 +81,15 @@ describe('AllRoutes', () => {
     const path = '/analytics/next/dashboard'
     render(<AllRoutes />, { route: { path } })
     expect(await screen.findByTestId('Dashboard')).toBeVisible()
+  })
+  it('should render reports correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/reports/overview' }
+      , wrapper: Provider })
+    await screen.findByTestId('reports')
+  })
+  it('should render datastudio correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/analytics/next/dataStudio' }
+      , wrapper: Provider })
+    await screen.findByTestId('reports')
   })
 })

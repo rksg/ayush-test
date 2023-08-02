@@ -59,6 +59,7 @@ export enum Features {
   WIFI_EDA_WIFI7_320MHZ = 'wifi-eda-wifi7-320mhz-toggle',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
+  WIFI_FR_6029_FG1_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
@@ -69,7 +70,11 @@ export enum Features {
   MULTICAST_RATE_LIMIT_TOGGLE = 'wifi-eda-multicast-rate-limiting-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
-  BETA_FLAG = 'acx-ui-beta-flag-toggle'
+  BETA_FLAG = 'acx-ui-beta-flag-toggle',
+  WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
+  WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
+  WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
+  IDM_DECOUPLING='ptenant-admin-authentication-enabled'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

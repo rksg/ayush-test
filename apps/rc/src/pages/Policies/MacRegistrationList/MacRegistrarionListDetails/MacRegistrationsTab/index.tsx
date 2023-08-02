@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }            from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
@@ -218,7 +218,8 @@ export function MacRegistrationsTab () {
         // eslint-disable-next-line max-len
         expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
       />
-      <ImportFileDrawer type='DPSK'
+      <ImportFileDrawer
+        type={ImportFileDrawerType.DPSK}
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}

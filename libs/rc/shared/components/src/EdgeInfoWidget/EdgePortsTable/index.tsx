@@ -22,6 +22,7 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       title: $t({ defaultMessage: 'Description' }),
       key: 'description',
       dataIndex: 'name',
+      width: 200,
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
@@ -53,6 +54,16 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       key: 'ip',
       dataIndex: 'ip',
       sorter: { compare: sortProp('ip', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'IP Type' }),
+      key: 'ipMode',
+      dataIndex: 'ipMode',
+      sorter: { compare: sortProp('ipMode', defaultSort) },
+      render: (ipMode) => {
+        return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
+          : (ipMode === 'Static' ? $t({ defaultMessage: 'Static IP' }) : '')
+      }
     },
     {
       title: $t({ defaultMessage: 'Speed' }),

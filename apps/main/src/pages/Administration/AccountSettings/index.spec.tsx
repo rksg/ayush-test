@@ -44,6 +44,12 @@ jest.mock('./MFAFormItem', () => ({
 jest.mock('./RecoveryPassphraseFormItem', () => ({
   RecoveryPassphraseFormItem: () => <div data-testid={'rc-RecoveryPassphraseFormItem'} title='RecoveryPassphraseFormItem' />
 }))
+jest.mock('./AuthServerFormItem', () => ({
+  AuthServerFormItem: () => <div data-testid={'rc-AuthServerFormItem'} title='AuthServerFormItem' />
+}))
+jest.mock('./AppTokenFormItem', () => ({
+  AppTokenFormItem: () => <div data-testid={'rc-AppTokenFormItem'} title='AppTokenFormItem' />
+}))
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   isDelegationMode: jest.fn().mockReturnValue(false)
