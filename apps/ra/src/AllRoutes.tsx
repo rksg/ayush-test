@@ -1,5 +1,5 @@
-import { RecommendationDetails, NetworkAssurance, NetworkAssuranceTabEnum } from '@acx-ui/analytics/components'
-import { Route, rootRoutes, Navigate, MLISA_BASE_PATH }                     from '@acx-ui/react-router-dom'
+import { RecommendationDetails, NetworkAssurance, NetworkAssuranceTabEnum, CrrmDetails } from '@acx-ui/analytics/components'
+import { Route, rootRoutes, Navigate, MLISA_BASE_PATH }                                  from '@acx-ui/react-router-dom'
 
 import ConfigChange    from './pages/ConfigChange'
 import IncidentDetails from './pages/IncidentDetails'
@@ -15,6 +15,7 @@ function AllRoutes () {
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
         <Route path=':activeTab/:id' element={<RecommendationDetails />} />
+        <Route path=':activeTab/:id/crrm' element={<CrrmDetails />} />
       </Route>
       <Route path='incidents'>
         <Route index={true} element={<Incidents />} />

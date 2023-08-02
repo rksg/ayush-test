@@ -1,6 +1,7 @@
-import styled from 'styled-components'
+import { Typography } from 'antd'
+import styled         from 'styled-components'
 
-import { InformationSolid } from '@acx-ui/icons'
+import { BulbOutlined, InformationSolid } from '@acx-ui/icons'
 
 import { Subtitle }            from '../../IncidentDetails/Insights/styledComponents'
 import { withDottedUnderline } from '../styledComponents'
@@ -89,4 +90,24 @@ export const KpiContentWrapper = styled.div`
 
 export const KpiWrapper = styled.div`
   padding-bottom: 10px;
+`
+
+export const BulbOutlinedIcon = styled(BulbOutlined)`
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+`
+
+export const CrrmTitle = styled(Typography.Title).attrs({ level: 2 })``
+
+export const CrrmDiv = styled.div`
+  padding-top: 20px;
+`
+
+export const LabelSpan = styled.span`
+  font-weight: 700;
+`
+
+export const CrrmDetailsWrapper = styled.div`
+  height: 375px;
 `

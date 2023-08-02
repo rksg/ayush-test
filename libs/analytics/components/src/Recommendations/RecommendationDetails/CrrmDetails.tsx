@@ -1,25 +1,21 @@
-import { get }                    from 'lodash'
-import { useIntl, defineMessage } from 'react-intl'
+import { get }     from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { Kpis }                          from './kpis'
+import { CrrmValues }                    from './CrrmValues'
 import MuteRecommendation                from './MuteRecommendation'
 import { Overview }                      from './overview'
 import { useRecommendationDetailsQuery } from './services'
-import { Values }                        from './values'
 
-export const linkMap = {
-  aiOps: defineMessage({ defaultMessage: 'AI Operations' }),
-  crrm: defineMessage({ defaultMessage: 'AI-Driven RRM' })
-}
+import { linkMap } from '.'
 
-export const RecommendationDetails = () => {
+export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const activeTab = get(params, 'activeTab', 'crrm') as keyof typeof linkMap
+  const activeTab = 'crrm'
   const link = `recommendations/${activeTab}`
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
@@ -42,14 +38,11 @@ export const RecommendationDetails = () => {
       }} />]}
     />}
     <GridRow>
-      <GridCol col={{ span: 3 }}>
+      <GridCol col={{ span: 5 }}>
         <Overview details={details} />
       </GridCol>
-      <GridCol col={{ span: 13 }}>
-        <Values details={details}/>
-      </GridCol>
-      <GridCol col={{ span: 8 }}>
-        <Kpis details={details} />
+      <GridCol col={{ span: 19 }}>
+        <CrrmValues details={details}/>
       </GridCol>
     </GridRow>
   </Loader>

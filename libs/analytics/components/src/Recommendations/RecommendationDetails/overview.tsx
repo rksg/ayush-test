@@ -12,6 +12,7 @@ import { codes, statusTrailMsgs } from '../config'
 import { Priority, PriorityIcon } from '../styledComponents'
 
 import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
+import { StatusTrail }                                              from './statusTrail'
 import { RecommendationApImpacted }                                 from './styledComponents'
 
 const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
@@ -59,6 +60,13 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { createdAt } = statusTrail[statusTrail.length - 1]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
+  const applied = details.appliedOnce && status !== 'reverted'
+  const before = details.kpi_number_of_interfering_links?.current
+  const after = applied
+    ? details.kpi_number_of_interfering_links?.projected
+    : details.kpi_number_of_interfering_links?.previous || 0
+  const crrmText = $t({
+    defaultMessage: '{before} interfering links can be optimised to {after}' }, { before, after })
   const Icon = () => <Priority>
     <PriorityIcon value={priority.order} />
     <span>{$t(priority.label)}</span>
@@ -68,10 +76,15 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     { label: $t({ defaultMessage: 'Date' }),
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(createdAt)) },
     ...(isRrm ? [] : [{ label: $t({ defaultMessage: 'Category' }), children: $t(category) }]),
-    { label: get('IS_MLISA_SA')
-      ? $t({ defaultMessage: 'Zone' })
-      : $t({ defaultMessage: 'Venue' }), children: sliceValue },
-    { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) }
+    ...(isRrm ? [] : [{
+      label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' }),
+      children: sliceValue
+    }]),
+    ...(isRrm ? [{ label: $t({ defaultMessage: 'Summary' }), children: crrmText }] : []),
+    { label: $t({ defaultMessage: 'Status' }), children: $t(statusTrailMsgs[status]) },
+    ...(isRrm
+      ? [{ label: $t({ defaultMessage: 'Trail' }), children: <StatusTrail details={details}/> }]
+      : [])
   ]
 
   const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)
