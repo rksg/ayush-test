@@ -67,7 +67,7 @@ describe('PreferredLanguageFormItem', () => {
   it('should be changable', async () => {
     render(
       <Provider>
-        <PreferredLanguageFormItem />
+        <Form> <PreferredLanguageFormItem /> </Form>
       </Provider>, {
         route: { params }
       })
