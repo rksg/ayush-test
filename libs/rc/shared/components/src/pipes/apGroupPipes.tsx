@@ -69,11 +69,11 @@ const apGroupTooltip = (type: string, venue: NetworkVenue, network: NetworkSaveD
     }
   }
   if(type === 'radio'){
-    return _.isEmpty(radio) ? '' : <table>{radio}</table>
+    return _.isEmpty(radio) ? '' : <table>{radio.map((item, index) => ({ ...item, key: index }))}</table>
   }else if(type === 'vlan'){
-    return _.isEmpty(vlan) ? '' : <table>{vlan}</table>
+    return _.isEmpty(vlan) ? '' : <table>{vlan.map((item, index) => ({ ...item, key: index }))}</table>
   }else{
-    return _.isEmpty(name) ? '' : <table>{name}</table>
+    return _.isEmpty(name) ? '' : <table>{name.map((item, index) => ({ ...item, key: index }))}</table>
   }
 }
 

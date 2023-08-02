@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
-import { Provider, store, videoCallQoeURL }                            from '@acx-ui/store'
+import { Provider, store, r1VideoCallQoeURL }                          from '@acx-ui/store'
 import { screen, render, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { getAllCallQoeTests, getAllCallQoeTestsWithNotStarted } from './__tests__/fixtures'
@@ -15,7 +15,7 @@ describe('VideoCallQoeListPage', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(api.util.resetApiState())
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
+    mockGraphqlQuery(r1VideoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTests })
   })
 
   it('should render page correctly', async () => {
@@ -45,7 +45,7 @@ describe('VideoCallQoeListPage', () => {
   })
 
   it('should disable the create test call button', async () => {
-    mockGraphqlQuery(videoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTestsWithNotStarted })
+    mockGraphqlQuery(r1VideoCallQoeURL,'CallQoeTests', { data: getAllCallQoeTestsWithNotStarted })
     const Component = () => {
       const { headerExtra } = useVideoCallQoe()
       return <span>{headerExtra}</span>

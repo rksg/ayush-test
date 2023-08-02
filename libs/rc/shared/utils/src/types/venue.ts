@@ -371,7 +371,8 @@ export interface Vlan {
 	vlanName?: string,
   untaggedPorts?: string,
   taggedPorts?: string,
-  title?: string
+  title?: string,
+  key?: number
 }
 
 export interface ConfigurationProfile {
@@ -686,6 +687,10 @@ export interface VenueLoadBalancing {
   bandBalancingEnabled: true,
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum
+}
+
+export interface VenueBssColoring {
+	bssColoringEnabled: boolean
 }
 
 export interface Node {

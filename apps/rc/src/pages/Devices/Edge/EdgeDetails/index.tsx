@@ -5,11 +5,11 @@ import { EdgeDhcp }              from './EdgeDhcp'
 import { EdgeOverview }          from './EdgeOverview'
 import { EdgeServices }          from './EdgeServices'
 import { EdgeTimeline }          from './EdgeTimeline'
-// import { EdgeTroubleshooting }   from './EdgeTroubleshooting'
+import { EdgeTroubleshooting }   from './EdgeTroubleshooting'
 
 const tabs = {
   overview: EdgeOverview,
-  // troubleshooting: EdgeTroubleshooting,
+  troubleshooting: EdgeTroubleshooting,
   services: EdgeServices,
   dhcp: EdgeDhcp,
   timeline: EdgeTimeline

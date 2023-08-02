@@ -1,10 +1,8 @@
-/* eslint-disable max-len */
-import { render, screen } from '@testing-library/react'
-import userEvent          from '@testing-library/user-event'
-import { IntlProvider }   from 'react-intl'
+import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { ApRadioTypeDataKeyMap, ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -21,13 +19,13 @@ describe.skip('RadioSettingForm component', () => {
     const radioDataKey = VenueRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth24GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -54,13 +52,13 @@ describe.skip('RadioSettingForm component', () => {
     const radioDataKey = VenueRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth5GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -85,13 +83,13 @@ describe.skip('RadioSettingForm component', () => {
     const radioDataKey = VenueRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth6GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -116,6 +114,7 @@ describe.skip('RadioSettingForm component', () => {
     await userEvent.click(mgmtTxRateSelect)
     await userEvent.click((await screen.findByTitle('9 Mbps')))
 
+    // eslint-disable-next-line max-len
     const multicastRateLimitSwitch = await screen.findByRole('Switch', { name: /Multicast Rate Limiting/i })
     await userEvent.click(multicastRateLimitSwitch)
     expect(await screen.findByTestId('enableUploadLimit')).toBeVisible()
@@ -127,14 +126,14 @@ describe.skip('RadioSettingForm component', () => {
     const radioDataKey = ApRadioTypeDataKeyMap[radioType]
     const bandwidthOptions = channelBandwidth24GOptions
     render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           context='ap'
           radioType={radioType}
           radioDataKey={radioDataKey}
           channelBandwidthOptions={bandwidthOptions}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
 
@@ -160,7 +159,7 @@ describe.skip('RadioSettingForm component', () => {
     const bandwidthOptions = channelBandwidth5GOptions
     let isUseVenueSettings = true
     const { asFragment } = render(
-      <IntlProvider locale='en'>
+      <Provider>
         <RadioSettingsForm
           context='ap'
           radioType={radioType}
@@ -168,7 +167,7 @@ describe.skip('RadioSettingForm component', () => {
           channelBandwidthOptions={bandwidthOptions}
           isUseVenueSettings={isUseVenueSettings}
         />
-      </IntlProvider>)
+      </Provider>)
 
     await screen.findByText('Channel selection method')
     // eslint-disable-next-line testing-library/no-node-access
