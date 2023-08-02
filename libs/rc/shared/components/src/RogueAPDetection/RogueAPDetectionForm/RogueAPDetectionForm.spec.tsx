@@ -2,8 +2,8 @@ import React from 'react'
 
 import { fireEvent } from '@testing-library/react'
 import userEvent     from '@testing-library/user-event'
-import { Form }      from 'antd'
 import { rest }      from 'msw'
+import { Path }      from 'react-router-dom'
 
 import {
   RogueAPDetectionContextType,
@@ -176,6 +176,19 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/__tenantId__',
+  search: '',
+  hash: ''
+}
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (): Path => mockedTenantPath
+}))
+
 const rogueRuleActionMap = {
   [RogueRuleType.CUSTOM_SNR_RULE]: { name: /signal threshold/i, value: '8' },
   [RogueRuleType.CUSTOM_SSID_RULE]: { name: /ssid/i, value: 'ssid123' },
@@ -342,7 +355,7 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByText('rule1')
   })
 
-  it.skip('should render RogueAPDetectionForm successfully', async () => {
+  it('should render RogueAPDetectionForm successfully', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
@@ -399,7 +412,7 @@ describe('RogueAPDetectionForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
-  it.skip('should render RogueAPDetectionForm successfully with mac oui rule', async () => {
+  it('should render RogueAPDetectionForm successfully with mac oui rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
@@ -434,7 +447,7 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByText('rule4')
   })
 
-  it.skip('should render RogueAPDetectionForm successfully with ssid rule', async () => {
+  it('should render RogueAPDetectionForm successfully with ssid rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
@@ -469,7 +482,7 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByText('rule3')
   })
 
-  it.skip('should render RogueAPDetectionForm successfully with snr rule', async () => {
+  it('should render RogueAPDetectionForm successfully with snr rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
@@ -532,9 +545,7 @@ describe('RogueAPDetectionForm', () => {
         state: initState,
         dispatch: setRogueAPConfigure
       }}>
-        <Form>
-          <RogueAPDetectionForm edit={true}/>
-        </Form>
+        <RogueAPDetectionForm edit={true}/>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,
