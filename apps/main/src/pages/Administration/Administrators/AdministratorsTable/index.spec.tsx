@@ -241,7 +241,7 @@ describe('Administrators Table', () => {
     const row = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "erp.cheng@email.com"?')
+    await screen.findByText('Delete " "?')
     const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
     await userEvent.click(submitBtn)
     await waitFor(() => {
