@@ -53,7 +53,7 @@ exports[`Topology Switch Card should render orrectly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi sc-evZas fBelZT"
+                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bkfsAJ sc-evZas fBelZT"
                 style="padding: 0px;"
                 type="button"
               >
