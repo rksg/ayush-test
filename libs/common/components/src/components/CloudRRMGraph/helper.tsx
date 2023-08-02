@@ -3,8 +3,8 @@ import { unparse }                  from 'papaparse'
 import { renderToString }           from 'react-dom/server'
 import { IntlShape, defineMessage } from 'react-intl'
 
-import { formatter } from '@acx-ui/formatter'
-import { getIntl, noDataDisplay }   from '@acx-ui/utils'
+import { formatter }              from '@acx-ui/formatter'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { cssStr } from '../../theme/helper'
 
