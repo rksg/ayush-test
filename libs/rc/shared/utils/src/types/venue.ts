@@ -698,7 +698,11 @@ export interface VenueClientAdmissionControl {
 	maxRadioLoad50G?: number,
 	minClientThroughput24G?: number,
 	minClientThroughput50G?: number
-  }
+}
+
+export interface VenueBssColoring {
+	bssColoringEnabled: boolean
+}
 
 export interface Node {
     type?: DeviceTypes;
