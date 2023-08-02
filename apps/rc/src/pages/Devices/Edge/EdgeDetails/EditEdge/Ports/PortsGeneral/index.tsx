@@ -11,11 +11,9 @@ import { useUpdatePortConfigMutation }                                          
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }           from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                           from '@acx-ui/react-router-dom'
 
-
 import { EdgeEditContext } from '../..'
 
 import { EdgePortWithStatus, lanPortsubnetValidator, PortConfigForm } from './PortConfigForm'
-
 
 interface PortsGeneralProps {
   data: EdgePortWithStatus[]
@@ -36,7 +34,6 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
   const editEdgeContext = useContext(EdgeEditContext)
   const dataRef = useRef<EdgePortWithStatus[] | undefined>(undefined)
-
 
   let tabData = [] as ContentSwitcherProps['tabDetails']
   let formData = {} as PortConfigFormType
@@ -86,7 +83,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
         key: 'ports-general',
         title: $t({ defaultMessage: 'Ports General' })
       })
-      // const formData = Object.values(formRef.current?.getFieldsValue(true))
+
       const formData = flatMap(formRef.current?.getFieldsValue(true))
       const errorTab = await validateData(formData as EdgePort[])
       editEdgeContext.setFormControl({
