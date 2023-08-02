@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
+import { EmbeddedReport }  from '../EmbeddedReport'
 import {
-  EmbeddedReport,
   ReportType,
   reportTypeLabelMapping
-} from '@acx-ui/reports/components'
-
+} from '../mapping/reportsMapping'
 import { ReportHeader } from '../ReportHeader'
+
 
 export function Report (props: {
   type: ReportType
