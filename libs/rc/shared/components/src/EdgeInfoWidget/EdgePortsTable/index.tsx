@@ -14,8 +14,8 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       dataIndex: 'sortIdx',
       defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('sortIdx', defaultSort) },
-      render: (data) => {
-        return 'port' + data
+      render: (_, { sortIdx }) => {
+        return 'port' + sortIdx
       }
     },
     {
@@ -60,7 +60,7 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       key: 'speedKbps',
       dataIndex: 'speedKbps',
       sorter: { compare: sortProp('speedKbps', defaultSort) },
-      render: (data, row) => {
+      render: (_, row) => {
         return formatter('networkSpeedFormat')(row.speedKbps)
       }
     }

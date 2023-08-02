@@ -209,7 +209,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) =>
+      render: (_, row) =>
         <Button
           type='link'
           size='small'
@@ -227,9 +227,8 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       dataIndex: 'name',
       searchable: true,
       sorter: true,
-      ellipsis: true,
       defaultSortOrder: 'ascend',
-      render: (data, row, __, highlightFn) =>
+      render: (_, row, __, highlightFn) =>
         // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <a
           // eslint-disable-next-line no-script-url
@@ -259,7 +258,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       filterable: guestTypeFilterOptions,
       filterMultiple: false,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderGuestType(row.guestType)
       }
     }, {
@@ -269,7 +268,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       filterKey: 'networkId',
       filterable: networkFilterOptions || true,
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return renderAllowedNetwork(row)
       }
     }, {
@@ -281,7 +280,7 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       filterMultiple: false,
       filterable: showExpiredOptions || true,
       defaultFilteredValue: ['true'],
-      render: function (data, row) {
+      render: function (_, row) {
         return renderExpires(row)
       }
     }, {
@@ -289,9 +288,10 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'guestStatus',
       sorter: true,
-      render: function (data) {
-        return data === GuestStatusEnum.EXPIRED ?
-          <span style={{ color: cssStr('--acx-semantics-red-50') }}>{data}</span> : data
+      render: function (_, { guestStatus }) {
+        return guestStatus === GuestStatusEnum.EXPIRED
+          ? <span style={{ color: cssStr('--acx-semantics-red-50') }}>{guestStatus}</span>
+          : guestStatus
       }
     }
   ]

@@ -185,7 +185,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterValueNullable: false,
       filterable: filterableKeys ? switchFilterOptions : false,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.isFirstLevel ?
           <TenantLink
             to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
@@ -193,10 +193,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           >
             {getSwitchName(row)}
           </TenantLink> :
-          <div>
-            {getSwitchName(row)}
-            <span style={{ marginLeft: '4px' }}>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-          </div>
+          `${getSwitchName(row)} (${getStackMemberStatus(row.unitStatus || '', true)})`
       }
     }, {
       key: 'deviceStatus',
@@ -207,7 +204,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterable: filterableKeys ? statusFilterOptions : false,
       groupable: filterableKeys && getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (data, row) => <SwitchStatus row={row}/>
+      render: (_, row) => <SwitchStatus row={row}/>
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -216,8 +213,8 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       searchable: searchable,
       groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions,
-      render: (data, row) => {
-        return data || getSwitchModel(row.serialNumber)
+      render: (_, row) => {
+        return row.model || getSwitchModel(row.serialNumber)
       }
     }, {
       key: 'activeSerial',
@@ -232,7 +229,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       dataIndex: 'switchMac',
       sorter: true,
       searchable: searchable,
-      render: (data) => typeof data === 'string' && data.toUpperCase()
+      render: (_, { switchMac }) => typeof switchMac === 'string' && switchMac.toUpperCase()
     }, {
       key: 'ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -257,8 +254,10 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       filterKey: 'venueId',
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
-      render: (data: React.ReactNode, row: SwitchRow) => (
-        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      render: (_: React.ReactNode, row: SwitchRow) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+          {row.venueName}
+        </TenantLink>
       )
     }]), {
       key: 'uptime',
@@ -272,9 +271,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       align: 'center',
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (data, row) => (
+      render: (_, row) => (
         <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>
-          {data ? data : ((row.unitStatus === undefined) ? 0 : '')}
+          {row.clientCount ? row.clientCount : ((row.unitStatus === undefined) ? 0 : '')}
         </TenantLink>
       )
     }

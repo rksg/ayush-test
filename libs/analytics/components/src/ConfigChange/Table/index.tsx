@@ -35,7 +35,7 @@ export function Table (props: {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (value) => formatter(DateFormatEnum.DateTimeFormat)(moment(Number(value))),
+      render: (_, { timestamp }) => formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },
@@ -43,9 +43,9 @@ export function Table (props: {
       key: 'type',
       title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
-      render: (value, row) => {
-        const config = getConfigChangeEntityTypeMapping().find(type => type.key === value)
-        return config ? <Badge key={row.id} color={config.color} text={config.label}/> : value
+      render: (_, row) => {
+        const config = getConfigChangeEntityTypeMapping().find(type => type.key === row.type)
+        return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
       },
       filterable: getConfigChangeEntityTypeMapping()
         .map(({ label, ...rest }) => ({ ...rest, value: label })),
@@ -56,7 +56,7 @@ export function Table (props: {
       key: 'name',
       title: $t({ defaultMessage: 'Entity Name' }),
       dataIndex: 'name',
-      render: (value, row, _, highlightFn) => highlightFn(String(value)),
+      render: (_, { name }, __, highlightFn) => highlightFn(String(name)),
       searchable: true,
       sorter: { compare: sortProp('name', defaultSort) }
     },
@@ -75,7 +75,6 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Change From' }),
       dataIndex: ['oldValues'],
       align: 'center',
-      ellipsis: true,
       render: (_, { oldValues, type, key }) => {
         const generateValues = oldValues?.map(value => {
           const mapped = enumTextMap.get(
@@ -92,7 +91,6 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Change To' }),
       dataIndex: ['newValues'],
       align: 'center',
-      ellipsis: true,
       render: (_, { newValues, type, key }) => {
         const generateValues = newValues?.map(value => {
           const mapped = enumTextMap.get(

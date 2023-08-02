@@ -61,7 +61,7 @@ const EdgeDHCPDetail = () => {
       sorter: { compare: sortProp('edgeName', defaultSort) },
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink to={`/devices/edge/${row.edgeId}/details/overview`}>
             {row.edgeName}
@@ -73,7 +73,7 @@ const EdgeDHCPDetail = () => {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'venueId',
       dataIndex: 'venueId',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
             {row.venueName}

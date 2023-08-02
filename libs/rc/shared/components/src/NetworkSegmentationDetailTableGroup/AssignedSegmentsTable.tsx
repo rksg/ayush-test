@@ -36,7 +36,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'Persona' }),
       key: 'name',
       dataIndex: 'name',
-      render: (data, row) => {
+      render: (_, row) => {
         return <TenantLink
           to={`users/persona-management/persona-group/${row.groupId}/persona/${row.id}`}
         >
@@ -53,7 +53,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'AP' }),
       key: 'ethernetPorts[0].name',
       dataIndex: 'ethernetPorts[0].name',
-      render: (data, row) => {
+      render: (_, row) => {
         return row?.ethernetPorts?.[0]?.name
       }
     },
@@ -61,7 +61,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'Switch' }),
       key: 'switches',
       dataIndex: 'switches',
-      render: (data, row) => {
+      render: (_, row) => {
         const switchItem = row?.switches
           ?.find(item => Object.keys(switchNameMapping).includes(item.macAddress))
         return switchNameMapping[switchItem?.macAddress as keyof typeof switchNameMapping]
@@ -72,7 +72,7 @@ export const AssignedSegmentsTable = (props: PersonaTableProps) => {
       title: $t({ defaultMessage: 'Assigned Port' }),
       key: 'ethernetPorts[0].portIndex',
       dataIndex: 'ethernetPorts[0].portIndex',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')
       }
     }

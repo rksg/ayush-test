@@ -182,6 +182,29 @@ const tallStyle = css<StyledTable>`
           display: none;
         }
       }
+
+      &-tbody > tr > td {
+        &.ant-table-cell-ellipsis {
+          &:has(a) { color: var(--acx-accents-blue-50); }
+          &:has(a:hover, a:active) { color: var(--acx-accents-blue-60); }
+          a span.ant-typography {
+            color: inherit;
+            text-decoration: inherit;
+          }
+          .ant-btn.ant-btn-link:not(.ant-btn-icon-only) {
+            width: 100%;
+            max-width: fit-content;
+            span {
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+          .ant-badge-status .ant-badge-status-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
     }
 
     .ant-pro-card-body {

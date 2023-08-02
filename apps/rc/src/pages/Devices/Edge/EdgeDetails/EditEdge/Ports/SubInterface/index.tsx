@@ -63,7 +63,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       title: '#',
       key: '',
       dataIndex: 'index',
-      render: (dom, entity, index) => {
+      render: (_, __, index) => {
         const pagination = tableQuery.pagination
         return ++index + (pagination.page - 1) * pagination.pageSize
       }

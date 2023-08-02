@@ -163,9 +163,9 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       sorter: true,
       fixed: 'left',
       searchable: searchable,
-      render: (data, row : APExtended, _, highlightFn) => (
+      render: (_, row : APExtended, __, highlightFn) => (
         <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
-          {searchable ? highlightFn(row.name || '--') : data}</TenantLink>
+          {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
@@ -177,7 +177,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
       groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
+      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
@@ -239,17 +239,21 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
-      render: (data: React.ReactNode, row : APExtended) => (
-        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+      render: (_: React.ReactNode, row : APExtended) => (
+        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+          {row.venueName}
+        </TenantLink>
       )
     }]), {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      render: (data, row : APExtended) => {
+      render: (_, row : APExtended) => {
+        const { switchId, switchSerialNumber, switchName } = row
         return (
-          // eslint-disable-next-line max-len
-          <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/devices/switch/${switchId}/${switchSerialNumber}/details/overview`}>
+            {switchName}
+          </TenantLink>
         )
       }
     }, {
@@ -257,13 +261,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       title: $t({ defaultMessage: 'Mesh Role' }),
       dataIndex: 'meshRole',
       sorter: true,
-      render: (data) => transformMeshRole(data as APMeshRole)
+      render: (_, { meshRole }) => transformMeshRole(meshRole as APMeshRole)
     }, {
       key: 'clients',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: (data, row : APExtended) => {
+      render: (_, row: APExtended) => {
         return releaseTag ?
           <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
             {transformDisplayNumber(row.clients)}
@@ -292,8 +296,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           dataIndex: channel,
           title: <Table.SubTitle children={channelTitleMap[key]} />,
           align: 'center',
-          ellipsis: true,
-          render: (data, row) =>
+          render: (_, row) =>
             transformDisplayText(row[key] as string)
         })
         return acc
@@ -323,7 +326,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: 'poePort',
       show: false,
       sorter: false,
-      render: (data, row : APExtended) => {
+      render: (_, row : APExtended) => {
         if (!row.hasPoeStatus) {
           return <span></span>
         }

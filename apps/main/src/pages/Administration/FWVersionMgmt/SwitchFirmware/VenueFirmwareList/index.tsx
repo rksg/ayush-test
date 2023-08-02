@@ -67,7 +67,7 @@ function useColumns (
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
       // defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return row.name
       }
     },
@@ -79,7 +79,7 @@ function useColumns (
       sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: filterables ? filterables['version'] : false,
       filterMultiple: false,
-      render: function (data, row) {
+      render: function (_, row) {
         let versionList = []
         if (row.switchFirmwareVersion?.id) {
           versionList.push(parseSwitchVersion(row.switchFirmwareVersion.id))
@@ -95,7 +95,7 @@ function useColumns (
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: { compare: sortProp('lastScheduleUpdateTime', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         return row.lastScheduleUpdateTime ? toUserDate(row.lastScheduleUpdateTime) : '--'
       }
     },
@@ -104,7 +104,7 @@ function useColumns (
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: { compare: sortProp('nextSchedule.timeSlot.startDateTime', defaultSort) },
-      render: function (data, row) {
+      render: function (_, row) {
         // return getNextScheduleTpl(intl, row)
         return (!isSwitchNextScheduleTooltipDisabled(row)
           ? getNextScheduleTpl(intl, row)

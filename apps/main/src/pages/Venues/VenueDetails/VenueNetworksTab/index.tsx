@@ -213,9 +213,9 @@ export function VenueNetworksTab () {
       sorter: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
-          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
         )
       }
     },
@@ -224,8 +224,8 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
       sorter: true,
-      render: (data: unknown, row) => <NetworkType
-        networkType={data as NetworkTypeEnum}
+      render: (_, row) => <NetworkType
+        networkType={row.nwSubType as NetworkTypeEnum}
         row={row}
       />
     },
@@ -240,7 +240,7 @@ export function VenueNetworksTab () {
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
       sorter: true,
-      render: function (data, row) {
+      render: function (__, row) {
         let disabled = false
         // eslint-disable-next-line max-len
         let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
@@ -252,7 +252,7 @@ export function VenueNetworksTab () {
         return <Tooltip
           title={title}
           placement='bottom'><Switch
-            checked={Boolean(data)}
+            checked={Boolean(row.activated?.isActivated)}
             disabled={disabled}
             onClick={(checked, event) => {
               activateNetwork(checked, row)
@@ -265,7 +265,7 @@ export function VenueNetworksTab () {
       key: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
@@ -274,7 +274,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'aps',
       width: 80,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
@@ -283,7 +283,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Radios' }),
       dataIndex: 'radios',
       width: 140,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e))
       }
     },
@@ -291,7 +291,7 @@ export function VenueNetworksTab () {
       key: 'scheduling',
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
-      render: function (data, row) {
+      render: function (_, row) {
         return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
     }

@@ -103,8 +103,8 @@ export default function DpskPassphraseManagement () {
       sorter: true,
       defaultSortOrder: 'descend',
       fixed: 'left',
-      render: function (data) {
-        return moment(data as string).format(EXPIRATION_TIME_FORMAT)
+      render: function (_, { createdDate }) {
+        return moment(createdDate).format(EXPIRATION_TIME_FORMAT)
       }
     },
     {
@@ -112,7 +112,6 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
       sorter: true,
-      ellipsis: true,
       searchable: true
     },
     {
@@ -120,8 +119,10 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
       sorter: true,
-      render: function (data) {
-        return (data && data !== -1) ? data : $t(unlimitedNumberOfDeviceLabel)
+      render: function (_, { numberOfDevices }) {
+        return (numberOfDevices && numberOfDevices !== -1)
+          ? numberOfDevices
+          : $t(unlimitedNumberOfDeviceLabel)
       }
     },
     {
@@ -135,8 +136,8 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'Passphrase' }),
       dataIndex: 'passphrase',
       sorter: false,
-      render: function (data) {
-        return <PassphraseViewer passphrase={data as string}/>
+      render: function (_, { passphrase }) {
+        return <PassphraseViewer passphrase={passphrase}/>
       }
     },
     {
@@ -150,7 +151,7 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'expirationDate',
       sorter: false,
-      render: function (data, row) {
+      render: function (_, row) {
         return getPassphraseStatus(row, isCloudpathEnabled)
       }
     },
@@ -159,11 +160,11 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'Expires' }),
       dataIndex: 'expirationDate',
       sorter: true,
-      render: function (data) {
-        if (data) {
+      render: function (_, { expirationDate }) {
+        if (expirationDate) {
           return transformAdvancedDpskExpirationText(intl, {
             expirationType: ExpirationType.SPECIFIED_DATE,
-            expirationDate: data as string,
+            expirationDate: expirationDate,
             displayTime: true
           })
         }

@@ -61,7 +61,7 @@ function useColumns () {
     title: $t({ defaultMessage: 'IP Addresses' }),
     dataIndex: 'ipList',
     key: 'ipList',
-    render: (data) => (data as string[])?.join('; ')
+    render: (_, { ipList}) => ipList?.join('; ')
   }]
   return columns
 }

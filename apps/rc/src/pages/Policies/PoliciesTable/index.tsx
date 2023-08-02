@@ -39,7 +39,7 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (_, row) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -47,7 +47,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id
             })}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -57,8 +57,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
       sorter: true,
-      render: function (data) {
-        return $t(policyTypeLabelMapping[data as PolicyType])
+      render: function (_, { type }) {
+        return $t(policyTypeLabelMapping[type])
       }
     },
     {
@@ -66,8 +66,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'Technology' }),
       dataIndex: 'technology',
       sorter: true,
-      render: function (data) {
-        return $t(policyTechnologyLabelMapping[data as PolicyTechnology])
+      render: function (_, { technology }) {
+        return $t(policyTechnologyLabelMapping[technology])
       }
     },
     {

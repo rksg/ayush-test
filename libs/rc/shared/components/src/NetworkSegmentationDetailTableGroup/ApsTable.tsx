@@ -49,7 +49,7 @@ export const ApsTable = (props: ApTableProps) => {
       title: $t({ defaultMessage: 'Available Ports' }),
       key: 'ports',
       dataIndex: 'apStatusData.lanPortStatus',
-      render: (node, row) => {
+      render: (_, row) => {
         return row?.apStatusData?.lanPortStatus?.length
       }
     },
@@ -57,7 +57,7 @@ export const ApsTable = (props: ApTableProps) => {
       title: $t({ defaultMessage: 'VxLAN PMTU Value' }),
       key: 'vxlanMtu',
       dataIndex: 'apStatusData.vxlanStatus.vxlanMtu',
-      render: (node, row) => {
+      render: (_, row) => {
         return row?.apStatusData?.vxlanStatus?.vxlanMtu
       }
     }

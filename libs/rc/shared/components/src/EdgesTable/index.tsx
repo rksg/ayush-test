@@ -121,10 +121,10 @@ export const EdgesTable = (props: EdgesTableProps) => {
       defaultSortOrder: 'ascend',
       searchable: true,
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink to={`/devices/edge/${row.serialNumber}/details/overview`}>
-            {data}
+            {row.name}
           </TenantLink>
         )
       }
@@ -137,7 +137,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       fixed: 'left',
       filterable: statusFilterOptions,
       filterKey: 'deviceStatusSeverity',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <EdgeStatusLight data={row.deviceStatus} showText={true} />
         )
@@ -182,10 +182,10 @@ export const EdgesTable = (props: EdgesTableProps) => {
       sorter: true,
       filterable: venueOptions,
       filterKey: 'venueId',
-      render: (data, row) => {
+      render: (_, row) => {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-            {data}
+            {row.venueName}
           </TenantLink>
         )
       }

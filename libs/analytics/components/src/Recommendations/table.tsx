@@ -115,7 +115,6 @@ export function RecommendationTable ({ filters, showCrrm }:
       key: 'summary',
       render: (_, value, __, highlightFn ) => <>{highlightFn(value.summary)}</>,
       sorter: { compare: sortProp('summary', defaultSort) },
-      ellipsis: true,
       searchable: true
     },
     ...(showCrrm ? [] : [{

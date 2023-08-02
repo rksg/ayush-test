@@ -82,10 +82,10 @@ export function VideoCallQoeDetails (){
       title: $t({ defaultMessage: 'Client MAC' }),
       dataIndex: 'macAddress',
       key: 'macAddress',
-      render: (value:unknown, row:Participants)=>{
+      render: (_, row)=>{
         if(row.networkType.toLowerCase() === 'wifi'){
           return <Space>
-            {value ? <span>{(value as string).toUpperCase()}</span>
+            {row.macAddress ? <span>{row.macAddress.toUpperCase()}</span>
               : <div style={{ width: '100px' }}>-</div>}
             <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
               <EditOutlinedIcon style={{ height: '16px', width: '16px', cursor: 'pointer' }}
@@ -122,40 +122,40 @@ export function VideoCallQoeDetails (){
       dataIndex: 'networkType',
       key: 'networkType',
       width: 100,
-      render: (value:unknown)=>{
-        return (value as string).toLowerCase() === 'wifi' ? 'Wi-Fi' : value as string
+      render: (_, { networkType })=>{
+        return networkType.toLowerCase() === 'wifi' ? 'Wi-Fi' : networkType
       }
     },
     {
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: ['apDetails','apName'],
       key: 'apName',
-      render: formatValue
+      render: (_, row)=>formatValue(row.apDetails?.apName, row)
     },
     {
       title: $t({ defaultMessage: 'AP MAC' }),
       dataIndex: ['apDetails','apMac'],
       key: 'apMac',
-      render: formatValue
+      render: (_, row)=>formatValue(row.apDetails?.apMac, row)
     },
     {
       title: $t({ defaultMessage: 'SSID' }),
       dataIndex: ['apDetails','ssid'],
       key: 'ssid',
-      render: (value:unknown)=>{
-        if(!value)
+      render: (_, { apDetails })=>{
+        if(!apDetails?.ssid)
           return '-'
-        return value as string
+        return apDetails.ssid
       }
     },
     {
       title: $t({ defaultMessage: 'Radio' }),
       dataIndex: ['apDetails','radio'],
       key: 'radio',
-      render: (value:unknown)=>{
-        if(!value)
+      render: (_, { apDetails })=>{
+        if(!apDetails?.radio)
           return '-'
-        return `${value} Ghz`
+        return `${apDetails.radio} Ghz`
       }
     },
     {
@@ -164,8 +164,8 @@ export function VideoCallQoeDetails (){
       key: 'joinTime',
       align: 'center',
       width: 50,
-      render: (value:unknown)=>{
-        return formatter(DateFormatEnum.OnlyTime)(value as string)
+      render: (_, { joinTime })=>{
+        return formatter(DateFormatEnum.OnlyTime)(joinTime)
       }
     },
     {
@@ -174,9 +174,9 @@ export function VideoCallQoeDetails (){
       key: 'leaveTime',
       align: 'center',
       width: 50,
-      render: (value:unknown,row:Participants)=>{
+      render: (_, row)=>{
         return <Tooltip title={row.leaveReason.replace('<br>','\n')}>
-          {formatter(DateFormatEnum.OnlyTime)(value as string)}</Tooltip>
+          {formatter(DateFormatEnum.OnlyTime)(row.leaveTime)}</Tooltip>
       }
     },
     {
@@ -185,11 +185,11 @@ export function VideoCallQoeDetails (){
       key: 'quality',
       align: 'center',
       width: 150,
-      render: (value:unknown, row:Participants)=>{
+      render: (_, row)=>{
         if(row.networkType.toLowerCase() !== 'wifi'){
           return $t({ defaultMessage: 'NA' })
         }
-        const wifiMetrics = value as WifiMetrics | null
+        const wifiMetrics = row.wifiMetrics || null
         const connectionQuality = getConnectionQuality(wifiMetrics)
         const connectionQualityTooltip = getConnectionQualityTooltip(wifiMetrics, intl)
 
@@ -406,10 +406,10 @@ export function VideoCallQoeDetails (){
                     dataIndex: 'mac',
                     key: 'mac',
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    render: (value:unknown, row:any)=>{
+                    render: (_, row: any)=>{
                       return <>
                         <GridRow>
-                          <GridCol col={{ span: 24 }}><strong>{value as string}</strong></GridCol>
+                          <GridCol col={{ span: 24 }}><strong>{row.mac}</strong></GridCol>
                         </GridRow>
                         <GridRow>
                           <GridCol col={{ span: 8 }}>

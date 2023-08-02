@@ -150,7 +150,7 @@ export function VarCustomers () {
         dataIndex: 'acceptInvite',
         key: 'acceptInvite',
         width: 220,
-        render: function (data, row) {
+        render: function (_, row) {
           return onAcceptInvite(row)
         }
       }
@@ -212,9 +212,9 @@ export function VarCustomers () {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
         }
       },
-      render: function (data, row, _, highlightFn) {
+      render: function (_, { tenantName }, __, highlightFn) {
         return (
-          <Link to=''>{highlightFn(data as string)}</Link>
+          <Link to=''>{highlightFn(tenantName)}</Link>
         )
       }
     },
@@ -230,7 +230,7 @@ export function VarCustomers () {
       align: 'center',
       key: 'apEntitlement.quantity',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.wifiLicenses ? row.wifiLicenses : 0
       }
     },
@@ -240,7 +240,7 @@ export function VarCustomers () {
       align: 'center',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformApUtilization(row)
       }
     },
@@ -250,7 +250,7 @@ export function VarCustomers () {
       align: 'center',
       key: 'switchEntitlement',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.switchLicenses ? row.switchLicenses : 0
       }
     },
@@ -259,7 +259,7 @@ export function VarCustomers () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return transformNextExpirationDate(row)
       }
     }

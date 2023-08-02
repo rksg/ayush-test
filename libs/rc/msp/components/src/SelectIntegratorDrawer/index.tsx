@@ -125,7 +125,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       dataIndex: 'assignedMspEcList',
       key: 'assignedMspEcList',
       align: 'center',
-      render: function (data, row) {
+      render: function (_, row) {
         return row.assignedMspEcList?.length > 0 ? row.assignedMspEcList.length : 0
       }
     }

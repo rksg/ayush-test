@@ -41,7 +41,7 @@ export function SwitchOverviewVLANs () {
       defaultSortOrder: 'ascend',
       sorter: true,
       fixed: 'left',
-      render: (data, row) =>
+      render: (_, row) =>
         <Button
           type='link'
           size='small'
@@ -50,7 +50,7 @@ export function SwitchOverviewVLANs () {
             setDrawerVisible(true)
           }}
         >
-          {data}
+          {row.vlanId}
         </Button>
     }, {
       key: 'vlanName',
@@ -62,19 +62,19 @@ export function SwitchOverviewVLANs () {
       title: $t({ defaultMessage: 'IPv4 DHCP Snooping' }),
       dataIndex: 'ipv4DhcpSnooping',
       sorter: true,
-      render: (data) => transformDisplayOnOff(data as boolean)
+      render: (_, { ipv4DhcpSnooping }) => transformDisplayOnOff(Boolean(ipv4DhcpSnooping))
     }, {
       key: 'arpInspection',
       title: $t({ defaultMessage: 'ARP Inspection' }),
       dataIndex: 'arpInspection',
       sorter: true,
-      render: (data) => transformDisplayOnOff(data as boolean)
+      render: (_, { arpInspection }) => transformDisplayOnOff(Boolean(arpInspection))
     }, {
       key: 'igmpSnooping',
       title: $t({ defaultMessage: 'IGMP Snooping' }),
       dataIndex: 'igmpSnooping',
       sorter: true,
-      render: (data) => transformTitleCase(data as string)
+      render: (_, { igmpSnooping }) => transformTitleCase(igmpSnooping as string)
     }, {
       key: 'multicastVersion',
       title: $t({ defaultMessage: 'Multicast Version' }),
@@ -85,14 +85,13 @@ export function SwitchOverviewVLANs () {
       title: $t({ defaultMessage: 'Spanning Tree' }),
       dataIndex: 'spanningTreeProtocol',
       sorter: true,
-      render: (data) => {
-        return data ? SpanningTreeProtocolName[data as keyof typeof SpanningTreeProtocolName] : null
+      render: (_, { spanningTreeProtocol }) => {
+        return spanningTreeProtocol ? SpanningTreeProtocolName[spanningTreeProtocol] : null
       }
     }, {
       key: 'untaggedPorts',
       title: $t({ defaultMessage: 'Untagged Ports' }),
-      dataIndex: 'untaggedPorts',
-      ellipsis: true
+      dataIndex: 'untaggedPorts'
     }, {
       key: 'taggedPorts',
       title: $t({ defaultMessage: 'Tagged Ports' }),

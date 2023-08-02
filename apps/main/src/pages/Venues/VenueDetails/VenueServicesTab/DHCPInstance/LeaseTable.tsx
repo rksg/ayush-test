@@ -50,7 +50,7 @@ export default function VenueLeaseTable (){
       searchable: true,
       // filterable: true, // TODO: change to search or provide static list
       dataIndex: 'status',
-      render: (data)=> data === DHCPLeasesStatusEnum.ONLINE ?
+      render: (_, { status })=> status === DHCPLeasesStatusEnum.ONLINE ?
         $t({ defaultMessage: 'Online' })
         :
         $t({ defaultMessage: 'Offline' })

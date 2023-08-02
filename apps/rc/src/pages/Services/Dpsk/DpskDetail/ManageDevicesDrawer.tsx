@@ -90,7 +90,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       searchable: true,
       defaultSortOrder: 'ascend',
       fixed: 'left',
-      render: (data, row) => {
+      render: (_, row) => {
         return row.lastConnected === ONLINE ? <TenantLink
           to={`/users/wifi/clients/${row.mac}/details/`}>
           {row.mac}
@@ -102,7 +102,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       title: $t({ defaultMessage: 'Last Seen' }),
       dataIndex: 'online',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.online ? ONLINE : new Date(row.lastConnected + ' GMT').toLocaleString()
       }
     },
@@ -111,7 +111,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
       title: $t({ defaultMessage: 'Last Network' }),
       dataIndex: 'lastConnectedNetwork',
       sorter: true,
-      render: (data, row) => {
+      render: (_, row) => {
         return row.lastConnectedNetwork ? <TenantLink
           // eslint-disable-next-line max-len
           to={`networks/wireless/${getNetworkId(row.lastConnectedNetwork)}/network-details/overview`}>

@@ -199,13 +199,18 @@ function Table <RecordType extends Record<string, any>> ({
     return cols.map(column => ({
       ...column,
       tooltip: null,
-      title: column.tooltip ? <UI.TitleWithTooltip>
-        {column.title as React.ReactNode}
-        <UI.InformationTooltip title={column.tooltip as string} />
-      </UI.TitleWithTooltip> : column.title,
+      title: column.tooltip
+        ? <UI.TitleWithTooltip>
+          {column.title as React.ReactNode}
+          <UI.InformationTooltip title={column.tooltip as string} />
+        </UI.TitleWithTooltip>
+        : column.title,
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
-      children: 'children' in column ? column.children : undefined
+      ellipsis: type === 'tall' && column.key !== settingsKey,
+      children: 'children' in column
+        ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
+        : undefined
     }))
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 

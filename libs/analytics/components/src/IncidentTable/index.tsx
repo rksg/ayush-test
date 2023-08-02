@@ -156,7 +156,6 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
         />
       ),
       sorter: { compare: sortProp('description', defaultSort) },
-      ellipsis: true,
       searchable: true
     },
     {

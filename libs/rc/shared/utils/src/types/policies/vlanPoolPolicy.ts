@@ -27,5 +27,5 @@ export interface VLANPoolAPGroup{
 export interface VLANPoolVenues{
   venueId?: string,
   venueName: string,
-  apGroupData: VLANPoolAPGroup
+  apGroupData: VLANPoolAPGroup[]
 }
