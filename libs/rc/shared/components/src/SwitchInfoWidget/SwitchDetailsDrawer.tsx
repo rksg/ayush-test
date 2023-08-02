@@ -9,6 +9,7 @@ import { Drawer, PasswordInput }  from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   SwitchViewModel,
+  getAdminPassword,
   getSwitchModel,
   getStackMemberStatus
 } from '@acx-ui/rc/utils'
@@ -84,19 +85,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
         <Divider/>
         { enableSwitchAdminPassword && <Form.Item
           label={$t({ defaultMessage: 'Admin Password' })}
-          children={
-            !(switchDetail?.configReady && switchDetail?.syncedSwitchConfig)
-              ? '--'
-              : (switchDetail.syncedAdminPassword
-                ? <PasswordInput
-                  style={{ paddingLeft: 0 }}
-                  readOnly
-                  bordered={false}
-                  value={switchDetail.adminPassword}
-                />
-                : $t({ defaultMessage: 'Custom' })
-              )
-          }
+          children={getAdminPassword(switchDetail, PasswordInput)}
         />}
         <Form.Item
           label={$t({ defaultMessage: 'MAC Address' })}

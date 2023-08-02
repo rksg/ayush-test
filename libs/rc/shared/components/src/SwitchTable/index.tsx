@@ -41,7 +41,8 @@ import {
   FILTER,
   SEARCH,
   GROUPBY,
-  getSwitchModel
+  getSwitchModel,
+  getAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                    from '@acx-ui/types'
@@ -268,17 +269,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       show: false,
       render: (data:boolean, row:SwitchRow) => {
         return <Tooltip title={getPasswordTooltip(row)}>{
-          !(row?.configReady && row?.syncedSwitchConfig)
-            ? '--'
-            : (row?.syncedAdminPassword
-              ? <PasswordInput
-                style={{ paddingLeft: 0 }}
-                readOnly
-                bordered={false}
-                value={row?.adminPassword}
-              />
-              : $t({ defaultMessage: 'Custom' })
-            )
+          getAdminPassword(row, PasswordInput)
         }</Tooltip>
       }
     }] : []),
