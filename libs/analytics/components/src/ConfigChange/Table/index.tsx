@@ -1,34 +1,42 @@
+import { useContext } from 'react'
+
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter, getFilterPayload } from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, useAnalyticsFilter, getFilterPayload, kpiConfig, productNames } from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
   Table as CommonTable,
   ConfigChange,
-  getConfigChangeEntityTypeMapping
+  getConfigChangeEntityTypeMapping,
+  Cascader
 }                                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay }             from '@acx-ui/utils'
 
-import { useConfigChangeQuery } from '../services'
+import { ConfigChangeContext, KPIFilterContext } from '../context'
+import { hasConfigChange }                       from '../KPI'
+import { useConfigChangeQuery }                  from '../services'
 
-import { Badge }                                from './styledComponents'
-import { EntityType, enumTextMap, jsonMapping } from './util'
+import { Badge, CascaderFilterWrapper }                        from './styledComponents'
+import { EntityType, enumTextMap, filterKPIData, jsonMapping } from './util'
 
 export function Table (props: {
-  timeRanges: moment.Moment[],
   onRowClick?: (params: unknown) => void,
 }) {
   const { $t } = useIntl()
-  const [startDate, endDate] = props.timeRanges
+  const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
+  const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
   const { filters: { filter } } = useAnalyticsFilter()
   const queryResults = useConfigChangeQuery({
     ...getFilterPayload({ filter }),
     start: startDate.toISOString(),
     end: endDate.toISOString()
-  })
+  }, { selectFromResult: queryResults => ({
+    ...queryResults,
+    data: filterKPIData(queryResults.data ?? [], kpiFilter)
+  }) })
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -111,7 +119,26 @@ export function Table (props: {
     }
   }
 
-  return (
+  const options = Object.keys(kpiConfig).reduce((agg, key)=> {
+    const config = kpiConfig[key as keyof typeof kpiConfig]
+    if(hasConfigChange(config)){
+      agg.push({ value: key, label: $t(config.configChange.text || config.text, productNames) })
+    }
+    return agg
+  }, [] as { value: string, label: string }[])
+
+  return <>
+    <CascaderFilterWrapper>
+      <Cascader
+        multiple
+        defaultValue={kpiFilter.map(kpi=>[kpi])}
+        placeholder={$t({ defaultMessage: 'Add KPI filter' })}
+        options={options}
+        onApply={selectedOptions =>
+          applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])}
+        allowClear
+      />
+    </CascaderFilterWrapper>
     <Loader states={[queryResults]}>
       <CommonTable
         settingsId='config-change-table'
@@ -124,5 +151,5 @@ export function Table (props: {
         columnEmptyText={noDataDisplay}
       />
     </Loader>
-  )
+  </>
 }

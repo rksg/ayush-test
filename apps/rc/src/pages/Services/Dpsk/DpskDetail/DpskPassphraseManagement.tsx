@@ -203,11 +203,14 @@ export default function DpskPassphraseManagement () {
     )
   }
 
+  const canEdit = (selectedRows: NewDpskPassphrase[]): boolean => {
+    return isCloudpathEnabled && selectedRows.length === 1 && !selectedRows[0].identityId
+  }
+
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit Passphrase' }),
-      // eslint-disable-next-line max-len
-      visible: (selectedRows: NewDpskPassphrase[]) => isCloudpathEnabled && selectedRows.length === 1,
+      visible: canEdit,
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
         setAddPassphrasesDrawerVisible(true)
@@ -281,33 +284,25 @@ export default function DpskPassphraseManagement () {
     }]: []
   ]
 
-  const networkForm = <NetworkForm modalMode={true}
-    modalCallBack={()=>{
-      setNetworkModalVisible(false)
-    }}
-    createType={NetworkTypeEnum.DPSK}
-  />
-
   return (<>
-    <DpskPassphraseDrawer
-      visible={addPassphrasesDrawerVisible}
+    {addPassphrasesDrawerVisible && <DpskPassphraseDrawer
+      visible={true}
       setVisible={setAddPassphrasesDrawerVisible}
       editMode={passphrasesDrawerEditMode}
-    />
+    />}
     { Object.keys(managePassphraseInfo).length > 0 && <ManageDevicesDrawer
       visible={manageDevicesVisible}
       setVisible={setManageDevicesVisible}
       passphraseInfo={managePassphraseInfo}
       setPassphraseInfo={setManagePassphraseInfo}
-    /> }
-    <ImportFileDrawer
-      type={ImportFileDrawerType.DPSK}
+    />}
+    {uploadCsvDrawerVisible && <ImportFileDrawer type={ImportFileDrawerType.DPSK}
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['20MB']}
       maxEntries={5000}
       acceptType={['csv']}
       templateLink='assets/templates/DPSK_import_template_expiration.csv'
-      visible={uploadCsvDrawerVisible}
+      visible={true}
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {
         const formValues = values as UploadPassphrasesFormFields
@@ -334,13 +329,20 @@ export default function DpskPassphraseManagement () {
         label={$t({ defaultMessage: 'User name prefix' })}
         children={<Input />}
       />
-    </ImportFileDrawer>
+    </ImportFileDrawer>}
     <Modal
       title={$t({ defaultMessage: 'Add DPSK Network' })}
       type={ModalType.ModalStepsForm}
       visible={networkModalVisible}
       mask={true}
-      children={networkForm}
+      children={
+        <NetworkForm modalMode={true}
+          modalCallBack={()=>{
+            setNetworkModalVisible(false)
+          }}
+          createType={NetworkTypeEnum.DPSK}
+        />
+      }
       destroyOnClose={true}
     />
     <Loader states={[tableQuery]}>

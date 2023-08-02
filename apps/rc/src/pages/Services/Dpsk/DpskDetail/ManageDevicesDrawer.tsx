@@ -274,7 +274,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
               { required: true },
               { validator: (_, value) => {
                 if (devicesData?.map(deviceData => deviceData.mac)
-                  .filter(mac => mac === value).length) {
+                  .filter(mac => mac === value.toLowerCase()).length) {
                   return Promise.reject($t({
                     defaultMessage: 'MAC address {macAddress} already exists'
                   }, { macAddress: value }))

@@ -63,10 +63,9 @@ function useColumns (
       title: intl.$t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
-      // sorter: true,
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: searchable,
-      // defaultSortOrder: 'ascend',
+      defaultSortOrder: 'ascend',
       render: function (_, row) {
         return row.name
       }
@@ -238,6 +237,18 @@ export const VenueFirmwareTable = (
   // const tableData = tableQuery?.data as readonly FirmwareSwitchVenue[] | undefined
   const columns = useColumns(searchable, filterables)
 
+  const hasAvailableSwitchFirmware = function (selectedRows: FirmwareSwitchVenue[]) {
+    let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+    selectedRows.forEach((row: FirmwareSwitchVenue) => {
+      const version = row.switchFirmwareVersion?.id
+      const rodanVersion = enableSwitchRodanFirmware ?
+        row.switchFirmwareVersionAboveTen?.id : ''
+      // eslint-disable-next-line max-len
+      removeCurrentVersionsAnd10010IfNeeded(version, rodanVersion, filterVersions, enableSwitchRodanFirmware)
+    })
+    return filterVersions?.length > 1
+  }
+
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
     visible: (selectedRows) => {
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -254,6 +265,13 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Update Now' }),
+    disabled: (selectedRows) => {
+      return !hasAvailableSwitchFirmware(selectedRows)
+    },
+    // tooltip: (selectedRows) => {
+    //   return hasAvailableSwitchFirmware(selectedRows) ?
+    //     '' : $t({ defaultMessage: 'No available versions' })
+    // },
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
@@ -292,6 +310,13 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
+    disabled: (selectedRows) => {
+      return !hasAvailableSwitchFirmware(selectedRows)
+    },
+    // tooltip: (selectedRows) => {
+    //   return hasAvailableSwitchFirmware(selectedRows) ?
+    //     '' : $t({ defaultMessage: 'No available versions' })
+    // },
     onClick: (selectedRows) => {
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]

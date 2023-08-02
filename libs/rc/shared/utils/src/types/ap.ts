@@ -312,6 +312,7 @@ export interface ApModel {
   externalAntenna?: ExternalAntenna,
   supportMesh?: boolean,
   version?: string,
+  support11AX?: boolean
 }
 
 export interface PingAp {
@@ -349,6 +350,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApBssColoringSettings {
+  bssColoringEnabled: boolean,
   useVenueSettings: boolean
 }
 
