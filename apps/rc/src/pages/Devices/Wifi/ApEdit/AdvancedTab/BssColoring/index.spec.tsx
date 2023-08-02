@@ -92,18 +92,21 @@ describe('AP BSS Coloring', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('Enable BSS Coloring'))
 
-    expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
+    const customizeButton = await screen.findByRole('button', { name: /Customize/ })
+    expect(customizeButton).toBeVisible()
     expect(await screen.findByTestId('ApBssColoring-text')).toBeVisible()
     expect(screen.queryByTestId('ApBssColoring-switch')).toBeNull()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
+    await userEvent.click(customizeButton)
 
-    expect(await screen.findByRole('button', { name: /Use Venue Settings/ })).toBeVisible()
-    expect(await screen.findByTestId('ApBssColoring-switch')).not.toBeDisabled()
-    expect(await screen.findByTestId('ApBssColoring-switch')).toBeVisible()
+    const useVenueButton = await screen.findByRole('button', { name: /Use Venue Settings/ })
+    expect(useVenueButton).toBeVisible()
+    const apBssColoringSwitch = await screen.findByTestId('ApBssColoring-switch')
+    expect(apBssColoringSwitch).not.toBeDisabled()
+    expect(apBssColoringSwitch).toBeVisible()
     expect(screen.queryByTestId('ApBssColoring-text')).toBeNull()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ }))
+    await userEvent.click(useVenueButton)
     expect(await screen.findByTestId('ApBssColoring-text')).toBeVisible()
     expect(screen.queryByTestId('ApBssColoring-switch')).toBeNull()
   })
@@ -121,9 +124,10 @@ describe('AP BSS Coloring', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
 
-    expect(await screen.findByTestId('ApBssColoring-switch')).toBeChecked()
-    await userEvent.click(await screen.findByTestId('ApBssColoring-switch'))
-    expect(await screen.findByTestId('ApBssColoring-switch')).not.toBeChecked()
+    const apBssColoringSwitch = await screen.findByTestId('ApBssColoring-switch')
+    expect(apBssColoringSwitch).toBeChecked()
+    await userEvent.click(apBssColoringSwitch)
+    expect(apBssColoringSwitch).not.toBeChecked()
 
     await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ }))
     expect(screen.queryByTestId('ApBssColoring-switch')).toBeNull()
