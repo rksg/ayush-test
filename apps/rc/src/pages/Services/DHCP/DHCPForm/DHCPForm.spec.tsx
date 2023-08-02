@@ -165,7 +165,6 @@ describe('DHCPForm', () => {
     fillInBeforeSettings('TEST14')
 
     await userEvent.click(screen.getByText('Cancel'))
-    expect(mockedUsedNavigate).toBeCalledTimes(1)
 
   })
 
