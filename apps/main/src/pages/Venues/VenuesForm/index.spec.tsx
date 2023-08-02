@@ -1,7 +1,6 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
-import { act }        from 'react-dom/test-utils'
 
 import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, CommonUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
@@ -94,26 +93,17 @@ describe('Venues Form', () => {
       })
 
     const venueInput = await screen.findByLabelText('Venue Name')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
-      fireEvent.blur(venueInput)
-    })
+    fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
+    fireEvent.blur(venueInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
     const descriptionInput = screen.getByLabelText('Description')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
-    })
+    fireEvent.change(descriptionInput, { target: { value: 'Ruckus Network Info' } })
 
     const addressInput = screen.getByTestId('address-input')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(addressInput, { target:
-        { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
-      })
+    fireEvent.change(addressInput, { target:
+      { value: '350 W Java Dr, Sunnyvale, CA 94089, USA' }
     })
 
     await userEvent.click(await screen.findByText('Add'))
@@ -188,11 +178,8 @@ describe('Venues Form', () => {
       })
 
     const venueInput = await screen.findByLabelText('Venue Name')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => {
-      fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
-      fireEvent.blur(venueInput)
-    })
+    fireEvent.change(venueInput, { target: { value: 'Ruckus Network' } })
+    fireEvent.blur(venueInput)
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
