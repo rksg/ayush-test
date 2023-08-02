@@ -3,24 +3,15 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, Slider, Switch, Tooltip } from 'antd'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
-import styled                            from 'styled-components/macro'
 
 import { Loader }                                                                               from '@acx-ui/components'
 import { useGetVenueClientAdmissionControlQuery, useUpdateVenueClientAdmissionControlMutation } from '@acx-ui/rc/services'
 import { VenueClientAdmissionControl }                                                          from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../..'
-import { FieldLabel }       from '../styledComponents'
+import { VenueEditContext }                              from '../..'
+import { ClientAdmissionControlSliderBlock, FieldLabel } from '../styledComponents'
 
-const ClientAdmissionControlSliderBlock = styled.div`
-  margin-top:-25px;
-  margin-right: 50px;
-  height:auto;
-  max-width:100%;
-  text-align:center;
-  padding:25px 5px 10px 20px;
-  border: 2px solid var(--acx-neutrals-30);
-`
+
 const { useWatch } = Form
 
 export function ClientAdmissionControl () {
