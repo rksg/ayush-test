@@ -541,6 +541,8 @@ describe('DeviceOSDrawer Component setting II', () => {
 
     await selectOptionSet('Gaming', 'PlayStation')
 
+    await screen.findByRole('option', { name: 'PlayStation' })
+
     expect(screen.queryByText(/please select the deviceType option/i)).toBeNull()
 
     expect(screen.queryByText(/please select the osVendor option/i)).toBeNull()
