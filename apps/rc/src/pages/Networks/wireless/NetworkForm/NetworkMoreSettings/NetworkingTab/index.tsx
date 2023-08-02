@@ -15,24 +15,6 @@ import * as UI                                from '../styledComponents'
 
 import WiFi7 from './WiFi7'
 
-const multicastFilterTooltipContent = (
-  <div>
-    <p>Drop all multicast or broadcast traffic from associated wireless clients,
-      except for the following which is always allowed:</p>
-    <ul style={{ paddingLeft: '40px' }}>
-      <li>ARP request</li>
-      <li>DHCPv4 request</li>
-      <li>DHCPv6 request</li>
-      <li>IPv6 NS</li>
-      <li>IPv6 NA</li>
-      <li>IPv6 RS</li>
-      <li>IGMP</li>
-      <li>MLD</li>
-      <li>All unicast packets</li>
-    </ul>
-  </div>
-)
-
 const { useWatch } = Form
 
 export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
