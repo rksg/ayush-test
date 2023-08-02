@@ -12,6 +12,8 @@ export enum Features {
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   EDGES = 'PLCY-EDGE',
   EDGES_TOGGLE = 'acx-ui-edges-toggle', // temporary. to prevent Edge related API being triggered in prod env
+  EDGES_SUB_INTERFACE_CSV_TOGGLE = 'acx-ui-edges-sub-interface-csv-toggle',
+  EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH='switch-consumer-nsg-toggle',
   UNRELEASED='acx-ui-unreleased',
