@@ -23,7 +23,8 @@ import {
   TenantDetails,
   EntitlementSummary,
   Entitlement,
-  NewEntitlementSummary
+  NewEntitlementSummary,
+  TenantAuthentications
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -525,6 +526,43 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getTenantAuthentications: build.query<TenantAuthentications[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getTenantAuthentications, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'AUTHENTICATION_LIST' }]
+    }),
+    deleteTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getAccountTier, params)
@@ -585,5 +623,9 @@ export const {
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
   useGetRadiusServerSettingQuery,
+  useGetTenantAuthenticationsQuery,
+  useDeleteTenantAuthenticationsMutation,
+  useAddTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation,
   useGetAccountTierQuery
 } = administrationApi
