@@ -88,5 +88,4 @@ export interface DhcpUeSummaryStats {
   successfulAllocation?: number
   remainsIps?: number
   droppedPackets?: number
-  edgeAlarmSummary?: EdgeAlarmSummary[]
 }

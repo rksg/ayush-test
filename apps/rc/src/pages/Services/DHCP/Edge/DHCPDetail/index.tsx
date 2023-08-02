@@ -38,8 +38,7 @@ const EdgeDHCPDetail = () => {
       'venueName',
       'successfulAllocation',
       'remainsIps',
-      'droppedPackets',
-      'edgeAlarmSummary'
+      'droppedPackets'
     ],
     filters: { dhcpId: [params.serviceId] }
   }
@@ -92,8 +91,13 @@ const EdgeDHCPDetail = () => {
       title: $t({ defaultMessage: 'Service Health' }),
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
-      render: (data, row) =>
-        <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
+      render: (data, row) => {
+        if(!dhcpStats) return '--'
+        const targetAlarmSummary = dhcpStats.edgeAlarmSummary?.find(
+          item => item.edgeId === row.edgeId
+        )
+        return <EdgeServiceStatusLight data={targetAlarmSummary ? [targetAlarmSummary] : []} />
+      }
     },
     {
       title: $t({ defaultMessage: '# of successful allocations' }),
@@ -188,7 +192,7 @@ const EdgeDHCPDetail = () => {
         ])}
       />
       <Loader states={[
-        { isFetching: isDhcpStatsLoading && isDhcpUeSummaryStatsLoading, isLoading: false }
+        { isFetching: isDhcpStatsLoading || isDhcpUeSummaryStatsLoading, isLoading: false }
       ]}>
         <Space direction='vertical' size={30}>
           <SummaryCard data={dhcpInfo} />
