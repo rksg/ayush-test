@@ -90,7 +90,12 @@ describe('PreferredLanguageFormItem', () => {
   })
 
   it('renders the language options correctly', async () => {
-    render(<PreferredLanguageFormItem />)
+    render(
+      <Provider>
+        <Form> <PreferredLanguageFormItem /> </Form>
+      </Provider>, {
+        route: { params }
+      })
     userEvent.selectOptions(
       screen.getByRole('combobox'),
       screen.getByRole('option', { name: 'English' })
