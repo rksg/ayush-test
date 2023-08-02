@@ -107,7 +107,7 @@ describe('EditEdge ports', () => {
         }
       })
     await screen.findByRole('tab', {
-      name: 'Sub-interface', selected: true
+      name: 'Sub-Interface', selected: true
     })
   })
 
@@ -154,7 +154,7 @@ describe('EditEdge ports', () => {
           path: '/:tenantId/t/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(screen.getByRole('tab', { name: 'Sub-interface' }))
+    await user.click(screen.getByRole('tab', { name: 'Sub-Interface' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
       pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/sub-interface`,
