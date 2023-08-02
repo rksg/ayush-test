@@ -49,6 +49,7 @@ import {
   VenueRadioCustomization,
   VenueDirectedMulticast,
   VenueLoadBalancing,
+  VenueBssColoring,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -901,6 +902,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
     }),
+    getVenueBssColoring: build.query<VenueBssColoring, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueBssColoring, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueBssColoring: build.mutation<VenueBssColoring, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueBssColoring, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -1239,6 +1257,9 @@ export const {
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
+  useGetVenueBssColoringQuery,
+  useLazyGetVenueBssColoringQuery,
+  useUpdateVenueBssColoringMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,

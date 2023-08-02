@@ -40,6 +40,7 @@ export enum Features {
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   SWITCH_RODAN_FIRMWARE = 'switch-consumer-collect-config-toggle',
+  SWITCH_ADMIN_PASSWORD = 'switch-consumer-admin-password-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   WPA3_80211R = 'wifi-eda-wpa3-80211r-toggle',
   I18N_TOGGLE = 'acx-ui-i18n-toggle',
@@ -59,6 +60,7 @@ export enum Features {
   WIFI_EDA_WIFI7_320MHZ = 'wifi-eda-wifi7-320mhz-toggle',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   CLOUDPATH_BETA = 'BETA-CP',
+  WIFI_FR_6029_FG1_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG4_TOGGLE = 'wifi-fr-6029-fg4-toggle',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
@@ -72,7 +74,10 @@ export enum Features {
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
-  WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle'
+  WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
+  IDM_DECOUPLING='ptenant-admin-authentication-enabled',
+  WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
+  WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
