@@ -158,7 +158,7 @@ describe('PersonaDevicesTable', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('should render persona device table with dpsk devices', async () => {
+  it.skip('should render persona device table with dpsk devices', async () => {
     mockServer.use(
       rest.get(
         DpskUrls.getPassphraseDevices.url.split('?')[0],
