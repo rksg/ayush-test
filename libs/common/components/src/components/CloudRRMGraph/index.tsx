@@ -113,6 +113,7 @@ export function Graph (props: GraphProps) {
           blur: { lineStyle: { color: blurColor } }
         })),
         categories: categories,
+        roam: true,
         force: {
           layoutAnimation: false,
           repulsion,
