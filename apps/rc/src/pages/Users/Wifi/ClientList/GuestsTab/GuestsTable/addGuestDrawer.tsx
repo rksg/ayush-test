@@ -525,7 +525,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       data-testid='saveBtn'
       key='saveBtn'
       onClick={() => form.submit()}
-      type={'secondary'}>
+      type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>,
     <Button

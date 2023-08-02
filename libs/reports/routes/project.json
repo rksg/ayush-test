@@ -1,0 +1,28 @@
+{
+  "sourceRoot": "libs/reports/routes/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/reports/routes/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/reports/routes"
+      ],
+      "options": {
+        "jestConfig": "libs/reports/routes/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

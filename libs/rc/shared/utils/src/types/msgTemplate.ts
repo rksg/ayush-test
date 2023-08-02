@@ -4,7 +4,8 @@ export interface TemplateScope {
     id: string,
     messageType: MessageType,
     nameLocalizationKey: string,
-    defaultTemplateId: string
+    defaultTemplateId: string,
+    registrations?: Registration[]
 }
 
 export enum MessageType {

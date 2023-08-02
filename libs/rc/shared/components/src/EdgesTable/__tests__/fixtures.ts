@@ -162,7 +162,7 @@ export const mockEdgeList = {
     },
     {
       name: 'Smart Edge 12',
-      deviceStatus: '4_04_HeartbeatLost',
+      deviceStatus: '4_02_Resetting',
       deviceStatusSeverity: '4_TransientIssue',
       type: 'type 1',
       model: 'model 1',
