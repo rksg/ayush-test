@@ -12,10 +12,10 @@ export function PoolTable (props:{
   openDrawer: (data?: EdgeDhcpPool) => void
   onDelete?: (data:EdgeDhcpPool[]) => void
   openImportModal: (visible: boolean) => void
+  isRelayOn: boolean
 }) {
-
   const { $t } = useIntl()
-  const { data, openDrawer, onDelete, openImportModal } = props
+  const { data, openDrawer, onDelete, openImportModal, isRelayOn } = props
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
@@ -49,15 +49,12 @@ export function PoolTable (props:{
     },
     {
       key: 'poolStartIp',
-      title: $t({ defaultMessage: 'Pool Start IP' }),
+      title: $t({ defaultMessage: 'Pool Range' }),
       dataIndex: 'poolStartIp',
-      sorter: { compare: sortProp('poolStartIp', defaultSort) }
-    },
-    {
-      key: 'poolEndIp',
-      title: $t({ defaultMessage: 'Pool End IP' }),
-      dataIndex: 'poolEndIp',
-      sorter: { compare: sortProp('poolEndIp', defaultSort) }
+      width: 250,
+      render: (_, row) => {
+        return `${row.poolStartIp} - ${row.poolEndIp}`
+      }
     },
     {
       key: 'gatewayIp',
@@ -78,7 +75,9 @@ export function PoolTable (props:{
   return (
     <Table
       rowKey='id'
-      columns={columns}
+      columns={columns.filter(col=>
+        (col.key !== 'gatewayIp' && isRelayOn) || !isRelayOn)
+      }
       dataSource={data}
       rowActions={filterByAccess(rowActions)}
       actions={filterByAccess(actions)}

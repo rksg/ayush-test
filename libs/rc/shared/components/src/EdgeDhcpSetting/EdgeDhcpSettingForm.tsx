@@ -1,9 +1,28 @@
-import { Col, Form, Input, InputNumber, Radio, RadioChangeEvent, Row, Select, Space, Switch } from 'antd'
-import { useIntl }                                                                            from 'react-intl'
-import styled                                                                                 from 'styled-components'
+import { useEffect } from 'react'
 
-import { Alert, StepsFormLegacy, Subtitle, useStepFormContext } from '@acx-ui/components'
 import {
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  RadioChangeEvent,
+  Row,
+  Select,
+  Space,
+  Switch
+} from 'antd'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components'
+
+import {
+  Alert,
+  StepsFormLegacy,
+  Subtitle,
+  useStepFormContext
+} from '@acx-ui/components'
+import {
+  EdgeDhcpPool,
   EdgeDhcpSetting,
   LeaseTimeType,
   LeaseTimeUnit,
@@ -55,6 +74,36 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
       form.setFieldValue('leaseTime', initDhcpData.leaseTime)
     }
   }
+
+  const relayGatewayValidator = (pools: EdgeDhcpPool[], isRelayOn: boolean) => {
+    for(let i = 0; i < pools.length; i++) {
+      const pool = pools[i]
+
+      if (isRelayOn && pool.gatewayIp) {
+        return Promise.reject($t({
+          defaultMessage: '{data} : gateway should be empty when relay is enabled.'
+        }, { data: pool.poolName }))
+      } else if (!isRelayOn && !pool.gatewayIp) {
+        return Promise.reject($t({
+          defaultMessage: '{data} : gateway is required'
+        }, { data: pool.poolName }))
+      }
+    }
+
+    return Promise.resolve()
+  }
+
+  useEffect(() => {
+    // clear gateway field when relay is enabled
+    if (dhcpRelay) {
+      const pools = form.getFieldValue('dhcpPools')
+      pools?.forEach((pool:EdgeDhcpPool) => {
+        pool.gatewayIp = ''
+      })
+    }
+
+    form.validateFields(['dhcpPools'])
+  }, [dhcpRelay])
 
   return (
     <div className={props.className}>
@@ -153,9 +202,15 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
                           name='leaseTimeUnit'
                           initialValue={initDhcpData.leaseTimeUnit}>
                           <Select >
-                            <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
-                            <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                            <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                            <Option value={LeaseTimeUnit.DAYS}>
+                              {$t({ defaultMessage: 'Days' })}
+                            </Option>
+                            <Option value={LeaseTimeUnit.HOURS}>
+                              {$t({ defaultMessage: 'Hours' })}
+                            </Option>
+                            <Option value={LeaseTimeUnit.MINUTES}>
+                              {$t({ defaultMessage: 'Minutes' })}
+                            </Option>
                           </Select>
                         </Form.Item>
                       </Space>
@@ -181,8 +236,13 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
           <Col span={15}>
             <Form.Item
               name='dhcpPools'
+              validateFirst
               rules={[
-                { required: true, message: $t({ defaultMessage: 'Please create DHCP pools' }) }
+                {
+                  required: true,
+                  message: $t({ defaultMessage: 'Please create DHCP pools' })
+                },
+                { validator: (_, value) => relayGatewayValidator(value, dhcpRelay) }
               ]}
               children={<DHCPPoolTable />}
             />

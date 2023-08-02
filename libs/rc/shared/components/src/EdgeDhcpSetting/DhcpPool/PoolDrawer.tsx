@@ -14,6 +14,7 @@ interface PoolDrawerProps {
   onAddOrEdit: (item: EdgeDhcpPool) => void
   data?: EdgeDhcpPool
   allPool?: EdgeDhcpPool[]
+  isRelayOn: boolean
 }
 
 const initPoolData: Partial<EdgeDhcpPool> = {
@@ -39,7 +40,7 @@ async function nameValidator (
 
 export const PoolDrawer = (props: PoolDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, onAddOrEdit, data, allPool } = props
+  const { visible, setVisible, onAddOrEdit, data, allPool, isRelayOn } = props
 
   const { form, onSubmit, onSave, onClose } = useDrawerControl({
     visible,
@@ -54,7 +55,6 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
       { operation: !!data ? $t({ defaultMessage: 'Edit' }) :
         $t({ defaultMessage: 'Add' }) })
   }
-
 
   const drawerContent = <Form
     form={form}
@@ -117,11 +117,14 @@ export const PoolDrawer = (props: PoolDrawerProps) => {
           name='gatewayIp'
           label={$t({ defaultMessage: 'Gateway' })}
           rules={[
-            { required: true },
+            { required: !isRelayOn },
             { validator: (_, value) => networkWifiIpRegExp(value) }
           ]}
+          initialValue=''
+          hidden={isRelayOn}
           children={<Input />}
         />
+
       </Col>
     </Row>
   </Form>

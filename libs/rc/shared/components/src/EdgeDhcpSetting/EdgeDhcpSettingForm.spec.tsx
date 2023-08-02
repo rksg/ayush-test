@@ -36,7 +36,6 @@ describe('EdgeDhcpSettingForm', () => {
         <StepsForm form={formRef.current}>
           <StepsForm.StepForm>
             <EdgeDhcpSettingForm />
-
           </StepsForm.StepForm>
         </StepsForm>
       </Provider>, { route: { params } }

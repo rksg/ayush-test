@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { Form }         from 'antd'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -26,6 +27,7 @@ export default function DhcpPoolTable ({
 }: DhcpPoolTableProps) {
   const { $t } = useIntl()
   const [importModalvisible, setImportModalvisible] = useState<boolean>(false)
+  const form = Form.useFormInstance()
   const {
     openDrawer,
     onDelete,
@@ -36,6 +38,8 @@ export default function DhcpPoolTable ({
   } = useTableControl<EdgeDhcpPool>({ value, onChange })
 
   const validateCSVData = async (data: EdgeDhcpPool[]): Promise<void> => {
+    const isRelayOn = form.getFieldValue('dhcpRelay')
+
     // find duplicate pool name
     const count = data.concat(value).reduce((result, item) => ({ ...result,
       [item.poolName]: (result[item.poolName] || 0) + 1
@@ -51,10 +55,25 @@ export default function DhcpPoolTable ({
       }))
     }
 
-
     // validation on other fields
     for(let i = 0; i < data.length; i++) {
       const item = data[i]
+
+      // requirement check
+      if (!item.poolName || !item.subnetMask
+        || !item.poolStartIp || !item.poolEndIp
+        || (!isRelayOn && !item.gatewayIp)) {
+        return Promise.reject($t({
+          defaultMessage: 'some required field(s) are empty.'
+        }))
+      }
+
+      // dependency between relay and gateway
+      if (isRelayOn && item.gatewayIp) {
+        return Promise.reject($t({
+          defaultMessage: '{data} : gateway should be empty when relay is enabled.'
+        }, { data: item.poolName }))
+      }
 
       try {
         await subnetMaskIpRegExp(item.subnetMask)
@@ -102,19 +121,32 @@ export default function DhcpPoolTable ({
 
   return (
     <>
-      <PoolTable
-        data={value}
-        openDrawer={openDrawer}
-        openImportModal={setImportModalvisible}
-        onDelete={onDelete}
-      />
-      <PoolDrawer
-        visible={visible}
-        setVisible={setVisible}
-        onAddOrEdit={onAddOrEdit}
-        data={currentEditData}
-        allPool={value}
-      />
+      <Form.Item
+        noStyle
+        dependencies={['dhcpRelay']}
+      >
+        {({ getFieldValue }) => {
+          const isRelayOn = getFieldValue('dhcpRelay')
+
+          return <>
+            <PoolTable
+              data={value}
+              openDrawer={openDrawer}
+              openImportModal={setImportModalvisible}
+              onDelete={onDelete}
+              isRelayOn={isRelayOn}
+            />
+            <PoolDrawer
+              visible={visible}
+              setVisible={setVisible}
+              onAddOrEdit={onAddOrEdit}
+              data={currentEditData}
+              allPool={value}
+              isRelayOn={isRelayOn}
+            />
+          </>
+        }}
+      </Form.Item>
       { // prevent `Warning: Instance created by `useForm` is not connected to any Form element. Forget to pass `form` prop?`
         importModalvisible &&
         <ImportFileDrawer
