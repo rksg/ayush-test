@@ -558,10 +558,10 @@ export function VenuePropertyTab () {
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
         type={ImportFileDrawerType.PropertyUnit}
-        acceptType={['xlsx']}
+        acceptType={['csv']}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
-        templateLink='assets/templates/units_import_template.xlsx'
+        templateLink='assets/templates/units_import_template.csv'
         importRequest={importUnits}
         formDataName={'unitImports'}
         onClose={() => setUploadCsvDrawerVisible(false)}

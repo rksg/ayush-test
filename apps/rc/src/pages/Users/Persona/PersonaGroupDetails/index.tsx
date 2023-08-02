@@ -133,7 +133,7 @@ function PersonaGroupDetails () {
       content: detailsQuery.data?.personas?.length ?? 0
     },
     {
-      title: $t({ defaultMessage: 'DPSK Pool' }),
+      title: $t({ defaultMessage: 'DPSK Service' }),
       content:
       <DpskPoolLink
         name={dpskPoolDisplay?.name}
@@ -182,6 +182,8 @@ function PersonaGroupDetails () {
               personaGroupId={personaGroupId}
               colProps={{
                 name: { searchable: true },
+                email: { searchable: true },
+                description: { searchable: true },
                 groupId: { show: false, filterable: false },
                 ...!propertyEnabled
                   ? { identityId: { disable: true, show: false } } : {}
