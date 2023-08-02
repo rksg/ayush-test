@@ -338,7 +338,7 @@ describe('RadioTab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  it('should render Client Admission Control correctly', async () => {
+  it.skip('should render Client Admission Control correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{

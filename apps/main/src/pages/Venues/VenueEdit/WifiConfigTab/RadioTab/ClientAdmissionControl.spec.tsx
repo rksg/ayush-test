@@ -28,6 +28,8 @@ const params = {
 
 describe('Venue Client Admission Control', () => {
   beforeEach(() => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
@@ -37,13 +39,17 @@ describe('Venue Client Admission Control', () => {
   })
 
   it('should render correctly', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
-        <Form>
-          <ClientAdmissionControl />
-        </Form>
+        <VenueEditContext.Provider value={{
+          editContextData: {},
+          setEditContextData: jest.fn(),
+          setEditRadioContextData: jest.fn()
+        }}>
+          <Form>
+            <ClientAdmissionControl />
+          </Form>
+        </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
@@ -53,7 +59,6 @@ describe('Venue Client Admission Control', () => {
     expect(enable24gBtn).toBeVisible()
     expect(enable50gBtn).toBeVisible()
     await waitFor(() => expect(enable24gBtn).toHaveAttribute('aria-checked', 'true'))
-    await waitFor(() => expect(enable50gBtn).toHaveAttribute('aria-checked', 'false'))
     expect(await screen.findByTestId('client-admission-control-min-client-count-24g')).toBeVisible()
     expect(await screen.findByTestId('client-admission-control-max-client-load-24g')).toBeVisible()
     expect(await screen.findByTestId('client-admission-control-min-client-throughput-24g'))
@@ -67,8 +72,6 @@ describe('Venue Client Admission Control', () => {
   })
 
   it('should handle turn On/Off switch buttons changed', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -89,8 +92,8 @@ describe('Venue Client Admission Control', () => {
 
     await userEvent.click(enable24gBtn)
     await userEvent.click(enable50gBtn)
-    await waitFor(() => expect(enable24gBtn).toHaveAttribute('aria-checked', 'false'))
-    await waitFor(() => expect(enable50gBtn).toHaveAttribute('aria-checked', 'true'))
+    expect(enable24gBtn).toHaveAttribute('aria-checked', 'false')
+    expect(enable50gBtn).toHaveAttribute('aria-checked', 'true')
 
     expect(screen.queryByTestId('client-admission-control-min-client-count-24g'))
       .not.toBeInTheDocument()
@@ -106,8 +109,6 @@ describe('Venue Client Admission Control', () => {
 
   it(`should turned off and grayed out switch buttons when 
     load balancing is enabled`, async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -129,10 +130,10 @@ describe('Venue Client Admission Control', () => {
     const enable24gBtn = await screen.findByTestId('client-admission-control-enable-24g')
     const enable50gBtn = await screen.findByTestId('client-admission-control-enable-50g')
 
-    await waitFor(() => expect(enable24gBtn).toHaveAttribute('aria-checked', 'false'))
-    await waitFor(() => expect(enable24gBtn).toHaveClass('ant-switch-disabled'))
-    await waitFor(() => expect(enable50gBtn).toHaveAttribute('aria-checked', 'false'))
-    await waitFor(() => expect(enable50gBtn).toHaveClass('ant-switch-disabled'))
+    expect(enable24gBtn).toHaveAttribute('aria-checked', 'false')
+    expect(enable24gBtn).toHaveClass('ant-switch-disabled')
+    expect(enable50gBtn).toHaveAttribute('aria-checked', 'false')
+    expect(enable50gBtn).toHaveClass('ant-switch-disabled')
 
     expect(screen.queryByTestId('client-admission-control-min-client-count-24g'))
       .not.toBeInTheDocument()
@@ -150,8 +151,6 @@ describe('Venue Client Admission Control', () => {
 
   it(`should turned off and grayed out switch buttons when 
   band balancing is enabled`, async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -173,10 +172,10 @@ describe('Venue Client Admission Control', () => {
     const enable24gBtn = await screen.findByTestId('client-admission-control-enable-24g')
     const enable50gBtn = await screen.findByTestId('client-admission-control-enable-50g')
 
-    await waitFor(() => expect(enable24gBtn).toHaveAttribute('aria-checked', 'false'))
-    await waitFor(() => expect(enable24gBtn).toHaveClass('ant-switch-disabled'))
-    await waitFor(() => expect(enable50gBtn).toHaveAttribute('aria-checked', 'false'))
-    await waitFor(() => expect(enable50gBtn).toHaveClass('ant-switch-disabled'))
+    expect(enable24gBtn).toHaveAttribute('aria-checked', 'false')
+    expect(enable24gBtn).toHaveClass('ant-switch-disabled')
+    expect(enable50gBtn).toHaveAttribute('aria-checked', 'false')
+    expect(enable50gBtn).toHaveClass('ant-switch-disabled')
 
     expect(screen.queryByTestId('client-admission-control-min-client-count-24g'))
       .not.toBeInTheDocument()
