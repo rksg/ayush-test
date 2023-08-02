@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
 
+import { get }                     from '@acx-ui/config'
 import { useAuthenticateMutation } from '@acx-ui/reports/services'
 
 export const getHostName = (origin: string) => {
-  if(process.env['NODE_ENV'] === 'development')
-    return 'https://dev.ruckus.cloud'
+  if (process.env['NODE_ENV'] === 'development')
+    return get('IS_MLISA_SA') ?
+      'https://staging.mlisa.io'
+      :
+      'https://dev.ruckus.cloud'
 
   return origin
 }

@@ -183,6 +183,10 @@ export const venueApModels = [
   }
 ]
 
+export const venueBssColoring = {
+  bssColoringEnabled: true
+}
+
 export const autocompleteResult = {
   address_components: [
     {
