@@ -689,6 +689,10 @@ export interface VenueLoadBalancing {
   steeringMode: SteeringModeEnum
 }
 
+export interface VenueBssColoring {
+	bssColoringEnabled: boolean
+}
+
 export interface Node {
     type?: DeviceTypes;
     name: string;
