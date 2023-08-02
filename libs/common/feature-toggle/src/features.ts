@@ -74,7 +74,8 @@ export enum Features {
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
-  WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle'
+  WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
+  IDM_DECOUPLING='ptenant-admin-authentication-enabled'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
