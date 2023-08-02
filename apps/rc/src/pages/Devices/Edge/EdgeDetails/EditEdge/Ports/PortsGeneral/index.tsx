@@ -46,8 +46,8 @@ const PortsGeneral = (props: PortsGeneralProps) => {
       value: `${index}`,
       children: <Form.List name={`port_${index}`}>
         {(fields) => fields.map(
-          ({ key, name }) => <PortConfigForm
-            name={name}
+          ({ key }) => <PortConfigForm
+            formListKey={key}
             key={`port_${index}_${key}`}
             index={index}
           />
