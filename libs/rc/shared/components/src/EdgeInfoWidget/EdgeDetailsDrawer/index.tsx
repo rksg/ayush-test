@@ -30,7 +30,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
 
   const content = (
     <Form
-      labelCol={{ span: 12 }}
+      labelCol={{ span: 9 }}
       labelAlign='left'
       style={{ marginTop: currentEdge?.deviceStatus === EdgeStatusEnum.OPERATIONAL ? '25px' : 0 }}
     >
@@ -163,7 +163,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
       visible={visible}
       onClose={onClose}
       children={content}
-      width={'400px'}
+      width={'480px'}
     />
   )
 }
