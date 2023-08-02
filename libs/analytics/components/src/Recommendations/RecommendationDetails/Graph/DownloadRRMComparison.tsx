@@ -4,11 +4,13 @@ import { kebabCase } from 'lodash'
 import { useIntl }   from 'react-intl'
 import sanitize      from 'sanitize-filename'
 
-import { Button, Loader, recommendationBandMapping } from '@acx-ui/components'
-import { formatter }                                 from '@acx-ui/formatter'
-import { DownloadOutlined }                          from '@acx-ui/icons'
+import { Button, Loader, recommendationBandMapping, SuspenseBoundary } from '@acx-ui/components'
+import { formatter }                                                   from '@acx-ui/formatter'
+import { DownloadOutlined }                                            from '@acx-ui/icons'
 
 import { useCRRMQuery } from './services'
+
+const { DefaultFallback: Spinner } = SuspenseBoundary
 
 const useDownloadUrl = (data: unknown, type: string) => {
   const [url, setUrl] = useState<string>()
@@ -33,11 +35,12 @@ export function DownloadRRMComparison (props: { title?: string }) {
     kebabCase(formatter('radioFormat')(band).toLowerCase())
   ].join('-') + '.csv')
 
-  return <Loader states={[recommendation, queryResult]}><Button
-    disabled={!!recommendation.data?.monitoring}
-    icon={<DownloadOutlined/>}
-    download={filename}
-    href={url}
-  >{props.title || $t({ defaultMessage: 'Download RRM comparison' })}</Button></Loader>
+  return <span><Loader states={[recommendation, queryResult]} fallback={<Spinner size='default' />}>
+    <Button
+      disabled={!!recommendation.data?.monitoring}
+      icon={<DownloadOutlined/>}
+      download={filename}
+      href={url}
+    >{props.title || $t({ defaultMessage: 'Download RRM comparison' })}</Button></Loader></span>
 }
 
