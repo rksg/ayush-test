@@ -37,7 +37,8 @@ const EdgeDHCPDetail = () => {
       'venueName',
       'successfulAllocation',
       'remainsIps',
-      'droppedPackets'
+      'droppedPackets',
+      'edgeAlarmSummary'
     ],
     filters: { dhcpId: [params.serviceId] }
   }
