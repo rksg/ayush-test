@@ -110,7 +110,8 @@ export interface EdgePortStatus {
   mac: string
   speedKbps: number
   duplex: string
-  ip: string
+  ip: string,
+  ipMode: string,
   sortIdx: number
   vlan: string
   subnet: string

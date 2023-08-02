@@ -32,6 +32,7 @@ export enum EdgeStatusEnum {
   CONFIGURATION_UPDATE_FAILED = '3_03_ConfigurationUpdateFailed',
   DISCONNECTED_FROM_CLOUD = '3_04_DisconnectedFromCloud',
   REBOOTING = '4_01_Rebooting',
+  RESETTING = '4_02_Resetting',
   HEARTBEAT_LOST = '4_04_HeartbeatLost'
 }
 
