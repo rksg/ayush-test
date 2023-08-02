@@ -1,6 +1,5 @@
 ci_version: v1
-ci:
-  image: gcr.io/kumo-scratch/altoci-jenkins:DEVOPS-18511--latest
+
 build:
   - directory: .
     build_type: dockerfile
