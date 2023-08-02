@@ -65,6 +65,7 @@ export interface CreateDpskPassphrasesFormFields {
   expiration: Omit<ExpirationDateEntity, 'offset'>
   email?: string;
   phoneNumber?: string;
+  revocationReason?: string;
 }
 
 export interface DpskPassphrasesSaveData {
@@ -79,6 +80,7 @@ export interface DpskPassphrasesSaveData {
   email?: string;
   phoneNumber?: string;
   override?: boolean;
+  revocationReason?: string;
 }
 
 export interface DpskPassphraseClient {
