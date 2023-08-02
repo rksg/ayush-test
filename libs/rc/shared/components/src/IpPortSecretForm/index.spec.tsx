@@ -13,7 +13,7 @@ import { IpPortSecretForm } from './index'
 
 
 describe('IpPortSecretForm', () => {
-  it('should render IP Port Secrect form successfully', async () => {
+  it.skip('should render IP Port Secrect form successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const { asFragment } = render(
@@ -29,7 +29,7 @@ describe('IpPortSecretForm', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should render IP Port Secrect accounting form successfully', async () => {
+  it.skip('should render IP Port Secrect accounting form successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     render(

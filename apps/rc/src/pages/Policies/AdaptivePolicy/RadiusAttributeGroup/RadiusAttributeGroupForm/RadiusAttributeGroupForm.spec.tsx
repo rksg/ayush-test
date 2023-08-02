@@ -209,7 +209,7 @@ describe('RadiusAttributeGroupForm', () => {
     await screen.findByRole('heading', { level: 1, name: 'Configure ' + attributeGroup.name })
 
     const row = await screen.findByRole('row', { name: /Annex-CLI-Filter/ })
-    fireEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/i }))
     await screen.findByText('Attribute Type')

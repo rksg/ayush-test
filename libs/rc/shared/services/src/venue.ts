@@ -49,6 +49,7 @@ import {
   VenueRadioCustomization,
   VenueDirectedMulticast,
   VenueLoadBalancing,
+  VenueBssColoring,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -901,6 +902,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
     }),
+    getVenueBssColoring: build.query<VenueBssColoring, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueBssColoring, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueBssColoring: build.mutation<VenueBssColoring, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueBssColoring, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -1072,6 +1090,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'ADD_UNIT',
             'UPDATE_UNIT',
             'DELETE_UNIT',
+            'IMPORT_UNIT',
             'UpdatePersona'
           ]
           onActivityMessageReceived(msg, activities, () => {
@@ -1238,6 +1257,8 @@ export const {
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
+  useGetVenueBssColoringQuery,
+  useUpdateVenueBssColoringMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
   useGetVenueMdnsFencingQuery,

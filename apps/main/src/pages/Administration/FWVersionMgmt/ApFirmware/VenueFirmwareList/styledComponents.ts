@@ -109,4 +109,8 @@ export const ValueContainer = styled.div`
 `
 export const ApModelsContainer = styled.div`
   margin-left: 24px;
+  .empty {
+    color: var(--acx-neutrals-50);
+    font-style: italic;
+  }
 `
