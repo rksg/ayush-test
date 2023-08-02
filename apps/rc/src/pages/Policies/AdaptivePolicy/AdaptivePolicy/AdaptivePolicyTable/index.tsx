@@ -66,7 +66,11 @@ export default function AdaptivePolicyTable () {
 
     tableQuery.data?.data.forEach(policy => {
       const { id, policyType } = policy
-      getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) } })
+      getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) },
+        payload: {
+          page: 1,
+          pageSize: 10000
+        } })
         .then(result => {
           if (result.data) {
             setConditionCountMap(map => new Map(map.set(id, result.data?.data.length ?? 0)))

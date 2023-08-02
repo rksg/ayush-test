@@ -208,14 +208,17 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
           <FieldSpace>
             <Form.Item name='operator' initialValue={OperatorType.ADD}>
               <Select
+                style={{ width: '200px' }}
                 options={Object.keys(OperatorType).map(option =>
                   // eslint-disable-next-line max-len
                   ({ label: $t(AttributeOperationLabelMapping[option as OperatorType]), value: option }))}>
               </Select>
             </Form.Item>
             <Form.Item name='attributeValue'
+              style={{ marginLeft: '50px' }}
               rules={[
-                { required: true },
+                { required: true,
+                  message: $t({ defaultMessage: 'Please enter Condition Value' }) },
                 { validator: (_, value) => attributeValueValidator(value) },
                 { max: 255 }]}
               children={<Input/>}/>
