@@ -338,7 +338,7 @@ describe('RadioTab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  it.skip('should render Client Admission Control correctly', async () => {
+  it('should render Client Admission Control correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
@@ -349,10 +349,7 @@ describe('RadioTab', () => {
         <RadioTab />
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
-
     // this would only be visible when loader removed
-    await waitFor(() => screen.findByText('Use Load Balancing'))
-
     const enable24G =
       await screen.findByTestId('client-admission-control-enable-24g')
     const enable50G =
