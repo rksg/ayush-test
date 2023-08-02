@@ -157,6 +157,9 @@ describe('DHCPTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 
   it('should navigate to the Edit view', async () => {

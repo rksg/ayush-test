@@ -1090,6 +1090,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'ADD_UNIT',
             'UPDATE_UNIT',
             'DELETE_UNIT',
+            'IMPORT_UNIT',
             'UpdatePersona'
           ]
           onActivityMessageReceived(msg, activities, () => {
