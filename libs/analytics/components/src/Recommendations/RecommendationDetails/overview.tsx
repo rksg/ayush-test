@@ -56,7 +56,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const { priority, statusTrail, category, sliceValue, status, code, id } = details
-  const { createdAt } = statusTrail[statusTrail.length - 1]
+  const { createdAt } = statusTrail[0]
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
   const applied = details.appliedOnce && status !== 'reverted'

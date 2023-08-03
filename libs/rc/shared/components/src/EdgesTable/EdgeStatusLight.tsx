@@ -59,6 +59,10 @@ export const EdgeStatusLight = (props: EdgeStatusLightProps) => {
       color: 'var(--acx-semantics-yellow-50)',
       text: $t({ defaultMessage: 'Rebooting' })
     },
+    [EdgeStatusEnum.RESETTING]: {
+      color: 'var(--acx-semantics-yellow-50)',
+      text: $t({ defaultMessage: 'Resetting and recovering' })
+    },
     [EdgeStatusEnum.HEARTBEAT_LOST]: {
       color: 'var(--acx-semantics-yellow-50)',
       text: $t({ defaultMessage: 'Heartbeat lost' })
