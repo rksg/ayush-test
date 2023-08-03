@@ -114,7 +114,11 @@ export function RadioTab () {
         await editRadioContextData.updateClientAdmissionControl?.()
       }
 
-      if (apModels || radioData || isLoadBalancingDataChanged) {
+      if (
+        apModels ||
+        radioData ||
+        isLoadBalancingDataChanged ||
+        isClientAdmissionControlDataChanged) {
         setEditContextData({
           ...editContextData,
           unsavedTabKey: 'radio',
@@ -123,7 +127,8 @@ export function RadioTab () {
 
         setEditRadioContextData({
           ...editRadioContextData,
-          isLoadBalancingDataChanged: false
+          isLoadBalancingDataChanged: false,
+          isClientAdmissionControlDataChanged: false
         })
       }
 

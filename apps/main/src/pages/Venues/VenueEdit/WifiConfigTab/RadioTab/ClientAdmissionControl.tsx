@@ -18,7 +18,7 @@ export function ClientAdmissionControl () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
-  const [isGrayedOut, setGrayedOut] = useState(false)
+  const [isTurnedOffAndGrayedOut, setIsTurnedOffAndGrayedOut] = useState(false)
 
   const enable24GFieldName = 'enableClientAdmissionControl24G'
   const enable50GFieldName = 'enableClientAdmissionControl50G'
@@ -49,9 +49,13 @@ export function ClientAdmissionControl () {
     const clientAdmissionControlData = getClientAdmissionControl?.data
     if (clientAdmissionControlData) {
       form.setFieldValue(enable24GFieldName,
-        (!isGrayedOut)? clientAdmissionControlData.enable24G: false)
+        (!isTurnedOffAndGrayedOut)? clientAdmissionControlData.enable24G: false)
       form.setFieldValue(enable50GFieldName,
-        (!isGrayedOut)? clientAdmissionControlData.enable50G: false)
+        (!isTurnedOffAndGrayedOut)? clientAdmissionControlData.enable50G: false)
+      if (isTurnedOffAndGrayedOut &&
+        (clientAdmissionControlData.enable24G || clientAdmissionControlData.enable50G)) {
+        onFormDataChanged()
+      }
       form.setFieldValue(minClientCount24GFieldName, clientAdmissionControlData.minClientCount24G)
       form.setFieldValue(minClientCount50GFieldName, clientAdmissionControlData.minClientCount50G)
       form.setFieldValue(maxRadioLoad24GFieldName, clientAdmissionControlData.maxRadioLoad24G)
@@ -61,7 +65,8 @@ export function ClientAdmissionControl () {
       form.setFieldValue(minClientThroughput50GFieldName,
         clientAdmissionControlData.minClientThroughput50G)
     }
-  }, [isGrayedOut, form, getClientAdmissionControl?.data])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTurnedOffAndGrayedOut, form, getClientAdmissionControl?.data])
 
   useEffect(() => {
     const isSwitchTurnedOffAndGrayedOut = editRadioContextData?.isBandBalancingEnabled ||
@@ -69,9 +74,9 @@ export function ClientAdmissionControl () {
     if (isSwitchTurnedOffAndGrayedOut) {
       form.setFieldValue(enable24GFieldName, false)
       form.setFieldValue(enable50GFieldName, false)
-      setGrayedOut(true)
+      setIsTurnedOffAndGrayedOut(true)
     } else {
-      setGrayedOut(false)
+      setIsTurnedOffAndGrayedOut(false)
     }
   }, [
     form,
@@ -128,7 +133,7 @@ export function ClientAdmissionControl () {
           {$t({ defaultMessage: 'Enable 2.4 GHz' })}
         </div>
         <Tooltip
-          title={(isGrayedOut)?
+          title={(isTurnedOffAndGrayedOut)?
             $t({ defaultMessage: `To enable the client admission control, please make sure 
               the band balancing or load balancing in the venue is disabled.` }): null}
           placement='right'>
@@ -138,7 +143,7 @@ export function ClientAdmissionControl () {
             valuePropName='checked'
             initialValue={enable24G}>
             <Switch
-              disabled={isGrayedOut}
+              disabled={isTurnedOffAndGrayedOut}
               data-testid='client-admission-control-enable-24g'
               onChange={onFormDataChanged} />
           </Form.Item>
@@ -213,7 +218,7 @@ export function ClientAdmissionControl () {
           {$t({ defaultMessage: 'Enable 5 GHz' })}
         </div>
         <Tooltip
-          title={(isGrayedOut)?
+          title={(isTurnedOffAndGrayedOut)?
             $t({ defaultMessage: `To enable the client admission control, please make sure 
               the band balancing or load balancing in the venue is disabled.` }): null}
           placement='right'>
@@ -223,7 +228,7 @@ export function ClientAdmissionControl () {
             valuePropName='checked'
             initialValue={enable24G}>
             <Switch
-              disabled={isGrayedOut}
+              disabled={isTurnedOffAndGrayedOut}
               data-testid='client-admission-control-enable-50g'
               onChange={onFormDataChanged} />
           </Form.Item>
