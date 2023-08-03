@@ -34,7 +34,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   APExtended,
-  VenueRadioCustomization
+  APExtendedGrouped,
+  VenueRadioCustomization,
+  AFCPowerMode,
+  LowPowerAPQuantity
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -107,6 +110,8 @@ export function RadioSettings () {
   const [bandwidth6GOptions, setBandwidth6GOptions] = useState<SelectItemOption[]>([])
   const [bandwidthLower5GOptions, setBandwidthLower5GOptions] = useState<SelectItemOption[]>([])
   const [bandwidthUpper5GOptions, setBandwidthUpper5GOptions] = useState<SelectItemOption[]>([])
+  const [lowPowerAPQuantity, setLowPowerAPQuantity] =
+  useState<LowPowerAPQuantity>({ lowPowerAPCount: 0, allAPCount: 0 })
 
   const [isLower5gInherit, setIsLower5gInherit] = useState(true)
   const [isUpper5gInherit, setIsUpper5gInherit] = useState(true)
@@ -160,6 +165,21 @@ export function RadioSettings () {
       return includes(indoorBandwidthList, bandwidth) || includes(outdoorBandwidthList, bandwidth)
     })
   }
+
+  /* eslint-disable max-len */
+  const displayLowPowerModeBanner = (response: (APExtended | APExtendedGrouped)[]) => {
+    const lowerPowerModeAP = response.filter((ap) => {
+      return ap.apRadioDeploy === '2-5-6' && ap.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER
+    })
+
+    if (true||lowerPowerModeAP.length > 0) {
+      setLowPowerAPQuantity({
+        lowPowerAPCount: lowerPowerModeAP.length,
+        allAPCount: response.length
+      })
+    }
+  }
+  /* eslint-enable max-len */
 
   const supportedApModelTooltip = wifi7_320Mhz_FeatureFlag ?
     // eslint-disable-next-line max-len
@@ -220,8 +240,9 @@ export function RadioSettings () {
       apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
         const { data } = res || {}
         if (data) {
-          const findAp = data.some((ap: APExtended) => ap.venueId === venueId)
-          setHasTriBandAps(findAp)
+          const findAp = data.filter((ap: APExtended) => ap.venueId === venueId)
+          setHasTriBandAps((findAp.length > 0))
+          displayLowPowerModeBanner(findAp)
         }
       })
     }
@@ -640,7 +661,8 @@ export function RadioSettings () {
               supportChannels={support6GChannels}
               bandwidthOptions={bandwidth6GOptions}
               handleChanged={handleChange}
-              onResetDefaultValue={handleResetDefaultSettings} />
+              onResetDefaultValue={handleResetDefaultSettings}
+              lowPowerAPs={lowPowerAPQuantity} />
           </div>
           }
           { isTriBandRadio && isDual5gMode &&

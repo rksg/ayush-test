@@ -504,3 +504,8 @@ export enum AFCStatus {
   REJECTED,
   PASSED
 }
+
+export interface LowPowerAPQuantity {
+  lowPowerAPCount: number,
+  allAPCount: number
+}
