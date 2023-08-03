@@ -143,6 +143,8 @@ export class OpenWlanAdvancedCustomization {
 
   enableMulticastDownlinkRateLimiting6G?: boolean
 
+  enableAdditionalRegulatoryDomains?: boolean
+
   constructor () {
     this.clientIsolation = true
 
@@ -248,5 +250,7 @@ export class OpenWlanAdvancedCustomization {
     this.enableMulticastUplinkRateLimiting6G = false
 
     this.enableMulticastDownlinkRateLimiting6G = false
+
+    this.enableAdditionalRegulatoryDomains = true
   }
 }

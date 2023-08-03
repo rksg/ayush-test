@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
-import { useIntl }                                        from 'react-intl'
+import { useIntl, defineMessage }                                        from 'react-intl'
 
 import { Tooltip }                                                                                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
@@ -37,6 +37,7 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
   const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
+  const enable80211D = useIsSplitOn(Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE)
 
   const [
     enableFastRoaming,
@@ -70,6 +71,11 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
   const isFastBssVisible = data?.type === NetworkTypeEnum.AAA ? true : (
     data?.type !== NetworkTypeEnum.DPSK && isNetworkWPASecured )
 
+  const additionalRegulatoryDomains80211dInfoMessage = defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: '802.11d enables global compliance with additional regulatory domains. Enable this option if required in your locality.'
+  })
+
   return (
     <>
       {AmbAndDtimFlag &&
@@ -101,6 +107,27 @@ export function NetworkingTab (props: { wlanData: NetworkSaveData | null }) {
           children={<Switch />}
         />
       </UI.FieldLabel>
+
+      {enable80211D &&
+      <UI.FieldLabel width={labelWidth}>
+        <Space>
+          {$t({ defaultMessage: 'Enable 802.11d' })}
+          <Tooltip.Question
+            title={$t(additionalRegulatoryDomains80211dInfoMessage)}
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />
+        </Space>
+        <Form.Item
+          name={['wlan','advancedCustomization','enableAdditionalRegulatoryDomains']}
+          style={{ marginBottom: '15px' }}
+          valuePropName='checked'
+          data-testid='enable-additional-regulatory-domains-80211d'
+          initialValue={true}
+          children={<Switch />}
+        />
+      </UI.FieldLabel>
+      }
 
       {isFastBssVisible &&
         <UI.FieldLabel width={labelWidth}>
