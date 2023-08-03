@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-import type { ConfigChange as ConfigChangeType } from '@acx-ui/components'
 import { Menu, MenuProps, Space } from 'antd'
 import { ItemType }               from 'antd/lib/menu/hooks/useItems'
 import { useIntl }                from 'react-intl'
 
+import type { ConfigChange as ConfigChangeType }                  from '@acx-ui/components'
 import { GridRow, GridCol, Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
 import { DateRange, dateRangeMap, defaultRanges }                 from '@acx-ui/utils'
@@ -17,7 +17,7 @@ import { Table } from './Table'
 
 export function useConfigChange () {
   const { $t } = useIntl()
-  const [selected, setSelected] = useState<ConfigChangeType | null>(null)
+  const [selected, setSelected] = useState<ConfigChangeType | null >(null)
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([])
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
@@ -28,9 +28,22 @@ export function useConfigChange () {
     pageSize: 10
   })
   const [dateRange, setDateRange] = useState(DateRange.last7Days)
-
   const timeRanges = defaultRanges()[dateRange]
-  const handleMenuClick: MenuProps['onClick'] = (e) => setDateRange(e.key as DateRange)
+
+  useEffect(() => {
+    setChartZoom({
+      start: timeRanges![0].valueOf(), end: timeRanges![1].valueOf()
+    })
+  }, [timeRanges![0].valueOf()])
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    setPagination({
+      current: 1,
+      pageSize: 10
+    })
+    setSelected(null)
+    setDateRange(e.key as DateRange)
+  }
 
   const onDotClick = (params: ConfigChangeType) => {
     setSelected(params)

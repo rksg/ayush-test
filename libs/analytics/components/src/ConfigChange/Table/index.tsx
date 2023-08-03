@@ -115,7 +115,7 @@ export function Table (props: {
     onChange: (_: React.Key[], selectedRows: ConfigChange[]) => {
       onRowClick?.(selectedRows[0])
     },
-    ...(selected && { selectedRowKeys: [selected.id!] })
+    ...(selected === null ? { selectedRowKeys: [] } : { selectedRowKeys: [selected.id!] })
   }
 
   const handlePaginationChange = (current: number, pageSize: number) => {

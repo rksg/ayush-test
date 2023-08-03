@@ -1,6 +1,7 @@
+import { ReactNode } from 'react'
+
 import userEvent from '@testing-library/user-event'
 
-import { ReactNode } from 'react'
 
 import { get }            from '@acx-ui/config'
 import { Provider }       from '@acx-ui/store'
