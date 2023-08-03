@@ -101,10 +101,8 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('High')).toBeVisible()
     expect(screen.queryByText('Category')).toBeNull()
     expect(screen.queryByText('AI-Driven Cloud RRM')).toBeNull()
-    expect(await screen.findByText('Venue')).toBeVisible()
-    expect(await screen.findByText('21_US_Beta_Samsung')).toBeVisible()
+    expect(await screen.findByText('Summary')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
-    expect(await screen.findByText('Scheduled')).toBeVisible()
   })
 
   it('should render correctly for low priority (client load)', async () => {

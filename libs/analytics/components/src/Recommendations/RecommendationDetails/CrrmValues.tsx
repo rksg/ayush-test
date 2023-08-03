@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow, Tooltip } from '@acx-ui/components'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
 
 import { EnhancedRecommendation } from './services'
 import { StatusTrail }            from './statusTrail'
@@ -10,8 +10,6 @@ import {
   DetailsHeader,
   DetailsWrapper,
   Title,
-  InfoIcon,
-  ValueDetailsWithIcon,
   CrrmTitle,
   CrrmDiv,
   ValueDetails
@@ -21,16 +19,10 @@ import { getRecommendationsText, getValues } from './values'
 export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const {
-    appliedOnce, status, original, current, recommended, tooltipContent
+    appliedOnce, status, original, current, recommended
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const secondValue = applied ? current : recommended
   const recommendationText = getRecommendationsText(details, $t)
-  const tooltipText = typeof tooltipContent === 'string'
-    ? tooltipContent
-    : typeof tooltipContent === 'undefined'
-      ? null
-      : $t(tooltipContent)
 
   const fields = [
     {
@@ -43,14 +35,7 @@ export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => 
       label: applied
         ? $t({ defaultMessage: 'Current Configuration' })
         : $t({ defaultMessage: 'Recommended Configuration' }),
-      value: tooltipText
-        ? <ValueDetailsWithIcon>
-          {secondValue}
-          {tooltipText && <Tooltip title={tooltipText}>
-            <InfoIcon />
-          </Tooltip>}
-        </ValueDetailsWithIcon>
-        : secondValue
+      value: applied ? current : recommended
     }
   ]
 

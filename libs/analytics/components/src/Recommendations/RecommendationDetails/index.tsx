@@ -19,7 +19,7 @@ export const RecommendationDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
-  const activeTab = get(params, 'activeTab', 'crrm') as keyof typeof linkMap
+  const activeTab = get(params, 'activeTab', 'aiOps') as keyof typeof linkMap
   const link = `recommendations/${activeTab}`
   const codeQuery = useRecommendationDetailsQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useRecommendationDetailsQuery(
