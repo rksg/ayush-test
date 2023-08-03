@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
-import { useIntl, defineMessage }                                        from 'react-intl'
+import { useIntl, defineMessage }                         from 'react-intl'
 
 import { Tooltip }                                                                                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
