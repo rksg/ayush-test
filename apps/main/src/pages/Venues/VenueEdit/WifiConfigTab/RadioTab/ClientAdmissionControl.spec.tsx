@@ -10,7 +10,6 @@ import { Provider, store }                from '@acx-ui/store'
 import { mockServer,
   render,
   screen,
-  waitFor,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { VenueEditContext }                from '../..'
