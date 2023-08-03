@@ -2,43 +2,35 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                              from '@acx-ui/components'
-import { APStatus }                                               from '@acx-ui/rc/components'
-import { useGetApRfNeighborsQuery, useDetectApNeighborsMutation } from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }                                  from '@acx-ui/components'
+import { APStatus }                                                   from '@acx-ui/rc/components'
+import { useLazyGetApRfNeighborsQuery, useDetectApNeighborsMutation } from '@acx-ui/rc/services'
 import {
   ApRfNeighbor,
+  ApRfNeighborsResponse,
+  CatchErrorResponse,
   SortResult,
   defaultSort,
-  getPokeSocket,
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-let pokeSocket: SocketIOClient.Socket
+import { DetectionStatus, useApNeighborSocket } from './useApNeighborSocket'
 
 export function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
-  const tableQuery = useGetApRfNeighborsQuery({ params: { serialNumber } })
-  const [ detectApNeighbors ] = useDetectApNeighborsMutation()
-  const [ requestId, setRequestId ] = useState('')
+  const [ getApRfNeighbors, { isLoading: isLoadingApRfNeighbors }] = useLazyGetApRfNeighborsQuery()
+  const [ detectApNeighbors, { isLoading: isDetecting } ] = useDetectApNeighborsMutation()
+  // eslint-disable-next-line max-len
+  const { setRequestId, detectionStatus, handleError } = useApNeighborSocket('', socketHandler)
+  const [ tableData, setTableData ] = useState<ApRfNeighborsResponse>()
 
   useEffect(() => {
-    if (!requestId) return
-
-    if (pokeSocket) pokeSocket.close()
-
-    pokeSocket = getPokeSocket(requestId)
-    pokeSocket.on('pokeEvent', (message: string) => {
-      console.log(message)
-    })
-
-    return () => {
-      if (pokeSocket) pokeSocket.close()
-    }
-  }, [requestId])
+    doDetect()
+  }, [])
 
   const doDetect = async () => {
     try {
@@ -49,21 +41,37 @@ export function ApRfNeighbors () {
 
       setRequestId(result.requestId)
     } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+      setRequestId('')
+      handleError(error as CatchErrorResponse)
     }
   }
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
+    disabled: isDetecting,
     onClick: doDetect
   }]
 
-  return <Loader states={[tableQuery]}>
+  async function socketHandler () {
+    try {
+      const data = await getApRfNeighbors({ params: { serialNumber } }).unwrap()
+      setTableData(data)
+    } catch (error) {
+      handleError(error as CatchErrorResponse)
+    }
+  }
+
+  const isTableLoading = (): boolean => {
+    return isLoadingApRfNeighbors || detectionStatus === DetectionStatus.FETCHING
+  }
+
+  // eslint-disable-next-line max-len
+  return <Loader states={[{ isLoading: isTableLoading() }]}>
     <Table
       settingsId='ap-rf-neighbors-table'
       rowKey='apMac'
       columns={getColumns()}
-      dataSource={tableQuery.data?.neighbors ?? []}
+      dataSource={tableData?.neighbors ?? []}
       actions={filterByAccess(tableActions)}
     />
   </Loader>

@@ -36,7 +36,7 @@ const ignoreEndpointList = [
   'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
   'addEdge', 'clientInfo', 'getClientDetails', 'getPropertyConfigs', 'getDhcpByEdgeId',
   'convertNonVARToMSP', 'createNetworkSegmentationGroup', 'updateNetworkSegmentationGroup',
-  'uploadZdConfig', 'importPersonas'
+  'uploadZdConfig', 'importPersonas', 'detectApNeighbors'
 ]
 
 export const errorMessage = {

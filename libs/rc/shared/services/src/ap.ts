@@ -777,8 +777,7 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...createHttpRequest(WifiUrlsInfo.getApRfNeighbors, params)
         }
-      },
-      providesTags: [{ type: 'ApRfNeighbors', id: 'LIST' }]
+      }
     }),
     detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -787,11 +786,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      invalidatesTags: [
-        { type: 'ApRfNeighbors', id: 'LIST' },
-        { type: 'ApLldpNeighbors', id: 'LIST' }
-      ]
+      }
     })
   })
 })
@@ -865,7 +860,7 @@ export const {
   useGetMeshUplinkApsQuery,
   useLazyGetMeshUplinkApsQuery,
   useDownloadApsCSVMutation,
-  useGetApRfNeighborsQuery,
+  useLazyGetApRfNeighborsQuery,
   useDetectApNeighborsMutation
 } = apApi
 
