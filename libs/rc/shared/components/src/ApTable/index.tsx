@@ -23,6 +23,8 @@ import {
   useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
 } from '@acx-ui/rc/services'
 import {
+  AFCStatus,
+  AFCPowerMode,
   ApDeviceStatusEnum,
   APExtended,
   ApExtraParams,
@@ -176,7 +178,35 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
       groupable: filterables && getGroupableConfig()?.deviceStatusGroupableOptions,
-      render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
+      render: (status: unknown, row : APExtended) => {
+        /* eslint-disable max-len */
+        // TODO add Feature flag and pending for PLM
+        if (ApDeviceStatusEnum.OPERATIONAL === status as ApDeviceStatusEnum &&
+          row.apStatusData?.afcInfo?.powerMode === AFCPowerMode.LOW_POWER) {
+
+          const afcInfo = row.apStatusData?.afcInfo
+
+          let warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode' })
+
+          if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+            warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode\nuntil its geo-location has been established' })
+          }
+          if (afcInfo?.afcStatus === AFCStatus.REJECTED || afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+            warningMessages = $t({ defaultMessage: 'Degraded - AP in low power mode\nWait for PLM reply' })
+          }
+
+          return (
+            <span>
+              <Badge color={handleStatusColor(DeviceConnectionStatus.CONNECTED)}
+                text={warningMessages}
+              />
+            </span>
+          )
+        } else {
+          return <APStatus status={status as ApDeviceStatusEnum} />
+        }
+        /* eslint-enable max-len */
+      }
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
