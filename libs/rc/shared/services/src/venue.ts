@@ -1278,6 +1278,7 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetVenueBssColoringQuery,
+  useLazyGetVenueBssColoringQuery,
   useUpdateVenueBssColoringMutation,
   useGetTopologyQuery,
   useGetApMeshTopologyQuery,
