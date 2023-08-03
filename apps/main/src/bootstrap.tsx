@@ -63,7 +63,7 @@ const isNonProdEnv = ( window.location.hostname === 'ruckus.cloud' ||
 
 function BrowserDialog ( broswerLang: LangKey) {
   const [isOpen, setIsOpen] = useState(true)
-  const [isActionConfirmed, setIsActionConfirmed] = useState(false)
+  const [isActionConfirmed, setIsActionConfirmed] = useState('false')
   const bLang = broswerLang.slice(0, 2)
   const browserLangDisplay = new Intl.DisplayNames(['en'], { type: 'language' })
   let intl: IntlShape
@@ -87,7 +87,7 @@ function BrowserDialog ( broswerLang: LangKey) {
           key: 'cancel',
           closeAfterAction: true,
           handler () {
-            setIsActionConfirmed(false)
+            setIsActionConfirmed('false')
             setIsOpen(false)
           }
         }, {
@@ -96,7 +96,7 @@ function BrowserDialog ( broswerLang: LangKey) {
           key: 'ok',
           closeAfterAction: true,
           handler () {
-            setIsActionConfirmed(true)
+            setIsActionConfirmed('true')
             setIsOpen(false)
           }
         }]
@@ -124,7 +124,7 @@ export function loadMessages (locales: readonly string[]): LangKey {
   if (Boolean(!isBrowserDialog) && browserLang !== DEFAULT_SYS_LANG) {
     const isConfirm = BrowserDialog(browserLang as LangKey)
     // console.log(`isConfirm ${isConfirm}`)
-    browserLang = isConfirm ? browserLang : DEFAULT_SYS_LANG
+    browserLang = isConfirm === 'true' ? browserLang : DEFAULT_SYS_LANG
     localStorage.setItem('browserLang', browserLang)
     localStorage.setItem('isBrowserDialog', 'true')
   }
