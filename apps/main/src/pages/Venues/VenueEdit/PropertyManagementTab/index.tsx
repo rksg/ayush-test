@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { FetchBaseQueryError }                                                         from '@reduxjs/toolkit/dist/query/react'
 import { Col, Form, Row, Select, Switch, Modal as AntModal, Input, Typography, Space } from 'antd'
@@ -93,6 +93,10 @@ export function PropertyManagementTab () {
   const formRef = useRef<StepsFormLegacyInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const propertyNotFound = useMemo(() =>
+    (propertyConfigsQuery?.error as FetchBaseQueryError)?.status === 404,
+  [propertyConfigsQuery.error]
+  )
   const [residentPortalModalVisible, setResidentPortalModalVisible] = useState(false)
   const [isPropertyEnable, setIsPropertyEnable] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
@@ -261,6 +265,8 @@ export function PropertyManagementTab () {
           }
         }).unwrap()
       } else {
+        // if property not found, we could not send PUT request to modify the property entity.
+        if (propertyNotFound) return
         await patchPropertyConfigs({
           params: { venueId },
           payload: { status: PropertyConfigStatus.DISABLED }
