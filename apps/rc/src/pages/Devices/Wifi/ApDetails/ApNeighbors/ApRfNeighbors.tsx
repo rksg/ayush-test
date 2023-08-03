@@ -1,22 +1,61 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                     from '@acx-ui/components'
-import { APStatus }                                                      from '@acx-ui/rc/components'
-import { useGetApRfNeighborsQuery }                                      from '@acx-ui/rc/services'
-import { ApRfNeighbor, SortResult, defaultSort, sortProp, useApContext } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                from '@acx-ui/user'
-import { getIntl }                                                       from '@acx-ui/utils'
+import { Loader, Table, TableProps }                              from '@acx-ui/components'
+import { APStatus }                                               from '@acx-ui/rc/components'
+import { useGetApRfNeighborsQuery, useDetectApNeighborsMutation } from '@acx-ui/rc/services'
+import {
+  ApRfNeighbor,
+  SortResult,
+  defaultSort,
+  getPokeSocket,
+  sortProp,
+  useApContext
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
+
+let pokeSocket: SocketIOClient.Socket
 
 export function ApRfNeighbors () {
   const { $t } = useIntl()
   const { serialNumber } = useApContext()
   const tableQuery = useGetApRfNeighborsQuery({ params: { serialNumber } })
+  const [ detectApNeighbors ] = useDetectApNeighborsMutation()
+  const [ requestId, setRequestId ] = useState('')
+
+  useEffect(() => {
+    if (!requestId) return
+
+    if (pokeSocket) pokeSocket.close()
+
+    pokeSocket = getPokeSocket(requestId)
+    pokeSocket.on('pokeEvent', (message: string) => {
+      console.log(message)
+    })
+
+    return () => {
+      if (pokeSocket) pokeSocket.close()
+    }
+  }, [requestId])
+
+  const doDetect = async () => {
+    try {
+      const result = await detectApNeighbors({
+        params: { serialNumber },
+        payload: { action: 'DETECT_RF_NEIGHBOR' }
+      }).unwrap()
+
+      setRequestId(result.requestId)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const tableActions = [{
     label: $t({ defaultMessage: 'Detect' }),
-    onClick: () => {
-      console.log('Detect')
-    }
+    onClick: doDetect
   }]
 
   return <Loader states={[tableQuery]}>

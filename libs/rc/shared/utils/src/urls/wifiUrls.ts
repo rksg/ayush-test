@@ -504,5 +504,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/aps/:serialNumber/rfNeighbors',
     newApi: true
+  },
+  detectApNeighbors: {
+    method: 'PATCH',
+    url: '/venues/aps/:serialNumber/neighbors',
+    newApi: true
   }
 }

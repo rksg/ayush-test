@@ -1,9 +1,10 @@
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate }                               from 'react-router-dom'
 
-import { Tabs }          from '@acx-ui/components'
-import { useApContext }  from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { Tabs }                   from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useApContext }           from '@acx-ui/rc/utils'
+import { useTenantLink }          from '@acx-ui/react-router-dom'
 
 import { ApRfNeighbors } from './ApRfNeighbors'
 
@@ -31,6 +32,7 @@ export function ApNeighborsTab () {
   const { $t } = useIntl()
   const { activeSubTab = tabs[0].key, serialNumber } = useApContext()
   const navigate = useNavigate()
+  const isApNeighborsOn = useIsSplitOn(Features.WIFI_EDA_NEIGHBORS_TOGGLE)
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}/details/neighbors/`)
   const onTabChange = (tab: string) => {
     navigate({
@@ -39,8 +41,8 @@ export function ApNeighborsTab () {
     })
   }
 
-  return (
-    <Tabs
+  return (isApNeighborsOn
+    ? <Tabs
       onChange={onTabChange}
       activeKey={activeSubTab}
       type='card'
@@ -48,5 +50,6 @@ export function ApNeighborsTab () {
       {tabs.map(({ key, title, component }) =>
         <Tabs.TabPane tab={$t(title)} key={key} >{component}</Tabs.TabPane>)}
     </Tabs>
+    : null
   )
 }
