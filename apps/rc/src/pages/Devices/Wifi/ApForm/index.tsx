@@ -17,8 +17,8 @@ import {
   StepsFormLegacyInstance,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { GoogleMapWithPreference }                        from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -27,7 +27,8 @@ import {
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
-  useWifiCapabilitiesQuery, useGetVenueVersionListQuery
+  useWifiCapabilitiesQuery,
+  useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -55,7 +56,7 @@ import {
   useTenantLink,
   useParams, TenantLink
 } from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { compareVersions, validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
@@ -134,7 +135,7 @@ export function ApForm () {
       })}
       {
         checkBelowFwVersion(venueFwVersion) ? <><br/><br/>{$t({
-          defaultMessage: 'If you are adding an <b>R560 or R570</b> AP, ' +
+          defaultMessage: 'If you are adding an <b>R560 or R760</b> AP, ' +
             'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
             'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
           b: chunks => <strong>{chunks}</strong>,
@@ -150,14 +151,7 @@ export function ApForm () {
 
   const checkBelowFwVersion = (version: string) => {
     if (version === '-') return false
-
-    const baseVersion = BASE_VERSION.split('.').map(Number)
-    const compareVersion = version.split('.').map(Number)
-    for (let i = 0; i < baseVersion.length; i++) {
-      if (baseVersion[i] > compareVersion[i])
-        return true
-    }
-    return false
+    return compareVersions(version, BASE_VERSION) < 0
   }
 
   useEffect(() => {
@@ -199,6 +193,13 @@ export function ApForm () {
       })) ?? [])
     }
   }, [venuesList])
+
+  useEffect(() => {
+    if (selectedVenue.hasOwnProperty('id')) {
+      const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
+      setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
+    }
+  }, [selectedVenue, venueVersionList])
 
   useEffect(() => {
     handleUpdateContext()
@@ -341,7 +342,7 @@ export function ApForm () {
 
       setEditContextData && setEditContextData({
         ...editContextData,
-        tabTitle: $t({ defaultMessage: 'AP Details' }),
+        tabTitle: $t({ defaultMessage: 'General' }),
         isDirty: checkFormIsDirty(form, originalData, deviceGps as DeviceGps),
         hasError: checkFormIsInvalid(form),
         updateChanges: () => handleUpdateAp(form?.getFieldsValue() as ApDeep)

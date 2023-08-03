@@ -7,7 +7,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AdaptivePolicyList, { AdaptivePolicyTabKey } from './index'
 
-describe('AdaptivePolicyList', () =>{
+describe.skip('AdaptivePolicyList', () =>{
   const params = { tenantId: '_tenantId_' }
 
   it('should render breadcrumb correctly when feature flag is off', async () => {

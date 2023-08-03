@@ -1,6 +1,6 @@
 import { STACK_MEMBERSHIP, SwitchStatusEnum, SWITCH_TYPE, SwitchPortStatus } from '@acx-ui/rc/utils'
 
-export const stackMemberStandalone = [
+export const stackMembersData = [
   {
     serialNumber: 'FEK3230S0DA',
     unitName: 'ICX7150-C12 Router',
@@ -17,10 +17,45 @@ export const stackMemberStandalone = [
     id: 'FEK3230S0DA',
     poeUtilization: 15400,
     order: '1'
+  },
+  {
+    serialNumber: 'FEK3230S0DB',
+    unitName: 'ICX7150-C12 Router',
+    poeFree: 108600,
+    uptime: '41 days, 0 hours',
+    deviceStatus: SwitchStatusEnum.OPERATIONAL,
+    unitStatus: STACK_MEMBERSHIP.MEMBER,
+    venueName: 'My-Venue',
+    switchMac: '58:fb:96:0e:c0:c4',
+    unitId: 2,
+    model: 'ICX7150-C12P',
+    activeSerial: 'FEK3230S0DA',
+    poeTotal: 124000,
+    id: 'FEK3230S0DB',
+    poeUtilization: 15400,
+    order: '2',
+    needAck: true
+  },
+  {
+    serialNumber: 'FEK3230S0DC',
+    unitName: 'ICX7150-C12 Router',
+    poeFree: 108600,
+    uptime: '',
+    // deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+    // unitStatus: STACK_MEMBERSHIP.STANDBY,
+    venueName: 'My-Venue',
+    switchMac: '58:fb:96:0e:c0:c4',
+    unitId: 3,
+    model: 'ICX7150-C12P',
+    activeSerial: 'FEK3230S0DA',
+    poeTotal: 124000,
+    id: 'FEK3230S0DC',
+    poeUtilization: 15400,
+    order: '3'
   }
 ]
 
-const ports =[
+export const ports =[
   {
     vlanIds: '1',
     isInWarningState: false,
@@ -109,7 +144,7 @@ const ports =[
     tx: 0,
     portIdentifier: '1/1/5',
     rx: 0,
-    unTaggedVlan: '1',
+    unTaggedVlan: '',
     neighborName: '',
     portnumber: '5',
     switchUnitId: 'FEK3230S0DA',
@@ -124,7 +159,7 @@ const ports =[
     status: 'Down'
   },
   {
-    vlanIds: '1',
+    vlanIds: '1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16',
     isInWarningState: false,
     tx: 0,
     portIdentifier: '1/1/6',
@@ -136,12 +171,14 @@ const ports =[
     portSpeed: 'link down or no traffic',
     adminStatus: 'Up',
     poeEnabled: true,
-    name: 'GigabitEthernet1/1/6',
+    name: '',
     poeUsed: 0,
     poeTotal: 0,
     poeType: 'n/a',
     usedInFormingStack: false,
-    status: 'Down'
+    status: 'Down',
+    deviceStatus: SwitchStatusEnum.OPERATIONAL,
+    syncedSwitchConfig: true
   },
   {
     vlanIds: '1',
@@ -163,7 +200,8 @@ const ports =[
     poePercent: 21.428571428571427,
     poeType: '2P-IEEE',
     usedInFormingStack: false,
-    status: 'Up'
+    status: 'Up',
+    lagId: '1'
   },
   {
     vlanIds: '1',
@@ -360,6 +398,14 @@ export const standaloneRear = {
       type: 'AC',
       status: 'OK'
     }
+  ],
+  fanStatus: [
+    {
+      unit: 1,
+      slotNumber: 1,
+      type: 'AC',
+      status: ''
+    }
   ]
 }
 
@@ -484,7 +530,7 @@ export const breakoutPorts = [
     syncedSwitchConfig: true
   },
   {
-    vlanIds: '1',
+    vlanIds: '1 2 3 4',
     isInWarningState: false,
     tx: 0,
     portIdentifier: '1/2/1:2',
@@ -504,12 +550,12 @@ export const breakoutPorts = [
     status: 'Down'
   },
   {
-    vlanIds: '1',
+    vlanIds: '1 2 3 4',
     isInWarningState: false,
     tx: 0,
     portIdentifier: '1/2/1:3',
     rx: 0,
-    unTaggedVlan: '1',
+    unTaggedVlan: '',
     neighborName: '',
     portnumber: '1:3',
     switchUnitId: 'FLX3333R011',

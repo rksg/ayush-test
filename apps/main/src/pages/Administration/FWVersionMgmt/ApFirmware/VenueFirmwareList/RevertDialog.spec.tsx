@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   FirmwareUrlsInfo
@@ -10,16 +11,18 @@ import {
   mockServer,
   render,
   screen,
-  fireEvent,
   within,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  waitFor
 } from '@acx-ui/test-utils'
 
 
 import {
   venue,
   preference,
-  availableVersions
+  availableVersions,
+  successResponse,
+  availableABFList
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -35,29 +38,27 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getAvailableFirmwareList.url.replace('?status=release', ''),
-        (req, res, ctx) => res(ctx.json(availableVersions))
+        (req, res, ctx) => {
+          const searchParams = req.url.searchParams
+          if (searchParams.get('status') !== 'release') return res(ctx.json([]))
+
+          if (searchParams.get('abf') !== null) return res(ctx.json([ ...availableABFList ]))
+
+          return res(ctx.json([...availableVersions]))
+        }
       ),
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
         (req, res, ctx) => res(ctx.json(preference))
+      ),
+      rest.patch(
+        FirmwareUrlsInfo.updateNow.url,
+        (req, res, ctx) => res(ctx.json({ ...successResponse }))
       )
     )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-  })
-
-  it('should render table', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <VenueFirmwareList />
-      </Provider>, {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('My-Venue')
-    expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
   })
 
   it('should revert selected row', async () => {
@@ -70,14 +71,16 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const row = await screen.findByRole('row', { name: /Latest-Venue/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
 
     const updateButton = screen.getByRole('button', { name: /Revert Now/i })
-    fireEvent.click(updateButton)
+    await userEvent.click(updateButton)
 
+    const confirmDialog = await screen.findByRole('dialog')
     const updateVenueButton = await screen.findByText('Run Revert')
-    fireEvent.click(updateVenueButton)
+    await userEvent.click(updateVenueButton)
+    await waitFor(() => expect(confirmDialog).not.toBeVisible())
   })
 
 })

@@ -1,7 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "analytics": "apps/analytics",
     "analytics-components": "libs/analytics/components",
     "analytics-services": "libs/analytics/services",
     "analytics-utils": "libs/analytics/utils",
@@ -27,10 +26,10 @@
     "rc-services": "libs/rc/shared/services",
     "rc-utils": "libs/rc/shared/utils",
     "react-router-dom": "libs/common/react-router-dom",
-    "reports": "apps/reports",
     "reports-components": "libs/reports/components",
     "reports-services": "libs/reports/services",
-    "reports-utils": "libs/reports/utils"
+    "reports-utils": "libs/reports/utils",
+    "reports-routes": "libs/reports/routes"
   },
   "architect": {
     "serve": {

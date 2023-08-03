@@ -17,8 +17,6 @@ const baseQuery = graphqlRequestBaseQuery({
 
 export type ServiceGuardBaseQuery = typeof baseQuery
 
-// GraphQL queries are place in the context of their respective route/widget,
-// please refer to them in source folder under /apps/analytics/src
 export const serviceGuardApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'analytics-network-health-api',

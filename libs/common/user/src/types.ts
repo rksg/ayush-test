@@ -146,6 +146,6 @@ export interface CommonResult {
 }
 
 export interface BetaStatus {
-  enabled?: boolean,
+  enabled?: string,
   startDate?: string
 }

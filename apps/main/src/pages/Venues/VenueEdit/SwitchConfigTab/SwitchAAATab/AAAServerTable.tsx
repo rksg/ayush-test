@@ -9,16 +9,19 @@ import {
   showActionModal,
   PasswordInput
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }                          from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting, VenueMessages } from '@acx-ui/rc/utils'
 import { useParams }                                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                                           from '@acx-ui/user'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
 
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
+  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+
   const radiusColumns: TableProps<RadiusServer & TacacsServer & LocalUser>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -118,6 +121,7 @@ function useColumns (type: AAAServerTypeEnum) {
       render: function (data, row) {
         return <div onClick={(e)=> {e.stopPropagation()}}>
           <PasswordInput
+            style={{ paddingLeft: 0 }}
             readOnly
             bordered={false}
             value={row.password}
@@ -125,6 +129,14 @@ function useColumns (type: AAAServerTypeEnum) {
         </div>
       }
     },
+    ...( enableSwitchAdminPassword ? [{
+      title: $t({ defaultMessage: 'Use In' }),
+      key: 'useIn',
+      dataIndex: 'useIn',
+      render: function (data: React.ReactNode) {
+        return data || '--'  //TODO: wait for API response
+      }
+    }] : []),
     {
       title: $t({ defaultMessage: 'Privilege' }),
       key: 'level',
@@ -310,7 +322,9 @@ export const AAAServerTable = (props: {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={cliApplied ? undefined : { type: 'checkbox', onChange: onSelectChange }}
+        rowSelection={cliApplied || !hasAccess()
+          ? undefined
+          : { type: 'checkbox', onChange: onSelectChange }}
       />
     </Loader>
   )

@@ -20,7 +20,7 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import {
   toUserDate,
@@ -56,7 +56,7 @@ export function VenueFirmwareList () {
       width: 120
     },
     {
-      title: $t({ defaultMessage: 'Current Edge Firmware' }),
+      title: $t({ defaultMessage: 'Current Firmware' }),
       key: 'versions[0].name',
       dataIndex: 'versions[0].name',
       sorter: { compare: sortProp('versions[0].name', defaultSort) },
@@ -137,7 +137,7 @@ export function VenueFirmwareList () {
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
       />
       <UpdateNowDialog
         visible={updateModelVisible}

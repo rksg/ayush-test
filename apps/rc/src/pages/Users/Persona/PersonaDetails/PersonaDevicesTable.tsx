@@ -23,8 +23,8 @@ import {
   PersonaDevice,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
@@ -37,12 +37,13 @@ const defaultPayload = {
 }
 
 export function PersonaDevicesTable (props: {
+  disableAddButton?: boolean
   persona?: Persona,
   dpskPoolId?: string
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { persona, dpskPoolId } = props
+  const { persona, dpskPoolId, disableAddButton = false } = props
   const [modelVisible, setModelVisible] = useState(false)
   const [macDevices, setMacDevices] = useState<PersonaDevice[]>([])
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
@@ -151,7 +152,7 @@ export function PersonaDevicesTable (props: {
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
-        lastSeenAt: moment.utc(device.lastConnected).toISOString(),
+        lastSeenAt: moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
         hasDpskRegistered: true
       }))
   }
@@ -261,7 +262,8 @@ export function PersonaDevicesTable (props: {
   const actions: TableProps<PersonaDevice>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)}
+      onClick: () => {setModelVisible(true)},
+      disabled: disableAddButton
     }
   ]
 
@@ -274,7 +276,7 @@ export function PersonaDevicesTable (props: {
       params: { groupId: persona?.groupId, id: persona?.id },
       payload: data
     }).unwrap()
-      .then()
+      .then(() => handleModalCancel())
       .catch(error => {
         console.log(error) // eslint-disable-line no-console
       })
@@ -300,13 +302,13 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={{
+        rowSelection={hasAccess() ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page
             disabled: !!item?.hasDpskRegistered
           })
-        }}
+        } : undefined}
         pagination={{ defaultPageSize: 5 }}
       />
 

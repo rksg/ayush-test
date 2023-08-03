@@ -17,7 +17,6 @@ import {
   ApDeep,
   Client,
   ClientStatusEnum,
-  getNoiseFloorStatus,
   getRssiStatus,
   getOsTypeIcon,
   NetworkSaveData,
@@ -72,7 +71,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         )?.data || []
 
         if (list.length > 0) {
-          const name = clientDetails?.userName || clientDetails?.username
+          const name = getClientUsername(clientDetails)
           setGuestDetail(list.filter(item => (
             item.networkId === clientDetails.networkId
             && item.name === name
@@ -163,7 +162,12 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           (shouldDisplayGuestDetail() &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (shouldDisplayDpskPassphraseDetail() &&
-            <DpskPassphraseDetails networkId={client.networkId} clientMac={client.clientMac} />),
+            <DpskPassphraseDetails
+              networkId={client.networkId}
+              clientMac={client.clientMac}
+              username={getClientUsername(client)}
+            />
+          ),
           (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
@@ -174,7 +178,11 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           (shouldDisplayGuestDetail() &&
             <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (shouldDisplayDpskPassphraseDetail() &&
-            <DpskPassphraseDetails networkId={client.networkId} clientMac={client.clientMac} />),
+            <DpskPassphraseDetails
+              networkId={client.networkId}
+              clientMac={client.clientMac}
+              username={getClientUsername(client)}
+            />),
           (client?.wifiCallingClient && <WiFiCallingDetails client={client} />)
         ]
         break
@@ -228,7 +236,7 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Username' })}
-        children={client?.userName || client?.username || client?.userId || '--'}
+        children={getClientUsername(client) || client?.userId || '--'}
       />
       {/* <Descriptions.Item // TODO: Tags
         label={$t({ defaultMessage: 'Tags' })}
@@ -408,20 +416,7 @@ function OperationalData ({ client }: { client: ClientExtended }) {
           </Tooltip>
         </Space>}
       />
-      <Descriptions.Item
-        label={intl.$t({ defaultMessage: 'Noise Floor' })}
-        children={<Space
-          style={{ color: getNoiseFloorStatus(intl, client?.noiseFloor_dBm)?.color }}
-        >
-          <Tooltip
-            placement='bottom'
-            title={getNoiseFloorStatus(intl, client?.noiseFloor_dBm)?.tooltip}
-          >
-            {client?.noiseFloor_dBm ? client.noiseFloor_dBm + ' dBm' : '--'}
-          </Tooltip>
-        </Space>
-        }
-      />
+
     </Descriptions>
   </>
 }
@@ -596,11 +591,12 @@ function GuestDetails ({ guestDetail, clientMac }: {
   </>
 }
 
-function DpskPassphraseDetails (props: { networkId: string, clientMac: string }) {
-  const { networkId, clientMac } = props
+// eslint-disable-next-line max-len
+function DpskPassphraseDetails (props: { networkId: string, clientMac: string, username?: string }) {
+  const { networkId, clientMac, username } = props
   const intl = getIntl()
   const { passphraseClient } = useGetPassphraseClientQuery({
-    param: {}, payload: { networkId, mac: clientMac }
+    param: {}, payload: { networkId, mac: clientMac, username: username ?? '' }
   }, {
     selectFromResult: ({ data }) => {
       return {
@@ -691,4 +687,8 @@ function getGuestsPayload ({ clientMac }: Client) {
       ]
     }
   }
+}
+
+function getClientUsername (client?: Client): string | undefined {
+  return client?.userName || client?.username
 }

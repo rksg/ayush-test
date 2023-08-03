@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportFileDrawer }            from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, MacRegistration, MacRegistrationPool, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                      from '@acx-ui/user'
+import { filterByAccess, hasAccess }                                           from '@acx-ui/user'
 
 import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
@@ -218,7 +218,8 @@ export function MacRegistrationsTab () {
         // eslint-disable-next-line max-len
         expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
       />
-      <ImportFileDrawer type='DPSK'
+      <ImportFileDrawer
+        type={ImportFileDrawerType.DPSK}
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
@@ -246,7 +247,7 @@ export function MacRegistrationsTab () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasAccess() && { type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {

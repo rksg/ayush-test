@@ -124,11 +124,13 @@ export const UserUrlsInfo = {
   },
   getBetaStatus: {
     method: 'get',
-    url: '/tenants/betaStatus'
+    url: '/tenants/betaStatus',
+    newApi: true
   },
   toggleBetaStatus: {
     method: 'put',
-    url: '/tenants/betaStatus/:enable'
+    url: '/tenants/betaStatus/:enable',
+    newApi: true
   }
 }
 
@@ -278,7 +280,9 @@ export const {
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params)
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
+      transformResponse: (betaStatus: { 'Start Date': string, enabled: string }) =>
+        ({ startDate: betaStatus['Start Date'], enabled: betaStatus.enabled })
     }),
     toggleBetaStatus: build.mutation<BetaStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params)

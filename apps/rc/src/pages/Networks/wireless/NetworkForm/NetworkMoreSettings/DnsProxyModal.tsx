@@ -22,9 +22,10 @@ import {
   checkItemNotIncluded,
   DnsProxyRule
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { DnsProxyContext } from './ServicesForm'
+import { DnsProxyContext } from './NetworkControlTab'
+
 
 interface DnsProxyListData {
   cloneList: DnsProxyRule[] | [],
@@ -191,7 +192,7 @@ export function MultiSelectTable (props: {
       dataSource={dnsProxyList}
       rowActions={filterByAccess(rowActions)}
       rowKey='domainName'
-      rowSelection={{ type: 'checkbox' }}
+      rowSelection={hasAccess() && { type: 'checkbox' }}
     />
   </>
   )

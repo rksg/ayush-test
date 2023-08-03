@@ -421,9 +421,7 @@ export function MspEcDropdownList () {
     <>
       <UI.CompanyNameDropdown onClick={()=>setVisible(true)}>
         <LayoutUI.CompanyName>{customerName}</LayoutUI.CompanyName>
-        <LayoutUI.Icon
-          children={<CaretDownSolid />}
-        />
+        <LayoutUI.DropdownCaretIcon children={<CaretDownSolid />} />
       </UI.CompanyNameDropdown>
       <Drawer
         width={colWidth}

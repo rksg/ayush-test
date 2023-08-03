@@ -293,7 +293,7 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
               class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
                 type="button"
               >
                 <span>
@@ -301,7 +301,7 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
+                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
                 type="button"
               >
                 <span>
@@ -669,7 +669,7 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
               class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
                 type="button"
               >
                 <span>
@@ -677,7 +677,7 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 cojOqk"
+                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 edRCi"
                 type="button"
               >
                 <span>

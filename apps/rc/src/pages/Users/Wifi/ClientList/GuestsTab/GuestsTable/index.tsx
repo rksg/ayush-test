@@ -13,9 +13,9 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -433,7 +433,8 @@ export const GuestsTable = ({ dateFilter }: { dateFilter: GuestDateFilter }) => 
         visible={drawerVisible}
         setVisible={setDrawerVisible}
       />
-      <ImportFileDrawer type='GuestPass'
+      <ImportFileDrawer
+        type={ImportFileDrawerType.GuestPass}
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={250}

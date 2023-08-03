@@ -8,6 +8,14 @@ import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, Password
 import { Features, useIsSplitOn, useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
 import { CopyOutlined }                                                                 from '@acx-ui/icons'
 import {
+  ConnectionMeteringLink,
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PersonaGroupLink,
+  PropertyUnitLink
+} from '@acx-ui/rc/components'
+import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
   useLazyGetMacRegListQuery,
@@ -22,14 +30,6 @@ import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
-import {
-  ConnectionMeteringLink,
-  DpskPoolLink,
-  MacRegistrationPoolLink,
-  NetworkSegmentationLink,
-  PersonaGroupLink,
-  PropertyUnitLink
-} from '../LinkHelper'
 import { PersonaDrawer }                       from '../PersonaDrawer'
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
@@ -155,7 +155,7 @@ function PersonaDetails () {
       />
     },
     { label: $t({ defaultMessage: 'VLAN' }), value: personaDetailsQuery.data?.vlan },
-    { label: $t({ defaultMessage: 'DPSK Pool' }),
+    { label: $t({ defaultMessage: 'DPSK Service' }),
       value:
         <DpskPoolLink
           name={dpskPoolData?.name}
@@ -198,7 +198,7 @@ function PersonaDetails () {
   ]
 
   const netSeg = [
-    { label: $t({ defaultMessage: 'Assigned VNI' }),
+    { label: $t({ defaultMessage: 'Assigned Segment No.' }),
       value: personaDetailsQuery.data?.vni ??
         (vniRetryable ?
           <Space size={'middle'} align={'center'}>
@@ -209,7 +209,7 @@ function PersonaDetails () {
               onClick={allocateVni}
               loading={isVniAllocating}
             >
-              {$t({ defaultMessage: 'Retry VNI' })}
+              {$t({ defaultMessage: 'Retry Segment No.' })}
             </Button>
           </Space> : undefined)
     },
@@ -319,6 +319,7 @@ function PersonaDetails () {
 
 
         <PersonaDevicesTable
+          disableAddButton={!personaGroupData?.macRegistrationPoolId}
           persona={personaDetailsQuery.data}
           dpskPoolId={personaGroupData?.dpskPoolId}
         />
@@ -393,7 +394,7 @@ function PersonaDetailsPageHeader (props: {
   }
 
   const extra = filterByAccess([
-    <Button type={'secondary'} onClick={showRevokedModal} disabled={!allowed}>
+    <Button type='primary' onClick={showRevokedModal} disabled={!allowed}>
       {$t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
