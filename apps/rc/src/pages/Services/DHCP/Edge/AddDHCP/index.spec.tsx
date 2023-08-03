@@ -257,45 +257,47 @@ describe('AddEdgeDhcp', () => {
   })
 })
 
-// describe('AddEdgeDhcp api fail', () => {
-//   let params: { tenantId: string }
-//   beforeEach(() => {
-//     params = {
-//       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-//     }
+describe('AddEdgeDhcp api fail', () => {
+  let params: { tenantId: string }
+  const mockedErrorFn = jest.fn()
+  jest.spyOn(console, 'log').mockImplementation(mockedErrorFn)
 
-//     mockServer.use(
-//       rest.post(
-//         EdgeDhcpUrls.addDhcpService.url,
-//         (req, res, ctx) => res(ctx.status(400), ctx.json(null))
-//       )
-//     )
-//   })
+  beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
 
-//   it('should add edge dhcp successfully', async () => {
-//     const user = userEvent.setup()
-//     render(
-//       <Provider>
-//         <AddDhcp />
-//       </Provider>, {
-//         route: { params, path: '/:tenantId/t/services/dhcp/create' }
-//       })
-//     const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
-//     fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
-//     await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
-//     const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
-//     const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-//     const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
-//     const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
-//     const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
-//     fireEvent.change(poolNameInput, { target: { value: 'Pool1' } })
-//     fireEvent.change(subnetMaskInput, { target: { value: '255.255.255.0' } })
-//     fireEvent.change(startIpInput, { target: { value: '1.1.1.1' } })
-//     fireEvent.change(endIpInput, { target: { value: '1.1.1.5' } })
-//     fireEvent.change(gatewayInput, { target: { value: '1.2.3.4' } })
-//     await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
-//     await user.click(screen.getByRole('button', { name: 'Add' }))
-//     // TODO
-//     // await screen.findByText('Server Error')
-//   })
-// })
+    mockServer.use(
+      rest.post(
+        EdgeDhcpUrls.addDhcpService.url,
+        (req, res, ctx) => res(ctx.status(400), ctx.json(null))
+      )
+    )
+  })
+
+  it('should add edge dhcp successfully', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddDhcp />
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/services/dhcp/create' }
+      })
+    const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
+    fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
+    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
+    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
+    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    fireEvent.change(poolNameInput, { target: { value: 'Pool1' } })
+    fireEvent.change(subnetMaskInput, { target: { value: '255.255.255.0' } })
+    fireEvent.change(startIpInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(endIpInput, { target: { value: '1.1.1.5' } })
+    fireEvent.change(gatewayInput, { target: { value: '1.2.3.4' } })
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(mockedErrorFn).toBeCalled())
+  })
+})

@@ -45,6 +45,7 @@ export function PoolTable (props:{
       key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
+      width: 150,
       sorter: { compare: sortProp('subnetMask', defaultSort) }
     },
     {

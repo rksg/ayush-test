@@ -33,6 +33,11 @@ const AddDhcp = () => {
         payload.leaseTime = -1 // -1 means infinite
       }
 
+      if(payload.dhcpRelay) {
+        payload.dhcpOptions = []
+        payload.hosts = []
+      }
+
       // should not create service with id
       payload.dhcpPools.forEach(item => item.id = '')
       payload.dhcpOptions?.forEach(item => item.id = '')

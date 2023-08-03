@@ -48,6 +48,7 @@ const EditDhcp = () => {
         edgeDhcpData.leaseTime === -1 ? LeaseTimeType.INFINITE : LeaseTimeType.LIMITED
       )
     }
+
   }, [edgeDhcpData])
 
   const handleEditEdgeDhcp = async (data: EdgeDhcpSettingFormData) => {
@@ -59,6 +60,11 @@ const EditDhcp = () => {
       }
       delete payload.enableSecondaryDNSServer
       delete payload.leaseTimeType
+
+      if(payload.dhcpRelay) {
+        payload.dhcpOptions = []
+        payload.hosts = []
+      }
 
       // should not create service with id
       payload.dhcpPools.forEach(item => {
