@@ -25,7 +25,8 @@ export enum EntitlementDeviceType {
 export enum EntitlementNetworkDeviceType {
   SWITCH = 'DVCNWTYPE_SWITCH',
   WIFI = 'DVCNWTYPE_WIFI',
-  LTE = 'DVCNWTYPE_LTE'
+  LTE = 'DVCNWTYPE_LTE',
+  APSW = 'APSW'
 }
 
 export enum EntitlementDeviceSubType {

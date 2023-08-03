@@ -34,10 +34,10 @@ import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
 
-const transformApUtilization = (row: VarCustomer) => {
+const transformApUtilization = (row: VarCustomer, deviceType: EntitlementNetworkDeviceType ) => {
   if (row.entitlements) {
     const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-      en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
+      en.entitlementDeviceType === deviceType)
     if (entitlement.length > 0) {
       const apEntitlement = entitlement[0]
       const quantity = parseInt(apEntitlement.quantity, 10)
@@ -83,6 +83,7 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isNavbarEnhanced = useIsSplitOn(Features.NAVBAR_ENHANCEMENT)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -224,36 +225,57 @@ export function VarCustomers () {
       key: 'tenantEmail',
       sorter: true
     },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'apEntitlement.quantity',
-      align: 'center',
-      key: 'apEntitlement.quantity',
-      sorter: true,
-      render: function (data, row) {
-        return row.wifiLicenses ? row.wifiLicenses : 0
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Installed Devices' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.apswLicenses || 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+        dataIndex: 'apswLicensesUtilization',
+        key: 'apswLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return transformApUtilization(row, EntitlementNetworkDeviceType.APSW)
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
-      dataIndex: 'wifiLicensesUtilization',
-      align: 'center',
-      key: 'wifiLicensesUtilization',
-      sorter: true,
-      render: function (data, row) {
-        return transformApUtilization(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchEntitlement',
-      align: 'center',
-      key: 'switchEntitlement',
-      sorter: true,
-      render: function (data, row) {
-        return row.switchLicenses ? row.switchLicenses : 0
-      }
-    },
+    ] : [
+
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+        dataIndex: 'apEntitlement.quantity',
+        // align: 'center',
+        key: 'apEntitlement.quantity',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.wifiLicenses ? row.wifiLicenses : 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
+        dataIndex: 'wifiLicensesUtilization',
+        // align: 'center',
+        key: 'wifiLicensesUtilization',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return transformApUtilization(row, EntitlementNetworkDeviceType.WIFI)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Switch Licenses' }),
+        dataIndex: 'switchEntitlement',
+        // align: 'center',
+        key: 'switchEntitlement',
+        sorter: true,
+        render: function (data: React.ReactNode, row: VarCustomer) {
+          return row.switchLicenses ? row.switchLicenses : 0
+        }
+      }]),
     {
       title: $t({ defaultMessage: 'Next License Expiration' }),
       dataIndex: 'expirationDate',

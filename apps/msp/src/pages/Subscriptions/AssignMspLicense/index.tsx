@@ -15,6 +15,7 @@ import {
   StepsForm,
   Subtitle
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useMspAssignmentSummaryQuery,
@@ -44,7 +45,7 @@ interface SubscriptionAssignmentForm {
   serviceExpirationDate: string
   wifiLicenses?: number
   switchLicenses?: number
-  devices?: number
+  apswLicenses?: number
 }
 
 interface MspAssignment {
@@ -69,6 +70,7 @@ export function AssignMspLicense () {
 
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
+  const [availableApswLicense, setAvailableApswLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [customDate, setCustomeDate] = useState(true)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
@@ -76,6 +78,7 @@ export function AssignMspLicense () {
 
   const { Option } = Select
   const isEditMode = action === 'edit'
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
@@ -96,11 +99,15 @@ export function AssignMspLicense () {
         setAssignedLicense(assigned)
         const wifi =
           assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_WIFI)
-        const wLic = wifi.length > 0 ? wifi[0].quantity : 0
+        const wLic = wifi.length > 0 ? wifi.reduce((acc, cur) => cur.quantity + acc, 0) : 0
         const sw =
           assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_SWITCH)
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        checkAvailableLicense(licenseSummary, wLic, sLic)
+        const apsw =
+          assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW)
+        const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+
+        checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
         form.setFieldsValue({
           serviceExpirationDate:
             wifi.length > 0 ? moment(wifi[0].dateExpires) : moment().add(30,'days'),
@@ -163,6 +170,19 @@ export function AssignMspLicense () {
             deviceType: EntitlementDeviceType.MSP_SWITCH
           })
       }
+      if (_.isString(ecFormData.apswLicenses)) {
+        const apswAssignId = getAssignmentId(EntitlementDeviceType.MSP_APSW)
+        const quantityApsw = parseInt(ecFormData.apswLicenses, 10)
+        apswAssignId ?
+          updateAssignment.push({
+            quantity: quantityApsw,
+            assignmentId: apswAssignId
+          })
+          : addAssignment.push({
+            quantity: quantityApsw,
+            deviceType: EntitlementDeviceType.MSP_APSW
+          })
+      }
       if (addAssignment.length > 0) {
         const mspAssignments: MspAssignment = {
           ownAssignments: true,
@@ -182,14 +202,14 @@ export function AssignMspLicense () {
   }
 
   const checkAvailableLicense =
-  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number) => {
+  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number, apswLic?: number) => {
     const wifiLicenses = entitlements.filter(p =>
       p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_WIFI)
     let remainingWifi = 0
     wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingWifi += lic.remainingDevices
     })
-    wLic ? setAvailableWifiLicense(remainingWifi+wLic) : setAvailableWifiLicense(remainingWifi)
+    setAvailableWifiLicense(remainingWifi + (wLic || 0))
 
     const switchLicenses = entitlements.filter(p =>
       p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_SWITCH)
@@ -197,8 +217,15 @@ export function AssignMspLicense () {
     switchLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingSwitch += lic.remainingDevices
     })
-    swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
-      : setAvailableSwitchLicense(remainingSwitch)
+    setAvailableSwitchLicense(remainingSwitch + (swLic || 0))
+
+    const apswLicenses = entitlements.filter(p =>
+      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    let remainingApsw = 0
+    apswLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingApsw += lic.remainingDevices
+    })
+    setAvailableApswLicense(remainingApsw + (apswLic || 0))
   }
 
   const onSelectChange = (value: string) => {
@@ -230,37 +257,56 @@ export function AssignMspLicense () {
     return <div>
       <Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
-      <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'Assigned Wi-Fi Subscription' })}</label>
-        <Form.Item
-          name='wifiLicenses'
-          label=''
-          initialValue={0}
-          rules={[
-            { required: true },
-            { validator: (_, value) => fieldValidator(value, availableWifiLicense) }
-          ]}
-          children={<Input type='number'/>}
-          style={{ paddingRight: '20px' }}
-        />
-        <label>devices out of {availableWifiLicense} available</label>
-      </UI.FieldLabelSubs>
 
-      <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'Assigned Switch Subscription' })}</label>
+      {isDeviceAgnosticEnabled && <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Assigned Device Subscriptions' })}</label>
         <Form.Item
-          name='switchLicenses'
+          name='apswLicenses'
           label=''
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => fieldValidator(value, availableSwitchLicense) }
+            { validator: (_, value) => fieldValidator(value, availableApswLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
-        <label>devices out of {availableSwitchLicense} available</label>
-      </UI.FieldLabelSubs>
+        <label>devices out of {availableApswLicense} available</label>
+      </UI.FieldLabelSubs>}
+
+      {!isDeviceAgnosticEnabled && <div>
+        <UI.FieldLabelSubs width='275px'>
+          <label>{intl.$t({ defaultMessage: 'Assigned Wi-Fi Subscription' })}</label>
+          <Form.Item
+            name='wifiLicenses'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true },
+              { validator: (_, value) => fieldValidator(value, availableWifiLicense) }
+            ]}
+            children={<Input type='number'/>}
+            style={{ paddingRight: '20px' }}
+          />
+          <label>devices out of {availableWifiLicense} available</label>
+        </UI.FieldLabelSubs>
+
+        <UI.FieldLabelSubs width='275px'>
+          <label>{intl.$t({ defaultMessage: 'Assigned Switch Subscription' })}</label>
+          <Form.Item
+            name='switchLicenses'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true },
+              { validator: (_, value) => fieldValidator(value, availableSwitchLicense) }
+            ]}
+            children={<Input type='number'/>}
+            style={{ paddingRight: '20px' }}
+          />
+          <label>devices out of {availableSwitchLicense} available</label>
+        </UI.FieldLabelSubs>
+      </div>}
 
       <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
         <label>{intl.$t({ defaultMessage: 'Subscription Start Date' })}</label>

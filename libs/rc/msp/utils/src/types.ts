@@ -98,6 +98,7 @@ export interface VarCustomer {
   tenantEmail: string;
   wifiLicenses: string;
   switchLicenses: string;
+  apswLicenses: string;
   entitlements: DelegationEntitlementRecord[];
   entitlement: DelegationEntitlementRecord;
 }

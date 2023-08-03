@@ -7,6 +7,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useMspAssignmentHistoryQuery
@@ -26,6 +27,7 @@ import * as UI from '../styledComponent'
 export function AssignedSubscriptionTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const columns: TableProps<MspAssignmentHistory>['columns'] = [
     {
@@ -33,16 +35,18 @@ export function AssignedSubscriptionTable () {
       dataIndex: 'name',
       key: 'name'
     },
-    {
-      title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'deviceSubType',
-      key: 'deviceSubType',
-      render: function (_, row) {
-        if (row.deviceType === 'MSP_WIFI')
-          return EntitlementUtil.tempLicenseToString(row.trialAssignment)
-        return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
+    ...(isDeviceAgnosticEnabled ? [] : [
+      {
+        title: $t({ defaultMessage: 'Type' }),
+        dataIndex: 'deviceSubType',
+        key: 'deviceSubType',
+        render: function (data: React.ReactNode, row: MspAssignmentHistory) {
+          if (row.deviceType === 'MSP_WIFI')
+            return EntitlementUtil.tempLicenseToString(row.trialAssignment)
+          return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
+        }
       }
-    },
+    ]),
     {
       title: $t({ defaultMessage: 'Assigned Devices' }),
       dataIndex: 'quantity',
@@ -83,9 +87,7 @@ export function AssignedSubscriptionTable () {
       defaultSortOrder: 'descend',
       render: function (_, row) {
         const remainingDays = EntitlementUtil.timeLeftInDays(row.dateExpires)
-        const TimeLeftWrapper = remainingDays < 0
-          ? UI.Expired
-          : (remainingDays <= 60 ? UI.Warning : Space)
+        const TimeLeftWrapper = (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
           EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
@@ -98,11 +100,6 @@ export function AssignedSubscriptionTable () {
       sorter: { compare: sortProp('status', defaultSort) },
       render: function () {
         return $t({ defaultMessage: 'Active' })
-        // if( row.status === 'VALID') {
-        //   return $t({ defaultMessage: 'Active' })
-        // } else {
-        //   return $t({ defaultMessage: 'Expired' })
-        // }
       }
     }
   ]

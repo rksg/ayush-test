@@ -32,7 +32,8 @@ import { AccountType }           from '@acx-ui/utils'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
-  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' })
+  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  APSW: defineMessage({ defaultMessage: 'Device' })
 }
 
 const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) => {
