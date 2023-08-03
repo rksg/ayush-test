@@ -1,7 +1,7 @@
-import React, { Key, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Form, FormInstance, Input, Select, TreeSelect } from 'antd'
-import {  useIntl }                                      from 'react-intl'
+import { Form, FormInstance, Input, Select } from 'antd'
+import {  useIntl }                          from 'react-intl'
 
 import { Loader }                                                                      from '@acx-ui/components'
 import { useLazyRadiusAttributeListWithQueryQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
@@ -12,7 +12,7 @@ import {
   DataType,
   OperatorType,
   RadiusAttribute,
-  treeNode, checkObjectNotExists
+  checkObjectNotExists
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
 
@@ -31,86 +31,72 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   const { $t } = useIntl()
   const { form, isEdit = false, editAttribute, getAttributeAssignments } = props
 
-  const [attributeTreeData, setAttributeTreeData] = useState([] as treeNode [])
-
   const commonAttributeKey = 'Common Attributes'
 
-  const radiusAttributeVendorListQuery = useRadiusAttributeVendorListQuery({ params: {} })
+  const { vendorList, vendorListIsLoading } = useRadiusAttributeVendorListQuery({ params: {} },{
+    selectFromResult: ({ data, isLoading }) => ({
+      vendorList: Array.of(commonAttributeKey).concat(data?.supportedVendors ?? []),
+      vendorListIsLoading: isLoading
+    })
+  })
   const [radiusAttributeListQuery] = useLazyRadiusAttributeListWithQueryQuery()
 
   const dataType = Form.useWatch('dataType', form)
 
-  const [treeSelectValue, setTreeSelectValue] = useState<string | undefined>(undefined)
+  const [attributesList, setAttributesList] = useState([] as RadiusAttribute [])
 
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
+  const vendor = Form.useWatch('vendorName', form)
 
-  useEffect(()=>{
-    if(radiusAttributeVendorListQuery.data) {
-      const radiusVendors = radiusAttributeVendorListQuery.data.supportedVendors ?? []
-      setAttributeTreeData(Array.of(toTreeNode(commonAttributeKey, false, [])).concat(
-        radiusVendors.map(vendor => toTreeNode(vendor, false,[]))))
+  useEffect(() =>{
+    if(vendor) {
+      setAttributesList([])
+      const defaultPayload = {
+        page: 0,
+        pageSize: '10000',
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+      const payload = vendor === commonAttributeKey ?
+        { ...defaultPayload, filters: { showOnDefault: true } } :
+        { ...defaultPayload, filters: { vendorName: vendor } }
+      radiusAttributeListQuery({ payload }).then(result => {
+        if (result.data) {
+          setAttributesList(result.data.data)
+          if(isEdit && editAttribute) {
+            form.setFieldValue('attribute', editAttribute.attributeName )
+          } else {
+            form.setFieldValue('attribute', undefined)
+          }
+        }
+      })
     }
-  }, [radiusAttributeVendorListQuery.data])
+  }, [vendor])
 
   useEffect(() => {
     if(isEdit && editAttribute) {
-      setTreeSelectValue(`${editAttribute.attributeName } (${editAttribute.dataType})`)
+      const payload = {
+        page: 0,
+        pageSize: '1',
+        filters: { name: editAttribute.attributeName }
+      }
+
+      radiusAttributeListQuery({ payload }).then(result => {
+        if (result.data && result.data.data.length !== 0) {
+          form.setFieldValue('vendorName', result.data.data[0].vendorName)
+        }
+      })
     } else{
-      setTreeSelectValue(undefined)
+      form.setFieldValue('vendorName', commonAttributeKey)
     }
   }, [editAttribute])
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onLoadData = async (treeNode: any) => {
-    const defaultPayload = {
-      page: 0,
-      pageSize: '10000'
-    }
-    const payload = treeNode.value === commonAttributeKey ?
-      { ...defaultPayload, filters: { showOnDefault: true } } :
-      { ...defaultPayload, filters: { vendorName: treeNode.value } }
-    const attributeList = (await radiusAttributeListQuery({ payload }).unwrap()).data
-    if(attributeList.length > 0) {
-      setAttributeTreeData(attributeTreeData.map(node => {
-        if(node.value === treeNode.value) {
-          node.children = attributeList.map((v: RadiusAttribute) =>
-            toTreeNode(v.name, true, undefined, v.dataType))
-        }
-        return node
-      }))
-    }
-  }
-
-  const toTreeNode = (
-    value: string,
-    isLeaf: boolean,
-    children?: treeNode [],
-    dataType?: string) : treeNode => {
-    return {
-      value: value,
-      title: isLeaf ? `${value} (${dataType})` : value,
-      isLeaf: isLeaf,
-      selectable: isLeaf,
-      children: children ?? undefined,
-      dataType: dataType ?? undefined
-    }
-  }
 
   const getAttributeDataType = (attributeName: string) => {
     return getAttribute(attributeName)?.dataType
   }
 
-  const getAttribute = (attributeName: string) : treeNode | undefined => {
-    let findAttribute
-    attributeTreeData.forEach(node => {
-      if(node.children) {
-        const attribute = node.children.find(node => node.value === attributeName)
-        if(attribute) {
-          findAttribute = attribute
-        }
-      }
-    })
-    return findAttribute
+  const getAttribute = (attributeName: string) : RadiusAttribute | undefined => {
+    const findAttribute = attributesList.filter(attribute => attribute.name === attributeName)
+    return findAttribute && findAttribute.length !== 0 ? findAttribute[0] : undefined
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,76 +130,56 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }
 
   return (
-    <Loader states={[{ isLoading: radiusAttributeVendorListQuery.isLoading }]}>
+    <Loader states={[{ isLoading: vendorListIsLoading }]}>
       <Form layout='vertical' form={form}>
         <Form.Item name='id' hidden children={<Input />}/>
         <Form.Item name='attributeName'
           label={$t({ defaultMessage: 'Attribute Type' })}
           rules={[{ required: true },
             { validator: (_, value) => attributeValidator(value) }]}
-        >
-          <Form.Item>
-            <TreeSelect
-              showArrow={false}
-              showSearch
-              value={treeSelectValue}
-              placeholder={$t({ defaultMessage: 'Select attribute type' })}
-              treeData={attributeTreeData}
-              loadData={onLoadData}
-              onSearch={(value) => {
-                if(!getAttribute(value)) {
-                  setTreeSelectValue(undefined)
-                  form.setFieldsValue({ attributeName: undefined })
-                }
-
-                // expand the node if children match the search string
-                if(value.length > 1) {
-                  const matchedExpandedKeys = [] as string []
-                  attributeTreeData.forEach(node => {
-                    if(node.children && node.children.length > 0) {
-                      const nodeKey = node.value
+          children={
+            <>
+              <Form.Item name='vendorName'
+                children={
+                  <Select
+                    showSearch={true}
+                    allowClear
+                    placeholder={$t({ defaultMessage: 'Select vendor...' })}
+                    options={vendorList.sort().map(set => ({ value: set, label: set }))}
+                  />
+                }/>
+              <Form.Item name='attribute'
+                children={
+                  <Select
+                    showSearch={true}
+                    allowClear
+                    placeholder={$t({ defaultMessage: 'Select attribute...' })}
+                    options={attributesList.map(attribute =>
                       // eslint-disable-next-line max-len
-                      if(node.children.find(attr => attr.value.includes(value)) && expandedKeys.indexOf(nodeKey) === -1)
-                        matchedExpandedKeys.push(nodeKey)
-                    }
-                  })
-                  setExpandedKeys([...expandedKeys, ...matchedExpandedKeys])
-                }
-              }}
-              onChange={(value) => {
-                if(!value) return
-                setTreeSelectValue(value)
-                form.setFieldsValue({ attributeName: value, dataType: getAttributeDataType(value) })
-              }}
-              treeExpandedKeys={expandedKeys}
-              onTreeExpand={(nodeKeys: Key []) =>{
-                // Loading attribute data if the nodes don't have the children
-                nodeKeys.filter(key => {
-                  const node = attributeTreeData.find(node => node.value === key)
-                  if(!node) return false
-                  return (!node.children || node.children.length === 0)
-                }).forEach(key => onLoadData({ value: key }))
-
-                setExpandedKeys([...nodeKeys])
-              }}
-              onDropdownVisibleChange={(open) => {
-                if(!open) setExpandedKeys([])
-              }}
-            />
-          </Form.Item>
-        </Form.Item>
+                      ({ value: attribute.name, label: `${attribute.name} (${attribute.dataType})` }))}
+                    // eslint-disable-next-line max-len
+                    onChange={(value: string) => form.setFieldsValue({ attributeName: value, dataType: getAttributeDataType(value) })}
+                  />
+                }/>
+            </>
+          }
+        />
+        {/*</Form.Item>*/}
         <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
           <FieldSpace>
             <Form.Item name='operator' initialValue={OperatorType.ADD}>
               <Select
+                style={{ width: '200px' }}
                 options={Object.keys(OperatorType).map(option =>
                   // eslint-disable-next-line max-len
                   ({ label: $t(AttributeOperationLabelMapping[option as OperatorType]), value: option }))}>
               </Select>
             </Form.Item>
             <Form.Item name='attributeValue'
+              style={{ marginLeft: '50px' }}
               rules={[
-                { required: true },
+                { required: true,
+                  message: $t({ defaultMessage: 'Please enter Condition Value' }) },
                 { validator: (_, value) => attributeValueValidator(value) }]}
               children={<Input/>}/>
           </FieldSpace>
