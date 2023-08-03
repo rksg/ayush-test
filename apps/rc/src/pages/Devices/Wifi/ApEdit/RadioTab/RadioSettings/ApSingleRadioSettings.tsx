@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useContext } from 'react'
+
 import { Form, Switch } from 'antd'
 import { NamePath }     from 'antd/es/form/interface'
 import { useIntl }      from 'react-intl'
 
-import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings } from '@acx-ui/rc/components'
 
+import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings } from '@acx-ui/rc/components'
+import { ApViewModel, AFCPowerMode, AFCStatus }                   from '@acx-ui/rc/utils'
+
+import { ApEditContext }           from '../..'
 import { DisabledDiv, FieldLabel } from '../../styledComponents'
+
 
 export interface ApSingleRadioSettingsPorps {
   isEnabled: boolean,
@@ -24,7 +30,7 @@ export interface ApSingleRadioSettingsPorps {
   supportDfsChannels?: any
 }
 
-
+// eslint-disable-max-len
 export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const { $t } = useIntl()
 
@@ -35,6 +41,33 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const handleEnableChanged = (checked: boolean) => {
     onEnableChanged(checked)
   }
+
+  const {
+    apViewContextData
+  } = useContext(ApEditContext)
+
+  /* eslint-disable max-len */
+  const displayLowPowerMode = (data?: ApViewModel) => {
+
+    // TODO add Feature flag and pending for PLM
+
+    if (!data || !data.apStatusData || !data.apStatusData.afcInfo) return
+
+    const afcInfo = data.apStatusData.afcInfo
+    const warningMessages = [] as JSX.Element[]
+
+    if(afcInfo.powerMode === AFCPowerMode.LOW_POWER) {
+      warningMessages.push(<p>${$t({ defaultMessage: 'AP will only operate in Low Power Mode' })}</p>)
+      if (afcInfo.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+        warningMessages.push(<p>${$t({ defaultMessage: 'until its geo-location has been established' })}</p>)
+      }
+      if (afcInfo.afcStatus === AFCStatus.REJECTED || afcInfo.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+        warningMessages.push(<p>${$t({ defaultMessage: 'Wait for PLM reply' })}</p>)
+      }
+    }
+    return warningMessages
+  }
+  /* eslint-enable max-len */
 
   return (
     (bandwidthOptions.length > 0)?
@@ -51,6 +84,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             }
           />
         </FieldLabel>
+        { displayLowPowerMode(apViewContextData) }
         { (!isEnabled && !isUseVenueSettings) ? (
           <DisabledDiv>
             {$t({ defaultMessage: '{radioTypeName} Radio is disabled' },
