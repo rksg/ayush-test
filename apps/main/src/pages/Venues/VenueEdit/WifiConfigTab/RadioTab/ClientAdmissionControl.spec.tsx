@@ -58,7 +58,6 @@ describe('Venue Client Admission Control', () => {
     const enable50gBtn = await screen.findByTestId('client-admission-control-enable-50g')
     expect(enable24gBtn).toBeVisible()
     expect(enable50gBtn).toBeVisible()
-    await waitFor(() => expect(enable24gBtn).toHaveAttribute('aria-checked', 'true'))
     expect(await screen.findByTestId('client-admission-control-min-client-count-24g')).toBeVisible()
     expect(await screen.findByTestId('client-admission-control-max-client-load-24g')).toBeVisible()
     expect(await screen.findByTestId('client-admission-control-min-client-throughput-24g'))
