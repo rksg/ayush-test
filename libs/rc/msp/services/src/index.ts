@@ -22,7 +22,8 @@ import {
   MspProfile,
   MspEcProfile,
   MspPortal,
-  ParentLogoUrl
+  ParentLogoUrl,
+  NewMspEntitlementSummary
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -232,7 +233,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         })
       }
     }),
-    mspEntitlementSummary: build.query<MspEntitlementSummary, RequestPayload>({
+    mspEntitlementSummary: build.query<MspEntitlementSummary[], RequestPayload>({
       query: ({ params }) => {
         const mspEntitlementSummaryReq =
           createHttpRequest(MspUrlsInfo.getMspEntitlementSummary, params)
@@ -250,6 +251,11 @@ export const mspApi = baseMspApi.injectEndpoints({
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
           })
         })
+      },
+      transformResponse: (response) => {
+        return MspUrlsInfo.getMspEntitlementSummary.newApi ?
+          (response as NewMspEntitlementSummary).mspEntitlementSummaries
+          : response as MspEntitlementSummary[]
       }
     }),
     mspAssignmentSummary: build.query<MspAssignmentSummary[], RequestPayload>({

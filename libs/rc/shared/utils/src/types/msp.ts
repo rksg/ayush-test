@@ -17,7 +17,9 @@ export enum EntitlementDeviceType {
   ANALYTICS='ANALYTICS',
   MSP_WIFI='MSP_WIFI',
   MSP_SWITCH='MSP_SWITCH',
-  EDGE='EDGE'
+  EDGE='EDGE',
+  MSP_APSW='MSP_APSW',
+  APSW='APSW'
 }
 
 export enum EntitlementNetworkDeviceType {

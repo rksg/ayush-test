@@ -14,6 +14,7 @@ import {
   Tabs
 } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
@@ -24,12 +25,15 @@ import {
   useMspEntitlementSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/msp/services'
+import { MspAssignmentSummary, MspEntitlementSummary }    from '@acx-ui/msp/utils'
 import { SpaceWrapper, MspSubscriptionUtilizationWidget } from '@acx-ui/rc/components'
 import {
   dateSort,
   defaultSort,
   EntitlementDeviceType,
+  EntitlementDeviceTypes,
   EntitlementUtil,
+  getEntitlementDeviceTypes,
   MspEntitlement,
   sortProp
 } from '@acx-ui/rc/utils'
@@ -52,45 +56,50 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 
 export function Subscriptions () {
   const { $t } = useIntl()
-  const [totalWifiCount, setTotalWifiCount] = useState(0)
-  const [usedWifiCount, setUsedWifiCount] = useState(0)
-  const [assignedWifiCount, setAssignedWifiCount] = useState(0)
-  const [wifiCourtesy, setWifiCourtesy] = useState(0)
-  const [totalSwitchCount, setTotalSwitchCount] = useState(0)
-  const [usedSwitchCount, setUsedSwitchCount] = useState(0)
-  const [assignedSwitchCount, setAssignedSwitchCount] = useState(0)
-  const [switchCourtesy, setSwitchCourtesy] = useState(0)
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const { tenantId } = useParams()
+  const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
+    .filter(o => o.value.startsWith('MSP'))
 
   const [
     refreshEntitlement
   ] = useRefreshMspEntitlementMutation()
 
   const getCourtesyTooltip = (total: number, courtesy: number) => {
-    return 'purchased: ' + (total-courtesy) + ', courtesy: ' + (courtesy)
-    // return $t({ defaultMessage: 'purchased:{total}, courtesy:{courtesy}' })
+    const purchased = total-courtesy
+    return $t({ defaultMessage: 'purchased:{purchased}, courtesy:{courtesy}' },
+      { purchased, courtesy })
   }
 
   const columns: TableProps<MspEntitlement>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'name',
-      key: 'name',
-      filterable: true
-    },
-    {
-      title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'deviceSubType',
-      key: 'deviceSubType',
-      render: function (_, row) {
-        if (row.deviceType === 'MSP_WIFI')
-          return EntitlementUtil.tempLicenseToString(row.isTrial)
-        return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Part Number' }),
+        dataIndex: 'sku',
+        key: 'sku',
+        sorter: { compare: sortProp('sku', defaultSort) }
       }
-    },
+    ]: [
+      {
+        title: $t({ defaultMessage: 'Subscription' }),
+        dataIndex: 'name',
+        key: 'name',
+        filterable: true
+      },
+      {
+        title: $t({ defaultMessage: 'Type' }),
+        dataIndex: 'deviceSubType',
+        key: 'deviceSubType',
+        render: function (data: React.ReactNode, row: MspEntitlement) {
+          if (row.deviceType === 'MSP_WIFI')
+            return EntitlementUtil.tempLicenseToString(row.isTrial)
+          return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
+        }
+      }
+    ]),
     {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
@@ -179,6 +188,53 @@ export function Subscriptions () {
     }
   ]
 
+  const subscriptionUtilizationTransformer = (
+    deviceTypeList: EntitlementDeviceTypes,
+    assignedSummary: MspAssignmentSummary[],
+    data: MspEntitlementSummary[]) => {
+    const result = {} as { [key in EntitlementDeviceType]: {
+      total: number;
+      used: number;
+      assigned: number;
+      courtesy: number;
+      tooltip: string;
+    } }
+
+    deviceTypeList.forEach(item => {
+      const deviceType = item.value
+      const summaryData = data.filter(n => n.deviceType === deviceType)
+      const assignedData = assignedSummary.filter(n => n.deviceType === deviceType)
+      let quantity = 0
+      let used = 0
+      let courtesy = 0
+      let assigned = 0
+
+      // only display types that has data in summary
+      if (summaryData.length > 0 || assignedData.length > 0) {
+        summaryData.forEach(summary => {
+          quantity += summary.quantity + summary.courtesyQuantity
+          used += summary.quantity + summary.courtesyQuantity - summary.remainingLicenses
+          courtesy += summary.courtesyQuantity
+        })
+
+        assignedData.forEach(summary => {
+          assigned += summary.myAssignments || 0
+        })
+
+        // including to display 0 quantity.
+        result[deviceType] = {
+          total: quantity,
+          used: used,
+          assigned: assigned,
+          courtesy: courtesy,
+          tooltip: getCourtesyTooltip(quantity, courtesy)
+        }
+      }
+    })
+
+    return result
+  }
+
   const SubscriptionUtilization = () => {
     const queryResults = useMspAssignmentSummaryQuery({
       params: useParams()
@@ -189,49 +245,15 @@ export function Subscriptions () {
       })
     })
     const summaryResults = useMspEntitlementSummaryQuery({ params: useParams() })
+    const summaryData = subscriptionUtilizationTransformer(
+      subscriptionDeviceTypeList,
+      queryResults.data ?? [],
+      summaryResults.data ?? [])
 
     useEffect(() => {
       if (queryResults.data) {
-        const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
-        let wifiQuantity = 0
-        let wifiUsed = 0
-        let wifiAssigned = 0
-        wifiData.forEach(summary => {
-          wifiUsed += summary.quantity
-          wifiAssigned += summary.myAssignments ?? 0
-          wifiQuantity += summary.quantity + summary.remainingDevices + wifiAssigned
-          setTotalWifiCount(wifiQuantity)
-          setUsedWifiCount(wifiUsed)
-          setAssignedWifiCount(wifiAssigned)
-        })
-        const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
-        let switchQuantity = 0
-        let switchUsed = 0
-        let switchAssigned = 0
-        switchData.forEach(summary => {
-          switchUsed += summary.quantity
-          switchAssigned += summary.myAssignments ?? 0
-          switchQuantity += summary.quantity + summary.remainingDevices + switchAssigned
-          setTotalSwitchCount(switchQuantity)
-          setUsedSwitchCount(switchUsed)
-          setAssignedSwitchCount(switchAssigned)
-        })
       }
       if (summaryResults.data) {
-        const wifiSummary =
-          summaryResults.data.mspEntitlementSummaries.filter(n => n.deviceType === 'MSP_WIFI')
-        let wifiCourtesy = 0
-        wifiSummary.forEach(summary => {
-          wifiCourtesy += summary.courtesyQuantity
-          setWifiCourtesy(wifiCourtesy)
-        })
-        const switchSummary =
-          summaryResults.data.mspEntitlementSummaries.filter(n => n.deviceType === 'MSP_SWITCH')
-        let switchCourtesy = 0
-        switchSummary.forEach(summary => {
-          switchCourtesy += summary.courtesyQuantity
-          setSwitchCourtesy(switchCourtesy)
-        })
       }
     }, [queryResults?.data, summaryResults.data])
 
@@ -241,22 +263,20 @@ export function Subscriptions () {
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
         <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
-          <MspSubscriptionUtilizationWidget
-            deviceType={EntitlementDeviceType.MSP_WIFI}
-            title={$t({ defaultMessage: 'Wi-Fi' })}
-            total={totalWifiCount}
-            assigned={assignedWifiCount}
-            used={usedWifiCount}
-            tooltip={getCourtesyTooltip(totalWifiCount, wifiCourtesy)}
-          />
-          <MspSubscriptionUtilizationWidget
-            deviceType={EntitlementDeviceType.MSP_SWITCH}
-            title={$t({ defaultMessage: 'Switch' })}
-            total={totalSwitchCount}
-            assigned={assignedSwitchCount}
-            used={usedSwitchCount}
-            tooltip={getCourtesyTooltip(totalSwitchCount, switchCourtesy)}
-          />
+          {
+            subscriptionDeviceTypeList.map((item) => {
+              const summary = summaryData[item.value]
+              return summary ? <MspSubscriptionUtilizationWidget
+                key={item.value}
+                deviceType={item.value}
+                title={item.label}
+                total={summary.total}
+                assigned={summary.assigned}
+                used={summary.used}
+                tooltip={summary.tooltip}
+              /> : ''
+            })
+          }
         </SpaceWrapper>
       </>
     )

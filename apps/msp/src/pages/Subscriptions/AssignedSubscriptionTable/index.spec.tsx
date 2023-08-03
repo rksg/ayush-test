@@ -1,102 +1,79 @@
 import '@testing-library/jest-dom'
-import { Path, rest } from 'msw'
 
-import { MspUrlsInfo }         from '@acx-ui/msp/utils'
-import { Provider }            from '@acx-ui/store'
-import { mockServer, render  } from '@acx-ui/test-utils'
+import { Provider }        from '@acx-ui/store'
+import { render, screen  } from '@acx-ui/test-utils'
 
 import { AssignedSubscriptionTable } from '.'
 
-const entitlement =
+const assignmentHistory =
   [
     {
-      name: 'Switch',
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.043Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2024-02-12 07:59:59Z',
+      deviceType: 'MSP_WIFI',
+      id: 130468,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
+    },
+    {
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-13 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-13 19:00:08Z',
+      dateExpires: '2023-09-12 07:59:59Z',
       deviceSubType: 'ICX76',
       deviceType: 'MSP_SWITCH',
-      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
-      expirationDate: 'Tue July 06 23:59:59 UTC 2023',
-      id: '358889502-1',
-      isTrial: false,
-      lastNotificationDate: null,
-      quantity: 100,
-      sku: 'CLD-MS76-1001',
-      status: 'VALID'
+      id: 130469,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'VALID',
+      trialAssignment: false
     },
     {
-      name: 'Wi-Fi',
-      deviceSubType: 'MSP_WIFI',
-      deviceType: 'MSP_WIFI',
-      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
-      expirationDate: 'Tue Dec 01 23:59:59 UTC 2023',
-      id: '373419142-1',
-      isTrial: false,
-      lastNotificationDate: null,
-      quantity: 80,
-      sku: 'CLD-MW00-1001',
-      status: 'VALID'
-    },
-    {
-      name: 'Wi-Fi',
-      deviceSubType: 'MSP_WIFI',
-      deviceType: 'MSP_WIFI',
-      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
-      expirationDate: 'Tue Dec 01 23:59:59 UTC 2022',
-      id: '373419143-1',
-      isTrial: false,
-      lastNotificationDate: null,
-      quantity: 60,
-      sku: 'CLD-MW00-1001',
-      status: 'EXPIRED'
+      createdBy: 'msp.eleu1658@rwbigdog.com',
+      dateAssignmentCreated: '2022-12-14 19:00:08.117Z',
+      dateAssignmentRevoked: null,
+      dateEffective: '2022-12-14 19:00:08Z',
+      dateExpires: '2023-02-13 07:59:59Z',
+      deviceSubType: 'ICX76',
+      deviceType: 'MSP_SWITCH',
+      id: 130470,
+      mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5',
+      mspTenantId: '3061bd56e37445a8993ac834c01e2710',
+      quantity: 2,
+      revokedBy: null,
+      status: 'EXPIRED',
+      trialAssignment: false
     }
   ]
 
-const summary =
-  [
-    {
-      deviceSubType: 'ICX',
-      deviceType: 'MSP_SWITCH',
-      isTrial: false,
-      quantity: 10,
-      remainingDevices: 5,
-      trial: false
-    },
-    {
-      deviceSubType: 'MSP_WIFI',
-      deviceType: 'MSP_WIFI',
-      isTrial: false,
-      quantity: 45,
-      remainingDevices: 15,
-      trial: false
-    }
-  ]
+const services = require('@acx-ui/msp/services')
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services')
+}))
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 describe('AssignedSubscriptionTable', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    mockServer.use(
-      rest.get(
-        MspUrlsInfo.getMspEntitlement.url,
-        (req, res, ctx) => res(ctx.json(entitlement))
-      ),
-      rest.get(
-        MspUrlsInfo.getMspAssignmentSummary.url,
-        (req, res, ctx) => res(ctx.json(summary))
-      ),
-      rest.get(
-        MspUrlsInfo.refreshMspEntitlement.url.split('?').at(0) as Path,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        MspUrlsInfo.getMspCustomersListDropdown.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        MspUrlsInfo.getMspCustomersList.url,
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
+    services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
+      return { data: assignmentHistory }
+    })
     params = {
-      tenantId: '3061bd56e37445a8993ac834c01e2710'
+      tenantId: '1576b79db6b549f3b1f3a7177d7d4ca5'
     }
   })
   it('should render correctly', async () => {
@@ -107,13 +84,10 @@ describe('AssignedSubscriptionTable', () => {
         route: { params, path: '/:tenantId/mspLicenses' }
       })
 
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    // const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
-    // fireEvent.click(generateUsageButton)
-    // const licenseManagementButton =
-    // await screen.findByRole('button', { name: 'Manage Subscriptions' })
-    // fireEvent.click(licenseManagementButton)
-    // const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    // fireEvent.click(refreshButton)
+    expect(await screen.findByText('Wi-Fi')).toBeVisible()
+    expect(screen.getByText('Switch')).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Generate Usage Report' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
   })
 })

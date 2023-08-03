@@ -4,7 +4,8 @@ import {
   Address,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  EntitlementNetworkDeviceType
+  EntitlementNetworkDeviceType,
+  Entitlement
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -159,10 +160,6 @@ export interface LicenseAssign {
 }
 
 export interface MspEntitlementSummary {
-  mspEntitlementSummaries: MspEntitlementSummaries[]
-}
-
-export interface MspEntitlementSummaries {
   deviceType: EntitlementDeviceType;
   deviceSubType?: EntitlementDeviceSubType;
   derivedLicenseType: string;
@@ -171,6 +168,13 @@ export interface MspEntitlementSummaries {
   effectiveDate: string;
   expirationDate: string;
   remainingDays: number;
+  remainingLicenses: number;
+}
+
+export interface NewMspEntitlementSummary {
+  mspEntitlementBanners: Array<unknown>;
+  mspEntitlements: Entitlement[];
+  mspEntitlementSummaries: MspEntitlementSummary[];
 }
 
 export interface EntitlementAssignment {

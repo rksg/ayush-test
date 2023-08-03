@@ -19,6 +19,7 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+import { getIntl }   from '@acx-ui/utils'
 
 import * as UI from '../styledComponent'
 
@@ -95,12 +96,13 @@ export function AssignedSubscriptionTable () {
       dataIndex: 'status',
       key: 'status',
       sorter: { compare: sortProp('status', defaultSort) },
-      render: function (_, row) {
-        if( row.status === 'VALID') {
-          return $t({ defaultMessage: 'Active' })
-        } else {
-          return $t({ defaultMessage: 'Expired' })
-        }
+      render: function () {
+        return $t({ defaultMessage: 'Active' })
+        // if( row.status === 'VALID') {
+        //   return $t({ defaultMessage: 'Active' })
+        // } else {
+        //   return $t({ defaultMessage: 'Expired' })
+        // }
       }
     }
   ]
@@ -118,7 +120,7 @@ export function AssignedSubscriptionTable () {
     const subscriptionData = queryResults.data?.map(response => {
       return {
         ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
+        name: EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
       }
     }).filter(rec => rec.status === 'VALID' && rec.mspEcTenantId === tenantId)
 

@@ -125,11 +125,9 @@ describe('AssignMspLicense', () => {
 
     const input = screen.getAllByRole('spinbutton')[0]
     fireEvent.change(input, { target: { value: '-1' } })
-    // await waitFor(() => {
-    // TODO: check why alert isn't showing up
-    // expect(screen.getByRole('alert', { name: 'Invalid number' })).toBeVisible()
-    // expect(screen.getByText('Invalid number')).toBeVisible()
-    // })
+    await waitFor(() => {
+      expect(screen.getByText('Invalid number')).toBeVisible()
+    })
   })
   it('should validate switch input correctly', async () => {
     render(
@@ -142,15 +140,9 @@ describe('AssignMspLicense', () => {
     const input = screen.getAllByRole('spinbutton')[1]
     await userEvent.clear(input)
     fireEvent.change(input, { target: { value: '-1' } })
-    // expect(screen.getAllByRole('spinbutton')[1]).toBeInvalid()
-    // await waitFor(() => {
-    //   expect(screen.getAllByRole('spinbutton')[1]).toBeInvalid()
-    // })
-    // await waitFor(() => {
-    // TODO: check why alert isn't showing up
-    // expect(screen.getByRole('alert', { name: 'Invalid number' })).toBeVisible()
-    // expect(screen.getByText('Invalid number')).toBeVisible()
-    // })
+    await waitFor(() => {
+      expect(screen.getByText('Invalid number')).toBeVisible()
+    })
   })
   it('expiration date dropdown should set five years date correctly', async () => {
     render(
@@ -170,15 +162,16 @@ describe('AssignMspLicense', () => {
       expect(screen.getByText('Five Years')).toBeVisible()
     })
     fireEvent.click(screen.getByText('Five Years'))
+
     const expirationDate = moment(Date.now()).add(5,'years').format('MM/DD/YYYY')
     await waitFor(() => {
-      expect(screen.queryByText('Custom date')).toBeNull()
+      expect(screen.queryByText('One Year')).toBeNull()
     })
     await waitFor(() => {
-      expect(screen.getByDisplayValue(expirationDate)).toBeVisible()
+      expect(screen.getByDisplayValue(expirationDate)).toBeDisabled()
     })
   })
-  it('expiration date dropdown should set three years date and custom date correctly', async () => {
+  it('expiration date dropdown should set 3 years date and custom date correctly', async () => {
     render(
       <Provider>
         <AssignMspLicense />

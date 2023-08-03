@@ -8,12 +8,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                             from '@acx-ui/config'
-import { useIsTierAllowed, Features }      from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }       from '@acx-ui/formatter'
-import { useGetMspProfileQuery }           from '@acx-ui/msp/services'
-import { MSPUtils }                        from '@acx-ui/msp/utils'
-import { SpaceWrapper }                    from '@acx-ui/rc/components'
+import { get }                                      from '@acx-ui/config'
+import { useIsTierAllowed, Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { useGetMspProfileQuery }                    from '@acx-ui/msp/services'
+import { MSPUtils }                                 from '@acx-ui/msp/utils'
+import { SpaceWrapper }                             from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -74,6 +74,7 @@ const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.getEntitlementSummary.newApi
@@ -85,38 +86,47 @@ const SubscriptionTable = () => {
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   const columns: TableProps<Entitlement>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'deviceType',
-      key: 'deviceType',
-      fixed: 'left',
-      filterMultiple: false,
-      filterValueNullable: true,
-      filterable: licenseTypeOpts.filter(o =>
-        (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
-        || o.key !== EntitlementDeviceType.EDGE
-      ),
-      sorter: { compare: sortProp('deviceType', defaultSort) },
-      render: function (_, row) {
-        return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Part Number' }),
+        dataIndex: 'sku',
+        key: 'sku',
+        sorter: { compare: sortProp('sku', defaultSort) }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'deviceSubType',
-      key: 'deviceSubType',
-      sorter: { compare: sortProp('deviceSubType', defaultSort) },
-      render: function (_, row) {
-        if (row.tempLicense === true) {
-          return EntitlementUtil.tempLicenseToString(true)
-        } else {
-          if (row.deviceType === EntitlementDeviceType.SWITCH)
-            return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
-          else
-            return EntitlementUtil.tempLicenseToString(false)
+    ]: [
+      {
+        title: $t({ defaultMessage: 'Subscription' }),
+        dataIndex: 'deviceType',
+        key: 'deviceType',
+        // fixed: 'left',
+        filterMultiple: false,
+        filterValueNullable: true,
+        filterable: licenseTypeOpts.filter(o =>
+          (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
+          || o.key !== EntitlementDeviceType.EDGE
+        ),
+        sorter: { compare: sortProp('deviceType', defaultSort) },
+        render: function (data: React.ReactNode, row: Entitlement) {
+          return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Type' }),
+        dataIndex: 'deviceSubType',
+        key: 'deviceSubType',
+        sorter: { compare: sortProp('deviceSubType', defaultSort) },
+        render: function (data: React.ReactNode, row: Entitlement) {
+          if (row.tempLicense === true) {
+            return EntitlementUtil.tempLicenseToString(true)
+          } else {
+            if (row.deviceType === EntitlementDeviceType.SWITCH)
+              return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+            else
+              return EntitlementUtil.tempLicenseToString(false)
+          }
         }
       }
-    },
+    ]),
     {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
@@ -126,19 +136,18 @@ const SubscriptionTable = () => {
         return row.quantity
       }
     },
-    // ...(isOnboardedMsp ? [
-    {
-      title: $t({ defaultMessage: 'Source' }),
-      dataIndex: 'assignedLicense',
-      key: 'assignedLicense',
-      show: isOnboardedMsp,
-      sorter: { compare: sortProp('assignedLicense', defaultSort) },
-      render: function (_, row) {
-        return row.assignedLicense
-          ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Purchased' })
-      }
-    },
-    // ] : []),
+    ...(isOnboardedMsp ? [
+      {
+        title: $t({ defaultMessage: 'Source' }),
+        dataIndex: 'assignedLicense',
+        key: 'assignedLicense',
+        show: isOnboardedMsp,
+        sorter: { compare: sortProp('assignedLicense', defaultSort) },
+        render: function (data: React.ReactNode, row: Entitlement) {
+          return row.assignedLicense
+            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Purchased' })
+        }
+      }] : []),
     {
       title: $t({ defaultMessage: 'Starting Date' }),
       dataIndex: 'effectiveDate',
