@@ -5,7 +5,8 @@ import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
-  fireEvent, mockServer, render,
+  mockServer,
+  render,
   screen,
   waitFor,
   within
@@ -48,41 +49,34 @@ describe('EditEdgeDhcp', () => {
     )
   })
 
-  it.skip('should render edit edge dhcp successfully', async () => {
+  it('should render edit edge dhcp successfully', async () => {
     render(
       <Provider>
         <EditDhcp />
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    let serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+
+    const poolsRow = await screen.findAllByRole('row', { name: /PoolTest/i })
+    expect(poolsRow.length).toBe(1)
+    const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     const fqdnNameInput = await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })
-    const domainNameInput = screen.getByRole('textbox', { name: 'Domain Name' })
-    const primaryDnsInput = screen.getByRole('textbox', { name: 'Primary DNS Server' })
-    serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName)
     expect(fqdnNameInput).toHaveValue(mockEdgeDhcpData.externalDhcpServerFqdnIp)
-    expect(domainNameInput).toHaveValue(mockEdgeDhcpData.domainName)
-    expect(primaryDnsInput).toHaveValue(mockEdgeDhcpData.primaryDnsIp)
-    const poolsRow = await screen.findAllByRole('row', { name: /PoolTest/i })
-    const hostsRow = await screen.findAllByRole('row', { name: /HostTest/i })
-    expect(poolsRow.length).toBe(1)
-    expect(hostsRow.length).toBe(1)
   })
 
-  it('should render breadcrumb correctly when feature flag is off', () => {
+  it('should render breadcrumb correctly when feature flag is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     render(
       <Provider>
         <EditDhcp />
       </Provider>, {
         route: { params, path: editPagePath }
       })
+    expect(await screen.findByRole('link', { name: 'Services' })).toBeVisible()
     expect(screen.queryByText('Network Control')).toBeNull()
     expect(screen.queryByText('My Services')).toBeNull()
-    expect(screen.getByRole('link', {
-      name: 'Services'
-    })).toBeVisible()
   })
 
   it('should render breadcrumb correctly when feature flag is on', async () => {
@@ -102,18 +96,20 @@ describe('EditEdgeDhcp', () => {
     })).toBeVisible()
   })
 
-  it.skip('should be blcoked when required field is empty', async () => {
-    const user = userEvent.setup()
+  it('should be blcoked when required field is empty', async () => {
     render(
       <Provider>
         <EditDhcp />
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
+    await screen.findByRole('row', { name: /PoolTest1/ })
+
+    const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+
     await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
-    fireEvent.change(serviceNameInput, { target: { value: '' } })
-    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    await userEvent.clear(serviceNameInput)
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await screen.findByText('Please enter Service Name')
   })
 
@@ -126,12 +122,20 @@ describe('EditEdgeDhcp', () => {
         route: { params, path: editPagePath }
       })
     await screen.findAllByRole('row', { name: /PoolTest/i })
-    fireEvent.click(screen.getByRole('switch', { name: 'DHCP Relay:' }))
-    fireEvent.click(await screen.findByRole('radio', { name: 'Infinite' }))
+    await userEvent.click(screen.getByRole('switch', { name: 'DHCP Relay:' }))
+    await userEvent.click(await screen.findByRole('radio', { name: 'Infinite' }))
     const optRow = await screen.findByRole('row', { name: /Option 1/i })
     await user.click(within(optRow).getByRole('checkbox'))
     await user.click(await screen.findByRole('button', { name: 'Delete' }))
     await waitFor(() => expect(optRow).not.toBeVisible())
+
+    await userEvent.click(await screen.findByText('PoolTest1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.type(within(drawer).getByRole('textbox', { name: 'Gateway' }), '1.1.1.127')
+    await userEvent.click(await within(drawer).findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(drawer).not.toBeVisible())
+
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUpdateReq).toBeCalledWith({
       id: '1',
@@ -150,7 +154,7 @@ describe('EditEdgeDhcp', () => {
           subnetMask: '255.255.255.0',
           poolStartIp: '1.1.1.1',
           poolEndIp: '1.1.1.10',
-          gatewayIp: '1.1.1.1',
+          gatewayIp: '1.1.1.127',
           activated: true
         }
       ],

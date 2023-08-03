@@ -51,7 +51,7 @@ export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
 
 export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeDhcpSetting>()
+  const { form, editMode } = useStepFormContext<EdgeDhcpSetting>()
 
   const [
     dhcpRelay,
@@ -81,7 +81,7 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
 
       if (isRelayOn && pool.gatewayIp) {
         return Promise.reject($t({
-          defaultMessage: '{data} : gateway should be empty when relay is enabled.'
+          defaultMessage: '{data} : gateway should be empty when relay is enabled'
         }, { data: pool.poolName }))
       } else if (!isRelayOn && !pool.gatewayIp) {
         return Promise.reject($t({
@@ -94,15 +94,21 @@ export const EdgeDhcpSettingForm = styled((props: EdgeDhcpSettingFormProps) => {
   }
 
   useEffect(() => {
+    // do nothing when data is not ready.
+    if (dhcpRelay === undefined) return
+
     // clear gateway field when relay is enabled
     if (dhcpRelay) {
       const pools = form.getFieldValue('dhcpPools')
       pools?.forEach((pool:EdgeDhcpPool) => {
-        pool.gatewayIp = ''
+        pool.gatewayIp = pool.gatewayIp ? '' : pool.gatewayIp
       })
+    } else {
+      if (editMode && form.isFieldTouched('dhcpRelay')) {
+      // validate again when relay is switched back to OFF
+        form.validateFields(['dhcpPools'])
+      }
     }
-
-    form.validateFields(['dhcpPools'])
   }, [dhcpRelay])
 
   return (
