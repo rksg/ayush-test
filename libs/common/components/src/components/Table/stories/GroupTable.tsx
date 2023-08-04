@@ -719,8 +719,7 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
           </span>
         }
       ]
-    },
-    render: (_, { deviceStatus }) => deviceStatus
+    }
   },
   {
     title: 'Model',
