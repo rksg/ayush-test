@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 
-import { RolesEnum }                                        from '@acx-ui/types'
-import { useTenantId, useLocaleContext, LocaleContextType } from '@acx-ui/utils'
+import { RolesEnum }                     from '@acx-ui/types'
+import { useTenantId, useLocaleContext } from '@acx-ui/utils'
 
 import {
   useAllowedOperationsQuery,
@@ -15,11 +15,11 @@ export interface UserProfileContextProps {
   allowedOperations: string[]
   hasRole: typeof hasRoles
   isPrimeAdmin: () => boolean
-  locale: LocaleContextType
 }
 
 const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
 const hasRole = hasRoles
+
 // eslint-disable-next-line max-len
 export const UserProfileContext = createContext<UserProfileContextProps>({} as UserProfileContextProps)
 export const useUserProfileContext = () => useContext(UserProfileContext)
@@ -39,8 +39,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   if (allowedOperations) setUserProfile({ profile: profile!, allowedOperations })
 
   return <UserProfileContext.Provider
-    value={{ data: profile, allowedOperations: allowedOperations || [], hasRole,
-      isPrimeAdmin, locale }}
+    value={{ data: profile, allowedOperations: allowedOperations || [], hasRole, isPrimeAdmin }}
     children={props.children}
   />
 }

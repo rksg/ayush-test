@@ -48,13 +48,23 @@ describe('PreferredLanguageFormItem', () => {
   beforeEach(() => {
     jest.mocked(mockUseUserProfileContext).mockReturnValue({ data: mockUserProfile })
   })
+
   it('should render successfully', async () => {
-    const { baseElement } = render(
+    render(
+      <Provider>
+        <Form> <PreferredLanguageFormItem /> </Form>
+      </Provider>, {
+        route: { params }
+      })
+    expect(await screen.findByRole('combobox', { name: 'Preferred Language' })).toBeVisible()
+  })
+
+  it('renders the form item with the correct initial value and label', async () => {
+    render(
       <Provider>
         <Form> <PreferredLanguageFormItem /> </Form>
       </Provider>
     )
-    expect(baseElement).toBeTruthy()
     await screen.findByText('Preferred Language')
     await screen.findByText('English')
     await screen.findByText('Japanese')
@@ -64,7 +74,7 @@ describe('PreferredLanguageFormItem', () => {
     await screen.findByText('Spanish')
   })
 
-  it('should be changable', async () => {
+  it('should be able to select new language', async () => {
     render(
       <Provider>
         <Form> <PreferredLanguageFormItem /> </Form>
@@ -78,17 +88,6 @@ describe('PreferredLanguageFormItem', () => {
     await userEvent.selectOptions(selector, 'French')
   })
 
-  it('renders the form item with the correct initial value and label', async () => {
-    render(
-      <Provider>
-        <Form> <PreferredLanguageFormItem /> </Form>
-      </Provider>, {
-        route: { params }
-      })
-    screen.getByRole('combobox', { name: 'Preferred Language' })
-    expect(await screen.findByRole('combobox')).toBeVisible()
-  })
-
   it('renders the language options correctly', async () => {
     render(
       <Provider>
@@ -96,8 +95,8 @@ describe('PreferredLanguageFormItem', () => {
       </Provider>, {
         route: { params }
       })
-    userEvent.selectOptions(
-      screen.getByRole('combobox'),
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[0],
       screen.getByRole('option', { name: 'English' })
     )
 
