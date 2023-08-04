@@ -200,7 +200,7 @@ export const mockEdgePortStatus = [
   },
   {
     portId: mockEdgePortConfig.ports[1].id,
-    ip: '10.206.78.153'
+    ip: ''
   }
 ]
 

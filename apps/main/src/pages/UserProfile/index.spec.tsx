@@ -21,7 +21,8 @@ const userProfile = {
   role: RolesEnum.ADMINISTRATOR,
   email: 'dog12@email.com',
   dateFormat: 'yyyy/mm/dd',
-  detailLevel: 'su'
+  detailLevel: 'su',
+  preferredLanguage: 'en-US'
 } as UserProfileInterface
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -32,6 +33,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('@acx-ui/msp/components', () => ({
   ...jest.requireActual('@acx-ui/msp/components'),
   MultiFactor: () => <div data-testid='MultiFactor' />
+}))
+
+jest.mock('./PreferredLanguageFormItem', () => ({
+  PreferredLanguageFormItem: () => <div data-testid={'rc-PreferredLanguageFormItem'}
+    title='PreferredLanguageFormItem' />
 }))
 
 describe('UserProfile', () => {
