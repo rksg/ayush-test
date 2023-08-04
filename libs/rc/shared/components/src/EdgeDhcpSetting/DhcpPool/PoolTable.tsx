@@ -39,20 +39,19 @@ export function PoolTable (props:{
       key: 'poolName',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'poolName',
+      width: 200,
       sorter: { compare: sortProp('poolName', defaultSort) }
     },
     {
       key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
       dataIndex: 'subnetMask',
-      width: 150,
       sorter: { compare: sortProp('subnetMask', defaultSort) }
     },
     {
       key: 'poolStartIp',
       title: $t({ defaultMessage: 'Pool Range' }),
       dataIndex: 'poolStartIp',
-      width: 250,
       render: (_, row) => {
         return `${row.poolStartIp} - ${row.poolEndIp}`
       }
