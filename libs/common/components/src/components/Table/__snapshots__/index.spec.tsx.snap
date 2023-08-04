@@ -367,7 +367,7 @@ exports[`Table component renders form table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 hDMQxF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hrIavC"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -424,7 +424,7 @@ exports[`Table component should render correctly 1`] = `
                         >
                           <tr>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -433,7 +433,7 @@ exports[`Table component should render correctly 1`] = `
                               Name
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -450,7 +450,7 @@ exports[`Table component should render correctly 1`] = `
                               </span>
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -519,19 +519,39 @@ exports[`Table component should render correctly 1`] = `
                             data-row-key="1"
                           >
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="John Doe"
                             >
-                              John Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                John Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              32
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                32
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="sample address"
                             >
-                              sample address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                sample address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -543,19 +563,39 @@ exports[`Table component should render correctly 1`] = `
                             data-row-key="2"
                           >
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Jane Doe"
                             >
-                              Jane Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Jane Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              33
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                33
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="new address"
                             >
-                              new address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                new address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -567,19 +607,39 @@ exports[`Table component should render correctly 1`] = `
                             data-row-key="3"
                           >
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Will Smith"
                             >
-                              Will Smith
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Will Smith
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              45
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                45
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="address"
                             >
-                              address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -604,7 +664,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 hDMQxF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hrIavC"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -692,7 +752,7 @@ exports[`Table component should render multi select table and render action butt
                               </div>
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -701,7 +761,7 @@ exports[`Table component should render multi select table and render action butt
                               Name
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -718,7 +778,7 @@ exports[`Table component should render multi select table and render action butt
                               </span>
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -816,19 +876,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="John Doe"
                             >
-                              John Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                John Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              32
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                32
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="sample address"
                             >
-                              sample address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                sample address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -860,19 +940,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Jane Doe"
                             >
-                              Jane Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Jane Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              33
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                33
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="new address"
                             >
-                              new address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                new address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -904,19 +1004,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Will Smith"
                             >
-                              Will Smith
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Will Smith
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              45
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                45
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="address"
                             >
-                              address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -941,7 +1061,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 hDMQxF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hrIavC"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -1133,7 +1253,7 @@ exports[`Table component should render multi select table and render action butt
                               </div>
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -1142,7 +1262,7 @@ exports[`Table component should render multi select table and render action butt
                               Name
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -1159,7 +1279,7 @@ exports[`Table component should render multi select table and render action butt
                               </span>
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -1257,19 +1377,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="John Doe"
                             >
-                              John Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                John Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              32
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                32
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="sample address"
                             >
-                              sample address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                sample address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -1301,19 +1441,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Jane Doe"
                             >
-                              Jane Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Jane Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              33
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                33
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="new address"
                             >
-                              new address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                new address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -1345,19 +1505,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Will Smith"
                             >
-                              Will Smith
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Will Smith
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              45
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                45
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="address"
                             >
-                              address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -1382,7 +1562,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-12 hDMQxF"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 hrIavC"
     style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
   >
     <div
@@ -1470,7 +1650,7 @@ exports[`Table component should render multi select table and render action butt
                               </div>
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -1479,7 +1659,7 @@ exports[`Table component should render multi select table and render action butt
                               Name
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -1496,7 +1676,7 @@ exports[`Table component should render multi select table and render action butt
                               </span>
                             </th>
                             <th
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                               data-testid="react-resizable"
                             >
                               <div
@@ -1594,19 +1774,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="John Doe"
                             >
-                              John Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                John Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              32
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                32
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="sample address"
                             >
-                              sample address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                sample address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -1638,19 +1838,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Jane Doe"
                             >
-                              Jane Doe
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Jane Doe
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              33
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                33
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="new address"
                             >
-                              new address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                new address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
@@ -1682,19 +1902,39 @@ exports[`Table component should render multi select table and render action butt
                               </label>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="Will Smith"
                             >
-                              Will Smith
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                Will Smith
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
                             >
-                              45
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                45
+                              </span>
                             </td>
                             <td
-                              class="ant-table-cell"
+                              class="ant-table-cell ant-table-cell-ellipsis"
+                              title="address"
                             >
-                              address
+                              <span
+                                class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                                style="width: 100%; margin: 0px; padding: 0px;"
+                                title=""
+                              >
+                                address
+                              </span>
                             </td>
                             <td
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"

@@ -3390,45 +3390,24 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-<<<<<<< HEAD
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
-      >
-        AP DISTRIBUTION BY CHANNEL
-      </div>
-=======
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
       />
->>>>>>> origin/master
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-<<<<<<< HEAD
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
-      >
-        ROGUE DISTRIBUTION BY CHANNEL
-      </div>
-=======
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
       />
->>>>>>> origin/master
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-<<<<<<< HEAD
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
-      >
-        DFS EVENTS BY CHANNEL
-      </div>
-=======
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
       />
->>>>>>> origin/master
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -3968,30 +3947,16 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-<<<<<<< HEAD
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
-      >
-        AP DISTRIBUTION BY CHANNEL
-      </div>
-=======
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
       />
->>>>>>> origin/master
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-<<<<<<< HEAD
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
-      >
-        ROGUE DISTRIBUTION BY CHANNEL
-      </div>
-=======
-        class="Grid__Container-sc-5irhjd-1 zzbxI"
       />
->>>>>>> origin/master
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"

@@ -60,7 +60,7 @@ export const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
       key: 'ipMode',
       dataIndex: 'ipMode',
       sorter: { compare: sortProp('ipMode', defaultSort) },
-      render: (ipMode) => {
+      render: (_, { ipMode }) => {
         return ipMode === 'DHCP' ? $t({ defaultMessage: 'DHCP' })
           : (ipMode === 'Static' ? $t({ defaultMessage: 'Static IP' }) : '')
       }
