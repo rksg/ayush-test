@@ -53,6 +53,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const currentUserMail = userProfileData?.email
   const currentUserDetailLevel = userProfileData?.detailLevel
   const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
+  const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING)
 
   const { data: mspProfile } = useGetMspProfileQuery({ params })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
@@ -125,6 +126,22 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) }
     },
+    ...(idmDecouplngFF ?
+      [
+        {
+          title: $t({ defaultMessage: 'Authentication Type' }),
+          key: 'authenticationId',
+          dataIndex: 'authenticationId',
+          sorter: { compare: sortProp('authenticationId', defaultSort) },
+          render: function (_: unknown, row: Administrator) {
+            return row.authenticationId
+              ? $t({ defaultMessage: 'SSO with 3rd Party' }) : $t({ defaultMessage: 'RUCKUS' })
+          }
+        }
+      ]
+      :
+      []
+    ),
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'role',

@@ -109,6 +109,45 @@ export const venue = [
         apModels: ['R500']
       }
     ]
+  },
+  {
+    id: 'aaa2f2133565438d85e1e46103889999',
+    name: 'Legacy-Venue',
+    apCount: 1,
+    apModels: [
+      'R512'
+    ],
+    versions: [
+      {
+        version: '6.1.0.10.433',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    eolApFirmwares: [
+      {
+        name: 'eol-ap-2022-12',
+        currentEolVersion: '6.2.0.103.513',
+        latestEolVersion: '6.2.0.103.533',
+        apCount: 1,
+        apModels: ['T300']
+      }
+    ]
+  },
+  {
+    id: 'zzz2f2133565438d85e1e46103889999',
+    name: 'Latest-Venue',
+    apCount: 1,
+    apModels: [
+      'R599'
+    ],
+    versions: [
+      {
+        version: '7.0.0.103.288',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ]
   }
 ]
 
@@ -335,6 +374,14 @@ export const availableABFList = [
     onboardDate: '2023-05-31T02:31:12.682+0000',
     name: '7.0.0.103.288',
     id: '7.0.0.103.288'
+  },
+  {
+    abf: 'active',
+    releaseDate: '2023-06-19T18:54:43.177+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2023-05-01T02:31:12.682+0000',
+    name: '7.0.0.103.260',
+    id: '7.0.0.103.260'
   },
   {
     abf: 'eol-ap-2022-12',

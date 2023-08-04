@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-import { getIntl } from '@acx-ui/utils'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import { STACK_MEMBERSHIP,
@@ -657,5 +657,23 @@ export const getClientIpAddr = (data?: SwitchClient) => {
   } else if (data?.clientIpv6Addr !== '0:0:0:0:0:0:0:0') {
     return data?.clientIpv6Addr
   }
-  return '--'
+  return noDataDisplay
+}
+
+export const getAdminPassword = (
+  data?: SwitchViewModel | SwitchRow,
+  PasswordCoomponent?: React.ElementType
+) => {
+  const { $t } = getIntl()
+  return !(data?.configReady && data?.syncedSwitchConfig)
+    ? noDataDisplay
+    : (data?.syncedAdminPassword
+      ? PasswordCoomponent && <PasswordCoomponent
+        style={{ paddingLeft: 0 }}
+        readOnly
+        bordered={false}
+        value={data?.adminPassword}
+      />
+      : $t({ defaultMessage: 'Custom' })
+    )
 }

@@ -1,6 +1,6 @@
-
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -58,6 +58,14 @@ const list = {
   totalPages: 1
 }
 
+const params = {
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  switchId: 'switchId',
+  serialNumber: 'serialNumber',
+  activeTab: 'configuration',
+  activeSubTab: 'backup'
+}
+
 describe('SwitchConfigBackupTable', () => {
   afterEach(() => jest.restoreAllMocks())
 
@@ -78,25 +86,15 @@ describe('SwitchConfigBackupTable', () => {
       rest.delete(
         SwitchUrlsInfo.deleteBackups.url,
         (req, res, ctx) => res(ctx.json({}))
-      )
-    )
-  })
-
-  it('should render correctly: Backup, Restore, Download and Delete', async () => {
-    mockServer.use(
+      ),
       rest.post(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'configuration',
-      activeSubTab: 'backup'
-    }
+  })
 
+  it('should render correctly: Backup, Restore, Download and Delete', async () => {
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData: {
@@ -145,20 +143,6 @@ describe('SwitchConfigBackupTable', () => {
   })
 
   it('should render correctly: View Backup and actions: Download', async () => {
-    mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getSwitchConfigBackupList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'configuration',
-      activeSubTab: 'backup'
-    }
-
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
         switchDetailsContextData: {
@@ -195,19 +179,6 @@ describe('SwitchConfigBackupTable', () => {
   })
 
   it('should render correctly: View Backup and actions: Compare', async () => {
-    mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getSwitchConfigBackupList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'configuration',
-      activeSubTab: 'backup'
-    }
 
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
@@ -238,27 +209,16 @@ describe('SwitchConfigBackupTable', () => {
 
     await userEvent.click(await screen.findByText('Actions'))
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Compare' }))
-    await waitFor(async () => expect(await screen.findByText('Compare Configurations')).toBeVisible())
+    expect(screen.getByText('Compare Configurations')).toBeVisible()
     const configSelect = await screen.findAllByRole('combobox', { name: /Configuration Name/i })
     await userEvent.click(configSelect[0])
     await userEvent.click((await screen.findByTitle(/SCHEDULED_1/i)))
-
+    const compareDialog = await screen.findByRole('dialog')
+    await userEvent.click(await within(compareDialog).findByTestId('CloseSymbol'))
+    await waitFor(async () => expect(compareDialog).not.toBeVisible())
   })
 
   it('should render correctly: View Backup and actions: Restore', async () => {
-    mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getSwitchConfigBackupList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'configuration',
-      activeSubTab: 'backup'
-    }
 
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
@@ -290,54 +250,12 @@ describe('SwitchConfigBackupTable', () => {
     await userEvent.click(await screen.findByText('Actions'))
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Restore' }))
     const restoreDialog = await screen.findByRole('dialog')
-    await waitFor(async () => expect(restoreDialog).toBeVisible())
-    const restoreButton = await within(restoreDialog).findByRole('button', { name: 'Restore' })
-    await waitFor(async () => expect(restoreButton).toBeVisible())
-    // TODO
-    // await userEvent.click(restoreButton)
-    // await waitFor(async () => expect(restoreDialog).not.toBeVisible())
+    await userEvent.click(await within(restoreDialog).findByText('Cancel'))
+    await waitFor(async () => expect(restoreDialog).not.toBeVisible())
 
-  })
-})
-
-describe('SwitchConfigBackupTable Alt', () => {
-  afterEach(() => jest.restoreAllMocks())
-
-  beforeEach(() => {
-    mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.downloadSwitchConfig.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        SwitchUrlsInfo.addBackup.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.put(
-        SwitchUrlsInfo.restoreBackup.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.delete(
-        SwitchUrlsInfo.deleteBackups.url,
-        (req, res, ctx) => res(ctx.json({}))
-      )
-    )
   })
 
   it('should render correctly: View Backup and actions: Delete', async () => {
-    mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getSwitchConfigBackupList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'configuration',
-      activeSubTab: 'backup'
-    }
 
     render(<Provider>
       <SwitchDetailsContext.Provider value={{
@@ -368,7 +286,9 @@ describe('SwitchConfigBackupTable Alt', () => {
 
     await userEvent.click(await screen.findByText('Actions'))
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Delete' }))
-
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(await within(dialog).findByText('Cancel'))
+    await waitFor(async () => expect(dialog).not.toBeVisible())
   })
 
   it('should render inRestoreProgress correctly', async () => {
@@ -429,6 +349,7 @@ describe('SwitchConfigBackupTable Alt', () => {
 
     const row3 = await screen.findByRole('row', { name: /testBackup/i })
     await userEvent.click(await within(row3).findByRole('checkbox'))
-
+    expect(await screen.findByRole('button', { name: 'Restore' })).toBeDisabled()
   })
+
 })
