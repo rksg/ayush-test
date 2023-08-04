@@ -1,9 +1,6 @@
 require('whatwg-fetch')
 require('@testing-library/jest-dom')
 
-// const { registerTsProject } = require('nx/src/utils/register')
-// const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
-
 const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
@@ -120,8 +117,6 @@ afterAll(() => {
   mockServer.close()
   cleanStylesFromDOM()
 })
-
-// cleanupRegisteredPaths()
 
 // from: https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
 Object.defineProperty(window, 'matchMedia', {

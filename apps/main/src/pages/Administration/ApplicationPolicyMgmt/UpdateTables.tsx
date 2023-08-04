@@ -77,7 +77,7 @@ export const UpdateAPPTable=(props: APPTableProps)=>{
 
   return (<Table<ApplicationInfo>
     columns={updateColumn}
-    dataSource={props.data} //Test for TSC validate
+    dataSource={props.data}
     rowKey='toApplicationId'
     actions={filterByAccess(props.actions)}
     pagination={pagination}
