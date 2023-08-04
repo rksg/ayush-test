@@ -79,7 +79,7 @@ describe('Edge Details Tabs', () => {
     render(
       <Provider>
         <EdgeDetailsTabs
-          isOperational={currentEdge.deviceStatusOperational=== EdgeStatusEnum.OPERATIONAL}
+          isOperational={true}
         />
       </Provider>, {
         route: { params }
