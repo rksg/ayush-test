@@ -16,6 +16,19 @@ const cliList = {
       id: '36e4d1dd8ab04cfb958aad3105e93aee',
       name: 'cli-test',
       reload: false
+    },
+    {
+      applyLater: true,
+      cli: 'test cli',
+      id: '36e4d1dd8ab04cfb958aad3105e93ae2',
+      name: 'cli-test2',
+      reload: false,
+      variables: [{ name: 'test', type: 'RANGE', value: '5:6' }],
+      venueSwitches: [{
+        id: '92db943606a046b5b2cd9b30624c833b',
+        switches: ['c0:c5:20:aa:24:0f'],
+        venueId: 'e99dfe45ce6b41828be94eaff2a268ff'
+      }]
     }
   ],
   fields: [
@@ -28,6 +41,11 @@ const cliList = {
   totalPages: 1
 }
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 describe('Wired', () => {
   beforeEach(() => {
@@ -66,6 +84,54 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByText('cli-test'))
     await userEvent.click(await screen.findByText('Delete'))
     await userEvent.click(await screen.findByText('Delete CLI template'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
+  it.skip('should delete multi onDemandCli correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      activeTab: 'onDemandCli'
+    }
+    render(<Provider><OnDemandCliTab /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
+    })
+
+    expect(await screen.findByText('cli-test')).toBeVisible()
+    await userEvent.click(await screen.findByText('cli-test'))
+    await userEvent.click(await screen.findByText('cli-test2'))
+    await userEvent.click(await screen.findByText('Delete'))
+    await userEvent.click(await screen.findByText('Delete "2 CLI templates"?'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+
+  it('should edit onDemandCli correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      activeTab: 'onDemandCli'
+    }
+    render(<Provider><OnDemandCliTab /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
+    })
+
+    expect(await screen.findByText('cli-test')).toBeVisible()
+    await userEvent.click(await screen.findByText('cli-test'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith(
+      '36e4d1dd8ab04cfb958aad3105e93aee/edit', { replace: false }
+    )
+  })
+
+  it('should add onDemandCli correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      activeTab: 'onDemandCli'
+    }
+    render(<Provider><OnDemandCliTab /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
+    })
+
+    expect(await screen.findByText('cli-test')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add CLI Template' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('add', { replace: false })
+  })
 })
