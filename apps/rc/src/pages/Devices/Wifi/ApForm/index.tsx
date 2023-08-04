@@ -116,6 +116,7 @@ export function ApForm () {
   const [cellularApModels, setCellularApModels] = useState([] as string[])
 
   const BASE_VERSION = '6.2.1'
+  const ALERT_AP_MODELS = ['R560', 'R760']
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -129,28 +130,34 @@ export function ApForm () {
   }
 
   const venueInfos = (venueFwVersion: string) => {
+    const contentInfo = <><br/><br/>{$t({
+      defaultMessage: 'If you are adding an <b>{apModels}</b> AP, ' +
+        'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
+        'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
+      b: chunks => <strong>{chunks}</strong>,
+      apModels: ALERT_AP_MODELS.join(' or '),
+      baseVersion: BASE_VERSION,
+      fwManagementLink: (<TenantLink
+        to={'/administration/fwVersionMgmt'}>{
+          $t({ defaultMessage: 'Firmware Management' })
+        }</TenantLink>)
+    })}</>
+
     return <span>
       {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
         fwVersion: venueFwVersion
       })}
       {
-        checkBelowFwVersion(venueFwVersion) ? <><br/><br/>{$t({
-          defaultMessage: 'If you are adding an <b>R560 or R760</b> AP, ' +
-            'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
-            'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
-          b: chunks => <strong>{chunks}</strong>,
-          baseVersion: BASE_VERSION,
-          fwManagementLink: (<TenantLink
-            to={'/administration/fwVersionMgmt'}>{
-              $t({ defaultMessage: 'Firmware Management' })
-            }</TenantLink>)
-        })}</> : ''
+        checkBelowFwVersion(venueFwVersion) ? contentInfo : ''
       }
     </span>
   }
 
   const checkBelowFwVersion = (version: string) => {
     if (version === '-') return false
+    if (isEditMode && apDetails) {
+      if (!ALERT_AP_MODELS.includes(apDetails.model)) return false
+    }
     return compareVersions(version, BASE_VERSION) < 0
   }
 
