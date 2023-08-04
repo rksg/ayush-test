@@ -487,6 +487,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/bssColoringSettings',
     newApi: true
   },
+  getVenueClientAdmissionControl: {
+    method: 'get',
+    url: '/venues/:venueId/clientAdmissionControlSettings',
+    newApi: true
+  },
+  updateVenueClientAdmissionControl: {
+    method: 'put',
+    url: '/venues/:venueId/clientAdmissionControlSettings',
+    newApi: true
+  },
   getApNetworkSettings: {
     method: 'get',
     url: '/venues/aps/:serialNumber/networkSettings',

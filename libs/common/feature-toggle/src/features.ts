@@ -78,6 +78,7 @@ export enum Features {
   IDM_DECOUPLING='ptenant-admin-authentication-enabled',
   WIFI_AP_BSS_COLORING_TOGGLE = 'wifi-ap-bss-coloring-toggle',
   WIFI_VENUE_BSS_COLORING_TOGGLE = 'wifi-fr-6029-fg1-toggle',
+  WIFI_FR_6029_FG6_1_TOGGLE = 'wifi-fr-6029-fg6-1-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle'
 }
 
