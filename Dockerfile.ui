@@ -76,7 +76,7 @@ ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
 COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
-COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
+# COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
 COPY cicd_tool ./cicd_tool
