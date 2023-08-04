@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react'
 import userEvent      from '@testing-library/user-event'
 import { Form }       from 'antd'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   findTBody,
   render, screen, within
@@ -13,6 +14,10 @@ import { mockedPoolData } from '../__tests__/fixtures'
 import DhcpPoolTable from '.'
 
 describe('DHCP Pool table(Edge)', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
+
   it('should render data succefully', async () => {
     render(<DhcpPoolTable value={mockedPoolData} />)
 
@@ -295,5 +300,24 @@ describe('DHCP Pool table(Edge)', () => {
     await userEvent.click(within(drawer).getByRole('button', { name: 'Import' }))
     await screen.findByText('Invalid Validation')
     await screen.findByText('Exceed maximum entries.')
+  })
+
+  it('should not display import from file when FF is disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(<Form form={formRef.current}>
+      <Form.Item
+        name='dhcpPools'
+        children={<DhcpPoolTable />}
+      />
+    </Form>)
+
+    const btn = screen.queryByRole('button', { name: 'Import from file' })
+    expect(btn).toBeNull()
   })
 })
