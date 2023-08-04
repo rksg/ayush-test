@@ -6,6 +6,7 @@ import {
   useDeleteSwitchesMutation,
   useRebootSwitchMutation,
   useSyncDataMutation,
+  useSyncSwitchesDataMutation,
   useRetryFirmwareUpdateMutation
 } from '@acx-ui/rc/services'
 import {
@@ -21,6 +22,7 @@ export function useSwitchActions () {
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
   const [ rebootSwitch ] = useRebootSwitchMutation()
   const [ syncData ] = useSyncDataMutation()
+  const [ syncSwitchesData ] = useSyncSwitchesDataMutation()
   const [ retryFirmwareUpdate ] = useRetryFirmwareUpdateMutation()
 
   function shouldHideConfirmation (selectedRows: SwitchRow[]) {
@@ -101,12 +103,27 @@ export function useSwitchActions () {
   const doSyncData= async (switchId: string, tenantId: string, callBack?: ()=>void ) => {
     try {
       await syncData({
-        params: { tenantId: tenantId, switchId },
+        params: { tenantId, switchId },
         payload: { deviceRequestAction: DeviceRequestAction.SYNC, isManual: true }
       }).unwrap()
       setTimeout(() => {
         callBack && callBack()
       }, 3000)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const doSyncAdminPassword = async (switchIdList: string[], callBack?: ()=>void) => {
+    try {
+      await syncSwitchesData({
+        payload: {
+          deviceRequestAction: DeviceRequestAction.SYNC_ADMIN_PASSWORD,
+          switchIdList }
+      }).unwrap()
+      setTimeout(() => {
+        callBack?.()
+      }, 1000)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -131,6 +148,7 @@ export function useSwitchActions () {
     showDeleteSwitch,
     showRebootSwitch,
     doSyncData,
+    doSyncAdminPassword,
     doRetryFirmwareUpdate
   }
 }

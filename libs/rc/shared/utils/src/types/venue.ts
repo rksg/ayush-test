@@ -218,6 +218,10 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export interface VenueBssColoring {
+	bssColoringEnabled: boolean
+}
+
 export interface VenueApModels {
 	models: string[]
 }
@@ -687,6 +691,17 @@ export interface VenueLoadBalancing {
   bandBalancingEnabled: true,
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum
+}
+
+export interface VenueClientAdmissionControl {
+	enable24G: boolean,
+	enable50G: boolean,
+	minClientCount24G?: number,
+	minClientCount50G?: number,
+	maxRadioLoad24G?: number,
+	maxRadioLoad50G?: number,
+	minClientThroughput24G?: number,
+	minClientThroughput50G?: number
 }
 
 export interface VenueBssColoring {

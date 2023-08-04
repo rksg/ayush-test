@@ -3391,9 +3391,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-      >
-        AP DISTRIBUTION BY CHANNEL
-      </div>
+      />
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -3401,9 +3399,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-      >
-        ROGUE DISTRIBUTION BY CHANNEL
-      </div>
+      />
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -3411,9 +3407,7 @@ exports[`Test Details should render ChannelDist correctly 1`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-      >
-        DFS EVENTS BY CHANNEL
-      </div>
+      />
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -3954,9 +3948,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-      >
-        AP DISTRIBUTION BY CHANNEL
-      </div>
+      />
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
@@ -3964,9 +3956,7 @@ exports[`Test Details should render ChannelDist correctly 2`] = `
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
-      >
-        ROGUE DISTRIBUTION BY CHANNEL
-      </div>
+      />
     </div>
     <div
       class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
