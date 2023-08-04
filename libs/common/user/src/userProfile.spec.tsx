@@ -26,8 +26,8 @@ describe('hasAccess', () => {
     })
   })
 
-  it('allow when id not defined in operationMap', () => {
-    expect(hasAccess('random-key')).toBe(true)
+  it('deny when id not defined in allowedOperations', () => {
+    expect(hasAccess('random-key')).toBe(false)
   })
 
   describe('when id defined in map', () => {
