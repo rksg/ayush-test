@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { networkApi }      from '@acx-ui/rc/services'
 import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
@@ -156,8 +157,9 @@ describe('Create Network: Venues Step', () => {
     expect(tbody).toBeVisible()
 
     const body = within(tbody)
-    fireEvent.click(await body.findByText('My-Venue'))
-    const activateButton = screen.getByRole('button', { name: 'Activate' })
+    const row = await body.findByRole('row', { name: /My-Venue/ })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    const activateButton = await screen.findByRole('button', { name: 'Activate' })
     fireEvent.click(activateButton)
 
     const rows = await screen.findAllByRole('switch')
